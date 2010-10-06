@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -39,9 +38,9 @@ public interface ITaskFundamentalProperties {
     /**
      * Sets the beginDate.
      */
-    public void setBeginDate(Date beginDate);
+    public void setBeginDate(GanttDate beginDate);
 
-    public Date getBeginDate();
+    public GanttDate getBeginDate();
 
     /**
      * The deadline associated to the task. It can return null if has no
@@ -53,9 +52,9 @@ public interface ITaskFundamentalProperties {
 
     public Date getConsolidatedline();
 
-    public Date getEndDate();
+    public GanttDate getEndDate();
 
-    public void setEndDate(Date endDate);
+    public void setEndDate(GanttDate endDate);
 
     public String getNotes();
 
@@ -77,7 +76,7 @@ public interface ITaskFundamentalProperties {
 
     List<Constraint<Date>> getStartConstraints();
 
-    public void moveTo(LocalDate date);
+    public void moveTo(GanttDate date);
 
     public boolean isSubcontracted();
 

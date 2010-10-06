@@ -60,6 +60,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -195,8 +196,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void applyAllocationWithDateChangesNotification(
             IOnTransaction<?> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-        Date previousStartDate = ganttTask.getBeginDate();
-        Date previousEnd = ganttTask.getEndDate();
+        GanttDate previousStartDate = ganttTask.getBeginDate();
+        GanttDate previousEnd = ganttTask.getEndDate();
         transactionService.runOnReadOnlyTransaction(allocationDoer);
         ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
     }

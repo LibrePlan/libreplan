@@ -36,6 +36,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -106,13 +107,15 @@ public class CriticalPathCalculatorTest {
         return dependency;
     }
 
-    private Date toDate(LocalDate localDate) {
-        return localDate.toDateTimeAtStartOfDay().toDate();
+    private GanttDate toDate(LocalDate localDate) {
+        return GanttDate.createFrom(localDate);
     }
 
     private int daysBetweenStartAndEnd(ITaskFundamentalProperties task) {
-        LocalDate start = LocalDate.fromDateFields(task.getBeginDate());
-        LocalDate end = LocalDate.fromDateFields(task.getEndDate());
+        LocalDate start = LocalDate.fromDateFields(task.getBeginDate()
+                .toDateApproximation());
+        LocalDate end = LocalDate.fromDateFields(task.getEndDate()
+                .toDateApproximation());
         return Days.daysBetween(start, end).getDays();
     }
 

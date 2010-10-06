@@ -23,7 +23,6 @@ package org.zkoss.ganttz.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
@@ -88,30 +87,30 @@ public class TaskContainer extends Task {
         return tasks;
     }
 
-    public Date getSmallestBeginDateFromChildren() {
+    public GanttDate getSmallestBeginDateFromChildren() {
         if (tasks.isEmpty()) {
             return getBeginDate();
         }
         return getSmallest(getStartDates());
     }
 
-    private List<Date> getStartDates() {
-        ArrayList<Date> result = new ArrayList<Date>();
+    private List<GanttDate> getStartDates() {
+        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
         for (Task task : tasks) {
             result.add(task.getBeginDate());
         }
         return result;
     }
 
-    private List<Date> getEndDates() {
-        ArrayList<Date> result = new ArrayList<Date>();
+    private List<GanttDate> getEndDates() {
+        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
         for (Task task : tasks) {
             result.add(task.getEndDate());
         }
         return result;
     }
 
-    public Date getBiggestDateFromChildren() {
+    public GanttDate getBiggestDateFromChildren() {
         if (tasks.isEmpty()) {
             return getEndDate();
         }

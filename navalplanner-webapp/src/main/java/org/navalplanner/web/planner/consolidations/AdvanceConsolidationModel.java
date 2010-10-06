@@ -56,6 +56,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -136,8 +137,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     public void accept() {
         if (context != null && orderElement != null && isVisibleAdvances()) {
             org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-            Date previousStartDate = ganttTask.getBeginDate();
-            Date previousEnd = ganttTask.getEndDate();
+            GanttDate previousStartDate = ganttTask.getBeginDate();
+            GanttDate previousEnd = ganttTask.getEndDate();
 
             createConsolidationIfNeeded();
 

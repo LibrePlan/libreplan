@@ -35,6 +35,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -340,9 +341,9 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     void doUpdatePosition(String leftX, String topY) {
-        Date startBeforeMoving = this.task.getBeginDate();
+        GanttDate startBeforeMoving = this.task.getBeginDate();
         LocalDate newPosition = getMapper().toDate(stripPx(leftX));
-        this.task.moveTo(newPosition);
+        this.task.moveTo(GanttDate.createFrom(newPosition));
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -352,8 +353,9 @@ public class TaskComponent extends Div implements AfterCompose {
 
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
-        DateTime end = new DateTime(this.task.getBeginDate().getTime())
-                .plus(getMapper().toDuration(pixels));
+        DateTime end = new DateTime(this.task.getBeginDate()
+                .toDateApproximation().getTime()).plus(getMapper().toDuration(
+                pixels));
         this.task.resizeTo(end.toLocalDate());
         updateWidth();
     }
@@ -494,7 +496,8 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private Duration fromStartUntil(Date until) {
-        DateTime start = new DateTime(this.task.getBeginDate().getTime());
+        DateTime start = new DateTime(this.task.getBeginDate()
+                .toDateApproximation().getTime());
         DateTime end = new DateTime(until.getTime());
         Duration duration = end.isAfter(start) ? new Duration(start, end)
                 : Duration.ZERO;

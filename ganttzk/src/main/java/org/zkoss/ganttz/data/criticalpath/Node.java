@@ -108,13 +108,14 @@ public class Node<T extends ITaskFundamentalProperties> {
             return 0;
         }
 
-        LocalDate beginDate = new LocalDate(task.getBeginDate());
+        LocalDate beginDate = new LocalDate(task.getBeginDate()
+                .toDateApproximation());
         LocalDate endDate = getTaskEndDate();
         return Days.daysBetween(beginDate, endDate).getDays();
     }
 
     private LocalDate getTaskEndDate() {
-        return new LocalDate(task.getEndDate());
+        return new LocalDate(task.getEndDate().toDateApproximation());
     }
 
     @Override

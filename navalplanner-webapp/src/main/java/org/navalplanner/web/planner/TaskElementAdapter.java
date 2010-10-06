@@ -152,10 +152,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public static GanttDate toGantt(IntraDayDate date) {
+        if (date == null) {
+            return null;
+        }
         return new GanttDateAdapter(date);
     }
 
     public static IntraDayDate toIntraDay(GanttDate date) {
+        if (date == null) {
+            return null;
+        }
         return date.byCases(new Cases<GanttDateAdapter, IntraDayDate>(
                 GanttDateAdapter.class) {
 
@@ -172,6 +178,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public static LocalDate toLocalDate(GanttDate date) {
+        if (date == null) {
+            return null;
+        }
         return toIntraDay(date).getDate();
     }
 
@@ -251,40 +260,38 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getBeginDate() {
-            return taskElement.getStartDate();
+        public GanttDate getBeginDate() {
+            return toGantt(taskElement.getIntraDayStartDate());
         }
 
         @Override
-        public void setBeginDate(final Date beginDate) {
-            setBeginDate(beginDate != null ? LocalDate
-                    .fromDateFields(beginDate) : null);
-        }
-
-        private void setBeginDate(final LocalDate beginDate) {
+        public void setBeginDate(final GanttDate beginDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.moveTo(currentScenario, beginDate);
+                            taskElement.moveTo(currentScenario,
+                                    toIntraDay(beginDate));
                             return null;
                         }
                     });
         }
 
         @Override
-        public Date getEndDate() {
-            return taskElement.getEndDate();
+        public GanttDate getEndDate() {
+            return toGantt(taskElement.getIntraDayEndDate());
         }
 
-        public void setEndDate(final Date endDate) {
+        @Override
+        public void setEndDate(final GanttDate endDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.resizeTo(currentScenario, endDate);
+                            taskElement.resizeTo(currentScenario,
+                                    toIntraDay(endDate));
                             return null;
                         }
                     });
@@ -308,7 +315,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 }
 
                 if (hours == 0) {
-                    return getBeginDate();
+                    return getBeginDate().toDateApproximation();
                 } else {
                     BigDecimal percentage = new BigDecimal(assignedHours)
                             .setScale(2).divide(new BigDecimal(hours),
@@ -365,7 +372,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Long totalMillis = taskElement.getLengthMilliseconds();
             Long advanceMillis = advancePercentage.multiply(
                     new BigDecimal(totalMillis)).longValue();
-            return new LocalDate(getBeginDate().getTime() + advanceMillis);
+            return new LocalDate(getBeginDate().toDateApproximation().getTime()
+                    + advanceMillis);
         }
 
         @Override
@@ -596,11 +604,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public void moveTo(LocalDate date) {
+        public void moveTo(GanttDate date) {
             setBeginDate(date);
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
-                task.explicityMoved(date);
+                task.explicityMoved(toLocalDate(date));
             }
         }
 

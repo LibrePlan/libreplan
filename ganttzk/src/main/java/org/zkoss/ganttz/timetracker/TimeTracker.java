@@ -321,13 +321,15 @@ public class TimeTracker {
     }
 
     private LocalDate endPlusOneMonth(Task task) {
-        Date taskEnd = max(task.getEndDate(), task.getDeadline());
+        Date taskEnd = max(task.getEndDate().toDateApproximation(),
+                task.getDeadline());
         return new LocalDate(taskEnd).plusMonths(1);
     }
 
     private LocalDate startMinusTwoWeeks(Task task) {
         // the deadline could be before the start
-        Date start = min(task.getBeginDate(), task.getDeadline());
+        Date start = min(task.getBeginDate().toDateApproximation(),
+                task.getDeadline());
         // the last consolidated value could be before the start
         if (task.getConsolidatedline() != null) {
             start = min(start, task.getConsolidatedline());

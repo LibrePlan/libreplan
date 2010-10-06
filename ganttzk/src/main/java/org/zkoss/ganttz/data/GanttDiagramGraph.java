@@ -180,7 +180,7 @@ public class GanttDiagramGraph<V, D> {
 
         @Override
         public Date getEndDateFor(Task task) {
-            return task.getEndDate();
+            return task.getEndDate().toDateApproximation();
         }
 
         @Override
@@ -202,17 +202,17 @@ public class GanttDiagramGraph<V, D> {
 
         @Override
         public void setEndDateFor(Task task, Date newEnd) {
-            task.setEndDate(newEnd);
+            task.setEndDate(GanttDate.createFrom(newEnd));
         }
 
         @Override
         public Date getStartDate(Task task) {
-            return task.getBeginDate();
+            return task.getBeginDate().toDateApproximation();
         }
 
         @Override
         public void setStartDateFor(Task task, Date newStart) {
-            task.setBeginDate(newStart);
+            task.setBeginDate(GanttDate.createFrom(newStart));
         }
 
         @Override
@@ -228,7 +228,8 @@ public class GanttDiagramGraph<V, D> {
 
         @Override
         public Date getSmallestBeginDateFromChildrenFor(Task container) {
-            return ((TaskContainer) container).getSmallestBeginDateFromChildren();
+            return ((TaskContainer) container)
+                    .getSmallestBeginDateFromChildren().toDateApproximation();
         }
 
         @Override

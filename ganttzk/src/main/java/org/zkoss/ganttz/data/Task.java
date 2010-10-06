@@ -155,12 +155,15 @@ public abstract class Task implements ITaskFundamentalProperties {
         Validate.notNull(dependenciesEnforcerHook);
     }
 
-    public void setBeginDate(Date newStart) {
-        Date previousValue = fundamentalProperties.getBeginDate();
-        Date previousEnd = fundamentalProperties.getEndDate();
+    public void setBeginDate(GanttDate newStart) {
+        GanttDate previousValue = fundamentalProperties.getBeginDate();
+        GanttDate previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setBeginDate(newStart);
-        dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
-                newStart);
+        Date newStartDate = newStart != null ? newStart.toDateApproximation()
+                : null;
+        dependenciesEnforcerHook.setStartDate(
+                previousValue.toDateApproximation(),
+                previousEnd.toDateApproximation(), newStartDate);
     }
 
     private void reloadResourcesTextIfChange(Date newDate, Date previousDate) {
@@ -169,23 +172,27 @@ public abstract class Task implements ITaskFundamentalProperties {
         }
     }
 
-    public void fireChangesForPreviousValues(Date previousStart,
-            Date previousEnd) {
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
-                fundamentalProperties.getBeginDate());
-        dependenciesEnforcerHook.setNewEnd(previousEnd, getEndDate());
+    public void fireChangesForPreviousValues(GanttDate previousStart,
+            GanttDate previousEnd) {
+        dependenciesEnforcerHook.setStartDate(previousStart
+                .toDateApproximation(), previousEnd.toDateApproximation(),
+                fundamentalProperties.getBeginDate().toDateApproximation());
+        dependenciesEnforcerHook.setNewEnd(previousEnd.toDateApproximation(),
+                getEndDate().toDateApproximation());
     }
 
-    public Date getBeginDate() {
-        return new Date(fundamentalProperties.getBeginDate().getTime());
+    public GanttDate getBeginDate() {
+        return fundamentalProperties.getBeginDate();
     }
 
     public long getLengthMilliseconds() {
-        return getEndDate().getTime() - getBeginDate().getTime();
+        return getEndDate().toDateApproximation().getTime()
+                - getBeginDate().toDateApproximation().getTime();
     }
 
     public ReadableDuration getLength() {
-        return new Duration(getBeginDate().getTime(), getEndDate().getTime());
+        return new Duration(getBeginDate().toDateApproximation().getTime(),
+                getEndDate().toDateApproximation().getTime());
     }
 
     public void addVisibilityPropertiesChangeListener(
@@ -209,7 +216,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public Date getEndDate() {
+    public GanttDate getEndDate() {
         return fundamentalProperties.getEndDate();
     }
 
@@ -218,12 +225,12 @@ public abstract class Task implements ITaskFundamentalProperties {
             return Constraint.emptyConstraint();
         }
         return violationNotificator.withListener(DateConstraint
-                .biggerOrEqualThan(getEndDate()));
+                .biggerOrEqualThan(getEndDate().toDateApproximation()));
     }
 
     public Constraint<Date> getEndDateBiggerThanStartDate() {
         return violationNotificator.withListener(DateConstraint
-                .biggerOrEqualThan(getBeginDate()));
+                .biggerOrEqualThan(getBeginDate().toDateApproximation()));
     }
 
     public String getNotes() {
@@ -238,18 +245,22 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public void setEndDate(Date value) {
+    public void setEndDate(GanttDate value) {
         if (value == null) {
             return;
         }
-        Date previousEnd = fundamentalProperties.getEndDate();
+        GanttDate previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setEndDate(value);
-        dependenciesEnforcerHook.setNewEnd(previousEnd,
-                fundamentalProperties.getEndDate());
+        dependenciesEnforcerHook.setNewEnd(previousEnd.toDateApproximation(),
+                fundamentalProperties.getEndDate().toDateApproximation());
     }
 
     public void resizeTo(LocalDate date) {
-        setEndDate(date.toDateTimeAtStartOfDay().toDate());
+        resizeTo(GanttDate.createFrom(date));
+    }
+
+    public void resizeTo(GanttDate date) {
+        setEndDate(date);
     }
 
     public void removed() {
@@ -292,12 +303,12 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getResourcesText();
     }
 
-    public void moveTo(LocalDate date) {
-        Date previousStart = getBeginDate();
-        Date previousEnd = getEndDate();
+    public void moveTo(GanttDate date) {
+        Date previousStart = getBeginDate().toDateApproximation();
+        Date previousEnd = getEndDate().toDateApproximation();
         fundamentalProperties.moveTo(date);
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date
-                .toDateTimeAtStartOfDay().toDate());
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
+                date.toDateApproximation());
     }
 
     @Override
@@ -380,7 +391,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public LocalDate getBeginDateAsLocalDate() {
-        return LocalDate.fromDateFields(getBeginDate());
+        return LocalDate.fromDateFields(getBeginDate().toDateApproximation());
     }
 
 }

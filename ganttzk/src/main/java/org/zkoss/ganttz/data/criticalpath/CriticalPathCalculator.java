@@ -21,6 +21,7 @@
 package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ import java.util.Set;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -75,15 +77,16 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         if (initialTasks.isEmpty()) {
             return null;
         }
+        GanttDate ganttDate = Collections.min(getStartDates());
+        return LocalDate.fromDateFields(ganttDate.toDateApproximation());
+    }
 
-        Date result = initialTasks.get(0).getBeginDate();
-        for (T task : initialTasks) {
-            Date date = task.getBeginDate();
-            if (date.compareTo(result) < 0) {
-                result = date;
-            }
+    private List<GanttDate> getStartDates() {
+        List<GanttDate> result = new ArrayList<GanttDate>();
+        for (T task : graph.getInitialTasks()) {
+            result.add(task.getBeginDate());
         }
-        return new LocalDate(result);
+        return result;
     }
 
     private InitialNode<T> createBeginningOfProjectNode() {

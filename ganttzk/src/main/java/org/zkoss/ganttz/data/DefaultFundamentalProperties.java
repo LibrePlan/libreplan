@@ -25,7 +25,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.LocalDate;
+import org.joda.time.DateTime;
+import org.zkoss.ganttz.data.GanttDate.CustomDate;
+import org.zkoss.ganttz.data.GanttDate.ICases;
+import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -84,12 +87,36 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.name = name;
     }
 
-    public Date getBeginDate() {
-        return new Date(beginDate);
+    private static GanttDate toGanttDate(long milliseconds) {
+        return GanttDate.createFrom(new DateTime(milliseconds).toLocalDate());
     }
 
-    public void setBeginDate(Date beginDate) {
-        this.beginDate = beginDate.getTime();
+    private static long toMilliseconds(GanttDate date) {
+        return date.byCases(new ICases<Long>() {
+
+            @Override
+            public Long on(LocalDateBased localDateBased) {
+                return localDateBased.getLocalDate().toDateTimeAtStartOfDay()
+                        .getMillis();
+            }
+
+            @Override
+            public Long on(CustomDate customType) {
+                throw new UnsupportedOperationException("no custom "
+                        + GanttDate.class.getSimpleName() + " for "
+                        + DefaultFundamentalProperties.class.getSimpleName());
+            }
+        });
+    }
+
+    @Override
+    public GanttDate getBeginDate() {
+        return toGanttDate(beginDate);
+    }
+
+    @Override
+    public void setBeginDate(GanttDate beginDate) {
+        this.beginDate = toMilliseconds(beginDate);
     }
 
     public long getLengthMilliseconds() {
@@ -97,13 +124,13 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public Date getEndDate() {
-        return new Date(beginDate + getLengthMilliseconds());
+    public GanttDate getEndDate() {
+        return toGanttDate(beginDate + getLengthMilliseconds());
     }
 
     @Override
-    public void setEndDate(Date endDate) {
-        this.lengthMilliseconds = endDate.getTime() - beginDate;
+    public void setEndDate(GanttDate endDate) {
+        this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
     public String getNotes() {
@@ -155,8 +182,8 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public void moveTo(LocalDate date) {
-        setBeginDate(date.toDateTimeAtStartOfDay().toDate());
+    public void moveTo(GanttDate date) {
+        setBeginDate(date);
     }
 
     @Override
