@@ -61,12 +61,12 @@ public class GanttDiagramGraph<V, D> {
         return new IDependenciesEnforcerHook() {
 
             @Override
-            public void setNewEnd(Date previousEnd, Date newEnd) {
+            public void setNewEnd(GanttDate previousEnd, GanttDate newEnd) {
             }
 
             @Override
-            public void setStartDate(Date previousStart, Date previousEnd,
-                    Date newStart) {
+            public void setStartDate(GanttDate previousStart,
+                    GanttDate previousEnd, GanttDate newStart) {
             }
         };
     }
@@ -408,10 +408,10 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public interface IDependenciesEnforcerHook {
-        public void setStartDate(Date previousStart, Date previousEnd,
-                Date newStart);
+        public void setStartDate(GanttDate previousStart,
+                GanttDate previousEnd, GanttDate newStart);
 
-        public void setNewEnd(Date previousEnd, Date newEnd);
+        public void setNewEnd(GanttDate previousEnd, GanttDate newEnd);
     }
 
     public interface IDependenciesEnforcerHookFactory<T> {
@@ -422,21 +422,21 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public interface INotificationAfterDependenciesEnforcement {
-        public void onStartDateChange(Date previousStart, Date previousEnd,
-                Date newStart);
+        public void onStartDateChange(GanttDate previousStart,
+                GanttDate previousEnd, GanttDate newStart);
 
-        public void onEndDateChange(Date previousEnd, Date newEnd);
+        public void onEndDateChange(GanttDate previousEnd, GanttDate newEnd);
     }
 
     private static final INotificationAfterDependenciesEnforcement EMPTY_NOTIFICATOR  = new INotificationAfterDependenciesEnforcement() {
 
         @Override
-        public void onStartDateChange(Date previousStart, Date previousEnd,
-                Date newStart) {
+        public void onStartDateChange(GanttDate previousStart,
+                GanttDate previousEnd, GanttDate newStart) {
         }
 
         @Override
-        public void onEndDateChange(Date previousEnd, Date newEnd) {
+        public void onEndDateChange(GanttDate previousEnd, GanttDate newEnd) {
         }
     };
 
@@ -501,13 +501,14 @@ public class GanttDiagramGraph<V, D> {
     private class StartDateNofitication {
 
         private final INotificationAfterDependenciesEnforcement notification;
-        private final Date previousStart;
-        private final Date previousEnd;
-        private final Date newStart;
+        private final GanttDate previousStart;
+        private final GanttDate previousEnd;
+        private final GanttDate newStart;
 
         public StartDateNofitication(
                 INotificationAfterDependenciesEnforcement notification,
-                Date previousStart, Date previousEnd, Date newStart) {
+                GanttDate previousStart, GanttDate previousEnd,
+                GanttDate newStart) {
             this.notification = notification;
             this.previousStart = previousStart;
             this.previousEnd = previousEnd;
@@ -529,12 +530,12 @@ public class GanttDiagramGraph<V, D> {
     private class LengthNotification {
 
         private final INotificationAfterDependenciesEnforcement notification;
-        private final Date previousEnd;
-        private final Date newEnd;
+        private final GanttDate previousEnd;
+        private final GanttDate newEnd;
 
         public LengthNotification(
                 INotificationAfterDependenciesEnforcement notification,
-                Date previousEnd, Date newEnd) {
+                GanttDate previousEnd, GanttDate newEnd) {
             this.notification = notification;
             this.previousEnd = previousEnd;
             this.newEnd = newEnd;
@@ -571,13 +572,13 @@ public class GanttDiagramGraph<V, D> {
         private IDependenciesEnforcerHook onEntrance(final V task) {
             return new IDependenciesEnforcerHook() {
 
-                public void setStartDate(Date previousStart, Date previousEnd,
-                        Date newStart) {
+                public void setStartDate(GanttDate previousStart,
+                        GanttDate previousEnd, GanttDate newStart) {
                     taskPositionModified(task);
                 }
 
                 @Override
-                public void setNewEnd(Date previousEnd, Date newEnd) {
+                public void setNewEnd(GanttDate previousEnd, GanttDate newEnd) {
                     taskPositionModified(task);
                 }
 
@@ -589,8 +590,8 @@ public class GanttDiagramGraph<V, D> {
             return new IDependenciesEnforcerHook() {
 
                 @Override
-                public void setStartDate(Date previousStart, Date previousEnd,
-                        Date newStart) {
+                public void setStartDate(GanttDate previousStart,
+                        GanttDate previousEnd, GanttDate newStart) {
                     StartDateNofitication startDateNotification = new StartDateNofitication(
                             notification, previousStart, previousEnd,
                             newStart);
@@ -599,7 +600,7 @@ public class GanttDiagramGraph<V, D> {
                 }
 
                 @Override
-                public void setNewEnd(Date previousEnd, Date newEnd) {
+                public void setNewEnd(GanttDate previousEnd, GanttDate newEnd) {
                     LengthNotification lengthNotification = new LengthNotification(
                             notification, previousEnd, newEnd);
                     deferedNotifier.get().add(task, lengthNotification);
@@ -614,8 +615,8 @@ public class GanttDiagramGraph<V, D> {
             return new IDependenciesEnforcerHook() {
 
                 @Override
-                public void setStartDate(final Date previousStart,
-                        final Date previousEnd, final Date newStart) {
+                public void setStartDate(final GanttDate previousStart,
+                        final GanttDate previousEnd, final GanttDate newStart) {
                     positionsUpdatingGuard
                             .entranceRequested(new IReentranceCases() {
 
@@ -645,7 +646,8 @@ public class GanttDiagramGraph<V, D> {
                 }
 
                 @Override
-                public void setNewEnd(final Date previousEnd, final Date newEnd) {
+                public void setNewEnd(final GanttDate previousEnd,
+                        final GanttDate newEnd) {
                     positionsUpdatingGuard
                             .entranceRequested(new IReentranceCases() {
 

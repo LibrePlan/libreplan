@@ -62,6 +62,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
@@ -203,8 +204,8 @@ public class TemplateModel implements ITemplateModel {
         };
     }
 
-    private static Date convert(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
+    private static GanttDate convert(LocalDate date) {
+        return GanttDate.createFrom(date);
     }
 
     public class Adapter implements

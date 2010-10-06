@@ -77,8 +77,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     private final INotificationAfterDependenciesEnforcement notifyDates = new INotificationAfterDependenciesEnforcement() {
 
         @Override
-        public void onStartDateChange(Date previousStart, Date previousEnd,
-                Date newStart) {
+        public void onStartDateChange(GanttDate previousStart,
+                GanttDate previousEnd, GanttDate newStart) {
             fundamentalPropertiesListeners.firePropertyChange("beginDate",
                     previousStart, fundamentalProperties.getBeginDate());
             fireEndDate(previousEnd);
@@ -86,11 +86,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         }
 
         @Override
-        public void onEndDateChange(Date previousEnd, Date newEnd) {
+        public void onEndDateChange(GanttDate previousEnd, GanttDate newEnd) {
             fireEndDate(previousEnd);
         }
 
-        private void fireEndDate(Date previousEnd) {
+        private void fireEndDate(GanttDate previousEnd) {
             fundamentalPropertiesListeners.firePropertyChange("endDate",
                     previousEnd, fundamentalProperties.getEndDate());
         }
@@ -159,14 +159,12 @@ public abstract class Task implements ITaskFundamentalProperties {
         GanttDate previousValue = fundamentalProperties.getBeginDate();
         GanttDate previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setBeginDate(newStart);
-        Date newStartDate = newStart != null ? newStart.toDateApproximation()
-                : null;
-        dependenciesEnforcerHook.setStartDate(
-                previousValue.toDateApproximation(),
-                previousEnd.toDateApproximation(), newStartDate);
+        dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
+                newStart);
     }
 
-    private void reloadResourcesTextIfChange(Date newDate, Date previousDate) {
+    private void reloadResourcesTextIfChange(GanttDate newDate,
+            GanttDate previousDate) {
         if (!ObjectUtils.equals(newDate, previousDate)) {
             reloadResourcesText();
         }
@@ -174,11 +172,9 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public void fireChangesForPreviousValues(GanttDate previousStart,
             GanttDate previousEnd) {
-        dependenciesEnforcerHook.setStartDate(previousStart
-                .toDateApproximation(), previousEnd.toDateApproximation(),
-                fundamentalProperties.getBeginDate().toDateApproximation());
-        dependenciesEnforcerHook.setNewEnd(previousEnd.toDateApproximation(),
-                getEndDate().toDateApproximation());
+        dependenciesEnforcerHook.setStartDate(previousStart, previousStart,
+                fundamentalProperties.getBeginDate());
+        dependenciesEnforcerHook.setNewEnd(previousEnd, getEndDate());
     }
 
     public GanttDate getBeginDate() {
@@ -251,8 +247,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         }
         GanttDate previousEnd = fundamentalProperties.getEndDate();
         fundamentalProperties.setEndDate(value);
-        dependenciesEnforcerHook.setNewEnd(previousEnd.toDateApproximation(),
-                fundamentalProperties.getEndDate().toDateApproximation());
+        dependenciesEnforcerHook.setNewEnd(previousEnd,
+                fundamentalProperties.getEndDate());
     }
 
     public void resizeTo(LocalDate date) {
@@ -304,11 +300,10 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void moveTo(GanttDate date) {
-        Date previousStart = getBeginDate().toDateApproximation();
-        Date previousEnd = getEndDate().toDateApproximation();
+        GanttDate previousStart = getBeginDate();
+        GanttDate previousEnd = getEndDate();
         fundamentalProperties.moveTo(date);
-        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd,
-                date.toDateApproximation());
+        dependenciesEnforcerHook.setStartDate(previousStart, previousEnd, date);
     }
 
     @Override
