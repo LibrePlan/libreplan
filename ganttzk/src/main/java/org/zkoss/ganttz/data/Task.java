@@ -149,7 +149,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void registerDependenciesEnforcerHook(
-            IDependenciesEnforcerHookFactory factory) {
+            IDependenciesEnforcerHookFactory<Task> factory) {
         Validate.notNull(factory);
         dependenciesEnforcerHook = factory.create(this, notifyDates);
         Validate.notNull(dependenciesEnforcerHook);
