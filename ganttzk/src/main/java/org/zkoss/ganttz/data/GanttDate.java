@@ -181,7 +181,7 @@ public abstract class GanttDate implements Comparable<GanttDate> {
 
         @Override
         public int compareTo(GanttDate o) {
-            return byCases(new ICases<Integer>() {
+            return o.byCases(new ICases<Integer>() {
                 @Override
                 public Integer on(LocalDateBased localDateBased) {
                     return compareToLocalDate(localDateBased.localDate);
