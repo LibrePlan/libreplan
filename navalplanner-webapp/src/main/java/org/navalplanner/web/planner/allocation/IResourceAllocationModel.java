@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -76,5 +77,11 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     Date getTaskStart();
 
     void setStartDate(Date date);
+
+    Date getTaskEnd();
+
+    BigDecimal getTaskDuration();
+
+    void setWorkableDays(BigDecimal decimal);
 
 }

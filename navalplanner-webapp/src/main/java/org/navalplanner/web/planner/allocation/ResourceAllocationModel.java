@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -397,9 +398,32 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
+    public Date getTaskEnd() {
+        if (task == null) {
+            return null;
+        }
+        return task.getEndDate();
+    }
+
+    @Override
     public void setStartDate(Date date) {
         if (task != null) {
             task.setStartDate(date);
+        }
+    }
+
+    @Override
+    public BigDecimal getTaskDuration() {
+        if (task == null) {
+            return BigDecimal.ZERO;
+        }
+        return new BigDecimal(task.getDaysDuration());
+    }
+
+    @Override
+    public void setWorkableDays(BigDecimal decimal) {
+        if (task != null) {
+            task.setWorkableDays(decimal);
         }
     }
 

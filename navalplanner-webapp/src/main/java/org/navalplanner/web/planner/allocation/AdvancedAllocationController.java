@@ -218,7 +218,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
-            case END_DATE:
+            case WORKABLE_DAYS:
                 return Restriction.fixedHours(restrictionSource.getStart(),
                         restrictionSource.getTotalHours());
             case NUMBER_OF_HOURS:

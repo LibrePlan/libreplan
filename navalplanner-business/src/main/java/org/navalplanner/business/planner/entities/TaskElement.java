@@ -118,6 +118,8 @@ public abstract class TaskElement extends BaseEntity {
 
     private IntraDayDate endDate;
 
+    private BigDecimal workableDays;
+
     private LocalDate deadline;
 
     private String name;
@@ -170,7 +172,6 @@ public abstract class TaskElement extends BaseEntity {
         this.startDate = task.startDate;
         this.taskSource = task.getTaskSource();
     }
-
 
     public TaskSource getTaskSource() {
         return taskSource;
@@ -601,6 +602,14 @@ public abstract class TaskElement extends BaseEntity {
 
     public Integer getSumOfHoursAllocated() {
         return sumOfHoursAllocated;
+    }
+
+    public void setWorkableDays(BigDecimal workableDays) {
+        this.workableDays = workableDays;
+    }
+
+    public BigDecimal getWorkableDays() {
+        return workableDays;
     }
 
 }

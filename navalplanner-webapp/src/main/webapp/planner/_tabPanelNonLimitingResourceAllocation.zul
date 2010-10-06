@@ -62,16 +62,34 @@
                             </rows>
                         </grid>
                     </vbox>
+
+                    <vbox align="bottom">
+                        <button id="btnRecommendedAllocation" label="${i18n:_('Recommended Allocation')}" />
+                    </vbox>
                 </groupbox>
 
                 <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
                     <caption label="${i18n:_('Allocation configuration')}" />
 
                     <hbox>
-                        <label value = "${i18n:_('Task start :')}" />
-                        <label value="@{allocationController.taskStart,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                        <!-- Planned Task Start -->
+                        <label style="font-weight: bold" value="${i18n:_('Planned start :')}" />
+                        <label value="@{allocationController.plannedTaskStart,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+
+                        <!-- Planned Task End -->
+                        <label style="font-weight: bold" value="${i18n:_('Planned end :')}" />
+                        <label id="lbTaskEnd" value="@{allocationController.plannedTaskEnd,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+
                     </hbox>
+                        <!-- Planned Workable Days -->
+                        <label style="font-weight: bold" value="${i18n:_('Planned workable days :')}" />
+                        <decimalbox id="dbTaskWorkableDays" width="90px" />
+                    <hbox>
+
+                    </hbox>
+
                     <separator orient="horizontal" spacing="10px"/>
+
                     <radiogroup id="calculationTypeSelector"
                         onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
                         <grid id="calculationTypesGrid">
@@ -80,12 +98,6 @@
                             </columns>
                         </grid>
                     </radiogroup>
-                    <hbox>
-                        <checkbox id="recommendedAllocationCheckbox" label="${i18n:_('Recommended Allocation')}"/>
-                        <separator orient="horizontal" spacing="10px"/>
-                        <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
-                            onCheck="allocationController.onCheckExtendedView()"/>
-                    </hbox>
                 </groupbox>
 
                 </hbox>
@@ -95,12 +107,17 @@
 
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
+
                     <hbox align="bottom">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" />
                         <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
                         <button label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
+                        <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
+                            onCheck="allocationController.onCheckExtendedView()"/>
                     </hbox>
+
                     <separator spacing="20px"/>
+
                     <grid id="allocationsGrid"
                         model="@{allocationController.resourceAllocations}"
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"
@@ -131,6 +148,7 @@
             <!-- Worker search -->
             <tabpanel>
                 <newAllocationSelector id="newAllocationSelector"/>
+
                 <!--  Select worker -->
                 <hbox>
                     <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelector)" />

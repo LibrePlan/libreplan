@@ -148,7 +148,7 @@ public class AllocationRowsHandler {
         switch (calculatedValue) {
             case NUMBER_OF_HOURS:
                 break;
-            case END_DATE:
+            case WORKABLE_DAYS:
             case RESOURCES_PER_DAY:
             return calculateHoursGroupByResourceType(type);
         }
@@ -208,7 +208,7 @@ public class AllocationRowsHandler {
                 && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
-        if (calculatedValue != CalculatedValue.END_DATE
+        if (calculatedValue != CalculatedValue.WORKABLE_DAYS
                 && formBinder.getAllocationEnd().isBefore(
                 new LocalDate(task.getStartDate()))) {
             formBinder.markEndDateMustBeAfterStartDate();
@@ -238,7 +238,7 @@ public class AllocationRowsHandler {
             case NUMBER_OF_HOURS:
                 calculateNumberOfHoursAllocation();
                 break;
-            case END_DATE:
+            case WORKABLE_DAYS:
                 calculateEndDateAllocation();
                 break;
             case RESOURCES_PER_DAY:

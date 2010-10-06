@@ -55,9 +55,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -82,8 +80,6 @@ public class FormBinder {
     private AggregateOfResourceAllocations aggregate;
 
     private AllocationResult lastAllocation;
-
-    private Datebox endDate;
 
     private Button applyButton;
 
@@ -115,9 +111,13 @@ public class FormBinder {
 
     private List<AllocationRow> rows = Collections.emptyList();
 
-    private Checkbox recommendedAllocationCheckbox;
+    private Decimalbox taskWorkableDays;
 
-    private EventListener recommendedCheckboxListener;
+    private Date taskStartDate;
+
+    private Button btnRecommendedAllocation;
+
+    private boolean recommendedAllocationIsPressed = false;
 
     private ProportionalDistributor hoursDistributorForRecommendedAllocation;
 
@@ -215,14 +215,13 @@ public class FormBinder {
         }
         allocationRowsHandler.setCalculatedValue(calculatedValue);
         applyDisabledRules();
-        loadValueForEndDate();
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         applyButton.setDisabled(false);
     }
 
     private void applyDisabledRules() {
         allHoursInputComponentDisabilityRule();
-        endDateDisabilityRule();
+        taskDurationDisabilityRule();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
     }
@@ -282,15 +281,16 @@ public class FormBinder {
 
     private void onChangeEnableApply(InputElement inputElement) {
         inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
-
     }
 
-    public void setEndDate(Datebox endDate) {
-        this.endDate = endDate;
-        this.endDate.setConstraint(datePosteriorOrEqualToStartDate());
-        endDateDisabilityRule();
-        loadValueForEndDate();
-        onChangeEnableApply(endDate);
+    public void setStartDate(Date startDate) {
+        this.taskStartDate = startDate;
+    }
+
+    public void setWorkableDays(Decimalbox duration) {
+        this.taskWorkableDays = duration;
+        taskDurationDisabilityRule();
+        onChangeEnableApply(taskWorkableDays);
     }
 
     public void setAllResourcesPerDay(Decimalbox allResourcesPerDay) {
@@ -301,28 +301,9 @@ public class FormBinder {
         onChangeEnableApply(allResourcesPerDay);
     }
 
-    private Constraint datePosteriorOrEqualToStartDate() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                Date date = (Date) value;
-                LocalDate startDate = allocationRowsHandler.getStartDate();
-                if (new LocalDate(date).isBefore(startDate)) {
-                    throw new WrongValueException(comp, _(
-                            "{0} must not be before {1}", date, startDate));
-                }
-            }
-        };
-    }
-
-    private void loadValueForEndDate() {
-        this.endDate.setValue(allocationRowsHandler.getEnd());
-    }
-
-    private void endDateDisabilityRule() {
-        this.endDate.setDisabled(allocationRowsHandler
-                .getCalculatedValue() == CalculatedValue.END_DATE);
+    private void taskDurationDisabilityRule() {
+        this.taskWorkableDays.setDisabled(allocationRowsHandler
+                .getCalculatedValue() == CalculatedValue.WORKABLE_DAYS);
     }
 
     private void allResourcesPerDayVisibilityRule() {
@@ -390,7 +371,6 @@ public class FormBinder {
         loadResourcesPerDay();
         loadHoursValues();
         loadValueForAssignedHoursComponent();
-        loadValueForEndDate();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
         Util.reloadBindings(allocationsGrid);
@@ -456,7 +436,8 @@ public class FormBinder {
     }
 
     public LocalDate getAllocationEnd() {
-        return new LocalDate(endDate.getValue());
+        LocalDate result = new LocalDate(taskStartDate);
+        return result.plusDays(taskWorkableDays.getValue().intValue());
     }
 
     public void setDeleteButtonFor(AllocationRow row,
@@ -515,7 +496,7 @@ public class FormBinder {
         DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
                 Locales.getCurrent());
         LocalDate start = allocationRowsHandler.getStartDate();
-        throw new WrongValueException(endDate, _(
+        throw new WrongValueException(taskWorkableDays, _(
                 "end date: {0} must be after start date: {1}",
                 getAllocationEnd().toString(formatter), start
                         .toString(formatter)));
@@ -546,35 +527,25 @@ public class FormBinder {
             this.applyButton.removeEventListener(Events.ON_CLICK,
                     applyButtonListener);
         }
-        if (this.recommendedAllocationCheckbox != null) {
-            this.recommendedAllocationCheckbox.removeEventListener(
-                    Events.ON_CHECK, recommendedCheckboxListener);
-        }
         for (InputElement inputElement : inputsAssociatedWithOnChangeEnableApply) {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
         }
     }
 
-    public void setCheckbox(Checkbox recommendedAllocation) {
-        this.recommendedAllocationCheckbox = recommendedAllocation;
-        this.recommendedAllocationCheckbox
-                .setChecked(this.recommendedAllocation);
-        disableIfNeededWorkerSearch();
-        recommendedCheckboxListener = new EventListener() {
-
+    public void setRecommendedAllocation(Button recommendedAllocation) {
+        this.btnRecommendedAllocation = recommendedAllocation;
+        btnRecommendedAllocation.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (recommendedAllocationCheckbox.isChecked()) {
-                    activatingRecommendedAllocation();
-                } else {
-                    deactivatingRecommendedAllocation();
-                }
+                recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
+                 if (recommendedAllocationIsPressed) {
+                     activatingRecommendedAllocation();
+                 } else {
+                     deactivatingRecommendedAllocation();
+                 }
             }
-
-        };
-        this.recommendedAllocationCheckbox.addEventListener(Events.ON_CHECK,
-                recommendedCheckboxListener);
+        });
     }
 
     private void activatingRecommendedAllocation() {
