@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.adapters;
 
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +33,6 @@ import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -270,8 +271,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     public static List<Constraint<Date>> getStartConstraintsGiven(
             Date notBeforeThan) {
         if (notBeforeThan != null) {
-            return Collections.singletonList(DateConstraint
-                    .biggerOrEqualThan(notBeforeThan));
+            return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
         } else {
             return Collections.emptyList();
         }

@@ -21,6 +21,7 @@
 package org.navalplanner.web.common;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,7 +71,6 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
@@ -246,7 +246,7 @@ public class TemplateModel implements ITemplateModel {
             if (isContainer(task)) {
                 return Constraint.emptyConstraint();
             }
-            return DateConstraint.biggerOrEqualThan(this.getEndDateFor(task));
+            return biggerOrEqualThan(this.getEndDateFor(task));
         }
 
         @Override
@@ -269,7 +269,7 @@ public class TemplateModel implements ITemplateModel {
         @Override
         public Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(
                 TaskElement task) {
-            return DateConstraint.biggerOrEqualThan(getStartDate(task));
+            return biggerOrEqualThan(getStartDate(task));
         }
 
         @Override

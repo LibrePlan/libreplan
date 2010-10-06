@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.data;
 
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,7 +29,6 @@ import java.util.List;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 
 /**
  * This enum tells the type of a depepdency. Each instance contanins the correct
@@ -157,12 +158,12 @@ public enum DependencyType {
 
     protected <V> Constraint<Date> biggerThanTaskEndDate(
             IAdapter<V, ?> adapter, V source) {
-        return DateConstraint.biggerOrEqualThan(adapter.getEndDateFor(source));
+        return biggerOrEqualThan(adapter.getEndDateFor(source));
     }
 
     protected <V> Constraint<Date> biggerThanTaskStartDate(
             IAdapter<V, ?> adapter, V source) {
-        return DateConstraint.biggerOrEqualThan(adapter.getStartDate(source));
+        return biggerOrEqualThan(adapter.getStartDate(source));
     }
 
     private static Date getBigger(Date date1, Date date2) {

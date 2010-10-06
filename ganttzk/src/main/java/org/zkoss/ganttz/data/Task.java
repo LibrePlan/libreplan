@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.data;
 
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
@@ -38,7 +40,6 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnforcement;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
 
 /**
@@ -220,13 +221,14 @@ public abstract class Task implements ITaskFundamentalProperties {
         if (isContainer()) {
             return Constraint.emptyConstraint();
         }
-        return violationNotificator.withListener(DateConstraint
-                .biggerOrEqualThan(getEndDate().toDateApproximation()));
+        return violationNotificator.withListener(biggerOrEqualThan(getEndDate()
+                .toDateApproximation()));
     }
 
     public Constraint<Date> getEndDateBiggerThanStartDate() {
-        return violationNotificator.withListener(DateConstraint
-                .biggerOrEqualThan(getBeginDate().toDateApproximation()));
+        return violationNotificator
+                .withListener(biggerOrEqualThan(getBeginDate()
+                        .toDateApproximation()));
     }
 
     public String getNotes() {

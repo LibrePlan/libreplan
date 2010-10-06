@@ -21,7 +21,6 @@ package org.zkoss.ganttz.data.constraint;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 
@@ -32,16 +31,13 @@ import org.apache.commons.lang.Validate;
 public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         Constraint<T> {
 
-    public static class DateConstraint {
+    public static <T extends Comparable<T>> Constraint<T> biggerOrEqualThan(
+            T value) {
+        return instantiate(ComparisonType.BIGGER_OR_EQUAL_THAN, value);
+    }
 
-        public static Constraint<Date> biggerOrEqualThan(Date date) {
-            return instantiate(ComparisonType.BIGGER_OR_EQUAL_THAN, date);
-        }
-
-        public static Constraint<Date> equalTo(Date date) {
-            return instantiate(ComparisonType.EQUAL_TO, date);
-        }
-
+    public static <T extends Comparable<T>> Constraint<T> equalTo(T value) {
+        return instantiate(ComparisonType.EQUAL_TO, value);
     }
 
     private static <T extends Comparable<T>> Constraint<T> instantiate(

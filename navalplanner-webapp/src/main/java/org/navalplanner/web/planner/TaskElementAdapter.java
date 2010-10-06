@@ -21,6 +21,8 @@
 package org.navalplanner.web.planner;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -75,8 +77,6 @@ import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
-
 /**
  * Responsible of adaptating a {@link TaskElement} into a
  * {@link ITaskFundamentalProperties} <br />
@@ -110,12 +110,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             case AS_SOON_AS_POSSIBLE:
                 return Collections.emptyList();
             case START_IN_FIXED_DATE:
-                return Collections.singletonList(DateConstraint
-                        .equalTo(asDate(startConstraint.getConstraintDate())));
+                return Collections.singletonList(equalTo(asDate(startConstraint
+                        .getConstraintDate())));
             case START_NOT_EARLIER_THAN:
                 return Collections
-                        .singletonList(DateConstraint
-                        .biggerOrEqualThan(asDate(startConstraint
+                        .singletonList(biggerOrEqualThan(asDate(startConstraint
                                 .getConstraintDate())));
             default:
                 throw new RuntimeException("can't handle " + constraintType);

@@ -26,6 +26,7 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -40,7 +41,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.DateConstraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
 
 /**
  * Tests for {@link CriticalPathCalculator}.
@@ -70,7 +71,7 @@ public class CriticalPathCalculatorTest {
         expect(result.getEndDate()).andReturn(
                 toDate(start.plusDays(durationDays))).anyTimes();
 
-        Constraint<Date> constraint = DateConstraint.biggerOrEqualThan(date
+        Constraint<Date> constraint = biggerOrEqualThan(date
                 .toDateTimeAtStartOfDay().toDate());
         expect(result.getStartConstraints()).andReturn(
                 Arrays.asList(constraint)).anyTimes();
@@ -86,7 +87,7 @@ public class CriticalPathCalculatorTest {
         expect(result.getEndDate()).andReturn(
                 toDate(start.plusDays(durationDays))).anyTimes();
 
-        Constraint<Date> constraint = DateConstraint.equalTo(date
+        Constraint<Date> constraint = ConstraintOnComparableValues.equalTo(date
                 .toDateTimeAtStartOfDay().toDate());
         expect(result.getStartConstraints()).andReturn(
                 Arrays.asList(constraint)).anyTimes();
