@@ -21,11 +21,12 @@
 package org.navalplanner.web.common;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.planner.TaskElementAdapter.toGantt;
+import static org.navalplanner.web.planner.TaskElementAdapter.toIntraDay;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -102,10 +103,9 @@ public class TemplateModel implements ITemplateModel {
                     .getDestination(), toGraphicalType(each.getType()), true);
         }
 
-        public static List<Constraint<Date>> getStartConstraintsGiven(
-                Adapter adapter,
-                Set<DependencyWithVisibility> withDependencies) {
-            List<Constraint<Date>> result = new ArrayList<Constraint<Date>>();
+        public static List<Constraint<GanttDate>> getStartConstraintsGiven(
+                Adapter adapter, Set<DependencyWithVisibility> withDependencies) {
+            List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
                 TaskElement source = each.getSource();
                 DependencyType type = each.getGraphicalType();
@@ -114,10 +114,10 @@ public class TemplateModel implements ITemplateModel {
             return result;
         }
 
-        public static List<Constraint<Date>> getEndConstraintsGiven(
+        public static List<Constraint<GanttDate>> getEndConstraintsGiven(
                 Adapter adapter,
                 Set<DependencyWithVisibility> withDependencies) {
-            List<Constraint<Date>> result = new ArrayList<Constraint<Date>>();
+            List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
                 TaskElement source = each.getSource();
                 DependencyType type = each.getGraphicalType();
@@ -235,14 +235,15 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public List<Constraint<Date>> getEndConstraintsGivenIncoming(
+        public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
                 Set<DependencyWithVisibility> incoming) {
             return DependencyWithVisibility.getEndConstraintsGiven(this,
                     incoming);
         }
 
         @Override
-        public Constraint<Date> getCurrentLenghtConstraintFor(TaskElement task) {
+        public Constraint<GanttDate> getCurrentLenghtConstraintFor(
+                TaskElement task) {
             if (isContainer(task)) {
                 return Constraint.emptyConstraint();
             }
@@ -267,22 +268,21 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(
+        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
                 TaskElement task) {
             return biggerOrEqualThan(getStartDate(task));
         }
 
         @Override
-        public Date getEndDateFor(TaskElement task) {
-            return task.getEndDate();
+        public GanttDate getEndDateFor(TaskElement task) {
+            return toGantt(task.getIntraDayEndDate());
         }
 
         @Override
-        public Date getSmallestBeginDateFromChildrenFor(TaskElement container) {
+        public GanttDate getSmallestBeginDateFromChildrenFor(
+                TaskElement container) {
             TaskGroup taskGroup = (TaskGroup) container;
-            IntraDayDate smallestStart = taskGroup
-                    .getSmallestStartDateFromChildren();
-            return smallestStart.toDateTimeAtStartOfDay().toDate();
+            return toGantt(taskGroup.getSmallestStartDateFromChildren());
         }
 
         @Override
@@ -291,20 +291,21 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public List<Constraint<Date>> getStartConstraintsFor(TaskElement task) {
+        public List<Constraint<GanttDate>> getStartConstraintsFor(
+                TaskElement task) {
             return TaskElementAdapter.getStartConstraintsFor(task);
         }
 
         @Override
-        public List<Constraint<Date>> getStartCosntraintsGiven(
+        public List<Constraint<GanttDate>> getStartConstraintsGiven(
                 Set<DependencyWithVisibility> withDependencies) {
             return DependencyWithVisibility.getStartConstraintsGiven(this,
                     withDependencies);
         }
 
         @Override
-        public Date getStartDate(TaskElement task) {
-            return task.getStartDate();
+        public GanttDate getStartDate(TaskElement task) {
+            return toGantt(task.getIntraDayStartDate());
         }
 
         @Override
@@ -330,13 +331,13 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public void setEndDateFor(TaskElement task, Date newEnd) {
-            task.setEndDate(newEnd);
+        public void setEndDateFor(TaskElement task, GanttDate newEnd) {
+            task.setIntraDayEndDate(toIntraDay(newEnd));
         }
 
         @Override
-        public void setStartDateFor(TaskElement task, Date newStart) {
-            task.moveTo(scenario, LocalDate.fromDateFields(newStart));
+        public void setStartDateFor(TaskElement task, GanttDate newStart) {
+            task.moveTo(scenario, toIntraDay(newStart));
         }
 
         @Override
@@ -565,9 +566,10 @@ public class TemplateModel implements ITemplateModel {
 
     private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
             Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
-        List<Constraint<Date>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven(order.getInitDate());
-        List<Constraint<Date>> endConstraints = Collections.emptyList();
+        List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
+                .getStartConstraintsGiven(GanttDate.createFrom(order
+                        .getInitDate()));
+        List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
                 .create(adapter, startConstraints, endConstraints,
                         order.getDependenciesConstraintsHavePriority());

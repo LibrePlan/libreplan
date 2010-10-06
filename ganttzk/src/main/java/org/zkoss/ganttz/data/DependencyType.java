@@ -49,12 +49,12 @@ public enum DependencyType {
             return current;
         }
 
-        public <V> List<Constraint<Date>> getStartConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
                 IAdapter<V, ?> adapter) {
             return Collections.emptyList();
         }
 
-        public <V> List<Constraint<Date>> getEndConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
                 IAdapter<V, ?> adapter) {
             return Collections.emptyList();
         }
@@ -78,13 +78,13 @@ public enum DependencyType {
                     current);
         }
 
-        public <V> List<Constraint<Date>> getStartConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
                 IAdapter<V, ?> adapter) {
             return Collections.singletonList(biggerThanTaskEndDate(adapter,
                     source));
         }
 
-        public <V> List<Constraint<Date>> getEndConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
                 GanttDiagramGraph.IAdapter<V, ?> adapter) {
             return Collections.emptyList();
         }
@@ -108,13 +108,13 @@ public enum DependencyType {
                     current);
         }
 
-        public <V> List<Constraint<Date>> getStartConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
                 GanttDiagramGraph.IAdapter<V, ?> adapter) {
             return Collections.singletonList(biggerThanTaskStartDate(adapter,
                     source));
         }
 
-        public <V> List<Constraint<Date>> getEndConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
                 GanttDiagramGraph.IAdapter<V, ?> adapter) {
             return Collections.emptyList();
         }
@@ -143,25 +143,25 @@ public enum DependencyType {
         }
 
         @Override
-        public <V> List<Constraint<Date>> getEndConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
                 IAdapter<V, ?> adapter) {
             return Collections.singletonList(biggerThanTaskEndDate(adapter,
                     source));
         }
 
         @Override
-        public <V> List<Constraint<Date>> getStartConstraints(V source,
+        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
                 IAdapter<V, ?> adapter) {
             return Collections.emptyList();
         }
     };
 
-    protected <V> Constraint<Date> biggerThanTaskEndDate(
+    protected <V> Constraint<GanttDate> biggerThanTaskEndDate(
             IAdapter<V, ?> adapter, V source) {
         return biggerOrEqualThan(adapter.getEndDateFor(source));
     }
 
-    protected <V> Constraint<Date> biggerThanTaskStartDate(
+    protected <V> Constraint<GanttDate> biggerThanTaskStartDate(
             IAdapter<V, ?> adapter, V source) {
         return biggerOrEqualThan(adapter.getStartDate(source));
     }
@@ -179,18 +179,18 @@ public enum DependencyType {
     public abstract Date calculateStartDestinyTask(Task originTask,
             Date current);
 
-    public final List<Constraint<Date>> getStartConstraints(Task source) {
+    public final List<Constraint<GanttDate>> getStartConstraints(Task source) {
         return getStartConstraints(source, GanttDiagramGraph.taskAdapter());
     }
 
-    public abstract <V> List<Constraint<Date>> getStartConstraints(V source,
-            IAdapter<V, ?> adapter);
+    public abstract <V> List<Constraint<GanttDate>> getStartConstraints(
+            V source, IAdapter<V, ?> adapter);
 
-    public final List<Constraint<Date>> getEndConstraints(Task source) {
+    public final List<Constraint<GanttDate>> getEndConstraints(Task source) {
         return getEndConstraints(source, GanttDiagramGraph.taskAdapter());
     }
 
-    public abstract <V> List<Constraint<Date>> getEndConstraints(V source,
+    public abstract <V> List<Constraint<GanttDate>> getEndConstraints(V source,
             IAdapter<V, ?> adapter);
 
     public abstract PointType getPointModified();

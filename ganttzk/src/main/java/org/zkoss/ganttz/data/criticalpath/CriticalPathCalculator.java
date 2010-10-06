@@ -22,7 +22,6 @@ package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,7 +140,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 Node<T> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
-                Constraint<Date> constraint = getDateConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -168,23 +167,24 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
     }
 
     private void setEarliestStart(Node<T> node, int earliestStart,
-            Constraint<Date> constraint) {
+            Constraint<GanttDate> constraint) {
         if (constraint != null) {
-            Date date = initDate.plusDays(earliestStart)
-                    .toDateTimeAtStartOfDay().toDate();
+            GanttDate date = GanttDate.createFrom(initDate
+                    .plusDays(earliestStart));
             date = constraint.applyTo(date);
-            earliestStart = Days.daysBetween(initDate, new LocalDate(date))
+            earliestStart = Days.daysBetween(initDate,
+                    LocalDate.fromDateFields(date.toDateApproximation()))
                     .getDays();
         }
         node.setEarliestStart(earliestStart);
     }
 
-    private Constraint<Date> getDateConstraint(T task) {
+    private Constraint<GanttDate> getDateConstraint(T task) {
         if (task == null) {
             return null;
         }
 
-        List<Constraint<Date>> constraints = task.getStartConstraints();
+        List<Constraint<GanttDate>> constraints = task.getStartConstraints();
         if (constraints == null) {
             return null;
         }
@@ -214,7 +214,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                 Node<T> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
-                Constraint<Date> constraint = getDateConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -241,15 +241,15 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
     }
 
     private void setLatestFinish(Node<T> node, int latestFinish,
-            Constraint<Date> constraint) {
+            Constraint<GanttDate> constraint) {
         if (constraint != null) {
             int duration = node.getDuration();
-            Date date = initDate.plusDays(latestFinish - duration)
-                    .toDateTimeAtStartOfDay().toDate();
+            GanttDate date = GanttDate.createFrom(initDate.plusDays(latestFinish - duration));
             date = constraint.applyTo(date);
-            latestFinish = Days.daysBetween(initDate, new LocalDate(date))
-                    .getDays()
-                    + duration;
+            int daysBetween = Days.daysBetween(initDate,
+                    LocalDate.fromDateFields(date.toDateApproximation()))
+                    .getDays();
+            latestFinish = daysBetween + duration;
         }
         node.setLatestFinish(latestFinish);
     }

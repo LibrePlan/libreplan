@@ -70,7 +70,7 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     private boolean inCriticalPath = false;
 
-    private ConstraintViolationNotificator<Date> violationNotificator = ConstraintViolationNotificator
+    private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
             .create();
 
     private IDependenciesEnforcerHook dependenciesEnforcerHook = GanttDiagramGraph.doNothingHook();
@@ -102,7 +102,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public List<Constraint<Date>> getStartConstraints() {
+    public List<Constraint<GanttDate>> getStartConstraints() {
         return violationNotificator.withListener(fundamentalProperties
                 .getStartConstraints());
     }
@@ -217,18 +217,17 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getEndDate();
     }
 
-    public Constraint<Date> getCurrentLengthConstraint() {
+    public Constraint<GanttDate> getCurrentLengthConstraint() {
         if (isContainer()) {
             return Constraint.emptyConstraint();
         }
-        return violationNotificator.withListener(biggerOrEqualThan(getEndDate()
-                .toDateApproximation()));
+        return violationNotificator
+                .withListener(biggerOrEqualThan(getEndDate()));
     }
 
-    public Constraint<Date> getEndDateBiggerThanStartDate() {
+    public Constraint<GanttDate> getEndDateBiggerThanStartDate() {
         return violationNotificator
-                .withListener(biggerOrEqualThan(getBeginDate()
-                        .toDateApproximation()));
+                .withListener(biggerOrEqualThan(getBeginDate()));
     }
 
     public String getNotes() {
@@ -327,7 +326,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void addConstraintViolationListener(
-            IConstraintViolationListener<Date> listener) {
+            IConstraintViolationListener<GanttDate> listener) {
         violationNotificator.addConstraintViolationListener(listener);
     }
 

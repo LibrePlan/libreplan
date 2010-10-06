@@ -199,4 +199,8 @@ public abstract class GanttDate implements Comparable<GanttDate> {
         protected abstract int compareToLocalDate(LocalDate localDate);
     }
 
+    public boolean after(GanttDate other) {
+        return compareTo(other) > 0;
+    }
+
 }

@@ -22,7 +22,6 @@ package org.zkoss.ganttz.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -43,36 +42,36 @@ public class Dependency implements IDependency<Task> {
     private enum Calculation {
         START {
             @Override
-            public List<Constraint<Date>> toConstraints(Task source,
+            public List<Constraint<GanttDate>> toConstraints(Task source,
                     DependencyType type) {
                 return type.getStartConstraints(source);
             }
         },
         END {
             @Override
-            public List<Constraint<Date>> toConstraints(Task source,
+            public List<Constraint<GanttDate>> toConstraints(Task source,
                     DependencyType type) {
                 return type.getEndConstraints(source);
             }
         };
 
-        abstract List<Constraint<Date>> toConstraints(Task source,
+        abstract List<Constraint<GanttDate>> toConstraints(Task source,
                 DependencyType type);
     }
 
-    public static List<Constraint<Date>> getStartConstraints(
+    public static List<Constraint<GanttDate>> getStartConstraints(
             Collection<Dependency> dependencies) {
         return getConstraintsFor(dependencies, Calculation.START);
     }
 
-    public static List<Constraint<Date>> getEndConstraints(
+    public static List<Constraint<GanttDate>> getEndConstraints(
             Collection<Dependency> incoming) {
         return getConstraintsFor(incoming, Calculation.END);
     }
 
-    private static List<Constraint<Date>> getConstraintsFor(
+    private static List<Constraint<GanttDate>> getConstraintsFor(
             Collection<Dependency> dependencies, Calculation calculation) {
-        List<Constraint<Date>> result = new ArrayList<Constraint<Date>>();
+        List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
         for (Dependency dependency : dependencies) {
             result.addAll(dependency.toConstraints(calculation));
         }
@@ -87,7 +86,7 @@ public class Dependency implements IDependency<Task> {
 
     private final boolean visible;
 
-    private ConstraintViolationNotificator<Date> violationsNotificator = ConstraintViolationNotificator
+    private ConstraintViolationNotificator<GanttDate> violationsNotificator = ConstraintViolationNotificator
             .create();
 
     public Dependency(Task source, Task destination,
@@ -112,13 +111,13 @@ public class Dependency implements IDependency<Task> {
         this(source, destination, type, true);
     }
 
-    private List<Constraint<Date>> toConstraints(Calculation calculation) {
+    private List<Constraint<GanttDate>> toConstraints(Calculation calculation) {
         return violationsNotificator.withListener(calculation.toConstraints(
                 source, type));
     }
 
     public void addConstraintViolationListener(
-            IConstraintViolationListener<Date> listener) {
+            IConstraintViolationListener<GanttDate> listener) {
         violationsNotificator.addConstraintViolationListener(listener);
     }
 

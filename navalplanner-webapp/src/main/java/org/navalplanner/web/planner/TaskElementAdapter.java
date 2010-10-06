@@ -99,7 +99,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         this.preventCalculateResourcesText = preventCalculateResourcesText;
     }
 
-    public static List<Constraint<Date>> getStartConstraintsFor(
+    public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement) {
         if (taskElement instanceof ITaskLeafConstraint) {
             ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
@@ -110,11 +110,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             case AS_SOON_AS_POSSIBLE:
                 return Collections.emptyList();
             case START_IN_FIXED_DATE:
-                return Collections.singletonList(equalTo(asDate(startConstraint
+                return Collections
+                        .singletonList(equalTo(toGantt(startConstraint
                         .getConstraintDate())));
             case START_NOT_EARLIER_THAN:
                 return Collections
-                        .singletonList(biggerOrEqualThan(asDate(startConstraint
+                        .singletonList(biggerOrEqualThan(toGantt(startConstraint
                                 .getConstraintDate())));
             default:
                 throw new RuntimeException("can't handle " + constraintType);
@@ -122,10 +123,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         } else {
             return Collections.emptyList();
         }
-    }
-
-    private static Date asDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     @Autowired
@@ -159,6 +156,13 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return null;
         }
         return new GanttDateAdapter(date);
+    }
+
+    public static GanttDate toGantt(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return GanttDate.createFrom(date);
     }
 
     public static IntraDayDate toIntraDay(GanttDate date) {
@@ -605,7 +609,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public List<Constraint<Date>> getStartConstraints() {
+        public List<Constraint<GanttDate>> getStartConstraints() {
             return getStartConstraintsFor(this.taskElement);
         }
 

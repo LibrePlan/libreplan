@@ -31,6 +31,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -264,12 +265,13 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.editingDatesEnabled = editingDatesEnabled;
     }
 
-    public List<Constraint<Date>> getStartConstraints() {
-        return getStartConstraintsGiven(this.notBeforeThan);
+    public List<Constraint<GanttDate>> getStartConstraints() {
+        return getStartConstraintsGiven(GanttDate
+                .createFrom(this.notBeforeThan));
     }
 
-    public static List<Constraint<Date>> getStartConstraintsGiven(
-            Date notBeforeThan) {
+    public static List<Constraint<GanttDate>> getStartConstraintsGiven(
+            GanttDate notBeforeThan) {
         if (notBeforeThan != null) {
             return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
         } else {
@@ -277,7 +279,7 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         }
     }
 
-    public List<Constraint<Date>> getEndConstraints() {
+    public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
     }
 

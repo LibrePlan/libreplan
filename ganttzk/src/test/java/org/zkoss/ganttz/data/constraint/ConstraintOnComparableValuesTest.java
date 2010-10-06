@@ -44,7 +44,8 @@ public class ConstraintOnComparableValuesTest {
 
     @Test
     public void biggerOrEqualThanNullLeaveValuesUnmodified() {
-        Constraint<Date> biggerThanNull = biggerOrEqualThan(null);
+        Constraint<Date> biggerThanNull = ConstraintOnComparableValues
+                .<Date> biggerOrEqualThan(null);
         Date eraStart = new Date(0);
         assertThat(biggerThanNull.applyConstraintTo(new Date(0)),
                 equalTo(eraStart));

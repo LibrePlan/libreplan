@@ -193,11 +193,11 @@ public class TaskComponent extends Div implements AfterCompose {
 
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-        taskViolationListener = new IConstraintViolationListener<Date>() {
+        taskViolationListener = new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<Date> constraint,
-                    Date value) {
+            public void constraintViolated(Constraint<GanttDate> constraint,
+                    GanttDate value) {
                 // TODO mark graphically task as violated
             }
         };
@@ -291,7 +291,7 @@ public class TaskComponent extends Div implements AfterCompose {
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
 
-    private IConstraintViolationListener<Date> taskViolationListener;
+    private IConstraintViolationListener<GanttDate> taskViolationListener;
 
     public TaskRow getRow() {
         if (getParent() == null) {

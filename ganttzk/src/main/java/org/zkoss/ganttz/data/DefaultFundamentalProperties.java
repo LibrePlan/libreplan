@@ -177,7 +177,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public List<Constraint<Date>> getStartConstraints() {
+    public List<Constraint<GanttDate>> getStartConstraints() {
         return Collections.emptyList();
     }
 

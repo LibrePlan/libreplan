@@ -23,7 +23,6 @@ package org.zkoss.ganttz.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -85,25 +84,27 @@ public class GanttDiagramGraph<V, D> {
         void registerDependenciesEnforcerHookOn(V task,
                 IDependenciesEnforcerHookFactory<V> hookFactory);
 
-        Date getStartDate(V task);
+        GanttDate getStartDate(V task);
 
-        void setStartDateFor(V task, Date newStart);
+        void setStartDateFor(V task, GanttDate newStart);
 
-        Date getEndDateFor(V task);
+        GanttDate getEndDateFor(V task);
 
-        void setEndDateFor(V task, Date newEnd);
+        void setEndDateFor(V task, GanttDate newEnd);
 
-        Date getSmallestBeginDateFromChildrenFor(V container);
+        GanttDate getSmallestBeginDateFromChildrenFor(V container);
 
-        Constraint<Date> getCurrentLenghtConstraintFor(V task);
+        Constraint<GanttDate> getCurrentLenghtConstraintFor(V task);
 
-        Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(V task);
+        Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(V task);
 
-        List<Constraint<Date>> getEndConstraintsGivenIncoming(Set<D> incoming);
+        List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
+                Set<D> incoming);
 
-        List<Constraint<Date>> getStartCosntraintsGiven(Set<D> withDependencies);
+        List<Constraint<GanttDate>> getStartConstraintsGiven(
+                Set<D> withDependencies);
 
-        List<Constraint<Date>> getStartConstraintsFor(V task);
+        List<Constraint<GanttDate>> getStartConstraintsFor(V task);
 
         V getSource(D dependency);
 
@@ -179,57 +180,57 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public Date getEndDateFor(Task task) {
-            return task.getEndDate().toDateApproximation();
+        public GanttDate getEndDateFor(Task task) {
+            return task.getEndDate();
         }
 
         @Override
-        public Constraint<Date> getCurrentLenghtConstraintFor(Task task) {
+        public Constraint<GanttDate> getCurrentLenghtConstraintFor(Task task) {
             return task.getCurrentLengthConstraint();
         }
 
         @Override
-        public Constraint<Date> getEndDateBiggerThanStartDateConstraintFor(
+        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
                 Task task) {
             return task.getEndDateBiggerThanStartDate();
         }
 
         @Override
-        public List<Constraint<Date>> getEndConstraintsGivenIncoming(
+        public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
                 Set<Dependency> incoming) {
             return Dependency.getEndConstraints(incoming);
         }
 
         @Override
-        public void setEndDateFor(Task task, Date newEnd) {
-            task.setEndDate(GanttDate.createFrom(newEnd));
+        public void setEndDateFor(Task task, GanttDate newEnd) {
+            task.setEndDate(newEnd);
         }
 
         @Override
-        public Date getStartDate(Task task) {
-            return task.getBeginDate().toDateApproximation();
+        public GanttDate getStartDate(Task task) {
+            return task.getBeginDate();
         }
 
         @Override
-        public void setStartDateFor(Task task, Date newStart) {
-            task.setBeginDate(GanttDate.createFrom(newStart));
+        public void setStartDateFor(Task task, GanttDate newStart) {
+            task.setBeginDate(newStart);
         }
 
         @Override
-        public List<Constraint<Date>> getStartCosntraintsGiven(
+        public List<Constraint<GanttDate>> getStartConstraintsGiven(
                 Set<Dependency> withDependencies) {
             return Dependency.getStartConstraints(withDependencies);
         }
 
         @Override
-        public List<Constraint<Date>> getStartConstraintsFor(Task task) {
+        public List<Constraint<GanttDate>> getStartConstraintsFor(Task task) {
             return task.getStartConstraints();
         }
 
         @Override
-        public Date getSmallestBeginDateFromChildrenFor(Task container) {
+        public GanttDate getSmallestBeginDateFromChildrenFor(Task container) {
             return ((TaskContainer) container)
-                    .getSmallestBeginDateFromChildren().toDateApproximation();
+                    .getSmallestBeginDateFromChildren();
         }
 
         @Override
@@ -244,8 +245,8 @@ public class GanttDiagramGraph<V, D> {
             ICriticalPathCalculable<Task> {
 
         private GanttZKDiagramGraph(
-                List<Constraint<Date>> globalStartConstraints,
-                List<Constraint<Date>> globalEndConstraints,
+                List<Constraint<GanttDate>> globalStartConstraints,
+                List<Constraint<GanttDate>> globalEndConstraints,
                 boolean dependenciesConstraintsHavePriority) {
             super(GANTTZK_ADAPTER, globalStartConstraints,
                     globalEndConstraints,
@@ -259,8 +260,8 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public static GanttZKDiagramGraph create(
-            List<Constraint<Date>> globalStartConstraints,
-            List<Constraint<Date>> globalEndConstraints,
+            List<Constraint<GanttDate>> globalStartConstraints,
+            List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
         return new GanttZKDiagramGraph(globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
@@ -274,9 +275,9 @@ public class GanttDiagramGraph<V, D> {
 
     private Map<V, V> fromChildToParent = new HashMap<V, V>();
 
-    private final List<Constraint<Date>> globalStartConstraints;
+    private final List<Constraint<GanttDate>> globalStartConstraints;
 
-    private final List<Constraint<Date>> globalEndConstraints;
+    private final List<Constraint<GanttDate>> globalEndConstraints;
 
     private DependenciesEnforcer enforcer = new DependenciesEnforcer();
 
@@ -344,16 +345,16 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public static <V, D> GanttDiagramGraph<V, D> create(IAdapter<V, D> adapter,
-            List<Constraint<Date>> globalStartConstraints,
-            List<Constraint<Date>> globalEndConstraints,
+            List<Constraint<GanttDate>> globalStartConstraints,
+            List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
         return new GanttDiagramGraph<V, D>(adapter, globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
     }
 
     protected GanttDiagramGraph(IAdapter<V, D> adapter,
-            List<Constraint<Date>> globalStartConstraints,
-            List<Constraint<Date>> globalEndConstraints,
+            List<Constraint<GanttDate>> globalStartConstraints,
+            List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
         this.adapter = adapter;
         this.globalStartConstraints = globalStartConstraints;
@@ -849,10 +850,10 @@ public class GanttDiagramGraph<V, D> {
         }
 
         boolean enforceParentShrinkage(V container) {
-            Date oldBeginDate = adapter.getStartDate(container);
-            Date firstStart = adapter
+            GanttDate oldBeginDate = adapter.getStartDate(container);
+            GanttDate firstStart = adapter
                     .getSmallestBeginDateFromChildrenFor(container);
-            Date previousEnd = adapter.getEndDateFor(container);
+            GanttDate previousEnd = adapter.getEndDateFor(container);
             if (firstStart.after(oldBeginDate)) {
                 adapter.setStartDateFor(container, firstStart);
                 adapter.setEndDateFor(container, previousEnd);
@@ -1019,7 +1020,7 @@ public class GanttDiagramGraph<V, D> {
 
         private boolean enforceStartAndEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
-            Date previousEndDate = adapter.getEndDateFor(task);
+            GanttDate previousEndDate = adapter.getEndDateFor(task);
             boolean startDateChanged = enforceStartDate(task, incoming);
             boolean endDateChanged = !parentRecalculation
                     && enforceEndDate(task, previousEndDate, incoming);
@@ -1028,26 +1029,27 @@ public class GanttDiagramGraph<V, D> {
 
         private boolean enforceEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
-            Date previousEndDate = adapter.getEndDateFor(task);
+            GanttDate previousEndDate = adapter.getEndDateFor(task);
             return enforceEndDate(task, previousEndDate, incoming);
         }
 
         @SuppressWarnings("unchecked")
-        private boolean enforceEndDate(V task, Date previousEndDate,
+        private boolean enforceEndDate(V task, GanttDate previousEndDate,
                 Set<D> incoming) {
             if (adapter.isFixed(task)) {
                 return false;
             }
-            Constraint<Date> currentLength = adapter
+            Constraint<GanttDate> currentLength = adapter
                     .getCurrentLenghtConstraintFor(task);
-            Constraint<Date> respectStartDate = adapter
+            Constraint<GanttDate> respectStartDate = adapter
                     .getEndDateBiggerThanStartDateConstraintFor(task);
-            Date newEnd = Constraint.<Date> initialValue(null)
+            GanttDate newEnd = Constraint
+                    .<GanttDate> initialValue(null)
                     .withConstraints(currentLength)
                     .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
                     .withConstraints(respectStartDate)
                     .apply();
-            if (!adapter.getEndDateFor(task).equals(newEnd)) {
+            if (hasChanged(previousEndDate, newEnd)) {
                 adapter.setEndDateFor(task, newEnd);
             }
             return !previousEndDate.equals(newEnd);
@@ -1057,26 +1059,35 @@ public class GanttDiagramGraph<V, D> {
             if (adapter.isFixed(task)) {
                 return false;
             }
-            Date newStart = calculateStartDateFor(task, incoming);
-            if (!adapter.getStartDate(task).equals(newStart)) {
+            GanttDate newStart = calculateStartDateFor(task, incoming);
+            GanttDate old = adapter.getStartDate(task);
+            if (hasChanged(old, newStart)) {
                 adapter.setStartDateFor(task, newStart);
                 return true;
             }
             return false;
         }
 
-        private Date calculateStartDateFor(V task, Set<D> withDependencies) {
-            List<Constraint<Date>> dependencyConstraints = adapter
-                    .getStartCosntraintsGiven(withDependencies);
-            Date newStart;
+        private boolean hasChanged(GanttDate old, GanttDate newValue) {
+            if (old == newValue) {
+                return false;
+            }
+            return (old == null) != (newValue == null)
+                    || old.compareTo(newValue) != 0;
+        }
+
+        private GanttDate calculateStartDateFor(V task, Set<D> withDependencies) {
+            List<Constraint<GanttDate>> dependencyConstraints = adapter
+                    .getStartConstraintsGiven(withDependencies);
+            GanttDate newStart;
             if (dependenciesConstraintsHavePriority) {
-                newStart = Constraint.<Date> initialValue(null)
+                newStart = Constraint.<GanttDate> initialValue(null)
                         .withConstraints(adapter.getStartConstraintsFor(task))
                         .withConstraints(dependencyConstraints)
                         .withConstraints(globalStartConstraints).apply();
 
             } else {
-                newStart = Constraint.<Date> initialValue(null)
+                newStart = Constraint.<GanttDate> initialValue(null)
                         .withConstraints(dependencyConstraints)
                         .withConstraints(adapter.getStartConstraintsFor(task))
                         .withConstraints(globalStartConstraints).apply();

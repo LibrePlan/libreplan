@@ -29,7 +29,6 @@ import static org.junit.Assert.assertThat;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -70,9 +69,8 @@ public class CriticalPathCalculatorTest {
         expect(result.getBeginDate()).andReturn(toDate(start)).anyTimes();
         expect(result.getEndDate()).andReturn(
                 toDate(start.plusDays(durationDays))).anyTimes();
-
-        Constraint<Date> constraint = biggerOrEqualThan(date
-                .toDateTimeAtStartOfDay().toDate());
+        GanttDate ganttDate = GanttDate.createFrom(date);
+        Constraint<GanttDate> constraint = biggerOrEqualThan(ganttDate);
         expect(result.getStartConstraints()).andReturn(
                 Arrays.asList(constraint)).anyTimes();
 
@@ -87,8 +85,9 @@ public class CriticalPathCalculatorTest {
         expect(result.getEndDate()).andReturn(
                 toDate(start.plusDays(durationDays))).anyTimes();
 
-        Constraint<Date> constraint = ConstraintOnComparableValues.equalTo(date
-                .toDateTimeAtStartOfDay().toDate());
+        GanttDate ganttDate = GanttDate.createFrom(date);
+        Constraint<GanttDate> constraint = ConstraintOnComparableValues
+                .equalTo(ganttDate);
         expect(result.getStartConstraints()).andReturn(
                 Arrays.asList(constraint)).anyTimes();
 
