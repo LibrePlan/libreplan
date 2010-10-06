@@ -169,6 +169,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Intbox duration;
 
+    private Datebox endDateBox;
+
     private Combobox startConstraintTypes;
 
     private Datebox startConstraintDate;
@@ -659,5 +661,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
             return task.hasConsolidations();
         }
         return false;
+    }
+
+    public void updateTaskEndDate(Date endDate) {
+        getGanttTaskDTO().endDate = endDate;
+        Util.reloadBindings(endDateBox);
     }
 }

@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -116,6 +117,7 @@ public class EditTaskController extends GenericForwardComposer {
         window = (Window) comp;
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
+        resourceAllocationController.setEditTaskController(this);
         subcontractController.doAfterCompose(subcontractTabpanel);
         initLimitingResourceAllocationController();
     }

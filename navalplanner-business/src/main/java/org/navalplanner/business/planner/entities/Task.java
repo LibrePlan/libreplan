@@ -86,7 +86,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         setIntraDayEndDate(newEnd);
     }
 
-    private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
+    private CalculatedValue calculatedValue = CalculatedValue.WORKABLE_DAYS;
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
@@ -250,7 +250,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public CalculatedValue getCalculatedValue() {
         if (calculatedValue == null) {
-            return CalculatedValue.END_DATE;
+            return CalculatedValue.WORKABLE_DAYS;
         }
         return calculatedValue;
     }
@@ -485,7 +485,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             ResourceAllocation.allocating(allocations)
                               .allocateOnTaskLength();
             break;
-        case END_DATE:
+        case WORKABLE_DAYS:
             IntraDayDate end = ResourceAllocation
                                 .allocating(allocations)
                                 .untilAllocating(getAssignedHours());
@@ -588,7 +588,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     @Override
     protected boolean canBeResized() {
-        return ((calculatedValue != CalculatedValue.END_DATE) || (resourceAllocations
+        return ((calculatedValue != CalculatedValue.WORKABLE_DAYS) || (resourceAllocations
                 .isEmpty()));
     }
 
