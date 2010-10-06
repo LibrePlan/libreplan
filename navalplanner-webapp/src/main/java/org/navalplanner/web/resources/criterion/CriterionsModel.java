@@ -227,4 +227,14 @@ public class CriterionsModel implements ICriterionsModel {
         this.criterionTreeModel = new CriterionTreeModel(this.criterionType);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public int numberOfRelatedEntities(Criterion criterion) {
+        if (criterion.isNewObject()) {
+            return 0;
+        }
+        return criterionDAO.numberOfRelatedRequirements(criterion)
+                + criterionDAO.numberOfRelatedSatisfactions(criterion);
+    }
+
 }

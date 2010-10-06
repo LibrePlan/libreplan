@@ -60,4 +60,8 @@ public interface ICriterionDAO extends IIntegrationEntityDAO<Criterion> {
 
     public boolean existsPredefinedCriterion(Criterion criterion);
 
+    public int numberOfRelatedRequirements(Criterion criterion);
+
+    public int numberOfRelatedSatisfactions(Criterion criterion);
+
 }

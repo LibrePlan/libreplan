@@ -29,10 +29,13 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -170,6 +173,7 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
         return (List<Criterion>) c.list();
     }
 
+
     @Override
     public List<Criterion> getAllSortedByTypeAndName() {
         Query query = getSession()
@@ -178,6 +182,22 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion>
                         + "JOIN criterion.type type "
                         + "order by type.name asc, criterion.name asc");
         return (List<Criterion>) query.list();
+    }
+
+    @Override
+    public int numberOfRelatedRequirements(Criterion criterion) {
+        Criteria c = getSession().createCriteria(CriterionRequirement.class)
+                .add(Restrictions.eq("criterion", criterion)).setProjection(
+                        Projections.rowCount());
+        return Integer.valueOf(c.uniqueResult().toString()).intValue();
+    }
+
+    @Override
+    public int numberOfRelatedSatisfactions(Criterion criterion) {
+        Criteria c = getSession().createCriteria(CriterionSatisfaction.class)
+                .add(Restrictions.eq("criterion", criterion)).setProjection(
+                        Projections.rowCount());
+        return Integer.valueOf(c.uniqueResult().toString()).intValue();
     }
 
 }
