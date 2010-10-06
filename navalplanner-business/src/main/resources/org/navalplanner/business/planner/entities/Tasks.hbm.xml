@@ -64,7 +64,7 @@
                         <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" />
+                <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             </component>
 
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"

@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
@@ -293,7 +294,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
         TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
-        startConstraintDate.setValue(taskStartConstraint.getConstraintDate());
+        startConstraintDate.setValue(taskStartConstraint.getConstraintDate()
+                .toDateTimeAtStartOfDay().toDate());
     }
 
     private boolean saveConstraintChanges() {
@@ -301,8 +303,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 .getStartConstraint();
         WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
                 .getSelectedItemApi().getValue();
-        Date inputDate = type.isAssociatedDateRequired() ? startConstraintDate
-                .getValue() : null;
+        LocalDate inputDate = type.isAssociatedDateRequired() ? LocalDate
+                .fromDateFields(startConstraintDate.getValue()) : null;
         if (taskConstraint.isValid(type.getType(), inputDate)) {
             taskConstraint.update(type.getType(), inputDate);
             if (currentContext != null) {

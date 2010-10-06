@@ -834,7 +834,8 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     protected void applyStartConstraintTo(Task task) {
-        task.getStartConstraint().notEarlierThan(this.getInitDate());
+        task.getStartConstraint().notEarlierThan(
+                LocalDate.fromDateFields(this.getInitDate()));
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {

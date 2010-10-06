@@ -19,8 +19,6 @@
  */
 package org.navalplanner.business.planner.entities;
 
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
@@ -33,7 +31,7 @@ public class TaskStartConstraint {
 
     private StartConstraintType startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
 
-    private Date constraintDate = null;
+    private LocalDate constraintDate = null;
 
     public TaskStartConstraint() {
     }
@@ -46,26 +44,25 @@ public class TaskStartConstraint {
     public void explicityMovedTo(LocalDate date) {
         Validate.notNull(date);
         startConstraintType = startConstraintType.newTypeAfterMoved();
-        constraintDate = date.toDateTimeAtStartOfDay().toDate();
+        constraintDate = date;
     }
 
-    public Date getConstraintDate() {
-        return constraintDate != null ? new Date(constraintDate.getTime())
-                : null;
+    public LocalDate getConstraintDate() {
+        return constraintDate;
     }
 
-    public void notEarlierThan(Date date) {
+    public void notEarlierThan(LocalDate date) {
         Validate.notNull(date);
         this.constraintDate = date;
         this.startConstraintType = StartConstraintType.START_NOT_EARLIER_THAN;
     }
 
-    public boolean isValid(StartConstraintType type, Date value) {
+    public boolean isValid(StartConstraintType type, LocalDate value) {
         return type != null
                 && type.isAssociatedDateRequired() == (value != null);
     }
 
-    public void update(StartConstraintType type, Date value) {
+    public void update(StartConstraintType type, LocalDate value) {
         Validate.isTrue(isValid(type, value));
         this.startConstraintType = type;
         this.constraintDate = value;

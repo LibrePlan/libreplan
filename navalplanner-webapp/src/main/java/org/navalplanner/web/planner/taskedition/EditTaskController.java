@@ -451,7 +451,7 @@ public class EditTaskController extends GenericForwardComposer {
         }
 
         return ((ITaskLeafConstraint) taskElement).getStartConstraint()
-                .getConstraintDate();
+                .getConstraintDate().toDateTimeAtStartOfDay().toDate();
     }
 
     private boolean isTaskLeafConstraint() {

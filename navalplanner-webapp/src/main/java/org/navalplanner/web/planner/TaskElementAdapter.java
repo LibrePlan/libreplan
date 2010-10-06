@@ -111,18 +111,22 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return Collections.emptyList();
             case START_IN_FIXED_DATE:
                 return Collections.singletonList(DateConstraint
-                        .equalTo(startConstraint.getConstraintDate()));
+                        .equalTo(asDate(startConstraint.getConstraintDate())));
             case START_NOT_EARLIER_THAN:
                 return Collections
                         .singletonList(DateConstraint
-                                .biggerOrEqualThan(startConstraint
-                                        .getConstraintDate()));
+                        .biggerOrEqualThan(asDate(startConstraint
+                                .getConstraintDate())));
             default:
                 throw new RuntimeException("can't handle " + constraintType);
             }
         } else {
             return Collections.emptyList();
         }
+    }
+
+    private static Date asDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     @Autowired
