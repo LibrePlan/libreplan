@@ -337,11 +337,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public BigDecimal getHoursAdvancePercentage() {
             OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                return orderElementDAO.getHoursAdvancePercentage(orderElement);
-            } else {
-                return new BigDecimal(0);
+            if (orderElement == null) {
+                return BigDecimal.ZERO;
             }
+
+            Integer totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
+                    .getSumChargedHours().getTotalChargedHours() : new Integer(0);
+            BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
+
+            BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())
+                    .setScale(2);
+
+            if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                return BigDecimal.ZERO;
+            }
+            return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
         }
 
         @Override
