@@ -22,6 +22,7 @@ package org.navalplanner.business.calendars.entities;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public interface ICalendar {
@@ -45,6 +46,17 @@ public interface ICalendar {
      * @return the capacity at which the resource can work
      */
     public EffortDuration getCapacityOn(LocalDate date);
+
+    /**
+     * Calculates the capacity duration at a given day. It means all the time
+     * that could be worked without having overtime. It considers the
+     * {@link PartialDay} so if the day it's not complete the capacity is
+     * reduced
+     * @param date
+     *            the date at which the capacity is calculated
+     * @return the capacity at which the resource can work at the day specified
+     */
+    public EffortDuration getCapacityOn(PartialDay partialDay);
 
     public AvailabilityTimeLine getAvailability();
 

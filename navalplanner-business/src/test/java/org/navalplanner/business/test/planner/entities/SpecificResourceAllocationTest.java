@@ -56,6 +56,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SpecificResourceAllocationTest {
@@ -144,15 +145,16 @@ public class SpecificResourceAllocationTest {
                 return toHoursAnswer(hours).answer();
             }
         };
+        IAnswer<EffortDuration> effortAnswer = new IAnswer<EffortDuration>() {
+            @Override
+            public EffortDuration answer() throws Throwable {
+                return hours(toHoursAnswer.answer());
+            }
+        };
         expect(
                 this.calendar.asDurationOn(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
-                new IAnswer<EffortDuration>() {
-                    @Override
-                    public EffortDuration answer() throws Throwable {
-                        return hours(toHoursAnswer.answer());
-                    }
-                }).anyTimes();
+                effortAnswer).anyTimes();
         expect(this.calendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
@@ -171,6 +173,8 @@ public class SpecificResourceAllocationTest {
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         expect(task.getStartDate()).andReturn(
                 start.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(
+                IntraDayDate.startOfDay(start)).anyTimes();
         expect(task.getEndDate()).andReturn(
                 end.toDateTimeAtStartOfDay().toDate()).anyTimes();
         expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();

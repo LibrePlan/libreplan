@@ -40,6 +40,7 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -288,6 +289,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public EffortDuration getCapacityOn(LocalDate date) {
         return getWorkableTimeAt(date);
+    }
+
+    public EffortDuration getCapacityOn(PartialDay date) {
+        return date.limitDuration(getWorkableTimeAt(date.getDate()));
     }
 
     public EffortDuration getWorkableTimeAt(LocalDate date) {

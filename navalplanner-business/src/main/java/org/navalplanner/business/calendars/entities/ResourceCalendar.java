@@ -25,6 +25,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Calendar for a {@link Resource}.
@@ -76,6 +77,11 @@ public class ResourceCalendar extends BaseCalendar {
 
     @Override
     public EffortDuration getCapacityOn(LocalDate date) {
+        return multiplyByCapacity(super.getCapacityOn(date));
+    }
+
+    @Override
+    public EffortDuration getCapacityOn(PartialDay date) {
         return multiplyByCapacity(super.getCapacityOn(date));
     }
 

@@ -23,6 +23,7 @@ package org.navalplanner.business.calendars.entities;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SameWorkHoursEveryDay implements ICalendar {
@@ -44,6 +45,11 @@ public class SameWorkHoursEveryDay implements ICalendar {
     @Override
     public EffortDuration getCapacityOn(LocalDate date) {
         return EffortDuration.hours(hours);
+    }
+
+    @Override
+    public EffortDuration getCapacityOn(PartialDay partialDay) {
+        return partialDay.limitDuration(getCapacityOn(partialDay.getDate()));
     }
 
     @Override
