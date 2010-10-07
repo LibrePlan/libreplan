@@ -125,8 +125,11 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional
     public void prepareForRemove(CriterionType criterionType) {
         this.criterionType = criterionType;
+        criterionTypeDAO.reattach(criterionType);
+        criterionType.getCriterions().size();
     }
 
     @Override
@@ -248,6 +251,17 @@ public class CriterionsModel implements ICriterionsModel {
     @Override
     public void addForRemoval(Criterion criterion) {
         criterionType.getCriterions().remove(criterion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDeletable(CriterionType criterionType) {
+        for (Criterion each : criterionType.getCriterions()) {
+            if (numberOfRelatedEntities(each) != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

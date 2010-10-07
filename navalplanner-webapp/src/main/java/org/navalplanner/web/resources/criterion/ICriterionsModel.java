@@ -84,5 +84,7 @@ public interface ICriterionsModel {
 
     boolean isDeletable(Criterion criterion);
 
+    boolean isDeletable(CriterionType criterionType);
+
     void addForRemoval(Criterion criterion);
 }
