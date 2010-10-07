@@ -25,13 +25,22 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * @author Óscar González Fernández
@@ -98,5 +107,91 @@ public class IntraDayDateTest {
         IntraDayDate b = IntraDayDate.create(today, oneHour);
         assertThat(IntraDayDate.min(a, b), equalTo(a));
         assertThat(IntraDayDate.max(a, b), equalTo(b));
+    }
+
+    @Test
+    public void untilTheSameDayReturnsZeroPartialDays() {
+        Iterable<PartialDay> days = IntraDayDate.create(today, zero())
+                .daysUntil(IntraDayDate.create(today, zero()));
+        assertFalse(days.iterator().hasNext());
+    }
+
+    @Test
+    public void untilTheNextDayReturnsOnePartialDay() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(tomorrow, zero());
+        Iterable<PartialDay> days = start.daysUntil(end);
+        assertThat(IntraDayDate.toList(days), delimitedBy(start, end));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void untilADayAgo() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(tomorrow, zero());
+        Iterable<PartialDay> days = end.daysUntil(start);
+    }
+
+    @Test
+    public void untilTwoDaysLaterReturnsTwoPartialDays() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate middle = IntraDayDate.create(today.plusDays(1), zero());
+        IntraDayDate end = IntraDayDate.create(today.plusDays(2), zero());
+        Iterable<PartialDay> days = start.daysUntil(end);
+        assertThat(IntraDayDate.toList(days), delimitedBy(start, middle, end));
+    }
+
+    @Test
+    public void worksWellWithEffortDurationsNotZero() {
+        IntraDayDate start = IntraDayDate.create(today, halfHour);
+        IntraDayDate end = IntraDayDate.create(today, oneHour);
+        IntraDayDate anotherEnd = IntraDayDate.create(tomorrow, halfHour);
+        assertThat(IntraDayDate.toList(start.daysUntil(end)), delimitedBy(start, end));
+        assertThat(IntraDayDate.toList(start.daysUntil(anotherEnd)),
+                delimitedBy(start, IntraDayDate.create(tomorrow, zero()),
+                        anotherEnd));
+    }
+
+    private Matcher<Iterable<PartialDay>> delimitedBy(
+            final IntraDayDate... dates) {
+        return new BaseMatcher<Iterable<PartialDay>>() {
+
+            @Override
+            public boolean matches(Object param) {
+                List<IntraDayDate> list = toPoints(param);
+                return list.equals(Arrays.asList(dates));
+            }
+
+            @SuppressWarnings("unchecked")
+            private List<IntraDayDate> toPoints(Object param) {
+                return toPoints((Iterable<PartialDay>) param);
+            }
+
+            private List<IntraDayDate> toPoints(Iterable<PartialDay> param) {
+                List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+                PartialDay last = null;
+                for (PartialDay each : param) {
+                    result.add(each.getStart());
+                    last = each;
+                }
+                if (last != null) {
+                    result.add(last.getEnd());
+                }
+                return result;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText(Arrays.asList(group(dates))
+                        .toString());
+            }
+
+            private Object group(IntraDayDate[] dates) {
+                List<Object> result = new ArrayList<Object>();
+                for (int i = 0; i < dates.length - 1; i++) {
+                    result.add(Arrays.asList(dates[i], dates[i + 1]));
+                }
+                return result;
+            }
+        };
     }
 }

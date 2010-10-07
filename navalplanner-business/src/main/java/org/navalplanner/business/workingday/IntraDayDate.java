@@ -21,9 +21,13 @@ package org.navalplanner.business.workingday;
 
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -140,6 +144,105 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             return result;
         }
         return isStartOfDay() ? 0 : 1;
+    }
+
+    /**
+     * It's an interval of {@link IntraDayDate}
+     */
+    public static class PartialDay {
+
+        private final IntraDayDate start;
+        private final IntraDayDate end;
+
+        public PartialDay(IntraDayDate start, IntraDayDate end) {
+            Validate.notNull(start);
+            Validate.notNull(end);
+            Validate.isTrue(end.compareTo(start) >= 0);
+            this.start = start;
+            this.end = end;
+        }
+
+        public IntraDayDate getStart() {
+            return start;
+        }
+
+        public IntraDayDate getEnd() {
+            return end;
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(new Object[] { start, end });
+        }
+
+    }
+
+    /**
+     * Returns an on demand {@link Iterable} that gives all the days from
+     * <code>this</code> to end
+     * @param end
+     * @return an on demand iterable
+     */
+    public Iterable<PartialDay> daysUntil(final IntraDayDate end) {
+        Validate.isTrue(compareTo(end) <= 0);
+        if (compareTo(end) == 0) {
+            return Collections.<PartialDay> emptyList();
+        }
+        return new Iterable<IntraDayDate.PartialDay>() {
+
+            @Override
+            public Iterator<PartialDay> iterator() {
+                return createIterator(IntraDayDate.this, end);
+            }
+
+        };
+    }
+
+    public static List<PartialDay> toList(Iterable<PartialDay> days) {
+        List<PartialDay> result = new ArrayList<IntraDayDate.PartialDay>();
+        for (PartialDay each : days) {
+            result.add(each);
+        }
+        return result;
+    }
+
+    private static Iterator<PartialDay> createIterator(
+            final IntraDayDate start, final IntraDayDate end) {
+
+        return new Iterator<IntraDayDate.PartialDay>() {
+            private IntraDayDate current = start;
+
+            @Override
+            public boolean hasNext() {
+                return current.compareTo(end) < 0;
+            }
+
+            @Override
+            public PartialDay next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                IntraDayDate start = current;
+                current = calculateNext(current);
+                return new PartialDay(start, current);
+            }
+
+            private IntraDayDate calculateNext(IntraDayDate date) {
+                IntraDayDate nextDay = IntraDayDate.startOfDay(date.date
+                        .plusDays(1));
+                return min(nextDay, end);
+            }
+
+            @Override
+            public void remove() {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(new Object[] { date, effortDuration });
     }
 
 }
