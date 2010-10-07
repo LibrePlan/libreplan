@@ -319,10 +319,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 date = calculateLimitDate(assignedHours);
             }
             if (date == null) {
-                Integer hours = 0;
-                if (orderElement != null) {
-                    hours = orderElement.getWorkHours();
-                }
+                Integer hours = taskElement.getSumOfHoursAllocated();
 
                 if (hours == 0) {
                     return getBeginDate().toDateApproximation();
