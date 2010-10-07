@@ -653,7 +653,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return null;
             }
             LocalDate consolidatedline = ((Task) taskElement)
-                    .getFirstDayNotConsolidated();
+                    .getFirstDayNotConsolidated().getDate();
             return toGantt(consolidatedline);
         }
 

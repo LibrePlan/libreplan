@@ -652,14 +652,14 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         return ((consolidation != null) && (!consolidation.isEmpty()));
     }
 
-    public LocalDate getFirstDayNotConsolidated() {
+    public IntraDayDate getFirstDayNotConsolidated() {
         if (consolidation != null) {
             LocalDate until = consolidation.getConsolidatedUntil();
             if (until != null) {
-                return until.plusDays(1);
+                return IntraDayDate.startOfDay(until.plusDays(1));
             }
         }
-        return LocalDate.fromDateFields(getStartDate());
+        return getIntraDayStartDate();
     }
 
 }

@@ -310,7 +310,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 }
 
                 LocalDate firstDayNotConsolidated = task
-                        .getFirstDayNotConsolidated();
+                        .getFirstDayNotConsolidated().getDate();
                 for (DayAssignment dayAssignment : task.getDayAssignments()) {
                     if (dayAssignment.getDay().compareTo(
                             firstDayNotConsolidated) >= 0) {

@@ -63,6 +63,7 @@ import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class GenericResourceAllocationTest {
@@ -93,13 +94,15 @@ public class GenericResourceAllocationTest {
     private Task givenTaskWithStartAndEnd(Interval interval) {
         Task task = createNiceMock(Task.class);
         setupCriterions(task);
-
+        IntraDayDate start = IntraDayDate.startOfDay(interval.getStart()
+                .toLocalDate());
         expect(task.getStartDate()).andReturn(interval.getStart().toDate())
                 .anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
         expect(task.getEndDate()).andReturn(interval.getEnd().toDate())
                 .anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(
-                interval.getStart().toLocalDate()).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start)
+                .anyTimes();
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
         return this.task = task;

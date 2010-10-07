@@ -193,7 +193,8 @@ public class SpecificResourceAllocationTest {
                 IntraDayDate.startOfDay(start)).anyTimes();
         expect(task.getEndDate()).andReturn(
                 end.toDateTimeAtStartOfDay().toDate()).anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(
+                IntraDayDate.startOfDay(start)).anyTimes();
         replay(task);
     }
 

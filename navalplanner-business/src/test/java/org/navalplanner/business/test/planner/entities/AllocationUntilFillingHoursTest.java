@@ -271,17 +271,19 @@ public class AllocationUntilFillingHoursTest {
         }
         expect(task.getStartDate()).andReturn(
                 startDate.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(
+                IntraDayDate.startOfDay(startDate)).anyTimes();
         expect(task.getCriterions()).andReturn(
                 Collections.<Criterion> emptySet()).anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(startDate)
+        expect(task.getFirstDayNotConsolidated()).andReturn(
+                IntraDayDate.startOfDay(startDate))
                 .anyTimes();
         replay(task);
     }
 
     private void givenAllocationsWithoutTask() {
         allocations.add(ResourcesPerDayModification.create(
-                (SpecificResourceAllocation)
- createStubAllocationReturning(
+                (SpecificResourceAllocation) createStubAllocationReturning(
                         SpecificResourceAllocation.class, null),
                 ResourcesPerDay.amount(2)));
         allocations.add(ResourcesPerDayModification.create(

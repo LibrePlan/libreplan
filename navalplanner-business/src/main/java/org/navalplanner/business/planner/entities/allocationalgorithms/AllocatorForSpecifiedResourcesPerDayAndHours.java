@@ -62,16 +62,14 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
     }
 
     public IntraDayDate untilAllocating(EffortDuration effortToAllocate) {
-        LocalDate taskStart = LocalDate.fromDateFields(task.getStartDate());
-        LocalDate start = (task.getFirstDayNotConsolidated().compareTo(
-                taskStart) >= 0) ? task.getFirstDayNotConsolidated()
-                : taskStart;
+        final IntraDayDate start = IntraDayDate.max(
+                task.getFirstDayNotConsolidated(), task.getIntraDayStartDate());
         int i = 0;
-        IntraDayDate currentEnd = IntraDayDate.create(start, zero());
-        for (EffortPerAllocation each : effortPerAllocation(start,
+        IntraDayDate currentEnd = start;
+        for (EffortPerAllocation each : effortPerAllocation(start.getDate(),
                 effortToAllocate)) {
-            IntraDayDate endCandidate = untilAllocating(start, each.allocation,
-                    each.duration);
+            IntraDayDate endCandidate = untilAllocating(start.getDate(),
+                    each.allocation, each.duration);
             currentEnd = IntraDayDate.max(currentEnd, endCandidate);
             i++;
         }

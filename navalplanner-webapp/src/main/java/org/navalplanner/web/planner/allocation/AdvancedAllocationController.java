@@ -1501,7 +1501,7 @@ class Row {
         if(!((Task)task).hasConsolidations()) {
             return false;
         }
-        LocalDate d = ((Task)task).getFirstDayNotConsolidated();
+        LocalDate d = ((Task) task).getFirstDayNotConsolidated().getDate();
         DateTime firstDayNotConsolidated =
             new DateTime(d.getYear(), d.getMonthOfYear(),
                     d.getDayOfMonth(), 0, 0, 0, 0);
