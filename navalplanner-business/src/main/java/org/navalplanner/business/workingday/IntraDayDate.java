@@ -147,7 +147,8 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     }
 
     /**
-     * It's an interval of {@link IntraDayDate}
+     * It's an interval of {@link IntraDayDate}. It allows to know how much
+     * effort can be spent in this day.
      */
     public static class PartialDay {
 
@@ -158,6 +159,9 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             Validate.notNull(start);
             Validate.notNull(end);
             Validate.isTrue(end.compareTo(start) >= 0);
+            Validate.isTrue(start.areSameDay(end.getDate())
+                    || (start.areSameDay(end.getDate().minusDays(1)) && end
+                            .getEffortDuration().isZero()));
             this.start = start;
             this.end = end;
         }
@@ -168,6 +172,28 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
         public IntraDayDate getEnd() {
             return end;
+        }
+
+        public LocalDate getDate() {
+            return start.getDate();
+        }
+
+        public EffortDuration limitDuration(EffortDuration duration) {
+            EffortDuration alreadyElapsedInDay = start.getEffortDuration();
+            if (alreadyElapsedInDay.isZero()
+                    && end.getEffortDuration().isZero()) {
+                return duration;
+            }
+            if (end.getEffortDuration().isZero()) {
+                if (alreadyElapsedInDay.compareTo(duration) >= 0) {
+                    return zero();
+                }
+                return duration.minus(alreadyElapsedInDay);
+            } else {
+                EffortDuration maximumAvailable = end.getEffortDuration()
+                        .minus(alreadyElapsedInDay);
+                return EffortDuration.min(maximumAvailable, duration);
+            }
         }
 
         @Override

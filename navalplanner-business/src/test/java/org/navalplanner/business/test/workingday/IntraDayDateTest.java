@@ -25,6 +25,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.minutes;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
@@ -149,6 +151,24 @@ public class IntraDayDateTest {
         assertThat(IntraDayDate.toList(start.daysUntil(anotherEnd)),
                 delimitedBy(start, IntraDayDate.create(tomorrow, zero()),
                         anotherEnd));
+    }
+
+    @Test
+    public void aPartialDayCanLimitAnEffortDuration() {
+        PartialDay day = new PartialDay(IntraDayDate.create(today,
+                halfHour), IntraDayDate.create(today, oneHour));
+        assertThat(day.limitDuration(hours(10)), equalTo(minutes(30)));
+        assertThat(day.limitDuration(minutes(20)), equalTo(minutes(20)));
+        PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today),
+                IntraDayDate.startOfDay(tomorrow));
+        assertThat(completeDay.limitDuration(hours(10)), equalTo(hours(10)));
+        PartialDay startsInTheMiddle = new PartialDay(IntraDayDate.create(
+                today, EffortDuration.hours(3)),
+                IntraDayDate.startOfDay(tomorrow));
+        assertThat(startsInTheMiddle.limitDuration(hours(10)),
+                equalTo(hours(7)));
+        assertThat(startsInTheMiddle.limitDuration(hours(3)), equalTo(zero()));
+        assertThat(startsInTheMiddle.limitDuration(hours(2)), equalTo(zero()));
     }
 
     private Matcher<Iterable<PartialDay>> delimitedBy(
