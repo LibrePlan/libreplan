@@ -542,14 +542,14 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public String getAssignedStatus() {
-        if(isSimplifiedAssignedStatusCalculationEnabled()) {
-            if (getSatisfiedResourceAllocations().isEmpty()) {
-                return "unassigned";
-            }
-            return "assigned";
-        }
-        if (getSatisfiedResourceAllocations().isEmpty()) {
+        if (getSumOfHoursAllocated() == 0) {
             return "unassigned";
+        }
+        if(isSimplifiedAssignedStatusCalculationEnabled()) {
+            //simplified calculation has only two states:
+            //unassigned, which was checked previously, and
+            //assigned otherwise
+            return "assigned";
         }
         for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
             final ResourcesPerDay resourcesPerDay = resourceAllocation.getResourcesPerDay();
