@@ -991,4 +991,9 @@ public class OrderModel implements IOrderModel {
         order.useSchedulingDataFor(scenarioManager.getCurrent());
     }
 
+    @Override
+    public void setForwardScheduling(boolean forwardScheduling) {
+        order.setForwardScheduling(forwardScheduling);
+    }
+
 }

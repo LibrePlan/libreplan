@@ -125,4 +125,6 @@ public interface IOrderModel {
 
     void useSchedulingDataForCurrentScenario(Order order);
 
+    void setForwardScheduling(boolean equals);
+
 }

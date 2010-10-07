@@ -110,6 +110,7 @@
                 <property name="totalHours" access="field" />
                 <property name="customerReference" access="field" />
                 <property name="externalCode" access="field" />
+                <property name="forwardScheduling" />
 
                 <property name="state" access="field" >
                     <type name="org.hibernate.type.EnumType">

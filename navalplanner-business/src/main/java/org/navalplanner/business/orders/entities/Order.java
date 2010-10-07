@@ -99,6 +99,8 @@ public class Order extends OrderLineGroup {
 
     private CurrentVersionInfo currentVersionInfo;
 
+    private boolean forwardScheduling = true;
+
     public static class CurrentVersionInfo {
 
         private final OrderVersion orderVersion;
@@ -494,6 +496,14 @@ public class Order extends OrderLineGroup {
             }
         }
         return false;
+    }
+
+    public boolean isForwardScheduling() {
+        return forwardScheduling;
+    }
+
+    public void setForwardScheduling(boolean forwardScheduling) {
+        this.forwardScheduling = forwardScheduling;
     }
 
 }

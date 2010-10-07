@@ -87,6 +87,8 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
@@ -239,7 +241,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
-
         checkCreationPermissions();
     }
 
@@ -838,6 +839,19 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         prepareEditWindow();
         showEditWindow(_("Edit order"));
+        initSchedulingStrategyRadioGroup();
+    }
+
+    private void initSchedulingStrategyRadioGroup() {
+        final Radiogroup rgSchedulingStrategy = (Radiogroup) editWindow.getFellowIfAny("rgSchedulingStrategy");
+        rgSchedulingStrategy.addEventListener(Events.ON_CHECK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Radio selected = rgSchedulingStrategy.getSelectedItem();
+                orderModel.setForwardScheduling("forward".equals(selected.getValue()));
+            }
+
+        });
     }
 
     private void resetTabControllers() {
