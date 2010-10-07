@@ -718,7 +718,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             if (associatedTaskElement != null
                     && STATUS_VISUALIZED.contains(order.getState())
                     && (predicate == null || predicate.accepts(order))) {
-                associatedTaskElement.setAssignedStatusDisabled(true);
+                associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
                 ordersToShow.add(order);
             }

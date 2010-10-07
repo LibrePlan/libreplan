@@ -136,7 +136,7 @@ public abstract class TaskElement extends BaseEntity {
 
     private BigDecimal advancePercentage = BigDecimal.ZERO;
 
-    private Boolean assignedStatusDisabled = false;
+    private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
     public void initializeEndDateIfDoesntExist() {
         if (getEndDate() == null) {
@@ -533,17 +533,20 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    public Boolean isAssignedStatusDisabled() {
-        return assignedStatusDisabled;
+    public Boolean isSimplifiedAssignedStatusCalculationEnabled() {
+        return simplifiedAssignedStatusCalculationEnabled;
     }
 
-    public void setAssignedStatusDisabled(Boolean disabled) {
-        this.assignedStatusDisabled = disabled;
+    public void setSimplifiedAssignedStatusCalculationEnabled(Boolean enabled) {
+        this.simplifiedAssignedStatusCalculationEnabled = enabled;
     }
 
     public String getAssignedStatus() {
-        if(isAssignedStatusDisabled()) {
-            return "unassigned";
+        if(isSimplifiedAssignedStatusCalculationEnabled()) {
+            if (getSatisfiedResourceAllocations().isEmpty()) {
+                return "unassigned";
+            }
+            return "assigned";
         }
         if (getSatisfiedResourceAllocations().isEmpty()) {
             return "unassigned";
