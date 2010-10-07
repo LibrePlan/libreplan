@@ -267,17 +267,23 @@ public class CriterionTreeModel implements ICriterionTreeModel {
         removeNodeImpl(node);
     }
 
-    private void removeNodeImpl(CriterionDTO criterion) {
-        if (criterion == tree.getRoot()) {
+    private void removeNodeImpl(CriterionDTO criterionDto) {
+        if (criterionDto == tree.getRoot()) {
             return;
         }
-        CriterionDTO parent = criterion.getParent();
-        if(parent == criterionRootDTO){
-            criterionRootDTO.getChildren().remove(criterion);
-        }else{
-            parent.getChildren().remove(criterion);
+        CriterionDTO parentDto = criterionDto.getParent();
+        if (parentDto == criterionRootDTO) {
+            criterionRootDTO.getChildren().remove(criterionDto);
+        } else {
+            parentDto.getChildren().remove(criterionDto);
         }
-        tree.remove(criterion);
+
+        Criterion parent = criterionDto.getCriterion().getParent();
+        if ((parent != null) && (!parent.getChildren().isEmpty())) {
+            parent.getChildren().remove(criterionDto.getCriterion());
+        }
+
+        tree.remove(criterionDto);
     }
 
     public int[] getPath(Criterion criterion) {

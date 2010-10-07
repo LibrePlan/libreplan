@@ -237,4 +237,17 @@ public class CriterionsModel implements ICriterionsModel {
                 + criterionDAO.numberOfRelatedSatisfactions(criterion);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDeletable(Criterion criterion) {
+        return criterion.isNewObject()
+                || (criterion.getChildren().isEmpty() && (numberOfRelatedEntities(criterion) == 0));
+    }
+
+
+    @Override
+    public void addForRemoval(Criterion criterion) {
+        criterionType.getCriterions().remove(criterion);
+    }
+
 }
