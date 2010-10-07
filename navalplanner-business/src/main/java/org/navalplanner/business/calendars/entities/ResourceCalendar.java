@@ -79,16 +79,6 @@ public class ResourceCalendar extends BaseCalendar {
         return multiplyByCapacity(super.getCapacityOn(date));
     }
 
-    protected Integer multiplyByCapacity(Integer duration) {
-        if (duration == null) {
-            return 0;
-        }
-        if (capacity == null) {
-            return duration;
-        }
-        return duration * capacity;
-    }
-
     protected EffortDuration multiplyByCapacity(EffortDuration duration) {
         if (duration == null) {
             return EffortDuration.zero();
