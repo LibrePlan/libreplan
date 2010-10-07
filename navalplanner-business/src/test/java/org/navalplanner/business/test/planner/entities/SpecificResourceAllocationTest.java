@@ -57,6 +57,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class SpecificResourceAllocationTest {
@@ -81,10 +82,15 @@ public class SpecificResourceAllocationTest {
         this.calendar = createNiceMock(ResourceCalendar.class);
         expect(this.calendar.getCapacityOn(isA(LocalDate.class)))
                 .andReturn(EffortDuration.hours(hours)).anyTimes();
+        IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
         expect(
                 this.calendar.asDurationOn(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andAnswer(
-                asDurationOnAnswer(hours(hours))).anyTimes();
+                        isA(ResourcesPerDay.class)))
+                .andAnswer(asDurationAnswer).anyTimes();
+        expect(
+                this.calendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class)))
+                .andAnswer(asDurationAnswer).anyTimes();
         expect(this.calendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
@@ -134,8 +140,14 @@ public class SpecificResourceAllocationTest {
 
             @Override
             public Integer answer() throws Throwable {
-                LocalDate date = (LocalDate) EasyMock
+                Object argument = EasyMock
                         .getCurrentArguments()[0];
+                LocalDate date;
+                if (argument instanceof LocalDate) {
+                    date = (LocalDate) argument;
+                }else{
+                    date = ((PartialDay) argument).getDate();
+                }
                 int hours;
                 if (answersForDates.containsKey(date)) {
                     hours = answersForDates.get(date);
@@ -155,6 +167,10 @@ public class SpecificResourceAllocationTest {
                 this.calendar.asDurationOn(isA(LocalDate.class),
                         isA(ResourcesPerDay.class))).andAnswer(
                 effortAnswer).anyTimes();
+        expect(
+                this.calendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class))).andAnswer(effortAnswer)
+                .anyTimes();
         expect(this.calendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);

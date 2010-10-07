@@ -90,6 +90,11 @@ public abstract class CombinedWorkHours implements ICalendar {
 
     @Override
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
+        return asDurationOn(PartialDay.wholeDay(day), amount);
+    }
+
+    @Override
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
         EffortDuration result = null;
         for (ICalendar each : calendars) {
             result = result == null ? each.asDurationOn(day, amount)

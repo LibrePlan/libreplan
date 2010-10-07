@@ -891,10 +891,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     @Override
     public EffortDuration asDurationOn(LocalDate day,
             ResourcesPerDay resourcesPerDay) {
-        final EffortDuration workableHours = getWorkableTimeAt(day);
-        return limitOverAssignability(day,
-                resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
-                workableHours);
+        return asDurationOn(PartialDay.wholeDay(day), resourcesPerDay);
+    }
+
+    @Override
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
+        EffortDuration workableDuration = day
+                .limitDuration(getWorkableTimeAt(day.getDate()));
+        EffortDuration asDuration = amount
+                .asDurationGivenWorkingDayOf(workableDuration);
+        return limitOverAssignability(day.getDate(), asDuration,
+                workableDuration);
     }
 
     private EffortDuration limitOverAssignability(LocalDate day,

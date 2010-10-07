@@ -38,6 +38,16 @@ public interface ICalendar {
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount);
 
     /**
+     * Translates the received amount into the corresponding duration at the
+     * given date. It takes into account the partial capacity of the day.
+     *
+     * @param day
+     * @param amount
+     * @return
+     */
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount);
+
+    /**
      * Calculates the capacity duration at a given date. It means all the time
      * that could be worked without having overtime
      *
