@@ -223,7 +223,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public Date getConsolidatedline() {
+    public GanttDate getConsolidatedline() {
         return null;
     }
 

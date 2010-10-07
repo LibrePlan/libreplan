@@ -321,7 +321,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public Date getConsolidatedline() {
+    public GanttDate getConsolidatedline() {
         return fundamentalProperties.getConsolidatedline();
     }
 

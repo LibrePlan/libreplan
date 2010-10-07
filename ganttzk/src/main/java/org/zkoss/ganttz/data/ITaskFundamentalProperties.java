@@ -50,7 +50,7 @@ public interface ITaskFundamentalProperties {
 
     public void setDeadline(Date date);
 
-    public Date getConsolidatedline();
+    public GanttDate getConsolidatedline();
 
     public GanttDate getEndDate();
 

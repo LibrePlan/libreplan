@@ -460,7 +460,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
         if (task.getConsolidatedline() != null) {
             int pixels = getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getConsolidatedline()))
+                    LocalDate.fromDateFields(task.getConsolidatedline()
+                            .toDateApproximation()))
                     - CONSOLIDATED_MARK_HALF_WIDTH;
             String position = pixels + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));

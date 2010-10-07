@@ -648,17 +648,13 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getConsolidatedline() {
+        public GanttDate getConsolidatedline() {
             if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
                 return null;
             }
             LocalDate consolidatedline = ((Task) taskElement)
                     .getFirstDayNotConsolidated();
-            if (consolidatedline == null) {
-                return null;
-            }
-            return consolidatedline.toDateTimeAtStartOfDay()
-                    .toDate();
+            return toGantt(consolidatedline);
         }
 
         @Override

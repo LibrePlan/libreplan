@@ -332,7 +332,7 @@ public class TimeTracker {
                 task.getDeadline());
         // the last consolidated value could be before the start
         if (task.getConsolidatedline() != null) {
-            start = min(start, task.getConsolidatedline());
+            start = min(start, task.getConsolidatedline().toDateApproximation());
         }
         return new LocalDate(start).minusWeeks(2);
     }
