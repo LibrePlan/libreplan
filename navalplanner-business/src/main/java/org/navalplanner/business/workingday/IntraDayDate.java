@@ -148,9 +148,14 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
     /**
      * It's an interval of {@link IntraDayDate}. It allows to know how much
-     * effort can be spent in this day.
+     * effort can be spent in this day
      */
     public static class PartialDay {
+
+        public static PartialDay wholeDay(LocalDate date) {
+            return new PartialDay(IntraDayDate.startOfDay(date),
+                    IntraDayDate.startOfDay(date.plusDays(1)));
+        }
 
         private final IntraDayDate start;
         private final IntraDayDate end;
