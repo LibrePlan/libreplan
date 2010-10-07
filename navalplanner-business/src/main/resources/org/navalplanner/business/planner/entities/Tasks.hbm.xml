@@ -24,6 +24,7 @@
             <property name="effortDuration" column="endDayDuration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
+        <property name="workableDays" column="WORKABLE_DAYS" scale="2"/>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
         <property name="advancePercentage" column="ADVANCE_PERCENTAGE" access="field" scale="4"/>
 
