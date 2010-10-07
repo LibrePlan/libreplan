@@ -244,7 +244,11 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public String toString() {
-        return getHours() + ":" + getMinutes() + ":" + getSeconds();
+        EnumMap<Granularity, Integer> valuesForEachUnit = decompose();
+        Integer hours = valuesForEachUnit.get(Granularity.HOURS);
+        Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
+        Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
+        return hours + ":" + minutes + ":" + seconds;
     }
 
 }
