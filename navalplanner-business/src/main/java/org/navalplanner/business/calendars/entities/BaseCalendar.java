@@ -23,7 +23,6 @@ package org.navalplanner.business.calendars.entities;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -900,8 +899,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         if (overAssignable) {
             return effortInitiallyCalculated;
         } else {
-            return Collections.min(Arrays.asList(effortInitiallyCalculated,
-                    multiplyByCapacity(workableHoursAtDay)));
+            return EffortDuration.min(effortInitiallyCalculated,
+                    multiplyByCapacity(workableHoursAtDay));
         }
     }
 
