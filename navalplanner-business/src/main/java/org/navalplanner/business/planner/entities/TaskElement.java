@@ -259,16 +259,6 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     /**
-     * @see #moveTo(Scenario, IntraDayDate)
-     */
-    public void moveTo(Scenario scenario, LocalDate newStartDate) {
-        if (newStartDate == null) {
-            return;
-        }
-        moveTo(scenario, IntraDayDate.startOfDay(newStartDate));
-    }
-
-    /**
      * Sets the startDate to newStartDate. It can update the endDate
      *
      * @param scenario
