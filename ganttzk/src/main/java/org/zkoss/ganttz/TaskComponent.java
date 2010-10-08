@@ -490,7 +490,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 widthHoursAdvancePercentage));
 
         String widthAdvancePercentage = getMapper().toPixels(
-                fromStartUntil(this.task.getHoursAdvanceEndDate()))
+                fromStartUntil(this.task.getAdvanceEndDate()))
                 + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
