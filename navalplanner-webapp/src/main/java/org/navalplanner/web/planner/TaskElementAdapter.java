@@ -216,7 +216,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date toDateApproximation() {
+        public Date toDayRoundedDate() {
             return date.toDateTimeAtStartOfDay().toDate();
         }
 
@@ -322,7 +322,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 Integer hours = taskElement.getSumOfHoursAllocated();
 
                 if (hours == 0) {
-                    return getBeginDate().toDateApproximation();
+                    return getBeginDate().toDayRoundedDate();
                 } else {
                     BigDecimal percentage = new BigDecimal(assignedHours)
                             .setScale(2).divide(new BigDecimal(hours),
@@ -387,12 +387,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
             if (advancePercentage.compareTo(BigDecimal.ZERO) == 0) {
-                return new LocalDate(getBeginDate().toDateApproximation());
+                return new LocalDate(getBeginDate().toDayRoundedDate());
             }
             Long totalMillis = taskElement.getLengthMilliseconds();
             Long advanceMillis = advancePercentage.multiply(
                     new BigDecimal(totalMillis)).longValue();
-            return new LocalDate(getBeginDate().toDateApproximation().getTime()
+            return new LocalDate(getBeginDate().toDayRoundedDate().getTime()
                     + advanceMillis).plusDays(1);
         }
 

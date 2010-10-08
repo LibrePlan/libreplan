@@ -87,8 +87,11 @@ public abstract class GanttDate implements Comparable<GanttDate> {
 
     public abstract <R> R byCases(ICases<R> cases);
 
-    // TODO remove this method
-    public abstract Date toDateApproximation();
+    /**
+     * Converts this {@link GanttDate} to a date that is the start of the day
+     * represented by this {@link GanttDate}
+     */
+    public abstract Date toDayRoundedDate();
 
     public static class LocalDateBased extends GanttDate {
 
@@ -124,7 +127,7 @@ public abstract class GanttDate implements Comparable<GanttDate> {
         }
 
         @Override
-        public Date toDateApproximation() {
+        public Date toDayRoundedDate() {
             return localDate.toDateTimeAtStartOfDay().toDate();
         }
 

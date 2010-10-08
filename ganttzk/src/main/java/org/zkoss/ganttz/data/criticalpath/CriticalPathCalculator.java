@@ -76,7 +76,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
             return null;
         }
         GanttDate ganttDate = Collections.min(getStartDates());
-        return LocalDate.fromDateFields(ganttDate.toDateApproximation());
+        return LocalDate.fromDateFields(ganttDate.toDayRoundedDate());
     }
 
     private List<GanttDate> getStartDates() {
@@ -173,7 +173,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                     .plusDays(earliestStart));
             date = constraint.applyTo(date);
             earliestStart = Days.daysBetween(initDate,
-                    LocalDate.fromDateFields(date.toDateApproximation()))
+                    LocalDate.fromDateFields(date.toDayRoundedDate()))
                     .getDays();
         }
         node.setEarliestStart(earliestStart);
@@ -247,7 +247,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
             GanttDate date = GanttDate.createFrom(initDate.plusDays(latestFinish - duration));
             date = constraint.applyTo(date);
             int daysBetween = Days.daysBetween(initDate,
-                    LocalDate.fromDateFields(date.toDateApproximation()))
+                    LocalDate.fromDateFields(date.toDayRoundedDate()))
                     .getDays();
             latestFinish = daysBetween + duration;
         }

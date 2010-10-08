@@ -354,7 +354,7 @@ public class TaskComponent extends Div implements AfterCompose {
     void doUpdateSize(String size) {
         int pixels = stripPx(size);
         DateTime end = new DateTime(this.task.getBeginDate()
-                .toDateApproximation().getTime()).plus(getMapper().toDuration(
+                .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
                 pixels));
         this.task.resizeTo(end.toLocalDate());
         updateWidth();
@@ -461,7 +461,7 @@ public class TaskComponent extends Div implements AfterCompose {
         if (task.getConsolidatedline() != null) {
             int pixels = getMapper().toPixels(
                     LocalDate.fromDateFields(task.getConsolidatedline()
-                            .toDateApproximation()))
+                            .toDayRoundedDate()))
                     - CONSOLIDATED_MARK_HALF_WIDTH;
             String position = pixels + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));
@@ -498,7 +498,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private Duration fromStartUntil(Date until) {
         DateTime start = new DateTime(this.task.getBeginDate()
-                .toDateApproximation().getTime());
+                .toDayRoundedDate().getTime());
         DateTime end = new DateTime(until.getTime());
         Duration duration = end.isAfter(start) ? new Duration(start, end)
                 : Duration.ZERO;

@@ -399,25 +399,25 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             getNameBox().setTooltiptext(task.getName());
 
             getStartDateBox().setValue(
-                    task.getBeginDate().toDateApproximation());
+                    task.getBeginDate().toDayRoundedDate());
             getStartDateBox().setDisabled(!canChangeStartDate());
             getStartDateTextBox().setDisabled(!canChangeStartDate());
 
-            getEndDateBox().setValue(task.getEndDate().toDateApproximation());
+            getEndDateBox().setValue(task.getEndDate().toDayRoundedDate());
             getEndDateBox().setDisabled(!canChangeEndDate());
             getEndDateTextBox().setDisabled(!canChangeEndDate());
 
             getStartDateTextBox().setValue(
-                    asString(task.getBeginDate().toDateApproximation()));
+                    asString(task.getBeginDate().toDayRoundedDate()));
             getEndDateTextBox().setValue(
-                    asString(task.getEndDate().toDateApproximation()));
+                    asString(task.getEndDate().toDayRoundedDate()));
         } else {
             nameLabel.setValue(task.getName());
             nameLabel.setTooltiptext(task.getName());
             startDateLabel.setValue(asString(task.getBeginDate()
-                    .toDateApproximation()));
+                    .toDayRoundedDate()));
             endDateLabel.setValue(asString(task.getEndDate()
-                    .toDateApproximation()));
+                    .toDayRoundedDate()));
         }
     }
 

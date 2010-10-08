@@ -113,9 +113,9 @@ public class CriticalPathCalculatorTest {
 
     private int daysBetweenStartAndEnd(ITaskFundamentalProperties task) {
         LocalDate start = LocalDate.fromDateFields(task.getBeginDate()
-                .toDateApproximation());
+                .toDayRoundedDate());
         LocalDate end = LocalDate.fromDateFields(task.getEndDate()
-                .toDateApproximation());
+                .toDayRoundedDate());
         return Days.daysBetween(start, end).getDays();
     }
 

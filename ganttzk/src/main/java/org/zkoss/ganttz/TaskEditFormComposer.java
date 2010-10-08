@@ -97,8 +97,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         TaskDTO result = new TaskDTO();
 
         result.name = task.getName();
-        result.beginDate = task.getBeginDate().toDateApproximation();
-        result.endDate = task.getEndDate().toDateApproximation();
+        result.beginDate = task.getBeginDate().toDayRoundedDate();
+        result.endDate = task.getEndDate().toDayRoundedDate();
         result.notes = task.getNotes();
         result.deadlineDate = task.getDeadline();
 

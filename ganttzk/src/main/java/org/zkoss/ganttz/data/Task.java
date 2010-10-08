@@ -183,13 +183,13 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public long getLengthMilliseconds() {
-        return getEndDate().toDateApproximation().getTime()
-                - getBeginDate().toDateApproximation().getTime();
+        return getEndDate().toDayRoundedDate().getTime()
+                - getBeginDate().toDayRoundedDate().getTime();
     }
 
     public ReadableDuration getLength() {
-        return new Duration(getBeginDate().toDateApproximation().getTime(),
-                getEndDate().toDateApproximation().getTime());
+        return new Duration(getBeginDate().toDayRoundedDate().getTime(),
+                getEndDate().toDayRoundedDate().getTime());
     }
 
     public void addVisibilityPropertiesChangeListener(
@@ -387,7 +387,7 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public LocalDate getBeginDateAsLocalDate() {
-        return LocalDate.fromDateFields(getBeginDate().toDateApproximation());
+        return LocalDate.fromDateFields(getBeginDate().toDayRoundedDate());
     }
 
 }

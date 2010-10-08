@@ -74,7 +74,7 @@ public enum DependencyType {
         @Override
         public Date calculateStartDestinyTask(Task originalTask,
                 Date current) {
-            return getBigger(originalTask.getEndDate().toDateApproximation(),
+            return getBigger(originalTask.getEndDate().toDayRoundedDate(),
                     current);
         }
 
@@ -104,7 +104,7 @@ public enum DependencyType {
 
         @Override
         public Date calculateStartDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getBeginDate().toDateApproximation(),
+            return getBigger(originTask.getBeginDate().toDayRoundedDate(),
                     current);
         }
 
@@ -128,7 +128,7 @@ public enum DependencyType {
 
         @Override
         public Date calculateEndDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getEndDate().toDateApproximation(),
+            return getBigger(originTask.getEndDate().toDayRoundedDate(),
                     current);
         }
 
