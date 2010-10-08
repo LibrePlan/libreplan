@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
@@ -723,6 +724,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 ordersToShow.add(order);
             }
         }
+        Collections.sort(result,new Comparator<TaskElement>(){
+            @Override
+            public int compare(TaskElement arg0, TaskElement arg1) {
+                return arg0.getStartDate().compareTo(arg1.getStartDate());
+            }
+        });
         setDefaultFilterValues(ordersToShow);
         return result;
     }
