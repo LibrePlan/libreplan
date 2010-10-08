@@ -129,6 +129,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return Collections
                         .singletonList(biggerOrEqualThan(toGantt(startConstraint
                                 .getConstraintDate())));
+            case AS_LATE_AS_POSSIBLE:
+                return Collections.emptyList();
+            case FINISH_NOT_LATER_THAN:
+                return Collections.emptyList();
             default:
                 throw new RuntimeException("can't handle " + constraintType);
             }
