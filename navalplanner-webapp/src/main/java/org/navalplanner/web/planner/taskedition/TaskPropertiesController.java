@@ -294,8 +294,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
         TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
-        startConstraintDate.setValue(taskStartConstraint.getConstraintDate()
-                .toDateTimeAtStartOfDay().toDate());
+        startConstraintDate.setValue(taskStartConstraint.getConstraintDateAsDate());
     }
 
     private boolean saveConstraintChanges() {

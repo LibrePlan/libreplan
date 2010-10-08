@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.Date;
+
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
@@ -39,6 +41,11 @@ public class TaskStartConstraint {
     public StartConstraintType getStartConstraintType() {
         return startConstraintType != null ? startConstraintType
                 : StartConstraintType.AS_SOON_AS_POSSIBLE;
+    }
+
+    public Date getConstraintDateAsDate() {
+        return constraintDate != null ? constraintDate.toDateTimeAtStartOfDay()
+                .toDate() : null;
     }
 
     public void explicityMovedTo(LocalDate date) {
