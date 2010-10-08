@@ -23,6 +23,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.zkoss.ganttz.IDatesMapper;
 
 /**
  * @author Óscar González Fernández
@@ -93,6 +94,8 @@ public abstract class GanttDate implements Comparable<GanttDate> {
      */
     public abstract Date toDayRoundedDate();
 
+    public abstract int toPixels(IDatesMapper datesMapper);
+
     public static class LocalDateBased extends GanttDate {
 
         private final LocalDate localDate;
@@ -150,6 +153,11 @@ public abstract class GanttDate implements Comparable<GanttDate> {
         @Override
         public int hashCode() {
             return localDate.hashCode();
+        }
+
+        @Override
+        public int toPixels(IDatesMapper datesMapper) {
+            return datesMapper.toPixels(localDate);
         }
 
     }

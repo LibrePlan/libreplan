@@ -38,9 +38,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.joda.time.Seconds;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
@@ -64,11 +69,14 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
@@ -152,10 +160,19 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public static GanttDate toGantt(IntraDayDate date) {
+        return toGantt(date, null);
+    }
+
+    public static GanttDate toGantt(IntraDayDate date,
+            EffortDuration dayCapacity) {
         if (date == null) {
             return null;
         }
-        return new GanttDateAdapter(date);
+        if (dayCapacity == null) {
+            // a sensible default
+            dayCapacity = EffortDuration.hours(8);
+        }
+        return new GanttDateAdapter(date, dayCapacity);
     }
 
     public static GanttDate toGantt(LocalDate date) {
@@ -193,10 +210,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     static class GanttDateAdapter extends CustomDate {
 
-        private final IntraDayDate date;
+        private static final int DAY_MILLISECONDS = (int) Days.days(1)
+                .toStandardDuration().getMillis();
 
-        GanttDateAdapter(IntraDayDate date) {
+        private final IntraDayDate date;
+        private final Duration workingDayDuration;
+
+        GanttDateAdapter(IntraDayDate date, EffortDuration capacityForDay) {
             this.date = date;
+            this.workingDayDuration = toMilliseconds(capacityForDay);
         }
 
         protected int compareToCustom(CustomDate customType) {
@@ -233,6 +255,40 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public int hashCode() {
             return date.hashCode();
         }
+
+        @Override
+        public int toPixels(IDatesMapper datesMapper) {
+            int pixesUntilDate = datesMapper.toPixels(this.date.getDate());
+            EffortDuration effortDuration = date.getEffortDuration();
+            Duration durationInDay = calculateDurationInDayFor(effortDuration);
+            int pixelsInsideDay = datesMapper.toPixels(durationInDay);
+            return pixesUntilDate + pixelsInsideDay;
+        }
+
+        private Duration calculateDurationInDayFor(EffortDuration effortDuration) {
+            if (workingDayDuration.getStandardSeconds() == 0) {
+                return Duration.ZERO;
+            }
+            Fraction fraction = fractionOfWorkingDayFor(effortDuration);
+            return new Duration(fraction.multiplyBy(
+                    Fraction.getFraction(DAY_MILLISECONDS, 1)).intValue());
+        }
+
+        @SuppressWarnings("unchecked")
+        private Fraction fractionOfWorkingDayFor(EffortDuration effortDuration) {
+            Duration durationInDay = toMilliseconds(effortDuration);
+            // cast to int is safe because there are not enough seconds in day
+            // to overflow
+            Fraction fraction = Fraction.getFraction(
+                    (int) durationInDay.getStandardSeconds(),
+                    (int) workingDayDuration.getStandardSeconds());
+            return Collections.min(Arrays
+                    .asList(fraction, Fraction.ONE));
+        }
+
+        private static Duration toMilliseconds(EffortDuration duration) {
+            return Seconds.seconds(duration.getSeconds()).toStandardDuration();
+        }
     }
 
     private class TaskElementWrapper implements ITaskFundamentalProperties {
@@ -268,7 +324,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public GanttDate getBeginDate() {
-            return toGantt(taskElement.getIntraDayStartDate());
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            return toGantt(start);
+        }
+
+        private GanttDate toGantt(IntraDayDate start) {
+            BaseCalendar calendar = taskElement.getCalendar();
+            if (calendar == null) {
+                return TaskElementAdapter.toGantt(start);
+            }
+            return TaskElementAdapter.toGantt(start, calendar
+                    .getCapacityOn(PartialDay.wholeDay(start.getDate())));
         }
 
         @Override
@@ -657,7 +723,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
             LocalDate consolidatedline = ((Task) taskElement)
                     .getFirstDayNotConsolidated().getDate();
-            return toGantt(consolidatedline);
+            return TaskElementAdapter.toGantt(consolidatedline);
         }
 
         @Override

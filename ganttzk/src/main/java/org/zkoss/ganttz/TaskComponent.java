@@ -429,8 +429,7 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         setLeft("0");
-        setLeft(getMapper().toPixels(this.task.getBeginDateAsLocalDate())
-                + "px");
+        setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
         DependencyList dependencyList = getDependencyList();
@@ -444,7 +443,10 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateWidth() {
         setWidth("0");
-        setWidth(getMapper().toPixels(this.task.getLength()) + "px");
+        int pixelsEnd = this.task.getEndDate().toPixels(getMapper());
+        int pixelsStart = this.task.getBeginDate().toPixels(getMapper());
+
+        setWidth((pixelsEnd - pixelsStart) + "px");
     }
 
     private void updateDeadline() {
