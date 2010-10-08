@@ -532,16 +532,20 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public String getAssignedStatus() {
-        if (getSumOfHoursAllocated() == 0) {
-            return "unassigned";
-        }
         if(isSimplifiedAssignedStatusCalculationEnabled()) {
             //simplified calculation has only two states:
-            //unassigned, which was checked previously, and
+            //unassigned, when hours allocated is zero, and
             //assigned otherwise
+            if (getSumOfHoursAllocated() == 0) {
+                return "unassigned";
+            }
             return "assigned";
         }
-        for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
+        Set<ResourceAllocation<?>> resourceAllocations = getSatisfiedResourceAllocations();
+        if (resourceAllocations.isEmpty()) {
+            return "unassigned";
+        }
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             final ResourcesPerDay resourcesPerDay = resourceAllocation.getResourcesPerDay();
             if (resourcesPerDay != null && resourcesPerDay.isZero()) {
                 return "partially-assigned";
