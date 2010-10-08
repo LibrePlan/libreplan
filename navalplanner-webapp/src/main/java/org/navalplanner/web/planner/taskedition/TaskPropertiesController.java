@@ -103,6 +103,28 @@ public class TaskPropertiesController extends GenericForwardComposer {
             public String getName() {
                 return _("START_IN_FIXED_DATE");
             }
+        },
+        FINISH_NOT_LATER_THAN(StartConstraintType.FINISH_NOT_LATER_THAN) {
+            @Override
+            public String getDescription() {
+                return _("finish not later than");
+            }
+
+            @Override
+            public String getName() {
+                return _("FINISH_NOT_LATER_THAN");
+            }
+        },
+        AS_LATE_AS_POSSIBLE(StartConstraintType.AS_LATE_AS_POSSIBLE) {
+            @Override
+            public String getDescription() {
+                return _("as late as possible");
+            }
+
+            @Override
+            public String getName() {
+                return _("AS_LATE_AS_POSSIBLE");
+            }
         };
 
         public static void appendItems(Combobox combo) {

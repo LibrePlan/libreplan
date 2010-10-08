@@ -41,6 +41,18 @@ public enum StartConstraintType {
         public StartConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
+    },
+    AS_LATE_AS_POSSIBLE(false) {
+        @Override
+        public StartConstraintType newTypeAfterMoved() {
+            return FINISH_NOT_LATER_THAN;
+        }
+    },
+    FINISH_NOT_LATER_THAN(true) {
+        @Override
+        public StartConstraintType newTypeAfterMoved() {
+            return FINISH_NOT_LATER_THAN;
+        }
     };
 
     private boolean dateRequired;
