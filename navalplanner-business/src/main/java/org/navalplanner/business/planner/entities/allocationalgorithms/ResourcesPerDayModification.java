@@ -41,6 +41,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class ResourcesPerDayModification extends
@@ -71,7 +72,7 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
                 EffortDuration limit) {
             return genericAllocation.createAssignmentsAtDay(getResources(),
                     day, getGoal(), limit);
@@ -123,7 +124,7 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
                 EffortDuration limit) {
             return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
                     limit);
@@ -209,14 +210,14 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);
 
-    public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
+    public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
             EffortDuration limit);
 
     public abstract AvailabilityTimeLine getAvailability();
 
-    public boolean isDayFilled(LocalDate lastDate, EffortDuration taken) {
+    public boolean isDayFilled(LocalDate day, EffortDuration taken) {
         return getBeingModified().getAllocationCalendar()
-                .asDurationOn(lastDate, goal).equals(taken);
+                .asDurationOn(PartialDay.wholeDay(day), goal).equals(taken);
     }
 
 }

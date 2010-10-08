@@ -276,4 +276,8 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return Arrays.toString(new Object[] { date, effortDuration });
     }
 
+    public IntraDayDate nextDayAtStart() {
+        return IntraDayDate.startOfDay(getDate().plusDays(1));
+    }
+
 }

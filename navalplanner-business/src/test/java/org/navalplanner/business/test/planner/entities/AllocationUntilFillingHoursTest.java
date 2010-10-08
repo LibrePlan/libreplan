@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -55,7 +56,7 @@ public class AllocationUntilFillingHoursTest {
 
     private Task task;
 
-    private LocalDate startDate;
+    private IntraDayDate startDate;
 
     @Test(expected = IllegalArgumentException.class)
     public void allTasksOfAllocationsMustBeNotNull() {
@@ -80,7 +81,7 @@ public class AllocationUntilFillingHoursTest {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         IntraDayDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(32);
-        assertThat(endDate.getDate(), equalTo(startDate.plusDays(2)));
+        assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(2)));
         assertTrue(endDate.isStartOfDay());
     }
 
@@ -89,7 +90,7 @@ public class AllocationUntilFillingHoursTest {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         IntraDayDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(31);
-        assertThat(endDate.getDate(), equalTo(startDate.plusDays(1)));
+        assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(1)));
         assertThat(endDate.getEffortDuration(), equalTo(hours(15)));
     }
 
@@ -123,6 +124,18 @@ public class AllocationUntilFillingHoursTest {
     }
 
     @Test
+    public void theResourcesPerDayIsCalculatedCorrectlyIfTheStartIsInTheMiddleOfADay() {
+        givenStartDate(IntraDayDate.create(new LocalDate(2009, 10, 10),
+                EffortDuration.hours(2)));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(8);
+        ResourceAllocation<?> allocation = allocations.get(0)
+                .getBeingModified();
+        assertThat(allocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
     public void theResourcesPerDayAreKeptCorrectlyCalculatedAfterUpdatingTheEndInterval() {
         final ResourcesPerDay oneResourcePerDay = ResourcesPerDay.amount(1);
         givenSpecificAllocations(oneResourcePerDay);
@@ -131,14 +144,15 @@ public class AllocationUntilFillingHoursTest {
                 .get(0)
                 .getBeingModified();
         // hours per day: 8, 8, 8, 6
-        allocation.onInterval(startDate, startDate.plusDays(1))
+        allocation.onInterval(startDate.getDate(),
+                startDate.getDate().plusDays(1))
                 .allocateHours(6);
         // hours per day: 6, 8, 8, 6
         assertTrue(allocation.getResourcesPerDay().getAmount()
                 .compareTo(oneResourcePerDay.getAmount()) < 0);
 
-        allocation.onInterval(startDate.plusDays(3), startDate.plusDays(4))
-                .allocateHours(8);
+        allocation.onInterval(startDate.getDate().plusDays(3),
+                startDate.getDate().plusDays(4)).allocateHours(8);
         // hours per day: 6, 8, 8, 8
         assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));
         // This last assertion is questionable. A solution would be to keep a
@@ -146,14 +160,16 @@ public class AllocationUntilFillingHoursTest {
         // the user and then the real values. In the meantime doing an effort to
         // keep the original value
 
-        allocation.onInterval(startDate.plusDays(4), startDate.plusDays(5))
+        allocation.onInterval(startDate.getDate().plusDays(4),
+                startDate.getDate().plusDays(5))
                 .allocateHours(8);
         // hours per day: 6, 8, 8, 8, 8
         assertTrue(allocation.getResourcesPerDay().getAmount()
                 .compareTo(oneResourcePerDay.getAmount()) < 0);
 
         // hours per day: 6, 8, 8, 8, 10
-        allocation.onInterval(startDate.plusDays(4), startDate.plusDays(5))
+        allocation.onInterval(startDate.getDate().plusDays(4),
+                startDate.getDate().plusDays(5))
                 .allocateHours(10);
         assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));
     }
@@ -261,22 +277,24 @@ public class AllocationUntilFillingHoursTest {
         return worker;
     }
 
+    private void givenStartDate(IntraDayDate start) {
+        this.startDate = start;
+    }
+
     private void createTaskIfNotCreatedYet() {
         if (task != null) {
             return;
         }
         task = createNiceMock(Task.class);
         if (startDate == null) {
-            startDate = new LocalDate(2009, 10, 10);
+            startDate = IntraDayDate.startOfDay(new LocalDate(2009, 10, 10));
         }
         expect(task.getStartDate()).andReturn(
                 startDate.toDateTimeAtStartOfDay().toDate()).anyTimes();
-        expect(task.getIntraDayStartDate()).andReturn(
-                IntraDayDate.startOfDay(startDate)).anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(startDate).anyTimes();
         expect(task.getCriterions()).andReturn(
                 Collections.<Criterion> emptySet()).anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(
-                IntraDayDate.startOfDay(startDate))
+        expect(task.getFirstDayNotConsolidated()).andReturn(startDate)
                 .anyTimes();
         replay(task);
     }

@@ -52,6 +52,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -470,15 +471,14 @@ public class GenericResourceAllocation extends
     }
 
     public List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
-            LocalDate day, ResourcesPerDay resourcesPerDay,
+            PartialDay day, ResourcesPerDay resourcesPerDay,
             final EffortDuration maxLimit) {
         final EffortDuration durations = min(
                 calculateTotalToDistribute(day, resourcesPerDay), maxLimit);
         GenericAllocation genericAllocation = new GenericAllocation(resources);
         return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
-                day, durations));
+                day.getDate(), durations));
     }
-
 
     @Override
     public List<Resource> getAssociatedResources() {

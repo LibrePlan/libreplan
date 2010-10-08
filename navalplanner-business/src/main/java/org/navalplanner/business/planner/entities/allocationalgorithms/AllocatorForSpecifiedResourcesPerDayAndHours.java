@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
@@ -68,8 +69,8 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
         IntraDayDate currentEnd = start;
         for (EffortPerAllocation each : effortPerAllocation(start.getDate(),
                 effortToAllocate)) {
-            IntraDayDate endCandidate = untilAllocating(start.getDate(),
-                    each.allocation, each.duration);
+            IntraDayDate endCandidate = untilAllocating(start, each.allocation,
+                    each.duration);
             currentEnd = IntraDayDate.max(currentEnd, endCandidate);
             i++;
         }
@@ -90,22 +91,27 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
      * @param effortRemaining
      * @return the moment on which the allocation would be completed
      */
-    private IntraDayDate untilAllocating(LocalDate start,
+    private IntraDayDate untilAllocating(IntraDayDate start,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration effortRemaining) {
         EffortDuration taken = zero();
-        LocalDate lastDate = start;
-        for (LocalDate current = start; effortRemaining.compareTo(zero()) > 0; current = current
-                .plusDays(1)) {
+        IntraDayDate lastDate = start;
+        for (IntraDayDate current = start; effortRemaining.compareTo(zero()) > 0; current = current.nextDayAtStart()) {
             lastDate = current;
             taken = assignForDay(resourcesPerDayModification,
-                    current, effortRemaining);
+                    dayStartingAt(current), effortRemaining);
+            lastDate = IntraDayDate.create(current.getDate(), taken);
             effortRemaining = effortRemaining.minus(taken);
         }
-        if (resourcesPerDayModification.isDayFilled(lastDate, taken)) {
-            return IntraDayDate.startOfDay(lastDate.plusDays(1));
+        if (resourcesPerDayModification.isDayFilled(lastDate.getDate(),
+                taken)) {
+            return lastDate.nextDayAtStart();
         }
-        return IntraDayDate.create(lastDate, taken);
+        return lastDate;
+    }
+
+    private PartialDay dayStartingAt(IntraDayDate start) {
+        return new PartialDay(start, start.nextDayAtStart());
     }
 
     private void setAssignmentsForEachAllocation(IntraDayDate end) {
@@ -133,7 +139,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             ResourcesPerDay resourcesPerDay, List<T> dayAssignments);
 
     protected abstract List<DayAssignment> createAssignmentsAtDay(
-            ResourcesPerDayModification allocation, LocalDate day,
+            ResourcesPerDayModification allocation, PartialDay day,
             EffortDuration limit);
 
     protected abstract boolean thereAreAvailableHoursFrom(LocalDate start,
@@ -144,7 +150,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
     private EffortDuration assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
-            LocalDate day, EffortDuration remaining) {
+            PartialDay day, EffortDuration remaining) {
         List<DayAssignment> newAssignments = createAssignmentsAtDay(
                 resourcesPerDayModification, day, remaining);
         resultAssignments.get(resourcesPerDayModification).addAll(
