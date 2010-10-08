@@ -1399,3 +1399,42 @@ display:none;
 .edit-task-window .message_INFO {
     width:auto;
 }
+
+
+.filtering-area {
+    white-space: nowrap;
+}
+
+.filter-more-options {
+    overflow: visible;
+}
+
+.filter-more-options .z-groupbox-body {
+    width: 900px;
+    left: -780px;
+    position: relative;
+    background-color: #F0FAFF;
+}
+.filter-more-options .z-groupbox-body .z-groupbox-cnt {
+    border-top: solid 1px #B2CCD9 !important;
+}
+
+.filter-more-options .z-groupbox-header {
+    margin-top: 0px;
+}
+.filter-more-options .z-groupbox-br {
+    display: none;
+}
+
+.filter-more-options .z-groupbox-tl  {
+    height: 1px;
+}
+
+.filter-more-options .z-groupbox-hl .z-groupbox-header {
+    padding-bottom: 1px;
+}
+
+.filter-more-options .z-caption .z-caption-l,
+.filter-more-options .z-caption .z-caption-r {
+    font-size:11px;
+}
