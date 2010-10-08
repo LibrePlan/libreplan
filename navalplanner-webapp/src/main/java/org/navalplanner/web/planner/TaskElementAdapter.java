@@ -386,11 +386,14 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
+            if (advancePercentage.compareTo(BigDecimal.ZERO) == 0) {
+                return new LocalDate(getBeginDate().toDateApproximation());
+            }
             Long totalMillis = taskElement.getLengthMilliseconds();
             Long advanceMillis = advancePercentage.multiply(
                     new BigDecimal(totalMillis)).longValue();
             return new LocalDate(getBeginDate().toDateApproximation().getTime()
-                    + advanceMillis);
+                    + advanceMillis).plusDays(1);
         }
 
         @Override
