@@ -25,6 +25,8 @@ import java.util.Iterator;
 import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  *
@@ -78,6 +80,10 @@ public class DateAndHour implements Comparable<DateAndHour> {
 
     public DateTime toDateTime() {
         return date.toDateTimeAtStartOfDay().plusHours(hour);
+    }
+
+    public IntraDayDate toIntraDayDate() {
+        return IntraDayDate.create(date, EffortDuration.hours(hour));
     }
 
     public static DateAndHour Max(DateAndHour arg0, DateAndHour arg1) {

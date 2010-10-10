@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -40,6 +43,9 @@ import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  *
@@ -124,69 +130,46 @@ public class Gap implements Comparable<Gap> {
 
     private Integer calculateHoursInGap(Resource resource, LocalDate startDate,
             int startHour, LocalDate endDate, int endHour) {
+        IntraDayDate intraStart = IntraDayDate.create(startDate,
+                hours(startHour));
+        IntraDayDate intraEnd = IntraDayDate.create(endDate, hours(endHour));
+        return calculateHoursInGap(resource, intraStart, intraEnd);
+    }
 
+    private Integer calculateHoursInGap(Resource resource, IntraDayDate start,
+            IntraDayDate end) {
         final ResourceCalendar calendar = resource.getCalendar();
-
-        int capacityRounded = calendar.getCapacityOn(startDate)
-                .roundToHours();
-        if (startDate.equals(endDate)) {
-            return capacityRounded - Math.max(startHour, endHour);
-        } else {
-            int hoursAtStart = capacityRounded - startHour;
-            int hoursInBetween = calendar.getWorkableHours(startDate
-                    .plusDays(1), endDate.minusDays(1));
-            return hoursAtStart + hoursInBetween + endHour;
+        Iterable<PartialDay> days = start.daysUntil(end);
+        EffortDuration result = zero();
+        for (PartialDay each : days) {
+            result = result.plus(calendar.getCapacityOn(each));
         }
+        return result.roundToHours();
     }
 
     public List<Integer> getHoursInGapUntilAllocatingAndGoingToTheEnd(
             BaseCalendar calendar,
             DateAndHour realStart, DateAndHour allocationEnd, int total) {
-        DateAndHour gapEnd = getEndTime();
-        Validate.isTrue(gapEnd == null || allocationEnd.compareTo(gapEnd) <= 0);
+        Validate.isTrue(getEndTime() == null || allocationEnd.compareTo(getEndTime()) <= 0);
         Validate.isTrue(startTime == null
                 || realStart.compareTo(startTime) >= 0);
+        Validate.isTrue(total >= 0);
         List<Integer> result = new ArrayList<Integer>();
-        Iterator<LocalDate> daysUntilEnd = realStart.daysUntil(gapEnd)
-                .iterator();
-        boolean isFirst = true;
+        Iterator<PartialDay> daysUntilEnd = realStart.toIntraDayDate()
+                .daysUntil(getEndTime().toIntraDayDate()).iterator();
         while (daysUntilEnd.hasNext()) {
-            LocalDate each = daysUntilEnd.next();
-            final boolean isLast = !daysUntilEnd.hasNext();
-            int hoursAtDay = getHoursAtDay(each, calendar, realStart, isFirst,
-                    isLast);
-            final int hours;
-            if (total > 0) {
-                hours = Math.min(hoursAtDay, total);
-                total -= hours;
-            } else {
-                hours = hoursAtDay;
-            }
-            if (isFirst) {
-                isFirst = false;
-            }
+            PartialDay each = daysUntilEnd.next();
+            int hoursAtDay = calendar.getCapacityOn(each).roundToHours();
+                int hours = Math.min(hoursAtDay, total);
+            total -= hours;
             result.add(hours);
             if (total == 0
-                    && DateAndHour.from(each).compareTo(allocationEnd) >= 0) {
+                    && DateAndHour.from(each.getDate())
+                            .compareTo(allocationEnd) >= 0) {
                 break;
             }
         }
         return result;
-    }
-
-    private int getHoursAtDay(LocalDate day, BaseCalendar calendar,
-            DateAndHour realStart, boolean isFirst, final boolean isLast) {
-        final int capacity = calendar.getCapacityOn(day).roundToHours();
-        if (isLast && isFirst) {
-            return Math.min(endTime.getHour() - realStart.getHour(),
-                    capacity);
-        } else if (isFirst) {
-            return capacity - realStart.getHour();
-        } else if (isLast) {
-            return Math.min(endTime.getHour(), capacity);
-        } else {
-            return capacity;
-        }
     }
 
     public static Gap create(Resource resource, DateAndHour startTime,
