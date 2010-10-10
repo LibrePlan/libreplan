@@ -42,9 +42,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -856,14 +854,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 EffortDuration result = zero();
 
                 for (Resource resource : durationsGrouped.get(day).keySet()) {
-                    BaseCalendar calendar = resource.getCalendar();
-
-                    EffortDuration workableTime = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityOn(day);
-                    if (calendar != null) {
-                        workableTime = calendar.getCapacityOn(day);
-                    }
-
+                    ICalendar calendar = resource.getCalendarOrDefault();
+                    EffortDuration workableTime = calendar.getCapacityOn(day);
                     EffortDuration assignedDuration = durationsGrouped.get(day)
                             .get(resource);
                     result = result.plus(min(assignedDuration, workableTime));
