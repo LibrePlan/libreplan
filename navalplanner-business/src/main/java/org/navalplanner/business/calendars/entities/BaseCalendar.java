@@ -287,6 +287,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return null;
     }
 
+    @Deprecated
     public EffortDuration getCapacityOn(LocalDate date) {
         return getWorkableTimeAt(date);
     }

@@ -76,6 +76,7 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     @Override
+    @Deprecated
     public EffortDuration getCapacityOn(LocalDate date) {
         return multiplyByCapacity(super.getCapacityOn(date));
     }

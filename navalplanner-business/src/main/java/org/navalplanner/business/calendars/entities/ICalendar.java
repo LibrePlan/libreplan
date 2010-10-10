@@ -31,10 +31,13 @@ public interface ICalendar {
      * Translates the received amount into the corresponding duration at the
      * given date
      *
+     * @deprecated Use {@link #asDurationOn(PartialDay, ResourcesPerDay)}
+     *             instead
      * @param day
      * @param amount
      * @return
      */
+    @Deprecated
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount);
 
     /**
@@ -51,10 +54,13 @@ public interface ICalendar {
      * Calculates the capacity duration at a given date. It means all the time
      * that could be worked without having overtime
      *
+     * @deprecated use {@link #getCapacityOn(PartialDay)} instead
+     *
      * @param date
      *            the date at which the capacity is calculated
      * @return the capacity at which the resource can work
      */
+    @Deprecated
     public EffortDuration getCapacityOn(LocalDate date);
 
     /**
