@@ -42,7 +42,6 @@ import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.Valid;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -60,6 +59,8 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * This class acts as the base class for all resources.
@@ -885,14 +886,13 @@ public abstract class Resource extends IntegrationEntity {
     private int getTotalWorkHoursFor(ICalendar calendar, LocalDate start,
             LocalDate end, ICriterion criterionToSatisfy) {
         EffortDuration sum = zero();
-        final int days = Days.daysBetween(start, end).getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
-            EffortDuration capacityCurrent = calendar
-                    .getCapacityOn(current);
+        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(start)
+                .daysUntil(IntraDayDate.startOfDay(end));
+        for (PartialDay current : daysBetween) {
+            EffortDuration capacityCurrent = calendar.getCapacityOn(current);
             if (capacityCurrent != null
                     && (criterionToSatisfy == null || satisfiesCriterionAt(
-                            criterionToSatisfy, current))) {
+                            criterionToSatisfy, current.getDate()))) {
                 sum = sum.plus(capacityCurrent);
             }
         }
