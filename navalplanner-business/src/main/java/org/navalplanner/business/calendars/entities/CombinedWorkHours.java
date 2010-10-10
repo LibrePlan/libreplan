@@ -73,11 +73,6 @@ public abstract class CombinedWorkHours implements ICalendar {
     }
 
     @Override
-    public EffortDuration getCapacityOn(LocalDate date) {
-        return getCapacityOn(PartialDay.wholeDay(date));
-    }
-
-    @Override
     public EffortDuration getCapacityOn(PartialDay day) {
         EffortDuration current = null;
         for (ICalendar workHour : calendars) {

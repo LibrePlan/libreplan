@@ -51,19 +51,6 @@ public interface ICalendar {
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount);
 
     /**
-     * Calculates the capacity duration at a given date. It means all the time
-     * that could be worked without having overtime
-     *
-     * @deprecated use {@link #getCapacityOn(PartialDay)} instead
-     *
-     * @param date
-     *            the date at which the capacity is calculated
-     * @return the capacity at which the resource can work
-     */
-    @Deprecated
-    public EffortDuration getCapacityOn(LocalDate date);
-
-    /**
      * Calculates the capacity duration at a given day. It means all the time
      * that could be worked without having overtime. It considers the
      * {@link PartialDay} so if the day it's not complete the capacity is

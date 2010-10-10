@@ -43,11 +43,6 @@ public class SameWorkHoursEveryDay implements ICalendar {
     }
 
     @Override
-    public EffortDuration getCapacityOn(LocalDate date) {
-        return getCapacityOn(PartialDay.wholeDay(date));
-    }
-
-    @Override
     public EffortDuration getCapacityOn(PartialDay partialDay) {
         return partialDay.limitDuration(EffortDuration.hours(hours));
     }

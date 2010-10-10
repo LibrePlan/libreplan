@@ -287,11 +287,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return null;
     }
 
-    @Deprecated
-    public EffortDuration getCapacityOn(LocalDate date) {
-        return getWorkableTimeAt(date);
-    }
-
     public EffortDuration getCapacityOn(PartialDay date) {
         return date.limitDuration(getWorkableTimeAt(date.getDate()));
     }
