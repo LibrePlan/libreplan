@@ -28,6 +28,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
+import static org.navalplanner.business.workingday.IntraDayDate.PartialDay.wholeDay;
 
 import java.util.Set;
 
@@ -146,11 +147,11 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
 
         EffortDuration wednesdayHours = calendar
-                .getCapacityOn(WEDNESDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE));
         assertThat(wednesdayHours, equalTo(hours(8)));
 
         EffortDuration sundayHours = calendar
-                .getCapacityOn(SUNDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE));
         assertThat(sundayHours, equalTo(zero()));
     }
 
@@ -165,7 +166,7 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createChristmasCalendar();
 
         EffortDuration duration = calendar
-                .getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE));
         assertThat(duration, equalTo(EffortDuration.zero()));
     }
 
@@ -182,11 +183,11 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar().newDerivedCalendar();
 
         EffortDuration wednesdayHours = calendar
-                .getCapacityOn(WEDNESDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE));
         assertThat(wednesdayHours, equalTo(hours(8)));
 
         EffortDuration sundayHours = calendar
-                .getCapacityOn(SUNDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE));
         assertThat(sundayHours, equalTo(zero()));
     }
 
@@ -195,7 +196,7 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createChristmasCalendar().newDerivedCalendar();
 
         EffortDuration hours = calendar
-                .getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE));
         assertThat(hours, equalTo(EffortDuration.zero()));
     }
 
@@ -208,15 +209,15 @@ public class BaseCalendarTest {
         calendar.addExceptionDay(day);
 
         EffortDuration mondayHours = calendar
-                .getCapacityOn(MONDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(MONDAY_LOCAL_DATE));
         assertThat(mondayHours, equalTo(hours(8)));
 
         EffortDuration wednesdayHours = calendar
-                .getCapacityOn(WEDNESDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE));
         assertThat(wednesdayHours, equalTo(hours(4)));
 
         EffortDuration sundayHours = calendar
-                .getCapacityOn(SUNDAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE));
         assertThat(sundayHours, equalTo(zero()));
     }
 
@@ -230,7 +231,7 @@ public class BaseCalendarTest {
         calendar.addExceptionDay(day);
 
         EffortDuration hours = calendar
-                .getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE);
+                .getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE));
         assertThat(hours, equalTo(hours(4)));
     }
 
@@ -308,17 +309,17 @@ public class BaseCalendarTest {
         calendar.setDurationAt(Days.WEDNESDAY, hours(4));
         calendar.setDurationAt(Days.SUNDAY, hours(4));
 
-        assertThat(calendar.getCapacityOn(WEDNESDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
 
-        assertThat(calendar.getCapacityOn(WEDNESDAY_LOCAL_DATE
-                .minusWeeks(1)), equalTo(hours(8)));
+        assertThat(calendar.getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE
+                .minusWeeks(1))), equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(SUNDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
 
-        assertThat(
-                calendar.getCapacityOn(SUNDAY_LOCAL_DATE.minusWeeks(1)),
+        assertThat(calendar.getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE
+                .minusWeeks(1))),
                 equalTo(zero()));
     }
 
@@ -330,18 +331,18 @@ public class BaseCalendarTest {
         calendar.setDurationAt(Days.MONDAY, hours(1));
         calendar.setDurationAt(Days.SUNDAY, hours(2));
 
-        assertThat(calendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(1)));
 
-        assertThat(calendar.getCapacityOn(SUNDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(SUNDAY_LOCAL_DATE)),
                 equalTo(hours(2)));
 
-        assertThat(
-                calendar.getCapacityOn(MONDAY_LOCAL_DATE.minusWeeks(1)),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE
+                .minusWeeks(1))),
                 equalTo(hours(8)));
 
-        assertThat(
-                calendar.getCapacityOn(MONDAY_LOCAL_DATE.minusDays(1)),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE
+                .minusDays(1))),
                 equalTo(zero()));
     }
 
@@ -385,10 +386,10 @@ public class BaseCalendarTest {
                 hours(8),
                 createCalendarExceptionType());
 
-        assertThat(calendar.getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE
-                .plusYears(1)), equalTo(hours(8)));
+        assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE
+                .plusYears(1))), equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)),
                 equalTo(zero()));
     }
 
@@ -410,13 +411,13 @@ public class BaseCalendarTest {
         calendar.newVersion(FRIDAY_LOCAL_DATE);
         setHoursForAllDays(calendar, 2);
 
-        assertThat(calendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(WEDNESDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
 
-        assertThat(calendar.getCapacityOn(FRIDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(FRIDAY_LOCAL_DATE)),
                 equalTo(hours(2)));
 
     }
@@ -431,19 +432,19 @@ public class BaseCalendarTest {
         calendar.newVersion(WEDNESDAY_LOCAL_DATE);
         setHoursForAllDays(calendar, 2);
 
-        assertThat(baseCalendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(baseCalendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
 
-        assertThat(baseCalendar.getCapacityOn(FRIDAY_LOCAL_DATE),
+        assertThat(baseCalendar.getCapacityOn(wholeDay(FRIDAY_LOCAL_DATE)),
                 equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(FRIDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(FRIDAY_LOCAL_DATE)),
                 equalTo(hours(2)));
 
-        assertThat(calendar.getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)),
                 equalTo(zero()));
     }
 
@@ -471,7 +472,7 @@ public class BaseCalendarTest {
 
     private void thenForAllDaysReturnsZero() {
         for (LocalDate localDate : DAYS_OF_A_WEEK_EXAMPLE) {
-            assertThat(calendarFixture.getCapacityOn(localDate),
+            assertThat(calendarFixture.getCapacityOn(wholeDay(localDate)),
                     equalTo(zero()));
         }
     }
@@ -571,7 +572,7 @@ public class BaseCalendarTest {
         calendar.setParent(parent);
 
         assertThat(calendar.getParent(), equalTo(parent));
-        assertThat(calendar.getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)),
                 equalTo(zero()));
     }
 
@@ -581,7 +582,7 @@ public class BaseCalendarTest {
         BaseCalendar derived = calendar.newDerivedCalendar();
         BaseCalendar copy = derived.newCopy();
 
-        assertThat(copy.getCapacityOn(CHRISTMAS_DAY_LOCAL_DATE),
+        assertThat(copy.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE)),
                 equalTo(zero()));
         assertThat(copy.getParent(), equalTo(calendar));
         assertThat(copy.getCalendarDataVersions().size(), equalTo(1));
@@ -609,10 +610,10 @@ public class BaseCalendarTest {
         assertThat(calendar.getParent(MONDAY_LOCAL_DATE),
                 equalTo(parent1));
 
-        assertThat(calendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(8)));
 
-        assertThat(calendar.getCapacityOn(FRIDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(FRIDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
     }
 
@@ -626,10 +627,10 @@ public class BaseCalendarTest {
         calendar.addExceptionDay(CalendarException.create(FRIDAY_LOCAL_DATE,
                 zero(), createCalendarExceptionType()));
 
-        assertThat(calendar.getCapacityOn(MONDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(zero()));
 
-        assertThat(calendar.getCapacityOn(FRIDAY_LOCAL_DATE),
+        assertThat(calendar.getCapacityOn(wholeDay(FRIDAY_LOCAL_DATE)),
                 equalTo(zero()));
 
         assertThat(calendar.getOwnExceptions().size(), equalTo(2));

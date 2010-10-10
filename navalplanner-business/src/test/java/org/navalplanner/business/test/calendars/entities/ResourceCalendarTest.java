@@ -25,6 +25,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.navalplanner.business.workingday.IntraDayDate.PartialDay.wholeDay;
 
 import java.util.List;
 
@@ -66,9 +67,9 @@ public class ResourceCalendarTest {
     public void testGetWorkableHours() {
         ResourceCalendar calendar = createBasicResourceCalendar();
 
-        assertThat(calendar.getCapacityOn(PAST),
+        assertThat(calendar.getCapacityOn(wholeDay(PAST)),
                 equalTo(EffortDuration.zero()));
-        assertThat(calendar.getCapacityOn(FUTURE),
+        assertThat(calendar.getCapacityOn(wholeDay(FUTURE)),
                 equalTo(EffortDuration.hours(8)));
     }
 

@@ -387,7 +387,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         EffortDuration result = zero();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            result = result.plus(getCapacityOn(current));
+            result = result.plus(getCapacityOn(PartialDay.wholeDay(current)));
             init = init.plusDays(1);
         }
         return result;
@@ -530,7 +530,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
             return DayType.ANCESTOR_EXCEPTION;
         }
-        if (getCapacityOn(date).isZero()) {
+        if (getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
             return DayType.ZERO_HOURS;
         }
         return DayType.NORMAL;
@@ -733,7 +733,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            if (getCapacityOn(current).isZero()) {
+            if (getCapacityOn(PartialDay.wholeDay(current)).isZero()) {
                 result.add(current);
             }
         }

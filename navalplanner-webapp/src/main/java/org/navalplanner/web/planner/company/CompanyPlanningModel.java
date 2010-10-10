@@ -67,6 +67,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
@@ -850,10 +851,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped) {
             SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
 
-            for (LocalDate day : durationsGrouped.keySet()) {
+            for (LocalDate date : durationsGrouped.keySet()) {
                 EffortDuration result = zero();
-
-                for (Resource resource : durationsGrouped.get(day).keySet()) {
+                PartialDay day = PartialDay.wholeDay(date);
+                for (Resource resource : durationsGrouped.get(date).keySet()) {
                     ICalendar calendar = resource.getCalendarOrDefault();
                     EffortDuration workableTime = calendar.getCapacityOn(day);
                     EffortDuration assignedDuration = durationsGrouped.get(day)
@@ -861,7 +862,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     result = result.plus(min(assignedDuration, workableTime));
                 }
 
-                map.put(day, result);
+                map.put(date, result);
             }
             return groupAsNeededByZoom(map);
         }
@@ -880,7 +881,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 protected EffortDuration getDurationFor(
                         Entry<LocalDate, Map<Resource, EffortDuration>> element) {
                     EffortDuration result = zero();
-                    LocalDate day = element.getKey();
+                    PartialDay day = PartialDay.wholeDay(element.getKey());
                     for (Entry<Resource, EffortDuration> each : element.getValue()
                             .entrySet()) {
                         EffortDuration overlad = getOverloadAt(day,
@@ -891,7 +892,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     return result;
                 }
 
-                private EffortDuration getOverloadAt(LocalDate day,
+                private EffortDuration getOverloadAt(PartialDay day,
                         Resource resource, EffortDuration assignedDuration) {
                     ICalendar calendar = resource.getCalendarOrDefault();
                     EffortDuration workableDuration = calendar

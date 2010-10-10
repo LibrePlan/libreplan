@@ -82,6 +82,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -1240,26 +1241,26 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> resourceDayAssignmentsGrouped) {
 
-            for (LocalDate day : orderDayAssignmentsGrouped.keySet()) {
+            for (LocalDate date : orderDayAssignmentsGrouped.keySet()) {
                 final EffortDuration maxCapacity = getSumCapacities(
-                        orderDayAssignmentsGrouped, day);
-
+                        orderDayAssignmentsGrouped, date);
+                final PartialDay day = PartialDay.wholeDay(date);
                 EffortDuration orderLoad = zero();
                 EffortDuration orderOverload = zero();
                 EffortDuration otherLoad = zero();
                 EffortDuration otherOverload = zero();
 
-                for (Resource resource : orderDayAssignmentsGrouped.get(day)
+                for (Resource resource : orderDayAssignmentsGrouped.get(date)
                         .keySet()) {
                     final EffortDuration resourceCapacityHours = calendarCapacityFor(
                             resource, day);
 
                     final EffortDuration durationAtOrder = orderDayAssignmentsGrouped
-                            .get(day).get(resource);
+                            .get(date).get(resource);
 
                     final EffortDuration totalDurationForResource;
                     totalDurationForResource = retrieveTotalDurationForResource(
-                            resourceDayAssignmentsGrouped, day, resource);
+                            resourceDayAssignmentsGrouped, date, resource);
 
                     final EffortDuration durationOther;
                     durationOther = totalDurationForResource.minus(min(
@@ -1289,20 +1290,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     otherLoad = otherLoad.plus(otherLoadIncrement);
                     otherOverload = otherOverload.plus(otherOverloadIncrement);
                 }
-                mapMaxCapacity.put(day, maxCapacity);
-                mapOrderLoad.put(day, orderLoad);
-                mapOrderOverload.put(day, orderOverload.plus(maxCapacity));
-                mapOtherLoad.put(day, otherLoad.plus(orderLoad));
-                mapOtherOverload.put(day, otherOverload.plus(orderOverload)
+                mapMaxCapacity.put(date, maxCapacity);
+                mapOrderLoad.put(date, orderLoad);
+                mapOrderOverload.put(date, orderOverload.plus(maxCapacity));
+                mapOtherLoad.put(date, otherLoad.plus(orderLoad));
+                mapOtherOverload.put(date, otherOverload.plus(orderOverload)
                         .plus(maxCapacity));
             }
         }
 
         private EffortDuration getSumCapacities(
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
-                LocalDate day) {
+                LocalDate date) {
+            PartialDay day = PartialDay.wholeDay(date);
             EffortDuration result = zero();
-            for (Resource resource : orderDayAssignmentsGrouped.get(day)
+            for (Resource resource : orderDayAssignmentsGrouped.get(date)
                     .keySet()) {
                 result = result.plus(calendarCapacityFor(resource, day));
             }

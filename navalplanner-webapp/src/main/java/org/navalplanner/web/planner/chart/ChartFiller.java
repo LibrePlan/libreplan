@@ -46,6 +46,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotDataSource;
@@ -95,15 +96,17 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected static EffortDuration sumCalendarCapacitiesForDay(
             Collection<? extends Resource> resources, LocalDate day) {
+        PartialDay wholeDay = PartialDay.wholeDay(day);
         EffortDuration sum = zero();
         for (Resource resource : resources) {
-            sum = sum.plus(calendarCapacityFor(resource, day));
+            sum = sum.plus(calendarCapacityFor(resource,
+                    wholeDay));
         }
         return sum;
     }
 
     protected static EffortDuration calendarCapacityFor(Resource resource,
-            LocalDate day) {
+            PartialDay day) {
         return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 

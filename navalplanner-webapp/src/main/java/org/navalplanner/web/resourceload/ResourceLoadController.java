@@ -43,6 +43,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.chart.Chart;
@@ -682,7 +683,8 @@ public class ResourceLoadController implements Composer {
             SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
             for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
                     .entrySet()) {
-                LocalDate day = each.getKey();
+                LocalDate date = each.getKey();
+                PartialDay day = PartialDay.wholeDay(date);
                 EffortDuration result = zero();
                 for (Entry<Resource, EffortDuration> resourceWithDuration : each
                         .getValue().entrySet()) {
@@ -694,7 +696,7 @@ public class ResourceLoadController implements Composer {
                     result = result
                             .plus(min(assignedDuration, resourceCapacity));
                 }
-                map.put(day, result);
+                map.put(date, result);
             }
             return groupAsNeededByZoom(map);
         }
@@ -704,7 +706,8 @@ public class ResourceLoadController implements Composer {
             SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
             for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
                     .entrySet()) {
-                final LocalDate day = each.getKey();
+                final LocalDate date = each.getKey();
+                final PartialDay day = PartialDay.wholeDay(date);
                 EffortDuration result = zero();
                 for (Entry<Resource, EffortDuration> resourceWithDuration : each
                         .getValue().entrySet()) {
@@ -717,7 +720,7 @@ public class ResourceLoadController implements Composer {
                             .minus(min(resourceCapacity, assignedDuration));
                     result = result.plus(overloadIncrement);
                 }
-                map.put(day, result);
+                map.put(date, result);
             }
             return groupAsNeededByZoom(map);
         }

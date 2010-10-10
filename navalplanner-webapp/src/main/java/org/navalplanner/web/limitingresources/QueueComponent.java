@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -337,7 +338,7 @@ public class QueueComponent extends XulElement implements
 
         int workableHours = queueElement.getLimitingResourceQueue()
                 .getResource().getCalendar()
-                .getCapacityOn(queueElement.getEndDate())
+                .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
@@ -368,7 +369,7 @@ public class QueueComponent extends XulElement implements
 
         int workableHours = queueElement.getLimitingResourceQueue()
                 .getResource().getCalendar()
-                .getCapacityOn(queueElement.getEndDate())
+                .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)

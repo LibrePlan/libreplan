@@ -237,8 +237,6 @@ public class GenericResourceAllocationTest {
     private <T extends BaseCalendar> T createCalendar(Class<T> klass,
             final int hoursPerDay) {
         BaseCalendar baseCalendar = createNiceMock(klass);
-        expect(baseCalendar.getCapacityOn(isA(LocalDate.class)))
-                .andReturn(hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.getCapacityOn(isA(PartialDay.class))).andReturn(
                 hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
@@ -433,7 +431,8 @@ public class GenericResourceAllocationTest {
     public void allocatingSeveralResourcesPerDayHavingJustOneResourceProducesOvertime() {
         LocalDate start = new LocalDate(2006, 10, 5);
         final Integer standardHoursPerDay = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityOn(start).getHours();
+                .getDefaultWorkingDay()
+                .getCapacityOn(PartialDay.wholeDay(start)).getHours();
         final int TASK_DURATION_DAYS = 4;
         givenBaseCalendarWithoutExceptions(standardHoursPerDay);
         givenTaskWithStartAndEnd(toInterval(start, Period
@@ -474,7 +473,8 @@ public class GenericResourceAllocationTest {
         LocalDate start = new LocalDate(2006, 10, 5);
         final int TASK_DURATION_DAYS = 1;
         final Integer defaultWorkableHours = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityOn(start).getHours();
+                .getDefaultWorkingDay()
+                .getCapacityOn(PartialDay.wholeDay(start)).getHours();
         givenBaseCalendarWithoutExceptions(defaultWorkableHours);
         givenTaskWithStartAndEnd(toInterval(start, Period
                 .days(TASK_DURATION_DAYS)));
