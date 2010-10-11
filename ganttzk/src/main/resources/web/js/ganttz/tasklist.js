@@ -186,7 +186,6 @@ function listenToScroll() {
 	scrolledpannel_ = scrolledpannel();
 	leftpanel_ = taskdetailsBody();
 	rightpanellayout_ = rightpanellayout();
-	plannergraph_ = plannergraph();
 
 	var onScroll = function() {
 
@@ -196,7 +195,10 @@ function listenToScroll() {
 
 		timetrackergap_.style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
 		leftpanel_.style["top"] = "-" + scrolledpannel_.scrollTop + "px";
-		plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
+		plannergraph_ = plannergraph();
+		if(plannergraph_ != undefined) {
+			plannergraph_.scrollLeft = scrolledpannel_.scrollLeft;
+		}
 		for (j=0;j<timeplotcontainer_all_.length;j++)
 		{
 			timeplotcontainer_all_[j].style["left"] = "-" + scrolledpannel_.scrollLeft + "px";
