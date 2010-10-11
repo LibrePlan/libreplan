@@ -41,6 +41,9 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.IntraDayDate.UntilEnd;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -56,6 +59,27 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  *
  */
 public class LimitingResourceAllocator {
+
+    private static final class UntilEndAndEffort extends UntilEnd {
+
+        private final EffortDuration goal;
+        private EffortDuration currentDuration = zero();
+
+        private UntilEndAndEffort(IntraDayDate endExclusive, EffortDuration goal) {
+            super(endExclusive);
+            this.goal = goal;
+        }
+
+        @Override
+        protected boolean hasNext(boolean currentDateIsLessThanEnd) {
+            return currentDateIsLessThanEnd
+                    || currentDuration.compareTo(goal) <= 0;
+        }
+
+        public void setCurrent(EffortDuration currentDuration) {
+            this.currentDuration = currentDuration;
+        }
+    }
 
     private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay
             .amount(new BigDecimal(1));
@@ -270,27 +294,21 @@ public class LimitingResourceAllocator {
             DateAndHour startTime, DateAndHour endsAfter) {
 
         List<DayAssignment> assignments = new LinkedList<DayAssignment>();
-
-        LocalDate date = startTime.getDate();
+        ResourceCalendar calendar = resource.getCalendar();
         final EffortDuration totalEffort = hours(resourceAllocation
                 .getIntendedTotalHours());
         EffortDuration effortAssigned = zero();
-        // Generate first day assignment
-        EffortDuration effortCanAllocate = effortCanWorkOnDay(resource, date,
-                startTime.getHour());
-        EffortDuration effortToAllocate = min(totalEffort, effortCanAllocate);
-        DayAssignment dayAssignment = createDayAssignment(resourceAllocation,
-                resource, date, effortToAllocate);
-        effortAssigned = effortAssigned.plus(addDayAssignment(assignments,
-                dayAssignment));
-
-        // Generate rest of day assignments
-        for (date = date.plusDays(1); effortAssigned.compareTo(totalEffort) < 0
-                || endsAfter.isAfter(date); date = date.plusDays(1)) {
-            effortAssigned = effortAssigned.plus(addDayAssignment(
-                    assignments,
-                    generateDayAssignment(resourceAllocation, resource, date,
-                            totalEffort)));
+        UntilEndAndEffort condition = new UntilEndAndEffort(
+                endsAfter.toIntraDayDate(), totalEffort);
+        for (PartialDay each : startTime.toIntraDayDate().daysUntil(condition)) {
+            EffortDuration effortForDay = EffortDuration.min(
+                    calendar.asDurationOn(each,
+                    ONE_RESOURCE_PER_DAY), totalEffort);
+            DayAssignment dayAssignment = createDayAssignment(
+                    resourceAllocation, resource, each.getDate(), effortForDay);
+            effortAssigned = effortAssigned.plus(addDayAssignment(assignments,
+                    dayAssignment));
+            condition.setCurrent(effortAssigned);
         }
         if (effortAssigned.compareTo(totalEffort) > 0) {
             stripStartAssignments(assignments,
@@ -318,34 +336,36 @@ public class LimitingResourceAllocator {
     private static List<DayAssignment> generateDayAssignmentsStartingFromEnd(ResourceAllocation<?> resourceAllocation,
             Resource resource,
             DateAndHour endTime) {
-
-        List<DayAssignment> assignments = new ArrayList<DayAssignment>();
+        ResourceCalendar calendar = resource.getCalendar();
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
 
         LocalDate date = endTime.getDate();
         EffortDuration totalIntended = hours(resourceAllocation
                 .getIntendedTotalHours());
 
         // Generate last day assignment
-        EffortDuration effortCanAllocate = effortCanWorkOnDay(resource, date,
-                endTime.getHour());
+        PartialDay firstDay = new PartialDay(IntraDayDate.startOfDay(date),
+                IntraDayDate.create(date, hours(endTime.getHour())));
+        EffortDuration effortCanAllocate = min(totalIntended,
+                calendar.asDurationOn(firstDay, ONE_RESOURCE_PER_DAY));
         if (effortCanAllocate.compareTo(zero()) > 0) {
-            EffortDuration effortToAllocate = min(totalIntended,
-                    effortCanAllocate);
             DayAssignment dayAssignment = createDayAssignment(
-                    resourceAllocation, resource, date, effortToAllocate);
-            totalIntended = totalIntended.minus(addDayAssignment(assignments,
+                    resourceAllocation, resource, date, effortCanAllocate);
+            totalIntended = totalIntended.minus(addDayAssignment(result,
                     dayAssignment));
         }
 
         // Generate rest of day assignments
         for (date = date.minusDays(1); totalIntended.compareTo(zero()) > 0; date = date
                 .minusDays(1)) {
-            totalIntended = totalIntended.minus(addDayAssignment(
-                    assignments,
-                    generateDayAssignment(resourceAllocation, resource, date,
-                            totalIntended)));
+            EffortDuration duration = min(totalIntended, calendar.asDurationOn(
+                    PartialDay.wholeDay(date), ONE_RESOURCE_PER_DAY));
+            DayAssignment dayAssigment = createDayAssignment(
+                    resourceAllocation, resource, date, duration);
+            totalIntended = totalIntended.minus(addDayAssignment(result,
+                    dayAssigment));
         }
-        return assignments;
+        return result;
     }
 
     private static DayAssignment createDayAssignment(
@@ -366,35 +386,6 @@ public class LimitingResourceAllocator {
             return dayAssignment.getDuration();
         }
         return zero();
-    }
-
-    private static EffortDuration effortCanWorkOnDay(final Resource resource,
-            final LocalDate date, int alreadyWorked) {
-        final ResourceCalendar calendar = resource.getCalendar();
-        EffortDuration durationCanAllocate = calendar
-                .asDurationOn(date, ONE_RESOURCE_PER_DAY);
-        EffortDuration alreadyWorkedAsDuration = hours(alreadyWorked);
-        if (durationCanAllocate.compareTo(alreadyWorkedAsDuration) <= 0) {
-            return zero();
-        }
-        return durationCanAllocate.minus(alreadyWorkedAsDuration);
-    }
-
-    private static DayAssignment generateDayAssignment(
-            final ResourceAllocation<?> resourceAllocation,
-            Resource resource,
-            final LocalDate date, EffortDuration intendedEffort) {
-
-        final ResourceCalendar calendar = resource.getCalendar();
-
-        EffortDuration effortCanAllocate = calendar.asDurationOn(date,
-                ONE_RESOURCE_PER_DAY);
-        if (effortCanAllocate.compareTo(zero()) > 0) {
-            EffortDuration toAllocate = min(intendedEffort, effortCanAllocate);
-            return createDayAssignment(resourceAllocation, resource, date,
-                    toAllocate);
-        }
-        return null;
     }
 
     public static DateAndHour startTimeToAllocateStartingFromEnd(
