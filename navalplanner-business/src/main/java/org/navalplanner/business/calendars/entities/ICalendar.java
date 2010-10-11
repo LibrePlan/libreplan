@@ -20,25 +20,11 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public interface ICalendar {
-
-    /**
-     * Translates the received amount into the corresponding duration at the
-     * given date
-     *
-     * @deprecated Use {@link #asDurationOn(PartialDay, ResourcesPerDay)}
-     *             instead
-     * @param day
-     * @param amount
-     * @return
-     */
-    @Deprecated
-    public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount);
 
     /**
      * Translates the received amount into the corresponding duration at the

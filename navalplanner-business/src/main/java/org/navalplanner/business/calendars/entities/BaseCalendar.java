@@ -885,13 +885,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     @Override
-    @Deprecated
-    public EffortDuration asDurationOn(LocalDate day,
-            ResourcesPerDay resourcesPerDay) {
-        return asDurationOn(PartialDay.wholeDay(day), resourcesPerDay);
-    }
-
-    @Override
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
         EffortDuration workableDuration = day
                 .limitDuration(getWorkableTimeAt(day.getDate()));

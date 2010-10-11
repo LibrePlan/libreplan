@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -80,12 +79,6 @@ public abstract class CombinedWorkHours implements ICalendar {
                     : updateCapacity(current, workHour.getCapacityOn(day));
         }
         return current;
-    }
-
-    @Override
-    @Deprecated
-    public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
-        return asDurationOn(PartialDay.wholeDay(day), amount);
     }
 
     @Override
