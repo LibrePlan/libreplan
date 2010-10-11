@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.planner.company;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
@@ -36,30 +34,25 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
@@ -141,12 +134,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private IOrderDAO orderDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
-    private IDayAssignmentDAO dayAssignmentDAO;
-
-    @Autowired
     private ITaskElementDAO taskElementDAO;
 
     @Autowired
@@ -176,6 +163,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private IScenarioManager scenarioManager;
 
     private Scenario currentScenario;
+
+    @Autowired
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private LocalDate filterStartDate;
     private LocalDate filterFinishDate;
@@ -817,129 +807,19 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
                 LocalDate finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
-                    currentScenario, start, finish);
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped = groupDurationsByDayAndResource(dayAssignments);
-            return calculateHoursAdditionByDayWithoutOverload(durationsGrouped);
+            return groupAsNeededByZoom(databaseSnapshots.
+                    snapshotResourceLoadChartData().getLoad().subMap(start, finish));
         }
 
         private SortedMap<LocalDate, EffortDuration> getOverload(
                 LocalDate start, LocalDate finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
-                    currentScenario, start, finish);
-
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, EffortDuration> mapMaxAvailability = calculateAvailabilityDurationByDay(
-                    resourceDAO.list(Resource.class), start, finish);
-
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if (day.compareTo(new LocalDate(start)) >= 0
-                        && day.compareTo(new LocalDate(finish)) <= 0) {
-                    EffortDuration overloadDuration = mapDayAssignments
-                            .get(day);
-                    EffortDuration maxDuration = mapMaxAvailability.get(day);
-                    mapDayAssignments.put(day,
-                            overloadDuration.plus(maxDuration));
-                }
-            }
-
-            return mapDayAssignments;
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayWithoutOverload(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped) {
-            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
-
-            for (LocalDate date : durationsGrouped.keySet()) {
-                EffortDuration result = zero();
-                PartialDay day = PartialDay.wholeDay(date);
-                for (Resource resource : durationsGrouped.get(date).keySet()) {
-                    ICalendar calendar = resource.getCalendarOrDefault();
-                    EffortDuration workableTime = calendar.getCapacityOn(day);
-                    EffortDuration assignedDuration = durationsGrouped.get(
-                            day.getDate()).get(resource);
-                    result = result.plus(min(assignedDuration, workableTime));
-                }
-
-                map.put(date, result);
-            }
-            return groupAsNeededByZoom(map);
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayJustOverload(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
-            return new EffortByDayCalculator<Entry<LocalDate, Map<Resource, EffortDuration>>>() {
-
-                @Override
-                protected LocalDate getDayFor(
-                        Entry<LocalDate, Map<Resource, EffortDuration>> element) {
-                    return element.getKey();
-                }
-
-                @Override
-                protected EffortDuration getDurationFor(
-                        Entry<LocalDate, Map<Resource, EffortDuration>> element) {
-                    EffortDuration result = zero();
-                    PartialDay day = PartialDay.wholeDay(element.getKey());
-                    for (Entry<Resource, EffortDuration> each : element.getValue()
-                            .entrySet()) {
-                        EffortDuration overlad = getOverloadAt(day,
-                                each.getKey(),
-                                        each.getValue());
-                        result = result.plus(overlad);
-                    }
-                    return result;
-                }
-
-                private EffortDuration getOverloadAt(PartialDay day,
-                        Resource resource, EffortDuration assignedDuration) {
-                    ICalendar calendar = resource.getCalendarOrDefault();
-                    EffortDuration workableDuration = calendar
-                            .getCapacityOn(day);
-                    if (assignedDuration.compareTo(workableDuration) > 0) {
-                        return assignedDuration.minus(workableDuration);
-                    }
-                    return zero();
-                }
-            }.calculate(dayAssignmentGrouped.entrySet());
+            return groupAsNeededByZoom(
+                    databaseSnapshots.snapshotResourceLoadChartData().getOverload().subMap(start, finish));
         }
 
         private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
                 LocalDate start, LocalDate finish) {
-            return calculateAvailabilityDurationByDay(
-                    resourceDAO.list(Resource.class), start, finish);
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateAvailabilityDurationByDay(
-                List<Resource> resources, LocalDate start, LocalDate finish) {
-            return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
-
-                @Override
-                protected LocalDate getDayFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    return element.getKey();
-                }
-
-                @Override
-                protected EffortDuration getDurationFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    LocalDate day = element.getKey();
-                    List<Resource> resources = element.getValue();
-                    return sumCalendarCapacitiesForDay(resources, day);
-                }
-
-            }.calculate(getResourcesByDateBetween(resources, start, finish));
-        }
-
-        private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-                List<Resource> resources, LocalDate start, LocalDate finish) {
-            Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-            for (LocalDate date = new LocalDate(start); date.compareTo(finish) <= 0; date = date
-                    .plusDays(1)) {
-                result.put(date, resources);
-            }
-            return result.entrySet();
+            return databaseSnapshots.snapshotResourceLoadChartData().getAvailability().subMap(start, finish);
         }
 
     }

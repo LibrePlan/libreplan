@@ -27,6 +27,10 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
@@ -39,6 +43,13 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceLoadChartData;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -49,6 +60,7 @@ import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -125,6 +137,13 @@ public class PredefinedDatabaseSnapshots {
         return ordersCodes.getValue();
     }
 
+    private IAutoUpdatedSnapshot<ResourceLoadChartData>
+        resourceLoadChartData;
+
+    public ResourceLoadChartData snapshotResourceLoadChartData() {
+        return resourceLoadChartData.getValue();
+    }
+    
     private boolean snapshotsRegistered = false;
 
     public void registerSnapshots() {
@@ -153,6 +172,11 @@ public class PredefinedDatabaseSnapshots {
                 calculateCustomerReferences(), Order.class);
         ordersCodes = snapshot("order codes", calculateOrdersCodes(),
                 Order.class);
+        resourceLoadChartData = snapshot("resource load grouped by date",
+                calculateResourceLoadChartData(),
+                CalendarAvailability.class, CalendarException.class,
+                CalendarData.class, TaskElement.class, SpecificResourceAllocation.class,
+                GenericResourceAllocation.class, ResourceAllocation.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(String name,
@@ -307,6 +331,27 @@ public class PredefinedDatabaseSnapshots {
                     result.add(order.getCode());
                 }
                 return result;
+            }
+        };
+    }
+
+    @Autowired
+    private IDayAssignmentDAO dayAssignmentDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
+
+    private Callable<ResourceLoadChartData> calculateResourceLoadChartData() {
+        return new Callable<ResourceLoadChartData>() {
+            @Override
+            public ResourceLoadChartData call()
+                    throws Exception {
+
+                List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
+                        scenarioManager.getCurrent(), null, null);
+                List<Resource> resources = resourceDAO.list(Resource.class);
+                return new ResourceLoadChartData(dayAssignments, resources);
+
             }
         };
     }
