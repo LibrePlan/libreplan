@@ -158,7 +158,7 @@ public class IntraDayDateTest {
         PartialDay day = new PartialDay(IntraDayDate.create(today,
                 halfHour), IntraDayDate.create(today, oneHour));
         assertThat(day.limitDuration(hours(10)), equalTo(minutes(30)));
-        assertThat(day.limitDuration(minutes(20)), equalTo(minutes(20)));
+        assertThat(day.limitDuration(minutes(40)), equalTo(minutes(10)));
         PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today),
                 IntraDayDate.startOfDay(tomorrow));
         assertThat(completeDay.limitDuration(hours(10)), equalTo(hours(10)));
@@ -169,6 +169,17 @@ public class IntraDayDateTest {
                 equalTo(hours(7)));
         assertThat(startsInTheMiddle.limitDuration(hours(3)), equalTo(zero()));
         assertThat(startsInTheMiddle.limitDuration(hours(2)), equalTo(zero()));
+        PartialDay startAndEndInSameDay = new PartialDay(IntraDayDate.create(
+                today, EffortDuration.hours(3)), IntraDayDate.create(today,
+                EffortDuration.hours(6)));
+        assertThat(startAndEndInSameDay.limitDuration(hours(4)),
+                equalTo(hours(1)));
+        assertThat(startAndEndInSameDay.limitDuration(hours(5)),
+                equalTo(hours(2)));
+        assertThat(startAndEndInSameDay.limitDuration(hours(6)),
+                equalTo(hours(3)));
+        assertThat(startAndEndInSameDay.limitDuration(hours(10)),
+                equalTo(hours(3)));
     }
 
     private Matcher<Iterable<PartialDay>> delimitedBy(

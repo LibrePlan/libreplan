@@ -183,22 +183,43 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             return start.getDate();
         }
 
+        /**
+         * <p>
+         * Limits the duration that can be worked in a day taking into account
+         * this day duration.
+         * </p>
+         * <ul>
+         * <li>
+         * If the day is whole then the duration returned is all.</li>
+         * <li>If the day has an end and a no zero start, the result will be:
+         * <code>max(duration, end) - start</code></li>
+         * <li>If the day has a no zero start that must be discounted from the
+         * duration</li>
+         * <li>If the day has an end, the duration must not surpass this end</li>
+         * </ul>
+         * @param duration
+         * @return a duration that can be employed taking into consideration
+         *         this day
+         */
         public EffortDuration limitDuration(EffortDuration duration) {
-            EffortDuration alreadyElapsedInDay = start.getEffortDuration();
-            if (alreadyElapsedInDay.isZero()
-                    && end.getEffortDuration().isZero()) {
+            if (isWholeDay()) {
                 return duration;
             }
-            if (end.getEffortDuration().isZero()) {
-                if (alreadyElapsedInDay.compareTo(duration) >= 0) {
-                    return zero();
-                }
-                return duration.minus(alreadyElapsedInDay);
-            } else {
-                EffortDuration maximumAvailable = end.getEffortDuration()
-                        .minus(alreadyElapsedInDay);
-                return EffortDuration.min(maximumAvailable, duration);
+            EffortDuration alreadyElapsedInDay = start.getEffortDuration();
+            if (alreadyElapsedInDay.compareTo(duration) >= 0) {
+                return zero();
             }
+            EffortDuration durationLimitedByEnd = duration;
+            if (!end.getEffortDuration().isZero()) {
+                durationLimitedByEnd = EffortDuration
+                        .min(end.getEffortDuration(), duration);
+            }
+            return durationLimitedByEnd.minus(alreadyElapsedInDay);
+        }
+
+        private boolean isWholeDay() {
+            return start.getEffortDuration().isZero()
+                    && end.getEffortDuration().isZero();
         }
 
         @Override
