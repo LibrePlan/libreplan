@@ -43,6 +43,7 @@ import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.IntraDayDate.UntilEnd;
 
 /**
  * @author Óscar González Fernández
@@ -130,7 +131,7 @@ public class IntraDayDateTest {
     public void untilADayAgo() {
         IntraDayDate start = IntraDayDate.create(today, zero());
         IntraDayDate end = IntraDayDate.create(tomorrow, zero());
-        Iterable<PartialDay> days = end.daysUntil(start);
+        end.daysUntil(start);
     }
 
     @Test
@@ -151,6 +152,23 @@ public class IntraDayDateTest {
         assertThat(IntraDayDate.toList(start.daysUntil(anotherEnd)),
                 delimitedBy(start, IntraDayDate.create(tomorrow, zero()),
                         anotherEnd));
+    }
+
+    @Test
+    public void canHaveAnExtraCondition() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(today.plusDays(10), zero());
+        final List<PartialDay> generated = new ArrayList<IntraDayDate.PartialDay>();
+        Iterable<PartialDay> days = start.daysUntil(new UntilEnd(end) {
+            @Override
+            protected boolean hasNext(boolean lessThanEnd) {
+                return lessThanEnd && generated.size() < 2;
+            }
+        });
+        for (PartialDay each : days) {
+            generated.add(each);
+        }
+        assertThat(generated.size(), equalTo(2));
     }
 
     @Test

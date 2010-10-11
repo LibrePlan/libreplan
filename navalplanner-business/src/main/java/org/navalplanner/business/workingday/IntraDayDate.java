@@ -229,24 +229,53 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
     }
 
+    interface IterationPredicate {
+        public boolean hasNext(IntraDayDate current);
+
+        public IntraDayDate limitNext(IntraDayDate nextDay);
+    }
+
+
+    public static class UntilEnd implements IterationPredicate {
+
+        private final IntraDayDate endExclusive;
+
+        public UntilEnd(IntraDayDate endExclusive) {
+            this.endExclusive = endExclusive;
+        }
+
+        @Override
+        public final boolean hasNext(IntraDayDate current) {
+            return hasNext(current.compareTo(endExclusive) < 0);
+        }
+
+        protected boolean hasNext(boolean currentDateIsLessThanEnd) {
+            return currentDateIsLessThanEnd;
+        }
+
+        @Override
+        public final IntraDayDate limitNext(IntraDayDate nextDay) {
+            return min(nextDay, endExclusive);
+        }
+    }
     /**
      * Returns an on demand {@link Iterable} that gives all the days from
      * <code>this</code> to end
-     * @param end
+     *
+     * @param endExclusive
      * @return an on demand iterable
      */
-    public Iterable<PartialDay> daysUntil(final IntraDayDate end) {
-        Validate.isTrue(compareTo(end) <= 0);
-        if (compareTo(end) == 0) {
-            return Collections.<PartialDay> emptyList();
-        }
-        return new Iterable<IntraDayDate.PartialDay>() {
+    public Iterable<PartialDay> daysUntil(final IntraDayDate endExclusive) {
+        Validate.isTrue(compareTo(endExclusive) <= 0);
+        return daysUntil(new UntilEnd(endExclusive));
+    }
 
+    public Iterable<PartialDay> daysUntil(final UntilEnd predicate) {
+        return new Iterable<IntraDayDate.PartialDay>() {
             @Override
             public Iterator<PartialDay> iterator() {
-                return createIterator(IntraDayDate.this, end);
+                return createIterator(IntraDayDate.this, predicate);
             }
-
         };
     }
 
@@ -259,14 +288,14 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     }
 
     private static Iterator<PartialDay> createIterator(
-            final IntraDayDate start, final IntraDayDate end) {
+            final IntraDayDate start, final IterationPredicate predicate) {
 
         return new Iterator<IntraDayDate.PartialDay>() {
             private IntraDayDate current = start;
 
             @Override
             public boolean hasNext() {
-                return current.compareTo(end) < 0;
+                return predicate.hasNext(current);
             }
 
             @Override
@@ -282,7 +311,7 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             private IntraDayDate calculateNext(IntraDayDate date) {
                 IntraDayDate nextDay = IntraDayDate.startOfDay(date.date
                         .plusDays(1));
-                return min(nextDay, end);
+                return predicate.limitNext(nextDay);
             }
 
             @Override
