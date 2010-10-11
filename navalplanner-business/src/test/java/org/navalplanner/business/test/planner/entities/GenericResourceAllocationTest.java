@@ -254,10 +254,6 @@ public class GenericResourceAllocationTest {
             }
         };
         expect(
-                baseCalendar.asDurationOn(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andAnswer(
-                durationAnswer).anyTimes();
-        expect(
                 baseCalendar.asDurationOn(isA(PartialDay.class),
                         isA(ResourcesPerDay.class))).andAnswer(durationAnswer)
                 .anyTimes();
@@ -585,7 +581,7 @@ public class GenericResourceAllocationTest {
                 .anyTimes();
 
         expect(
-                calendar.asDurationOn(isA(LocalDate.class),
+                calendar.asDurationOn(isA(PartialDay.class),
                         isA(ResourcesPerDay.class))).andReturn(hours(unit))
                 .anyTimes();
 

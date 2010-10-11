@@ -33,6 +33,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -238,7 +239,7 @@ public class EffortDistributor {
                     .getAssignedDurationAt(resource, day);
             final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
             Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
-                    day, ONE).getSeconds();
+                    PartialDay.wholeDay(day), ONE).getSeconds();
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;
             final int assignedForEach = alreadyAssignedSeconds / capacityUnits;

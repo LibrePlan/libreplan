@@ -84,10 +84,6 @@ public class SpecificResourceAllocationTest {
                 .andReturn(EffortDuration.hours(hours)).anyTimes();
         IAnswer<? extends EffortDuration> asDurationAnswer = asDurationOnAnswer(hours(hours));
         expect(
-                this.calendar.asDurationOn(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class)))
-                .andAnswer(asDurationAnswer).anyTimes();
-        expect(
                 this.calendar.asDurationOn(isA(PartialDay.class),
                         isA(ResourcesPerDay.class)))
                 .andAnswer(asDurationAnswer).anyTimes();
@@ -164,10 +160,6 @@ public class SpecificResourceAllocationTest {
                 return hours(toHoursAnswer.answer());
             }
         };
-        expect(
-                this.calendar.asDurationOn(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andAnswer(
-                effortAnswer).anyTimes();
         expect(
                 this.calendar.asDurationOn(isA(PartialDay.class),
                         isA(ResourcesPerDay.class))).andAnswer(effortAnswer)
