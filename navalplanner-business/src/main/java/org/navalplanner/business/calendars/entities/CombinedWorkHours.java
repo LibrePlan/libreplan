@@ -83,6 +83,7 @@ public abstract class CombinedWorkHours implements ICalendar {
     }
 
     @Override
+    @Deprecated
     public EffortDuration asDurationOn(LocalDate day, ResourcesPerDay amount) {
         return asDurationOn(PartialDay.wholeDay(day), amount);
     }
