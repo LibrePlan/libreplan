@@ -29,6 +29,8 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPo
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -96,10 +98,15 @@ public class ThereAreHoursOnWorkHoursCalculator {
             EffortDuration maximum,
             ResourcesPerDay resourcesPerDay,
             LocalDate start, LocalDate end) {
+        return sunDurationUntil(calendar, maximum, resourcesPerDay, IntraDayDate.startOfDay(start),
+                IntraDayDate.startOfDay(end));
+    }
+
+    private static EffortDuration sunDurationUntil(ICalendar calendar,
+            EffortDuration maximum, ResourcesPerDay resourcesPerDay,
+            IntraDayDate start, IntraDayDate end) {
         EffortDuration result = zero();
-        int days = org.joda.time.Days.daysBetween(start, end).getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
+        for (PartialDay current : start.daysUntil(end)) {
             result = result.plus(calendar.asDurationOn(current, resourcesPerDay));
             if (result.compareTo(maximum) >= 0) {
                 return maximum;
