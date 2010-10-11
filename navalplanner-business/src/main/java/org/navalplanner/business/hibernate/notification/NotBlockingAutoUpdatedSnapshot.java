@@ -226,11 +226,15 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
             public T call() throws Exception {
                 long start = System.currentTimeMillis();
                 long timeWaiting = start - requestTime;
+                Exception error = null;
                 try {
                     return callable.call();
+                } catch (Exception e) {
+                    error = e;
+                    throw e;
                 } finally {
                     long timeExecuting = System.currentTimeMillis() - start;
-                    executionsReport.newData(timeWaiting, timeExecuting);
+                    executionsReport.newData(timeWaiting, timeExecuting, error);
                 }
             }
         };
@@ -238,18 +242,21 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
 
     private static class Data {
         final int executionTimes;
+        final int errors;
         long totalMsWaiting;
         long totalMsExecuting;
 
-        private Data(int executionTimes, long totalMsWaiting,
+        private Data(int executionTimes, int errors, long totalMsWaiting,
                 long totalMsExecuting) {
             this.executionTimes = executionTimes;
             this.totalMsWaiting = totalMsWaiting;
             this.totalMsExecuting = totalMsExecuting;
+            this.errors = errors;
         }
 
-        public Data newData(long timeWaiting, long timeExcuting) {
-            return new Data(executionTimes + 1, totalMsWaiting + timeWaiting,
+        public Data newData(long timeWaiting, long timeExcuting, Exception e) {
+            return new Data(executionTimes + 1, errors + (e != null ? 1 : 0),
+                    totalMsWaiting + timeWaiting,
                     totalMsExecuting + timeExcuting);
         }
 
@@ -258,20 +265,26 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
     private class ExecutionsReport {
 
         private AtomicReference<Data> data = new AtomicReference<Data>(
-                new Data(0, 0, 0));
+                new Data(0, 0, 0, 0));
 
-        public void newData(long timeWaiting, long timeExecuting) {
+        public void newData(long timeWaiting, long timeExecuting,
+                Exception possibleError) {
             Data previousData;
             Data newData;
             do {
                 previousData = data.get();
-                newData = previousData.newData(timeWaiting, timeExecuting);
+                newData = previousData.newData(timeWaiting, timeExecuting,
+                        possibleError);
             } while (!data.compareAndSet(previousData, newData));
-            report(timeWaiting, timeExecuting, newData);
+            report(timeWaiting, timeExecuting, newData, possibleError);
         }
 
-        private void report(long timeWaiting, long timeExecuting, Data data) {
+        private void report(long timeWaiting, long timeExecuting, Data data,
+                Exception possibleError) {
             LOG.info(name + " took " + timeExecuting + " ms executing");
+            if (possibleError != null) {
+                LOG.error("error loading " + name, possibleError);
+            }
             LOG.info(name + " waited for " + timeWaiting
                     + " ms until executing");
             LOG.info(name + " mean time waiting for execution: "
@@ -280,6 +293,7 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
                     + data.totalMsExecuting / data.executionTimes + " ms");
             LOG.info(name + " has been executed " + data.executionTimes
                     + " times");
+            LOG.info(name + " has produced errors " + data.errors + " times");
         }
     }
 
