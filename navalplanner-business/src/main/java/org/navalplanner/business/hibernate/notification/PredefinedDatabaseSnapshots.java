@@ -25,8 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import javax.annotation.PostConstruct;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
@@ -61,6 +61,9 @@ import org.springframework.stereotype.Component;
 @Component
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class PredefinedDatabaseSnapshots {
+
+    private static final Log LOG = LogFactory
+            .getLog(PredefinedDatabaseSnapshots.class);
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -122,9 +125,14 @@ public class PredefinedDatabaseSnapshots {
         return ordersCodes.getValue();
     }
 
-    @PostConstruct
-    @SuppressWarnings("unused")
-    private void postConstruct() {
+    private boolean snapshotsRegistered = false;
+
+    public void registerSnapshots() {
+        if (snapshotsRegistered) {
+            LOG.warn("snapshots have already been registered");
+            return;
+        }
+        snapshotsRegistered = true;
         criterionsMap = snapshot("criterions map", calculateCriterionsMap(),
                 CriterionType.class, Criterion.class);
         labelsMap = snapshot("labels map", calculateLabelsMap(),

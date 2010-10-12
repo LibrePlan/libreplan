@@ -24,6 +24,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -40,6 +41,13 @@ public class BootstrapListener implements ServletContextListener {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils
                 .getWebApplicationContext(servletContextEvent
                         .getServletContext());
+        doBootstrap(webApplicationContext);
+        // some snapshots could depend on the bootstrap being done, so they are
+        // launched after
+        launchSnapshots(webApplicationContext);
+    }
+
+    private void doBootstrap(WebApplicationContext webApplicationContext) {
         String[] beanNames = BeanFactoryUtils
                 .beanNamesForTypeIncludingAncestors(webApplicationContext,
                         IDataBootstrap.class);
@@ -48,6 +56,23 @@ public class BootstrapListener implements ServletContextListener {
                     .getBean(name);
             bootstrap.loadRequiredData();
         }
+    }
+
+    private void launchSnapshots(WebApplicationContext webApplicationContext) {
+        PredefinedDatabaseSnapshots snapshots = getPredefinedDatabaseSnapshots(webApplicationContext);
+        snapshots.registerSnapshots();
+    }
+
+    private PredefinedDatabaseSnapshots getPredefinedDatabaseSnapshots(
+            WebApplicationContext webApplicationContext) {
+        return (PredefinedDatabaseSnapshots) webApplicationContext
+                .getBean(lowercaseFirst(PredefinedDatabaseSnapshots.class
+                        .getSimpleName()));
+    }
+
+    private String lowercaseFirst(String simpleName) {
+        return simpleName.substring(0, 1).toLowerCase()
+                + simpleName.substring(1);
     }
 
 }
