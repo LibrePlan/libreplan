@@ -136,6 +136,19 @@ public class AllocationUntilFillingHoursTest {
     }
 
     @Test
+    public void theEndDateIsCalculatedCorrectlyIfTheStartIsInTheMiddleOfADayAndEndsTheSameDay() {
+        givenStartDate(IntraDayDate.create(new LocalDate(2009, 10, 10),
+                EffortDuration.hours(2)));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(4);
+        ResourceAllocation<?> allocation = allocations.get(0)
+                .getBeingModified();
+        assertThat(allocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.create(new LocalDate(2009, 10, 10),
+                        EffortDuration.hours(6))));
+    }
+
+    @Test
     public void theResourcesPerDayAreKeptCorrectlyCalculatedAfterUpdatingTheEndInterval() {
         final ResourcesPerDay oneResourcePerDay = ResourcesPerDay.amount(1);
         givenSpecificAllocations(oneResourcePerDay);

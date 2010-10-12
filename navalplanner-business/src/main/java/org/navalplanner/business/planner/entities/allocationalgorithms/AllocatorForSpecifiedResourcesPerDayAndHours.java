@@ -99,7 +99,8 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             lastDate = current;
             taken = assignForDay(resourcesPerDayModification,
                     dayStartingAt(current), effortRemaining);
-            lastDate = IntraDayDate.create(current.getDate(), taken);
+            lastDate = IntraDayDate.create(current.getDate(),
+                    taken.plus(current.getEffortDuration()));
             effortRemaining = effortRemaining.minus(taken);
         }
         if (resourcesPerDayModification.isDayFilled(lastDate.getDate(),
