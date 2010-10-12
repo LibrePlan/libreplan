@@ -52,6 +52,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
@@ -72,16 +73,17 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     @Override
     protected void initializeEndDate() {
-        Integer workHours = getWorkHours();
-        long endDateTime = getStartDate().getTime()
-                + timeElapsedMillisWorkingOneResourceEightHoursPerDay(workHours);
-        setEndDate(new Date(endDateTime));
-    }
+        EffortDuration workHours = EffortDuration.hours(getWorkHours());
+        EffortDuration effortStandardPerDay = EffortDuration.hours(8);
 
-    private long timeElapsedMillisWorkingOneResourceEightHoursPerDay(
-            Integer workHours) {
-        final long millisecondsPerDay = 24 * 3600l * 1000;
-        return workHours * millisecondsPerDay / 8;
+        int daysElapsed = workHours.divideBy(effortStandardPerDay);
+        EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
+
+        IntraDayDate start = getIntraDayStartDate();
+        IntraDayDate newEnd = IntraDayDate.create(
+                start.getDate().plusDays(daysElapsed), start
+                        .getEffortDuration().plus(remainder));
+        setIntraDayEndDate(newEnd);
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
