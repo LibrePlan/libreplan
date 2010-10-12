@@ -268,15 +268,14 @@ public abstract class TaskElement extends BaseEntity {
         if (newStartDate == null) {
             return;
         }
-        final boolean sameDay = this.startDate.areSameDay(newStartDate
-                .getDate());
+        IntraDayDate previousStart = this.startDate;
         long durationMilliseconds = getLengthMilliseconds();
         setIntraDayStartDate(newStartDate);
         DateTime newEnd = this.startDate.toDateTimeAtStartOfDay().plus(
                 durationMilliseconds);
         this.endDate = IntraDayDate.create(newEnd.toLocalDate(),
                 EffortDuration.zero());
-        if (!sameDay) {
+        if (!previousStart.equals(newStartDate)) {
             moveAllocations(scenario);
         }
     }
