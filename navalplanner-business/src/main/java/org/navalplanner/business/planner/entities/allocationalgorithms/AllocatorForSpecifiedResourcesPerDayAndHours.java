@@ -31,7 +31,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -67,7 +66,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
                 task.getFirstDayNotConsolidated(), task.getIntraDayStartDate());
         int i = 0;
         IntraDayDate currentEnd = start;
-        for (EffortPerAllocation each : effortPerAllocation(start.getDate(),
+        for (EffortPerAllocation each : effortPerAllocation(start,
                 effortToAllocate)) {
             IntraDayDate endCandidate = untilAllocating(start, each.allocation,
                     each.duration);
@@ -78,7 +77,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
         return currentEnd;
     }
 
-    private List<EffortPerAllocation> effortPerAllocation(LocalDate start,
+    private List<EffortPerAllocation> effortPerAllocation(IntraDayDate start,
             EffortDuration toBeAssigned) {
         return new HoursPerAllocationCalculator(allocations)
                 .calculateEffortsPerAllocation(start, toBeAssigned);
@@ -142,7 +141,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
             ResourcesPerDayModification allocation, PartialDay day,
             EffortDuration limit);
 
-    protected abstract boolean thereAreAvailableHoursFrom(LocalDate start,
+    protected abstract boolean thereAreAvailableHoursFrom(IntraDayDate start,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration remainingDuration);
 
@@ -193,7 +192,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
         }
 
         public List<EffortPerAllocation> calculateEffortsPerAllocation(
-                LocalDate start, EffortDuration toAssign) {
+                IntraDayDate start, EffortDuration toAssign) {
             do {
                 List<EffortDuration> durations = divideEffort(toAssign);
                 List<EffortPerAllocation> result = EffortPerAllocation.wrap(
@@ -212,7 +211,8 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
         }
 
         private List<ResourcesPerDayModification> getUnsatisfied(
-                LocalDate start, List<EffortPerAllocation> hoursPerAllocations) {
+                IntraDayDate start,
+                List<EffortPerAllocation> hoursPerAllocations) {
             List<ResourcesPerDayModification> cannotSatisfy = new ArrayList<ResourcesPerDayModification>();
             for (EffortPerAllocation each : hoursPerAllocations) {
                 if (!thereAreAvailableHoursFrom(start, each.allocation,

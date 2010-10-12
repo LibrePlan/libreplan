@@ -241,7 +241,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected boolean thereAreAvailableHoursFrom(
-                        LocalDate start,
+                        IntraDayDate start,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
                     ICalendar calendar = getCalendar(resourcesPerDayModification);
@@ -249,7 +249,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getGoal();
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
-                    availability.invalidUntil(start);
+                    availability.invalidUntil(start.asExclusiveEnd());
                     return calendar.thereAreCapacityFor(availability,
                             resourcesPerDay, effortToAllocate);
                 }
