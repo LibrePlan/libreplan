@@ -29,6 +29,7 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
 import java.util.EnumMap;
@@ -148,6 +149,18 @@ public class EffortDurationTest {
         assertThat(hours(3).divideBy(2),
                 equalTo(hours(1).and(30, Granularity.MINUTES)));
         assertThat(hours(3).divideBy(4), equalTo(minutes(45)));
+    }
+
+    @Test
+    public void effortDurationCanBeDividedByAnotherEffortDuration() {
+        assertThat(hours(4).divideBy(hours(2)), equalTo(2));
+        assertThat(hours(4).remainderFor(hours(2)), equalTo(zero()));
+        assertThat(hours(5).divideBy(hours(2)), equalTo(2));
+        assertThat(hours(5).remainderFor(hours(2)), equalTo(hours(1)));
+        assertThat(hours(2).divideBy(hours(4)), equalTo(0));
+        assertThat(hours(2).remainderFor(hours(4)), equalTo(hours(2)));
+        assertThat(hours(1).and(30, Granularity.MINUTES).divideBy(minutes(30)),
+                equalTo(3));
     }
 
     @Test(expected = IllegalArgumentException.class)

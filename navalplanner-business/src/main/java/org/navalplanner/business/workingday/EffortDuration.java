@@ -157,6 +157,32 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     /**
+     * <p>
+     * Divides this duration by other returning the quotient.
+     * </p>
+     * There can be a remainder left.
+     * @see #remainderFor(EffortDuration)
+     * @param other
+     * @return
+     */
+    public int divideBy(EffortDuration other) {
+        return seconds / other.seconds;
+    }
+
+    /**
+     * Calculates the remainder resulting of doing the integer division of both
+     * durations
+     *
+     * @see #divideBy(EffortDuration)
+     * @param other
+     * @return the remainder
+     */
+    public EffortDuration remainderFor(EffortDuration other) {
+        int dividend = divideBy(other);
+        return this.minus(other.multiplyBy(dividend));
+    }
+
+    /**
      * Pluses two {@link EffortDuration}. <br />
      * <b>Warning:<b /> This method can cause an integer overflow and the result
      * would be incorrect.
