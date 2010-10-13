@@ -82,6 +82,9 @@
                     org/navalplanner/business/common/entities/OrderSequence.hbm.xml
                 </value>
                 <value>
+                    org/navalplanner/business/common/entities/EntitySequence.hbm.xml
+                </value>
+                <value>
                     org/navalplanner/business/externalcompanies/entities/ExternalCompanies.hbm.xml
                 </value>
                 <value>

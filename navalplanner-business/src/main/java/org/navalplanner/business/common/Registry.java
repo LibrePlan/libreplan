@@ -27,6 +27,7 @@ import org.navalplanner.business.calendars.daos.ICalendarDataDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
@@ -186,6 +187,9 @@ public class Registry {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IEntitySequenceDAO entitySequenceDAO;
+
     private Registry() {
     }
 
@@ -339,4 +343,7 @@ public class Registry {
         return getInstance().taskElementDAO;
     }
 
+    public static IEntitySequenceDAO getEntitySequenceDAO() {
+        return getInstance().entitySequenceDAO;
+    }
 }
