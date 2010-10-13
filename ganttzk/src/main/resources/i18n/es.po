@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-09-08 11:16+0200\n"
-"PO-Revision-Date: 2010-06-23 11:49+0200\n"
+"POT-Creation-Date: 2010-10-11 21:03+0200\n"
+"PO-Revision-Date: 2010-10-13 11:11+0200\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
@@ -38,7 +38,7 @@ msgid "by criteria"
 msgstr "por criterios"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:43
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -52,11 +52,11 @@ msgstr "Recursos limitantes"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:214
 msgid "Set End-End"
-msgstr "Asignar Fin-Fin"
+msgstr "Definir Fin-Fin"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:32
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:33
 msgid "Create Order"
-msgstr ""
+msgstr "Crear pedido"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:57
 msgid "Task"
@@ -70,7 +70,7 @@ msgstr "por recursos"
 msgid "Criterion"
 msgstr "Criterio"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:40
 msgid "Print"
 msgstr "Imprimir"
 
@@ -96,13 +96,13 @@ msgstr "cambiando zoom"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:44
 msgid "Quarter"
-msgstr "Cuarto"
+msgstr "Trimestre"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:57
 msgid "None"
 msgstr "Ninguno"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
 msgid "Flatten/Unflatten tree"
 msgstr "Aplanar/expandir árbol"
 
@@ -119,7 +119,7 @@ msgstr "Nombre"
 msgid "Name filter"
 msgstr "Filtro por nombres"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:59
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:60
 msgid "Expand/Collapse all"
 msgstr "Expandir/plegar todo"
 
@@ -135,13 +135,13 @@ msgstr "Año"
 msgid "Month"
 msgstr "Mes"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:56
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:57
 msgid "Show/Hide resources"
 msgstr "Mostrar/ocultar recursos"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:206
 msgid "Set End-Start"
-msgstr "Asignar Fin-Inicio"
+msgstr "Definir Fin-Inicio"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:279
 msgid "decreasing zoom"
@@ -155,7 +155,7 @@ msgstr "Ocultar camino crítico"
 msgid "Day"
 msgstr "Día"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:50
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:51
 msgid "Show/Hide Critical path"
 msgstr "Mostrar/ocultar camino crítico"
 
@@ -163,7 +163,7 @@ msgstr "Mostrar/ocultar camino crítico"
 msgid "showing resources"
 msgstr "mostrando recursos"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:53
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:54
 msgid "Show/Hide labels"
 msgstr "Mostrar/ocultar etiquetas"
 
@@ -172,6 +172,7 @@ msgid "Hour"
 msgstr "Hora"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:90
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:93
 msgid "Graphics"
 msgstr "Gráficas"
 
@@ -179,7 +180,7 @@ msgstr "Gráficas"
 msgid "Set Start-Start"
 msgstr "Definir Inicio-Inicio"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:141
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:142
 msgid "See resource allocation"
 msgstr "Ver asignación de recursos"
 
@@ -195,7 +196,7 @@ msgstr "Mostrar todos los elementos"
 msgid "All"
 msgstr "Todos"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
 msgid "Refresh"
 msgstr "Actualizar"
 
