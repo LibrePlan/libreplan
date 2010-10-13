@@ -125,7 +125,7 @@ public class DataForPlanner {
                     public void doAction(
                             IContextWithPlannerTask<ITaskFundamentalProperties> context,
                             ITaskFundamentalProperties task) {
-                        taskEditForm.init(context.getRelativeTo(),
+                        taskEditForm.init(context.getGanttDiagramGraph(), context.getRelativeTo(),
                                 context.getTask());
                     }
 

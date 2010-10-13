@@ -23,7 +23,10 @@ package org.zkoss.ganttz;
 import java.util.Date;
 
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.util.IAction;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Datebox;
@@ -34,6 +37,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
     public TaskEditFormComposer() {
 
     }
+
+    private GanttDiagramGraph<Task, ?> ganttDiagramGraph;
 
     private Task currentTask;
 
@@ -54,7 +59,8 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         super.doAfterCompose(comp);
     }
 
-    public void init(Component openRelativeTo, Task task) {
+    public void init(GanttDiagramGraph<Task, ?> ganttDiagramGraph, Component openRelativeTo, Task task) {
+        this.ganttDiagramGraph = ganttDiagramGraph;
         this.currentTask = task;
         this.taskDTO = toDTO(task);
         updateComponentValuesForTask(taskDTO);
@@ -105,12 +111,20 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         return result;
     }
 
-    private void copyFromDTO(TaskDTO taskDTO, Task currentTask) {
-        currentTask.setName(taskDTO.name);
-        currentTask.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
-        currentTask.resizeTo(GanttDate.createFrom(taskDTO.endDate));
-        currentTask.setNotes(taskDTO.notes);
-        currentTask.setDeadline(taskDTO.deadlineDate);
+    private void copyFromDTO(final TaskDTO taskDTO, final Task currentTask) {
+        DeferedNotifier notifier = ganttDiagramGraph.manualNotificationOn(new IAction() {
+            @Override
+            public void doAction() {
+                currentTask.setName(taskDTO.name);
+                currentTask.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
+                currentTask.resizeTo(GanttDate.createFrom(taskDTO.endDate));
+                currentTask.setNotes(taskDTO.notes);
+                currentTask.setDeadline(taskDTO.deadlineDate);
+
+                ganttDiagramGraph.enforceRestrictions(currentTask);
+            }
+        });
+        notifier.doNotifications();
     }
 
     public TaskDTO getTaskDTO() {
