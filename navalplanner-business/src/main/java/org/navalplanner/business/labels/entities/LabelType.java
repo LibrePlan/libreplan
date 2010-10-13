@@ -28,16 +28,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 
 /**
  * LabeType entity
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
- *
  */
 public class LabelType extends IntegrationEntity implements Comparable {
 
@@ -45,6 +45,8 @@ public class LabelType extends IntegrationEntity implements Comparable {
     private String name;
 
     private Set<Label> labels = new HashSet<Label>();
+
+    private Integer lastLabelSequenceCode = 0;
 
     private Boolean generateCode = false;
 
@@ -176,6 +178,30 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
         throw new InstanceNotFoundException(code, Label.class.getName());
 
+    }
+
+    public void generateLabelCodes(int numberOfDigits) {
+        for (Label label : this.getLabels()) {
+            if ((label.getCode() == null) || (label.getCode().isEmpty())
+                    || (!label.getCode().startsWith(this.getCode()))) {
+                this.incrementLastLabelSequenceCode();
+                String labelCode = EntitySequence.formatValue(numberOfDigits,
+                        this.getLastLabelSequenceCode());
+                label.setCode(this.getCode() + labelCode);
+            }
+        }
+    }
+
+    public void incrementLastLabelSequenceCode() {
+        if (this.lastLabelSequenceCode == null) {
+            this.lastLabelSequenceCode = 0;
+        }
+        this.lastLabelSequenceCode++;
+    }
+
+    @NotNull(message = "last label sequence code not specified")
+    public Integer getLastLabelSequenceCode() {
+        return lastLabelSequenceCode;
     }
 
 }

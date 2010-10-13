@@ -41,6 +41,7 @@
     <property name="code" access="property" not-null="true" unique="true"/>
     <property name="name" unique="true"/>
     <property name="generateCode" not-null="true" />
+    <property name="lastLabelSequenceCode" access="field"></property>
 
     <!-- Indexed the other side -->
     <set name="labels" inverse="false" cascade="all">
