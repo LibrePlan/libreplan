@@ -174,7 +174,7 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     }
 
     public static Criterion create(CriterionType type) {
-        return create(new Criterion(type));
+        return create(new Criterion(type),"");
     }
 
     public static Criterion create(String name, CriterionType type) {

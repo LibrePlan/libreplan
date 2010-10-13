@@ -168,6 +168,7 @@
     <property name="description"/>
     <property name="allowSimultaneousCriterionsPerResource"/>
     <property name="allowHierarchy"/>
+    <property name="lastCriterionSequenceCode" access="field"></property>
     <property name="enabled"/>
     <property name="generateCode" not-null="true" />
     <property name="resource">

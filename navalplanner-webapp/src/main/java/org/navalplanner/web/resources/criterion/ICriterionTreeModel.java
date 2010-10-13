@@ -30,7 +30,6 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.zkoss.zul.TreeModel;
 
 /**
- *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface ICriterionTreeModel {
@@ -69,5 +68,5 @@ public interface ICriterionTreeModel {
 
     void unindent(CriterionDTO nodeToIndent);
 
-    void regenerateCodeForUnsavedCriteria();
+    void regenerateCodeForUnsavedCriteria(int numberOfDigits);
 }

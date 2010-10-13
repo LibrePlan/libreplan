@@ -396,8 +396,8 @@ public class CriterionTreeController extends GenericForwardComposer {
         codeEditionDisabled = disabled;
     }
 
-    public void regenerateCodeForUnsavedCriteria() {
-        getModel().regenerateCodeForUnsavedCriteria();
+    public void regenerateCodeForUnsavedCriteria(int numberOfDigits) {
+        getModel().regenerateCodeForUnsavedCriteria(numberOfDigits);
     }
 
     public void reloadTree(){
