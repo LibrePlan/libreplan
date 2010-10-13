@@ -20,12 +20,11 @@
 
 package org.navalplanner.business.common.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.orders.entities.Order;
@@ -40,7 +39,8 @@ import org.navalplanner.business.resources.entities.Worker;
 public enum EntityNameEnum {
 
     ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
-            "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar");
+            "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
+            "Type of work hours");;
 
     private String description;
 
@@ -71,6 +71,9 @@ public enum EntityNameEnum {
         case CALENDAR:
             return (IIntegrationEntityDAO<CalendarData>) Registry
                     .getCalendarDataDAO();
+        case WORK_HOURS_TYPE:
+            return (IIntegrationEntityDAO<TypeOfWorkHours>) Registry
+                    .getTypeOfWorkHoursDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);
