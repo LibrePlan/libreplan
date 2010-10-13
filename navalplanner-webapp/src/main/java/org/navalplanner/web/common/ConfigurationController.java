@@ -56,6 +56,7 @@ import org.zkoss.zul.api.Window;
 /**
  * Controller for {@link Configuration} entity.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -90,6 +91,7 @@ public class ConfigurationController extends GenericForwardComposer {
         messages = new MessagesForUser(messagesContainer);
 
         createPanelEntityComponents();
+
     }
 
     private void createPanelEntityComponents() {
@@ -104,17 +106,17 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    private void initPanelTitle(Panel panel, final EntityNameEnum entityName) {
-        panel.setTitle(_("{0} sequences", entityName.getDescription()));
+    private void initPanelTitle(Panel panel, EntityNameEnum entityName) {
+        panel.setTitle(_(entityName.getSequenceLiteral()));
     }
 
     private void initButtonInPanelSequence(Component component,
             final EntityNameEnum entityName) {
-        String name = entityName.getDescription();
+        String name = entityName.getDescription().toLowerCase();
         try {
             Button button = (Button) component.getFirstChild().getFirstChild()
                     .getFirstChild();
-            button.setLabel(_("New {0} sequence", name));
+            button.setLabel(_("New " + name + " sequence"));
             button.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override

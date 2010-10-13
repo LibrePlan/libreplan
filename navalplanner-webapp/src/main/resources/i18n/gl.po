@@ -141,6 +141,24 @@ msgstr "Operacións"
 msgid "New order sequence"
 msgstr "Nova secuencia de pedido"
 
+msgid "New criterion sequence"
+msgstr "Nova secuencia de criterio"
+
+msgid "New label sequence"
+msgstr "Nova secuencia de etiqueta"
+
+msgid "New machine sequence"
+msgstr "Nova secuencia de maquina"
+
+msgid "New worker sequence"
+msgstr "Nova secuencia de traballador"
+
+msgid "New unit type sequence"
+msgstr "Nova secuencia de unidade de medida"
+
+msgid "New calendar sequence"
+msgstr "Nova secuencia de calendario"
+
 #: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:27
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:29
 msgid "Add criterion"
@@ -223,6 +241,24 @@ msgstr "Formularios de calidade"
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:122
 msgid "Order sequences"
 msgstr "Secuencias de pedido"
+
+msgid "Criterion sequences"
+msgstr "Secuencias de criterio"
+
+msgid "Label sequences"
+msgstr "Secuencias de etiqueta"
+
+msgid "Machine sequences"
+msgstr "Secuencias de maquina"
+
+msgid "Worker sequences"
+msgstr "Secuencias de traballador"
+
+msgid "Unit type sequences"
+msgstr "Secuencias de unidade de medida"
+
+msgid "Calendar sequences"
+msgstr "Secuencias de calendario"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:273
 msgid "Reports"

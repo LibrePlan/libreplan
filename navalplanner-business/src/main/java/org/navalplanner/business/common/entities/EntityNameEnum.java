@@ -38,9 +38,9 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public enum EntityNameEnum {
-    ORDER(_("Order")), CRITERION(_("Criterion")), LABEL(_("Label")), MACHINE(
-            _("Machine")), WORKER(_("Worker")), UNIT_TYPE(_("Unit type")), CALENDAR(
-            _("Calendar"));
+
+    ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
+            "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar");
 
     private String description;
 
@@ -75,6 +75,10 @@ public enum EntityNameEnum {
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);
         }
+    }
+
+    public String getSequenceLiteral() {
+        return getDescription() + " sequences";
     }
 
 }
