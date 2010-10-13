@@ -90,7 +90,7 @@ planner = self;
                 </center>
             </borderlayout>
         </center>
-        <south collapsible="true" title="Graphics" sclass="scheduling-graphics"
+        <south collapsible="true" title="${i18n:_('Graphics')}" sclass="scheduling-graphics"
             id="graphics" onOpen="planner.changeChartVisibility(event.open);" height="200px">
             <div id="insertionPointChart" />
         </south>
