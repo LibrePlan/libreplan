@@ -38,6 +38,10 @@ public class Worker extends Resource {
         return create(new Worker());
     }
 
+    public static Worker create(String code) {
+        return create(new Worker(), code);
+    }
+
     public static Worker create(String firstName, String surname,
         String nif) {
 
