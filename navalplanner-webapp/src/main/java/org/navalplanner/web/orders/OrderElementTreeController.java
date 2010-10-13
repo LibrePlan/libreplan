@@ -290,6 +290,35 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         Util.reloadBindings(tree);
     }
 
+    public void disabledCodeBoxes(boolean disabled) {
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren treeChildren = tree.getTreechildren();
+        if (treeChildren != null) {
+            childrenSet.addAll((Collection<Treeitem>) treeChildren.getItems());
+        }
+        for (Treeitem each : childrenSet) {
+            disableCodeBoxes(each, disabled);
+        }
+    }
+
+    private void disableCodeBoxes(Treeitem item, boolean disabled) {
+        Treerow row = item.getTreerow();
+        InputElement codeBox = (InputElement) ((Treecell) row.getChildren()
+                .get(1)).getChildren().get(0);
+        codeBox.setDisabled(disabled);
+        codeBox.invalidate();
+
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren children = item.getTreechildren();
+        if (children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+
+        for (Treeitem each : childrenSet) {
+            disableCodeBoxes(each, disabled);
+        }
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);

@@ -33,7 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
@@ -57,7 +57,6 @@ public class Order extends OrderLineGroup {
         order.setNewObject(true);
         return order;
     }
-
 
     public static Order createUnvalidated(String code) {
         Order order = create(new Order(), code);
@@ -135,7 +134,6 @@ public class Order extends OrderLineGroup {
         }
         return currentVersionInfo;
     }
-
 
     public void addOrderAuthorization(OrderAuthorization orderAuthorization) {
         orderAuthorization.setOrder(this);
@@ -397,10 +395,9 @@ public class Order extends OrderLineGroup {
                     || (orderElement.getCode().isEmpty())
                     || (!orderElement.getCode().startsWith(this.getCode()))) {
                 this.incrementLastOrderElementSequenceCode();
-                String orderElementCode = OrderSequence.formatValue(
+                String orderElementCode = EntitySequence.formatValue(
                         numberOfDigits, this.getLastOrderElementSequenceCode());
-                orderElement.setCode(this.getCode()
-                        + OrderSequence.CODE_SEPARATOR + orderElementCode);
+                orderElement.setCode(this.getCode() + orderElementCode);
             }
 
             if (orderElement instanceof OrderLine) {
@@ -411,13 +408,11 @@ public class Order extends OrderLineGroup {
                                     orderElement.getCode()))) {
                         ((OrderLine) orderElement)
                                 .incrementLastHoursGroupSequenceCode();
-                        String hoursGroupCode = OrderSequence.formatValue(
+                        String hoursGroupCode = EntitySequence.formatValue(
                                 numberOfDigits, ((OrderLine) orderElement)
                                         .getLastHoursGroupSequenceCode());
-                        hoursGroup
-                                .setCode(orderElement.getCode()
-                                        + OrderSequence.CODE_SEPARATOR
-                                        + hoursGroupCode);
+                        hoursGroup.setCode(orderElement.getCode()
+                                + hoursGroupCode);
                     }
                 }
             }
@@ -464,7 +459,6 @@ public class Order extends OrderLineGroup {
 
     /**
      * Disassociates this order and its children from the scenario
-     *
      * @param scenario
      * @return <code>null</code> if there is no order version for the scenario;
      *         the order version associated to the supplied scenario
@@ -480,7 +474,6 @@ public class Order extends OrderLineGroup {
     public OrderVersion getOrderVersionFor(Scenario current) {
         return scenarios.get(current);
     }
-
 
     public void setOrderVersion(Scenario scenario, OrderVersion newOrderVersion) {
         scenarios.put(scenario, newOrderVersion);
