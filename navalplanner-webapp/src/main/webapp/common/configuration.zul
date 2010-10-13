@@ -144,27 +144,6 @@
                         </row>
                     </rows>
                 </grid>
-
-                <!-- Order sequences -->
-                <panel title="${i18n:_('Order sequences')}" border="normal">
-                    <panelchildren>
-                        <hbox valign="center">
-                            <button label="${i18n:_('New order sequence')}"
-                                onClick="configurationController.addOrderSequence()" />
-                        </hbox>
-                        <grid id="orderSequencesList" fixedLayout="true"
-                            model="@{configurationController.orderSequences}"
-                            rowRenderer="@{configurationController.orderSequenceRowRenderer}" >
-                            <columns sizable="true">
-                                <column label="${i18n:_('Active')}" />
-                                <column label="${i18n:_('Prefix')}" />
-                                <column label="${i18n:_('Number of digits')}" />
-                                <column label="${i18n:_('Last value')}" />
-                                <column label="${i18n:_('Operations')}" />
-                            </columns>
-                        </grid>
-                    </panelchildren>
-                </panel>
             </tabpanel>
         </tabpanels>
     </tabbox>

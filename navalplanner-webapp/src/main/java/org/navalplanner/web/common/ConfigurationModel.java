@@ -24,26 +24,20 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
-import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
-import org.navalplanner.business.common.entities.OrderSequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -65,8 +59,6 @@ public class ConfigurationModel implements IConfigurationModel {
      */
     private Configuration configuration;
 
-    private List<OrderSequence> orderSequences;
-
     private Map<EntityNameEnum, List<EntitySequence>> entitySequences = new HashMap<EntityNameEnum, List<EntitySequence>>();
 
     @Autowired
@@ -74,9 +66,6 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IBaseCalendarDAO baseCalendarDAO;
-
-    @Autowired
-    private IOrderSequenceDAO orderSequenceDAO;
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
@@ -99,7 +88,6 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional(readOnly = true)
     public void init() {
         this.configuration = getCurrentConfiguration();
-        this.orderSequences = orderSequenceDAO.getAll();
         initEntitySequences();
     }
 
@@ -146,24 +134,8 @@ public class ConfigurationModel implements IConfigurationModel {
 
         checkEntitySequences();
 
-        if (orderSequences.isEmpty()) {
-            throw new ValidationException(
-                    _("At least one order sequence is needed"));
-        }
-
-        if (!checkConstraintJustOneOrderSequenceActive()) {
-            throw new ValidationException(
-                    _("Just one order sequence must be active"));
-        }
-
-        if (!checkConstraintPrefixNotRepeated()) {
-            throw new ValidationException(
-                    _("Order sequence prefixes can not be repeated"));
-        }
-
         try {
             configurationDAO.save(configuration);
-            storeAndRemoveOrderSequences();
             storeAndRemoveEntitySequences();
         } catch (HibernateOptimisticLockingFailureException e) {
             throw new ConcurrentModificationException(
@@ -195,36 +167,6 @@ public class ConfigurationModel implements IConfigurationModel {
             }
         }
         return false;
-    }
-
-    private boolean checkConstraintPrefixNotRepeated() {
-        Set<String> prefixes = new HashSet<String>();
-        for (OrderSequence orderSequence : orderSequences) {
-            String prefix = orderSequence.getPrefix();
-            if (prefixes.contains(prefix)) {
-                return false;
-            }
-            prefixes.add(prefix);
-        }
-        return true;
-    }
-
-    private void storeAndRemoveOrderSequences() {
-        for (OrderSequence orderSequence : orderSequences) {
-            orderSequenceDAO.save(orderSequence);
-        }
-
-        List<OrderSequence> toRemove = orderSequenceDAO
-                .findOrderSquencesNotIn(orderSequences);
-        for (OrderSequence orderSequence : toRemove) {
-            try {
-                orderSequenceDAO.remove(orderSequence);
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalArgumentException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     private void storeAndRemoveEntitySequences() {
@@ -267,19 +209,6 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : toSaveAfter) {
             entitySequenceDAO.save(entitySequence);
         }
-    }
-
-    private boolean checkConstraintJustOneOrderSequenceActive() {
-        boolean someoneActive = false;
-        for (OrderSequence orderSequence : orderSequences) {
-            if (orderSequence.isActive()) {
-                if (someoneActive) {
-                    return false;
-                }
-                someoneActive = true;
-            }
-        }
-        return someoneActive;
     }
 
     @Override
@@ -407,31 +336,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Override
     public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
-            if (configuration != null) {
-                configuration.setGenerateCodeForUnitTypes(
-                        generateCodeForUnitTypes);
-            }
-    }
-
-    @Override
-    public List<OrderSequence> getOrderSequences() {
-        return Collections.unmodifiableList(orderSequences);
-    }
-
-    @Override
-    public void addOrderSequence() {
-        orderSequences.add(OrderSequence.create(""));
-    }
-
-    @Override
-    public void removeOrderSequence(OrderSequence orderSequence)
-            throws IllegalArgumentException {
-        if (orderSequence.getLastValue() > 0) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not remove this order sequence, it is already in use"));
+        if (configuration != null) {
+            configuration.setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
         }
-        orderSequences.remove(orderSequence);
     }
 
     @Override
@@ -520,5 +427,4 @@ public class ConfigurationModel implements IConfigurationModel {
         entitySequences.get(entitySequence.getEntityName()).remove(
                 entitySequence);
     }
-
 }

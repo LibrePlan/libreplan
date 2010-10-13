@@ -30,7 +30,6 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
-import org.navalplanner.business.common.entities.OrderSequence;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -42,7 +41,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
@@ -71,8 +69,6 @@ public class ConfigurationController extends GenericForwardComposer {
     private Component messagesContainer;
 
     private Tabpanel panelConfiguration;
-
-    private OrderSequenceRowRenderer orderSequenceRowRenderer = new OrderSequenceRowRenderer();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -258,24 +254,6 @@ public class ConfigurationController extends GenericForwardComposer {
                 generateCodeForUnitTypes);
     }
 
-    public List<OrderSequence> getOrderSequences() {
-        return configurationModel.getOrderSequences();
-    }
-
-    public void addOrderSequence() {
-        configurationModel.addOrderSequence();
-        reloadOrderSequencesList();
-    }
-
-    public void removeOrderSequence(OrderSequence orderSequence) {
-        try {
-            configurationModel.removeOrderSequence(orderSequence);
-        } catch (IllegalArgumentException e) {
-            messages.showMessage(Level.ERROR, e.getMessage());
-        }
-        reloadOrderSequencesList();
-    }
-
     public void removeEntitySequence(EntitySequence entitySequence) {
         try {
             configurationModel.removeEntitySequence(entitySequence);
@@ -283,141 +261,6 @@ public class ConfigurationController extends GenericForwardComposer {
             messages.showMessage(Level.ERROR, e.getMessage());
         }
         reloadEntitySequenceList(entitySequence.getEntityName());
-    }
-
-    private void reloadOrderSequencesList() {
-        Util
-                .reloadBindings(configurationWindow
-                        .getFellow("orderSequencesList"));
-    }
-
-    public OrderSequenceRowRenderer getOrderSequenceRowRenderer() {
-        return orderSequenceRowRenderer;
-    }
-
-    private class OrderSequenceRowRenderer implements RowRenderer {
-
-        @Override
-        public void render(Row row, Object data) throws Exception {
-            OrderSequence orderSequence = (OrderSequence) data;
-            row.setValue(orderSequence);
-
-            appendActiveCheckbox(row, orderSequence);
-            appendPrefixTextbox(row, orderSequence);
-            appendNumberOfDigitsInbox(row, orderSequence);
-            appendLastValueInbox(row, orderSequence);
-            appendOperations(row, orderSequence);
-        }
-
-        private void appendActiveCheckbox(Row row,
-                final OrderSequence orderSequence) {
-            Checkbox checkbox = Util.bind(new Checkbox(),
-                    new Util.Getter<Boolean>() {
-
-                        @Override
-                        public Boolean get() {
-                            return orderSequence.isActive();
-                        }
-                    }, new Util.Setter<Boolean>() {
-
-                        @Override
-                        public void set(Boolean value) {
-                            orderSequence.setActive(value);
-                        }
-                    });
-
-            row.appendChild(checkbox);
-        }
-
-        private void appendPrefixTextbox(Row row,
-                final OrderSequence orderSequence) {
-            final Textbox tempTextbox = new Textbox();
-            Textbox textbox = Util.bind(tempTextbox,
-                    new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                    return orderSequence.getPrefix();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    try {
-                        orderSequence.setPrefix(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempTextbox, e
-                                .getMessage());
-                    }
-                }
-            });
-            textbox.setConstraint("no empty:" + _("cannot be null or empty"));
-
-            if (orderSequence.isAlreadyInUse()) {
-                textbox.setDisabled(true);
-            }
-
-            row.appendChild(textbox);
-        }
-
-        private void appendNumberOfDigitsInbox(Row row,
-                final OrderSequence orderSequence) {
-            final Intbox tempIntbox = new Intbox();
-            Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
-
-                @Override
-                public Integer get() {
-                    return orderSequence.getNumberOfDigits();
-                }
-            }, new Util.Setter<Integer>() {
-
-                @Override
-                public void set(Integer value) {
-                    try {
-                        orderSequence.setNumberOfDigits(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempIntbox, e.getMessage());
-                    }
-                }
-            });
-            intbox.setConstraint("no empty:" + _("cannot be null or empty"));
-
-            if (orderSequence.isAlreadyInUse()) {
-                intbox.setDisabled(true);
-            }
-
-            row.appendChild(intbox);
-        }
-
-        private void appendLastValueInbox(Row row,
-                final OrderSequence orderSequence) {
-            Textbox textbox = Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                            return OrderSequence.formatValue(orderSequence
-                                    .getNumberOfDigits(), orderSequence
-                                    .getLastValue());
-                }
-            });
-
-            row.appendChild(textbox);
-        }
-
-        private void appendOperations(Row row, final OrderSequence orderSequence) {
-            final Button removeButton = Util
-                    .createRemoveButton(new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    removeOrderSequence(orderSequence);
-                }
-            });
-
-            row.appendChild(removeButton);
-        }
-
     }
 
     public void setExpandCompanyPlanningViewCharts(

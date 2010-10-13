@@ -27,7 +27,6 @@ import java.util.List;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
-import org.navalplanner.business.common.entities.OrderSequence;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -75,11 +74,6 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForMaterialCategories();
     void setGenerateCodeForMaterialCategories(
             Boolean generateCodeForMaterialCategories);
-
-    List<OrderSequence> getOrderSequences();
-    void addOrderSequence();
-    void removeOrderSequence(OrderSequence orderSequence)
-            throws IllegalArgumentException;
 
     List<EntitySequence> getEntitySequences(EntityNameEnum entityName);
     void addEntitySequence(EntityNameEnum entityName);

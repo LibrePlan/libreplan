@@ -30,7 +30,6 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
-import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -57,9 +56,6 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
-    private IOrderSequenceDAO orderSequenceDAO;
-
-    @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
 
     @Override
@@ -73,18 +69,7 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
             configurationDAO.save(configuration);
         }
 
-        createDefaultOrderSquenceIfNotExist();
         loadRequiredDataSequences();
-    }
-
-    private void createDefaultOrderSquenceIfNotExist() {
-        List<OrderSequence> orderSequences = orderSequenceDAO.getAll();
-
-        if (orderSequences.isEmpty()) {
-            OrderSequence orderSequence = OrderSequence.create(PREFIX);
-            orderSequence.setActive(true);
-            orderSequenceDAO.save(orderSequence);
-        }
     }
 
     public void loadRequiredDataSequences() {
