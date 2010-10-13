@@ -463,7 +463,8 @@ public class CriterionTreeModel implements ICriterionTreeModel {
             criterionType.incrementLastCriterionSequenceCode();
             String criterionCode = EntitySequence.formatValue(numberOfDigits,
                     criterionType.getLastCriterionSequenceCode());
-            criterion.setCode(criterionType.getCode() + criterionCode);
+            criterion.setCode(criterionType.getCode()
+                    + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
         }
     }
 

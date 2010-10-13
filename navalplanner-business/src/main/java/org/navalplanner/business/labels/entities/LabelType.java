@@ -187,7 +187,8 @@ public class LabelType extends IntegrationEntity implements Comparable {
                 this.incrementLastLabelSequenceCode();
                 String labelCode = EntitySequence.formatValue(numberOfDigits,
                         this.getLastLabelSequenceCode());
-                label.setCode(this.getCode() + labelCode);
+                label.setCode(this.getCode()
+                        + EntitySequence.CODE_SEPARATOR_CHILDREN + labelCode);
             }
         }
     }

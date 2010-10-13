@@ -43,6 +43,8 @@ public class EntitySequence extends BaseEntity {
     public static final Integer MIN_NUMBER_OF_DIGITS = 5;
     public static final Integer MAX_NUMBER_OF_DIGITS = 9;
 
+    public static final String CODE_SEPARATOR_CHILDREN = "-";
+
     public static EntitySequence create(String prefix, EntityNameEnum entityName) {
         return create(new EntitySequence(prefix, entityName));
     }
@@ -195,4 +197,5 @@ public class EntitySequence extends BaseEntity {
             }
         }
     }
+
 }

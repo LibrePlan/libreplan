@@ -397,7 +397,9 @@ public class Order extends OrderLineGroup {
                 this.incrementLastOrderElementSequenceCode();
                 String orderElementCode = EntitySequence.formatValue(
                         numberOfDigits, this.getLastOrderElementSequenceCode());
-                orderElement.setCode(this.getCode() + orderElementCode);
+                orderElement.setCode(this.getCode()
+                        + EntitySequence.CODE_SEPARATOR_CHILDREN
+                        + orderElementCode);
             }
 
             if (orderElement instanceof OrderLine) {
@@ -412,6 +414,7 @@ public class Order extends OrderLineGroup {
                                 numberOfDigits, ((OrderLine) orderElement)
                                         .getLastHoursGroupSequenceCode());
                         hoursGroup.setCode(orderElement.getCode()
+                                + EntitySequence.CODE_SEPARATOR_CHILDREN
                                 + hoursGroupCode);
                     }
                 }
