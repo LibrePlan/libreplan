@@ -20,10 +20,15 @@
 
 package org.navalplanner.web.common;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.entities.EntityNameEnum;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.entities.OrderSequence;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contract for {@link ConfigurationModel}.
@@ -76,6 +81,11 @@ public interface IConfigurationModel {
     void removeOrderSequence(OrderSequence orderSequence)
             throws IllegalArgumentException;
 
+    List<EntitySequence> getEntitySequences(EntityNameEnum entityName);
+    void addEntitySequence(EntityNameEnum entityName);
+    void removeEntitySequence(EntitySequence entitySequence)
+            throws IllegalArgumentException;
+
     void setExpandCompanyPlanningViewCharts(
             Boolean expandCompanyPlanningViewCharts);
 
@@ -102,5 +112,4 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForUnitTypes();
 
     void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes);
-
 }

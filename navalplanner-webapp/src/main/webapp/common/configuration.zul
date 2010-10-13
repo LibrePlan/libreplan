@@ -40,7 +40,7 @@
             <tab label="${i18n:_('Main preferences')}" />
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel id="panelConfiguration">
                 <grid fixedLayout="true" id="configurationVariables">
                     <columns>
                         <column width="200px" />
@@ -71,25 +71,32 @@
                                 <rows>
                                     <row>
                                         <checkbox label="${i18n:_('Criterion')}"
-                                            checked="@{configurationController.generateCodeForCriterion}" />
+                                            checked="@{configurationController.generateCodeForCriterion}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                         <checkbox label="${i18n:_('Label')}"
-                                            checked="@{configurationController.generateCodeForLabel}" />
+                                            checked="@{configurationController.generateCodeForLabel}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                     <row>
                                         <checkbox label="${i18n:_('Work report')}"
-                                            checked="@{configurationController.generateCodeForWorkReport}" />
+                                            checked="@{configurationController.generateCodeForWorkReport}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                         <checkbox label="${i18n:_('Resources')}"
-                                            checked="@{configurationController.generateCodeForResources}" />
+                                            checked="@{configurationController.generateCodeForResources}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                     <row>
                                         <checkbox label="${i18n:_('Types of work hours')}"
-                                            checked="@{configurationController.generateCodeForTypesOfWorkHours}" />
+                                            checked="@{configurationController.generateCodeForTypesOfWorkHours}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                         <checkbox label="${i18n:_('Material categories')}"
-                                            checked="@{configurationController.generateCodeForMaterialCategories}" />
+                                            checked="@{configurationController.generateCodeForMaterialCategories}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                     <row>
                                         <checkbox label="${i18n:_('Unit Measures')}"
-                                            checked="@{configurationController.generateCodeForUnitTypes}" />
+                                            checked="@{configurationController.generateCodeForUnitTypes}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                 </rows>
                             </grid>
@@ -104,13 +111,16 @@
                                 <rows>
                                     <row>
                                         <checkbox label="${i18n:_('Company view')}"
-                                            checked="@{configurationController.expandCompanyPlanningViewCharts}" />
+                                            checked="@{configurationController.expandCompanyPlanningViewCharts}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                         <checkbox label="${i18n:_('Order view')}"
-                                            checked="@{configurationController.expandOrderPlanningViewCharts}" />
+                                            checked="@{configurationController.expandOrderPlanningViewCharts}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                     <row>
                                         <checkbox label="${i18n:_('Resource load view')}"
-                                            checked="@{configurationController.expandResourceLoadViewCharts}" />
+                                            checked="@{configurationController.expandResourceLoadViewCharts}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                 </rows>
                             </grid>
@@ -155,7 +165,6 @@
                         </grid>
                     </panelchildren>
                 </panel>
-
             </tabpanel>
         </tabpanels>
     </tabbox>
