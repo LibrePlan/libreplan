@@ -98,10 +98,20 @@ public class EntitySequenceDAO extends
     public String getNextEntityCode(EntityNameEnum entityName) {
         for (int i = 0; i < 5; i++) {
             try {
+                String code;
+                Integer cont = 0;
                 EntitySequence entitySequence = getActiveEntitySequence(entityName);
-                entitySequence.incrementLastValue();
+
+                do {
+                    entitySequence.incrementLastValue();
+                    code = entitySequence.getCode();
+                    cont++;
+                } while (entityName.getIntegrationEntityDAO()
+                        .existsByCode(code)
+                        && cont < 100);
+
                 save(entitySequence);
-                return entitySequence.getCode();
+                return code;
             } catch (HibernateOptimisticLockingFailureException e) {
                 // Do nothing (optimistic approach 5 attempts)
             } catch (InstanceNotFoundException e) {

@@ -22,6 +22,17 @@ package org.navalplanner.business.common.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.materials.entities.UnitType;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.Worker;
+
 /**
  * It represents the entities which use code generation
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -40,4 +51,30 @@ public enum EntityNameEnum {
     public String getDescription() {
         return this.description;
     }
+
+    public IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
+        switch (this) {
+        case ORDER:
+            return (IIntegrationEntityDAO<Order>) Registry.getOrderDAO();
+        case CRITERION:
+            return (IIntegrationEntityDAO<CriterionType>) Registry
+                    .getCriterionTypeDAO();
+        case LABEL:
+            return (IIntegrationEntityDAO<LabelType>) Registry
+                    .getLabelTypeDAO();
+        case MACHINE:
+            return (IIntegrationEntityDAO<Machine>) Registry.getMachineDAO();
+        case WORKER:
+            return (IIntegrationEntityDAO<Worker>) Registry.getWorkerDAO();
+        case UNIT_TYPE:
+            return (IIntegrationEntityDAO<UnitType>) Registry.getUnitTypeDAO();
+        case CALENDAR:
+            return (IIntegrationEntityDAO<CalendarData>) Registry
+                    .getCalendarDataDAO();
+        default:
+            throw new RuntimeException("can't handle the code sequence of the "
+                    + description);
+        }
+    }
+
 }
