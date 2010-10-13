@@ -26,8 +26,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -133,13 +135,12 @@ public class ConfigurationModel implements IConfigurationModel {
     public void confirm() {
 
         checkEntitySequences();
-
         try {
             configurationDAO.save(configuration);
             storeAndRemoveEntitySequences();
         } catch (HibernateOptimisticLockingFailureException e) {
             throw new ConcurrentModificationException(
-                    _("Some order was created during the configuration process, it is impossible to update order sequence table. Please, try again later"));
+                    _("Some entity sequence was created during the configuration process, it is impossible to update entity sequence table. Please, try again later"));
         }
     }
 
@@ -157,7 +158,25 @@ public class ConfigurationModel implements IConfigurationModel {
                 throw new ValidationException(_(
                         "At least one {0} sequence must be active", entity));
             }
+            if (!checkConstraintPrefixNotRepeated(sequences)) {
+                throw new ValidationException(_(
+                        "The {0} sequence prefixes can not be repeated",
+                        entityName.getDescription()));
+            }
         }
+    }
+
+    private boolean checkConstraintPrefixNotRepeated(
+            List<EntitySequence> sequences) {
+        Set<String> prefixes = new HashSet<String>();
+        for (EntitySequence sequence : sequences) {
+            String prefix = sequence.getPrefix();
+            if (prefixes.contains(prefix)) {
+                return false;
+            }
+            prefixes.add(prefix);
+        }
+        return true;
     }
 
     private boolean isAnyActive(List<EntitySequence> sequences) {
@@ -427,4 +446,5 @@ public class ConfigurationModel implements IConfigurationModel {
         entitySequences.get(entitySequence.getEntityName()).remove(
                 entitySequence);
     }
+
 }
