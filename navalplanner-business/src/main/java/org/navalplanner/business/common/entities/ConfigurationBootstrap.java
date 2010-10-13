@@ -20,12 +20,16 @@
 
 package org.navalplanner.business.common.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.daos.IOrderSequenceDAO;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +40,6 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Creates a default {@link Configuration} with default values. It also creates
  * a default {@link OrderSequence}.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 @Component
@@ -56,6 +59,9 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
     @Autowired
     private IOrderSequenceDAO orderSequenceDAO;
 
+    @Autowired
+    private IEntitySequenceDAO entitySequenceDAO;
+
     @Override
     @Transactional
     public void loadRequiredData() {
@@ -68,6 +74,7 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
         }
 
         createDefaultOrderSquenceIfNotExist();
+        loadRequiredDataSequences();
     }
 
     private void createDefaultOrderSquenceIfNotExist() {
@@ -78,6 +85,35 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
             orderSequence.setActive(true);
             orderSequenceDAO.save(orderSequence);
         }
+    }
+
+    public void loadRequiredDataSequences() {
+        Map<EntityNameEnum, List<EntitySequence>> mapSequences = initEntitySequences();
+        for (final EntityNameEnum entityName : EntityNameEnum.values()) {
+            if ((mapSequences.get(entityName)).isEmpty()) {
+                createDefaultEntitySquenceIfNotExist(entityName);
+            }
+        }
+    }
+
+    private Map<EntityNameEnum, List<EntitySequence>> initEntitySequences() {
+        Map<EntityNameEnum, List<EntitySequence>> entitySequences = new HashMap<EntityNameEnum, List<EntitySequence>>();
+        for (EntityNameEnum entityName : EntityNameEnum.values()) {
+            entitySequences.put(entityName, new ArrayList<EntitySequence>());
+        }
+        for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
+            entitySequences.get(entitySequence.getEntityName()).add(
+                    entitySequence);
+        }
+        return entitySequences;
+    }
+
+    private void createDefaultEntitySquenceIfNotExist(EntityNameEnum entityName) {
+        String prefix = entityName.toString();
+        EntitySequence entitySequence = EntitySequence.create(prefix,
+                entityName);
+        entitySequence.setActive(true);
+        entitySequenceDAO.save(entitySequence);
     }
 
     private BaseCalendar getDefaultCalendar() {
