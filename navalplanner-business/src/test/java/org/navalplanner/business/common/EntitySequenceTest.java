@@ -25,6 +25,9 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.util.UUID;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
@@ -33,7 +36,6 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,14 +54,22 @@ public class EntitySequenceTest {
     @Autowired
     IEntitySequenceDAO entitySequenceDAO;
 
-    @Autowired
-    private IAdHocTransactionService transactionService;
+    @Before
+    public void loadRequiredaData() {
+        for (EntitySequence sequence : entitySequenceDAO.getAll()) {
+            try {
+                entitySequenceDAO.remove(sequence.getId());
+            } catch (InstanceNotFoundException e) {
+
+            }
+        }
+    }
 
     @Test
     public void testCreateActiveEntitySequence() throws Exception {
         try {
-            entitySequenceDAO.save(givenEntitySequence("prefix_test",
-                    EntityNameEnum.CALENDAR, true));
+            entitySequenceDAO.save(givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.CALENDAR, true));
             entitySequenceDAO.flush();
         } catch (ValidationException e) {
             fail("It should not throw an exception");
@@ -96,7 +106,8 @@ public class EntitySequenceTest {
     @Test
     public void testCreateEntitySequenceWithEmptyEntityName() throws Exception {
         try {
-            entitySequenceDAO.save(givenEntitySequence("prefix", null, false));
+            entitySequenceDAO.save(givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), null, false));
             fail("It should throw an exception");
         } catch (ValidationException e) {
             // It should throw an exception
@@ -108,8 +119,8 @@ public class EntitySequenceTest {
     public void testCreateEntitySequenceWithNumberOfDigitsNotSpecified()
             throws Exception {
         try {
-            EntitySequence entitySequence = givenEntitySequence("prefix",
-                    EntityNameEnum.CRITERION, true);
+            EntitySequence entitySequence = givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.CRITERION, true);
             entitySequence.setNumberOfDigits(null);
             entitySequenceDAO.save(entitySequence);
             fail("It should throw an exception");
@@ -123,8 +134,8 @@ public class EntitySequenceTest {
     public void testCreateEntitySequenceWithNumberOfDigitsOutRange()
             throws Exception {
         try {
-            EntitySequence entitySequence = givenEntitySequence("prefix",
-                    EntityNameEnum.CRITERION, true);
+            EntitySequence entitySequence = givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.CRITERION, true);
             entitySequence.setNumberOfDigits(15);
             entitySequenceDAO.save(entitySequence);
             fail("It should throw an exception");
@@ -135,85 +146,57 @@ public class EntitySequenceTest {
     }
 
     @Test
-    @NotTransactional
+    @Transactional
     public void testCreateTwoActiveEntitySequenceWithTheSameEntityName() {
-        EntitySequence entitySequenceA = givenEntitySequence("prefixA",
-                EntityNameEnum.CRITERION, true);
-        saveEntitySequenceInTransaction(entitySequenceA);
+        EntitySequence entitySequenceA = givenEntitySequence("prefix-"
+                + UUID.randomUUID(), EntityNameEnum.CRITERION, true);
+        entitySequenceDAO.save(entitySequenceA);
+        entitySequenceDAO.flush();
         try {
-            EntitySequence entitySequenceB = givenEntitySequence("prefixB",
-                    EntityNameEnum.CRITERION, true);
-            saveEntitySequenceInTransaction(entitySequenceB);
+            EntitySequence entitySequenceB = givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.CRITERION, true);
+            entitySequenceDAO.save(entitySequenceB);
             fail("Expected ValidationException");
         } catch (ValidationException e) {
         }
     }
 
     @Test
-    @NotTransactional
+    @Transactional
     public void testCreateTwoEntitySequenceWithTheSameEntityName() {
-        EntitySequence entitySequenceA = givenEntitySequence("prefixA",
-                EntityNameEnum.LABEL, true);
-        saveEntitySequenceInTransaction(entitySequenceA);
+        EntitySequence entitySequenceA = givenEntitySequence("prefix-"
+                + UUID.randomUUID(), EntityNameEnum.LABEL, true);
+        entitySequenceDAO.save(entitySequenceA);
+        entitySequenceDAO.flush();
         try {
-            EntitySequence entitySequenceB = givenEntitySequence("prefixB",
-                    EntityNameEnum.LABEL, false);
-            saveEntitySequenceInTransaction(entitySequenceB);
+            EntitySequence entitySequenceB = givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.LABEL, false);
+            entitySequenceDAO.save(entitySequenceB);
         } catch (ValidationException e) {
             fail("It shouldn't throw an exception");
         }
     }
 
     @Test
-    @NotTransactional
+    @Transactional
     public void testCreateAndRemoveTwoEntitySequenceWithTheSameEntityName() {
-        EntitySequence entitySequenceA = givenEntitySequence("prefixA",
-                EntityNameEnum.MACHINE, true);
-        saveEntitySequenceInTransaction(entitySequenceA);
+        EntitySequence entitySequenceA = givenEntitySequence("prefix-"
+                + UUID.randomUUID(), EntityNameEnum.MACHINE, true);
+        entitySequenceDAO.save(entitySequenceA);
         try {
-            removeEntitySequenceInTransaction(entitySequenceA);
+            entitySequenceDAO.remove(entitySequenceA.getId());
         } catch (ValidationException e) {
+            fail("It shouldn't throw an exception");
+        } catch (InstanceNotFoundException o) {
             fail("It shouldn't throw an exception");
         }
         try {
-            EntitySequence entitySequenceB = givenEntitySequence("prefixB",
-                    EntityNameEnum.MACHINE, true);
-            saveEntitySequenceInTransaction(entitySequenceB);
+            EntitySequence entitySequenceB = givenEntitySequence("prefix-"
+                    + UUID.randomUUID(), EntityNameEnum.MACHINE, true);
+            entitySequenceDAO.save(entitySequenceB);
         } catch (ValidationException e) {
             fail("It shouldn't throw an exception");
         }
-    }
-
-    private void saveEntitySequenceInTransaction(
-            final EntitySequence entitySequence) {
-        IOnTransaction<Void> createEntitySequenceTransaction = new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-                entitySequenceDAO.save(entitySequence);
-                return null;
-            }
-        };
-        transactionService.runOnTransaction(createEntitySequenceTransaction);
-    }
-
-    private void removeEntitySequenceInTransaction(
-            final EntitySequence entitySequence) {
-        IOnTransaction<Void> createEntitySequenceTransaction = new IOnTransaction<Void>() {
-
-            @Override
-            public Void execute() {
-                try {
-                    entitySequenceDAO.remove(entitySequence);
-                } catch (InstanceNotFoundException e) {
-
-                } catch (IllegalArgumentException e) {
-
-                }
-                return null;
-            }
-        };
-        transactionService.runOnTransaction(createEntitySequenceTransaction);
     }
 
     private EntitySequence givenEntitySequence(String prefix,
@@ -223,4 +206,5 @@ public class EntitySequenceTest {
         entitySequence.setActive(active);
         return entitySequence;
     }
+
 }
