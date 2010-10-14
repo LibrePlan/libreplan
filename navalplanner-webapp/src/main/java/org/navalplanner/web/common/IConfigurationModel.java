@@ -20,14 +20,11 @@
 
 package org.navalplanner.web.common;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Contract for {@link ConfigurationModel}.
@@ -106,4 +103,8 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForUnitTypes();
 
     void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes);
+
+    void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars);
+
+    Boolean getGenerateCodeForBaseCalendars();
 }

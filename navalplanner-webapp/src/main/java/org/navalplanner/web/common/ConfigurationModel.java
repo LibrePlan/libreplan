@@ -354,6 +354,23 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForBaseCalendars() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForBaseCalendars();
+    }
+
+    @Override
     public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
         if (configuration != null) {
             configuration.setGenerateCodeForUnitTypes(generateCodeForUnitTypes);

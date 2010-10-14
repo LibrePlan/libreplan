@@ -25,6 +25,7 @@
         <property name="generateCodeForTypesOfWorkHours" not-null="true" />
         <property name="generateCodeForMaterialCategories" not-null="true" />
         <property name="generateCodeForUnitTypes" not-null="true" />
+        <property name="generateCodeForBaseCalendars" not-null="true" />
         <property name="expandCompanyPlanningViewCharts" not-null="true" />
         <property name="expandOrderPlanningViewCharts" not-null="true" />
         <property name="expandResourceLoadViewCharts" not-null="true" />

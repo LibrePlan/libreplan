@@ -55,6 +55,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForUnitTypes = true;
 
+    private Boolean generateCodeForBaseCalendars = true;
+
     private Boolean expandCompanyPlanningViewCharts = false;
 
     private Boolean expandOrderPlanningViewCharts = true;
@@ -184,6 +186,15 @@ public class Configuration extends BaseEntity {
 
     public void setMonteCarloMethodTabVisible(Boolean monteCarloMethodTabVisible) {
         this.monteCarloMethodTabVisible = monteCarloMethodTabVisible;
+    }
+
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        this.generateCodeForBaseCalendars = generateCodeForBaseCalendars;
+    }
+
+    public Boolean getGenerateCodeForBaseCalendars() {
+        return generateCodeForBaseCalendars;
     }
 
 }

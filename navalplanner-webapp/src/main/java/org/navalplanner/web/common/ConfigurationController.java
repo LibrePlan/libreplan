@@ -250,10 +250,19 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.getGenerateCodeForUnitTypes();
     }
 
-    public void setGenerateCodeForUnitTypes(
-            Boolean generateCodeForUnitTypes) {
-        configurationModel.setGenerateCodeForUnitTypes(
-                generateCodeForUnitTypes);
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+        configurationModel
+                .setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
+    }
+
+    public Boolean getGenerateCodeForBaseCalendars() {
+        return configurationModel.getGenerateCodeForBaseCalendars();
+    }
+
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        configurationModel
+                .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
     public void removeEntitySequence(EntitySequence entitySequence) {

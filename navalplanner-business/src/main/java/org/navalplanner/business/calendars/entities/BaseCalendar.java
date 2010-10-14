@@ -40,8 +40,8 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -56,6 +56,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
+    }
+
+    public static BaseCalendar create(String code) {
+        return create(new BaseCalendar(CalendarData.create()), code);
     }
 
     public static BaseCalendar createUnvalidated(String code, String name,
@@ -108,6 +112,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     @Valid
     private List<CalendarAvailability> calendarAvailabilities = new ArrayList<CalendarAvailability>();
+
+    private Boolean generatedCode = false;
 
     public enum DayType {
         NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
@@ -1080,4 +1086,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         throw new InstanceNotFoundException(code, CalendarData.class.getName());
 
     }
+
+    public void setGeneratedCode(Boolean generatedCode) {
+        this.generatedCode = generatedCode;
+    }
+
+    public Boolean isGeneratedCode() {
+        return generatedCode == null ? false : generatedCode;
+    }
+
 }
