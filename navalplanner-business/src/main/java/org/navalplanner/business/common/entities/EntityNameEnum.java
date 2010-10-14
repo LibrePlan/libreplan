@@ -26,6 +26,7 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -40,7 +41,7 @@ public enum EntityNameEnum {
 
     ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
             "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
-            "Type of work hours");;
+            "Type of work hours"), MATERIAL_CATEGORY("Material category");
 
     private String description;
 
@@ -74,6 +75,9 @@ public enum EntityNameEnum {
         case WORK_HOURS_TYPE:
             return (IIntegrationEntityDAO<TypeOfWorkHours>) Registry
                     .getTypeOfWorkHoursDAO();
+        case MATERIAL_CATEGORY:
+            return (IIntegrationEntityDAO<MaterialCategory>) Registry
+                    .getMaterialCategoryDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);
