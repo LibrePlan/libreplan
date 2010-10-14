@@ -710,8 +710,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected void resetAssigmentsForInterval(LocalDate startInclusive,
             LocalDate endExclusive, List<T> assignmentsCreated) {
-        boolean endMovedAfterCurrentEnd = getEndDate() != null
-                && getEndDate().compareTo(endExclusive) < 0;
+        LocalDate realEndExclusive = getEndDateGiven(assignmentsCreated);
+        boolean endMovedAfterCurrentEnd = realEndExclusive != null
+                && getEndDate() != null
+                && getEndDate().compareTo(realEndExclusive) < 0;
         removingAssignments(withoutConsolidated(getAssignments(startInclusive,
                 endExclusive)));
         addingAssignments(assignmentsCreated);
@@ -1121,12 +1123,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return intraDayEnd;
         }
 
-        List<? extends DayAssignment> assignments = getAssignments();
+        LocalDate l = getEndDateGiven(getAssignments());
+        if (l == null) {
+            return null;
+        }
+        return IntraDayDate.startOfDay(l);
+    }
+
+    private LocalDate getEndDateGiven(
+            List<? extends DayAssignment> assignments) {
         if (assignments.isEmpty()) {
             return null;
         }
         DayAssignment lastAssignment = assignments.get(assignments.size() - 1);
-        return IntraDayDate.startOfDay(lastAssignment.getDay().plusDays(1));
+        return lastAssignment.getDay().plusDays(1);
     }
 
     public boolean isAlreadyFinishedBy(LocalDate date) {
