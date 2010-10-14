@@ -234,14 +234,16 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.toTransientStateWithInitial(getUnorderedFor(scenario));
+        result.toTransientStateWithInitial(getUnorderedFor(scenario),
+                getIntraDayEndFor(scenario));
         result.resource = getResource();
         return result;
     }
 
     private void toTransientStateWithInitial(
-            Set<SpecificDayAssignment> initialAssignments) {
+            Set<SpecificDayAssignment> initialAssignments, IntraDayDate end) {
         this.state = new TransientState(initialAssignments);
+        this.state.setIntraDayEnd(end);
     }
 
     @Override

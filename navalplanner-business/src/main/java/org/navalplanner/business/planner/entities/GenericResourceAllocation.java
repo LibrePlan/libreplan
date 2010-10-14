@@ -495,8 +495,8 @@ public class GenericResourceAllocation extends
     @Override
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation
-                .toTransientStateWithInitial(getUnorderedForScenario(scenario));
+        allocation.toTransientStateWithInitial(
+                getUnorderedForScenario(scenario), getIntraDayEndFor(scenario));
         allocation.criterions = new HashSet<Criterion>(criterions);
         allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
                 this);
@@ -504,8 +504,9 @@ public class GenericResourceAllocation extends
     }
 
     private void toTransientStateWithInitial(
-            Set<GenericDayAssignment> initialAssignments) {
+            Set<GenericDayAssignment> initialAssignments, IntraDayDate end) {
         this.assignmentsState = new TransientState(initialAssignments);
+        this.assignmentsState.setIntraDayEnd(end);
     }
 
     @Override
