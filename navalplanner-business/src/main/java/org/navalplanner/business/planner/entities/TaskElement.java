@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -458,21 +460,22 @@ public abstract class TaskElement extends BaseEntity {
 
     public abstract Set<ResourceAllocation<?>> getAllResourceAllocations();
 
-    public SortedMap<LocalDate, Integer> getHoursAssignedByDay() {
-        SortedMap<LocalDate, Integer> result = new TreeMap<LocalDate, Integer>();
+    public SortedMap<LocalDate, EffortDuration> getDurationsAssignedByDay() {
+        SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
         for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
             for (DayAssignment each : resourceAllocation
                     .getAssignments()) {
-                addToResult(result, each.getDay(), each.getHours());
+                addToResult(result, each.getDay(), each.getDuration());
             }
         }
         return result;
     }
 
-    private void addToResult(SortedMap<LocalDate, Integer> result,
-            LocalDate date, int hours) {
-        int current = result.get(date) != null ? result.get(date) : 0;
-        result.put(date, current + hours);
+    private void addToResult(SortedMap<LocalDate, EffortDuration> result,
+            LocalDate date, EffortDuration duration) {
+        EffortDuration current = result.get(date) != null ? result.get(date)
+                : zero();
+        result.put(date, current.plus(duration));
     }
 
     public List<DayAssignment> getDayAssignments() {

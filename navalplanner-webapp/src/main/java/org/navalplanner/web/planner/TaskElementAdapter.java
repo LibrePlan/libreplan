@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
@@ -475,29 +477,29 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return null;
             }
             boolean limitReached = false;
-
-            Integer count = 0;
+            EffortDuration hoursEffort = hours(hours);
+            EffortDuration count = zero();
             LocalDate lastDay = null;
-            Integer hoursLastDay = 0;
+            EffortDuration effortLastDay = zero();
 
-            Map<LocalDate, Integer> daysMap = taskElement
-                    .getHoursAssignedByDay();
+            Map<LocalDate, EffortDuration> daysMap = taskElement
+                    .getDurationsAssignedByDay();
             if (daysMap.isEmpty()) {
                 return null;
             }
-            for (Entry<LocalDate, Integer> entry : daysMap.entrySet()) {
+            for (Entry<LocalDate, EffortDuration> entry : daysMap.entrySet()) {
                 lastDay = entry.getKey();
-                hoursLastDay = entry.getValue();
-                count += hoursLastDay;
-                if (count >= hours) {
+                effortLastDay = entry.getValue();
+                count = count.plus(effortLastDay);
+                if (count.compareTo(hoursEffort) >= 0) {
                     limitReached = true;
                     break;
                 }
             }
 
             if (!limitReached) {
-                while (count < hours) {
-                    count += hoursLastDay;
+                while (count.compareTo(hoursEffort) < 0) {
+                    count = count.plus(effortLastDay);
                     lastDay = lastDay.plusDays(1);
                 }
             }
