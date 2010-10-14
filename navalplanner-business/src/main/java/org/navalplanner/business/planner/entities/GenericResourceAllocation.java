@@ -399,6 +399,7 @@ public class GenericResourceAllocation extends
             ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
                     scenario);
             result.resetTo(genericDayAssignments);
+            result.setIntraDayEnd(getIntraDayEnd());
             return result;
         }
 

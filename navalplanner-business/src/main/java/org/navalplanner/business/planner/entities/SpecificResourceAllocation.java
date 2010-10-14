@@ -373,6 +373,7 @@ public class SpecificResourceAllocation extends
             ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
                     scenario);
             result.resetTo(specificDaysAssignment);
+            result.setIntraDayEnd(intraDayEnd);
             return result;
         }
 
