@@ -480,7 +480,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             EffortDuration hoursEffort = hours(hours);
             EffortDuration count = zero();
             LocalDate lastDay = null;
-            EffortDuration effortLastDay = zero();
+            EffortDuration effortLastDayNotZero = zero();
 
             Map<LocalDate, EffortDuration> daysMap = taskElement
                     .getDurationsAssignedByDay();
@@ -489,17 +489,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
             for (Entry<LocalDate, EffortDuration> entry : daysMap.entrySet()) {
                 lastDay = entry.getKey();
-                effortLastDay = entry.getValue();
-                count = count.plus(effortLastDay);
+                if (!entry.getValue().isZero()) {
+                    effortLastDayNotZero = entry.getValue();
+                }
+                count = count.plus(entry.getValue());
                 if (count.compareTo(hoursEffort) >= 0) {
                     limitReached = true;
                     break;
                 }
             }
-
-            if (!limitReached) {
+            if (!limitReached && effortLastDayNotZero.isZero()) {
+                LOG.warn("limit not reached and no day with effort not zero");
+            }
+            if (!limitReached && !effortLastDayNotZero.isZero()) {
                 while (count.compareTo(hoursEffort) < 0) {
-                    count = count.plus(effortLastDay);
+                    count = count.plus(effortLastDayNotZero);
                     lastDay = lastDay.plusDays(1);
                 }
             }
