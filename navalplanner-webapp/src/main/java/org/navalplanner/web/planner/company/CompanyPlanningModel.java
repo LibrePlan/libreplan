@@ -857,8 +857,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 for (Resource resource : durationsGrouped.get(date).keySet()) {
                     ICalendar calendar = resource.getCalendarOrDefault();
                     EffortDuration workableTime = calendar.getCapacityOn(day);
-                    EffortDuration assignedDuration = durationsGrouped.get(day)
-                            .get(resource);
+                    EffortDuration assignedDuration = durationsGrouped.get(
+                            day.getDate()).get(resource);
                     result = result.plus(min(assignedDuration, workableTime));
                 }
 
