@@ -67,6 +67,8 @@
 
     <property name="generateCode" not-null="true" />
 
+    <property name="lastWorkReportLineSequenceCode" access="field" />
+
     <!-- Not indexed -->
     <many-to-one name="workReportType" class="WorkReportType" column="WORK_REPORT_TYPE_ID" not-null="true"/>
 
