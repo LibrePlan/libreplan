@@ -41,6 +41,7 @@ import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
@@ -839,19 +840,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         prepareEditWindow();
         showEditWindow(_("Edit order"));
-        initSchedulingStrategyRadioGroup();
     }
 
-    private void initSchedulingStrategyRadioGroup() {
-        final Radiogroup rgSchedulingStrategy = (Radiogroup) editWindow.getFellowIfAny("rgSchedulingStrategy");
-        rgSchedulingStrategy.addEventListener(Events.ON_CHECK, new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                Radio selected = rgSchedulingStrategy.getSelectedItem();
-                orderModel.setForwardScheduling("forward".equals(selected.getValue()));
-            }
-
-        });
+    private void prepareEditWindow() {
+        addEditWindow();
+        updateDisabilitiesOnInterface();
+        initializeCustomerComponent();
+        initSchedulingStrategyRadioGroup();
+        selectDefaultTab();
     }
 
     private void resetTabControllers() {
@@ -865,11 +861,23 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderAuthorizationController = null;
     }
 
-    private void prepareEditWindow() {
-        addEditWindow();
-        updateDisabilitiesOnInterface();
-        initializeCustomerComponent();
-        selectDefaultTab();
+    private void initSchedulingStrategyRadioGroup() {
+        final Radiogroup rgSchedulingStrategy = (Radiogroup) editWindow.getFellowIfAny("rgSchedulingStrategy");
+        rgSchedulingStrategy.addEventListener(Events.ON_CHECK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Radio selected = rgSchedulingStrategy.getSelectedItem();
+                orderModel.setForwardScheduling("forward".equals(selected.getValue()));
+            }
+
+        });
+
+        OrderLineGroup order = orderModel.getOrder();
+        if (order.isForwardScheduling()) {
+            rgSchedulingStrategy.setSelectedIndex(0);
+        } else {
+            rgSchedulingStrategy.setSelectedIndex(1);
+        }
     }
 
     private void showEditWindow(String title) {
