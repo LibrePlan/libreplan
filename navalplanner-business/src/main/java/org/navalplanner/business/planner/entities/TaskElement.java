@@ -200,7 +200,7 @@ public abstract class TaskElement extends BaseEntity {
     protected void copyPropertiesFrom(TaskElement task) {
         this.name = task.getName();
         this.notes = task.getNotes();
-        this.startDate = task.startDate;
+        setStartDate(task.getStartDate());
         this.forwardScheduling = isForwardScheduling(task);
         this.taskSource = task.getTaskSource();
     }
@@ -267,8 +267,8 @@ public abstract class TaskElement extends BaseEntity {
 
     @NotNull
     public Date getStartDate() {
-        return startDate != null ? startDate.getDate().toDateTimeAtStartOfDay()
-                .toDate() : null;
+        return getIntraDayStartDate() != null ? getIntraDayStartDate()
+                .getDate().toDateTimeAtStartOfDay().toDate() : null;
     }
 
     public IntraDayDate getIntraDayStartDate() {
@@ -276,11 +276,11 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public LocalDate getStartAsLocalDate() {
-        return startDate == null ? null : startDate.getDate();
+        return getIntraDayStartDate() == null ? null : getIntraDayStartDate().getDate();
     }
 
     public LocalDate getEndAsLocalDate() {
-        return endDate == null ? null : endDate.getDate();
+        return getIntraDayStartDate() == null ? null : getIntraDayStartDate().getDate();
     }
 
     public void setStartDate(Date startDate) {
@@ -307,7 +307,7 @@ public abstract class TaskElement extends BaseEntity {
             return;
         }
         IntraDayDate previousStart = this.startDate;
-        this.endDate = calculateEndKeepingLength(newStartDate);
+        setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
         setIntraDayStartDate(newStartDate);
         if (!previousStart.equals(newStartDate)) {
             moveAllocations(scenario);
@@ -346,8 +346,8 @@ public abstract class TaskElement extends BaseEntity {
 
     @NotNull
     public Date getEndDate() {
-        return endDate != null ? endDate.toDateTimeAtStartOfDay().toDate()
-                : null;
+        return getIntraDayEndDate() != null ? getIntraDayEndDate()
+                .toDateTimeAtStartOfDay().toDate() : null;
     }
 
     public void setEndDate(Date endDate) {
@@ -359,7 +359,7 @@ public abstract class TaskElement extends BaseEntity {
     public void setIntraDayEndDate(IntraDayDate endDate) {
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.endDate = endDate;
-        datesInterceptor.setNewEnd(previousEnd, this.endDate);
+        datesInterceptor.setNewEnd(previousEnd, getIntraDayEndDate());
     }
 
     public IntraDayDate getIntraDayEndDate() {
@@ -375,7 +375,7 @@ public abstract class TaskElement extends BaseEntity {
         if (!canBeResized()) {
             return;
         }
-        boolean sameDay = this.endDate.areSameDay(endDate.getDate());
+        boolean sameDay = getIntraDayEndDate().areSameDay(endDate.getDate());
         setIntraDayEndDate(endDate);
         if (!sameDay) {
             moveAllocations(scenario);
