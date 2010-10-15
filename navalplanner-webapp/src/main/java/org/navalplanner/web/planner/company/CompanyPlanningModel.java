@@ -47,9 +47,6 @@ import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapsh
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.ICostCalculator;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -60,8 +57,6 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
-import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
@@ -134,21 +129,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private IOrderDAO orderDAO;
 
     @Autowired
-    private ITaskElementDAO taskElementDAO;
-
-    @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
     private IUserDAO userDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
-
-    @Autowired
-    private ICostCalculator hoursCostCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
@@ -827,15 +813,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
+            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask =
+                databaseSnapshots.snapshotEstimatedCostPerTask();
+            Collection<TaskElement> list = filterTasksByDate(
+                    estimatedCostPerTask.keySet(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement, filterStartDate, filterFinishDate));
-                }
+                addCost(estimatedCost, estimatedCostPerTask.get(taskElement));
             }
 
             estimatedCost = accumulateResult(estimatedCost);
@@ -856,8 +843,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         private SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
             SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
-            List<WorkReportLine> workReportLines = workReportLineDAO
-                    .findFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
+            Collection<WorkReportLine> workReportLines = filterWorkReportLinesByDate(
+                    databaseSnapshots.snapshotWorkReportLines(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             if (workReportLines.isEmpty()) {
                 return result;
@@ -877,16 +865,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(asDate(filterStartDate), asDate(filterFinishDate));
+            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> advanceCostPerTask =
+                databaseSnapshots.snapshotAdvanceCostPerTask();
+            Collection<TaskElement> list = filterTasksByDate(
+                    advanceCostPerTask.keySet(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement,
-                            filterStartDate, filterFinishDate));
-                }
+                addCost(advanceCost, advanceCostPerTask.get(taskElement));
             }
 
             advanceCost = accumulateResult(advanceCost);
@@ -898,6 +886,34 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         @Override
         protected Set<EarnedValueType> getSelectedIndicators() {
             return getEarnedValueSelectedIndicators();
+        }
+
+        private Collection<TaskElement> filterTasksByDate(
+                Collection<TaskElement> tasks, Date startDate, Date endDate) {
+            if(startDate == null && endDate == null) {
+                return tasks;
+            }
+            for(TaskElement task : tasks) {
+                if((startDate != null && task.getEndDate().compareTo(startDate)<0) ||
+                    (endDate != null && task.getStartDate().compareTo(endDate)>0)) {
+                    tasks.remove(task);
+                }
+            }
+            return tasks;
+        }
+
+        private Collection<WorkReportLine> filterWorkReportLinesByDate(
+                Collection<WorkReportLine> lines, Date startDate, Date endDate) {
+            if(startDate == null && endDate == null) {
+                return lines;
+            }
+            for(WorkReportLine line: lines) {
+                if((startDate != null && line.getDate().compareTo(startDate)<0) ||
+                    (endDate != null && line.getDate().compareTo(endDate)>0)) {
+                    lines.remove(line);
+                }
+            }
+            return lines;
         }
     }
 

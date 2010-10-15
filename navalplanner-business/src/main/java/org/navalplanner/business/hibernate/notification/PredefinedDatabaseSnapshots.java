@@ -19,15 +19,19 @@
  */
 package org.navalplanner.business.hibernate.notification;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
@@ -44,12 +48,16 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceLoadChartData;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -61,6 +69,8 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -143,7 +153,27 @@ public class PredefinedDatabaseSnapshots {
     public ResourceLoadChartData snapshotResourceLoadChartData() {
         return resourceLoadChartData.getValue();
     }
-    
+
+    private IAutoUpdatedSnapshot<List<WorkReportLine>> workReportLines;
+
+    public List<WorkReportLine> snapshotWorkReportLines() {
+        return workReportLines.getValue();
+    }
+
+    private IAutoUpdatedSnapshot<Map<TaskElement,SortedMap<LocalDate, BigDecimal>>>
+            estimatedCostPerTask;
+
+    public Map<TaskElement,SortedMap<LocalDate, BigDecimal>> snapshotEstimatedCostPerTask() {
+        return estimatedCostPerTask.getValue();
+    }
+
+    private IAutoUpdatedSnapshot<Map<TaskElement,SortedMap<LocalDate, BigDecimal>>>
+            advanceCostPerTask;
+
+    public Map<TaskElement,SortedMap<LocalDate, BigDecimal>> snapshotAdvanceCostPerTask() {
+        return advanceCostPerTask.getValue();
+    }
+
     private boolean snapshotsRegistered = false;
 
     public void registerSnapshots() {
@@ -177,6 +207,15 @@ public class PredefinedDatabaseSnapshots {
                 CalendarAvailability.class, CalendarException.class,
                 CalendarData.class, TaskElement.class, SpecificResourceAllocation.class,
                 GenericResourceAllocation.class, ResourceAllocation.class);
+        workReportLines = snapshot("work report lines", calculateWorkReportLines(),
+                WorkReportLine.class);
+        estimatedCostPerTask = snapshot("estimated cost per task",
+                calculateEstimatedCostPerTask(),
+                TaskElement.class, Task.class, TaskGroup.class, DayAssignment.class);
+        advanceCostPerTask = snapshot("advance cost per task",
+                calculateAdvanceCostPerTask(),
+                TaskElement.class, Task.class, TaskGroup.class,
+                DirectAdvanceAssignment.class);
     }
 
     private <T> IAutoUpdatedSnapshot<T> snapshot(String name,
@@ -352,6 +391,59 @@ public class PredefinedDatabaseSnapshots {
                 List<Resource> resources = resourceDAO.list(Resource.class);
                 return new ResourceLoadChartData(dayAssignments, resources);
 
+            }
+        };
+    }
+
+    @Autowired
+    private IWorkReportLineDAO workReportLineDAO;
+
+    private Callable<List<WorkReportLine>> calculateWorkReportLines() {
+        return new Callable<List<WorkReportLine>>() {
+            @Override
+            public List<WorkReportLine> call()
+                    throws Exception {
+                return workReportLineDAO.list(WorkReportLine.class);
+            }
+        };
+    }
+
+    @Autowired
+    private ICostCalculator hoursCostCalculator;
+
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
+    private Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>> calculateEstimatedCostPerTask() {
+        return new Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>>() {
+            @Override
+            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call()
+                    throws Exception {
+                Map<TaskElement, SortedMap<LocalDate, BigDecimal>> map =
+                    new HashMap<TaskElement, SortedMap<LocalDate,BigDecimal>>();
+                for(TaskElement task : taskElementDAO.list(TaskElement.class)) {
+                    if(task instanceof Task) {
+                        map.put(task, hoursCostCalculator.getEstimatedCost((Task)task));
+                    }
+                }
+                return map;
+            }
+        };
+    }
+
+    private Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>> calculateAdvanceCostPerTask() {
+        return new Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>>() {
+            @Override
+            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call()
+                    throws Exception {
+                Map<TaskElement, SortedMap<LocalDate, BigDecimal>> map =
+                    new HashMap<TaskElement, SortedMap<LocalDate,BigDecimal>>();
+                for(TaskElement task : taskElementDAO.list(TaskElement.class)) {
+                    if(task instanceof Task) {
+                        map.put(task, hoursCostCalculator.getAdvanceCost((Task)task));
+                    }
+                }
+                return map;
             }
         };
     }
