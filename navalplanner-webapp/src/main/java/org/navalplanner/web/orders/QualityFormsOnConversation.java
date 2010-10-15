@@ -62,8 +62,10 @@ public class QualityFormsOnConversation {
     private void initialize(QualityForm qualityForm) {
         qualityForm.getName();
         qualityForm.getQualityFormType();
-        AdvanceType advanceType = qualityForm.getAdvanceType();
-        advanceType.getUnitName();
+        if (qualityForm.isReportAdvance()) {
+            AdvanceType advanceType = qualityForm.getAdvanceType();
+            advanceType.getUnitName();
+        }
         for (QualityFormItem qualityFormItem : qualityForm
                 .getQualityFormItems()) {
             qualityFormItem.getName();
