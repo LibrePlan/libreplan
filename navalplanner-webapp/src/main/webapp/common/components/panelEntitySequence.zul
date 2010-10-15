@@ -17,9 +17,9 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<panel border="normal">
-	<panelchildren>
+	<vbox>
 		<hbox valign="center">
+			<label />
 			<button />
 		</hbox>
 		<radiogroup>
@@ -32,6 +32,6 @@
 					<column label="${i18n:_('Operations')}" />
 				</columns>
 			</grid>
+			<separator bar="false" height="15px" />
 		</radiogroup>
-	</panelchildren>
-</panel>
+	</vbox>

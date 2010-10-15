@@ -147,6 +147,12 @@
                         </row>
                     </rows>
                 </grid>
+				<separator bar="false" height="20px" />
+				<panel border="normal" title="Entity code sequences">
+					<panelchildren id="panelEntitySequence">
+					</panelchildren>
+				</panel>
+
             </tabpanel>
         </tabpanels>
     </tabbox>

@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -50,7 +51,6 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Listitem;
-import org.zkoss.zul.api.Panel;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -97,26 +97,31 @@ public class ConfigurationController extends GenericForwardComposer {
     private void createPanelEntityComponents() {
         for (final EntityNameEnum entityName : EntityNameEnum.values()) {
             Component entitySequenceComponent = Executions.createComponents(
-                    "components/panelEntitySequence.zul", panelConfiguration,
+                    "components/panelEntitySequence.zul", panelConfiguration
+                            .getFellow("panelEntitySequence"),
                     new HashMap<String, String>());
-            initPanelTitle((Panel) entitySequenceComponent, entityName);
+            initLabelInPanelSequence(entitySequenceComponent, entityName);
             initButtonInPanelSequence(entitySequenceComponent, entityName);
             initGridInPanelSequence(entitySequenceComponent, entityName);
             reloadEntitySequenceList(entityName);
         }
     }
 
-    private void initPanelTitle(Panel panel, EntityNameEnum entityName) {
-        panel.setTitle(_(entityName.getSequenceLiteral()));
+    private void initLabelInPanelSequence(Component component,
+            final EntityNameEnum entityName) {
+        try {
+            Label label = (Label) component.getFirstChild().getFirstChild();
+            label.setValue(_(entityName.getSequenceLiteral()));
+            label.invalidate();
+        } catch (ClassCastException e) {
+        }
     }
 
     private void initButtonInPanelSequence(Component component,
             final EntityNameEnum entityName) {
-        String name = entityName.getDescription().toLowerCase();
         try {
-            Button button = (Button) component.getFirstChild().getFirstChild()
-                    .getFirstChild();
-            button.setLabel(_("New " + name + " sequence"));
+            Button button = (Button) component.getFirstChild().getLastChild();
+            button.setLabel(_("New"));
             button.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -133,12 +138,18 @@ public class ConfigurationController extends GenericForwardComposer {
         String name = entityName.getDescription();
         String id = name + "SequenceList";
         try {
-            Grid grid = (Grid) component.getFirstChild().getLastChild()
-                    .getFirstChild();
+            Grid grid = (Grid) component.getLastChild().getFirstChild();
             grid.setId(id);
         } catch (ClassCastException e) {
         }
     }
+
+    // private void addSeparatorComponent(Component component){
+    // Separator separator = new Separator();
+    // separator.setHeight("10px");
+    // separator.setBar(true);
+    // component.appendChild(separator);
+    // }
 
     public List<BaseCalendar> getCalendars() {
         return configurationModel.getCalendars();
