@@ -33,6 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
@@ -268,6 +269,16 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     public Iterable<PartialDay> daysUntil(final IntraDayDate endExclusive) {
         Validate.isTrue(compareTo(endExclusive) <= 0);
         return daysUntil(new UntilEnd(endExclusive));
+    }
+
+    public int numberOfDaysUntil(IntraDayDate end) {
+        Validate.isTrue(compareTo(end) <= 0);
+        Days daysBetween = Days.daysBetween(getDate(), end.getDate());
+        if (getEffortDuration().compareTo(end.getEffortDuration()) <= 0) {
+            return daysBetween.getDays();
+        } else {
+            return daysBetween.getDays() - 1;
+        }
     }
 
     public Iterable<PartialDay> daysUntil(final UntilEnd predicate) {

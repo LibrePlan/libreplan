@@ -144,6 +144,41 @@ public class IntraDayDateTest {
     }
 
     @Test
+    public void canNowTheNumberOfDaysBetweenTwoDates() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(today.plusDays(1), zero());
+        assertThat(start.numberOfDaysUntil(end), equalTo(1));
+        assertThat(
+                start.numberOfDaysUntil(IntraDayDate.create(today, hours(8))),
+                equalTo(0));
+        assertThat(
+                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
+                        IntraDayDate.create(tomorrow, hours(3))), equalTo(0));
+        assertThat(
+                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
+                        IntraDayDate.create(tomorrow, hours(4))), equalTo(1));
+        assertThat(
+                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
+                        IntraDayDate.create(tomorrow, hours(5))), equalTo(1));
+        assertThat(
+                IntraDayDate.create(today, hours(4)).numberOfDaysUntil(
+                        IntraDayDate.create(tomorrow.plusDays(1), hours(3))),
+                equalTo(1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void theEndMustBeEqualOrBiggerThanTheStart() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        IntraDayDate end = IntraDayDate.create(today.plusDays(1), zero());
+        assertThat(end.numberOfDaysUntil(start), equalTo(1));
+    }
+
+    public void theEndCanBeTheSameAsTheStart() {
+        IntraDayDate start = IntraDayDate.create(today, zero());
+        assertThat(start.numberOfDaysUntil(start), equalTo(0));
+    }
+
+    @Test
     public void worksWellWithEffortDurationsNotZero() {
         IntraDayDate start = IntraDayDate.create(today, halfHour);
         IntraDayDate end = IntraDayDate.create(today, oneHour);
