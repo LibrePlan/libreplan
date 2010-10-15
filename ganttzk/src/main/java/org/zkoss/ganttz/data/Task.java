@@ -275,12 +275,12 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     @Override
-    public Date getHoursAdvanceEndDate() {
+    public GanttDate getHoursAdvanceEndDate() {
         return fundamentalProperties.getHoursAdvanceEndDate();
     }
 
     @Override
-    public Date getAdvanceEndDate() {
+    public GanttDate getAdvanceEndDate() {
         return fundamentalProperties.getAdvanceEndDate();
     }
 

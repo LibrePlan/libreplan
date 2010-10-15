@@ -22,7 +22,6 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -32,7 +31,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
-import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
@@ -485,26 +483,23 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
-        String widthHoursAdvancePercentage = getMapper().toPixels(
-                fromStartUntil(this.task.getHoursAdvanceEndDate()))
-                + "px";
+        int startPixels = this.task.getBeginDate().toPixels(getMapper());
+
+        String widthHoursAdvancePercentage = pixelsFromStartUntil(startPixels,
+                this.task.getHoursAdvanceEndDate()) + "px";
         response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
 
-        String widthAdvancePercentage = getMapper().toPixels(
-                fromStartUntil(this.task.getAdvanceEndDate()))
-                + "px";
+        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+                this.task.getAdvanceEndDate()) + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
     }
 
-    private Duration fromStartUntil(Date until) {
-        DateTime start = new DateTime(this.task.getBeginDate()
-                .toDayRoundedDate().getTime());
-        DateTime end = new DateTime(until.getTime());
-        Duration duration = end.isAfter(start) ? new Duration(start, end)
-                : Duration.ZERO;
-        return duration;
+    private int pixelsFromStartUntil(int startPixels, GanttDate until) {
+        int endPixels = until.toPixels(getMapper());
+        assert endPixels >= startPixels;
+        return endPixels - startPixels;
     }
 
     public void updateTooltipText() {

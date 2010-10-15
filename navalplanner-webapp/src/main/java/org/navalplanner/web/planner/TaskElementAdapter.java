@@ -373,7 +373,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getHoursAdvanceEndDate() {
+        public GanttDate getHoursAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
 
             Integer assignedHours = 0;
@@ -382,24 +382,24 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         .getTotalChargedHours();
             }
 
-            LocalDate date = null;
+            GanttDate result = null;
             if(!(taskElement instanceof TaskGroup)) {
-                date = calculateLimitDate(assignedHours);
+                result = calculateLimitDate(assignedHours);
             }
-            if (date == null) {
+            if (result == null) {
                 Integer hours = taskElement.getSumOfHoursAllocated();
 
                 if (hours == 0) {
-                    return getBeginDate().toDayRoundedDate();
+                    return getBeginDate();
                 } else {
                     BigDecimal percentage = new BigDecimal(assignedHours)
                             .setScale(2).divide(new BigDecimal(hours),
                                     RoundingMode.DOWN);
-                    date = calculateLimitDate(percentage);
+                    result = calculateLimitDate(percentage);
                 }
             }
 
-            return date.toDateTimeAtStartOfDay().toDate();
+            return result;
         }
 
         @Override
@@ -423,7 +423,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getAdvanceEndDate() {
+        public GanttDate getAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
 
             BigDecimal advancePercentage;
@@ -439,29 +439,29 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Integer advanceHours = advancePercentage.multiply(
                     new BigDecimal(hours)).intValue();
 
-            LocalDate date;
+            GanttDate result;
             if(taskElement instanceof TaskGroup) {
-                date = calculateLimitDate(advancePercentage);
+                result = calculateLimitDate(advancePercentage);
             }
             else {
-                date = calculateLimitDate(advanceHours);
-                if (date == null) {
-                    date = calculateLimitDate(advancePercentage);
+                result = calculateLimitDate(advanceHours);
+                if (result == null) {
+                    result = calculateLimitDate(advancePercentage);
                 }
             }
 
-            return date.toDateTimeAtStartOfDay().toDate();
+            return result;
         }
 
-        private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
+        private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
             if (advancePercentage.compareTo(BigDecimal.ZERO) == 0) {
-                return new LocalDate(getBeginDate().toDayRoundedDate());
+                return getBeginDate();
             }
             Long totalMillis = taskElement.getLengthMilliseconds();
             Long advanceMillis = advancePercentage.multiply(
                     new BigDecimal(totalMillis)).longValue();
-            return new LocalDate(getBeginDate().toDayRoundedDate().getTime()
-                    + advanceMillis).plusDays(1);
+            return GanttDate.createFrom(new LocalDate(getBeginDate()
+                    .toDayRoundedDate().getTime() + advanceMillis).plusDays(1));
         }
 
         @Override
@@ -472,7 +472,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return new BigDecimal(0);
         }
 
-        private LocalDate calculateLimitDate(Integer hours) {
+        private GanttDate calculateLimitDate(Integer hours) {
             if (hours == null || hours == 0) {
                 return null;
             }
@@ -508,7 +508,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 }
             }
 
-            return lastDay.plusDays(1);
+            return GanttDate.createFrom(lastDay.plusDays(1));
         }
 
         @Override

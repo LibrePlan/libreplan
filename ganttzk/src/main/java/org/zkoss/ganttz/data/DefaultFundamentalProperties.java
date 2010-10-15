@@ -142,13 +142,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public Date getHoursAdvanceEndDate() {
-        return new Date(hoursAdvanceEndDate);
+    public GanttDate getHoursAdvanceEndDate() {
+        return GanttDate.createFrom(new Date(hoursAdvanceEndDate));
     }
 
     @Override
-    public Date getAdvanceEndDate() {
-        return advanceEndDate != null ? new Date(advanceEndDate.getTime())
+    public GanttDate getAdvanceEndDate() {
+        return advanceEndDate != null ? GanttDate.createFrom(new Date(
+                advanceEndDate.getTime()))
                 : null;
     }
     @Override

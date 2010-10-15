@@ -60,9 +60,9 @@ public interface ITaskFundamentalProperties {
 
     public void setNotes(String notes);
 
-    public Date getHoursAdvanceEndDate();
+    public GanttDate getHoursAdvanceEndDate();
 
-    public Date getAdvanceEndDate();
+    public GanttDate getAdvanceEndDate();
 
     public BigDecimal getHoursAdvancePercentage();
 
