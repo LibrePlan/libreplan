@@ -21,6 +21,8 @@
 package org.navalplanner.web.planner;
 
 import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.min;
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
@@ -330,13 +332,14 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return toGantt(start);
         }
 
-        private GanttDate toGantt(IntraDayDate start) {
+        private GanttDate toGantt(IntraDayDate date) {
             BaseCalendar calendar = taskElement.getCalendar();
             if (calendar == null) {
-                return TaskElementAdapter.toGantt(start);
+                return TaskElementAdapter.toGantt(date);
             }
-            return TaskElementAdapter.toGantt(start, calendar
-                    .getCapacityOn(PartialDay.wholeDay(start.getDate())));
+            return TaskElementAdapter
+                    .toGantt(date, calendar.getCapacityOn(PartialDay
+                            .wholeDay(date.getDate())));
         }
 
         @Override
@@ -454,14 +457,49 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
-            if (advancePercentage.compareTo(BigDecimal.ZERO) == 0) {
+            BaseCalendar calendar = taskElement.getCalendar();
+            if (advancePercentage.compareTo(BigDecimal.ZERO) == 0 || calendar==null) {
                 return getBeginDate();
             }
-            Long totalMillis = taskElement.getLengthMilliseconds();
-            Long advanceMillis = advancePercentage.multiply(
-                    new BigDecimal(totalMillis)).longValue();
-            return GanttDate.createFrom(new LocalDate(getBeginDate()
-                    .toDayRoundedDate().getTime() + advanceMillis).plusDays(1));
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            IntraDayDate end = taskElement.getIntraDayEndDate();
+            int daysBetween = start.numberOfDaysUntil(end);
+            if (daysBetween == 0) {
+                return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
+            }
+            int daysAdvance = advancePercentage.multiply(
+                    new BigDecimal(daysBetween))
+                    .intValue();
+            return GanttDate.createFrom(taskElement.getIntraDayStartDate()
+                    .getDate().plusDays(daysAdvance));
+        }
+
+        private GanttDate calculateLimitDateWhenDaysBetweenAreZero(
+                BigDecimal advancePercentage) {
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            IntraDayDate end = taskElement.getIntraDayEndDate();
+            BaseCalendar calendar = taskElement.getCalendar();
+            Iterable<PartialDay> daysUntil = start.daysUntil(end);
+            EffortDuration total = zero();
+            for (PartialDay each : daysUntil) {
+                total = total.plus(calendar.getCapacityOn(each));
+            }
+            BigDecimal totalAsSeconds = new BigDecimal(total
+                    .getSeconds());
+            EffortDuration advanceLeft = seconds(advancePercentage.multiply(
+                    totalAsSeconds).intValue());
+            for (PartialDay each : daysUntil) {
+                if (advanceLeft.compareTo(calendar.getCapacityOn(each)) <= 0) {
+                    LocalDate dayDate = each.getStart().getDate();
+                    if (dayDate.equals(start.getDate())) {
+                        return toGantt(IntraDayDate.create(dayDate,
+                                advanceLeft.plus(start.getEffortDuration())));
+                    }
+                    return toGantt(IntraDayDate.create(dayDate, advanceLeft));
+                }
+                advanceLeft = advanceLeft.minus(calendar.getCapacityOn(each));
+            }
+            return toGantt(end);
         }
 
         @Override
@@ -476,10 +514,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             if (hours == null || hours == 0) {
                 return null;
             }
-            boolean limitReached = false;
-            EffortDuration hoursEffort = hours(hours);
-            EffortDuration count = zero();
-            LocalDate lastDay = null;
+            EffortDuration hoursLeft = hours(hours);
+            IntraDayDate result = null;
             EffortDuration effortLastDayNotZero = zero();
 
             Map<LocalDate, EffortDuration> daysMap = taskElement
@@ -488,27 +524,38 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return null;
             }
             for (Entry<LocalDate, EffortDuration> entry : daysMap.entrySet()) {
-                lastDay = entry.getKey();
                 if (!entry.getValue().isZero()) {
                     effortLastDayNotZero = entry.getValue();
                 }
-                count = count.plus(entry.getValue());
-                if (count.compareTo(hoursEffort) >= 0) {
-                    limitReached = true;
+                EffortDuration decrement = min(entry.getValue(), hoursLeft);
+                hoursLeft = hoursLeft.minus(decrement);
+                if (hoursLeft.isZero()) {
+                    if (decrement.equals(entry.getValue())) {
+                        result = IntraDayDate.startOfDay(entry.getKey()
+                                .plusDays(1));
+                    } else {
+                        result = IntraDayDate.create(entry.getKey(), decrement);
+                    }
                     break;
+                } else {
+                    result = IntraDayDate
+                            .startOfDay(entry.getKey().plusDays(1));
                 }
             }
-            if (!limitReached && effortLastDayNotZero.isZero()) {
+            if (!hoursLeft.isZero() && effortLastDayNotZero.isZero()) {
                 LOG.warn("limit not reached and no day with effort not zero");
             }
-            if (!limitReached && !effortLastDayNotZero.isZero()) {
-                while (count.compareTo(hoursEffort) < 0) {
-                    count = count.plus(effortLastDayNotZero);
-                    lastDay = lastDay.plusDays(1);
+            if (!hoursLeft.isZero() && !effortLastDayNotZero.isZero()) {
+                while (!hoursLeft.isZero()) {
+                    hoursLeft = hoursLeft.minus(min(effortLastDayNotZero,
+                            hoursLeft));
+                    result = result.nextDayAtStart();
                 }
             }
-
-            return GanttDate.createFrom(lastDay.plusDays(1));
+            if (result == null) {
+                return null;
+            }
+            return toGantt(result);
         }
 
         @Override
