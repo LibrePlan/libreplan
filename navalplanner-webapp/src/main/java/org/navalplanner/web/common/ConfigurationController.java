@@ -349,6 +349,11 @@ public class ConfigurationController extends GenericForwardComposer {
             appendNumberOfDigitsInbox(row, entitySequence);
             appendLastValueInbox(row, entitySequence);
             appendOperations(row, entitySequence);
+
+            if (entitySequence.isAlreadyInUse()) {
+                row
+                        .setTooltiptext(_("The code sequence is already in use and it can not be updated."));
+            }
         }
 
         private void appendActiveRadiobox(final Row row,
