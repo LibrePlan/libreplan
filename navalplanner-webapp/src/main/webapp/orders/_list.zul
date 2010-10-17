@@ -24,11 +24,16 @@
         rowRenderer= "@{controller.ordersRowRender}"
         onInitRender ="controller.sortOrders();" sclass="clickable-rows projects-list">
         <columns>
-            <column label="${i18n:_('Name')}" align="center" sort="auto(lower(name))" sclass="name"/>
-            <column label="${i18n:_('Code')}" align="center" sort="auto(lower(code))"/>
-            <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center" sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date"/>
-            <column label="${i18n:_('Deadline')}" align="center" sort="auto(deadline,initDate)" sclass="date"/>
-            <column label="${i18n:_('Customer')}" align="center" sort="auto(lower(customer))" />
+            <column label="${i18n:_('Name')}" align="center"
+                sort="auto(lower(name))" sclass="name"/>
+            <column label="${i18n:_('Code')}" align="center"
+                sort="auto(lower(code))"/>
+            <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center"
+                sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date"/>
+            <column label="${i18n:_('Deadline')}" align="center"
+                sort="auto(deadline,initDate)" sortDirection="ascending" sclass="date"/>
+            <column label="${i18n:_('Customer')}" align="center"
+                sort="auto(lower(customer))" />
             <column label="${i18n:_('Customer reference')}" align="center"/>
             <column label="${i18n:_('Total Budget')}" align="center"/>
             <column label="${i18n:_('Total Hours')}" align="center"/>

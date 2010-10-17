@@ -111,24 +111,32 @@ public class TaskSource extends BaseEntity {
     }
 
     /**
-     * This method updates the task with a name and a start date. The start date
-     * and end date should never be null, unless it's legacy data
+     * This method updates the task with a name, scheduling strategy, start date
+     * and end date. The start date and end date should never be null, unless
+     * it's legacy data
+     *
      * @param task
      * @param orderElement
      */
     private static void updateTaskWithOrderElement(TaskElement task,
             OrderElement orderElement) {
+
         task.setName(orderElement.getName());
-        if (task.getStartDate() == null) {
-            task.setStartDate(orderElement.getOrder().getInitDate());
+        task.setForwardScheduling(orderElement.isForwardScheduling());
+
+        if (task.isForwardScheduling()) {
+            if (task.getStartDate() == null) {
+                task.setStartDate(orderElement.getOrder().getInitDate());
+            }
+            if (task.getSatisfiedResourceAllocations().isEmpty()) {
+                task.setEndDate(null);
+            }
+        } else {
+            if (task.getEndDate() == null) {
+                task.setEndDate(orderElement.getOrder().getDeadline());
+            }
         }
-        if (task.getEndDate() == null) {
-            task.initializeEndDateIfDoesntExist();
-        }
-        if (task.getSatisfiedResourceAllocations().isEmpty()) {
-            task.setEndDate(null);
-            task.initializeEndDateIfDoesntExist();
-        }
+        task.initializeEndDateIfDoesntExist();
         task.updateDeadlineFromOrderElement();
     }
 

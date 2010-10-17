@@ -74,17 +74,39 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     @Override
     protected void initializeEndDate() {
-        EffortDuration workHours = EffortDuration.hours(getWorkHours());
+        if (isForwardScheduling()) {
+            IntraDayDate newEnd = calculateEndDate(getIntraDayStartDate(),
+                    EffortDuration.hours(getWorkHours()));
+            setIntraDayEndDate(newEnd);
+        } else {
+            IntraDayDate newStart = calculateStartDate(getIntraDayEndDate(),
+                    EffortDuration.hours(getWorkHours()));
+            setIntraDayStartDate(newStart);
+        }
+    }
+
+    private IntraDayDate calculateEndDate(IntraDayDate start, EffortDuration workHours) {
         EffortDuration effortStandardPerDay = EffortDuration.hours(8);
 
         int daysElapsed = workHours.divideBy(effortStandardPerDay);
         EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
 
-        IntraDayDate start = getIntraDayStartDate();
         IntraDayDate newEnd = IntraDayDate.create(
                 start.getDate().plusDays(daysElapsed), start
                         .getEffortDuration().plus(remainder));
-        setIntraDayEndDate(newEnd);
+        return newEnd;
+    }
+
+    private IntraDayDate calculateStartDate(IntraDayDate end, EffortDuration workHours) {
+        EffortDuration effortStandardPerDay = EffortDuration.hours(8);
+
+        int daysElapsed = workHours.divideBy(effortStandardPerDay);
+        EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
+
+        IntraDayDate newStart = IntraDayDate.create(
+                end.getDate().minusDays(daysElapsed), end
+                        .getEffortDuration().plus(remainder));
+        return newStart;
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.WORKABLE_DAYS;
@@ -127,7 +149,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private boolean theOrderElementMustBeNotNull() {
         return getOrderElement() != null;
     }
-
 
     public HoursGroup getHoursGroup() {
         return getTaskSource().getHoursGroups().iterator().next();

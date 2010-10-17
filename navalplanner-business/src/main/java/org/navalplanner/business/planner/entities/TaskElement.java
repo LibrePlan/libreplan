@@ -104,20 +104,25 @@ public abstract class TaskElement extends BaseEntity {
     protected static <T extends TaskElement> T create(T taskElement,
             TaskSource taskSource) {
         taskElement.taskSource = taskSource;
+
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
-        taskElement.setStartDate(taskElement.getOrderInitDate());
         taskElement.setForwardScheduling(isForwardScheduling(taskSource));
+        initializeStartDateFromOrder(taskElement);
         return create(taskElement);
     }
 
-    private static boolean isForwardScheduling(TaskSource taskSource) {
-        return Boolean.valueOf(taskSource.getOrderElement().getOrder().isForwardScheduling());
+    private static void initializeStartDateFromOrder(TaskElement taskElement) {
+        if (taskElement.isForwardScheduling()) {
+            taskElement.setStartDate(taskElement.getOrder().getInitDate());
+        } else {
+            taskElement.setEndDate(taskElement.getOrder().getDeadline());
+        }
     }
 
-    private Date getOrderInitDate() {
-        return isForwardScheduling() ? getOrder().getInitDate() : getOrder()
-                .getDeadline();
+    private static boolean isForwardScheduling(TaskSource taskSource) {
+        return Boolean.valueOf(taskSource.getOrderElement().getOrder()
+                .isForwardScheduling());
     }
 
     public Boolean isForwardScheduling() {

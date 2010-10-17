@@ -65,10 +65,22 @@ public class TaskGroup extends TaskElement {
         Validate.notNull(task);
         task.setParent(this);
         addTaskElement(taskElements.size(), task);
-        Date newPossibleEndDate = task.getEndDate();
-        if (getEndDate() == null
-                || getEndDate().compareTo(newPossibleEndDate) < 0) {
-            setEndDate(newPossibleEndDate);
+        updateNewPossibleEndDate(task);
+    }
+
+    private void updateNewPossibleEndDate(TaskElement task) {
+        if (task.isForwardScheduling()) {
+            Date newPossibleEndDate = task.getEndDate();
+            if (getEndDate() == null
+                    || getEndDate().compareTo(newPossibleEndDate) < 0) {
+                setEndDate(newPossibleEndDate);
+            }
+        } else {
+            Date newPossibleStartDate = task.getStartDate();
+            if (getStartDate() == null
+                    || getStartDate().compareTo(newPossibleStartDate) > 0) {
+                setStartDate(newPossibleStartDate);
+            }
         }
     }
 

@@ -938,10 +938,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
-        result.setNotBeforeThan(orderReloaded.getInitDate());
+        setOrderStartConstraint(result, orderReloaded);
         result.setDependenciesConstraintsHavePriority(orderReloaded
                 .getDependenciesConstraintsHavePriority());
         return result;
+    }
+
+    private void setOrderStartConstraint(PlannerConfiguration<TaskElement> plannerConfiguration, Order order) {
+        if (order.isForwardScheduling()) {
+            plannerConfiguration.setNotBeforeThan(order.getInitDate());
+        } else {
+            // TODO Maybe to add a setNotAfterThan method
+        }
     }
 
     private PlanningState createPlanningStateFor(
