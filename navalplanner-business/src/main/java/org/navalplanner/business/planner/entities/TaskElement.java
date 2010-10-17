@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -105,9 +106,33 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.taskSource = taskSource;
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
-        taskElement.setStartDate(taskElement.getOrderElement().getOrder()
-                .getInitDate());
+        taskElement.setStartDate(taskElement.getOrderInitDate());
+        taskElement.setForwardScheduling(isForwardScheduling(taskSource));
         return create(taskElement);
+    }
+
+    private static boolean isForwardScheduling(TaskSource taskSource) {
+        return Boolean.valueOf(taskSource.getOrderElement().getOrder().isForwardScheduling());
+    }
+
+    private Date getOrderInitDate() {
+        return isForwardScheduling() ? getOrder().getInitDate() : getOrder()
+                .getDeadline();
+    }
+
+    public Boolean isForwardScheduling() {
+        if (forwardScheduling == null) {
+            forwardScheduling = getOrder().isForwardScheduling();
+        }
+        return forwardScheduling;
+    }
+
+    public void setForwardScheduling(Boolean isForwardScheduling) {
+        this.forwardScheduling = isForwardScheduling;
+    }
+
+    private Order getOrder() {
+        return getOrderElement().getOrder();
     }
 
     protected static <T extends TaskElement> T createWithoutTaskSource(
@@ -145,6 +170,8 @@ public abstract class TaskElement extends BaseEntity {
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
+    private Boolean forwardScheduling;
+
     public void initializeEndDateIfDoesntExist() {
         if (getEndDate() == null) {
             initializeEndDate();
@@ -174,7 +201,12 @@ public abstract class TaskElement extends BaseEntity {
         this.name = task.getName();
         this.notes = task.getNotes();
         this.startDate = task.startDate;
+        this.forwardScheduling = isForwardScheduling(task);
         this.taskSource = task.getTaskSource();
+    }
+
+    private boolean isForwardScheduling(TaskElement task) {
+        return task.getOrder().isForwardScheduling();
     }
 
     public TaskSource getTaskSource() {

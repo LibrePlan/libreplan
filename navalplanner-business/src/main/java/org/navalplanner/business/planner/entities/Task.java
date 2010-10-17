@@ -63,9 +63,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private static final Log LOG = LogFactory.getLog(Task.class);
 
     public static Task createTask(TaskSource taskSource) {
-        Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
+        Task task = new Task(orderElement.isForwardScheduling());
         orderElement.applyStartConstraintIfNeededTo(task);
+
         Task result = create(task, taskSource);
         result.initializeEndDate();
         return result;
@@ -102,7 +103,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         }
     }
 
-    private TaskStartConstraint startConstraint = new TaskStartConstraint();
+    private TaskStartConstraint startConstraint;
 
     private SubcontractedTaskData subcontractedTaskData;
 
@@ -115,6 +116,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
      */
     public Task() {
 
+    }
+
+    public Task(boolean forwardScheduling) {
+        startConstraint = new TaskStartConstraint(forwardScheduling);
     }
 
     @SuppressWarnings("unused")
@@ -397,7 +402,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public TaskStartConstraint getStartConstraint() {
         if (startConstraint == null) {
-            startConstraint = new TaskStartConstraint();
+            startConstraint = new TaskStartConstraint(isForwardScheduling());
         }
         return startConstraint;
     }

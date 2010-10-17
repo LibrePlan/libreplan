@@ -459,6 +459,10 @@ public abstract class OrderElement extends IntegrationEntity implements
         return copy(initDate);
     }
 
+    public boolean isForwardScheduling() {
+        return getOrder().isForwardScheduling();
+    }
+
     public void setInitDate(Date initDate) {
         this.initDate = initDate;
     }
@@ -942,6 +946,9 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public Order getOrder() {
         if (parent == null) {
+            if (this instanceof Order) {
+                return (Order) this;
+            }
             return null;
         }
         return parent.getOrder();

@@ -35,7 +35,13 @@ public class TaskStartConstraint {
 
     private LocalDate constraintDate = null;
 
-    public TaskStartConstraint() {
+    protected TaskStartConstraint() {
+
+    }
+
+    public TaskStartConstraint(boolean forwardScheduling) {
+        startConstraintType = forwardScheduling ? StartConstraintType.AS_SOON_AS_POSSIBLE
+                : StartConstraintType.AS_LATE_AS_POSSIBLE;
     }
 
     public StartConstraintType getStartConstraintType() {
