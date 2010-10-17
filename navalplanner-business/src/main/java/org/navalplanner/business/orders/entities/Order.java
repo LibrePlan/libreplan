@@ -256,10 +256,6 @@ public class Order extends OrderLineGroup {
         this.responsible = responsible;
     }
 
-    public boolean isDeadlineBeforeStart() {
-        return getDeadline() != null && getDeadline().before(getInitDate());
-    }
-
     public List<OrderElement> getOrderElements() {
         return new ArrayList<OrderElement>(getChildren());
     }
@@ -295,13 +291,32 @@ public class Order extends OrderLineGroup {
     @SuppressWarnings("unused")
     @AssertTrue(message = "the order must have a init date")
     private boolean checkConstraintOrderMustHaveStartDate() {
-        return getInitDate() != null;
+        if (forwardScheduling) {
+            return getInitDate() != null;
+        }
+        return true;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "the order must have a deadline")
+    private boolean checkConstraintOrderMustHaveDeadline() {
+        if (!forwardScheduling) {
+            return getDeadline() != null;
+        }
+        return true;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "deadline must be after start date")
     private boolean checkConstraintDeadlineMustBeAfterStart() {
-        return !this.isDeadlineBeforeStart();
+        if (isForwardScheduling()) {
+            return isDeadlineAfterStart();
+        }
+        return true;
+    }
+
+    private boolean isDeadlineAfterStart() {
+        return getDeadline() == null || getDeadline().after(getInitDate());
     }
 
     @SuppressWarnings("unused")
