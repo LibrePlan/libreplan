@@ -73,6 +73,19 @@
     padding-left:2px;
 }
 
+.listdetails input.task_title {
+    width: auto;
+}
+
+.listdetails div.z-tree-cell-cnt {
+	width: 500px; !important;
+}
+
+/*.listdetails input {
+	width: 80%; !important;
+} */
+
+
 #listdetails_container .z-datebox-inp,
 #listdetails_container div.z-tree-col-cnt {
     font-size: 9px !important;
@@ -92,16 +105,33 @@
 }
 
 .listdetails .depth_2 input.task_title {
-    width: 69.5%;
+    width: 78%;
 }
 
 .listdetails .depth_3 .task_title {
-    width: 57.5%;
+    width: 74%;
 }
 
 .listdetails .depth_4 .task_title {
-    width: 45%;
+    width: 70%;
 }
+
+.listdetails .depth_5 .task_title {
+    width: 66%;
+}
+
+.listdetails .depth_6 .task_title {
+    width: 62%;
+}
+
+.listdetails .depth_7 .task_title {
+    width: 58%;
+}
+
+.listdetails .depth_8 .task_title {
+    width: 54%;
+}
+
 
 .listdetails {
     min-width:200px;
