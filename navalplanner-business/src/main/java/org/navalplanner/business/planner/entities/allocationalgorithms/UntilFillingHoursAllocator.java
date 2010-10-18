@@ -40,7 +40,7 @@ import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
+public abstract class UntilFillingHoursAllocator {
 
     private final Task task;
 
@@ -48,7 +48,7 @@ public abstract class AllocatorForSpecifiedResourcesPerDayAndHours {
 
     private Map<ResourcesPerDayModification, List<DayAssignment>> resultAssignments = new HashMap<ResourcesPerDayModification, List<DayAssignment>>();
 
-    public AllocatorForSpecifiedResourcesPerDayAndHours(Task task,
+    public UntilFillingHoursAllocator(Task task,
             List<ResourcesPerDayModification> allocations) {
         this.task = task;
         this.allocations = allocations;

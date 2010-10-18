@@ -48,7 +48,7 @@ import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public class AllocationUntilFillingHoursTest {
+public class UntilFillingHoursAllocatorTest {
 
     private List<ResourcesPerDayModification> allocations = new ArrayList<ResourcesPerDayModification>();
 
