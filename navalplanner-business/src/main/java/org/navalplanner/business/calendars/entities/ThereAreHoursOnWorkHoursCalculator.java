@@ -171,7 +171,7 @@ public class ThereAreHoursOnWorkHoursCalculator {
     }
 
     /**
-     * Caculates if there are enough hours
+     * Calculates if there are enough hours
      */
     public static CapacityResult thereIsAvailableCapacityFor(
             ICalendar calendar,
