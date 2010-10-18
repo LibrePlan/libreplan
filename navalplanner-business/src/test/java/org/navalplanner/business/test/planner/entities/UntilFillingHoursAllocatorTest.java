@@ -21,8 +21,11 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
+import static org.easymock.EasyMock.verify;
+import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -43,8 +46,10 @@ import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -137,6 +142,24 @@ public class UntilFillingHoursAllocatorTest {
         for (ResourcesPerDayModification each : allocations) {
             assertTrue(each.getBeingModified().isSatisfied());
         }
+    }
+
+    @Test
+    public void theAllocationsThatAreNotSatisfiedAreNotified() {
+        AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+        availability.invalidUntil(new LocalDate(2010, 11, 13));
+        availability.invalidFrom(new LocalDate(2010, 11, 15));
+        givenCalendarWithAvailability(availability, hours(8));
+        givenSpecificAllocations(ResourcesPerDay.amount(1),
+                ResourcesPerDay.amount(2));
+        INotFulfilledReceiver receiver = createMock(INotFulfilledReceiver.class);
+        receiver.cantFulfill(isA(ResourcesPerDayModification.class),
+                isA(CapacityResult.class));
+        expectLastCall().times(2);
+        replay(receiver);
+        ResourceAllocation.allocating(allocations)
+                .untilAllocating(49, receiver);
+        verify(receiver);
     }
 
     @Test

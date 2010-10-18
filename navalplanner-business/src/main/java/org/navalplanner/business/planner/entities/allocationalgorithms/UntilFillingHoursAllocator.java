@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -142,11 +143,14 @@ public abstract class UntilFillingHoursAllocator {
             ResourcesPerDayModification allocation, PartialDay day,
             EffortDuration limit);
 
-    protected abstract boolean thereAreAvailableHoursFrom(IntraDayDate start,
+    protected abstract CapacityResult thereAreAvailableHoursFrom(
+            IntraDayDate start,
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration remainingDuration);
 
-    protected abstract void markUnsatisfied(ResourceAllocation<?> beingModified);
+    protected abstract void markUnsatisfied(
+            ResourcesPerDayModification allocationAttempt,
+            CapacityResult capacityResult);
 
     private EffortDuration assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
@@ -203,9 +207,6 @@ public abstract class UntilFillingHoursAllocator {
                 if (unsatisfied.isEmpty()) {
                     return result;
                 }
-                for (ResourcesPerDayModification each : unsatisfied) {
-                    markUnsatisfied(each.getBeingModified());
-                }
                 allocations.removeAll(unsatisfied);
             } while (!allocations.isEmpty());
             return Collections.emptyList();
@@ -216,9 +217,12 @@ public abstract class UntilFillingHoursAllocator {
                 List<EffortPerAllocation> hoursPerAllocations) {
             List<ResourcesPerDayModification> cannotSatisfy = new ArrayList<ResourcesPerDayModification>();
             for (EffortPerAllocation each : hoursPerAllocations) {
-                if (!thereAreAvailableHoursFrom(start, each.allocation,
-                        each.duration)) {
+                CapacityResult capacityResult = thereAreAvailableHoursFrom(
+                        start, each.allocation,
+                        each.duration);
+                if (!capacityResult.thereIsCapacityAvailable()) {
                     cannotSatisfy.add(each.allocation);
+                    markUnsatisfied(each.allocation, capacityResult);
                 }
             }
             return cannotSatisfy;

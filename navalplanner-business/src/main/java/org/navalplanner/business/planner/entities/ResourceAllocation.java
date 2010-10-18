@@ -46,13 +46,15 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
-import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Machine;
@@ -220,7 +222,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
+        public interface INotFulfilledReceiver {
+            public void cantFulfill(
+                    ResourcesPerDayModification allocationAttempt,
+                    CapacityResult capacityResult);
+        }
+
         public IntraDayDate untilAllocating(int hoursToAllocate) {
+            return untilAllocating(hoursToAllocate, doNothing());
+        }
+
+        private static INotFulfilledReceiver doNothing() {
+            return new INotFulfilledReceiver() {
+                @Override
+                public void cantFulfill(
+                        ResourcesPerDayModification allocationAttempt,
+                        CapacityResult capacityResult) {
+                }
+            };
+        }
+
+        public IntraDayDate untilAllocating(int hoursToAllocate,
+                final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
                     task, allocations) {
 
@@ -240,7 +263,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
                 @Override
-                protected boolean thereAreAvailableHoursFrom(
+                protected CapacityResult thereAreAvailableHoursFrom(
                         IntraDayDate start,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
@@ -250,8 +273,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
                     availability.invalidUntil(start.asExclusiveEnd());
-                    return calendar.thereAreCapacityFor(availability,
-                            resourcesPerDay, effortToAllocate);
+                    return ThereAreHoursOnWorkHoursCalculator
+                            .thereIsAvailableCapacityFor(calendar,
+                                    availability, resourcesPerDay,
+                                    effortToAllocate);
                 }
 
                 private CombinedWorkHours getCalendar(
@@ -262,8 +287,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
                 @Override
-                protected void markUnsatisfied(ResourceAllocation<?> allocation) {
-                    allocation.markAsUnsatisfied();
+                protected void markUnsatisfied(
+                        ResourcesPerDayModification allocationAttempt,
+                        CapacityResult capacityResult) {
+                    allocationAttempt.getBeingModified().markAsUnsatisfied();
+                    receiver.cantFulfill(allocationAttempt, capacityResult);
                 }
 
             };
