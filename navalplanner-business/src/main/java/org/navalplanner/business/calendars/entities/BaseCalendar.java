@@ -917,7 +917,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
         return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(
-                this, availability, resourcesPerDay, durationToAllocate);
+                this, availability, resourcesPerDay, durationToAllocate)
+                .thereIsCapacityAvailable();
     }
 
     public boolean onlyGivesZeroHours() {

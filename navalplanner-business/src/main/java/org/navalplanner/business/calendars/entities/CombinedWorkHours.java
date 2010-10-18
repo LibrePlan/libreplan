@@ -112,8 +112,9 @@ public abstract class CombinedWorkHours implements ICalendar {
     @Override
     public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
             ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
-        return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(this,
-                availability, resourcesPerDay, durationToAllocate);
+        return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(
+                this, availability, resourcesPerDay, durationToAllocate)
+                .thereIsCapacityAvailable();
     }
 }
 

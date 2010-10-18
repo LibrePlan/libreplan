@@ -457,7 +457,8 @@ public class UntilFillingHoursAllocatorTest {
                         return ThereAreHoursOnWorkHoursCalculator
                                 .thereIsAvailableCapacityFor(result,
                                         availability, resourcesPerDay,
-                                        effortDuration);
+                                        effortDuration)
+                                .thereIsCapacityAvailable();
                     }
                 }).anyTimes();
         replay(result);
