@@ -73,6 +73,8 @@ public class UntilFillingHoursAllocatorTest {
 
     private BaseCalendar taskCalendar;
 
+    private Integer initialLengthDaysForTask;
+
     @Test(expected = IllegalArgumentException.class)
     public void allTasksOfAllocationsMustBeNotNull() {
         givenAllocationsWithoutTask();
@@ -142,6 +144,25 @@ public class UntilFillingHoursAllocatorTest {
         for (ResourcesPerDayModification each : allocations) {
             assertTrue(each.getBeingModified().isSatisfied());
         }
+    }
+
+    @Test
+    public void ifNoAllocationsCantBeDoneTheTaskEndIsReturned() {
+        givenTaskOfDaysLength(10);
+        AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+        availability.invalidUntil(new LocalDate(2010, 11, 13));
+        availability.invalidFrom(new LocalDate(2010, 11, 15));
+        givenCalendarWithAvailability(availability, hours(8));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate end = ResourceAllocation.allocating(allocations)
+                .untilAllocating(17);
+        IntraDayDate expectedEnd = IntraDayDate.startOfDay(task
+                .getIntraDayStartDate().getDate().plusDays(10));
+        assertThat(end, equalTo(expectedEnd));
+    }
+
+    private void givenTaskOfDaysLength(int days) {
+        this.initialLengthDaysForTask = days;
     }
 
     @Test
@@ -361,8 +382,17 @@ public class UntilFillingHoursAllocatorTest {
         if (startDate == null) {
             startDate = IntraDayDate.startOfDay(new LocalDate(2009, 10, 10));
         }
+        IntraDayDate end = null;
+        if (initialLengthDaysForTask != null) {
+            LocalDate startPlusDays = startDate.getDate().plusDays(
+                    initialLengthDaysForTask);
+            end = IntraDayDate.startOfDay(startPlusDays);
+        }
         expect(task.getStartDate()).andReturn(
                 startDate.toDateTimeAtStartOfDay().toDate()).anyTimes();
+        if (end != null) {
+            expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
+        }
         expect(task.getIntraDayStartDate()).andReturn(startDate).anyTimes();
         expect(task.getCriterions()).andReturn(
                 Collections.<Criterion> emptySet()).anyTimes();

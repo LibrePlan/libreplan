@@ -65,10 +65,19 @@ public abstract class UntilFillingHoursAllocator {
     public IntraDayDate untilAllocating(EffortDuration effortToAllocate) {
         final IntraDayDate start = IntraDayDate.max(
                 task.getFirstDayNotConsolidated(), task.getIntraDayStartDate());
+        List<EffortPerAllocation> effortPerAllocation = effortPerAllocation(start,
+                effortToAllocate);
+        if (effortPerAllocation.isEmpty()) {
+            return null;
+        }
+        return untilAllocating(start, effortPerAllocation);
+    }
+
+    private IntraDayDate untilAllocating(final IntraDayDate start,
+            List<EffortPerAllocation> effortPerAllocation) {
         int i = 0;
         IntraDayDate currentEnd = start;
-        for (EffortPerAllocation each : effortPerAllocation(start,
-                effortToAllocate)) {
+        for (EffortPerAllocation each : effortPerAllocation) {
             IntraDayDate endCandidate = untilAllocating(start, each.allocation,
                     each.duration);
             currentEnd = IntraDayDate.max(currentEnd, endCandidate);
