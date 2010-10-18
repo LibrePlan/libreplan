@@ -21,6 +21,8 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -28,14 +30,19 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.easymock.IAnswer;
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -46,6 +53,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class UntilFillingHoursAllocatorTest {
@@ -57,6 +65,8 @@ public class UntilFillingHoursAllocatorTest {
     private Task task;
 
     private IntraDayDate startDate;
+
+    private BaseCalendar taskCalendar;
 
     @Test(expected = IllegalArgumentException.class)
     public void allTasksOfAllocationsMustBeNotNull() {
@@ -101,6 +111,32 @@ public class UntilFillingHoursAllocatorTest {
         ResourceAllocation<?> allocation = allocations.get(0)
                 .getBeingModified();
         assertThat(allocation.getAssignments(), haveHours(16, 16));
+    }
+
+    @Test
+    public void ifNoAvailableHoursTheAllocationsAreNotSatisfied() {
+        AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+        availability.invalidUntil(new LocalDate(2010, 11, 13));
+        availability.invalidFrom(new LocalDate(2010, 11, 15));
+        givenCalendarWithAvailability(availability, hours(8));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(24);
+        for (ResourcesPerDayModification each : allocations) {
+            assertTrue(each.getBeingModified().isUnsatisfied());
+        }
+    }
+
+    @Test
+    public void ifAvailableHoursTheAllocationsAreSatisfied() {
+        AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+        availability.invalidUntil(new LocalDate(2010, 11, 13));
+        availability.invalidFrom(new LocalDate(2010, 11, 15));
+        givenCalendarWithAvailability(availability, hours(8));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        ResourceAllocation.allocating(allocations).untilAllocating(16);
+        for (ResourcesPerDayModification each : allocations) {
+            assertTrue(each.getBeingModified().isSatisfied());
+        }
     }
 
     @Test
@@ -309,6 +345,9 @@ public class UntilFillingHoursAllocatorTest {
                 Collections.<Criterion> emptySet()).anyTimes();
         expect(task.getFirstDayNotConsolidated()).andReturn(startDate)
                 .anyTimes();
+        if (taskCalendar != null) {
+            expect(task.getCalendar()).andReturn(taskCalendar).anyTimes();
+        }
         replay(task);
     }
 
@@ -362,6 +401,67 @@ public class UntilFillingHoursAllocatorTest {
         expect(resourceAllocation.getTask()).andReturn(task).anyTimes();
         replay(resourceAllocation);
         return resourceAllocation;
+    }
+
+    private BaseCalendar givenCalendarWithAvailability(
+            final AvailabilityTimeLine availability,
+            final EffortDuration workingDay) {
+        taskCalendar = mockCalendarWithAvailability(availability, workingDay);
+        return taskCalendar;
+    }
+
+    private BaseCalendar mockCalendarWithAvailability(
+            final AvailabilityTimeLine availability,
+            final EffortDuration workingDay) {
+        final BaseCalendar result = createNiceMock(BaseCalendar.class);
+        expect(result.getAvailability()).andReturn(availability).anyTimes();
+        expect(result.getCapacityOn(isA(PartialDay.class)))
+                .andAnswer(new IAnswer<EffortDuration>() {
+
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        PartialDay day = (PartialDay) getCurrentArguments()[0];
+                        if (availability.isValid(day.getDate())) {
+                            return day.limitDuration(workingDay);
+                        } else {
+                            return zero();
+                        }
+                    }
+                }).anyTimes();
+        expect(
+                result.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class))).andAnswer(
+                new IAnswer<EffortDuration>() {
+
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        PartialDay day = (PartialDay) getCurrentArguments()[0];
+                        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
+                        if (availability.isValid(day.getDate())) {
+                            return day.limitDuration(resourcesPerDay
+                                    .asDurationGivenWorkingDayOf(workingDay));
+                        } else {
+                            return zero();
+                        }
+                    }
+                }).anyTimes();
+        expect(result.thereAreCapacityFor(isA(AvailabilityTimeLine.class),
+                        isA(ResourcesPerDay.class), isA(EffortDuration.class)))
+                .andAnswer(new IAnswer<Boolean>() {
+
+                    @Override
+                    public Boolean answer() throws Throwable {
+                        AvailabilityTimeLine availability = (AvailabilityTimeLine) getCurrentArguments()[0];
+                        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
+                        EffortDuration effortDuration = (EffortDuration) getCurrentArguments()[2];
+                        return ThereAreHoursOnWorkHoursCalculator
+                                .thereIsAvailableCapacityFor(result,
+                                        availability, resourcesPerDay,
+                                        effortDuration);
+                    }
+                }).anyTimes();
+        replay(result);
+        return result;
     }
 
 }
