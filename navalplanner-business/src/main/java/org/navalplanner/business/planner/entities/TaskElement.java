@@ -183,6 +183,10 @@ public abstract class TaskElement extends BaseEntity {
         }
     }
 
+    /*
+     * Initializes endDate or startDate depending on scheduling strategy
+     * selected
+     */
     protected abstract void initializeEndDate();
 
     public void updateDeadlineFromOrderElement() {

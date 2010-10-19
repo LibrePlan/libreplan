@@ -166,8 +166,13 @@ public class TaskGroup extends TaskElement {
 
     @Override
     protected void initializeEndDate() {
-        List<Date> endDates = getEndDates(getChildren());
-        setEndDate(Collections.max(endDates));
+        if (isForwardScheduling()) {
+            List<Date> endDates = getEndDates(getChildren());
+            setEndDate(Collections.max(endDates));
+        } else {
+            List<Date> startDates = getStartDates(getChildren());
+            setStartDate(Collections.min(startDates));
+        }
     }
 
     private List<Date> getEndDates(Collection<? extends TaskElement> children) {
@@ -175,6 +180,15 @@ public class TaskGroup extends TaskElement {
         for (TaskElement each : children) {
             Validate.notNull(each.getEndDate());
             result.add(each.getEndDate());
+        }
+        return result;
+    }
+
+    private List<Date> getStartDates(Collection<? extends TaskElement> children) {
+        List<Date> result = new ArrayList<Date>();
+        for (TaskElement each : children) {
+            Validate.notNull(each.getStartDate());
+            result.add(each.getStartDate());
         }
         return result;
     }
