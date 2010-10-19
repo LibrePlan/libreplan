@@ -233,7 +233,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
+        orderElementFilter.getChildren().clear();
         // Add the expand/collapse button to the tool bar
         final Button expandAllButton = new Button();
         expandAllButton.setId("expandAllButton");
