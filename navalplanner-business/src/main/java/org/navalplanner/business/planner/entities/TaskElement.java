@@ -127,7 +127,8 @@ public abstract class TaskElement extends BaseEntity {
 
     public Boolean isForwardScheduling() {
         if (forwardScheduling == null) {
-            forwardScheduling = getOrder().isForwardScheduling();
+            final Order order = getOrder();
+            forwardScheduling = order == null ? true: order.isForwardScheduling();
         }
         return forwardScheduling;
     }
@@ -137,7 +138,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private Order getOrder() {
-        return getOrderElement().getOrder();
+        return getOrderElement() != null ? getOrderElement().getOrder() : null;
     }
 
     protected static <T extends TaskElement> T createWithoutTaskSource(
