@@ -44,6 +44,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -467,14 +468,18 @@ public class ConfigurationController extends GenericForwardComposer {
             row.appendChild(textbox);
         }
 
-        private void appendOperations(Row row,
+        private void appendOperations(final Row row,
                 final EntitySequence entitySequence) {
             final Button removeButton = Util
                     .createRemoveButton(new EventListener() {
 
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            removeEntitySequence(entitySequence);
+                            if (isLastOne(row)) {
+                                showMessageNotDelete();
+                            } else {
+                                removeEntitySequence(entitySequence);
+                            }
                         }
                     });
 
@@ -496,4 +501,19 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.getEntitySequences(entityName);
     }
 
+    private boolean isLastOne(final Row row) {
+        return (row.getGrid().getRows().getChildren().size() == 1);
+    }
+
+    public void showMessageNotDelete() {
+        try {
+            Messagebox
+                    .show(
+                            _("It can not be deleted. At least one sequence is necessary."),
+                            _("Deleting sequence"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            messages.showMessage(Level.ERROR, e.getMessage());
+        }
+    }
 }
