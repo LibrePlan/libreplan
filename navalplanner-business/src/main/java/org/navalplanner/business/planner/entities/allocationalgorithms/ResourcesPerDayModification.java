@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -86,6 +88,20 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
+        public String getNoValidPeriodsMessage() {
+            String firstLine = _("There are no days available due to not satisfying the criterions.");
+            String secondLine = _("Another possibility is that the resources don't have days available due to their calendars.");
+            return firstLine + "\n" + secondLine;
+        }
+
+        @Override
+        public String getNoValidPeriodsMessageDueToIntersectionMessage() {
+            String firstLine = _("There are no days available in the days marked available by the task calendar.");
+            String secondLine = _("Maybe the criterions are not satisfied in those days.");
+            return firstLine + "\n" + secondLine;
+        }
+
+        @Override
         public ICalendar getResourcesCalendar() {
             return CombinedWorkHours.maxOf(resourcesCalendar());
         }
@@ -134,6 +150,16 @@ public abstract class ResourcesPerDayModification extends
         public AvailabilityTimeLine getAvailability() {
             Resource resource = getAssociatedResource();
             return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
+        }
+
+        @Override
+        public String getNoValidPeriodsMessage() {
+            return _("The resource's calendar has no available days starting from the start of the task.");
+        }
+
+        @Override
+        public String getNoValidPeriodsMessageDueToIntersectionMessage() {
+            return _("There are no days available at resource's calendar in the days marked available by the task's calendar.");
         }
 
         private Resource getAssociatedResource() {
@@ -215,9 +241,14 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract AvailabilityTimeLine getAvailability();
 
+    public abstract String getNoValidPeriodsMessage();
+
+    public abstract String getNoValidPeriodsMessageDueToIntersectionMessage();
+
     public boolean isDayFilled(LocalDate day, EffortDuration taken) {
         return getBeingModified().getAllocationCalendar()
                 .asDurationOn(PartialDay.wholeDay(day), goal).equals(taken);
     }
+
 
 }

@@ -28,10 +28,12 @@ import java.util.List;
 import java.util.Set;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -265,7 +267,23 @@ public class AllocationRowsHandler {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
         ResourceAllocation.allocating(allocations).untilAllocating(
-                formBinder.getAssignedHours());
+                formBinder.getAssignedHours(), notFullfiledReceiver());
+    }
+
+    private INotFulfilledReceiver notFullfiledReceiver() {
+        return new INotFulfilledReceiver() {
+
+            @Override
+            public void cantFulfill(ResourcesPerDayModification attempt,
+                    CapacityResult capacityResult) {
+                final AllocationRow row = findRowFor(attempt.getBeingModified());
+                row.markNoCapacity(attempt, capacityResult);
+            }
+        };
+    }
+
+    private AllocationRow findRowFor(ResourceAllocation<?> resourceAllocation) {
+        return AllocationRow.find(currentRows, resourceAllocation);
     }
 
     private void calculateResourcesPerDayAllocation() {

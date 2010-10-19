@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +29,16 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityAvailable;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult.IMatcher;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ResourcesPerDayIsZero;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ThereAreNoValidPeriods;
+import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ValidPeriodsDontHaveCapacity;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -36,11 +48,13 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
 import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Constraint;
@@ -61,6 +75,8 @@ public abstract class AllocationRow {
 
     public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
             SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
+
+    private static final Log LOG = LogFactory.getLog(AllocationRow.class);
 
     public static void assignHours(List<AllocationRow> rows, int[] hours) {
         int i = 0;
@@ -93,6 +109,16 @@ public abstract class AllocationRow {
             each.setTemporal(modification.getBeingModified());
         }
         return result;
+    }
+
+    public static AllocationRow find(Collection<? extends AllocationRow> rows,
+            ResourceAllocation<?> allocationBeingModified) {
+        for (AllocationRow each : rows) {
+            if (each.temporal == allocationBeingModified) {
+                return each;
+            }
+        }
+        return null;
     }
 
     public static List<HoursModification> createHoursModificationsAndAssociate(
@@ -499,5 +525,65 @@ public abstract class AllocationRow {
     }
 
     public abstract ResourceEnum getType();
+
+    private org.zkoss.zul.Row findRow() {
+        Component current = null;
+        do {
+            current = hoursInput.getParent();
+        } while (!(current instanceof org.zkoss.zul.Row));
+        return (org.zkoss.zul.Row) current;
+    }
+
+    public void markNoCapacity(
+            final ResourcesPerDayModification allocationAttempt,
+            CapacityResult capacityResult) {
+        final org.zkoss.zul.Row row = findRow();
+        capacityResult.match(new IMatcher<Void>() {
+
+            @Override
+            public Void on(CapacityAvailable result) {
+                LOG.warn("shouldn't have happened");
+                return null;
+            }
+
+            @Override
+            public Void on(ThereAreNoValidPeriods result) {
+                List<Interval> calendarValidPeriods = result
+                        .getSpecifiedCalendar()
+                        .getAvailability().getValidPeriods();
+                AvailabilityTimeLine otherAvailability = result
+                        .getSpecifiedAdditionalAvailability();
+                if (calendarValidPeriods.isEmpty()) {
+                    throw new WrongValueException(row,
+                            _("there are no valid periods for this calendar"));
+                } else if (otherAvailability.getValidPeriods().isEmpty()) {
+                    throw new WrongValueException(row, allocationAttempt
+                            .getNoValidPeriodsMessage());
+                } else {
+                    throw new WrongValueException(row, allocationAttempt
+                            .getNoValidPeriodsMessageDueToIntersectionMessage());
+                }
+            }
+
+            @Override
+            public Void on(ValidPeriodsDontHaveCapacity result) {
+                EffortDuration sumReached = result.getSumReached();
+                List<Interval> validPeriods = result.getValidPeriods();
+                String firstLine = _(
+                        "In the available periods {0} only {1} hours are available.",
+                        validPeriods, sumReached.getHours());
+                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criterions by the resources and their calendars.")
+                        : _("The periods available depend on the resource's calendar.");
+                throw new WrongValueException(hoursInput, firstLine + "\n"
+                        + secondLine);
+            }
+
+            @Override
+            public Void on(ResourcesPerDayIsZero result) {
+                throw new WrongValueException(resourcesPerDayInput,
+                        _("Resources per day are zero"));
+            }
+        });
+    }
 
 }
