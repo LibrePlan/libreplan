@@ -423,4 +423,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.shouldCalculateEndFirst();
     }
 
+    public GanttDate getOrderDeadline() {
+        return fundamentalProperties.getOrderDeadline();
+    }
+
 }

@@ -102,4 +102,6 @@ public interface ITaskFundamentalProperties {
 
     boolean shouldCalculateEndFirst();
 
+    GanttDate getOrderDeadline();
+
 }

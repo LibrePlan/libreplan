@@ -131,6 +131,8 @@ public class GanttDiagramGraph<V, D> {
 
         boolean shouldCalculateEndFirst(V task);
 
+        GanttDate getOrderDeadline(V firstTask);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -265,6 +267,11 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public void setEndDateKeepingSize(Task task, GanttDate newEnd) {
             task.setEndDateKeepingSize(newEnd);
+        }
+
+        @Override
+        public GanttDate getOrderDeadline(Task task) {
+            return task.getOrderDeadline();
         }
 
     }

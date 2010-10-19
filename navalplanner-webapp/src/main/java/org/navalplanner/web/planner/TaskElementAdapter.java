@@ -948,6 +948,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return false;
         }
 
+        @Override
+        public GanttDate getOrderDeadline() {
+            return GanttDate.createFrom(taskElement.getOrderElement()
+                    .getOrder().getDeadline());
+        }
+
     }
 
     @Override

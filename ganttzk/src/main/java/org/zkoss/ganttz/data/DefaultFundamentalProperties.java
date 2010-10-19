@@ -256,4 +256,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return true;
     }
 
+    @Override
+    public GanttDate getOrderDeadline() {
+        return null;
+    }
+
 }
