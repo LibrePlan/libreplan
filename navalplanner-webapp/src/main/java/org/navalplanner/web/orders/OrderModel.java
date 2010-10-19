@@ -38,6 +38,7 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -491,22 +492,28 @@ public class OrderModel implements IOrderModel {
                     return null;
                 }
             });
-            order.dontPoseAsTransientObjectAnymore();
-            // this way we don't have dontPoseAsTransient all children of the
-            // order
-            initEditAfterSave();
+            dontPoseAsTransientObjectAnymore(order);
         }
     }
 
-    private void initEditAfterSave() {
-        transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        initEdit(order);
-                        return null;
-                    }
-                });
+    private void dontPoseAsTransientObjectAnymore(Collection<? extends BaseEntity> collection) {
+        for(BaseEntity entity : collection) {
+            entity.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
+    private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
+        orderElement.dontPoseAsTransientObjectAnymore();
+
+        dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
+        dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
+        dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
+        dontPoseAsTransientObjectAnymore(orderElement.getLabels());
+        dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
+        dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
+        for(OrderElement child : orderElement.getAllChildren()) {
+            dontPoseAsTransientObjectAnymore(child);
+        }
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
