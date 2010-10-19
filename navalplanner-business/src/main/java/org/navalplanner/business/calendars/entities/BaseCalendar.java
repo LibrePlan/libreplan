@@ -113,8 +113,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     @Valid
     private List<CalendarAvailability> calendarAvailabilities = new ArrayList<CalendarAvailability>();
 
-    private Boolean generatedCode = false;
-
     public enum DayType {
         NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
     }
@@ -1085,14 +1083,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
         throw new InstanceNotFoundException(code, CalendarData.class.getName());
 
-    }
-
-    public void setGeneratedCode(Boolean generatedCode) {
-        this.generatedCode = generatedCode;
-    }
-
-    public Boolean isGeneratedCode() {
-        return generatedCode == null ? false : generatedCode;
     }
 
 }

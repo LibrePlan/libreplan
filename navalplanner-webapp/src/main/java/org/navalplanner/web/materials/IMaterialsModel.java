@@ -29,6 +29,7 @@ import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 
 /**
@@ -36,7 +37,7 @@ import org.zkoss.ganttz.util.MutableTreeModel;
  * @author Diego Pino Garcia <dpino@igalia.com>
  *
  */
-public interface IMaterialsModel {
+public interface IMaterialsModel extends IIntegrationEntityModel {
 
     void addMaterialCategory(MaterialCategory parent, String categoryName) throws ValidationException;
 

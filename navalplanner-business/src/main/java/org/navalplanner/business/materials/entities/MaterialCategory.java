@@ -64,8 +64,6 @@ public class MaterialCategory extends IntegrationEntity {
     @Valid
     private Set<Material> materials = new HashSet<Material>();
 
-    private Boolean generateCode = false;
-
     // Default constructor, needed by Hibernate
     protected MaterialCategory() {
 
@@ -133,14 +131,6 @@ public class MaterialCategory extends IntegrationEntity {
 
     public void removeMaterial(Material material) {
         materials.remove(material);
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
     }
 
     @AssertTrue(message="material category name has to be unique. It is already used")
