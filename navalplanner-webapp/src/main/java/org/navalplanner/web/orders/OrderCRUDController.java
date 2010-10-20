@@ -805,13 +805,24 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         orderModel.initEdit(order);
         if (editWindow != null) {
-            clearTabControllers();
+            resetTabControllers();
             selectDefaultTab();
             return;
         }
 
         prepareEditWindow();
         showEditWindow(_("Edit order"));
+    }
+
+    private void resetTabControllers() {
+        orderElementTreeController = null;
+        assignedHoursController = null;
+        manageOrderElementAdvancesController = null;
+        assignedLabelsController = null;
+        assignedCriterionRequirementController = null;
+        assignedMaterialsController = null;
+        assignedTaskQualityFormController = null;
+        orderAuthorizationController = null;
     }
 
     private void prepareEditWindow() {
@@ -852,18 +863,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("tabPanelGeneralData");
         Util.createBindingsFor(tabPanel);
         Util.reloadBindings(tabPanel);
-    }
-
-    private void clearTabControllers() {
-        orderElementTreeController = null;
-        assignedHoursController = null;
-        manageOrderElementAdvancesController = null;
-        manageOrderElementAdvancesController = null;
-        assignedLabelsController = null;
-        assignedCriterionRequirementController = null;
-        assignedMaterialsController = null;
-        assignedTaskQualityFormController = null;
-        orderAuthorizationController = null;
     }
 
     private void initializeTabs() {
