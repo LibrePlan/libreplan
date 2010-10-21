@@ -311,6 +311,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
+    private List<Textbox> orderElementCodeTextboxes = new ArrayList<Textbox>();
+
+    public List<Textbox> getOrderElementCodeTextboxes() {
+        return orderElementCodeTextboxes;
+    }
+
     public class OrderElementTreeitemRenderer extends Renderer {
 
         private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
@@ -557,6 +563,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             addCell(textBoxCode);
             registerKeyboardListener(textBoxCode);
+            textBoxCode.setAttribute("orderElement", orderElement, Component.COMPONENT_SCOPE);
+            orderElementCodeTextboxes.add(textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {

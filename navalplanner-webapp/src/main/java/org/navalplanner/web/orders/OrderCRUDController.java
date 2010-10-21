@@ -97,6 +97,7 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listbox;
+import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -561,8 +562,17 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void refreshOrderWindow() {
         updateDisabilitiesOnInterface();
-        initializeTabs();
+        refreshCodeTextboxesOnly();
         getVisibility().showOnly(editWindow);
+    }
+
+    private void refreshCodeTextboxesOnly() {
+        if(orderElementTreeController != null) {
+            for(Textbox box : orderElementTreeController.getOrderElementCodeTextboxes()) {
+                box.setValue(((OrderElement)box.getAttribute(
+                        "orderElement", Component.COMPONENT_SCOPE)).getCode());
+            }
+        }
     }
 
     public void saveAndExit() {
