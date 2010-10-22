@@ -51,7 +51,9 @@ import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.OrderDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.impl.ConfigurationOrderElementConverter;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
@@ -162,8 +164,8 @@ public class SubcontractServiceREST implements ISubcontractService {
                     });
         } catch (ValidationException e) {
             InstanceConstraintViolationsDTO violation = ConstraintViolationConverter
-                    .toDTO(Util.generateInstanceId(1, orderElementDTO.code),
-                            e.getInvalidValues());
+                    .toDTO(new InstanceConstraintViolationsDTOId(new Long(1),
+                            orderElementDTO.code, OrderDTO.ENTITY_TYPE), e);
             throw new ViolationError(violation);
         }
     }
