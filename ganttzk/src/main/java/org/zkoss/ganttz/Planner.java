@@ -53,9 +53,15 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.json.JSONArray;
+import org.zkoss.lang.Objects;
+import org.zkoss.zk.au.AuRequest;
+import org.zkoss.zk.au.AuService;
+import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -330,6 +336,34 @@ public class Planner extends HtmlMacroComponent  {
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
+
+        setAuService(new AuService(){
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                String[] requestData;
+                String zoomindex;
+
+                if (command.equals("onZoomLevelChange")){
+                    requestData = retrieveData(request, 1);
+                    zoomindex = requestData[0];
+
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels")).getModel().getElementAt(Integer.parseInt(zoomindex)));
+                    return true;
+                }
+                return false;
+            }
+
+            private String[] retrieveData(AuRequest request, int requestLength){
+                String [] requestData =  (String[]) ((JSONArray)request.getData().get("")).toArray(new String[requestLength]);
+
+                if (requestData == null || requestData.length != requestLength) {
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
+                            new Object[] { Objects.toString(requestData), this });
+                }
+
+                return requestData;
+           }
+        });
     }
 
     private void resettingPreviousComponentsToNull() {

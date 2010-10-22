@@ -43,8 +43,7 @@ planner = self;
         <!--  Visualization modes -->
         <label>${i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
-            model="${planner.zoomLevels}"
-            onSelect="planner.setZoomLevel(self.selectedItem.value);" >
+            model="${planner.zoomLevels}">
         </listbox>
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"

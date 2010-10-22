@@ -8,6 +8,12 @@ ganttz.Planner = zk.$extends(zk.Macro,{
     bind_ : function(){
         this.$supers('bind_', arguments);
         this.adjustScrollableDimensions();
+        //Zoomlevel selector
+        this.domListen_(jq('.plannerlayout .toolbar-box select'), 'onChange', '_zoomLevelChanged');
+    },
+    unbind_ : function(){
+        this.$supers('unbind_', arguments);
+        this.domUnlisten_(jq('.plannerlayout .toolbar-box select'), 'onChange', '_zoomLevelChanged');
     },
     adjustScrollableDimensions : function(){
 
@@ -48,6 +54,10 @@ ganttz.Planner = zk.$extends(zk.Macro,{
 
         // Inner divs need recalculation to adjust to new scroll displacement lenght
         ganttz.GanttPanel.getInstance().reScrollX(DOMWatermark.outerWidth());
+    },
+    _zoomLevelChanged : function(event){
+        var zoomindex = event.domTarget.selectedIndex;
+        zAu.send(new zk.Event(this, 'onZoomLevelChange', [new String(zoomindex)]));
     }
 },{
     FOOTER_HEIGHT : 40, // Design-relative footer height
