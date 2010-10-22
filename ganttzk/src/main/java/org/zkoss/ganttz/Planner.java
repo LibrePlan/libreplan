@@ -53,8 +53,6 @@ import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.json.JSONArray;
-import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.mesg.MZk;
@@ -341,28 +339,25 @@ public class Planner extends HtmlMacroComponent  {
             public boolean service(AuRequest request, boolean everError){
                 String command = request.getCommand();
                 String[] requestData;
-                String zoomindex;
+                int zoomindex;
 
                 if (command.equals("onZoomLevelChange")){
-                    requestData = retrieveData(request, 1);
-                    zoomindex = requestData[0];
+                    zoomindex=  (Integer) retrieveData(request, "zoomindex");
 
-                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels")).getModel().getElementAt(Integer.parseInt(zoomindex)));
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels")).getModel().getElementAt(zoomindex));
                     return true;
                 }
                 return false;
             }
 
-            private String[] retrieveData(AuRequest request, int requestLength){
-                String [] requestData =  (String[]) ((JSONArray)request.getData().get("")).toArray(new String[requestLength]);
-
-                if (requestData == null || requestData.length != requestLength) {
+            private Object retrieveData(AuRequest request, String key){
+                Object value = request.getData().get(key);
+                if ( value == null)
                     throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                            new Object[] { Objects.toString(requestData), this });
-                }
+                            new Object[] { key, this });
 
-                return requestData;
-           }
+                return value;
+            }
         });
     }
 

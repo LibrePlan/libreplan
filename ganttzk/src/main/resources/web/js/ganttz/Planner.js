@@ -57,7 +57,7 @@ ganttz.Planner = zk.$extends(zk.Macro,{
     },
     _zoomLevelChanged : function(event){
         var zoomindex = event.domTarget.selectedIndex;
-        zAu.send(new zk.Event(this, 'onZoomLevelChange', [new String(zoomindex)]));
+        zAu.send(new zk.Event(this, 'onZoomLevelChange', {zoomindex : zoomindex}));
     }
 },{
     FOOTER_HEIGHT : 40, // Design-relative footer height
