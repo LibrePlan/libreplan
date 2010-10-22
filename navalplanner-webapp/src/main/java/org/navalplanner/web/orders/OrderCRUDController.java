@@ -93,11 +93,11 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
 import org.zkoss.zul.api.Listbox;
-import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -568,9 +568,10 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void refreshCodeTextboxesOnly() {
         if(orderElementTreeController != null) {
-            for(Textbox box : orderElementTreeController.getOrderElementCodeTextboxes()) {
-                box.setValue(((OrderElement)box.getAttribute(
-                        "orderElement", Component.COMPONENT_SCOPE)).getCode());
+            Map<OrderElement, Textbox> orderElementCodeTextBoxes =
+                orderElementTreeController.getOrderElementCodeTextboxes();
+            for(OrderElement element :orderElementCodeTextBoxes.keySet()) {
+                orderElementCodeTextBoxes.get(element).setValue(element.getCode());
             }
         }
     }

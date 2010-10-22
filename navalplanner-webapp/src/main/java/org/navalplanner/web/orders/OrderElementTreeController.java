@@ -324,9 +324,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
-    private List<Textbox> orderElementCodeTextboxes = new ArrayList<Textbox>();
+    private Map<OrderElement, Textbox> orderElementCodeTextboxes = new HashMap<OrderElement, Textbox>();
 
-    public List<Textbox> getOrderElementCodeTextboxes() {
+    public Map<OrderElement, Textbox> getOrderElementCodeTextboxes() {
         return orderElementCodeTextboxes;
     }
 
@@ -576,8 +576,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             addCell(textBoxCode);
             registerKeyboardListener(textBoxCode);
-            textBoxCode.setAttribute("orderElement", orderElement, Component.COMPONENT_SCOPE);
-            orderElementCodeTextboxes.add(textBoxCode);
+            orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -958,6 +957,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                     element.getName()));
         } else {
             super.remove(element);
+            orderElementCodeTextboxes.remove(element);
         }
     }
 
