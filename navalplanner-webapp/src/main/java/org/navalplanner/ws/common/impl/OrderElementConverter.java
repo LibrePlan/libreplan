@@ -252,9 +252,12 @@ public final class OrderElementConverter {
         }
         OrderElement orderElement = toEntityExceptCriterionRequirements(
                 orderVersion, orderElementDTO, configuration);
+
+        // FIXME Review why this validation is needed here, it breaks the
+        // subcontract service. This was introduced at commit 341145a5
         // Validate OrderElement.code and HoursGroup.code must be unique
-        Order.checkConstraintOrderUniqueCode(orderElement);
-        HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
+        // Order.checkConstraintOrderUniqueCode(orderElement);
+        // HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
 
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
