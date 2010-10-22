@@ -147,9 +147,9 @@
                         model="@{calendarController.editionController.getHoursPerDay}"
                         itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
                         <listhead>
-                            <listheader label="${i18n:_('Day of week')}" />
-                            <listheader label="${i18n:_('Workable Time')}" />
-                            <listheader label="${i18n:_('By default')}" />
+                            <listheader label="${i18n:_('Day of week')}" width="80px"/>
+                            <listheader label="${i18n:_('Workable Time')}" width="160px"/>
+                            <listheader label="${i18n:_('Inh.')}" width="30px" tooltiptext="${i18n:_('Inherited from parent calendar')}" />
                         </listhead>
                     </listbox>
 
@@ -157,12 +157,11 @@
                         model="@{calendarController.editionController.historyVersions}"
                         itemRenderer="@{calendarController.editionController.historyVersionsRenderer}">
                         <listhead>
-                            <listheader label="${i18n:_('Name')}" />
-                            <listheader label="${i18n:_('Parent')}" />
-                            <listheader label="${i18n:_('Valid from')}" />
-                            <listheader label="${i18n:_('Expiry date')}" />
-                            <listheader label="${i18n:_('Summary')}" />
-                            <listheader label="${i18n:_('Operations')}" />
+                            <listheader label="${i18n:_('Parent')}" width="80px"/>
+                            <listheader label="${i18n:_('Valid from')}" width="80px"/>
+                            <listheader label="${i18n:_('Expiry date')}" width="80px"/>
+                            <listheader label="${i18n:_('Summary')}" width="180px"/>
+                            <listheader label="${i18n:_('Op.')}" tooltiptext="${i18n:_('Operations')}" width="50px"/>
                         </listhead>
                     </listbox>
 
