@@ -340,9 +340,11 @@ public class Planner extends HtmlMacroComponent  {
                 String command = request.getCommand();
                 String[] requestData;
                 int zoomindex;
+                int scrollLeft;
 
                 if (command.equals("onZoomLevelChange")){
                     zoomindex=  (Integer) retrieveData(request, "zoomindex");
+                    scrollLeft = (Integer) retrieveData(request, "scrollLeft");
 
                     setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels")).getModel().getElementAt(zoomindex));
                     return true;
