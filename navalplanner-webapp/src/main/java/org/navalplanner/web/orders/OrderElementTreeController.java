@@ -55,6 +55,7 @@ import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeController;
 import org.zkoss.ganttz.IPredicate;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -234,25 +235,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         orderElementFilter.getChildren().clear();
-        // Add the expand/collapse button to the tool bar
-        final Button expandAllButton = new Button();
-        expandAllButton.setId("expandAllButton");
-        expandAllButton.setClass("planner-command");
-        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
-        expandAllButton.setImage("/common/img/ico_expand.png");
-        expandAllButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (expandAllButton.getSclass().equals("planner-command")) {
-                    expandAll();
-                    expandAllButton.setSclass("planner-command clicked");
-                } else {
-                    collapseAll();
-                    expandAllButton.setSclass("planner-command");
-                }
-            }
-        });
-        orderElementFilter.getParent().getChildren().add(expandAllButton);
+        appendExpandCollapseButton();
 
         // Configuration of the order elements filter
         Component filterComponent = Executions.createComponents(
@@ -270,6 +253,36 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
+    }
+
+    private void appendExpandCollapseButton() {
+        List<Component> children = orderElementFilter.getParent().getChildren();
+
+        // Is already added?
+        Button button = (Button) ComponentsFinder.findById("expandAllButton", children);
+        if (button != null) {
+            return;
+        }
+
+        // Append expand/collapse button
+        final Button expandAllButton = new Button();
+        expandAllButton.setId("expandAllButton");
+        expandAllButton.setClass("planner-command");
+        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
+        expandAllButton.setImage("/common/img/ico_expand.png");
+        expandAllButton.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (expandAllButton.getSclass().equals("planner-command")) {
+                    expandAll();
+                    expandAllButton.setSclass("planner-command clicked");
+                } else {
+                    collapseAll();
+                    expandAllButton.setSclass("planner-command");
+                }
+            }
+        });
+        children.add(expandAllButton);
     }
 
     public void expandAll() {

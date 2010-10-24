@@ -23,6 +23,8 @@ package org.zkoss.ganttz.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.zkoss.zk.ui.Component;
+
 /**
  * Utility methods to find components
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -41,6 +43,16 @@ public class ComponentsFinder {
             }
         }
         return result;
+    }
+
+    public static Component findById(String id,
+            List<? extends Component> children) {
+        for (Component child : children) {
+            if (child.getId().equals(id)) {
+                return child;
+            }
+        }
+        return null;
     }
 
 }
