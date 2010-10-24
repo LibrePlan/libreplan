@@ -90,3 +90,8 @@ a.ayuda:hover {
     margin-top: 30px;
     width: 300px;
 }
+
+.supported-browsers {
+    color: #BBBBBB;
+    font-size: 9px;
+}

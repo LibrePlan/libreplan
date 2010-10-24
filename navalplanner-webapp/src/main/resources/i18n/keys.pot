@@ -6529,3 +6529,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:196
 msgid "Choose an order element to operate on it"
 msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/common/layout/login.zul:112
+msgid "Supported Chrome, Firefox, Safari and Epiphany browsers"
+msgstr ""
+

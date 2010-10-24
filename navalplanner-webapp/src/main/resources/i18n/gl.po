@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-11-08 19:55+0100\n"
-"PO-Revision-Date: 2010-11-09 11:57+0100\n"
+"PO-Revision-Date: 2010-11-09 19:08+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "MIME-Version: 1.0\n"
@@ -6682,6 +6682,10 @@ msgstr "Borrar elemento de pedido seleccionado"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:196
 msgid "Choose an order element to operate on it"
 msgstr "Seleccione un elemento de pedido para operar sobre el"
+
+#: navalplanner-webapp/src/main/webapp/common/layout/login.zul:112
+msgid "Supported Chrome, Firefox, Safari and Epiphany browsers"
+msgstr "Compatible cos navegadores Chrome, Firefox, Safari e Epiphany"
 
 #~ msgid "New order element name:"
 #~ msgstr "Nome do novo elemento de pedido:"
