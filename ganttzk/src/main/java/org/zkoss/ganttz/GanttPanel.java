@@ -129,8 +129,8 @@ public class GanttPanel extends XulElement implements AfterCompose {
         return timeTrackerComponent.getTimeTracker();
     }
 
-    public void setZoomLevel(ZoomLevel zoomLevel) {
-        getTimeTracker().setZoomLevel(zoomLevel);
+    public void setZoomLevel(ZoomLevel zoomLevel, int scrollLeft) {
+        timeTrackerComponent.setZoomLevel(zoomLevel, scrollLeft);
     }
 
     public Planner getPlanner() {

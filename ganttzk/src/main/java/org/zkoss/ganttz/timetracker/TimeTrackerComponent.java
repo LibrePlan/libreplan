@@ -41,6 +41,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     private IZoomLevelChangedListener zoomListener;
     private final String secondLevelZul;
     private String timeTrackerElementId;
+    private int scrollLeft;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
         this(timeTracker,
@@ -58,6 +59,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 if (isInPage()) {
                     recreate();
+                    changeDetailLevel(getDaysFor(scrollLeft));
                 }
             }
         };
@@ -155,6 +157,11 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     private void changeDetailLevel(double days) {
         scrollHorizontalPercentage((int) Math.floor(days
                 / getTimeTrackerState().daysPerPixel()));
+    }
+
+    public void setZoomLevel(ZoomLevel zoomlevel, int scrollLeft){
+        this.scrollLeft = scrollLeft;
+        getTimeTracker().setZoomLevel(zoomlevel);
     }
 
 }

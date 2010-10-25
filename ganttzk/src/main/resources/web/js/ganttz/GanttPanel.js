@@ -60,6 +60,9 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     },
     reScrollX : function(px){
         jq('#ganttpanel_inner_scroller_x').width(px);
+    },
+    scroll_horizontal : function(value){
+        jq('#ganttpanel_scroller_x').scrollLeft(value);
     }
 },{
     getInstance : function(){

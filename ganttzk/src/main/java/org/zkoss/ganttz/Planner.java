@@ -233,13 +233,13 @@ public class Planner extends HtmlMacroComponent  {
         return new SimpleListModel(selectableZoomlevels);
     }
 
-    public void setZoomLevel(final ZoomLevel zoomLevel) {
+    public void setZoomLevel(final ZoomLevel zoomLevel, int scrollLeft) {
         if (ganttPanel == null) {
             return;
         }
         this.fixedZoomByUser = true;
         initialZoomLevel = zoomLevel;
-        ganttPanel.setZoomLevel(zoomLevel);
+        ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
 
     public void zoomIncrease() {
@@ -346,7 +346,9 @@ public class Planner extends HtmlMacroComponent  {
                     zoomindex=  (Integer) retrieveData(request, "zoomindex");
                     scrollLeft = (Integer) retrieveData(request, "scrollLeft");
 
-                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels")).getModel().getElementAt(zoomindex));
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels"))
+                            .getModel().getElementAt(zoomindex),
+                            scrollLeft);
                     return true;
                 }
                 return false;
