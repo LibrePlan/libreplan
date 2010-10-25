@@ -119,31 +119,27 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void reload() {
-        try {
-            // FIXME: Temporary fix, it seems the page was already rendered, so
-            // clear it all as it's going to be rendered again
-            parent.getChildren().clear();
+        // FIXME: Temporary fix, it seems the page was already rendered, so
+        // clear it all as it's going to be rendered again
+        parent.getChildren().clear();
 
-            limitingResourceQueueModel.initGlobalView();
+        limitingResourceQueueModel.initGlobalView();
 
-            // Initialize interval
-            timeTracker = buildTimeTracker();
-            limitingResourcesPanel = buildLimitingResourcesPanel();
+        // Initialize interval
+        timeTracker = buildTimeTracker();
+        limitingResourcesPanel = buildLimitingResourcesPanel();
 
-            this.parent.appendChild(limitingResourcesPanel);
-            limitingResourcesPanel.afterCompose();
+        this.parent.appendChild(limitingResourcesPanel);
+        limitingResourcesPanel.afterCompose();
 
-            cbSelectAll = (Checkbox) limitingResourcesPanel
-                    .getFellowIfAny("cbSelectAll");
+        cbSelectAll = (Checkbox) limitingResourcesPanel
+                .getFellowIfAny("cbSelectAll");
 
-            initGridUnassignedLimitingResourceQueueElements();
-            initManualAllocationWindow();
-            initEditTaskWindow();
+        initGridUnassignedLimitingResourceQueueElements();
+        initManualAllocationWindow();
+        initEditTaskWindow();
 
-            addCommands(limitingResourcesPanel);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
+        addCommands(limitingResourcesPanel);
     }
 
     private void initGridUnassignedLimitingResourceQueueElements() {
