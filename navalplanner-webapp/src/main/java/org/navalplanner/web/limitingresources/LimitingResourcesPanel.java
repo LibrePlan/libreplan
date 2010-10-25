@@ -36,8 +36,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -493,8 +493,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         }
 
         public void setInterval(Interval realInterval) {
-            intervalStart = new DateTime(realInterval.getStart());
-            intervalEnd = new DateTime(realInterval.getFinish());
+            intervalStart = realInterval.getStart().toDateTimeAtStartOfDay();
+            intervalEnd = realInterval.getFinish().toDateTimeAtStartOfDay();
             paginatorStart = intervalStart;
             paginatorEnd = intervalStart.plus(intervalIncrease());
             if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
@@ -551,8 +551,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         public void populateHorizontalListbox() {
             horizontalPagination.getItems().clear();
             DateTimeFormatter df = DateTimeFormat.forPattern("dd/MMM/yyyy");
-            DateTime intervalStart = new DateTime(timeTracker.getRealInterval()
-                    .getStart());
+            DateTime intervalStart = timeTracker.getRealInterval().getStart()
+                    .toDateTimeAtStartOfDay();
             if (intervalStart != null) {
                 DateTime itemStart = intervalStart;
                 DateTime itemEnd = intervalStart.plus(intervalIncrease());

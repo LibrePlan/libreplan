@@ -91,6 +91,8 @@ public class LimitingResourcesTabCreator {
                 // LimitingResourcesController.add(upCommand);
                 arguments.put("LimitingResourcesController",
                         limitingResourcesController);
+                Order currentOrder = mode.getOrder();
+                limitingResourcesController.filterBy(currentOrder);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
@@ -110,10 +112,7 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs
                         .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                Order currentOrder = mode.getOrder();
-                limitingResourcesController.filterBy(currentOrder);
-                limitingResourcesController.reload();
-                breadcrumbs.appendChild(new Label(currentOrder.getName()));
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
             }
         };
     }
@@ -128,6 +127,7 @@ public class LimitingResourcesTabCreator {
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("LimitingResourcesController",
                         limitingResourcesControllerGlobal);
+                limitingResourcesControllerGlobal.filterBy(null);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
@@ -139,8 +139,6 @@ public class LimitingResourcesTabCreator {
                 componentCreator) {
             @Override
             protected void afterShowAction() {
-                limitingResourcesControllerGlobal.filterBy(null);
-                limitingResourcesControllerGlobal.reload();
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }

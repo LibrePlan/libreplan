@@ -116,9 +116,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
+        reload();
     }
 
-    public void reload() {
+    private void reload() {
         // FIXME: Temporary fix, it seems the page was already rendered, so
         // clear it all as it's going to be rendered again
         parent.getChildren().clear();

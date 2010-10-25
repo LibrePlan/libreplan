@@ -172,8 +172,8 @@ public class QueueComponent extends XulElement implements
         }
         for (LimitingResourceQueueElement each : list) {
             if (interval != null) {
-                if (each.getEndDate().toDateMidnight().isAfter(
-                        (new DateTime(interval.getStart())).toDateMidnight())
+                if (each.getEndDate().toDateMidnight()
+                        .isAfter(interval.getStart().toDateMidnight())
                         && each.getStartDate().toDateMidnight().isBefore(
                                 new DateTime(interval.getFinish()))) {
                     result.add(createQueueTask(datesMapper, each));
