@@ -250,6 +250,7 @@ public class MaterialsController extends
                     codeTb.setValue(materialCategory.getCode());
                     codeTb.setDisabled(ce.isChecked());
                     Util.reloadBindings(codeTb);
+                    Util.reloadBindings(gridMaterials);
                 }
             });
             Treecell generateCodeTc = new Treecell();
