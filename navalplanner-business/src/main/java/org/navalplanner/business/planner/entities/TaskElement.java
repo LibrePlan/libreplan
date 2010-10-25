@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
@@ -36,9 +37,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
-import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -48,6 +50,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -271,15 +274,40 @@ public abstract class TaskElement extends BaseEntity {
             return;
         }
         IntraDayDate previousStart = this.startDate;
-        long durationMilliseconds = getLengthMilliseconds();
+        this.endDate = calculateEndKeepingLength(newStartDate);
         setIntraDayStartDate(newStartDate);
-        DateTime newEnd = this.startDate.toDateTimeAtStartOfDay().plus(
-                durationMilliseconds);
-        this.endDate = IntraDayDate.create(newEnd.toLocalDate(),
-                EffortDuration.zero());
         if (!previousStart.equals(newStartDate)) {
             moveAllocations(scenario);
         }
+    }
+
+    private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
+        final IntraDayDate start = getIntraDayStartDate();
+        final IntraDayDate end = getIntraDayEndDate();
+        final int numberOfDays = start.numberOfDaysUntil(end);
+        EffortDuration resultDuration = zero();
+        ICalendar calendar = getCalendar() != null ? getCalendar()
+                : SameWorkHoursEveryDay.getDefaultWorkingDay();
+        if (getIntraDayStartDate().getEffortDuration().compareTo(
+                getIntraDayEndDate().getEffortDuration()) <= 0) {
+            resultDuration = end.getEffortDuration().minus(
+                    start.getEffortDuration());
+        } else {
+            EffortDuration capacity = calendar.getCapacityOn(
+                    PartialDay.wholeDay(start.getDate()));
+            resultDuration = end.getEffortDuration().plus(
+                    capacity.minus(min(start.getEffortDuration(), capacity)));
+        }
+        resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
+        LocalDate resultDay = newStartDate.getDate().plusDays(
+                numberOfDays);
+        final EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                .wholeDay(resultDay));
+        if (resultDuration.compareTo(capacity) >= 0) {
+            resultDay = resultDay.plusDays(1);
+            resultDuration = resultDuration.minus(capacity);
+        }
+        return IntraDayDate.create(resultDay, resultDuration);
     }
 
     protected abstract void moveAllocations(Scenario scenario);
@@ -557,13 +585,6 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public abstract boolean hasLimitedResourceAllocation();
-
-    public long getLengthMilliseconds() {
-        if (getEndDate() == null || getStartDate() == null) {
-            return 0;
-        }
-        return getEndDate().getTime() - getStartDate().getTime();
-    }
 
     public void removePredecessorsDayAssignmentsFor(Scenario scenario) {
         for (ResourceAllocation<?> each : getAllResourceAllocations()) {
