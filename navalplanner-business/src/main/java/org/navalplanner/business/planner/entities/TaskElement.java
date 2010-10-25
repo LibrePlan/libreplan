@@ -543,16 +543,6 @@ public abstract class TaskElement extends BaseEntity {
 
     public abstract boolean isMilestone();
 
-    public Integer getTotalHoursAssignedCalculated() {
-        int result = 0;
-        for (ResourceAllocation<?> resourceAllocation : getSatisfiedResourceAllocations()) {
-            for (DayAssignment each : resourceAllocation.getAssignments()) {
-                result += each.getHours();
-            }
-        }
-        return result;
-    }
-
     public Boolean isSimplifiedAssignedStatusCalculationEnabled() {
         return simplifiedAssignedStatusCalculationEnabled;
     }
