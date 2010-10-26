@@ -57,6 +57,7 @@ public abstract class IntegrationEntityModel implements IIntegrationEntityModel 
     protected abstract Set<IntegrationEntity> getChildren();
 
     protected void initOldCodes() {
+        oldCodesChildren.clear();
         if (getCurrentEntity() != null) {
             setOldCode(getCurrentEntity().getCode());
             for (IntegrationEntity child : getChildren()) {

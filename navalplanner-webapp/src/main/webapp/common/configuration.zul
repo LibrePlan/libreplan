@@ -105,6 +105,9 @@
                                         <checkbox label="${i18n:_('Work report types')}"
                                             checked="@{configurationController.generateCodeForWorkReportType}"
                                             onCheck="configurationController.reloadGeneralConfiguration();" />
+                                        <checkbox label="${i18n:_('Calendar exception types')}"
+                                            checked="@{configurationController.generateCodeForCalendarExceptionType}"
+                                            onCheck="configurationController.reloadGeneralConfiguration();" />
                                     </row>
                                 </rows>
                             </grid>

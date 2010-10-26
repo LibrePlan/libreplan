@@ -213,6 +213,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
     }
 
+    public Boolean getGenerateCodeForCalendarExceptionType() {
+        return configurationModel.getGenerateCodeForCalendarExceptionType();
+    }
+
+    public void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType) {
+        configurationModel
+                .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
+    }
+
     public Boolean getGenerateCodeForLabel() {
         return configurationModel.getGenerateCodeForLabel();
     }
@@ -398,6 +408,7 @@ public class ConfigurationController extends GenericForwardComposer {
         private void appendPrefixTextbox(Row row,
                 final EntitySequence entitySequence) {
             final Textbox tempTextbox = new Textbox();
+            tempTextbox.setWidth("200px");
             Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
 
                 @Override

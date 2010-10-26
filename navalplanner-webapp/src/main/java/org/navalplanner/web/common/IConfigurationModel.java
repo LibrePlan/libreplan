@@ -56,6 +56,11 @@ public interface IConfigurationModel {
 
     void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType);
 
+    Boolean getGenerateCodeForCalendarExceptionType();
+
+    void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType);
+
     Boolean getGenerateCodeForCriterion();
     void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
 

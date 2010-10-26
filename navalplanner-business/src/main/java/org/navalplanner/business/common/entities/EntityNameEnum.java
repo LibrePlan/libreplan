@@ -21,6 +21,7 @@
 package org.navalplanner.business.common.entities;
 
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
@@ -44,8 +45,9 @@ public enum EntityNameEnum {
     ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
             "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
 			"Type of work hours"), MATERIAL_CATEGORY("Material category"), WORK_REPORT(
-            "Work report"), WORK_REPORT_TYPE("Work report type"), RESOURCE_CALENDAR(
-            "Resource calendar");
+            "Work report"), WORK_REPORT_TYPE("Work report type"), CALENDAR_EXCEPTION_TYPE(
+            "Calendar exception type"), RESOURCE_CALENDAR(
+            "Resource calendar");;
 
     private String description;
 
@@ -89,6 +91,9 @@ public enum EntityNameEnum {
         case WORK_REPORT_TYPE:
             return (IIntegrationEntityDAO<WorkReportType>) Registry
                     .getWorkReportTypeDAO();
+        case CALENDAR_EXCEPTION_TYPE:
+            return (IIntegrationEntityDAO<CalendarExceptionType>) Registry
+                    .getCalendarExceptionTypeDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);

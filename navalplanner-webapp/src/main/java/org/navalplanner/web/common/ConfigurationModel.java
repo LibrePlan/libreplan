@@ -284,6 +284,23 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForCalendarExceptionType() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForCalendarExceptionType();
+    }
+
+    @Override
+    public void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
+        }
+    }
+
+    @Override
     public Boolean getGenerateCodeForLabel() {
         if (configuration == null) {
             return null;
