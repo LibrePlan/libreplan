@@ -503,8 +503,6 @@ public class OrderModel implements IOrderModel {
     }
 
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
-        orderElement.dontPoseAsTransientObjectAnymore();
-
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
         dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
@@ -512,6 +510,7 @@ public class OrderModel implements IOrderModel {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
         dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
         for(OrderElement child : orderElement.getAllChildren()) {
+            child.dontPoseAsTransientObjectAnymore();
             dontPoseAsTransientObjectAnymore(child);
         }
     }
