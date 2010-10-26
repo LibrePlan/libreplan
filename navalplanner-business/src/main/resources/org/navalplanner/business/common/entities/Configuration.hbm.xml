@@ -17,7 +17,7 @@
             column="CONFIGURATION_ID" />
 
         <property name="companyCode" />
-
+        <property name="generateCodeForCostCategory" not-null="true" />
         <property name="generateCodeForCalendarExceptionType" not-null="true" />
         <property name="generateCodeForWorkReportType" not-null="true" />
         <property name="generateCodeForCriterion" not-null="true" />

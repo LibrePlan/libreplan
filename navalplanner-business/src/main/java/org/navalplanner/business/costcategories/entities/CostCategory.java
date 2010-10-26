@@ -29,10 +29,12 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 
@@ -45,6 +47,8 @@ public class CostCategory extends IntegrationEntity {
     private String name;
 
     private boolean enabled = true;
+
+    private Integer lastHourCostSequenceCode = 0;
 
     @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
@@ -212,4 +216,30 @@ public class CostCategory extends IntegrationEntity {
         return getFirstRepeatedCode(this.hourCosts) == null;
     }
 
+    public void generateHourCostCodes(int numberOfDigits) {
+        for (HourCost hourCost : this.hourCosts) {
+            if ((hourCost.getCode() == null) || (hourCost.getCode().isEmpty())
+                    || (!hourCost.getCode().startsWith(this.getCode()))) {
+                this.incrementLastHourCostSequenceCode();
+                String hourCostCode = EntitySequence.formatValue(
+                        numberOfDigits, this.getLastHourCostSequenceCode());
+                hourCost
+                        .setCode(this.getCode()
+                                + EntitySequence.CODE_SEPARATOR_CHILDREN
+                                + hourCostCode);
+            }
+        }
+    }
+
+    public void incrementLastHourCostSequenceCode() {
+        if (lastHourCostSequenceCode == null) {
+            lastHourCostSequenceCode = 0;
+        }
+        lastHourCostSequenceCode++;
+    }
+
+    @NotNull(message = "last hours cost sequence code not specified")
+    public Integer getLastHourCostSequenceCode() {
+        return lastHourCostSequenceCode;
+    }
 }

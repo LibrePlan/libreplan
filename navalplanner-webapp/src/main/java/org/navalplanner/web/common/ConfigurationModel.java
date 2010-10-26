@@ -301,6 +301,23 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForCostCategory(generateCodeForCostCategory);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForCostCategory() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForCostCategory();
+    }
+
+    @Override
     public Boolean getGenerateCodeForLabel() {
         if (configuration == null) {
             return null;

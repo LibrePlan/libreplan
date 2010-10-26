@@ -69,6 +69,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForCalendarExceptionType = true;
 
+    private Boolean generateCodeForCostCategory = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -217,6 +219,15 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForCalendarExceptionType() {
         return this.generateCodeForCalendarExceptionType;
+    }
+
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        this.generateCodeForCostCategory = generateCodeForCostCategory;
+    }
+
+    public Boolean getGenerateCodeForCostCategory() {
+        return generateCodeForCostCategory;
     }
 
 }

@@ -223,6 +223,16 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
     }
 
+    public Boolean getGenerateCodeForCostCategory() {
+        return configurationModel.getGenerateCodeForCostCategory();
+    }
+
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        configurationModel
+                .setGenerateCodeForCostCategory(generateCodeForCostCategory);
+    }
+
     public Boolean getGenerateCodeForLabel() {
         return configurationModel.getGenerateCodeForLabel();
     }

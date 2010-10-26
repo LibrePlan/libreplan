@@ -58,6 +58,10 @@ public interface IConfigurationModel {
 
     Boolean getGenerateCodeForCalendarExceptionType();
 
+    void setGenerateCodeForCostCategory(Boolean generateCodeForCostCategory);
+
+    Boolean getGenerateCodeForCostCategory();
+
     void setGenerateCodeForCalendarExceptionType(
             Boolean generateCodeForCalendarExceptionType);
 
