@@ -24,9 +24,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.joda.time.Months;
+import org.joda.time.ReadablePeriod;
+import org.joda.time.Weeks;
+import org.joda.time.Years;
+import org.joda.time.base.BaseSingleFieldPeriod;
 import org.zkoss.ganttz.util.Interval;
 
 /**
@@ -34,6 +42,39 @@ import org.zkoss.ganttz.util.Interval;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public abstract class TimeTrackerState {
+
+    public static Date year(int year) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear();
+        calendar.set(Calendar.YEAR, year);
+        return calendar.getTime();
+    }
+
+    public static abstract class LazyGenerator<T> implements Iterator<T> {
+
+        private T current;
+
+        protected LazyGenerator(T first) {
+            this.current = first;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        public T next() {
+            return this.current = next(this.current);
+        }
+
+        protected abstract T next(T last);
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+    }
 
     protected static final long MILLSECONDS_IN_DAY = 1000 * 60 * 60 * 24;
 
@@ -65,11 +106,13 @@ public abstract class TimeTrackerState {
         return result;
     }
 
-    protected abstract Collection<DetailItem> createDetailsForFirstLevel(
-            Interval interval);
+    protected static LocalDate asLocalDate(Date date) {
+        return new LocalDate(date);
+    }
 
-    protected abstract Collection<DetailItem> createDetailsForSecondLevel(
-            Interval interval);
+    public interface IDetailItemCreator {
+        DetailItem create(DateTime dateTime);
+    }
 
     public Collection<DetailItem> getSecondLevelDetails(Interval interval) {
         if (getZoomLevel() == ZoomLevel.DETAIL_FIVE) {
@@ -99,49 +142,152 @@ public abstract class TimeTrackerState {
         return result;
     }
 
-    protected static int[] calculateInitialEndYear(Date initialDate,
-            Date endDate) {
+    private Collection<DetailItem> createDetails(Interval interval,
+            Iterator<LocalDate> datesGenerator,
+            IDetailItemCreator detailItemCreator) {
+        LocalDate current = interval.getStart();
+        LocalDate end = interval.getFinish();
+        List<DetailItem> result = new ArrayList<DetailItem>();
+        while (current.isBefore(end)) {
+            result.add(detailItemCreator.create(current
+                    .toDateTimeAtStartOfDay()));
+            assert datesGenerator.hasNext();
+            current = datesGenerator.next();
+        }
+        return result;
+    }
 
-        int[] pairYears = new int[2];
+    private final Collection<DetailItem> createDetailsForFirstLevel(
+            Interval interval) {
+        Interval realInterval = getRealIntervalFor(interval);
+        return createDetails(realInterval,
+                getPeriodsFirstLevelGenerator(realInterval.getStart()),
+                getDetailItemCreatorFirstLevel());
+    }
 
-        long yearsInBetween = calculateYearsBetween(initialDate, endDate);
-        Calendar cal = new GregorianCalendar();
-        cal.setTime(initialDate);
-        int initialYear = cal.get(Calendar.YEAR);
-        int endYear;
+    protected abstract Iterator<LocalDate> getPeriodsFirstLevelGenerator(
+            LocalDate start);
 
-        if (yearsInBetween >= NUMBER_OF_ITEMS_MINIMUM) {
-            cal.setTime(endDate);
-            endYear = cal.get(Calendar.YEAR);
-        } else {
-            endYear = initialYear + NUMBER_OF_ITEMS_MINIMUM;
+    private final Collection<DetailItem> createDetailsForSecondLevel(
+            Interval interval) {
+        Interval realInterval = getRealIntervalFor(interval);
+        return createDetails(realInterval,
+                getPeriodsSecondLevelGenerator(realInterval.getStart()),
+                getDetailItemCreatorSecondLevel());
+    }
+
+    protected abstract Iterator<LocalDate> getPeriodsSecondLevelGenerator(
+            LocalDate start);
+
+    protected abstract IDetailItemCreator getDetailItemCreatorFirstLevel();
+
+    protected abstract IDetailItemCreator getDetailItemCreatorSecondLevel();
+
+    protected abstract LocalDate round(LocalDate date, boolean down);
+
+    public enum PeriodType {
+        YEARS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Years.years(amount);
+            }
+
+            @Override
+            public Years differenceBetween(LocalDate start, LocalDate end) {
+                return Years.yearsBetween(start, end);
+            }
+        },
+        MONTHS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Months.months(amount);
+            }
+
+            @Override
+            public Months differenceBetween(LocalDate start, LocalDate end) {
+                return Months.monthsBetween(start, end);
+            }
+        },
+        WEEKS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Weeks.weeks(amount);
+            }
+
+            @Override
+            public Weeks differenceBetween(LocalDate start, LocalDate end) {
+                return Weeks.weeksBetween(start, end);
+            }
+        },
+        DAYS {
+            @Override
+            public ReadablePeriod toPeriod(int amount) {
+                return Days.days(amount);
+            }
+
+            @Override
+            public Days differenceBetween(LocalDate start, LocalDate end) {
+                return Days.daysBetween(start, end);
+            }
+        };
+
+        public abstract ReadablePeriod toPeriod(int amount);
+
+        public abstract BaseSingleFieldPeriod differenceBetween(
+                LocalDate start, LocalDate end);
+
+        public Period amount(int amount) {
+            return new Period(this, amount);
         }
 
-        pairYears[0] = initialYear;
-        pairYears[1] = endYear;
-
-        return pairYears;
     }
 
-    protected static long calculateYearsBetween(Date initialDate, Date endDate) {
+    static class Period {
 
-        long milsecondsDiff = endDate.getTime() - initialDate.getTime();
+        private final PeriodType type;
 
-        // To chech later: If you put MILLSECONDS_IN_YEAR the
-        // division is made wrongly.
+        private final int amount;
 
-        long days = milsecondsDiff / MILLSECONDS_IN_DAY;
-        return (days / 365);
+        private Period(PeriodType type, int amount) {
+            this.type = type;
+            this.amount = amount;
+        }
+
+        ReadablePeriod toPeriod() {
+            return this.type.toPeriod(amount);
+        }
+
+        BaseSingleFieldPeriod asPeriod(Interval interval) {
+            return type.differenceBetween(interval.getStart(),
+                    interval.getFinish());
+        }
     }
 
-    public static Date year(int year) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        return calendar.getTime();
+    protected abstract Period getMinimumPeriod();
+
+    private Interval calculateIntervalWithMinimum(Interval interval) {
+        Period minimumPeriod = getMinimumPeriod();
+        BaseSingleFieldPeriod intervalAsPeriod = minimumPeriod
+                .asPeriod(interval);
+        if (intervalAsPeriod.compareTo(minimumPeriod.toPeriod()) >= 0) {
+            return interval;
+        }
+        LocalDate newEnd = new LocalDate(interval.getStart())
+                .plus(minimumPeriod.toPeriod());
+        return new Interval(interval.getStart(), newEnd);
     }
 
-    public abstract Interval getRealIntervalFor(Interval testInterval);
+    public Interval getRealIntervalFor(Interval testInterval) {
+        return calculateForAtLeastMinimum(calculateIntervalWithMinimum(testInterval));
+    }
+
+    private Interval calculateForAtLeastMinimum(Interval atLeastMinimum) {
+        LocalDate start = round(atLeastMinimum.getStart(), true);
+        LocalDate finish = round(atLeastMinimum.getFinish(), false);
+        Interval result = new Interval(start.toDateTimeAtStartOfDay().toDate(),
+                finish.toDateTimeAtStartOfDay().toDate());
+        return result;
+    }
 
     public abstract double daysPerPixel();
 

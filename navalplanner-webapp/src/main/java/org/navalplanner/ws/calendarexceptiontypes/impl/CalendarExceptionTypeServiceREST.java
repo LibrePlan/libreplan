@@ -20,7 +20,9 @@
 
 package org.navalplanner.ws.calendarexceptiontypes.impl;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
@@ -31,6 +33,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeListDTO;
 import org.navalplanner.ws.calendarexceptiontypes.api.ICalendarExceptionTypeService;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 import org.navalplanner.ws.common.impl.GenericRESTService;
 import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,13 +69,15 @@ public class CalendarExceptionTypeServiceREST extends
     @Override
     protected CalendarExceptionType toEntity(CalendarExceptionTypeDTO entityDTO)
             throws ValidationException, RecoverableErrorException {
-        return null;
+        return CalendarExceptionTypeConverter.toEntity(entityDTO);
     }
 
     @Override
     protected void updateEntity(CalendarExceptionType entity,
             CalendarExceptionTypeDTO entityDTO) throws ValidationException,
             RecoverableErrorException {
+        CalendarExceptionTypeConverter.updateCalendarExceptionType(entity,
+                entityDTO);
     }
 
     @Override
@@ -80,6 +85,14 @@ public class CalendarExceptionTypeServiceREST extends
     @Transactional(readOnly = true)
     public CalendarExceptionTypeListDTO getCalendarExceptionType() {
         return new CalendarExceptionTypeListDTO(findAll());
+    }
+
+    @Override
+    @POST
+    @Consumes("application/xml")
+    public InstanceConstraintViolationsListDTO addCalendarExceptionTypes(
+            CalendarExceptionTypeListDTO calendarExceptionTypeListDTO) {
+        return save(calendarExceptionTypeListDTO.calendarExceptionTypes);
     }
 
 }

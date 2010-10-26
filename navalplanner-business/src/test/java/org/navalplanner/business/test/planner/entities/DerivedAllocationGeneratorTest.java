@@ -27,6 +27,7 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,9 +44,9 @@ import org.junit.Test;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.DerivedDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
@@ -125,8 +126,8 @@ public class DerivedAllocationGeneratorTest {
         expect(result.getAssignedHours(isA(LocalDate.class))).andReturn(
                 assignedHours).anyTimes();
         expect(
-                result.getAssignedHoursDiscounting(isA(Object.class),
-                        isA(LocalDate.class))).andReturn(assignedHours)
+                result.getAssignedDurationDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(hours(assignedHours))
                 .anyTimes();
         replay(result);
         return result;
@@ -152,6 +153,7 @@ public class DerivedAllocationGeneratorTest {
             int hours) {
         DayAssignment dayAssignment = createNiceMock(DayAssignment.class);
         expect(dayAssignment.getHours()).andReturn(hours).anyTimes();
+        expect(dayAssignment.getDuration()).andReturn(hours(hours)).anyTimes();
         expect(dayAssignment.getResource()).andReturn(machine).anyTimes();
         expect(dayAssignment.getDay()).andReturn(day).anyTimes();
         expect(dayAssignment.isAssignedTo(machine)).andReturn(true).anyTimes();

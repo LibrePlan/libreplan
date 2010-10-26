@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
@@ -199,12 +200,8 @@ public class ResourceLoadComponent extends XulElement {
             LoadPeriod loadPeriod) {
         LocalDate start = loadPeriod.getStart();
         LocalDate end = loadPeriod.getEnd();
-        return datesMapper
-                .toPixels(toMilliseconds(end) - toMilliseconds(start));
-    }
-
-    private static long toMilliseconds(LocalDate localDate) {
-        return localDate.toDateMidnight().getMillis();
+        return datesMapper.toPixels(new Duration(
+                start.toDateTimeAtStartOfDay(), end.toDateTimeAtStartOfDay()));
     }
 
     private static String forCSS(int pixels) {
@@ -213,8 +210,7 @@ public class ResourceLoadComponent extends XulElement {
 
     private static int getStartPixels(IDatesMapper datesMapper,
             LoadPeriod loadPeriod) {
-        return datesMapper.toPixels(loadPeriod.getStart().toDateMidnight()
-                .toDate());
+        return datesMapper.toPixels(loadPeriod.getStart());
     }
 
     protected void renderProperties(ContentRenderer renderer) throws IOException{

@@ -22,25 +22,28 @@ package org.navalplanner.web.resources.search;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -50,7 +53,6 @@ import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -62,14 +64,10 @@ import org.zkoss.zul.Treerow;
  * Controller for searching for {@link Resource}
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class NewAllocationSelectorController extends GenericForwardComposer {
-
-    @Autowired
-    private IResourceSearchModel resourceSearchModel;
+public class NewAllocationSelectorController extends
+        AllocationSelectorController {
 
     private ResourceListRenderer resourceListRenderer = new ResourceListRenderer();
-
-    private Textbox txtName;
 
     private Radiogroup allocationTypeSelector;
 
@@ -77,11 +75,11 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
 
     private Listbox listBoxResources;
 
+    private Label allocationSelectedItems;
+
     private CriterionRenderer criterionRenderer = new CriterionRenderer();
 
     private AllocationType currentAllocationType;
-
-    private boolean limitingResource = false;
 
     public NewAllocationSelectorController() {
 
@@ -98,6 +96,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * Initializes ZUL components
      */
     private void initController() {
+        doInitialSelection();
         // Add event listener onSelect to criterionsTree widget
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
@@ -106,7 +105,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
                 // is executed, refreshing the results into the workers listbox
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    searchResources(txtName.getValue(), getSelectedCriterions());
+                    searchResources("", getSelectedCriterions());
                 }
             });
         }
@@ -115,9 +114,17 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         criterionsTree.setTreeitemRenderer(criterionRenderer);
         listBoxResources.setItemRenderer(getListitemRenderer());
 
-        // Show all workers
-        refreshListBoxResources(getAllResources());
+        refreshListBoxResources();
+        listBoxResources.addEventListener(Events.ON_SELECT,
+                new EventListener() {
 
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (isGenericType()) {
+                    returnToSpecificDueToResourceSelection();
+                }
+            }
+        });
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
@@ -126,39 +133,72 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
                         AllocationType type = AllocationType
                                 .getSelected(allocationTypeSelector);
                         onType(type);
+                        showSelectedAllocations();
                     }
                 });
-        listBoxResources.addEventListener(Events.ON_SELECT,
-                new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (currentAllocationType == AllocationType.GENERIC) {
-                            clearSelection(listBoxResources);
-                }
-            }
-        });
-        doInitialSelection();
     }
 
-    private List<Resource> getAllResources() {
-        return (limitingResource) ? resourceSearchModel
-                .getAllLimitingResources() : resourceSearchModel
-                .getAllNonLimitingResources();
+    private List<? extends Resource> getAllResources() {
+        return query().byLimiting(limitingResource).execute();
+    }
+
+    private IResourcesQuery<?> query() {
+        return currentAllocationType.doQueryOn(resourceSearchModel);
     }
 
     private void doInitialSelection() {
-        currentAllocationType = AllocationType.SPECIFIC;
-        AllocationType.SPECIFIC.doTheSelectionOn(allocationTypeSelector);
+        currentAllocationType = AllocationType.GENERIC_WORKERS;
+        AllocationType.GENERIC_WORKERS.doTheSelectionOn(allocationTypeSelector);
         onType(currentAllocationType);
     }
 
     private void onType(AllocationType type) {
-        listBoxResources.setDisabled(AllocationType.GENERIC == type);
-        if (AllocationType.GENERIC == type) {
-            clearSelection(listBoxResources);
-        }
         currentAllocationType = type;
+        Util.reloadBindings(criterionsTree);
+        refreshListBoxResources();
+    }
+
+    private void returnToSpecificDueToResourceSelection() {
+        currentAllocationType = AllocationType.SPECIFIC;
+        List<Criterion> criteria = getSelectedCriterions();
+        List<Resource> selectedWorkers = getSelectedWorkers();
+        refreshListBoxResources(query().byCriteria(criteria)
+                .byLimiting(limitingResource).execute());
+        listBoxResources.renderAll(); // force render so list items has the
+                                      // value property so the resources can be
+                                      // selected
+
+        selectWorkers(selectedWorkers);
+        currentAllocationType.doTheSelectionOn(allocationTypeSelector);
+    }
+
+    private void selectWorkers(Collection<? extends Resource> selectedWorkers) {
+        for (Resource each : selectedWorkers) {
+            Listitem listItem = findListItemFor(each);
+            if (listItem != null) {
+                listItem.setSelected(true);
+            }
+        }
+    }
+
+    private Listitem findListItemFor(Resource resource) {
+        @SuppressWarnings("unchecked")
+        Collection<Listitem> items = listBoxResources.getItems();
+        for (Listitem item : items) {
+            Resource itemResource = (Resource) item.getValue();
+            if (itemResource != null
+                    && itemResource.getId().equals(resource.getId())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    private static final EnumSet<AllocationType> genericTypes = EnumSet.of(
+            AllocationType.GENERIC_MACHINES, AllocationType.GENERIC_WORKERS);
+
+    private boolean isGenericType() {
+        return genericTypes.contains(currentAllocationType);
     }
 
     @SuppressWarnings("unchecked")
@@ -194,8 +234,10 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @param criterions
      */
     private void searchResources(String name, List<Criterion> criterions) {
-        final List<Resource> resources = resourceSearchModel.findResources(
-                name, criterions, limitingResource);
+        final List<? extends Resource> resources = query().byName(name)
+                .byCriteria(criterions)
+                .byLimiting(limitingResource)
+                .execute();
         refreshListBoxResources(resources);
     }
 
@@ -232,16 +274,19 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
     }
 
     public void clearAll() {
-        txtName.setValue("");
-        refreshListBoxResources(getAllResources());
+        refreshListBoxResources();
         criterionsTree.setModel(getCriterions());
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
         doInitialSelection();
     }
 
+    private void refreshListBoxResources() {
+        refreshListBoxResources(getAllResources());
+    }
+
     public List<Resource> getSelectedWorkers() {
-        if(currentAllocationType== AllocationType.GENERIC){
+        if (isGenericType()) {
             return allResourcesShown();
         } else {
             return getSelectedResourcesOnListbox();
@@ -305,8 +350,7 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
      * @return
      */
     public TreeModel getCriterions() {
-        Map<CriterionType, Set<Criterion>> criterions = resourceSearchModel
-                .getCriterions();
+        Map<CriterionType, Set<Criterion>> criterions = query().getCriteria();
 
         List<CriterionTreeNode> rootList = new ArrayList<CriterionTreeNode>();
         for (Entry<CriterionType, Set<Criterion>> entry : criterions.entrySet()) {
@@ -427,12 +471,26 @@ public class NewAllocationSelectorController extends GenericForwardComposer {
         currentAllocationType.addTo(this, allocationsAdder);
     }
 
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        this.limitingResource = limitingResource;
-    }
-
     public void allowSelectMultipleResources(boolean multiple) {
         listBoxResources.setMultiple(multiple);
+    }
+
+    public void showSelectedAllocations() {
+        allocationSelectedItems.setValue(buildSelectedAllocationsString());
+    }
+
+    private String buildSelectedAllocationsString() {
+
+        if (currentAllocationType == AllocationType.SPECIFIC) {
+            List<String> result = new ArrayList<String>();
+            for (Resource each : getSelectedResourcesOnListbox()) {
+                result.add(each.getShortDescription());
+            }
+            return StringUtils.join(result, ",");
+        } else {
+            List<Criterion> criterions = getSelectedCriterions();
+            return currentAllocationType.asCaption(criterions);
+        }
     }
 
 }

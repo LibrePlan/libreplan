@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -140,6 +141,11 @@ public class SpecificAllocationRow extends AllocationRow {
     @Override
     public List<Resource> getAssociatedResources() {
         return Collections.singletonList(resource);
+    }
+
+    @Override
+    public ResourceEnum getType() {
+        return resource.getType();
     }
 
 }

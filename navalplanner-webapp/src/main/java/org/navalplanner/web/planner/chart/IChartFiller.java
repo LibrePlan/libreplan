@@ -20,18 +20,7 @@
 
 package org.navalplanner.web.planner.chart;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedMap;
-
-import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.resources.entities.Resource;
-import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.geometry.TimeGeometry;
-import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 
@@ -43,31 +32,6 @@ import org.zkoss.ganttz.util.Interval;
 public interface IChartFiller {
 
     void fillChart(Timeplot chart, Interval interval, Integer size);
-
-    TimeGeometry getTimeGeometry(Interval interval);
-
-    ValueGeometry getValueGeometry();
-
-    SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
-            List<DayAssignment> dayAssignments);
-
-    void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
-            SortedMap<LocalDate, BigDecimal> additionalCost);
-
-    SortedMap<LocalDate, BigDecimal> accumulateResult(
-            SortedMap<LocalDate, BigDecimal> map);
-
-    SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
-            SortedMap<LocalDate, Integer> map);
-
-    Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval);
-
-    Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval, boolean justDaysWithInformation);
-
-    void appendPlotinfo(Timeplot chart, Plotinfo plotinfo, ValueGeometry valueGeometry,
-            TimeGeometry timeGeometry);
 
     void setZoomLevel(ZoomLevel zoomLevel);
 

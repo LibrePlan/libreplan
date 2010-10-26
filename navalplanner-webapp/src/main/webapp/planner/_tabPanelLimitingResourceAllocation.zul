@@ -21,27 +21,25 @@
 <?page title="${i18n:_('NavalPlan: Scheduling')}"?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
+<?component name="newAllocationSelectorCombo"
+    class="org.navalplanner.web.common.components.NewAllocationSelectorCombo"
+    macroURI="/resources/search/allocation_selector_combo.zul" ?>
+
 <?component name="newAllocationSelector"
     class="org.navalplanner.web.common.components.NewAllocationSelector"
     macroURI="/resources/search/allocation_selector.zul" ?>
 
 <tabpanel id="${arg.id}">
-    <tabbox mold="accordion">
+ <tabbox mold="accordion">
         <tabs>
-            <tab id="tabLimitingResourceAllocation"
-                    label="${i18n:_('Limiting resource allocation')}"
-                    image="common/img/collapse.gif" />
-
-            <tab id="tabLimitingWorkerSearch"
-                    label="${i18n:_('Resources search')}"
-                    image="common/img/collapse.gif" />
+            <tab id="tabLimitingResourceAllocation" />
+            <tab id="tabLimitingWorkerSearch" />
         </tabs>
         <tabpanels>
             <tabpanel>
                 <!-- Order element information -->
-
-        <panel title="${i18n:_('Order Element Information')}:" border="normal">
-            <panelchildren>
+                <panel title="${i18n:_('Order Element Information')}:" border="normal">
+                    <panelchildren>
 
                     <grid id="gridLimitingOrderElementHours">
                         <columns>
@@ -64,12 +62,21 @@
                             </row>
                           </rows>
                     </grid>
-                </panelchildren>
-                </panel>
+    </panelchildren>
+</panel>
 
-                <!-- Allocations -->
-                <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
+<!-- Allocations -->
+    <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
                     <panelchildren>
+
+                    <!-- Multiple allocation selector -->
+                    <separator spacing="10px"/>
+                    <hbox>
+                    <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
+                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                    <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
+                    </hbox>
+                    <separator spacing="10px"/>
                     <grid id="gridLimitingAllocations"
                         model="@{limitingAllocationController.resourceAllocationRows}"
                         rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
@@ -82,16 +89,16 @@
                         </columns>
                     </grid>
                 </panelchildren>
-        </panel>
+      </panel>
 
             </tabpanel>
 
             <tabpanel >
                 <newAllocationSelector id="limitingNewAllocationSelector" />
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(event)" />
+                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelector)" />
                     <button label="${i18n:_('Close')}" onClick="limitingAllocationController.onCloseSelectWorkers()" />
-                </hbox>
+               </hbox>
             </tabpanel>
         </tabpanels>
     </tabbox>

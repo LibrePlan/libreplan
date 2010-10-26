@@ -29,7 +29,9 @@ import static org.junit.Assert.fail;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
 import java.util.EnumMap;
 
 import org.junit.Test;
@@ -132,6 +134,93 @@ public class EffortDurationTest {
         EffortDuration min = min(asList(hours(2), hours(3), seconds(10),
                 seconds(5).and(1, Granularity.HOURS)));
         assertThat(min, equalTo(seconds(10)));
+    }
+
+    @Test
+    public void effortDurationsCanBePlused() {
+        EffortDuration a = EffortDuration.hours(1).and(30, Granularity.MINUTES);
+        EffortDuration b = EffortDuration.minutes(30);
+        assertThat(a.plus(b), equalTo(EffortDuration.hours(2)));
+    }
+
+    @Test
+    public void effortDurationCanBeDivided() {
+        assertThat(hours(4).divideBy(4), equalTo(hours(1)));
+        assertThat(hours(3).divideBy(2),
+                equalTo(hours(1).and(30, Granularity.MINUTES)));
+        assertThat(hours(3).divideBy(4), equalTo(minutes(45)));
+    }
+
+    @Test
+    public void effortDurationCanBeDividedByAnotherEffortDuration() {
+        assertThat(hours(4).divideBy(hours(2)), equalTo(2));
+        assertThat(hours(4).remainderFor(hours(2)), equalTo(zero()));
+        assertThat(hours(5).divideBy(hours(2)), equalTo(2));
+        assertThat(hours(5).remainderFor(hours(2)), equalTo(hours(1)));
+        assertThat(hours(2).divideBy(hours(4)), equalTo(0));
+        assertThat(hours(2).remainderFor(hours(4)), equalTo(hours(2)));
+        assertThat(hours(1).and(30, Granularity.MINUTES).divideBy(minutes(30)),
+                equalTo(3));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void effortDurationCannotBeSubstractedIfMinuedIsSmallerThanSubtrahend() {
+        EffortDuration threeHours = hours(3);
+        threeHours.minus(threeHours.and(1, Granularity.SECONDS));
+    }
+
+    @Test
+    public void effortDurationCanBeSubstracted() {
+        assertThat(hours(2).minus(minutes(120)), equalTo(EffortDuration.zero()));
+        assertThat(hours(2).minus(minutes(60)), equalTo(hours(1)));
+    }
+
+    @Test
+    public void canConvertToDecimalHours() {
+        EffortDuration duration = hours(1).and(30, Granularity.MINUTES);
+        assertThat(duration.toHoursAsDecimalWithScale(1), equalTo(new BigDecimal("1.5")));
+    }
+
+    @Test
+    public void theScaleIsTheOneProvided() {
+        EffortDuration duration = hours(1).and(30, Granularity.MINUTES);
+        assertThat(duration.toHoursAsDecimalWithScale(1).scale(), equalTo(1));
+        assertThat(duration.toHoursAsDecimalWithScale(2).scale(), equalTo(2));
+        assertThat(duration.toHoursAsDecimalWithScale(3).scale(), equalTo(3));
+    }
+
+    @Test
+    public void anHalfUpRoundIsDone() {
+        // 3601/3600 = 1.000277778
+        EffortDuration duration = hours(1).and(1, Granularity.SECONDS);
+        assertThat(duration.toHoursAsDecimalWithScale(6), equalTo(new BigDecimal(
+                "1.000278")));
+        assertThat(duration.toHoursAsDecimalWithScale(5),
+                equalTo(new BigDecimal("1.00028")));
+        assertThat(duration.toHoursAsDecimalWithScale(4),
+                equalTo(new BigDecimal("1.0003")));
+    }
+
+    @Test
+    public void theDurationCanBeRoundedToIntegerHours() {
+        assertThat(hours(0).roundToHours(), equalTo(0));
+        assertThat(hours(1).roundToHours(), equalTo(1));
+        assertThat(hours(2).roundToHours(), equalTo(2));
+    }
+
+    @Test
+    public void theTypeOfRoundDoneIsHalfUpWhenTheHoursAreAtLeastOne() {
+        assertThat(hours(1).and(20, Granularity.MINUTES).roundToHours(),
+                equalTo(1));
+        assertThat(hours(1).and(30, Granularity.MINUTES).roundToHours(),
+                equalTo(2));
+    }
+
+    @Test
+    public void ifDurationNotZeroIsAlwaysRoundedToAtLeastOne() {
+        assertThat(seconds(1).roundToHours(), equalTo(1));
+        assertThat(minutes(29).roundToHours(), equalTo(1));
+        assertThat(minutes(30).roundToHours(), equalTo(1));
     }
 
 }

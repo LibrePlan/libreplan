@@ -60,8 +60,11 @@
                             <textbox value="@{controller.machine.description}" width="500px"
                                 constraint="no empty:${i18n:_('Description cannot be null or empty')}" />
                         </row>
-                       <row>
-                            <label value="${i18n:_('Limited resource')}" />
+                        <row>
+                            <hbox>
+                                <label value="${i18n:_('Limited resource')}" />
+                                <image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
+                            </hbox>
                             <listbox mold="select" width="200px"
                                 model="@{controller.limitingResourceOptionList}"
                                 selectedItem="@{controller.limitingResource}"
@@ -97,4 +100,9 @@
     <button label="${i18n:_('Cancel')}"
         onClick="controller.cancel();"
         sclass="cancel-button global-action"/>
+
+    <popup id="limiting-resources-popup" width="700px" >
+        <iframe id="iframe" src="/help/${i18n:_('en')}/05-recursos.html#recursos-limitantes" width="100%" />
+    </popup>
+
 </window>

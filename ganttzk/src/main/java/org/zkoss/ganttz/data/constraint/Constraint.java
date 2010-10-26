@@ -33,6 +33,41 @@ import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
  */
 public abstract class Constraint<T> {
 
+    public static <T> Constraint<T> coalesce(
+            Collection<? extends Constraint<T>> constraints) {
+        if (constraints.size() == 1) {
+            return constraints.iterator().next();
+        }
+        return new CompoundConstraint<T>(constraints);
+    }
+
+    private static class CompoundConstraint<T> extends Constraint<T> {
+        private final List<Constraint<T>> constraints;
+
+        CompoundConstraint(Collection<? extends Constraint<T>> constraints) {
+            this.constraints = new ArrayList<Constraint<T>>(constraints);
+        }
+
+        @Override
+        protected T applyConstraintTo(T value) {
+            T result = value;
+            for (Constraint<T> each : constraints) {
+                result = each.applyTo(result);
+            }
+            return result;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(T value) {
+            for (Constraint<T> each : constraints) {
+                if (!each.isSatisfiedBy(value)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
     public static <T> Constraint<T> emptyConstraint() {
         return new Constraint<T>() {
 
@@ -122,8 +157,8 @@ public abstract class Constraint<T> {
     private WeakReferencedListeners<IConstraintViolationListener<T>> weakListeners = WeakReferencedListeners
             .create();
 
-    public final T applyTo(T currentValue) {
-        T result = applyConstraintTo(currentValue);
+    public final T applyTo(T value) {
+        T result = applyConstraintTo(value);
         if (!isSatisfiedBy(result)) {
             throw new IllegalStateException(result
                     + " doesn't fulfill this constraint: " + this);
@@ -131,7 +166,7 @@ public abstract class Constraint<T> {
         return result;
     }
 
-    protected abstract T applyConstraintTo(T currentValue);
+    protected abstract T applyConstraintTo(T value);
 
     public abstract boolean isSatisfiedBy(T value);
 

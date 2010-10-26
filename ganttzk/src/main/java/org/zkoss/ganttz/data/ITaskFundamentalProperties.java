@@ -36,13 +36,11 @@ public interface ITaskFundamentalProperties {
     public void setName(String name);
 
     /**
-     * Sets the beginDate. As result of this, the length of the task can change.
-     * So the new value is returned
-     * @return the new length
+     * Sets the beginDate.
      */
-    public long setBeginDate(Date beginDate);
+    public void setBeginDate(GanttDate beginDate);
 
-    public Date getBeginDate();
+    public GanttDate getBeginDate();
 
     /**
      * The deadline associated to the task. It can return null if has no
@@ -52,19 +50,19 @@ public interface ITaskFundamentalProperties {
 
     public void setDeadline(Date date);
 
-    public Date getConsolidatedline();
+    public GanttDate getConsolidatedline();
 
-    public void setLengthMilliseconds(long lengthMilliseconds);
+    public GanttDate getEndDate();
 
-    public long getLengthMilliseconds();
+    public void setEndDate(GanttDate endDate);
 
     public String getNotes();
 
     public void setNotes(String notes);
 
-    public Date getHoursAdvanceEndDate();
+    public GanttDate getHoursAdvanceEndDate();
 
-    public Date getAdvanceEndDate();
+    public GanttDate getAdvanceEndDate();
 
     public BigDecimal getHoursAdvancePercentage();
 
@@ -76,9 +74,9 @@ public interface ITaskFundamentalProperties {
 
     public String getResourcesText();
 
-    List<Constraint<Date>> getStartConstraints();
+    List<Constraint<GanttDate>> getStartConstraints();
 
-    public void moveTo(Date date);
+    public void moveTo(GanttDate date);
 
     public boolean isSubcontracted();
 

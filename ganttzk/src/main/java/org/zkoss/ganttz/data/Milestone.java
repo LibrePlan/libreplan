@@ -28,10 +28,6 @@ import java.util.List;
  */
 public class Milestone extends Task {
 
-    public Milestone() {
-        super();
-    }
-
     public Milestone(ITaskFundamentalProperties fundamentalProperties) {
         super(fundamentalProperties);
     }

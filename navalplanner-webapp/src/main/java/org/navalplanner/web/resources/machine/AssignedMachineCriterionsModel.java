@@ -76,14 +76,12 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
     static {
-        applicableResources.add(ResourceEnum.RESOURCE);
         applicableResources.add(ResourceEnum.MACHINE);
     }
 
     private static List<ResourceEnum> applicableWorkerResources = new ArrayList<ResourceEnum>();
 
     static {
-        applicableWorkerResources.add(ResourceEnum.RESOURCE);
         applicableWorkerResources.add(ResourceEnum.WORKER);
     }
 

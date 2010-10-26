@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -36,7 +38,7 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -47,6 +49,9 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -176,11 +181,12 @@ public class SpecificResourceAllocation extends
 
     private final class SpecificAssignmentsAllocation extends
             AssignmentsAllocation {
+
         @Override
-        protected List<SpecificDayAssignment> distributeForDay(
-                LocalDate day, int totalHours) {
-            return Arrays.asList(SpecificDayAssignment.create(day,
-                    totalHours, resource));
+        protected List<SpecificDayAssignment> distributeForDay(LocalDate day,
+                EffortDuration effort) {
+            return Arrays.asList(SpecificDayAssignment.create(day, effort,
+                    resource));
         }
 
         @Override
@@ -195,8 +201,8 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
-        return CombinedWorkHours.minOf(taskWorkHours, getResource()
+    protected ICalendar getCalendarGivenTaskCalendar(ICalendar taskCalendar) {
+        return CombinedWorkHours.minOf(taskCalendar, getResource()
                 .getCalendar());
     }
 
@@ -205,11 +211,11 @@ public class SpecificResourceAllocation extends
         return SpecificDayAssignment.class;
     }
 
-    public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-            ResourcesPerDay resourcesPerDay, int limit) {
-        int hours = calculateTotalToDistribute(day, resourcesPerDay);
-        SpecificDayAssignment specific = SpecificDayAssignment.create(day, Math
-                .min(limit, hours), resource);
+    public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
+            ResourcesPerDay resourcesPerDay, EffortDuration limit) {
+        EffortDuration effort = calculateTotalToDistribute(day, resourcesPerDay);
+        SpecificDayAssignment specific = SpecificDayAssignment.create(
+                day.getDate(), min(limit, effort), resource);
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         result.add(specific);
         return result;
@@ -228,14 +234,16 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.toTransientStateWithInitial(getUnorderedFor(scenario));
+        result.toTransientStateWithInitial(getUnorderedFor(scenario),
+                getIntraDayEndFor(scenario));
         result.resource = getResource();
         return result;
     }
 
     private void toTransientStateWithInitial(
-            Set<SpecificDayAssignment> initialAssignments) {
+            Set<SpecificDayAssignment> initialAssignments, IntraDayDate end) {
         this.state = new TransientState(initialAssignments);
+        this.state.setIntraDayEnd(end);
     }
 
     @Override
@@ -297,6 +305,16 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
+        }
+
+        @Override
         protected void setParentFor(SpecificDayAssignment each) {
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
@@ -312,6 +330,8 @@ public class SpecificResourceAllocation extends
         private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
 
         private final Set<SpecificDayAssignment> specificDaysAssignment;
+
+        private IntraDayDate intraDayEnd;
 
         TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
             this.specificDaysAssignment = specificDayAssignments;
@@ -355,7 +375,18 @@ public class SpecificResourceAllocation extends
             ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
                     scenario);
             result.resetTo(specificDaysAssignment);
+            result.setIntraDayEnd(intraDayEnd);
             return result;
+        }
+
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
         }
     }
 
@@ -366,6 +397,15 @@ public class SpecificResourceAllocation extends
             return new HashSet<SpecificDayAssignment>();
         }
         return container.getDayAssignments();
+    }
+
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
+        SpecificDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayEnd();
     }
 
     private class SpecificDayAssignmentsNoExplicitlySpecifiedScenario extends
@@ -380,6 +420,11 @@ public class SpecificResourceAllocation extends
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
             return new ExplicitlySpecifiedScenarioState(scenario);
+        }
+
+        @Override
+        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
+            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
         }
 
     }

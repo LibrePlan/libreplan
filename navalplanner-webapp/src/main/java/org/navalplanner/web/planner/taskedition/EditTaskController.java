@@ -24,23 +24,26 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.allocation.FormBinder;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
+import org.navalplanner.web.planner.allocation.AllocationResult;
+import org.navalplanner.web.planner.allocation.FormBinder;
+import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.order.SubcontractController;
@@ -144,6 +147,12 @@ public class EditTaskController extends GenericForwardComposer {
 
     private void showEditForm(IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
+        showEditForm(context, taskElement, planningState, false);
+    }
+
+    private void showEditForm(IContextWithPlannerTask<TaskElement> context,
+            TaskElement taskElement, PlanningState planningState,
+            boolean fromLimitingResourcesView) {
         this.taskElement = taskElement;
         this.context = context;
         this.planningState = planningState;
@@ -152,9 +161,13 @@ public class EditTaskController extends GenericForwardComposer {
 
         try {
             window.setTitle(_("Edit task: {0}", taskElement.getName()));
-            window.setMode("modal");
             showSelectedTabPanel();
             Util.reloadBindings(window);
+            if (fromLimitingResourcesView) {
+                window.doModal();
+            } else {
+                window.setMode("modal");
+            }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -209,15 +222,23 @@ public class EditTaskController extends GenericForwardComposer {
         showEditForm(context, taskElement, planningState);
     }
 
-    public void showEditFormResourceAllocation(TaskElement taskElement) {
+    public void showEditFormResourceAllocationFromLimitingResources(TaskElement taskElement) {
         limitingResourceAllocationController.setDisableHours(false);
         taskPropertiesTab.setVisible(false);
-        showEditFormResourceAllocation(null, taskElement, null);
+        showEditFormResourceAllocation(null, taskElement, null, true);
     }
 
     public void showEditFormResourceAllocation(
             IContextWithPlannerTask<TaskElement> context,
             TaskElement taskElement, PlanningState planningState) {
+        showEditFormResourceAllocation(context, taskElement, planningState,
+                false);
+    }
+
+    public void showEditFormResourceAllocation(
+            IContextWithPlannerTask<TaskElement> context,
+            TaskElement taskElement, PlanningState planningState,
+            boolean fromLimitingResourcesView) {
 
         if (isTask(taskElement)) {
             Task task = asTask(taskElement);
@@ -229,7 +250,8 @@ public class EditTaskController extends GenericForwardComposer {
         } else {
             editTaskTabbox.setSelectedPanelApi(taskPropertiesTabpanel);
         }
-        showEditForm(context, taskElement, planningState);
+        showEditForm(context, taskElement, planningState,
+                fromLimitingResourcesView);
     }
 
     public void selectAssignmentTab(int index) {
@@ -342,6 +364,11 @@ public class EditTaskController extends GenericForwardComposer {
             formBinder.doApply();
             allocationResult = formBinder.getLastAllocation();
         }
+        if (allocationResult.getAggregate().isEmpty()) {
+            getMessagesForUser().showMessage(Level.WARNING,
+                    _("Some allocations needed"));
+            return;
+        }
         getSwitcher().goToAdvancedAllocation(
                 allocationResult, createResultReceiver(allocationResult));
         window.setVisible(false);
@@ -367,10 +394,11 @@ public class EditTaskController extends GenericForwardComposer {
         private final IRestrictionSource restrictionSource;
 
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
+            Validate.isTrue(!allocation.getAggregate().isEmpty());
             this.allocation = allocation;
             final int totalHours = allocation.getAggregate().getTotalHours();
-            final LocalDate start = allocation.getStart();
-            final LocalDate end = start.plusDays(allocation.getDaysDuration());
+            final IntraDayDate start = allocation.getIntraDayStart();
+            final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
                     .getCalculatedValue();
             restrictionSource = new IRestrictionSource() {
@@ -382,12 +410,12 @@ public class EditTaskController extends GenericForwardComposer {
 
                 @Override
                 public LocalDate getStart() {
-                    return start;
+                    return start.getDate();
                 }
 
                 @Override
                 public LocalDate getEnd() {
-                    return end;
+                    return end.asExclusiveEnd();
                 }
 
                 @Override
@@ -418,11 +446,15 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     public Date getStartConstraintDate() {
-        if ((taskElement == null) || (!isTask())) {
+        if ((taskElement == null) || (!isTaskLeafConstraint())) {
             return null;
         }
+        return ((ITaskLeafConstraint) taskElement).getStartConstraint()
+                .getConstraintDateAsDate();
+    }
 
-        return ((Task) taskElement).getStartConstraint().getConstraintDate();
+    private boolean isTaskLeafConstraint() {
+        return (taskElement != null && taskElement instanceof ITaskLeafConstraint);
     }
 
     public void setStartConstraintDate(Date date) {

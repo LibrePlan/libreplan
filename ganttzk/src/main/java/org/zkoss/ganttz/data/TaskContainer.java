@@ -22,8 +22,7 @@ package org.zkoss.ganttz.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
@@ -57,40 +56,14 @@ public class TaskContainer extends Task {
         return result;
     }
 
-    private static <T> T getSmallest(Collection<T> elements,
-            Comparator<T> comparator) {
-        List<T> withoutNulls = removeNulls(elements);
-        if (withoutNulls.isEmpty()) {
-            throw new IllegalArgumentException("at least one required");
-        }
-        T result = null;
-        for (T element : withoutNulls) {
-            result = result == null ? element : (comparator.compare(result,
-                    element) < 0 ? result : element);
-        }
-        return result;
-    }
-
     private static <T extends Comparable<? super T>> T getSmallest(
             Collection<T> elements) {
-        return getSmallest(elements, new Comparator<T>() {
-
-            @Override
-            public int compare(T o1, T o2) {
-                return o1.compareTo(o2);
-            }
-        });
+        return Collections.min(removeNulls(elements));
     }
 
     private static <T extends Comparable<? super T>> T getBiggest(
             Collection<T> elements) {
-        return getSmallest(elements, new Comparator<T>() {
-
-            @Override
-            public int compare(T o1, T o2) {
-                return o2.compareTo(o1);
-            }
-        });
+        return Collections.max(removeNulls(elements));
     }
 
     private List<Task> tasks = new ArrayList<Task>();
@@ -114,30 +87,30 @@ public class TaskContainer extends Task {
         return tasks;
     }
 
-    public Date getSmallestBeginDateFromChildren() {
+    public GanttDate getSmallestBeginDateFromChildren() {
         if (tasks.isEmpty()) {
             return getBeginDate();
         }
         return getSmallest(getStartDates());
     }
 
-    private List<Date> getStartDates() {
-        ArrayList<Date> result = new ArrayList<Date>();
+    private List<GanttDate> getStartDates() {
+        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
         for (Task task : tasks) {
             result.add(task.getBeginDate());
         }
         return result;
     }
 
-    private List<Date> getEndDates() {
-        ArrayList<Date> result = new ArrayList<Date>();
+    private List<GanttDate> getEndDates() {
+        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
         for (Task task : tasks) {
             result.add(task.getEndDate());
         }
         return result;
     }
 
-    public Date getBiggestDateFromChildren() {
+    public GanttDate getBiggestDateFromChildren() {
         if (tasks.isEmpty()) {
             return getEndDate();
         }

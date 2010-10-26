@@ -21,6 +21,7 @@
 package org.navalplanner.ws.calendarexceptiontypes.impl;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO;
 
 /**
@@ -36,9 +37,27 @@ public final class CalendarExceptionTypeConverter {
 
     public final static CalendarExceptionTypeDTO toDTO(
             CalendarExceptionType calendarExceptionType) {
+        EffortDuration duration = calendarExceptionType.getDuration();
+        int seconds = (duration != null) ? duration.getSeconds() : 0;
         return new CalendarExceptionTypeDTO(calendarExceptionType.getCode(),
                 calendarExceptionType.getName(), calendarExceptionType
-                        .getColor(), calendarExceptionType.isOverAssignable());
+                        .getColor(), calendarExceptionType.isOverAssignable(),
+                seconds);
+    }
+
+    public final static CalendarExceptionType toEntity(
+            CalendarExceptionTypeDTO entityDTO) {
+        return CalendarExceptionType.create(entityDTO.code, entityDTO.name,
+                entityDTO.color, entityDTO.overAssignable, EffortDuration
+                        .seconds(entityDTO.duration));
+    }
+
+    public static void updateCalendarExceptionType(
+            CalendarExceptionType entity, CalendarExceptionTypeDTO entityDTO) {
+        entity.setName(entityDTO.name);
+        entity.setColor(entityDTO.color);
+        entity.setOverAssignable(entityDTO.overAssignable);
+        entity.setDuration(EffortDuration.seconds(entityDTO.duration));
     }
 
 }

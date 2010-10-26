@@ -29,6 +29,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -158,9 +160,9 @@ public class CutyPrint {
                 }));
 
         // Add capture destination callback URL
-        captureString += " --url=http://" + request.getLocalName() + ":"
+        String hostName = resolveLocalHost(request);
+        captureString += " --url=http://" + hostName + ":"
                 + request.getLocalPort() + url;
-
         if (parameters != null) {
             captureString += "?";
             for (String key : parameters.keySet()) {
@@ -234,6 +236,15 @@ public class CutyPrint {
 
         } catch (IOException e) {
             LOG.error(_("Could not execute print command"), e);
+        }
+    }
+
+    private static String resolveLocalHost(HttpServletRequest request) {
+        try {
+            InetAddress host = InetAddress.getByName(request.getLocalName());
+            return host.getHostName();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
         }
     }
 

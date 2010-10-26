@@ -125,8 +125,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
      */
     private List<Criterion> criteriaToShowList = new ArrayList<Criterion>();
 
-    private Date initDateFilter;
-    private Date endDateFilter;
+    private LocalDate initDateFilter;
+    private LocalDate endDateFilter;
 
     @Autowired
     private IDayAssignmentDAO dayAssignmentDAO;
@@ -236,8 +236,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
             // reattaching criterions so the query returns the same criteria as
             // keys
             allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
-            return resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(criteriaToShowList, initDateFilter, endDateFilter);
+            return resourceAllocationDAO.findGenericAllocationsBySomeCriterion(
+                    criteriaToShowList, asDate(initDateFilter),
+                    asDate(endDateFilter));
         }
         Map<Criterion, List<GenericResourceAllocation>> toReturn;
         if (filter()) {
@@ -245,10 +246,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     .getAllChildrenAssociatedTaskElements());
             allCriteriaList = Criterion.sortByTypeAndName(getCriterionsOn(tasks));
             toReturn = resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(allCriteriaList, initDateFilter, endDateFilter);
+                    .findGenericAllocationsBySomeCriterion(allCriteriaList,
+                            asDate(initDateFilter), asDate(endDateFilter));
         } else {
-            toReturn =
-                resourceAllocationDAO.findGenericAllocationsByCriterion(initDateFilter, endDateFilter);
+            toReturn = resourceAllocationDAO.findGenericAllocationsByCriterion(
+                    asDate(initDateFilter), asDate(endDateFilter));
             allCriteriaList = Criterion.sortByTypeAndName(toReturn.keySet());
         }
         if(pageFilterPosition == -1) {
@@ -264,6 +266,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
             }
         }
         return toReturnFiltered;
+    }
+
+    public static Date asDate(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     private void reattachCriteriaToShow() {
@@ -537,7 +546,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         for (CriterionSatisfaction satisfaction : satisfactions) {
             criterions.add(satisfaction.getCriterion());
         }
-        return " :: " + Criterion.getNames(criterions);
+        return " :: " + Criterion.getCaptionFor(criterions);
     }
 
     private LoadTimeLine createPrincipal(Criterion criterion,
@@ -550,10 +559,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<GenericResourceAllocation> value) {
         if(initDateFilter != null || endDateFilter != null) {
-            return PeriodsBuilder
-                .build(LoadPeriodGenerator.onCriterion(criterion,
-                    resourcesDAO), value,
-                    initDateFilter, endDateFilter);
+            return PeriodsBuilder.build(
+                    LoadPeriodGenerator.onCriterion(criterion, resourcesDAO),
+                    value, asDate(initDateFilter), asDate(endDateFilter));
         }
         return PeriodsBuilder
             .build(LoadPeriodGenerator.onCriterion(criterion,
@@ -574,27 +582,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private LoadTimeLine buildGroup(Resource resource) {
         List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
                 .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource,
-                                asLocalDate(initDateFilter),
-                                asLocalDate(endDateFilter)));
+                        .findAllocationsRelatedTo(resource, initDateFilter,
+                                endDateFilter));
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
                 .getName(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
 
-    }
-
-    /**
-     * @param date
-     *            the date to extract the {@link LocalDate} from
-     * @return <code>null</code> if date is null
-     */
-    private static LocalDate asLocalDate(Date date) {
-        if (date == null) {
-            return null;
-        }
-        return LocalDate.fromDateFields(date);
     }
 
     private List<LoadTimeLine> buildSecondLevel(Resource resource,
@@ -758,7 +753,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     public static String getName(Collection<? extends Criterion> criterions,
             Task task) {
         String prefix = task.getName();
-        return (prefix + " :: " + Criterion.getNames(criterions));
+        return (prefix + " :: " + Criterion.getCaptionFor(criterions));
     }
 
     private LoadTimeLine buildTimeLine(Resource resource, String name,
@@ -767,9 +762,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
             TimeLineRole<BaseEntity> role) {
         List<LoadPeriod> loadPeriods;
         if(initDateFilter != null || endDateFilter != null) {
-            loadPeriods = PeriodsBuilder
-                .build(LoadPeriodGenerator.onResource(resource), sortedByStartDate,
-                        initDateFilter, endDateFilter);
+            loadPeriods = PeriodsBuilder.build(
+                    LoadPeriodGenerator.onResource(resource),
+                    sortedByStartDate, asDate(initDateFilter),
+                    asDate(endDateFilter));
         }
         else {
             loadPeriods = PeriodsBuilder
@@ -803,9 +799,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .onResourceSatisfying(resource, criterions);
         List<LoadPeriod> loadPeriods;
         if(initDateFilter != null || endDateFilter != null) {
-            loadPeriods = PeriodsBuilder
-                .build(periodGeneratorFactory, allocationsSortedByStartDate,
-                initDateFilter, endDateFilter);
+            loadPeriods = PeriodsBuilder.build(periodGeneratorFactory,
+                    allocationsSortedByStartDate, asDate(initDateFilter),
+                    asDate(endDateFilter));
         }
         else {
             loadPeriods = PeriodsBuilder
@@ -871,22 +867,22 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     @Override
-    public void setEndDateFilter(Date value) {
+    public void setEndDateFilter(LocalDate value) {
         endDateFilter = value;
     }
 
     @Override
-    public void setInitDateFilter(Date value) {
+    public void setInitDateFilter(LocalDate value) {
         initDateFilter = value;
     }
 
     @Override
-    public Date getEndDateFilter() {
+    public LocalDate getEndDateFilter() {
         return endDateFilter;
     }
 
     @Override
-    public Date getInitDateFilter() {
+    public LocalDate getInitDateFilter() {
         return initDateFilter;
     }
 
@@ -919,7 +915,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         else {
             resources =resourcesDAO
-                .findSatisfyingCriterionsAtSomePoint(criteriaToShow());
+                .findSatisfyingAllCriterionsAtSomePoint(criteriaToShow());
         }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);

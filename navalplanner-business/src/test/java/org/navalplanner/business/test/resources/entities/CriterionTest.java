@@ -190,7 +190,7 @@ public class CriterionTest {
     @Test
     public void testCanBeRelatedTo() throws Exception {
         assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
-                .criterionCanBeRelatedTo(Resource.class));
+                .criterionCanBeRelatedTo(Worker.class));
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .criterionCanBeRelatedTo(Worker.class));
     }

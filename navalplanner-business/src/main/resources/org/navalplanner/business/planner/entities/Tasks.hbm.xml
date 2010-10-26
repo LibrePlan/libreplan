@@ -12,20 +12,22 @@
         <property name="name" />
         <property name="notes"/>
         <component name="startDate"
-            class="org.navalplanner.business.workingday.TaskDate">
+            class="org.navalplanner.business.workingday.IntraDayDate">
             <property  name="date" column="startDate" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             <property name="effortDuration" column="startDayDuration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
-        <component name="endDate" class="org.navalplanner.business.workingday.TaskDate">
+        <component name="endDate" class="org.navalplanner.business.workingday.IntraDayDate">
             <property name="date" column="endDate" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
             <property name="effortDuration" column="endDayDuration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" />
+        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" access="field" scale="4"/>
+
+        <property name="sumOfHoursAllocated"/>
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
@@ -62,7 +64,7 @@
                         <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" />
+                <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             </component>
 
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
@@ -96,6 +98,15 @@
 
         <joined-subclass name="TaskMilestone">
             <key column="TASK_ELEMENT_ID"></key>
+
+            <component name="startConstraint">
+                <property name="startConstraintType">
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                    </type>
+                </property>
+                <property name="constraintDate" />
+            </component>
         </joined-subclass>
 
     </class>

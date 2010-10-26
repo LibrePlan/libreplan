@@ -20,25 +20,17 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.labels.daos.ILabelDAO;
-import org.navalplanner.business.labels.daos.ILabelTypeDAO;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
-import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implements all the methods needed to search the criterion to filter the
@@ -50,73 +42,22 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
-    private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
-
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
-
-    private static final Map<LabelType, List<Label>> mapLabels = new HashMap<LabelType, List<Label>>();
-
-    private static OrderStatusEnum[] ordersStatusEnums;
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     protected OrderElementsMultipleFiltersFinder() {
 
-    }
-
-    @Transactional(readOnly = true)
-    public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-            @Override
-                    public Void execute() {
-                        loadLabels();
-                        loadCriterions();
-                        return null;
-                    }
-                });
-    }
-
-    private void loadCriterions() {
-        mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeDAO
-                .getCriterionTypes();
-        for (CriterionType criterionType : criterionTypes) {
-            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
-                    .findByType(criterionType));
-
-            mapCriterions.put(criterionType, criterions);
-        }
-    }
-
-    private void loadLabels() {
-        mapLabels.clear();
-        List<LabelType> labelTypes = labelTypeDAO.getAll();
-        for (LabelType labelType : labelTypes) {
-            List<Label> labels = new ArrayList<Label>(labelDAO
-                    .findByType(labelType));
-            mapLabels.put(labelType, labels);
-        }
     }
 
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
         fillWithFirstTenFiltersLabels();
         fillWithFirstTenFiltersCriterions();
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
+        addNoneFilter();
         return getListMatching();
     }
 
     private List<FilterPair> fillWithFirstTenFiltersLabels() {
+        Map<LabelType, List<Label>> mapLabels = getLabelsMap();
         Iterator<LabelType> iteratorLabelType = mapLabels.keySet().iterator();
         while (iteratorLabelType.hasNext() && getListMatching().size() < 10) {
             LabelType type = iteratorLabelType.next();
@@ -132,7 +73,12 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
+    private Map<LabelType, List<Label>> getLabelsMap() {
+        return databaseSnapshots.snapshotLabelsMap();
+    }
+
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
+        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -149,6 +95,10 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
+    private Map<CriterionType, List<Criterion>> getMapCriterions() {
+        return databaseSnapshots.snapshotCriterionsMap();
+    }
+
     public List<FilterPair> getMatching(String filter) {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
@@ -163,7 +113,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
-        for (CriterionType type : mapCriterions.keySet()) {
+        for (CriterionType type : getMapCriterions().keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -175,7 +125,11 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
-        for (Criterion criterion : mapCriterions.get(type)) {
+        List<Criterion> list = getMapCriterions().get(type);
+        if (list == null) {
+            return;
+        }
+        for (Criterion criterion : list) {
             String name = StringUtils.deleteWhitespace(criterion.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -188,7 +142,11 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
-        for (Criterion criterion : mapCriterions.get(type)) {
+        List<Criterion> list = getMapCriterions().get(type);
+        if (list == null) {
+            return;
+        }
+        for (Criterion criterion : list) {
             addCriterion(type, criterion);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;
@@ -198,7 +156,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInLabelTypes(String filter) {
         boolean limited = (filter.length() < 3);
-        for (LabelType type : mapLabels.keySet()) {
+        for (LabelType type : getLabelsMap().keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -210,7 +168,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInLabels(LabelType type, String filter) {
-        for (Label label : mapLabels.get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             String name = StringUtils.deleteWhitespace(label.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -223,7 +181,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairLabelType(LabelType type, boolean limited) {
-        for (Label label : mapLabels.get(type)) {
+        for (Label label : getLabelsMap().get(type)) {
             addLabel(type, label);
             if ((limited) && (getListMatching().size() > 9)) {
                 return;
@@ -242,12 +200,6 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         String pattern = type.getName() + " :: " + label.getName();
         getListMatching().add(
                 new FilterPair(OrderElementFilterEnum.Label, pattern, label));
-    }
-
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
     }
 
 }

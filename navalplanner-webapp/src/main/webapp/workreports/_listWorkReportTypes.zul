@@ -23,7 +23,7 @@
         model="@{controller.workReportTypes}"
         onInitRender ="controller.sortWorkReportTypes();">
         <columns>
-            <column id="workReportTypeName" label="${i18n:_('Name')}" sort="auto(name)" sortDirection="descending"/>
+            <column id="workReportTypeName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>

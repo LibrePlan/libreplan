@@ -20,7 +20,13 @@
 
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.min;
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -36,10 +42,14 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
+import org.joda.time.Days;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
+import org.joda.time.Seconds;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
@@ -49,8 +59,8 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
-import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
@@ -60,22 +70,25 @@ import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.Machine;
-import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.GanttDate.Cases;
+import org.zkoss.ganttz.data.GanttDate.CustomDate;
+import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
-
 /**
  * Responsible of adaptating a {@link TaskElement} into a
  * {@link ITaskFundamentalProperties} <br />
@@ -87,10 +100,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
 
-    public static List<Constraint<Date>> getStartConstraintsFor(
+    private boolean preventCalculateResourcesText = false;
+
+    public boolean isPreventCalculateResourcesText() {
+        return preventCalculateResourcesText;
+    }
+
+    public void setPreventCalculateResourcesText(
+            boolean preventCalculateResourcesText) {
+        this.preventCalculateResourcesText = preventCalculateResourcesText;
+    }
+
+    public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement) {
-        if (taskElement instanceof Task) {
-            Task task = (Task) taskElement;
+        if (taskElement instanceof ITaskLeafConstraint) {
+            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
             TaskStartConstraint startConstraint = task.getStartConstraint();
             final StartConstraintType constraintType = startConstraint
                     .getStartConstraintType();
@@ -98,19 +122,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             case AS_SOON_AS_POSSIBLE:
                 return Collections.emptyList();
             case START_IN_FIXED_DATE:
-                return Collections.singletonList(DateConstraint
-                        .equalTo(startConstraint.getConstraintDate()));
+                return Collections
+                        .singletonList(equalTo(toGantt(startConstraint
+                        .getConstraintDate())));
             case START_NOT_EARLIER_THAN:
                 return Collections
-                        .singletonList(DateConstraint
-                                .biggerOrEqualThan(startConstraint
-                                        .getConstraintDate()));
+                        .singletonList(biggerOrEqualThan(toGantt(startConstraint
+                                .getConstraintDate())));
             default:
                 throw new RuntimeException("can't handle " + constraintType);
             }
-        } else if (taskElement.isMilestone()) {
-            return Collections.singletonList(DateConstraint
-                    .biggerOrEqualThan(taskElement.getStartDate()));
         } else {
             return Collections.emptyList();
         }
@@ -124,9 +145,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private ITaskElementDAO taskDAO;
-
-    @Autowired
-    private IResourceDAO resourceDAO;
 
     @Autowired
     private ICriterionDAO criterionDAO;
@@ -143,6 +161,138 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public TaskElementAdapter() {
+    }
+
+    public static GanttDate toGantt(IntraDayDate date) {
+        return toGantt(date, null);
+    }
+
+    public static GanttDate toGantt(IntraDayDate date,
+            EffortDuration dayCapacity) {
+        if (date == null) {
+            return null;
+        }
+        if (dayCapacity == null) {
+            // a sensible default
+            dayCapacity = EffortDuration.hours(8);
+        }
+        return new GanttDateAdapter(date, dayCapacity);
+    }
+
+    public static GanttDate toGantt(LocalDate date) {
+        if (date == null) {
+            return null;
+        }
+        return GanttDate.createFrom(date);
+    }
+
+    public static IntraDayDate toIntraDay(GanttDate date) {
+        if (date == null) {
+            return null;
+        }
+        return date.byCases(new Cases<GanttDateAdapter, IntraDayDate>(
+                GanttDateAdapter.class) {
+
+            @Override
+            public IntraDayDate on(LocalDateBased localDate) {
+                return IntraDayDate.startOfDay(localDate.getLocalDate());
+            }
+
+            @Override
+            protected IntraDayDate onCustom(GanttDateAdapter customType) {
+                return customType.date;
+            }
+        });
+    }
+
+    public static LocalDate toLocalDate(GanttDate date) {
+        if (date == null) {
+            return null;
+        }
+        return toIntraDay(date).getDate();
+    }
+
+    static class GanttDateAdapter extends CustomDate {
+
+        private static final int DAY_MILLISECONDS = (int) Days.days(1)
+                .toStandardDuration().getMillis();
+
+        private final IntraDayDate date;
+        private final Duration workingDayDuration;
+
+        GanttDateAdapter(IntraDayDate date, EffortDuration capacityForDay) {
+            this.date = date;
+            this.workingDayDuration = toMilliseconds(capacityForDay);
+        }
+
+        protected int compareToCustom(CustomDate customType) {
+            if (customType instanceof GanttDateAdapter) {
+                GanttDateAdapter other = (GanttDateAdapter) customType;
+                return this.date.compareTo(other.date);
+            }
+            throw new RuntimeException("incompatible type: " + customType);
+        }
+
+        protected int compareToLocalDate(LocalDate localDate) {
+            return this.date.compareTo(localDate);
+        }
+
+        public IntraDayDate getDate() {
+            return date;
+        }
+
+        @Override
+        public Date toDayRoundedDate() {
+            return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        protected boolean isEqualsToCustom(CustomDate customType) {
+            if (customType instanceof GanttDateAdapter) {
+                GanttDateAdapter other = (GanttDateAdapter) customType;
+                return this.date.equals(other.date);
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return date.hashCode();
+        }
+
+        @Override
+        public int toPixels(IDatesMapper datesMapper) {
+            int pixesUntilDate = datesMapper.toPixels(this.date.getDate());
+            EffortDuration effortDuration = date.getEffortDuration();
+            Duration durationInDay = calculateDurationInDayFor(effortDuration);
+            int pixelsInsideDay = datesMapper.toPixels(durationInDay);
+            return pixesUntilDate + pixelsInsideDay;
+        }
+
+        private Duration calculateDurationInDayFor(EffortDuration effortDuration) {
+            if (workingDayDuration.getStandardSeconds() == 0) {
+                return Duration.ZERO;
+            }
+            Fraction fraction = fractionOfWorkingDayFor(effortDuration);
+            return new Duration(fraction.multiplyBy(
+                    Fraction.getFraction(DAY_MILLISECONDS, 1)).intValue());
+        }
+
+        @SuppressWarnings("unchecked")
+        private Fraction fractionOfWorkingDayFor(EffortDuration effortDuration) {
+            Duration durationInDay = toMilliseconds(effortDuration);
+            // cast to int is safe because there are not enough seconds in day
+            // to overflow
+            Fraction fraction = Fraction.getFraction(
+                    (int) durationInDay.getStandardSeconds(),
+                    (int) workingDayDuration.getStandardSeconds());
+            return (Fraction) Collections.min(Arrays
+                    .asList(fraction, Fraction.ONE));
+        }
+
+        private static Duration toMilliseconds(EffortDuration duration) {
+            return Seconds.seconds(duration.getSeconds()).toStandardDuration();
+        }
     }
 
     private class TaskElementWrapper implements ITaskFundamentalProperties {
@@ -177,93 +327,70 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getBeginDate() {
-            return taskElement.getStartDate();
+        public GanttDate getBeginDate() {
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            return toGantt(start);
+        }
+
+        private GanttDate toGantt(IntraDayDate date) {
+            BaseCalendar calendar = taskElement.getCalendar();
+            if (calendar == null) {
+                return TaskElementAdapter.toGantt(date);
+            }
+            return TaskElementAdapter
+                    .toGantt(date, calendar.getCapacityOn(PartialDay
+                            .wholeDay(date.getDate())));
         }
 
         @Override
-        public long getLengthMilliseconds() {
-            return taskElement.getLengthMilliseconds();
-        }
-
-        @Override
-        public long setBeginDate(final Date beginDate) {
-            Long runOnReadOnlyTransaction = transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Long>() {
-                        @Override
-                        public Long execute() {
-                            stepsBeforePossibleReallocation();
-                            Long result = setBeginDateInsideTransaction(beginDate);
-                            return result;
-                        }
-                    });
-            return runOnReadOnlyTransaction;
-        }
-
-        private void reattachAllResourcesForTask() {
-            Set<Resource> resources = resourcesForTask();
-            for (Resource each : resources) {
-                resourceDAO.reattach(each);
-            }
-            for (Machine machine : Resource.machines(resources)) {
-                Set<MachineWorkersConfigurationUnit> configurationUnits = machine
-                        .getConfigurationUnits();
-                for (MachineWorkersConfigurationUnit eachUnit : configurationUnits) {
-                    Hibernate.initialize(eachUnit);
-                }
-            }
-        }
-
-        private Set<Resource> resourcesForTask() {
-            Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
-            Set<Resource> resources = new HashSet<Resource>();
-            for (ResourceAllocation<?> each : resourceAllocations) {
-                resources.addAll(each.getAssociatedResources());
-                for (DerivedAllocation derivedAllocation : each
-                        .getDerivedAllocations()) {
-                    resources
-                            .addAll(derivedAllocation.getResources());
-                }
-            }
-            return resources;
-        }
-
-        private Long setBeginDateInsideTransaction(final Date beginDate) {
-            taskElement.moveTo(currentScenario, beginDate);
-            return getLengthMilliseconds();
-        }
-
-        @Override
-        public void setLengthMilliseconds(final long lengthMilliseconds) {
+        public void setBeginDate(final GanttDate beginDate) {
             transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            updateEndDate(lengthMilliseconds);
+                            taskElement.moveTo(currentScenario,
+                                    toIntraDay(beginDate));
                             return null;
                         }
                     });
         }
 
-        private void updateEndDate(long lengthMilliseconds) {
-            Date endDate = new Date(getBeginDate().getTime()
-                    + lengthMilliseconds);
-            taskElement.resizeTo(currentScenario, endDate);
+        @Override
+        public GanttDate getEndDate() {
+            return toGantt(taskElement.getIntraDayEndDate());
         }
 
         @Override
-        public Date getHoursAdvanceEndDate() {
-            OrderElement orderElement = taskElement.getOrderElement();
-            Integer assignedHours = orderElementDAO
-                    .getAssignedHours(orderElement);
+        public void setEndDate(final GanttDate endDate) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            stepsBeforePossibleReallocation();
+                            taskElement.resizeTo(currentScenario,
+                                    toIntraDay(endDate));
+                            return null;
+                        }
+                    });
+        }
 
-            LocalDate date = calculateLimitDate(assignedHours);
-            if (date == null) {
-                Integer hours = 0;
-                if (orderElement != null) {
-                    hours = orderElement.getWorkHours();
-                }
+        @Override
+        public GanttDate getHoursAdvanceEndDate() {
+            OrderElement orderElement = taskElement.getOrderElement();
+
+            Integer assignedHours = 0;
+            if (orderElement.getSumChargedHours() != null) {
+                assignedHours = orderElement.getSumChargedHours()
+                        .getTotalChargedHours();
+            }
+
+            GanttDate result = null;
+            if(!(taskElement instanceof TaskGroup)) {
+                result = calculateLimitDate(assignedHours);
+            }
+            if (result == null) {
+                Integer hours = taskElement.getSumOfHoursAllocated();
 
                 if (hours == 0) {
                     return getBeginDate();
@@ -271,32 +398,42 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     BigDecimal percentage = new BigDecimal(assignedHours)
                             .setScale(2).divide(new BigDecimal(hours),
                                     RoundingMode.DOWN);
-                    date = calculateLimitDate(percentage);
+                    result = calculateLimitDate(percentage);
                 }
             }
 
-            return date.toDateTimeAtStartOfDay().toDate();
+            return result;
         }
 
         @Override
         public BigDecimal getHoursAdvancePercentage() {
             OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                return orderElementDAO.getHoursAdvancePercentage(orderElement);
-            } else {
-                return new BigDecimal(0);
+            if (orderElement == null) {
+                return BigDecimal.ZERO;
             }
+
+            Integer totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
+                    .getSumChargedHours().getTotalChargedHours() : new Integer(0);
+            BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
+
+            BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())
+                    .setScale(2);
+
+            if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                return BigDecimal.ZERO;
+            }
+            return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
         }
 
         @Override
-        public Date getAdvanceEndDate() {
+        public GanttDate getAdvanceEndDate() {
             OrderElement orderElement = taskElement.getOrderElement();
 
             BigDecimal advancePercentage;
             Integer hours;
             if (orderElement != null) {
                 advancePercentage = taskElement.getAdvancePercentage();
-                hours = taskElement.getTotalHoursAssigned();
+                hours = taskElement.getSumOfHoursAllocated();
             } else {
                 advancePercentage = new BigDecimal(0);
                 hours = Integer.valueOf(0);
@@ -305,25 +442,64 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             Integer advanceHours = advancePercentage.multiply(
                     new BigDecimal(hours)).intValue();
 
-            LocalDate date;
+            GanttDate result;
             if(taskElement instanceof TaskGroup) {
-                date = calculateLimitDate(advancePercentage);
+                result = calculateLimitDate(advancePercentage);
             }
             else {
-                date = calculateLimitDate(advanceHours);
-                if (date == null) {
-                    date = calculateLimitDate(advancePercentage);
+                result = calculateLimitDate(advanceHours);
+                if (result == null) {
+                    result = calculateLimitDate(advancePercentage);
                 }
             }
 
-            return date.toDateTimeAtStartOfDay().toDate();
+            return result;
         }
 
-        private LocalDate calculateLimitDate(BigDecimal advancePercentage) {
-            Long totalMillis = getLengthMilliseconds();
-            Long advanceMillis = advancePercentage.multiply(
-                    new BigDecimal(totalMillis)).longValue();
-            return new LocalDate(getBeginDate().getTime() + advanceMillis);
+        private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
+            BaseCalendar calendar = taskElement.getCalendar();
+            if (advancePercentage.compareTo(BigDecimal.ZERO) == 0 || calendar==null) {
+                return getBeginDate();
+            }
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            IntraDayDate end = taskElement.getIntraDayEndDate();
+            int daysBetween = start.numberOfDaysUntil(end);
+            if (daysBetween == 0) {
+                return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
+            }
+            int daysAdvance = advancePercentage.multiply(
+                    new BigDecimal(daysBetween))
+                    .intValue();
+            return GanttDate.createFrom(taskElement.getIntraDayStartDate()
+                    .getDate().plusDays(daysAdvance));
+        }
+
+        private GanttDate calculateLimitDateWhenDaysBetweenAreZero(
+                BigDecimal advancePercentage) {
+            IntraDayDate start = taskElement.getIntraDayStartDate();
+            IntraDayDate end = taskElement.getIntraDayEndDate();
+            BaseCalendar calendar = taskElement.getCalendar();
+            Iterable<PartialDay> daysUntil = start.daysUntil(end);
+            EffortDuration total = zero();
+            for (PartialDay each : daysUntil) {
+                total = total.plus(calendar.getCapacityOn(each));
+            }
+            BigDecimal totalAsSeconds = new BigDecimal(total
+                    .getSeconds());
+            EffortDuration advanceLeft = seconds(advancePercentage.multiply(
+                    totalAsSeconds).intValue());
+            for (PartialDay each : daysUntil) {
+                if (advanceLeft.compareTo(calendar.getCapacityOn(each)) <= 0) {
+                    LocalDate dayDate = each.getStart().getDate();
+                    if (dayDate.equals(start.getDate())) {
+                        return toGantt(IntraDayDate.create(dayDate,
+                                advanceLeft.plus(start.getEffortDuration())));
+                    }
+                    return toGantt(IntraDayDate.create(dayDate, advanceLeft));
+                }
+                advanceLeft = advanceLeft.minus(calendar.getCapacityOn(each));
+            }
+            return toGantt(end);
         }
 
         @Override
@@ -334,39 +510,52 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return new BigDecimal(0);
         }
 
-        private LocalDate calculateLimitDate(Integer hours) {
+        private GanttDate calculateLimitDate(Integer hours) {
             if (hours == null || hours == 0) {
                 return null;
             }
-            boolean limitReached = false;
+            EffortDuration hoursLeft = hours(hours);
+            IntraDayDate result = null;
+            EffortDuration effortLastDayNotZero = zero();
 
-            Integer count = 0;
-            LocalDate lastDay = null;
-            Integer hoursLastDay = 0;
-
-            Map<LocalDate, Integer> daysMap = taskElement
-                    .getHoursAssignedByDay();
+            Map<LocalDate, EffortDuration> daysMap = taskElement
+                    .getDurationsAssignedByDay();
             if (daysMap.isEmpty()) {
                 return null;
             }
-            for (Entry<LocalDate, Integer> entry : daysMap.entrySet()) {
-                lastDay = entry.getKey();
-                hoursLastDay = entry.getValue();
-                count += hoursLastDay;
-                if (count >= hours) {
-                    limitReached = true;
+            for (Entry<LocalDate, EffortDuration> entry : daysMap.entrySet()) {
+                if (!entry.getValue().isZero()) {
+                    effortLastDayNotZero = entry.getValue();
+                }
+                EffortDuration decrement = min(entry.getValue(), hoursLeft);
+                hoursLeft = hoursLeft.minus(decrement);
+                if (hoursLeft.isZero()) {
+                    if (decrement.equals(entry.getValue())) {
+                        result = IntraDayDate.startOfDay(entry.getKey()
+                                .plusDays(1));
+                    } else {
+                        result = IntraDayDate.create(entry.getKey(), decrement);
+                    }
                     break;
+                } else {
+                    result = IntraDayDate
+                            .startOfDay(entry.getKey().plusDays(1));
                 }
             }
-
-            if (!limitReached) {
-                while (count < hours) {
-                    count += hoursLastDay;
-                    lastDay = lastDay.plusDays(1);
+            if (!hoursLeft.isZero() && effortLastDayNotZero.isZero()) {
+                LOG.warn("limit not reached and no day with effort not zero");
+            }
+            if (!hoursLeft.isZero() && !effortLastDayNotZero.isZero()) {
+                while (!hoursLeft.isZero()) {
+                    hoursLeft = hoursLeft.minus(min(effortLastDayNotZero,
+                            hoursLeft));
+                    result = result.nextDayAtStart();
                 }
             }
-
-            return lastDay.plusDays(1);
+            if (result == null) {
+                return null;
+            }
+            return toGantt(result);
         }
 
         @Override
@@ -399,7 +588,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getResourcesText() {
-            if (taskElement.getOrderElement() == null) {
+            if (isPreventCalculateResourcesText() ||
+                    taskElement.getOrderElement() == null) {
                 return "";
             }
             try {
@@ -508,7 +698,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             StringBuilder result = new StringBuilder();
             result.append(_("Name: {0}", getName()) + "<br/>");
             result.append(_("Advance") + ": ").append(
-                    getAdvancePercentage().multiply(new BigDecimal(100)))
+                    (getAdvancePercentage().multiply(new BigDecimal(100)))
+                            .setScale(2, RoundingMode.DOWN))
                     .append("% , ");
 
             result.append(_("Hours invested") + ": ").append(
@@ -547,16 +738,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public List<Constraint<Date>> getStartConstraints() {
+        public List<Constraint<GanttDate>> getStartConstraints() {
             return getStartConstraintsFor(this.taskElement);
         }
 
         @Override
-        public void moveTo(Date date) {
+        public void moveTo(GanttDate date) {
             setBeginDate(date);
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
-                task.explicityMoved(date);
+                task.explicityMoved(toLocalDate(date));
             }
         }
 
@@ -579,17 +770,13 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public Date getConsolidatedline() {
+        public GanttDate getConsolidatedline() {
             if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
                 return null;
             }
             LocalDate consolidatedline = ((Task) taskElement)
-                    .getFirstDayNotConsolidated();
-            if (consolidatedline == null) {
-                return null;
-            }
-            return consolidatedline.toDateTimeAtStartOfDay()
-                    .toDate();
+                    .getFirstDayNotConsolidated().getDate();
+            return TaskElementAdapter.toGantt(consolidatedline);
         }
 
         @Override
@@ -613,7 +800,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         private void stepsBeforePossibleReallocation() {
             taskDAO.reattach(taskElement);
-            reattachAllResourcesForTask();
         }
 
         @Override

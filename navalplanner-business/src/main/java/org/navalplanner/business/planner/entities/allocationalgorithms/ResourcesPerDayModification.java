@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,7 +31,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
@@ -40,6 +42,8 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public abstract class ResourcesPerDayModification extends
@@ -70,8 +74,8 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-                int limit) {
+        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
+                EffortDuration limit) {
             return genericAllocation.createAssignmentsAtDay(getResources(),
                     day, getGoal(), limit);
         }
@@ -84,16 +88,30 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public IWorkHours getResourcesWorkHoursPerDay() {
-            return CombinedWorkHours.maxOf(resourcesWorkHours());
+        public String getNoValidPeriodsMessage() {
+            String firstLine = _("There are no days available due to not satisfying the criterions.");
+            String secondLine = _("Another possibility is that the resources don't have days available due to their calendars.");
+            return firstLine + "\n" + secondLine;
         }
 
-        private List<IWorkHours> resourcesWorkHours() {
-            List<IWorkHours> workHours = new ArrayList<IWorkHours>();
+        @Override
+        public String getNoValidPeriodsMessageDueToIntersectionMessage() {
+            String firstLine = _("There are no days available in the days marked available by the task calendar.");
+            String secondLine = _("Maybe the criterions are not satisfied in those days.");
+            return firstLine + "\n" + secondLine;
+        }
+
+        @Override
+        public ICalendar getResourcesCalendar() {
+            return CombinedWorkHours.maxOf(resourcesCalendar());
+        }
+
+        private List<ICalendar> resourcesCalendar() {
+            List<ICalendar> calendar = new ArrayList<ICalendar>();
             for (Resource each : getResources()) {
-                workHours.add(workHoursFor(each));
+                calendar.add(calendarFor(each));
             }
-            return workHours;
+            return calendar;
         }
 
     }
@@ -122,8 +140,8 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-                int limit) {
+        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
+                EffortDuration limit) {
             return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
                     limit);
         }
@@ -134,13 +152,23 @@ public abstract class ResourcesPerDayModification extends
             return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
         }
 
+        @Override
+        public String getNoValidPeriodsMessage() {
+            return _("The resource's calendar has no available days starting from the start of the task.");
+        }
+
+        @Override
+        public String getNoValidPeriodsMessageDueToIntersectionMessage() {
+            return _("There are no days available at resource's calendar in the days marked available by the task's calendar.");
+        }
+
         private Resource getAssociatedResource() {
             return getResources().get(0);
         }
 
         @Override
-        public IWorkHours getResourcesWorkHoursPerDay() {
-            return workHoursFor(getAssociatedResource());
+        public ICalendar getResourcesCalendar() {
+            return calendarFor(getAssociatedResource());
         }
 
     }
@@ -182,7 +210,7 @@ public abstract class ResourcesPerDayModification extends
         return result;
     }
 
-    protected static IWorkHours workHoursFor(Resource associatedResource) {
+    protected static ICalendar calendarFor(Resource associatedResource) {
         ResourceCalendar calendar = associatedResource.getCalendar();
         return calendar != null ? calendar : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
@@ -202,16 +230,25 @@ public abstract class ResourcesPerDayModification extends
         return goal;
     }
 
-    public abstract IWorkHours getResourcesWorkHoursPerDay();
+    public abstract ICalendar getResourcesCalendar();
 
     public abstract void applyAllocationOnAllTaskLength();
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);
 
-    public abstract List<DayAssignment> createAssignmentsAtDay(LocalDate day,
-            int limit);
+    public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
+            EffortDuration limit);
 
     public abstract AvailabilityTimeLine getAvailability();
+
+    public abstract String getNoValidPeriodsMessage();
+
+    public abstract String getNoValidPeriodsMessageDueToIntersectionMessage();
+
+    public boolean isDayFilled(LocalDate day, EffortDuration taken) {
+        return getBeingModified().getAllocationCalendar()
+                .asDurationOn(PartialDay.wholeDay(day), goal).equals(taken);
+    }
 
 
 }

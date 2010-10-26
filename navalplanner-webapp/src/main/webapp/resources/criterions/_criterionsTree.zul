@@ -18,13 +18,15 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<panel title="${i18n:_('Associated Criteria')}" border="normal">
-<panelchildren>
+<groupbox closable="false">
+<caption label="${i18n:_('Criteria of selected type ')}" />
+
 <vbox id="criterionsTree">
     <vbox>
         <hbox align="center">
+            <label value="${i18n:_('New criterion')}" />
             <textbox value="" id="criterionName" width="200px" onOK="criterionTreeController.addCriterion();"/>
-            <button id="add_new_criterion" label="${i18n:_('New criterion')}"
+            <button id="add_new_criterion" label="${i18n:_('Add')}"
                 onClick="criterionTreeController.addCriterion();"/>
         </hbox>
     </vbox>
@@ -44,5 +46,5 @@
     </vbox>
 </vbox>
 <separator bar="false" spacing="40px" orient="vertical"/>
-</panelchildren>
-</panel>
+
+</groupbox>

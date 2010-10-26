@@ -23,8 +23,8 @@
   mold="paging" pageSize="10" apply="${controller.workers}">
   <columns>
    <column label="${i18n:_('Operations')}" />
-   <column label="${i18n:_('Name')}" sort="auto(firstName)" />
-   <column label="${i18n:_('Surname')}" sort="auto(surname)" />
+   <column label="${i18n:_('Name')}" sort="auto(lower(firstName))" />
+   <column label="${i18n:_('Surname')}" sort="auto(lower(surname))" />
    <column label="${i18n:_('NIF')}" sort="auto(nif)" />
   </columns>
   <rows>

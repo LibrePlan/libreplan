@@ -591,8 +591,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         public void setInterval(Interval realInterval) {
-            intervalStart = new DateTime(realInterval.getStart());
-            intervalEnd = new DateTime(realInterval.getFinish());
+            intervalStart = realInterval.getStart().toDateTimeAtStartOfDay();
+            intervalEnd = realInterval.getFinish().toDateTimeAtStartOfDay();
             paginatorStart = intervalStart;
             paginatorEnd = intervalStart.plus(intervalIncrease());
             if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
@@ -923,7 +923,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction, TaskElement task) {
         return Row.createRow(messages, restriction, Criterion
-                .getNames(genericResourceAllocation.getCriterions()), 1, Arrays
+                .getCaptionFor(genericResourceAllocation.getCriterions()), 1, Arrays
                 .asList(genericResourceAllocation), genericResourceAllocation
                 .isLimiting(), task);
     }
@@ -949,20 +949,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow(_("Name")) {
+        result.add(new ColumnOnRow("Name") {
 
             @Override
             public Component cellFor(Row row) {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow(_("Hours")) {
+        result.add(new ColumnOnRow("Hours") {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllHours();
             }
         });
-        result.add(new ColumnOnRow(_("Function")) {
+        result.add(new ColumnOnRow("Function") {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1027,7 +1027,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     @Override
     public Column toColumn() {
         Column column = new org.zkoss.zul.Column();
-        column.setLabel(columnName);
+        column.setLabel(_(columnName));
         column.setSclass(((String) columnName).toLowerCase());
         return column;
     }
@@ -1501,7 +1501,7 @@ class Row {
         if(!((Task)task).hasConsolidations()) {
             return false;
         }
-        LocalDate d = ((Task)task).getFirstDayNotConsolidated();
+        LocalDate d = ((Task) task).getFirstDayNotConsolidated().getDate();
         DateTime firstDayNotConsolidated =
             new DateTime(d.getYear(), d.getMonthOfYear(),
                     d.getDayOfMonth(), 0, 0, 0, 0);

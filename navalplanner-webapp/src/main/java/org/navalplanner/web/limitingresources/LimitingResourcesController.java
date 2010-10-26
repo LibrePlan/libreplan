@@ -116,34 +116,31 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         this.parent = comp;
+        reload();
     }
 
-    public void reload() {
-        try {
-            // FIXME: Temporary fix, it seems the page was already rendered, so
-            // clear it all as it's going to be rendered again
-            parent.getChildren().clear();
+    private void reload() {
+        // FIXME: Temporary fix, it seems the page was already rendered, so
+        // clear it all as it's going to be rendered again
+        parent.getChildren().clear();
 
-            limitingResourceQueueModel.initGlobalView();
+        limitingResourceQueueModel.initGlobalView();
 
-            // Initialize interval
-            timeTracker = buildTimeTracker();
-            limitingResourcesPanel = buildLimitingResourcesPanel();
+        // Initialize interval
+        timeTracker = buildTimeTracker();
+        limitingResourcesPanel = buildLimitingResourcesPanel();
 
-            this.parent.appendChild(limitingResourcesPanel);
-            limitingResourcesPanel.afterCompose();
+        this.parent.appendChild(limitingResourcesPanel);
+        limitingResourcesPanel.afterCompose();
 
-            cbSelectAll = (Checkbox) limitingResourcesPanel
-                    .getFellowIfAny("cbSelectAll");
+        cbSelectAll = (Checkbox) limitingResourcesPanel
+                .getFellowIfAny("cbSelectAll");
 
-            initGridUnassignedLimitingResourceQueueElements();
-            initManualAllocationWindow();
-            initEditTaskWindow();
+        initGridUnassignedLimitingResourceQueueElements();
+        initManualAllocationWindow();
+        initEditTaskWindow();
 
-            addCommands(limitingResourcesPanel);
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
+        addCommands(limitingResourcesPanel);
     }
 
     private void initGridUnassignedLimitingResourceQueueElements() {
@@ -232,9 +229,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
                     .getResource();
             return (resource != null) ? resource.getName() : "";
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
-            Set<Criterion> criteria = ((GenericResourceAllocation) resourceAllocation)
-                    .getCriterions();
-            return Criterion.getNames(criteria);
+            GenericResourceAllocation genericAllocation = (GenericResourceAllocation) resourceAllocation;
+            return Criterion.getCaptionForCriterionsFrom(genericAllocation);
         }
         return StringUtils.EMPTY;
     }
@@ -328,7 +324,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             Task task = oldElement.getTask();
 
             EditTaskController editTaskController = getEditController(editTaskWindow);
-            editTaskController.showEditFormResourceAllocation(task);
+            editTaskController.showEditFormResourceAllocationFromLimitingResources(task);
 
             Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
             Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();

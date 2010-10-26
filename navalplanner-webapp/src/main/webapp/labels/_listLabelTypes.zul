@@ -22,7 +22,7 @@
     <newdatasortablegrid id="labelTypes" model="@{controller.labelTypes}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_('Code')}"/>
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>

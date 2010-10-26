@@ -20,6 +20,8 @@
 
 package org.zkoss.ganttz.adapters;
 
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -29,9 +31,9 @@ import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.Planner;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.DateConstraint;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -134,6 +136,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private boolean expandAllEnabled = true;
 
     private boolean flattenTreeEnabled = true;
+
+    private boolean showAllResourcesEnabled = true;
 
     private boolean renamingTasksEnabled = true;
 
@@ -261,21 +265,21 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.editingDatesEnabled = editingDatesEnabled;
     }
 
-    public List<Constraint<Date>> getStartConstraints() {
-        return getStartConstraintsGiven(this.notBeforeThan);
+    public List<Constraint<GanttDate>> getStartConstraints() {
+        return getStartConstraintsGiven(GanttDate
+                .createFrom(this.notBeforeThan));
     }
 
-    public static List<Constraint<Date>> getStartConstraintsGiven(
-            Date notBeforeThan) {
+    public static List<Constraint<GanttDate>> getStartConstraintsGiven(
+            GanttDate notBeforeThan) {
         if (notBeforeThan != null) {
-            return Collections.singletonList(DateConstraint
-                    .biggerOrEqualThan(notBeforeThan));
+            return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
         } else {
             return Collections.emptyList();
         }
     }
 
-    public List<Constraint<Date>> getEndConstraints() {
+    public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
     }
 
@@ -307,6 +311,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     public void setFlattenTreeEnabled(boolean flattenTreeEnabled) {
         this.flattenTreeEnabled = flattenTreeEnabled;
+    }
+
+    @Override
+    public boolean isShowAllResourcesEnabled() {
+        return showAllResourcesEnabled;
+    }
+
+    public void setShowAllResourcesEnabled(boolean showAllResourcesEnabled) {
+        this.showAllResourcesEnabled = showAllResourcesEnabled;
     }
 
     @Override

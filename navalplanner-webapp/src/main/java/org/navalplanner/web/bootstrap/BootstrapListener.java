@@ -20,10 +20,18 @@
 
 package org.navalplanner.web.bootstrap;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import org.navalplanner.business.BootstrapOrder;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
+import org.springframework.aop.framework.Advised;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -40,14 +48,82 @@ public class BootstrapListener implements ServletContextListener {
         WebApplicationContext webApplicationContext = WebApplicationContextUtils
                 .getWebApplicationContext(servletContextEvent
                         .getServletContext());
+        doBootstrap(webApplicationContext);
+        // some snapshots could depend on the bootstrap being done, so they are
+        // launched after
+        launchSnapshots(webApplicationContext);
+    }
+
+    private void doBootstrap(WebApplicationContext webApplicationContext) {
+        List<IDataBootstrap> bootstrapsFound = findBootstraps(webApplicationContext);
+        Collections.sort(bootstrapsFound, byBootstrapOrder());
+        for (IDataBootstrap each : bootstrapsFound) {
+            each.loadRequiredData();
+        }
+    }
+
+    private List<IDataBootstrap> findBootstraps(
+            WebApplicationContext webApplicationContext) {
         String[] beanNames = BeanFactoryUtils
                 .beanNamesForTypeIncludingAncestors(webApplicationContext,
                         IDataBootstrap.class);
+        List<IDataBootstrap> result = new ArrayList<IDataBootstrap>();
         for (String name : beanNames) {
             IDataBootstrap bootstrap = (IDataBootstrap) webApplicationContext
                     .getBean(name);
-            bootstrap.loadRequiredData();
+            result.add(bootstrap);
         }
+        return result;
+    }
+
+    private Comparator<IDataBootstrap> byBootstrapOrder() {
+        return new Comparator<IDataBootstrap>() {
+
+            @Override
+            public int compare(IDataBootstrap o1, IDataBootstrap o2) {
+                return getOrderingValue(o1) - getOrderingValue(o2);
+            }
+
+            private int getOrderingValue(IDataBootstrap dataBootstrap) {
+                BootstrapOrder annotation = searchAnnotationFor(dataBootstrap);
+                return annotation == null ? 0 : annotation.value();
+            }
+
+            private BootstrapOrder searchAnnotationFor(
+                    IDataBootstrap dataBootstrap) {
+                Class<? extends IDataBootstrap> klass = dataBootstrap
+                        .getClass();
+                BootstrapOrder result = klass
+                        .getAnnotation(BootstrapOrder.class);
+                if (result == null && dataBootstrap instanceof Advised) {
+                    return searchInProxiedClass((Advised) dataBootstrap);
+                }
+                return result;
+            }
+
+            private BootstrapOrder searchInProxiedClass(Advised advised) {
+                Class<?> proxiedClass = advised.getTargetSource()
+                        .getTargetClass();
+                return proxiedClass.getAnnotation(BootstrapOrder.class);
+            }
+        };
+    }
+
+    private void launchSnapshots(WebApplicationContext webApplicationContext) {
+        PredefinedDatabaseSnapshots snapshots = getPredefinedDatabaseSnapshots(webApplicationContext);
+        snapshots.registerSnapshots();
+    }
+
+    private PredefinedDatabaseSnapshots getPredefinedDatabaseSnapshots(
+            WebApplicationContext webApplicationContext) {
+        return (PredefinedDatabaseSnapshots) webApplicationContext
+                .getBean(lowercaseFirst(PredefinedDatabaseSnapshots.class
+                        .getSimpleName()));
+    }
+
+    private String lowercaseFirst(String simpleName) {
+        return simpleName.substring(0, 1).toLowerCase()
+                + simpleName.substring(1);
     }
 
 }

@@ -326,6 +326,10 @@ public class Planner extends HtmlMacroComponent  {
             Button flattenTree = (Button) getFellow("flattenTree");
             flattenTree.setVisible(false);
         }
+        if (!configuration.isShowAllResourcesEnabled()) {
+            Button showAllResources = (Button) getFellow("showAllResources");
+            showAllResources.setVisible(false);
+        }
         listZoomLevels.setSelectedIndex(getZoomLevel().ordinal());
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();

@@ -56,9 +56,9 @@ public class LimitingResourcesTabCreator {
     }
 
     private final Mode mode;
-    private final LimitingResourcesController LimitingResourcesController;
+    private final LimitingResourcesController limitingResourcesController;
 
-    private final LimitingResourcesController LimitingResourcesControllerGlobal;
+    private final LimitingResourcesController limitingResourcesControllerGlobal;
 
     private final Component breadcrumbs;
 
@@ -67,8 +67,8 @@ public class LimitingResourcesTabCreator {
             LimitingResourcesController LimitingResourcesControllerGlobal,
             Component breadcrumbs) {
         this.mode = mode;
-        this.LimitingResourcesController = LimitingResourcesController;
-        this.LimitingResourcesControllerGlobal = LimitingResourcesControllerGlobal;
+        this.limitingResourcesController = LimitingResourcesController;
+        this.limitingResourcesControllerGlobal = LimitingResourcesControllerGlobal;
         this.breadcrumbs = breadcrumbs;
     }
 
@@ -90,7 +90,9 @@ public class LimitingResourcesTabCreator {
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 // LimitingResourcesController.add(upCommand);
                 arguments.put("LimitingResourcesController",
-                        LimitingResourcesController);
+                        limitingResourcesController);
+                Order currentOrder = mode.getOrder();
+                limitingResourcesController.filterBy(currentOrder);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
@@ -110,10 +112,7 @@ public class LimitingResourcesTabCreator {
                 breadcrumbs
                         .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                Order currentOrder = mode.getOrder();
-                LimitingResourcesController.filterBy(currentOrder);
-                LimitingResourcesController.reload();
-                breadcrumbs.appendChild(new Label(currentOrder.getName()));
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
             }
         };
     }
@@ -127,7 +126,8 @@ public class LimitingResourcesTabCreator {
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("LimitingResourcesController",
-                        LimitingResourcesControllerGlobal);
+                        limitingResourcesControllerGlobal);
+                limitingResourcesControllerGlobal.filterBy(null);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
@@ -139,8 +139,6 @@ public class LimitingResourcesTabCreator {
                 componentCreator) {
             @Override
             protected void afterShowAction() {
-                LimitingResourcesControllerGlobal.filterBy(null);
-                LimitingResourcesControllerGlobal.reload();
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }

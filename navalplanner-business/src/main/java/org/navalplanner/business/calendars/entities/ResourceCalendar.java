@@ -20,11 +20,15 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Calendar for a {@link Resource}.
@@ -66,30 +70,21 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     public Integer getCapacity(LocalDate from, LocalDate to) {
-        Integer result = getCapacityAt(to);
-        for (LocalDate date = from; date.isBefore(to);) {
-            result += getCapacityAt(date);
-            date = date.plusDays(1);
+        return getCapacity(IntraDayDate.startOfDay(from),
+                IntraDayDate.startOfDay(to));
+    }
+
+    public Integer getCapacity(IntraDayDate from, IntraDayDate to) {
+        EffortDuration result = zero();
+        for (PartialDay each : from.daysUntil(to)) {
+            result = result.plus(getCapacityOn(each));
         }
-        return result;
+        return result.roundToHours();
     }
 
     @Override
-    public Integer getCapacityAt(LocalDate date) {
-        if (!isActive(date)) {
-            return 0;
-        }
-        return multiplyByCapacity(super.getCapacityAt(date));
-    }
-
-    protected Integer multiplyByCapacity(Integer duration) {
-        if (duration == null) {
-            return 0;
-        }
-        if (capacity == null) {
-            return duration;
-        }
-        return duration * capacity;
+    public EffortDuration getCapacityOn(PartialDay date) {
+        return multiplyByCapacity(super.getCapacityOn(date));
     }
 
     protected EffortDuration multiplyByCapacity(EffortDuration duration) {

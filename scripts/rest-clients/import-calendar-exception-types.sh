@@ -30,4 +30,4 @@ authorization=`./base64.sh $loginName:$password`
 curl -sv -X POST $certificate -d @$file \
     --header "Content-type: application/xml" \
     --header "Authorization: Basic $authorization" \
-    $baseServiceURL/orderelements/ | tidy -xml -i -q -utf8
+    $baseServiceURL/calendarexceptiontypes | tidy -xml -i -q -utf8

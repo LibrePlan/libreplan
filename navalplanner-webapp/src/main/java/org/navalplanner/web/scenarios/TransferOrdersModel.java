@@ -135,8 +135,6 @@ public class TransferOrdersModel implements ITransferOrdersModel {
     @Override
     @Transactional
     public void transfer(Order order) throws ValidationException {
-        orderDAO.save(order);
-
         Scenario sourceScenario = getSourceScenario();
         Scenario destinationScenario = getDestinationScenario();
 
@@ -154,6 +152,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                     _("Source and destination scenarios should be different"));
         }
 
+        orderDAO.save(order);
         OrderVersion sourceOrderVersion = order
                 .getOrderVersionFor(sourceScenario);
         if (sourceOrderVersion == null) {

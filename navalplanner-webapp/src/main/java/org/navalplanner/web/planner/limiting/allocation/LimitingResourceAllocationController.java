@@ -29,7 +29,9 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
+import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.HoursRendererColumn;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -82,6 +84,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     private boolean disableHours = true;
 
+    private NewAllocationSelectorCombo limitingNewAllocationSelectorCombo;
+
     private NewAllocationSelector limitingNewAllocationSelector;
 
     private GridLimitingAllocationRenderer gridLimitingAllocationRenderer = new GridLimitingAllocationRenderer();
@@ -90,6 +94,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         limitingNewAllocationSelector.setLimitingResourceFilter(true);
+        limitingNewAllocationSelectorCombo.setLimitingResourceFilter(true);
         limitingNewAllocationSelector.allowSelectMultipleResources(false);
     }
 
@@ -109,8 +114,17 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         try {
             resourceAllocationModel.init(task, planningState);
             resourceAllocationModel.setLimitingResourceAllocationController(this);
-            tabLimitingWorkerSearch.setDisabled(existsResourceAllocationWithDayAssignments());
+
+            // if exist resource allocation with day assignments, it can not
+            // change them
+            boolean existsDaysAssignments = existsResourceAllocationWithDayAssignments();
+            tabLimitingWorkerSearch.setDisabled(existsDaysAssignments);
+            limitingNewAllocationSelectorCombo
+                    .setDisabled(existsDaysAssignments);
+
             limitingNewAllocationSelector.setAllocationsAdder(resourceAllocationModel);
+            limitingNewAllocationSelectorCombo
+                    .setAllocationsAdder(resourceAllocationModel);
             gridLimitingOrderElementHours.setModel(new ListModelList(
                     resourceAllocationModel.getHoursAggregatedByCriteria()));
             gridLimitingOrderElementHours.setRowRenderer(createOrderElementHoursRenderer());
@@ -144,18 +158,14 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         return resourceAllocationModel.getResourceAllocationRows();
     }
 
-    public void onSelectWorkers(Event event) {
+    public void onSelectWorkers(AllocationSelector allocationSelector) {
         try {
-            addSelectedResources();
+            allocationSelector.addChoosen();
         } finally {
             tabLimitingResourceAllocation.setSelected(true);
-            limitingNewAllocationSelector.clearAll();
+            allocationSelector.clearAll();
             Util.reloadBindings(gridLimitingAllocations);
         }
-    }
-
-    private void addSelectedResources() {
-        limitingNewAllocationSelector.addChoosen();
     }
 
     public void onCloseSelectWorkers() {
@@ -164,6 +174,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     public void clear() {
         limitingNewAllocationSelector.clearAll();
+        limitingNewAllocationSelectorCombo.clearAll();
     }
 
     public GridLimitingAllocationRenderer getGridLimitingAllocationRenderer() {

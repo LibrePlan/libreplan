@@ -65,6 +65,9 @@ public class UnitTypeBootstrap implements IDataBootstrap {
     }
 
     public static UnitType getDefaultUnitType() {
+        if (defaultUnitType.isNewObject()) {
+            defaultUnitType.dontPoseAsTransientObjectAnymore();
+        }
         return defaultUnitType;
     }
 }

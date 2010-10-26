@@ -22,6 +22,7 @@ package org.navalplanner.ws.common.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
@@ -36,39 +37,28 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class InstanceConstraintViolationsListDTO {
 
     @XmlElement(name="instance-constraint-violations")
-    public List<InstanceConstraintViolationsDTO>
-        instanceConstraintViolationsList;
+    public List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList;
 
-    public InstanceConstraintViolationsListDTO() {}
+    public InstanceConstraintViolationsListDTO() {
+        instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+    }
 
     public InstanceConstraintViolationsListDTO(
-        List<InstanceConstraintViolationsDTO>
-            instanceConstraintViolationsList) {
-
-        this.instanceConstraintViolationsList =
-            instanceConstraintViolationsList;
-
+            List<InstanceConstraintViolationsDTO> violations) {
+        this.instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>(
+                violations);
     }
 
     @Override
     public String toString() {
-
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-
         printWriter.println("*** " + this.getClass().getName() + " ***");
-
-        for (InstanceConstraintViolationsDTO i :
-            instanceConstraintViolationsList) {
-
+        for (InstanceConstraintViolationsDTO i : instanceConstraintViolationsList) {
             printWriter.println(i);
-
         }
-
         printWriter.close();
-
         return stringWriter.toString();
-
     }
 
 }

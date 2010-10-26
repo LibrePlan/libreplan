@@ -20,15 +20,19 @@
 
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
+<?component name="newAllocationSelectorCombo"
+    class="org.navalplanner.web.common.components.NewAllocationSelectorCombo"
+    macroURI="/resources/search/allocation_selector_combo.zul" ?>
+
 <?component name="newAllocationSelector"
-    class="org.navalplanner.web.common.components.NewAllocationSelector"
+ class="org.navalplanner.web.common.components.NewAllocationSelector"
     macroURI="/resources/search/allocation_selector.zul" ?>
 
 <tabpanel id="resourceAllocationTabpanel">
-    <tabbox mold="accordion">
+ <tabbox mold="accordion">
         <tabs>
-            <tab id="tbResourceAllocation" label="${i18n:_('Non limiting resource allocation')}" image="common/img/collapse.gif" />
-            <tab id="workerSearchTab" label="${i18n:_('Resources search')}" image="common/img/collapse.gif"/>
+            <tab id="tbResourceAllocation" />
+            <tab id="workerSearchTab" />
         </tabs>
         <tabpanels>
             <tabpanel>
@@ -60,7 +64,7 @@
                     </vbox>
                 </groupbox>
 
-                <groupbox sclass="assignedresources" closable="false" width="310px" height="170px" >
+                <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
                     <caption label="${i18n:_('Allocation configuration')}" />
 
                     <hbox>
@@ -88,6 +92,15 @@
 
                 <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
                     <caption label="${i18n:_('Allocations')}" />
+
+                    <!-- Multiple allocation selector -->
+                    <separator spacing="10px"/>
+                    <hbox align="bottom">
+                        <newAllocationSelectorCombo id="newAllocationSelectorCombo" />
+                        <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
+                    </hbox>
+                    <separator spacing="20px"/>
                     <grid id="allocationsGrid"
                         model="@{allocationController.resourceAllocations}"
                         rowRenderer="@{allocationController.resourceAllocationRenderer}"
@@ -113,14 +126,14 @@
                         </columns>
                     </grid>
                 </groupbox>
-            </tabpanel>
+        </tabpanel>
 
             <!-- Worker search -->
             <tabpanel>
                 <newAllocationSelector id="newAllocationSelector"/>
                 <!--  Select worker -->
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(event)" />
+                    <button label="${i18n:_('Select')}" onClick="allocationController.onSelectWorkers(newAllocationSelector)" />
                     <button label="${i18n:_('Close')}" onClick="allocationController.onCloseSelectWorkers()" />
                 </hbox>
             </tabpanel>
@@ -130,7 +143,7 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Apply tab changes')}" id="applyButton" sclass="global-action" />
-        <button label="${i18n:_('Go to advanced Allocation')}"
+        <button label="${i18n:_('Go to advanced Allocation')}" id="advancedAllocationButton"
             onClick="editController.goToAdvancedAllocation();" sclass="global-action" />
     </hbox>
 </tabpanel>

@@ -23,6 +23,7 @@ package org.navalplanner.web.workreports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -357,6 +358,8 @@ public class WorkReportModel implements IWorkReportModel {
             if(!workReport.getGenerateCode()) {
                 workReportLine.setCode("");
             }
+            // Adding default date
+            workReportLine.setDate(new Date());
             workReport.addWorkReportLine(workReportLine);
             return workReportLine;
         }

@@ -19,6 +19,11 @@
  */
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -26,6 +31,9 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTi
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -33,37 +41,164 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class ThereAreHoursOnWorkHoursCalculator {
 
-    // Not instantiable
+    // Not instantiableisCapacityAvailable
     private ThereAreHoursOnWorkHoursCalculator() {
     }
 
+    public static abstract class CapacityResult {
+        public final boolean thereIsCapacityAvailable() {
+            return match(new IMatcher<Boolean>() {
+
+                @Override
+                public Boolean on(CapacityAvailable result) {
+                    return true;
+                }
+
+                @Override
+                public Boolean on(ThereAreNoValidPeriods result) {
+                    return false;
+                }
+
+                @Override
+                public Boolean on(ValidPeriodsDontHaveCapacity result) {
+                    return false;
+                }
+
+                @Override
+                public Boolean on(ResourcesPerDayIsZero result) {
+                    return false;
+                }
+            });
+        }
+
+        public interface IMatcher<T> {
+            public T on(CapacityAvailable result);
+
+            public T on(ThereAreNoValidPeriods result);
+
+            public T on(ValidPeriodsDontHaveCapacity result);
+
+            public T on(ResourcesPerDayIsZero result);
+        }
+
+        public abstract <T> T match(IMatcher<T> matcher);
+    }
+
+    public static class CapacityAvailable extends CapacityResult {
+
+        private CapacityAvailable() {
+        }
+
+        @Override
+        public <T> T match(IMatcher<T> matcher) {
+            return matcher.on(this);
+        }
+
+    }
+
+    public static class ThereAreNoValidPeriods extends CapacityResult {
+
+        private final ICalendar specifiedCalendar;
+
+        private final AvailabilityTimeLine specifiedAdditionalAvailability;
+
+        private ThereAreNoValidPeriods(ICalendar specifiedCalendar,
+                AvailabilityTimeLine specifiedAdditionalAvailability) {
+            this.specifiedCalendar = specifiedCalendar;
+            this.specifiedAdditionalAvailability = specifiedAdditionalAvailability;
+        }
+
+        public ICalendar getSpecifiedCalendar() {
+            return specifiedCalendar;
+        }
+
+        public AvailabilityTimeLine getSpecifiedAdditionalAvailability() {
+            return specifiedAdditionalAvailability;
+        }
+
+        @Override
+        public <T> T match(IMatcher<T> matcher) {
+            return matcher.on(this);
+        }
+
+    }
+
+    public static class ValidPeriodsDontHaveCapacity extends CapacityResult {
+
+        private final List<Interval> validPeriods;
+
+        private final EffortDuration sumReached;
+
+        private final EffortDuration effortNeeded;
+
+        private ValidPeriodsDontHaveCapacity(
+                Collection<? extends Interval> validPeriods,
+                EffortDuration sumReached, EffortDuration effortNeeded) {
+            this.validPeriods = Collections
+                    .unmodifiableList(new ArrayList<Interval>(validPeriods));
+            this.sumReached = sumReached;
+            this.effortNeeded = effortNeeded;
+        }
+
+        public List<Interval> getValidPeriods() {
+            return validPeriods;
+        }
+
+        public EffortDuration getSumReached() {
+            return sumReached;
+        }
+
+        public EffortDuration getEffortNeeded() {
+            return effortNeeded;
+        }
+
+        @Override
+        public <T> T match(IMatcher<T> matcher) {
+            return matcher.on(this);
+        }
+    }
+
+    public static class ResourcesPerDayIsZero extends CapacityResult {
+
+        private ResourcesPerDayIsZero() {
+        }
+
+        @Override
+        public <T> T match(IMatcher<T> matcher) {
+            return matcher.on(this);
+        }
+
+    }
+
     /**
-     * Caculates if there are enough hours
+     * Calculates if there are enough hours
      */
-    public static boolean thereAreHoursOn(IWorkHours workHours,
+    public static CapacityResult thereIsAvailableCapacityFor(
+            ICalendar calendar,
             AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        if (hoursToAllocate == 0) {
-            return true;
+            ResourcesPerDay resourcesPerDay, EffortDuration effortToAllocate) {
+        if (effortToAllocate.isZero()) {
+            return new CapacityAvailable();
         }
         if (resourcesPerDay.isZero()) {
-            return false;
+            return new ResourcesPerDayIsZero();
         }
-        AvailabilityTimeLine realAvailability = workHours.getAvailability()
+        AvailabilityTimeLine realAvailability = calendar.getAvailability()
                 .and(availability);
         List<Interval> validPeriods = realAvailability.getValidPeriods();
         if (validPeriods.isEmpty()) {
-            return false;
+            return new ThereAreNoValidPeriods(calendar, availability);
         }
 
         Interval last = getLast(validPeriods);
         Interval first = validPeriods.get(0);
         final boolean isOpenEnded = last.getEnd().equals(EndOfTime.create())
                 || first.getStart().equals(StartOfTime.create());
-
-        return isOpenEnded
-                || thereAreHoursOn(workHours, hoursToAllocate, resourcesPerDay,
-                        validPeriods);
+        if (isOpenEnded) {
+            return new CapacityAvailable();
+        }
+        return thereIsCapacityOn(calendar, effortToAllocate, resourcesPerDay,
+                validPeriods);
 
     }
 
@@ -71,34 +206,40 @@ public class ThereAreHoursOnWorkHoursCalculator {
         return validPeriods.get(validPeriods.size() - 1);
     }
 
-    private static boolean thereAreHoursOn(IWorkHours workHours,
-            int hoursToAllocate,
+    private static CapacityResult thereIsCapacityOn(ICalendar calendar,
+            EffortDuration effortToAllocate,
             ResourcesPerDay resourcesPerDay, List<Interval> validPeriods) {
-        int sum = 0;
+        EffortDuration sum = zero();
         for (Interval each : validPeriods) {
             FixedPoint start = (FixedPoint) each.getStart();
             FixedPoint end = (FixedPoint) each.getEnd();
-            int pending = hoursToAllocate - sum;
-            sum += sumHoursUntil(workHours, pending, resourcesPerDay, start
-                    .getDate(), end
-                    .getDate());
-            if (sum >= hoursToAllocate) {
-                return true;
+            EffortDuration pending = effortToAllocate.minus(sum);
+            sum = sum.plus(sumDurationUntil(calendar, pending,
+                    resourcesPerDay, start.getDate(), end.getDate()));
+            if (sum.compareTo(effortToAllocate) >= 0) {
+                return new CapacityAvailable();
             }
         }
-        return false;
+        return new ValidPeriodsDontHaveCapacity(validPeriods, sum,
+                effortToAllocate);
     }
 
-    private static int sumHoursUntil(IWorkHours workHours, int maximum,
+    private static EffortDuration sumDurationUntil(ICalendar calendar,
+            EffortDuration maximum,
             ResourcesPerDay resourcesPerDay,
             LocalDate start, LocalDate end) {
-        int result = 0;
-        int days = org.joda.time.Days.daysBetween(start, end).getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
-            result += workHours.toHours(current, resourcesPerDay);
-            if (result >= maximum) {
-                return result;
+        return sunDurationUntil(calendar, maximum, resourcesPerDay, IntraDayDate.startOfDay(start),
+                IntraDayDate.startOfDay(end));
+    }
+
+    private static EffortDuration sunDurationUntil(ICalendar calendar,
+            EffortDuration maximum, ResourcesPerDay resourcesPerDay,
+            IntraDayDate start, IntraDayDate end) {
+        EffortDuration result = zero();
+        for (PartialDay current : start.daysUntil(end)) {
+            result = result.plus(calendar.asDurationOn(current, resourcesPerDay));
+            if (result.compareTo(maximum) >= 0) {
+                return maximum;
             }
         }
         return result;

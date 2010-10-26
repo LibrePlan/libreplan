@@ -20,10 +20,19 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
+import java.util.EnumMap;
+
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * Type of an exception day.
@@ -31,6 +40,20 @@ import org.navalplanner.business.common.Registry;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class CalendarExceptionType extends IntegrationEntity {
+
+    private String name;
+
+    private String color;
+
+    // Beware. Not Assignable was intended to mean not over assignable. This
+    // name is kept in order to not break legacy data
+    private Boolean notAssignable = Boolean.TRUE;
+
+    private EffortDuration duration = EffortDuration.zero();
+
+    public static CalendarExceptionType create() {
+        return create(new CalendarExceptionType());
+    }
 
     public static CalendarExceptionType create(String name, String color,
             Boolean notAssignable) {
@@ -43,17 +66,19 @@ public class CalendarExceptionType extends IntegrationEntity {
                 code);
     }
 
-    private String name;
-    private String color;
-
-    // Beware. Not Assignable was intended to mean not over assignable. This
-    // name is kept in order to not break legacy data
-    private Boolean notAssignable;
+    public static CalendarExceptionType create(String code, String name,
+            String color, Boolean notAssignable, EffortDuration duration) {
+        CalendarExceptionType calendarExceptionType = new CalendarExceptionType(
+                name, color, notAssignable);
+        calendarExceptionType.setDuration(duration);
+        return create(calendarExceptionType, code);
+    }
 
     /**
      * Constructor for hibernate. Do not use!
      */
-    public CalendarExceptionType() {
+    protected CalendarExceptionType() {
+
     }
 
     public CalendarExceptionType(String name, String color,
@@ -67,8 +92,16 @@ public class CalendarExceptionType extends IntegrationEntity {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getColor() {
         return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     /**
@@ -78,8 +111,53 @@ public class CalendarExceptionType extends IntegrationEntity {
         return BooleanUtils.isFalse(notAssignable);
     }
 
+    public void setOverAssignable(Boolean overAssignable) {
+        this.notAssignable = !overAssignable;
+    }
+
+    public String getOverAssignableStr() {
+        return isOverAssignable() ? _("Yes") : _("No");
+    }
+
+    public EffortDuration getDuration() {
+        return duration;
+    }
+
+    public String getDurationStr() {
+        EnumMap<Granularity, Integer> values = duration.decompose();
+        Integer hours = values.get(Granularity.HOURS);
+        Integer minutes = values.get(Granularity.MINUTES);
+        Integer seconds = values.get(Granularity.SECONDS);
+        return hours + ":" + minutes + ":" + seconds ;
+    }
+
+    public void setDuration(EffortDuration duration) {
+        this.duration = duration;
+    }
+
     @Override
     protected ICalendarExceptionTypeDAO getIntegrationEntityDAO() {
         return Registry.getCalendarExceptionTypeDAO();
     }
+
+    @AssertTrue(message = "name is already used")
+    public boolean checkConstraintUniqueName() {
+        if (StringUtils.isBlank(name)) {
+            return true;
+        }
+
+        ICalendarExceptionTypeDAO calendarExceptionTypeDAO = getIntegrationEntityDAO();
+        if (isNewObject()) {
+            return !calendarExceptionTypeDAO.existsByNameAnotherTransaction(
+                    name);
+        } else {
+            try {
+                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO.findByName(name);
+                return calendarExceptionType.getId().equals(getId());
+            } catch (InstanceNotFoundException e) {
+                return true;
+            }
+        }
+    }
+
 }

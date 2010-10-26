@@ -27,8 +27,8 @@
 ]]>
 </zscript>
 
-<window border="normal" title="${i18n:_('Stretches function configuration')}"
-    apply="${stretchesFunctionController}">
+<window border="false" title="${i18n:_('Stretches function configuration')}"
+    apply="${stretchesFunctionController}" closable="true">
 
 <hbox>
     <vbox>
@@ -45,10 +45,10 @@
             style="margin-bottom: 5px" fixedLayout="true" rows="15"
             width="500px" >
             <listhead>
-                <listheader label="${i18n:_('Date')}" />
-                <listheader label="${i18n:_('Length percentage')}" />
-                <listheader label="${i18n:_('Amount work percentage')}" />
-                <listheader label="${i18n:_('Operations')}" />
+                <listheader label="${i18n:_('Date')}" tooltiptext="${i18n:_('Measurement date')}" />
+                <listheader label="${i18n:_('Length')}" tooltiptext="${i18n:_('Length percentage')}" />
+                <listheader label="${i18n:_('Amount work')}" tooltiptext="${i18n:_('Amount work percentage')}" />
+                <listheader label="${i18n:_('Op.')}" tooltiptext="${i18n:_('Operations')}" width="50px"/>
             </listhead>
         </listbox>
 
@@ -80,9 +80,9 @@
 
 <hbox>
     <button label="${i18n:_('Accept')}"
-        onClick="stretchesFunctionController.confirm()" />
+        onClick="stretchesFunctionController.confirm()" sclass="save-button global-action"/>
     <button label="${i18n:_('Cancel')}"
-        onClick="stretchesFunctionController.cancel()" />
+        onClick="stretchesFunctionController.cancel()" sclass="cancel-button global-action"/>
 </hbox>
 
 </window>

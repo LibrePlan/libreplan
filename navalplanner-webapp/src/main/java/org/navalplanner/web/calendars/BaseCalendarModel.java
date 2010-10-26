@@ -229,15 +229,6 @@ public class BaseCalendarModel implements IBaseCalendarModel {
     }
 
     @Override
-    public Integer getHoursOfDay() {
-        if (getBaseCalendar() == null) {
-            return null;
-        }
-
-        return getBaseCalendar().getWorkableHours(selectedDate);
-    }
-
-    @Override
     public EffortDuration getWorkableTime() {
         if (getBaseCalendar() == null) {
             return null;

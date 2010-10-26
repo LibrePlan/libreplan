@@ -68,13 +68,6 @@ public class DBUserDetailsService implements UserDetailsService {
                 "'{0}': not found", loginName));
         }
 
-        //Retrieve roles from the user and its profiles
-        Set<UserRole> allRoles = new HashSet<UserRole>();
-        allRoles.addAll(user.getRoles());
-        for(Profile eachProfile : user.getProfiles()) {
-            allRoles.addAll(eachProfile.getRoles());
-        }
-
         Scenario scenario = user.getLastConnectedScenario();
         if (scenario == null) {
             scenario = PredefinedScenarios.MASTER.getScenario();
@@ -87,7 +80,7 @@ public class DBUserDetailsService implements UserDetailsService {
             true, // accountNonExpired
             true, // credentialsNonExpired
             true, // accountNonLocked
-            getGrantedAuthorities(allRoles),
+            getGrantedAuthorities(user.getAllRoles()),
             scenario);
     }
 

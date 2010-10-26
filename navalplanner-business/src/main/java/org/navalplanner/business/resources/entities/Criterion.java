@@ -40,6 +40,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 
@@ -49,8 +50,6 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class Criterion extends IntegrationEntity implements ICriterion {
-
-    private static final String ALL_WORKERS = _("[generic all workers]");
 
     public static Criterion createUnvalidated(String code, String name,
         CriterionType type, Criterion parent, Boolean active) {
@@ -81,7 +80,8 @@ public class Criterion extends IntegrationEntity implements ICriterion {
                 if (o2.getName() == null) {
                     return -1;
                 }
-                return o1.getName().compareTo(o2.getName());
+                return o1.getName().toLowerCase().compareTo(
+                        o2.getName().toLowerCase());
             }
         });
         return result;
@@ -109,16 +109,56 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     /**
      * Returns a string of criterion names separated by comma
-     *
+     * @deprecated use {@link #getCaptionFor(ResourceEnum, Collection)} instead
      * @param criteria
      * @return
      */
-    public static String getNames(Collection<? extends Criterion> criteria) {
-        List<String> names = new ArrayList<String>();
-        for (Criterion each: criteria) {
-            names.add(each.getName());
+    @Deprecated
+    public static String getCaptionFor(Collection<? extends Criterion> criteria) {
+        return getCaptionFor(ResourceEnum.WORKER, criteria);
+    }
+
+    public static String getCaptionForCriterionsFrom(
+            GenericResourceAllocation allocation) {
+        return getCaptionFor(allocation.getResourceType(),
+                allocation.getCriterions());
+    }
+
+    /**
+     * Returns a string of criterion names separated by comma
+     * @param resourceType
+     * @param criteria
+     * @return
+     */
+    public static String getCaptionFor(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria) {
+        if (criteria.isEmpty()) {
+            return allCaptionFor(resourceType);
         }
-        return (names.isEmpty()) ? Criterion.ALL_WORKERS : StringUtils.join(names, ",");
+        List<String> result = new ArrayList<String>();
+        for (Criterion each : criteria) {
+            result.add(each.getName());
+        }
+        return StringUtils.join(result, ",");
+    }
+
+    private static String allCaptionFor(ResourceEnum resourceType) {
+        switch (resourceType) {
+        case WORKER:
+            return allWorkersCaption();
+        case MACHINE:
+            return allMachinesCaption();
+        default:
+            throw new RuntimeException("cant handle " + resourceType);
+        }
+    }
+
+    private static String allWorkersCaption() {
+        return _("[generic all workers]");
+    }
+
+    private static String allMachinesCaption() {
+        return _("[generic all machines]");
     }
 
     public void updateUnvalidated(String name, Boolean active) {

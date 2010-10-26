@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.orders.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +35,9 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;
@@ -150,9 +154,13 @@ public class Order extends OrderLineGroup {
     }
 
     public void useSchedulingDataFor(Scenario scenario) {
+        useSchedulingDataFor(scenario, true);
+    }
+
+    public void useSchedulingDataFor(Scenario scenario, boolean recursive) {
         OrderVersion orderVersion = scenarios.get(scenario);
         currentVersionInfo = CurrentVersionInfo.create(scenario, orderVersion);
-        useSchedulingDataFor(orderVersion);
+        useSchedulingDataFor(orderVersion, recursive);
     }
 
     @Override
@@ -325,16 +333,6 @@ public class Order extends OrderLineGroup {
         return dayAssignments;
     }
 
-    public List<OrderElement> getAllOrderElements() {
-        List<OrderElement> result = new ArrayList<OrderElement>(
-                this
-                .getChildren());
-        for (OrderElement orderElement : this.getChildren()) {
-            result.addAll(orderElement.getAllChildren());
-        }
-        return result;
-    }
-
     public Set<Resource> getResources() {
         Set<Resource> resources = new HashSet<Resource>();
         for (DayAssignment dayAssignment : getDayAssignments()) {
@@ -387,22 +385,6 @@ public class Order extends OrderLineGroup {
         return lastOrderElementSequenceCode;
     }
 
-    @AssertTrue(message = "some code is repeated between order code and order element codes")
-    public boolean checkConstraintCodeNotRepeated() {
-        Set<String> codes = new HashSet<String>();
-        codes.add(getCode());
-
-        for (OrderElement orderElement : getAllOrderElements()) {
-            String code = orderElement.getCode();
-            if (codes.contains(code)) {
-                return false;
-            }
-            codes.add(code);
-        }
-
-        return true;
-    }
-
     @Override
     public Order getOrder() {
         return this;
@@ -444,21 +426,6 @@ public class Order extends OrderLineGroup {
                 }
             }
         }
-    }
-
-    @AssertTrue(message = "some code is repeated between hours group codes")
-    public boolean checkConstraintHoursGroupCodeNotRepeated() {
-        Set<String> codes = new HashSet<String>();
-
-        for (HoursGroup hoursGroup : getHoursGroups()) {
-            String code = hoursGroup.getCode();
-            if (codes.contains(code)) {
-                return false;
-            }
-            codes.add(code);
-        }
-
-        return true;
     }
 
     @Override
@@ -531,4 +498,5 @@ public class Order extends OrderLineGroup {
         }
         return false;
     }
+
 }

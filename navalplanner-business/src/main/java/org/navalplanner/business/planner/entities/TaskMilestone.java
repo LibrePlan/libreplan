@@ -29,13 +29,14 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public class TaskMilestone extends TaskElement {
+public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
 
     public static TaskMilestone create(Date initialDate) {
         Validate.notNull(initialDate);
@@ -46,6 +47,8 @@ public class TaskMilestone extends TaskElement {
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
+
+    private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -140,6 +143,17 @@ public class TaskMilestone extends TaskElement {
     @Override
     public boolean hasLimitedResourceAllocation() {
         return false;
+    }
+
+    public void explicityMoved(LocalDate date) {
+        getStartConstraint().explicityMovedTo(date);
+    }
+
+    public TaskStartConstraint getStartConstraint() {
+        if (startConstraint == null) {
+            startConstraint = new TaskStartConstraint();
+        }
+        return startConstraint;
     }
 
 }

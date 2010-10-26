@@ -225,7 +225,7 @@ public class CriterionTypeDAOTest {
     public void testGetCriterionTypesByResourceType() {
         // Add RESOURCE criterionType
         CriterionType criterionType = createValidCriterionType();
-        criterionType.setResource(ResourceEnum.RESOURCE);
+        criterionType.setResource(ResourceEnum.WORKER);
         criterionTypeDAO.save(criterionType);
 
         // Add WORKER criterionType
@@ -235,7 +235,7 @@ public class CriterionTypeDAOTest {
 
         // Get number of criterionTypes of type RESOURCE
         List<ResourceEnum> resources = new ArrayList<ResourceEnum>();
-        resources.add(ResourceEnum.RESOURCE);
+        resources.add(ResourceEnum.WORKER);
         List<CriterionType> criterions = criterionTypeDAO.getCriterionTypesByResources(resources);
         int numberOfCriterionsOfTypeResource = criterions.size();
 

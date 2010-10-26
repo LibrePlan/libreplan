@@ -440,6 +440,12 @@ h4.message_WARNING {
     margin-top: 5px;
 }
 
+.main-area .z-center-body > .z-window-embedded {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 10px;
+}
+
 /* Hide inner second level embed window titles */
 .z-window-embedded
 .z-window-embedded
@@ -611,6 +617,25 @@ div.z-grid {
     overflow: hidden;
 }
 
+#timetrackerheader div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader th,
+#timetracker th {
+    border-top: 0;
+}
+
+#timetrackerheader th {
+    border-top: 0;
+}
+
+.listdetails div {
+    border: 0;
+}
+
+
+
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
 .z-listbox .z-longbox,.z-listbox .z-doublebox {
     height: 22px;
@@ -638,13 +663,13 @@ div.z-grid {
     height:25px;
 }
 .orderTree .operations {
-    min-width:160px;
+    width:160px;
 }
 .orderTree .name {
     min-width:120px;
 }
 .orderTree .hours {
-    min-width:40px;
+    width:40px;
 }
 .orderTree .code {
     min-width:100px;
@@ -652,8 +677,8 @@ div.z-grid {
 .orderTree .scheduling_state {
     min-width:160px;
 }
-.orderTree .estimated-init,
-.orderTree .deadline {
+.orderTree .estimated_init,
+.orderTree .estimated_end {
     width: 100px;
 }
 
@@ -1129,7 +1154,7 @@ span.z-dottree-line {
 }
 
 .main-area > .z-center-body:first-child {
-    height: auto !important;
+/*    height: auto !important; */
     width: auto !important;
 }
 
@@ -1352,4 +1377,68 @@ tr.z-tree-row-seld .z-row-cnt {
 .tooltip-actions {
     margin-bottom: 10px;
     margin-left: 10px;
+}
+
+.projects-list .date {
+    width:120px;
+}
+
+.z-band-popup td.z-list-cell {
+    border-right: dotted 1px #cccccc;
+}
+
+.edit-task-window .z-tab-accordion {
+display:none;
+}
+
+.edit-task-window .z-tabpanel-accordion {
+    border:0;
+}
+
+.edit-task-window .message_ERROR,
+.edit-task-window .message_INFO {
+    width:auto;
+}
+
+
+.filtering-area {
+    white-space: nowrap;
+}
+
+.filter-more-options {
+    overflow: visible;
+}
+
+.filter-more-options .z-groupbox-body {
+    width: 900px;
+    left: -780px;
+    position: relative;
+    background-color: #F0FAFF;
+}
+.filter-more-options .z-groupbox-body .z-groupbox-cnt {
+    border-top: solid 1px #B2CCD9 !important;
+}
+
+.filter-more-options .z-groupbox-header {
+    margin-top: 0px;
+}
+.filter-more-options .z-groupbox-br {
+    display: none;
+}
+
+.filter-more-options .z-groupbox-tl  {
+    height: 1px;
+}
+
+.filter-more-options .z-groupbox-hl .z-groupbox-header {
+    padding-bottom: 1px;
+}
+
+.filter-more-options .z-caption .z-caption-l,
+.filter-more-options .z-caption .z-caption-r {
+    font-size:11px;
+}
+
+.filter-more-options .z-groupbox-hl {
+    cursor:pointer;
 }

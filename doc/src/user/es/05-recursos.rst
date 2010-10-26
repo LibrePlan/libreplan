@@ -42,6 +42,7 @@ Una vez en la edición de un recurso, el usuario puede acceder a las siguientes 
    * Nombre
    * Apellidos
    * DNI
+   * Recursos limitantes (ver sección)
 
 .. figure:: images/worker-personal-data.png
    :scale: 50
@@ -166,3 +167,10 @@ La diferencia con respeto a los trabajadores, es que en los grupos de trabajador
    :scale: 50
 
    Recursos virtuales
+
+Recursos limitantes
+================================
+
+Los recursos limitantes son un tipo especial de elementos productivos que sólamente pueden encontrarse no asignados o con un 100% de dedicación. Lo que es lo mismo, no pueden de tener más de una tarea asignada al mismo tiempo o encontrarse sobreplanificados.
+
+Por cada recurso limitante se crea automáticamente una cola para que las tareas que tiene planificadas puedan ser gestionadas de forma específica mediante los métodos de asignación proporcionados, realizando asignaciones automáticas de las tareas a las colas que cumplan los criterios que requieren o moviendo tareas entre colas.

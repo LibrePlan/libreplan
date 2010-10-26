@@ -21,7 +21,6 @@
 package org.zkoss.ganttz.timetracker.zoom;
 
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.joda.time.Months;
 import org.joda.time.ReadablePeriod;
@@ -32,7 +31,8 @@ import org.zkoss.util.Locales;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+public class DetailThreeTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_MONTHS_MINIMUM = 20;
 
@@ -110,8 +110,8 @@ public class DetailThreeTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Days getMinimumPeriod() {
-        return Days.days(NUMBER_OF_MONTHS_MINIMUM * 31);
+    protected Period getMinimumPeriod() {
+        return PeriodType.MONTHS.amount(NUMBER_OF_MONTHS_MINIMUM);
     }
 
     @Override

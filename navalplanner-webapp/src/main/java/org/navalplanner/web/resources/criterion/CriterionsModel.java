@@ -125,8 +125,11 @@ public class CriterionsModel implements ICriterionsModel {
     }
 
     @Override
+    @Transactional
     public void prepareForRemove(CriterionType criterionType) {
         this.criterionType = criterionType;
+        criterionTypeDAO.reattach(criterionType);
+        criterionType.getCriterions().size();
     }
 
     @Override
@@ -225,6 +228,40 @@ public class CriterionsModel implements ICriterionsModel {
     public void reloadCriterionType() {
         this.criterionType = getFromDB(criterionType);
         this.criterionTreeModel = new CriterionTreeModel(this.criterionType);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public int numberOfRelatedEntities(Criterion criterion) {
+        if (criterion.isNewObject()) {
+            return 0;
+        }
+        return criterionDAO.numberOfRelatedRequirements(criterion)
+                + criterionDAO.numberOfRelatedSatisfactions(criterion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDeletable(Criterion criterion) {
+        return criterion.isNewObject()
+                || (criterion.getChildren().isEmpty() && (numberOfRelatedEntities(criterion) == 0));
+    }
+
+
+    @Override
+    public void addForRemoval(Criterion criterion) {
+        criterionType.getCriterions().remove(criterion);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isDeletable(CriterionType criterionType) {
+        for (Criterion each : criterionType.getCriterions()) {
+            if (numberOfRelatedEntities(each) != 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
 }

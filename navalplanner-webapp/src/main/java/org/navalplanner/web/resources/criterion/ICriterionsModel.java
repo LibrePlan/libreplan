@@ -79,4 +79,12 @@ public interface ICriterionsModel {
     public void remove(CriterionType criterionType);
 
     void saveCriterionType() throws ValidationException;
+
+    int numberOfRelatedEntities(Criterion criterion);
+
+    boolean isDeletable(Criterion criterion);
+
+    boolean isDeletable(CriterionType criterionType);
+
+    void addForRemoval(Criterion criterion);
 }

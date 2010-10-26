@@ -52,11 +52,13 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.AfterCopy;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Task extends TaskElement {
+public class Task extends TaskElement implements ITaskLeafConstraint {
 
     private static final Log LOG = LogFactory.getLog(Task.class);
 
@@ -71,16 +73,17 @@ public class Task extends TaskElement {
 
     @Override
     protected void initializeEndDate() {
-        Integer workHours = getWorkHours();
-        long endDateTime = getStartDate().getTime()
-                + timeElapsedMillisWorkingOneResourceEightHoursPerDay(workHours);
-        setEndDate(new Date(endDateTime));
-    }
+        EffortDuration workHours = EffortDuration.hours(getWorkHours());
+        EffortDuration effortStandardPerDay = EffortDuration.hours(8);
 
-    private long timeElapsedMillisWorkingOneResourceEightHoursPerDay(
-            Integer workHours) {
-        final long millisecondsPerDay = 24 * 3600l * 1000;
-        return workHours * millisecondsPerDay / 8;
+        int daysElapsed = workHours.divideBy(effortStandardPerDay);
+        EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
+
+        IntraDayDate start = getIntraDayStartDate();
+        IntraDayDate newEnd = IntraDayDate.create(
+                start.getDate().plusDays(daysElapsed), start
+                        .getEffortDuration().plus(remainder));
+        setIntraDayEndDate(newEnd);
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
@@ -365,21 +368,21 @@ public class Task extends TaskElement {
         if (aggregate.isEmpty()) {
             return;
         }
-        final LocalDate start = aggregate.getStart();
-        final LocalDate end = aggregate.getEnd();
+        final IntraDayDate start = aggregate.getStart();
+        final IntraDayDate end = aggregate.getEnd();
         mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
                 modifications, toRemove);
     }
 
-    private void mergeAllocation(Scenario scenario, final LocalDate start,
-            final LocalDate end,
+    private void mergeAllocation(Scenario scenario, final IntraDayDate start,
+            final IntraDayDate end,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
-        setStartDate(start.toDateTimeAtStartOfDay().toDate());
-        setDaysDuration(Days.daysBetween(start, end).getDays());
+        setIntraDayStartDate(start);
+        setIntraDayEndDate(end);
         for (ModifiedAllocation pair : modifications) {
             Validate.isTrue(resourceAllocations.contains(pair.getOriginal()));
             pair.getOriginal().mergeAssignmentsAndResourcesPerDay(scenario,
@@ -403,7 +406,7 @@ public class Task extends TaskElement {
         }
     }
 
-    public void explicityMoved(Date date) {
+    public void explicityMoved(LocalDate date) {
         getStartConstraint().explicityMovedTo(date);
     }
 
@@ -498,10 +501,10 @@ public class Task extends TaskElement {
                               .allocateOnTaskLength();
             break;
         case END_DATE:
-            LocalDate end = ResourceAllocation
+            IntraDayDate end = ResourceAllocation
                                 .allocating(allocations)
                                 .untilAllocating(getAssignedHours());
-            setEndDate(end.toDateTimeAtStartOfDay().toDate());
+            setIntraDayEndDate(end);
             break;
         case RESOURCES_PER_DAY:
             List<HoursModification> hoursModified = strategy
@@ -513,8 +516,8 @@ public class Task extends TaskElement {
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
         updateDerived(copied);
-        mergeAllocation(onScenario, asLocalDate(getStartDate()),
-                asLocalDate(getEndDate()),
+        mergeAllocation(onScenario, getIntraDayStartDate(),
+                getIntraDayEndDate(),
                 calculatedValue, Collections
                         .<ResourceAllocation<?>> emptyList(), copied,
                 Collections.<ResourceAllocation<?>> emptyList());
@@ -651,14 +654,14 @@ public class Task extends TaskElement {
         return ((consolidation != null) && (!consolidation.isEmpty()));
     }
 
-    public LocalDate getFirstDayNotConsolidated() {
+    public IntraDayDate getFirstDayNotConsolidated() {
         if (consolidation != null) {
             LocalDate until = consolidation.getConsolidatedUntil();
             if (until != null) {
-                return until.plusDays(1);
+                return IntraDayDate.startOfDay(until.plusDays(1));
             }
         }
-        return LocalDate.fromDateFields(getStartDate());
+        return getIntraDayStartDate();
     }
 
 }

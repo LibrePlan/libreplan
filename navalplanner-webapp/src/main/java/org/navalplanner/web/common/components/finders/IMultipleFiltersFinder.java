@@ -31,8 +31,6 @@ import org.zkoss.zul.ListitemRenderer;
 
 public interface IMultipleFiltersFinder {
 
-    void init();
-
     /**
      * Return the FilterPair list match with filter.
      * @param filter
@@ -51,14 +49,16 @@ public interface IMultipleFiltersFinder {
      */
     String getNewFilterText(String inputText);
 
-    boolean isValidNewFilter(Object obj);
+    boolean isValidNewFilter(List filterValues, Object obj);
 
     boolean isValidFormatText(List filterValues, String value);
 
-    List<FilterPair> updateDeletedFilters(List filterValues, String value);
+    boolean updateDeletedFilters(List filterValues, String value);
 
     String[] getHeaders();
 
     ListitemRenderer getItemRenderer();
+
+    void reset();
 
 }

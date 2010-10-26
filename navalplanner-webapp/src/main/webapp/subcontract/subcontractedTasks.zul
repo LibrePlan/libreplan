@@ -39,16 +39,18 @@
         rowRenderer="@{controller.subcontractedTasksRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Subcontratation date')}"/>
-            <column label="${i18n:_('Communication date')}"/>
-            <column label="${i18n:_('External company')}"/>
-            <column label="${i18n:_('Order code')}"/>
-            <column label="${i18n:_('Subcontracted code')}"/>
-            <column label="${i18n:_('Task name')}"/>
-            <column label="${i18n:_('Work description')}"/>
-            <column label="${i18n:_('Budget')}"/>
-            <column label="${i18n:_('State')}"/>
-            <column label="${i18n:_('Operations')}" />
+            <column label="${i18n:_('Subcontratation')}"
+                    tooltiptext="${i18n:_('Subcontratation date')}" sort="auto(subcontratationdate)" />
+            <column label="${i18n:_('Communication')}" sort="auto(communicationdate)"
+                tooltiptext="${i18n:_('Communication date')}" />
+            <column label="${i18n:_('Company')}" tooltiptext="${i18n:_('External company')}" sort="auto(externalcompany)" />
+            <column label="${i18n:_('Order code')}" tooltiptext="${i18n:_('Order code')}" />
+            <column label="${i18n:_('Subcontracted code')}" tooltiptext="${i18n:_('Subcontracted code')}" />
+            <column label="${i18n:_('Task name')}" tooltiptext="${i18n:_('Task name')}" />
+            <column label="${i18n:_('Description')}" tooltiptext="${i18n:_('Work description')}" />
+            <column label="${i18n:_('Budget')}" tooltiptext="${i18n:_('Budget')}" />
+            <column label="${i18n:_('State')}" tooltiptext="${i18n:_('State')}" />
+            <column label="${i18n:_('Operations')}" tooltiptext="${i18n:_('Operations')}" width="150px"/>
         </columns>
     </grid>
 

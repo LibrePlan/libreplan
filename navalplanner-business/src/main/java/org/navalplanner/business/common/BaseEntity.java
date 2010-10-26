@@ -22,7 +22,6 @@ package org.navalplanner.business.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.ClassValidator;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -101,7 +100,7 @@ public abstract class BaseEntity implements INewObject {
 
     @SuppressWarnings("unchecked")
     public void validate() throws ValidationException {
-        ClassValidator classValidator = new ClassValidator(this.getClass());
+        NavalPlanClassValidator classValidator = new NavalPlanClassValidator(this.getClass());
         InvalidValue[] invalidValues = classValidator.getInvalidValues(this);
         if (invalidValues.length > 0) {
             throw new ValidationException(invalidValues);

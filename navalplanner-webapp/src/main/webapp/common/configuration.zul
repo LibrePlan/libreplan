@@ -88,7 +88,7 @@
                                             checked="@{configurationController.generateCodeForMaterialCategories}" />
                                     </row>
                                     <row>
-                                        <checkbox label="${i18n:_('Unit Types')}"
+                                        <checkbox label="${i18n:_('Unit Measures')}"
                                             checked="@{configurationController.generateCodeForUnitTypes}" />
                                     </row>
                                 </rows>

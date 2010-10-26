@@ -30,16 +30,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IHoursGroupDAO;
+import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -47,12 +47,10 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
-public class HoursGroup extends BaseEntity implements Cloneable,
+public class HoursGroup extends IntegrationEntity implements Cloneable,
         ICriterionRequirable {
 
     private static final Log LOG = LogFactory.getLog(HoursGroup.class);
-
-    private String code;
 
     private ResourceEnum resourceType = ResourceEnum.WORKER;
 
@@ -88,11 +86,11 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     public static HoursGroup createUnvalidated(String code,
             ResourceEnum resourceType, Integer workingHours) {
-        HoursGroup result = new HoursGroup();
+        HoursGroup result = create(new HoursGroup());
         result.setCode(code);
         result.setResourceType(resourceType);
         result.setWorkingHours(workingHours);
-        return create(result);
+        return result;
     }
 
     /**
@@ -158,7 +156,7 @@ public class HoursGroup extends BaseEntity implements Cloneable,
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
         String code = parentOrderLine.getCode();
-        this.code = code != null ? code : "";
+        this.setCode(code != null ? code : "");
         this.setOrderLineTemplate(null);
     }
 
@@ -167,24 +165,12 @@ public class HoursGroup extends BaseEntity implements Cloneable,
         this.setParentOrderLine(null);
     }
 
-    @NotEmpty(message = "code not specified")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
     public ResourceEnum getResourceType() {
         return resourceType;
     }
 
     public void setResourceType(ResourceEnum resource) {
-        if ((resource != null) && (resource.equals(ResourceEnum.getDefault()))) {
-            throw new IllegalArgumentException(
-                    _("the resource type should be Worker or Machine"));
-        }
+        Validate.notNull(resource);
         this.resourceType = resource;
     }
 
@@ -397,27 +383,6 @@ public class HoursGroup extends BaseEntity implements Cloneable,
         return false;
     }
 
-    @AssertTrue(message = "code is already being used")
-    public boolean checkConstraintUniqueCode() {
-        if (code == null) {
-            LOG.warn("Hours group code is null. "
-                    + "Not checking unique code since it would fail");
-            return true;
-        }
-        IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
-        if (isNewObject()) {
-            return !hoursGroupDAO.existsByCodeAnotherTransaction(this);
-        } else {
-            try {
-                HoursGroup hoursGroup = hoursGroupDAO
-                        .findUniqueByCodeAnotherTransaction(this);
-                return hoursGroup.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
-                return true;
-            }
-        }
-    }
-
     public OrderLineTemplate getOrderLineTemplate() {
         return orderLineTemplate;
     }
@@ -432,6 +397,41 @@ public class HoursGroup extends BaseEntity implements Cloneable,
 
     public void setOrigin(HoursGroup origin) {
         this.origin = origin;
+    }
+
+    @Override
+    protected IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
+        return Registry.getHoursGroupDAO();
+    }
+
+    @Override
+    public boolean checkConstraintUniqueCode() {
+        // the automatic checking of this constraint is avoided because it uses
+        // the wrong code property
+        return true;
+    }
+
+    public static void checkConstraintHoursGroupUniqueCode(OrderElement order) {
+        HoursGroup repeatedHoursGroup;
+
+        if (order instanceof OrderLineGroup) {
+            repeatedHoursGroup = ((OrderLineGroup) order).findRepeatedHoursGroupCode();
+            if (repeatedHoursGroup != null) {
+                throw new ValidationException(_(
+                        "Repeated Hours Group code {0} in Order {1}",
+                        repeatedHoursGroup.getCode(), repeatedHoursGroup
+                                .getParentOrderLine().getName()));
+            }
+        }
+
+        repeatedHoursGroup = Registry.getHoursGroupDAO()
+                .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
+        if (repeatedHoursGroup != null) {
+            throw new ValidationException(_(
+                    "Repeated Hours Group code {0} in Order {1}",
+                    repeatedHoursGroup.getCode(), repeatedHoursGroup
+                            .getParentOrderLine().getName()));
+        }
     }
 
 }

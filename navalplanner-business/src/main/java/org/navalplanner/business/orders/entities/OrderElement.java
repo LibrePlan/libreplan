@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -48,12 +48,10 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.SchedulingDataForVersion.Data;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
@@ -192,10 +190,17 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     public void useSchedulingDataFor(OrderVersion orderVersion) {
+        useSchedulingDataFor(orderVersion, true);
+    }
+
+    public void useSchedulingDataFor(OrderVersion orderVersion,
+            boolean recursive) {
         Validate.notNull(orderVersion);
         SchedulingDataForVersion schedulingVersion = schedulingVersionFor(orderVersion);
-        for (OrderElement each : getChildren()) {
-            each.useSchedulingDataFor(orderVersion);
+        if (recursive) {
+            for (OrderElement each : getChildren()) {
+                each.useSchedulingDataFor(orderVersion);
+            }
         }
         current = schedulingVersion.makeAvailableFor(orderVersion);
     }
@@ -217,10 +222,8 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     protected void writeSchedulingDataChanges() {
-        Data currentSchedulingState = getCurrentSchedulingData();
-        currentSchedulingState.writeSchedulingDataChanges();
-        List<OrderElement> children = getChildren();
-        for (OrderElement each : children) {
+        getCurrentSchedulingData().writeSchedulingDataChanges();
+        for (OrderElement each : getChildren()) {
             each.writeSchedulingDataChanges();
         }
     }
@@ -831,7 +834,8 @@ public abstract class OrderElement extends IntegrationEntity implements
     }
 
     protected void applyStartConstraintTo(Task task) {
-        task.getStartConstraint().notEarlierThan(this.getInitDate());
+        task.getStartConstraint().notEarlierThan(
+                LocalDate.fromDateFields(this.getInitDate()));
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
@@ -986,6 +990,13 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
+    @Override
+    public boolean checkConstraintUniqueCode() {
+        // the automatic checking of this constraint is avoided because it uses
+        // the wrong code property
+        return true;
+    }
+
     @AssertTrue(message = "a label can not be assigned twice in the same branch")
     public boolean checkConstraintLabelNotRepeatedInTheSameBranch() {
         return checkConstraintLabelNotRepeatedInTheSameBranch(new HashSet<Label>());
@@ -1051,23 +1062,6 @@ public abstract class OrderElement extends IntegrationEntity implements
 
         for (OrderElement child : getChildren()) {
             child.removeLabelOnChildren(newLabel);
-        }
-    }
-
-    @AssertTrue(message = "code is already being used")
-    public boolean checkConstraintUniqueCode() {
-        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
-
-        if (isNewObject()) {
-            return !orderElementDAO.existsByCodeAnotherTransaction(this);
-        } else {
-            try {
-                OrderElement orderElement = orderElementDAO
-                        .findUniqueByCodeAnotherTransaction(getInfoComponent().getCode());
-                return orderElement.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
-                return true;
-            }
         }
     }
 
@@ -1271,6 +1265,39 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public SumChargedHours getSumChargedHours() {
         return sumChargedHours;
+    }
+
+    public void updateAdvancePercentageTaskElement() {
+        BigDecimal advancePercentage = this.getAdvancePercentage();
+        if (this.getTaskSource() != null) {
+            if (this.getTaskSource().getTask() != null) {
+                this.getTaskSource().getTask().setAdvancePercentage(
+                        advancePercentage);
+            }
+        }
+    }
+
+    public static void checkConstraintOrderUniqueCode(OrderElement order) {
+        OrderElement repeatedOrder;
+
+        // Check no code is repeated in this order
+        if (order instanceof OrderLineGroup) {
+            repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
+            if (repeatedOrder != null) {
+                throw new ValidationException(_(
+                        "Repeated Order code {0} in Order {1}",
+                        repeatedOrder.getCode(), repeatedOrder.getName()));
+            }
+        }
+
+        // Check no code is repeated within the DB
+        repeatedOrder = Registry.getOrderElementDAO()
+                .findRepeatedOrderCodeInDB(order);
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Order code {0} in Order {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
+        }
     }
 
 }

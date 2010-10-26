@@ -42,9 +42,10 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
+import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -101,22 +102,23 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
     @Override
     @Transactional(readOnly = true)
-    public void addGeneric(Set<Criterion> criteria,
+    public void addGeneric(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
-
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
                             _("there are no resources for required criteria: {0}. " +
                                     "So the generic allocation can't be added",
-                                    Criterion.getNames(criteria)));
+                            Criterion.getCaptionFor(resourceType, criteria)));
         }
 
         if (resources.size() >= 1) {
             if (planningState != null) {
                 planningState.reassociateResourcesWithSession();
             }
-            addGenericResourceAllocation(criteria, reloadResources(resources));
+            addGenericResourceAllocation(resourceType, criteria,
+                    reloadResources(resources));
         }
     }
 
@@ -133,18 +135,20 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
         return limitingResourceAllocationController.getMessagesForUser();
     }
 
-    private void addGenericResourceAllocation(Set<Criterion> criteria,
+    private void addGenericResourceAllocation(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
 
         if (isNew(criteria, resources)) {
             limitingAllocationRows.clear();
-            LimitingAllocationRow allocationRow = LimitingAllocationRow.create(
-                    criteria, resources, task, LimitingAllocationRow.DEFAULT_PRIORITY);
-            limitingAllocationRows.add(allocationRow);
+            limitingAllocationRows.add(LimitingAllocationRow.create(
+                    resourceType, criteria, resources, task,
+                    LimitingAllocationRow.DEFAULT_PRIORITY));
         }
     }
 
-    private boolean isNew(Set<Criterion> criteria, Collection<? extends Resource> resources) {
+    private boolean isNew(Collection<? extends Criterion> criteria,
+            Collection<? extends Resource> resources) {
         LimitingAllocationRow allocationRow = getLimitingAllocationRow();
 
         if (allocationRow == null || allocationRow.isSpecific()) {
@@ -170,6 +174,13 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Override
     @Transactional(readOnly = true)
     public void addSpecific(Collection<? extends Resource> resources) {
+
+        if (!areAllLimitingResources(resources)) {
+            getMessagesForUser().showMessage(Level.ERROR,
+                    _("All resources must be limiting. "));
+            return;
+        }
+
         if (resources.size() >= 1) {
             if (planningState != null) {
                 planningState.reassociateResourcesWithSession();
@@ -178,6 +189,16 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
                     Collections.singleton(getFirstChild(resources)));
             addSpecificResourceAllocation(getFirstChild(reloaded));
         }
+    }
+
+    private boolean areAllLimitingResources(
+            Collection<? extends Resource> resources) {
+        for (Resource resource : resources) {
+            if (!resource.isLimitingResource()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Resource getFirstChild(Collection<? extends Resource> collection) {

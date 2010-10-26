@@ -20,31 +20,36 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static java.util.Arrays.asList;
+import static org.navalplanner.business.workingday.EffortDuration.max;
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public abstract class CombinedWorkHours implements IWorkHours {
+public abstract class CombinedWorkHours implements ICalendar {
 
-    private final List<IWorkHours> workHours;
+    private final List<ICalendar> calendars;
 
-    public CombinedWorkHours(Collection<? extends IWorkHours> workHours) {
-        Validate.notNull(workHours);
-        Validate.isTrue(!workHours.isEmpty());
-        this.workHours = notNull(workHours);
-        Validate.isTrue(!this.workHours.isEmpty(),
+    public CombinedWorkHours(Collection<? extends ICalendar> calendars) {
+        Validate.notNull(calendars);
+        Validate.isTrue(!calendars.isEmpty());
+        this.calendars = notNull(calendars);
+        Validate.isTrue(!this.calendars.isEmpty(),
                 "there should be at least one workHours not null");
     }
 
-    private static List<IWorkHours> notNull(
-            Collection<? extends IWorkHours> workHours) {
-        List<IWorkHours> result = new ArrayList<IWorkHours>();
-        for (IWorkHours each : workHours) {
+    private static List<ICalendar> notNull(
+            Collection<? extends ICalendar> calendars) {
+        List<ICalendar> result = new ArrayList<ICalendar>();
+        for (ICalendar each : calendars) {
             if (each != null) {
                 result.add(each);
             }
@@ -52,44 +57,44 @@ public abstract class CombinedWorkHours implements IWorkHours {
         return result;
     }
 
-    public static CombinedWorkHours minOf(IWorkHours... workHours) {
+    public static CombinedWorkHours minOf(ICalendar... workHours) {
         Validate.notNull(workHours);
-        return new Min(Arrays.asList(workHours));
+        return new Min(asList(workHours));
     }
 
-    public static CombinedWorkHours maxOf(IWorkHours... workHours) {
-        return maxOf(Arrays.asList(workHours));
+    public static CombinedWorkHours maxOf(ICalendar... workHours) {
+        return maxOf(asList(workHours));
     }
 
     public static CombinedWorkHours maxOf(
-            Collection<? extends IWorkHours> workHours) {
-        return new Max(workHours);
+            Collection<? extends ICalendar> calendars) {
+        return new Max(calendars);
     }
 
     @Override
-    public Integer getCapacityAt(LocalDate date) {
-        Integer current = null;
-        for (IWorkHours workHour : workHours) {
-            current = current == null ? workHour.getCapacityAt(date)
-                    : updateCapacity(current, workHour.getCapacityAt(date));
+    public EffortDuration getCapacityOn(PartialDay day) {
+        EffortDuration current = null;
+        for (ICalendar workHour : calendars) {
+            current = current == null ? workHour.getCapacityOn(day)
+                    : updateCapacity(current, workHour.getCapacityOn(day));
         }
         return current;
     }
 
     @Override
-    public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-        Integer current = null;
-        for (IWorkHours each : workHours) {
-            current = current == null ? each.toHours(day, amount)
-                    : updateHours(current, each.toHours(day, amount));
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
+        EffortDuration result = null;
+        for (ICalendar each : calendars) {
+            result = result == null ? each.asDurationOn(day, amount)
+                    : updateDuration(result, each.asDurationOn(day, amount));
         }
-        return current;
+        return result;
     }
 
     @Override
     public AvailabilityTimeLine getAvailability() {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
-        for (IWorkHours each : workHours) {
+        for (ICalendar each : calendars) {
             result = compoundAvailability(result, each.getAvailability());
         }
         return result;
@@ -98,32 +103,37 @@ public abstract class CombinedWorkHours implements IWorkHours {
     protected abstract AvailabilityTimeLine compoundAvailability(
             AvailabilityTimeLine accumulated, AvailabilityTimeLine each);
 
-    protected abstract Integer updateHours(Integer current, Integer each);
+    protected abstract EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each);
 
-    protected abstract Integer updateCapacity(Integer current, Integer each);
+    protected abstract EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each);
 
     @Override
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
-                availability, resourcesPerDay, hoursToAllocate);
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
+        return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(
+                this, availability, resourcesPerDay, durationToAllocate)
+                .thereIsCapacityAvailable();
     }
 }
 
 class Min extends CombinedWorkHours {
 
-    public Min(List<IWorkHours> workHours) {
-        super(workHours);
+    public Min(List<ICalendar> calendars) {
+        super(calendars);
     }
 
     @Override
-    protected Integer updateCapacity(Integer current, Integer each) {
-        return Math.min(current, each);
+    protected EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each) {
+        return Collections.min(asList(current, each));
     }
 
     @Override
-    protected Integer updateHours(Integer current, Integer each) {
-        return Math.min(current, each);
+    protected EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each) {
+        return min(current, each);
     }
 
     @Override
@@ -136,18 +146,20 @@ class Min extends CombinedWorkHours {
 
 class Max extends CombinedWorkHours {
 
-    public Max(Collection<? extends IWorkHours> workHours) {
-        super(workHours);
+    public Max(Collection<? extends ICalendar> calendars) {
+        super(calendars);
     }
 
     @Override
-    protected Integer updateCapacity(Integer current, Integer each) {
-        return Math.max(current, each);
+    protected EffortDuration updateCapacity(EffortDuration current,
+            EffortDuration each) {
+        return Collections.max(asList(current, each));
     }
 
     @Override
-    protected Integer updateHours(Integer current, Integer each) {
-        return Math.max(current, each);
+    protected EffortDuration updateDuration(EffortDuration current,
+            EffortDuration each) {
+        return max(current, each);
     }
 
     @Override

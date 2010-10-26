@@ -25,11 +25,12 @@
         <filter id="filter"/>
     </div>
 
-    <separator bar="false" spacing="30px" orient="horizontal"/>
+    <separator bar="false" spacing="5px" orient="horizontal"/>
+
     <newdatasortablegrid id="listing" model="@{controller.virtualWorkers}" mold="paging"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)"/>
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending"/>
             <newdatasortablecolumn label="${i18n:_('Capacity')}" sort="auto(capacity)" />
             <newdatasortablecolumn label="${i18n:_('Observations')}" sort="auto(observations)" />
             <newdatasortablecolumn label="${i18n:_('Operations')}" />

@@ -23,6 +23,7 @@ package org.navalplanner.business.resources.daos;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -52,6 +53,8 @@ public interface ICriterionTypeDAO
 
     boolean existsByNameAnotherTransaction(CriterionType criterionType);
 
+    boolean hasDiferentTypeSaved(Long id, ResourceEnum resource);
+
     public void removeByName(CriterionType criterionType);
 
     List<CriterionType> getCriterionTypes();
@@ -69,9 +72,16 @@ public interface ICriterionTypeDAO
     boolean existsPredefinedType(CriterionType criterionType);
 
     /**
+     * Checks if exists any {@link Criteria} of the {@link CriterionType} has
+     * been assigned to any @ Resource}
+     * @param criterionType
+     * @return
+     */
+    boolean checkChildrenAssignedToAnyResource(CriterionType criterionType);
+
+    /**
      * Searches for the equivalent {@link CriterionType} on the DB for a
      * CriterionType created from a {@link PredefinedCriterionTypes}
-     *
      * @param predefinedCriterionType
      * @return <code>null</code> if there is no {@link CriterionType} for the
      *         predefinedCriterionType. Otherwise the equivalent

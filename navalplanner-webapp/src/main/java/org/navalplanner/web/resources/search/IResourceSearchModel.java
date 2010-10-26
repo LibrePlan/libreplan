@@ -20,13 +20,17 @@
 
 package org.navalplanner.web.resources.search;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
+import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.Worker;
 
 /**
  * Conversation for worker search
@@ -35,40 +39,80 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public interface IResourceSearchModel {
 
+    public interface IResourcesQuery<T extends Resource> {
+
+        /**
+         * Restrict the result to resources that have name as a substring. The
+         * match is case insensitive.
+         *
+         * @param name
+         * @return this same object in order to cascade calls
+         */
+        IResourcesQuery<T> byName(String name);
+
+        /**
+         * Restrict the result to a list of {@link Resource} satisfying all
+         * criteria at some point in time
+         *
+         * @param criteria
+         * @return this same object in order to cascade calls
+         */
+        IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria);
+
+        /**
+         * Restrict resources to the ones having the provided limiting value. By
+         * default, if this method is not called, the resources are restricted
+         * to the ones not limiting.
+         * @param limiting
+         * @return this same object in order to cascade calls
+         */
+        IResourcesQuery<T> byLimiting(boolean limiting);
+
+        /**
+         * Retrieve the list of resources that match the restrictions specified.
+         *
+         * @return
+         */
+        List<T> execute();
+
+        /**
+         * <p>
+         * Gets all {@link Criterion} and groups then by {@link CriterionType}
+         * with the condition that the {@link CriterionType#getResource()} is of
+         * a type compatible for this query.
+         * </p>
+         * For example if this query has been created by
+         * {@link IResourceSearchModel#searchWorkers()} only the criteria with
+         * criterion type such its resource is {@link ResourceEnum.WORKER}
+         * @return HashMap<CriterionType, Set<Criterion>>
+         */
+        Map<CriterionType, Set<Criterion>> getCriteria();
+    }
+
     /**
-     * Returns all resources filtering by name, criteria and limitingResource
+     * Do the search limited to workers
      *
-     * @param name
-     * @param criterions
-     * @param limitingResource
      * @return
      */
-    List<Resource> findResources(String name, List<Criterion> criteria, boolean limitingResource);
+    public IResourcesQuery<Worker> searchWorkers();
 
     /**
-     * Returns all resources
+     * Do the search limited to machines
      * @return
      */
-    List<Resource> getAllResources();
+    public IResourcesQuery<Machine> searchMachines();
 
     /**
-     * Gets all {@link Criterion} and groups then by {@link CriterionType}
-     * @return HashMap<CriterionType, Set<Criterion>>
-     */
-    Map<CriterionType, Set<Criterion>> getCriterions();
-
-    /**
-     * Returns all limiting resources
-     *
+     * Search machines or workers based on the value of resourceType
+     * @param resourceType
      * @return
      */
-    List<Resource> getAllLimitingResources();
+    public IResourcesQuery<?> searchBy(ResourceEnum resourceType);
 
     /**
-     * Returns all non-limiting resources
-     *
+     * Search both resources and machines
      * @return
      */
-    List<Resource> getAllNonLimitingResources();
+    public IResourcesQuery<Resource> searchBoth();
 
 }

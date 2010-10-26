@@ -38,6 +38,7 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -50,6 +51,7 @@ import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -172,6 +174,9 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
+
+    @Autowired
+    private IHoursGroupDAO hoursGroupDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -487,25 +492,34 @@ public class OrderModel implements IOrderModel {
                     return null;
                 }
             });
-            order.dontPoseAsTransientObjectAnymore();
-            // this way we don't have dontPoseAsTransient all children of the
-            // order
-            initEditAfterSave();
+            dontPoseAsTransientObjectAnymore(order);
         }
     }
 
-    private void initEditAfterSave() {
-        transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        initEdit(order);
-                        return null;
-                    }
-                });
+    private void dontPoseAsTransientObjectAnymore(Collection<? extends BaseEntity> collection) {
+        for(BaseEntity entity : collection) {
+            entity.dontPoseAsTransientObjectAnymore();
+        }
+    }
+
+    private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
+        orderElement.dontPoseAsTransientObjectAnymore();
+
+        dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
+        dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
+        dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
+        dontPoseAsTransientObjectAnymore(orderElement.getLabels());
+        dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
+        dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
+        for(OrderElement child : orderElement.getAllChildren()) {
+            dontPoseAsTransientObjectAnymore(child);
+        }
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
+        Order.checkConstraintOrderUniqueCode(order);
+        HoursGroup.checkConstraintHoursGroupUniqueCode(order);
+
         reattachCriterions();
         reattachTasksForTasksSources();
 
@@ -533,6 +547,10 @@ public class OrderModel implements IOrderModel {
             order.writeSchedulingDataChanges();
         }
         saveDerivedScenarios();
+        calculateAdvancePercentageIncludingChildren(order);
+    }
+
+    private void calculateAdvancePercentageIncludingChildren(OrderElement order) {
         calculateAdvancePercentage(order);
         for (OrderElement orderElement : order.getAllChildren()) {
             calculateAdvancePercentage(orderElement);
@@ -540,13 +558,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void calculateAdvancePercentage(OrderElement orderElement) {
-        BigDecimal advancePercentage = orderElement.getAdvancePercentage();
-        if (orderElement.getTaskSource() != null) {
-            if (orderElement.getTaskSource().getTask() != null) {
-                orderElement.getTaskSource().getTask().setAdvancePercentage(
-                        advancePercentage);
-            }
-        }
+        orderElement.updateAdvancePercentageTaskElement();
     }
 
     private void createAndSaveNewOrderVersion(Scenario currentScenario,
@@ -611,14 +623,15 @@ public class OrderModel implements IOrderModel {
 
     private void reattachTasksForTasksSources() {
         for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
-            each.reloadTask(taskElementDAO);
+            each.reattachTask(taskElementDAO);
         }
     }
 
     private void synchronizeWithSchedule(OrderElement orderElement,
             boolean preexistent) {
-        for (TaskSourceSynchronization each : orderElement
-                .calculateSynchronizationsNeeded()) {
+        List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
+                .calculateSynchronizationsNeeded();
+        for (TaskSourceSynchronization each : synchronizationsNeeded) {
             each.apply(taskSourceDAO, preexistent);
         }
     }
@@ -745,7 +758,7 @@ public class OrderModel implements IOrderModel {
     }
 
     private void reattachOrderElement(OrderElement orderElement) {
-        orderElementDAO.save(orderElement);
+        orderElementDAO.reattach(orderElement);
     }
 
     @Override

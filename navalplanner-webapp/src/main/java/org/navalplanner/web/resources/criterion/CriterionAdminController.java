@@ -118,7 +118,14 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     public void confirmRemove(CriterionType criterionType) {
         criterionsModel_V2.prepareForRemove(criterionType);
-        showConfirmingWindow();
+        if (criterionsModel_V2.isDeletable(criterionType)) {
+            showConfirmingWindow();
+        } else {
+            messagesForUser
+                    .showMessage(
+                            Level.WARNING,
+                            _("This criterion type cannot be deleted because it has assignments to projects or resources"));
+        }
     }
 
     public void cancelRemove() {

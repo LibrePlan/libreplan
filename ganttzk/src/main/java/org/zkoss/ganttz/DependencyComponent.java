@@ -23,11 +23,11 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
@@ -51,7 +51,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private Dependency dependency;
 
-    private IConstraintViolationListener<Date> violationListener;
+    private IConstraintViolationListener<GanttDate> violationListener;
 
     public DependencyComponent(TaskComponent source, TaskComponent destination,
             Dependency dependency) {
@@ -64,11 +64,11 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.source = source;
         this.destination = destination;
         this.dependency = dependency;
-        violationListener = new IConstraintViolationListener<Date>() {
+        violationListener = new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<Date> constraint,
-                    Date value) {
+            public void constraintViolated(Constraint<GanttDate> constraint,
+                    GanttDate value) {
                 // TODO mark graphically dependency as violated
             }
         };

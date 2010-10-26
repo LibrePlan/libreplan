@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.SortedSet;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -44,6 +45,7 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkoss.ganttz.DatesMapperOnInterval;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -172,8 +174,8 @@ public class QueueComponent extends XulElement implements
         }
         for (LimitingResourceQueueElement each : list) {
             if (interval != null) {
-                if (each.getEndDate().toDateMidnight().isAfter(
-                        (new DateTime(interval.getStart())).toDateMidnight())
+                if (each.getEndDate().toDateMidnight()
+                        .isAfter(interval.getStart().toDateMidnight())
                         && each.getStartDate().toDateMidnight().isBefore(
                                 new DateTime(interval.getFinish()))) {
                     result.add(createQueueTask(datesMapper, each));
@@ -213,7 +215,7 @@ public class QueueComponent extends XulElement implements
             result.append(_("Resource: {0} ", specific.getResource().getName()));
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            result.append(_("Criteria: {0} ", Criterion.getNames(generic.getCriterions())));
+            result.append(_("Criteria: {0} ", Criterion.getCaptionFor(generic.getCriterions())));
         }
         result.append(_("Allocation: [{0},{1}]", element.getStartDate()
                 .toString(), element.getEndDate()));
@@ -323,11 +325,11 @@ public class QueueComponent extends XulElement implements
         if (advancementEndDate == null) {
             return null;
         }
-        long millis = (advancementEndDate.toDateTime().getMillis() - queueElement
-                .getStartTime().toDateTime().getMillis());
+        Duration durationBetween = new Duration(queueElement.getStartTime()
+                .toDateTime().getMillis(), advancementEndDate.toDateTime().getMillis());
         Div progressBar = new Div();
         if (!queueElement.getStartDate().isEqual(advancementEndDate.getDate())) {
-            progressBar.setWidth(datesMapper.toPixels(millis) + "px");
+            progressBar.setWidth(datesMapper.toPixels(durationBetween) + "px");
             progressBar.setSclass("queue-progress-bar");
         }
         return progressBar;
@@ -337,8 +339,9 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
 
         int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar().getCapacityAt(
-                        queueElement.getEndDate());
+                .getResource().getCalendar()
+                .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
+                .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
@@ -367,8 +370,9 @@ public class QueueComponent extends XulElement implements
             LimitingResourceQueueElement queueElement) {
 
         int workableHours = queueElement.getLimitingResourceQueue()
-                .getResource().getCalendar().getCapacityAt(
-                        queueElement.getEndDate());
+                .getResource().getCalendar()
+                .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
+                .roundToHours();
 
         int shadeWidth = new Long((24 - workableHours)
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
@@ -378,7 +382,7 @@ public class QueueComponent extends XulElement implements
                 * DatesMapperOnInterval.MILISECONDS_PER_HOUR
                 / datesMapper.getMilisecondsPerPixel()).intValue()
                 + shadeWidth;
-        ;
+
         Div notWorkableHoursShade = new Div();
         notWorkableHoursShade.setContext("");
         notWorkableHoursShade.setSclass("limiting-completion");
@@ -390,13 +394,7 @@ public class QueueComponent extends XulElement implements
 
     private static int getWidthPixels(IDatesMapper datesMapper,
             LimitingResourceQueueElement queueElement) {
-        return datesMapper.toPixels(getEndMillis(queueElement)
-                - getStartMillis(queueElement));
-    }
-
-    private static long getStartMillis(LimitingResourceQueueElement queueElement) {
-        return queueElement.getStartDate().toDateMidnight().getMillis()
-                + (queueElement.getStartHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
+        return datesMapper.toPixels(queueElement.getLengthBetween());
     }
 
     private static int getDeadlinePixels(IDatesMapper datesMapper,
@@ -404,12 +402,6 @@ public class QueueComponent extends XulElement implements
         // Deadline date is considered inclusively
         return datesMapper.toPixelsAbsolute(deadlineDate.plusDays(1)
                 .toDateMidnight().getMillis());
-    }
-
-
-    private static long getEndMillis(LimitingResourceQueueElement queueElement) {
-        return queueElement.getEndDate().toDateMidnight().getMillis()
-                + (queueElement.getEndHour() * DatesMapperOnInterval.MILISECONDS_PER_HOUR);
     }
 
     private static String forCSS(int pixels) {

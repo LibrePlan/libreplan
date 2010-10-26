@@ -87,7 +87,7 @@ public class TaskSource extends BaseEntity {
                 boolean preexistent) {
             Task result = Task.createTask(taskSource);
             taskSource.setTask(result);
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return result;
         }
     }
@@ -104,7 +104,7 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return taskSource.getTask();
         }
 
@@ -190,7 +190,7 @@ public class TaskSource extends BaseEntity {
                 result.addTaskElement(taskElement);
             }
             taskSource.setTask(result);
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return result;
         }
 
@@ -210,7 +210,7 @@ public class TaskSource extends BaseEntity {
             TaskGroup taskGroup = (TaskGroup) taskSource.getTask();
             taskGroup.setTaskChildrenTo(children);
             updateTaskWithOrderElement(taskGroup, taskSource.getOrderElement());
-            taskSourceDAO.save(taskSource);
+            taskSourceDAO.saveWithoutValidating(taskSource);
             return taskGroup;
         }
     }
@@ -226,21 +226,23 @@ public class TaskSource extends BaseEntity {
         @Override
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preexistent) {
-            if (!preexistent) {
-                taskSource.getTask().detachFromDependencies();
-                return null;
-            }
-            try {
-                taskSourceDAO.remove(taskSource.getId());
-
-                // Flushing is required in order to avoid violation of unique
-                // constraint. If flush is not done and there is a task source
+            taskSource.getTask().detachFromDependencies();
+            taskSource.getTask().detachFromParent();
+            if (preexistent) {
+                try {
+                    taskSourceDAO.remove(taskSource.getId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                // Flushing is required in order to avoid violation of
+                // unique
+                // constraint. If flush is not done and there is a task
+                // source
                 // that must be removed and another is created for the same
                 // order element the unique constraint
-                // "tasksource_orderelement_key" would be violated by hibernate
+                // "tasksource_orderelement_key" would be violated by
+                // hibernate
                 taskSourceDAO.flush();
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
             }
             return null;
         }
@@ -317,8 +319,8 @@ public class TaskSource extends BaseEntity {
         return AggregatedHoursGroup.aggregate(hoursGroups);
     }
 
-    public void reloadTask(ITaskElementDAO taskElementDAO) {
-        taskElementDAO.save(task);
+    public void reattachTask(ITaskElementDAO taskElementDAO) {
+        taskElementDAO.reattach(task);
     }
 
     public int getTotalHours() {

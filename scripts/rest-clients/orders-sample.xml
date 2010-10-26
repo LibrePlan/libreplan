@@ -6,42 +6,38 @@
   init-date="2010-03-15T10:22:24.251+01:00" name="Pedido A"
   code="PREFIX-00019">
     <labels>
-      <label code="458ade05-dc8c-4678-a28a-50b883415d99" />
+      <label code="b2b9cdee-2785-4c03-8e01-cec0a93b61aa" />
     </labels>
     <material-assignments>
       <material-assignment estimated-availability="2010-03-15T10:22:24.251+01:00"
       unit-price="5.00" units="0.0" material-code="4141" />
     </material-assignments>
      <advance-measurements>
-      <advance-measurement value="0"
+      <advance-measurement value="10"
       date="2010-03-15T00:00:00+01:00" />
     </advance-measurements>
     <criterion-requirements>
-      <direct-criterion-requirement type="LeaveAAKjflasfj"
-      name="CriterioB" />
+      <direct-criterion-requirement type="LEAVE"
+      name="medicalLeave" />
     </criterion-requirements>
     <children>
       <order-line name="orderline A2" code="PREFIX-00019-00002">
         <labels />
         <material-assignments />
-        <advance-measurements>
-          <advance-measurement value="0.00"
-          date="2010-03-15T00:00:00+01:00" />
-        </advance-measurements>
         <criterion-requirements>
-          <direct-criterion-requirement type="LeaveAAKjflasfj"
-          name="CriterioA" />
+          <direct-criterion-requirement type="LEAVE"
+          name="paternityLeave" />
           <indirect-criterion-requirement valid="true"
-          type="LeaveAAKjflasfj" name="CriterioB" />
+          type="LEAVE" name="medicalLeave" />
         </criterion-requirements>
         <hours-groups>
           <hours-group working-hours="0" resource-type="WORKER"
           code="PREFIX-00019-00001-00001">
             <criterion-requirements>
               <indirect-criterion-requirement valid="true"
-              type="LeaveAAKjflasfj" name="CriterioB" />
+              type="LEAVE" name="medicalLeave" />
               <indirect-criterion-requirement valid="true"
-              type="LeaveAAKjflasfj" name="CriterioA" />
+              type="LEAVE" name="paternityLeave" />
             </criterion-requirements>
           </hours-group>
         </hours-groups>
@@ -54,7 +50,7 @@
   init-date="2010-03-15T10:22:24.251+01:00" name="Pedido BBB"
   code="PREFIX-00022">
     <labels>
-      <label code="458ade05-dc8c-4678-a28a-50b883415d99" />
+      <label code="b2b9cdee-2785-4c03-8e01-cec0a93b61xt" />
     </labels>
     <material-assignments>
       <material-assignment estimated-availability="2010-03-15T10:22:24.251+01:00"

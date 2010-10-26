@@ -186,15 +186,21 @@ public class ResourcesPerDayTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void canCalculateTheResourcesPerDayFromTheHoursWorkingAndTheWorkableHours() {
-        Object[] periodicalNumber = { ResourcesPerDay.calculateFrom(10, 3),
+    public void canCalculateTheResourcesPerDayFromTheWorkingEffortAndTheWorkableEffort() {
+        Object[] periodicalNumber = {
+                ResourcesPerDay.calculateFrom(seconds(10), seconds(3)),
                 readsAs(3, 33) };
         Object[][] examples = {
-                { ResourcesPerDay.calculateFrom(1000, 1000), readsAs(1, 00) },
-                { ResourcesPerDay.calculateFrom(2000, 1000), readsAs(2, 00) },
-                { ResourcesPerDay.calculateFrom(500, 1000), readsAs(0, 50) },
-                { ResourcesPerDay.calculateFrom(651, 1000), readsAs(0, 65) },
-                { ResourcesPerDay.calculateFrom(1986, 1000), readsAs(1, 99) },
+                { ResourcesPerDay.calculateFrom(seconds(1000), seconds(1000)),
+                        readsAs(1, 00) },
+                { ResourcesPerDay.calculateFrom(seconds(2000), seconds(1000)),
+                        readsAs(2, 00) },
+                { ResourcesPerDay.calculateFrom(seconds(500), seconds(1000)),
+                        readsAs(0, 50) },
+                { ResourcesPerDay.calculateFrom(seconds(651), seconds(1000)),
+                        readsAs(0, 65) },
+                { ResourcesPerDay.calculateFrom(seconds(1986), seconds(1000)),
+                        readsAs(1, 99) },
                 periodicalNumber };
         for (Object[] pair : examples) {
             ResourcesPerDay first = (ResourcesPerDay) pair[0];

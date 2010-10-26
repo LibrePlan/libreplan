@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<hbox align="end" sclass="filtering-area">
+<hbox align="top" sclass="filtering-area">
 
     <!-- Multiple filter -->
     <label value="${i18n:_('Filter by')}"
@@ -28,21 +28,29 @@
 
     <!-- Personal details -->
     <label value="${i18n:_('Personal details')}"/>
-    <textbox id="txtfilter" width="200px"/>
+    <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
-    <!-- Limiting resource -->
-    <label value="${i18n:_('Limiting resource')}"/>
-    <listbox id="filterLimitingResource"
-        mold="select"
-        model="@{controller.limitingResourceFilterOptionList}" />
+<groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false">
+        <caption label="More options" />
 
+<hbox>
     <!-- Filter by date -->
     <label value="${i18n:_('Active period from')}"/>
     <datebox id="filterStartDate" constraint = "@{controller.checkConstraintStartDate}"/>
     <label value="${i18n:_('to')}"/>
     <datebox id="filterFinishDate" constraint = "@{controller.checkConstraintFinishDate}"/>
 
+    <!-- Limiting resource -->
+    <label value="${i18n:_('Limiting resource')}"/>
+    <listbox id="filterLimitingResource"
+        mold="select"
+        model="@{controller.limitingResourceFilterOptionList}" />
+    </hbox>
+      </groupbox>
+
     <button label="${i18n:_('Filter')}" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to machines satisfying required criteria')}"
+        tooltiptext="${i18n:_('Apply filtering to resources satisfying required criteria')}"
         onClick="controller.onApplyFilter()"/>
+
+
 </hbox>

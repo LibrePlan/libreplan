@@ -33,7 +33,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
  */
 public enum OrderElementFilterEnum implements IFilterEnum {
 
-    None("..."), Criterion(_("Criterion")), Label(_("Label"));
+    Criterion(_("Criterion")), Label(_("Label"));
 
     /**
      * Forces to mark the string as needing translation

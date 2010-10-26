@@ -19,16 +19,16 @@
 -->
 
 <window id="listing" title="${i18n:_('Criterion Type List')}">
-<newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true">
+<newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true" sclass="clickable-rows">
    <columns>
-        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)"/>
-        <newdatasortablecolumn label="${i18n:_('Code')}"/>
+        <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
+        <newdatasortablecolumn label="${i18n:_('Code')}" />
         <newdatasortablecolumn width="60px" label="${i18n:_('Enabled')}"/>
         <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>
     </columns>
     <rows>
-        <row self="@{each='criterionType'}" value="@{criterionType}">
-            <label value="@{criterionType.name}"/>
+        <row self="@{each='criterionType'}" value="@{criterionType}" onDoubleClick="controller.goToEditForm(self.value);">
+            <label value="@{criterionType.name}" tooltiptext="@{criterionType.description}"/>
             <label value="@{criterionType.code}"/>
             <checkbox disabled="true" checked="@{criterionType.enabled}"/>
             <hbox>
@@ -37,12 +37,9 @@
                     tooltiptext="${i18n:_('Edit')}"
                     onClick="controller.goToEditForm(self.parent.parent.value);">
                 </button>
-                <button visible="false" sclass="icono" image="/common/img/ico_borrar1.png"
+                <button sclass="icono" image="/common/img/ico_borrar1.png"
                     hoverImage="/common/img/ico_borrar.png"
                     tooltiptext="${i18n:_('Delete')}" disabled="@{criterionType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
-                </button>
-                <button visible="true" sclass="icono" image="/common/img/ico_borrar_out.png"
-                        tooltiptext="${i18n:_('Not deletable')}" disabled="@{criterionType.immutable}">
                 </button>
             </hbox>
         </row>

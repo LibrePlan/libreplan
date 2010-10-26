@@ -21,6 +21,7 @@
 package org.navalplanner.business.resources.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,10 +42,10 @@ import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.Valid;
-import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -53,9 +54,13 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
+import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * This class acts as the base class for all resources.
@@ -188,10 +193,9 @@ public abstract class Resource extends IntegrationEntity {
         @Override
         List<DayAssignment> calculateAssignments() {
             List<DayAssignment> result = new ArrayList<DayAssignment>();
-            Scenario current = Registry.getScenarioManager().getCurrent();
             for (DayAssignment each : dayAssignments) {
                 if (isTransient(each)
-                        || each.getScenario().equals(current)) {
+                        || each.getScenario().equals(currentScenario)) {
                     result.add(each);
                 }
             }
@@ -831,15 +835,15 @@ public abstract class Resource extends IntegrationEntity {
         return sum;
     }
 
-    public int getAssignedHoursDiscounting(
+    public EffortDuration getAssignedDurationDiscounting(
             Object alloationFromWhichDiscountHours, LocalDate day) {
-        int sum = 0;
+        EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
             if (!dayAssignment.belongsTo(alloationFromWhichDiscountHours)) {
-                sum += dayAssignment.getHours();
+                result = result.plus(dayAssignment.getDuration());
             }
         }
-        return sum;
+        return result;
     }
 
     public void addNewAssignments(Collection<? extends DayAssignment> assignments) {
@@ -865,33 +869,34 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        return getTotalWorkHoursFor(calendarOrDefault(), start, end, null);
+        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end, null);
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end,
             ICriterion criterion) {
-        return getTotalWorkHoursFor(calendarOrDefault(), start, end, criterion);
+        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end,
+                criterion);
     }
 
-    private IWorkHours calendarOrDefault() {
+    public ICalendar getCalendarOrDefault() {
         return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
     }
 
-    private int getTotalWorkHoursFor(IWorkHours calendar, LocalDate start,
+    private int getTotalWorkHoursFor(ICalendar calendar, LocalDate start,
             LocalDate end, ICriterion criterionToSatisfy) {
-        int sum = 0;
-        final int days = Days.daysBetween(start, end).getDays();
-        for (int i = 0; i < days; i++) {
-            LocalDate current = start.plusDays(i);
-            Integer workableHours = calendar.getCapacityAt(current);
-            if (workableHours != null
+        EffortDuration sum = zero();
+        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(start)
+                .daysUntil(IntraDayDate.startOfDay(end));
+        for (PartialDay current : daysBetween) {
+            EffortDuration capacityCurrent = calendar.getCapacityOn(current);
+            if (capacityCurrent != null
                     && (criterionToSatisfy == null || satisfiesCriterionAt(
-                            criterionToSatisfy, current))) {
-                sum += workableHours;
+                            criterionToSatisfy, current.getDate()))) {
+                sum = sum.plus(capacityCurrent);
             }
         }
-        return sum;
+        return sum.roundToHours();
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
@@ -962,6 +967,13 @@ public abstract class Resource extends IntegrationEntity {
         ICriterion compositedCriterion = CriterionCompounder.buildAnd(
                 criterions).getResult();
         return compositedCriterion.isSatisfiedBy(this);
+    }
+
+    public boolean satisfiesCriterionsAtSomePoint(
+            Collection<? extends Criterion> criterions) {
+        AvailabilityTimeLine availability = AvailabilityCalculator
+                .getCriterionsAvailabilityFor(criterions, this);
+        return !availability.getValidPeriods().isEmpty();
     }
 
     @Valid
@@ -1091,6 +1103,8 @@ public abstract class Resource extends IntegrationEntity {
 
     }
 
+    public abstract ResourceEnum getType();
+
     public boolean isVirtual() {
         return false;
     }
@@ -1121,12 +1135,8 @@ public abstract class Resource extends IntegrationEntity {
         return getFirstRepeatedCode(resourcesCostCategoryAssignments) == null;
     }
 
-    protected boolean isCriterionSatisfactionOfCorrectType(
-        CriterionSatisfaction c) {
-
-        return c.getResourceType().equals(ResourceEnum.RESOURCE);
-
-    }
+    protected abstract boolean isCriterionSatisfactionOfCorrectType(
+            CriterionSatisfaction c);
 
     protected IResourceDAO getIntegrationEntityDAO() {
         return Registry.getResourceDAO();
