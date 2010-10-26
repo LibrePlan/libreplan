@@ -324,6 +324,14 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
         tree.setModel(orderElementTreeController.getTreeModel());
+        tree.addEventListener(Events.ON_SELECT, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                //undo the work done by this event
+                //to be able to control it from the ON_CLICK event
+                tree.clearSelection();
+            }
+        });
     }
 
     private void setTreeRenderer(TreeComponent orderElementsTree) {
