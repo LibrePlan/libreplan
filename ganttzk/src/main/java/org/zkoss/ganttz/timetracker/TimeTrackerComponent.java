@@ -26,8 +26,6 @@ import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -65,27 +63,6 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         };
         this.timeTracker.addZoomListener(zoomListener);
         timeTrackerElementId = timetrackerId;
-
-        setAuService(new AuService() {
-            public boolean service(AuRequest request, boolean everError){
-                String command = request.getCommand();
-                if (command.equals("onIncrease")){
-                    onIncrease(retrievePixelsOffset(request));
-                    return true;
-                }
-                if (command.equals("onDecrease")){
-                    onDecrease(retrievePixelsOffset(request));
-                    return true;
-                }
-
-                return false;
-            }
-
-            private int retrievePixelsOffset(AuRequest request){
-                String[] requestData = (String[])request.getData().get("");
-                return Integer.parseInt(requestData[0]);
-            }
-        });
     }
 
     private boolean isInPage() {
@@ -128,18 +105,6 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private TimeTrackerState getTimeTrackerState() {
         return getTimeTracker().getTimeTrackerState();
-    }
-
-    public void onIncrease(int offset) {
-        double daysOffset = getDaysFor(offset);
-        getTimeTracker().zoomIncrease();
-        changeDetailLevel(daysOffset);
-    }
-
-    public void onDecrease(int offset) {
-        double daysOffset = getDaysFor(offset);
-        getTimeTracker().zoomDecrease();
-        changeDetailLevel(daysOffset);
     }
 
     public TimeTracker getTimeTracker() {
