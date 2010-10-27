@@ -150,7 +150,7 @@ Crear un pedido cada grupo cos seguintes datos e poñerlle, os puntos de planifi
 
       *  Elementos de pedido:
 
-         * 1  Coordinacion - **Punto de planificación** - Criterio Grupo 2 
+         * 1  Coordinacion - **Punto de planificación** - Criterio Grupo 2
 
             * 1.1 Reunións con cliente - 100h
             * 1.2 Reunións con traballadores - 100h

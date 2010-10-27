@@ -1052,7 +1052,7 @@ As características máis importantes do sistema de avances en NavalPlan é o se
 
    * É posible ter varias maneiras de medir o avance sobre unha determinada tarefa. Debido a elo, os avances se caracterizan por ser medidos en diferentes unidades e son administrables os distintos tipos de avances.
    * Programouse un sistema de propagación de avances de maneira que se un avance se mide a un determinado nivel da árbore de pedidos, entón se calcula no nivel superior automaticamente cal debería ser o avance en función das horas representadas polos fillos que teñan medido ese tipo de avance.
-   * Na vista de planificación, tanto a vista a nivel de empresa como a nivel de pedido, sobre as tarefas que representan os puntos de planificación como os contedores das mesmas teñen a capacidade de representar graficamente un dos avances da tarefa. 
+   * Na vista de planificación, tanto a vista a nivel de empresa como a nivel de pedido, sobre as tarefas que representan os puntos de planificación como os contedores das mesmas teñen a capacidade de representar graficamente un dos avances da tarefa.
 
 Administración de tipos de avance
 =================================

@@ -33,7 +33,7 @@ Aceptar el workspace por defecto y marcarlo para que no pregunte más
 
 Como instalar el Plugin de Maven2 (http://m2eclipse.sonatype.org/)
 
-Menu Eclipse -> Help -> Install new software 
+Menu Eclipse -> Help -> Install new software
 
 Se pulsa sobre la opción Add:  y se añade
 
@@ -50,31 +50,31 @@ Una vez reiniciado el entorno se procedrá a Importar el proyecto
 
 Menu Eclipse -> File -> Import ....
 
-Se slecciona como Import Source 
+Se slecciona como Import Source
    	     Maven ->  Existing Maven Project
 
 Como directorio raiz se marca la ruta donde se encuentra descargado el
-repositorio GIT del proyecto xestion produccion. Una vez seleccionado 
-aparecerán los proyectos que lo conforman y se aceptarán todos para su 
+repositorio GIT del proyecto xestion produccion. Una vez seleccionado
+aparecerán los proyectos que lo conforman y se aceptarán todos para su
 importación pulsando sobre la opción Finish.
 
-Lo siguiente será ejecutar la aplicación desde el entorno, para ello será 
-preciso seleccionar con el botón derecho el proyecto navalplanner-webapp y 
+Lo siguiente será ejecutar la aplicación desde el entorno, para ello será
+preciso seleccionar con el botón derecho el proyecto navalplanner-webapp y
 en la opción Run As seleccionar Run Configurations....
 
 se crea una nueva como Maven Build haciendo doble click sobre el ratón
 como nombre a esta New_configuracion podemos poner Maven Xestion Producion
 
-Como base directory se podrá selecionar Browse WorkSpace y allí la aplicación 
+Como base directory se podrá selecionar Browse WorkSpace y allí la aplicación
 navalplanner-webapp
 
 Como Goals se marcará: jetty:stop jetty:run
 
 Es recomendable marcar la opción Skip Tests y Resolve Workspace artifacts.
-También es posible marcar la opción Offline si queremos que maven no 
+También es posible marcar la opción Offline si queremos que maven no
 acceda a internet para descargar los paquetes.
 
-Pulsamos sobre la opción Run. Y nos realizará una primera ejecución y 
+Pulsamos sobre la opción Run. Y nos realizará una primera ejecución y
 la aplicación ya estará disponible en http://localhost:8080/navalplanner-webapp/
 
 A partir de este momento la opción por defecto de ejecuución será la que acabamos de ejecutar y será accesible desde la barra de herramientas de Eclipse.

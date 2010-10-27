@@ -172,6 +172,6 @@ The difference with respect to workers is that virtual worker groups have a name
 Limiting resources
 ================================
 
-Limiting resources are an specific type of productive elements which just can be either not assigned or with a 100% of dedication. What it the same, they are not capable of having more than one task scheduled at the same time nor overassigned. 
+Limiting resources are an specific type of productive elements which just can be either not assigned or with a 100% of dedication. What it the same, they are not capable of having more than one task scheduled at the same time nor overassigned.
 
 For each limiting resource a queue is automatically created so the tasks they have scheduled can be managed in an specific manner using the assignment methods provided, creating automatic assignments between the tasks and the queues matching required criteria or moving tasks between queues.
