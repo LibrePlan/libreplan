@@ -146,12 +146,10 @@ public class DateConverter {
                 throw new RuntimeException(e);
             }
 
-            LocalDate date = dateTime.toDateTimeToday().toLocalDate();
-            return factory.newXMLGregorianCalendarTime(dateTime
-                    .getHourOfDay(), dateTime.getMinuteOfHour(), dateTime
-                    .getSecondOfMinute(), dateTime.getMillisOfSecond(),
-                    DatatypeConstants.FIELD_UNDEFINED
-                    );
+            return factory.newXMLGregorianCalendarTime(dateTime.getHourOfDay(),
+                    dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute(),
+                    dateTime.getMillisOfSecond(),
+                    DatatypeConstants.FIELD_UNDEFINED);
         }
     }
 }

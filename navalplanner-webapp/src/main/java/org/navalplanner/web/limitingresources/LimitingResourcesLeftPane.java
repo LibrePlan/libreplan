@@ -20,9 +20,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
@@ -83,33 +80,6 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
                 return path.length == 0;
             }
         };
-    }
-
-    // private List<LimitingResourceQueue> calculatedClosedItems(Treeitem item)
-    // {
-    // List<LimitingResourceQueue> result = new
-    // ArrayList<LimitingResourceQueue>();
-    // Treechildren treeChildren = item.getTreechildren();
-    // if (treeChildren != null) {
-    // List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
-    // .getChildren();
-    // Iterator<Treeitem> iterator = myTreeItems.iterator();
-    // while (iterator.hasNext()) {
-    // Treeitem child = (Treeitem) iterator.next();
-    // if (!child.isOpen()) {
-    // result.addAll(getLineChildrenBy(child));
-    // } else {
-    // result.addAll(calculatedClosedItems(child));
-    // }
-    // }
-    // }
-    // return result;
-    // }
-
-    private List<LimitingResourceQueue> getLineChildrenBy(Treeitem item) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        LimitingResourceQueue line = getLineByTreeitem(item);
-        return result;
     }
 
     private LimitingResourceQueue getLineByTreeitem(Treeitem child) {

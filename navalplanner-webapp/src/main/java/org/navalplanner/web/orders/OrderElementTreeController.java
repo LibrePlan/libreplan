@@ -171,8 +171,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     public void found(OrderElementTemplate template) {
                         OrderLineGroup parent = (OrderLineGroup) getModel()
                                 .getRoot();
-                        OrderElement created = orderModel.createFrom(parent,
-                                template);
+                        orderModel.createFrom(parent, template);
                         getModel().addNewlyAddedChildrenOf(parent);
                     }
                 });

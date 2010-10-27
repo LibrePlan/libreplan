@@ -70,7 +70,6 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
 
     }
     private void searchInWorkers(String filter) {
-        boolean limited = (filter.length() < 3);
         for (Worker worker : getListWorkers()) {
             String name = StringUtils.deleteWhitespace(
                     worker.getShortDescription().toLowerCase());

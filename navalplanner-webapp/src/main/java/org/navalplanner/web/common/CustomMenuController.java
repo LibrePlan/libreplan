@@ -170,7 +170,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 for (CustomMenuItem child : ci.children) {
                     if (child.contains(requestPath)) {
                         child.setActive(true);
-                        List<CustomMenuItem> test = child.children;
                         for (CustomMenuItem c : child.children) {
                             if (c.contains(requestPath)) {
                                 c.setActive(true);

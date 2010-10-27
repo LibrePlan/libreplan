@@ -111,10 +111,6 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
             List<Order> orders, Date startingDate, Date endingDate,
             List<Criterion> criterions) {
 
-        String orderStrQuery = "FROM Order order ";
-        Query orderQuery = getSession().createQuery(orderStrQuery);
-        List<Order> orderList = orderQuery.list();
-
         String strQuery = "SELECT new org.navalplanner.business.reports.dtos.OrderCostsPerResourceDTO(worker, wrl) "
                 + "FROM Worker worker, WorkReportLine wrl "
                 + "LEFT OUTER JOIN wrl.resource resource "

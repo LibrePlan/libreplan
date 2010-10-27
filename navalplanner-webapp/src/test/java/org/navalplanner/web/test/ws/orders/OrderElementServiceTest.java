@@ -969,7 +969,7 @@ public class OrderElementServiceTest {
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
         try {
-            OrderElement orderElement = orderElementDAO.findUniqueByCode(code);
+            orderElementDAO.findUniqueByCode(code);
             fail("Order shouldn't be stored");
         } catch (InstanceNotFoundException e) {
             // It should throw an exception

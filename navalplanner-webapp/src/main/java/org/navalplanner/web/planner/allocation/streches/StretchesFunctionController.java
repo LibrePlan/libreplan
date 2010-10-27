@@ -33,7 +33,6 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
@@ -95,7 +94,6 @@ public class StretchesFunctionController extends GenericForwardComposer {
             Type type) {
         AssignmentFunction assignmentFunction = resourceAllocation
                 .getAssignmentFunction();
-        Task task = resourceAllocation.getTask();
         stretchesFunctionModel.init((StretchesFunction) assignmentFunction,
                 resourceAllocation, type);
         reloadStretchesListAndCharts();

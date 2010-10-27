@@ -359,7 +359,6 @@ public final class WorkReportConverter {
             throw new ValidationException(_("missing code in a work report."));
         }
 
-        WorkReportType type = workReport.getWorkReportType();
         /*
          * 1: Update the existing work report line or add new
          * work report line.
