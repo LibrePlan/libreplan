@@ -33,13 +33,14 @@ import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Contract for {@link WorkRerportType}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IWorkReportTypeModel {
+public interface IWorkReportTypeModel extends IIntegrationEntityModel {
 
     /**
      * Gets the current {@link WorkReportType}.

@@ -65,6 +65,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean monteCarloMethodTabVisible = false;
 
+    private Boolean generateCodeForWorkReportType = true;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -195,6 +197,15 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForBaseCalendars() {
         return generateCodeForBaseCalendars;
+    }
+
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        this.generateCodeForWorkReportType = generateCodeForWorkReportType;
+    }
+
+    public Boolean getGenerateCodeForWorkReportType() {
+        return generateCodeForWorkReportType;
     }
 
 }

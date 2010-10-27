@@ -52,6 +52,10 @@ public interface IConfigurationModel {
     String getCompanyCode();
     void setCompanyCode(String companyCode);
 
+    Boolean getGenerateCodeForWorkReportType();
+
+    void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType);
+
     Boolean getGenerateCodeForCriterion();
     void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
 

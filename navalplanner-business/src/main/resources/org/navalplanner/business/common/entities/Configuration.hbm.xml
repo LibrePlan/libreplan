@@ -18,6 +18,7 @@
 
         <property name="companyCode" />
 
+        <property name="generateCodeForWorkReportType" not-null="true" />
         <property name="generateCodeForCriterion" not-null="true" />
         <property name="generateCodeForLabel" not-null="true" />
         <property name="generateCodeForWorkReport" not-null="true" />

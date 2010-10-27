@@ -29,7 +29,7 @@ import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -40,23 +40,17 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionField;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class WorkReportType extends BaseEntity {
+public class WorkReportType extends IntegrationEntity {
 
     public static WorkReportType create() {
-        WorkReportType workReportType = new WorkReportType();
-        workReportType.setNewObject(true);
-        return workReportType;
+        return create(new WorkReportType());
     }
 
     public static WorkReportType create(String name, String code) {
-        WorkReportType workReportType = new WorkReportType(name, code);
-        workReportType.setNewObject(true);
-        return workReportType;
+        return create(new WorkReportType(name), code);
     }
 
     private String name;
-
-    private String code;
 
     private Boolean dateIsSharedByLines = false;
 
@@ -80,18 +74,8 @@ public class WorkReportType extends BaseEntity {
 
     }
 
-    private WorkReportType(String name, String code) {
+    private WorkReportType(String name) {
         this.name = name;
-        this.code = code;
-    }
-
-    @NotEmpty(message = "code not specified or empty")
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     @NotEmpty(message = "name not specified or empty")
@@ -169,7 +153,7 @@ public class WorkReportType extends BaseEntity {
     @SuppressWarnings("unused")
     @AssertTrue(message = "Value is not valid.\n Code cannot contain chars like '_'.")
     public boolean checkConstraintWorkReportTypeCodeWithoutIncorrectCharacter() {
-        if ((code == null) || (code.contains("_"))) {
+        if ((getCode() == null) || (getCode().contains("_"))) {
             return false;
         }
         return true;
@@ -190,27 +174,6 @@ public class WorkReportType extends BaseEntity {
             } catch (NonUniqueResultException e) {
                 return false;
             }
-        }
-    }
-
-    @SuppressWarnings("unused")
-    @AssertTrue(message = "work report type code is already being used")
-    public boolean checkConstraintUniqueWorkReportTypeCode() {
-
-        IWorkReportTypeDAO workReportTypeDAO = Registry.getWorkReportTypeDAO();
-
-        if (isNewObject()) {
-            return !workReportTypeDAO.existsByCodeAnotherTransaction(this);
-        } else {
-            try {
-                WorkReportType c = workReportTypeDAO.findUniqueByCode(code);
-                return c.getId().equals(getId());
-            } catch (InstanceNotFoundException e) {
-                return true;
-            } catch (NonUniqueResultException e) {
-                return false;
-            }
-
         }
     }
 
@@ -543,6 +506,11 @@ public class WorkReportType extends BaseEntity {
     private boolean isValidIndexToAdd(Integer position, List<Object> list) {
         return ((position.compareTo(0) >= 0) && (position
                 .compareTo(list.size()) <= 0));
+    }
+
+    @Override
+    protected IWorkReportTypeDAO getIntegrationEntityDAO() {
+        return Registry.getWorkReportTypeDAO();
     }
 
 }

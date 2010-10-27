@@ -145,13 +145,6 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    // private void addSeparatorComponent(Component component){
-    // Separator separator = new Separator();
-    // separator.setHeight("10px");
-    // separator.setBar(true);
-    // component.appendChild(separator);
-    // }
-
     public List<BaseCalendar> getCalendars() {
         return configurationModel.getCalendars();
     }
@@ -208,6 +201,16 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
         configurationModel.setGenerateCodeForCriterion(generateCodeForCriterion);
+    }
+
+    public Boolean getGenerateCodeForWorkReportType() {
+        return configurationModel.getGenerateCodeForWorkReportType();
+    }
+
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        configurationModel
+                .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
     }
 
     public Boolean getGenerateCodeForLabel() {

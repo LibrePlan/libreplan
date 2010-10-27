@@ -33,6 +33,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.business.workreports.entities.WorkReportType;
 
 /**
  * It represents the entities which use code generation
@@ -43,7 +44,8 @@ public enum EntityNameEnum {
     ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
             "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
 			"Type of work hours"), MATERIAL_CATEGORY("Material category"), WORK_REPORT(
-            "Work report"), RESOURCE_CALENDAR("Resource calendar");
+            "Work report"), WORK_REPORT_TYPE("Work report type"), RESOURCE_CALENDAR(
+            "Resource calendar");
 
     private String description;
 
@@ -84,6 +86,9 @@ public enum EntityNameEnum {
         case WORK_REPORT:
             return (IIntegrationEntityDAO<WorkReport>) Registry
                     .getWorkReportDAO();
+        case WORK_REPORT_TYPE:
+            return (IIntegrationEntityDAO<WorkReportType>) Registry
+                    .getWorkReportTypeDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);

@@ -267,6 +267,23 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean getGenerateCodeForWorkReportType() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForWorkReportType();
+    }
+
+    @Override
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
+        }
+    }
+
+    @Override
     public Boolean getGenerateCodeForLabel() {
         if (configuration == null) {
             return null;
