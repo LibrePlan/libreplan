@@ -926,11 +926,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void setParentFor(Collection<? extends T> assignments) {
             for (T each : assignments) {
-                setParentFor(each);
+                setItselfAsParentFor(each);
             }
         }
-
-        protected abstract void setParentFor(T each);
 
         protected void removingAssignments(
                 List<? extends DayAssignment> assignments){
@@ -976,13 +974,27 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    protected abstract class TransientState extends DayAssignmentsState {
+    final protected TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<T>());
+    }
+
+    final protected DayAssignmentsState toTransientStateWithInitial(
+            Collection<? extends T> initialAssignments,
+            IntraDayDate end) {
+        TransientState result = new TransientState(initialAssignments);
+        result.setIntraDayEnd(end);
+        return result;
+    }
+
+    protected abstract void setItselfAsParentFor(T dayAssignment);
+
+    protected class TransientState extends DayAssignmentsState {
 
         private final Set<T> assignments;
 
         private IntraDayDate intraDayEnd;
 
-        TransientState(Set<T> assignments) {
+        TransientState(Collection<? extends T> assignments) {
             this.assignments = new HashSet<T>(assignments);
         }
 

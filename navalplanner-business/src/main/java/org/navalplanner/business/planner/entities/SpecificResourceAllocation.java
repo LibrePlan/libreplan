@@ -140,10 +140,6 @@ public class SpecificResourceAllocation extends
         return new SpecificDayAssignmentsNoExplicitlySpecifiedScenario();
     }
 
-    private TransientState buildInitialTransientState() {
-        return new TransientState(new HashSet<SpecificDayAssignment>());
-    }
-
     @NotNull
     public Resource getResource() {
         return resource;
@@ -234,16 +230,10 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.toTransientStateWithInitial(getUnorderedFor(scenario),
-                getIntraDayEndFor(scenario));
+        result.state = result.toTransientStateWithInitial(
+                getUnorderedFor(scenario), getIntraDayEndFor(scenario));
         result.resource = getResource();
         return result;
-    }
-
-    private void toTransientStateWithInitial(
-            Set<SpecificDayAssignment> initialAssignments, IntraDayDate end) {
-        this.state = new TransientState(initialAssignments);
-        this.state.setIntraDayEnd(end);
     }
 
     @Override
@@ -274,7 +264,6 @@ public class SpecificResourceAllocation extends
 
     private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
 
-        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
         private final SpecificDayAssignmentsContainer container;
 
         private ExplicitlySpecifiedScenarioState(
@@ -316,30 +305,15 @@ public class SpecificResourceAllocation extends
             container.setIntraDayEnd(intraDayEnd);
         }
 
-        @Override
-        protected void setParentFor(SpecificDayAssignment each) {
-            each.setSpecificResourceAllocation(outerSpecificAllocation);
-        }
-
         protected void copyTransientPropertiesIfAppropiateTo(
                 DayAssignmentsState newStateForScenario) {
         }
 
     }
 
-    private class TransientState extends
-            ResourceAllocation<SpecificDayAssignment>.TransientState {
-        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
-
-        TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
-            super(specificDayAssignments);
-        }
-
-        @Override
-        protected void setParentFor(SpecificDayAssignment each) {
-            each.setSpecificResourceAllocation(outerSpecificAllocation);
-        }
-
+    @Override
+    protected void setItselfAsParentFor(SpecificDayAssignment dayAssignment) {
+        dayAssignment.setSpecificResourceAllocation(this);
     }
 
     private Set<SpecificDayAssignment> getUnorderedFor(Scenario scenario) {

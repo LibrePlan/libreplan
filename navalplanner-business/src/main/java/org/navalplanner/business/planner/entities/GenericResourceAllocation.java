@@ -183,10 +183,6 @@ public class GenericResourceAllocation extends
         return new GenericDayAssignmentsNoExplicitlySpecifiedScenario();
     }
 
-    private TransientState buildInitialTransientState() {
-        return new TransientState(new HashSet<GenericDayAssignment>());
-    }
-
     private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
         Map<Scenario, GenericDayAssignmentsContainer> result = new HashMap<Scenario, GenericDayAssignmentsContainer>();
         for (GenericDayAssignmentsContainer each : genericDayAssignmentsContainers) {
@@ -291,7 +287,6 @@ public class GenericResourceAllocation extends
     }
 
     private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
-        private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
         private final GenericDayAssignmentsContainer container;
 
@@ -310,11 +305,6 @@ public class GenericResourceAllocation extends
         protected void removeAssignments(
                 List<? extends DayAssignment> assignments) {
             container.removeAll(assignments);
-        }
-
-        @Override
-        protected void setParentFor(GenericDayAssignment each) {
-            each.setGenericResourceAllocation(outerGenericAllocation);
         }
 
         @Override
@@ -339,18 +329,9 @@ public class GenericResourceAllocation extends
         }
     }
 
-    private class TransientState extends
-            ResourceAllocation<GenericDayAssignment>.TransientState {
-        private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
-
-        TransientState(Set<GenericDayAssignment> genericDayAssignments) {
-            super(genericDayAssignments);
-        }
-
-        @Override
-        protected void setParentFor(GenericDayAssignment each) {
-            each.setGenericResourceAllocation(outerGenericAllocation);
-        }
+    @Override
+    protected void setItselfAsParentFor(GenericDayAssignment dayAssignment) {
+        dayAssignment.setGenericResourceAllocation(this);
     }
 
     private Set<GenericDayAssignment> getUnorderedForScenario(
@@ -429,18 +410,12 @@ public class GenericResourceAllocation extends
     @Override
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation.toTransientStateWithInitial(
+        allocation.assignmentsState = allocation.toTransientStateWithInitial(
                 getUnorderedForScenario(scenario), getIntraDayEndFor(scenario));
         allocation.criterions = new HashSet<Criterion>(criterions);
         allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
                 this);
         return allocation;
-    }
-
-    private void toTransientStateWithInitial(
-            Set<GenericDayAssignment> initialAssignments, IntraDayDate end) {
-        this.assignmentsState = new TransientState(initialAssignments);
-        this.assignmentsState.setIntraDayEnd(end);
     }
 
     @Override
