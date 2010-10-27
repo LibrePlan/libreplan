@@ -1038,7 +1038,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    protected abstract DayAssignmentsState explicitlySpecifiedState(
+    private DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
+        IDayAssignmentsContainer<T> container;
+        container = retrieveOrCreateContainerFor(scenario);
+        return new ExplicitlySpecifiedScenarioState(container);
+    }
+
+    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(
             Scenario scenario);
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
@@ -1105,6 +1111,53 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         protected abstract Collection<T> getUnorderedAssignmentsForScenario(
                 Scenario scenario);
+
+    }
+
+    protected class ExplicitlySpecifiedScenarioState extends
+            DayAssignmentsState {
+
+        private final IDayAssignmentsContainer<T> container;
+
+        ExplicitlySpecifiedScenarioState(IDayAssignmentsContainer<T> container) {
+            Validate.notNull(container);
+            this.container = container;
+        }
+
+        @Override
+        protected void addAssignments(Collection<? extends T> assignments) {
+            container.addAll(assignments);
+        }
+
+        @Override
+        protected Collection<T> getUnorderedAssignments() {
+            return container.getDayAssignments();
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            container.removeAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(Collection<T> assignmentsCopied) {
+            container.resetTo(assignmentsCopied);
+        }
+
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
+        }
+
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
+        }
 
     }
 

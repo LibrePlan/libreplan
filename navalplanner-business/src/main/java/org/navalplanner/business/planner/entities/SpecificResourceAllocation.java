@@ -112,7 +112,8 @@ public class SpecificResourceAllocation extends
         state = buildFromDBState();
     }
 
-    private SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
+    @Override
+    protected SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
             Scenario scenario) {
         Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
         SpecificDayAssignmentsContainer retrieved = containers.get(scenario);
@@ -255,60 +256,6 @@ public class SpecificResourceAllocation extends
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
         return Collections.singletonList(resource);
-    }
-
-    protected DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
-        SpecificDayAssignmentsContainer container = retrieveOrCreateContainerFor(scenario);
-        return new ExplicitlySpecifiedScenarioState(container);
-    }
-
-    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
-
-        private final SpecificDayAssignmentsContainer container;
-
-        private ExplicitlySpecifiedScenarioState(
-                SpecificDayAssignmentsContainer container) {
-            Validate.notNull(container);
-            this.container = container;
-        }
-
-        @Override
-        protected void addAssignments(
-                Collection<? extends SpecificDayAssignment> assignments) {
-            container.addAll(assignments);
-        }
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
-            return container.getDayAssignments();
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            container.removeAll(assignments);
-        }
-
-        @Override
-        protected void resetTo(
-                Collection<SpecificDayAssignment> assignmentsCopied) {
-            container.resetTo(assignmentsCopied);
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return container.getIntraDayEnd();
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            container.setIntraDayEnd(intraDayEnd);
-        }
-
-        protected void copyTransientPropertiesIfAppropiateTo(
-                DayAssignmentsState newStateForScenario) {
-        }
-
     }
 
     @Override

@@ -166,7 +166,8 @@ public class GenericResourceAllocation extends
         this.assignmentsState = buildInitialTransientState();
     }
 
-    private GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
+    @Override
+    protected GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
             Scenario scenario) {
         Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
         GenericDayAssignmentsContainer retrieved = containers.get(scenario);
@@ -279,54 +280,6 @@ public class GenericResourceAllocation extends
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {
         return new GenericAllocation(new ArrayList<Resource>(resources));
-    }
-
-    protected DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
-        GenericDayAssignmentsContainer container = retrieveOrCreateContainerFor(scenario);
-        return new ExplicitlySpecifiedScenarioState(container);
-    }
-
-    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
-
-        private final GenericDayAssignmentsContainer container;
-
-        ExplicitlySpecifiedScenarioState(
-                GenericDayAssignmentsContainer container) {
-            Validate.notNull(container);
-            this.container = container;
-        }
-
-        @Override
-        protected Collection<GenericDayAssignment> getUnorderedAssignments() {
-            return container.getDayAssignments();
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            container.removeAll(assignments);
-        }
-
-        @Override
-        protected void addAssignments(
-                Collection<? extends GenericDayAssignment> assignments) {
-            container.addAll(assignments);
-        }
-
-        @Override
-        protected void resetTo(Collection<GenericDayAssignment> assignments) {
-            container.resetTo(assignments);
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return container.getIntraDayEnd();
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            container.setIntraDayEnd(intraDayEnd);
-        }
     }
 
     @Override
