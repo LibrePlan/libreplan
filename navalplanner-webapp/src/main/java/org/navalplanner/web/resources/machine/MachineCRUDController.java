@@ -355,7 +355,10 @@ public class MachineCRUDController extends GenericForwardComposer {
             parentCalendar = machineModel.getDefaultCalendar();
         }
 
-        machineModel.setCalendar(parentCalendar.newDerivedResourceCalendar());
+        resourceCalendarModel.initCreateDerived(parentCalendar);
+        resourceCalendarModel.generateCalendarCodes();
+        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel
+                .getBaseCalendar());
     }
 
     private Window editCalendarWindow;
@@ -375,7 +378,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
         baseCalendarEditionController = new BaseCalendarEditionController(
                 resourceCalendarModel, editCalendarWindow,
-                createNewVersionWindow) {
+                createNewVersionWindow, messagesForUser) {
 
             @Override
             public void goToList() {
@@ -394,9 +397,11 @@ public class MachineCRUDController extends GenericForwardComposer {
 
             @Override
             public void save() {
+                validateCalendarExceptionCodes();
                 ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
                         .getBaseCalendar();
                 if (calendar != null) {
+                    resourceCalendarModel.generateCalendarCodes();
                     machineModel.setCalendarOfMachine(calendar);
                 }
                 reloadWindow();

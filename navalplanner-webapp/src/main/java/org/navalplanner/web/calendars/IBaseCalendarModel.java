@@ -199,4 +199,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     void setDurationAt(Days day, EffortDuration value);
 
+    void generateCalendarCodes();
+
 }

@@ -45,7 +45,7 @@
                         <label value="@{calendarController.editionController.nameParentCalendar}" visible="@{calendarController.editionController.isDerived}" />
                     </vbox>
                 </row>
-                <row>
+                <row visible="@{calendarController.editionController.notResourceCalendar}">
                     <label value="${i18n:_('Code')}" />
                         <hbox>
                             <textbox id="txtCode" value="@{calendarController.editionController.baseCalendar.code}" width="250px"
@@ -135,11 +135,13 @@
                     <listbox id="exceptionsList"
                         model="@{calendarController.editionController.calendarExceptions}"
                         itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
-                        rows="4" width="100%">
+                        onSelect="calendarController.editionController.onSelectException(event)" 
+                        rows="4" width="100%" >
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
                             <listheader label="${i18n:_('Exception Type')}" />
                             <listheader label="${i18n:_('Workable Time')}" />
+                            <listheader label="${i18n:_('Code')}" visible="@{calendarController.editionController.notResourceCalendar}"/>
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>
@@ -191,14 +193,12 @@
 
                 <hbox>
                     <label value="${i18n:_('Type')}" />
-                    <vbox>
-                        <label value="@{calendarController.editionController.calendarType}" />
-                        <combobox id="parentCalendars"
+                    <label value="@{calendarController.editionController.calendarType}" />
+                    <combobox id="parentCalendars"
                             visible="@{calendarController.editionController.isDerived}">
                             <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
                                 label="@{baseCalnedar.name}" />
-                        </combobox>
-                    </vbox>
+					</combobox>
                 </hbox>
 
                 <hbox visible="@{calendarController.editionController.isEditing}">
@@ -228,7 +228,8 @@
                     <listhead>
                         <listheader label="${i18n:_('Valid from')}" />
                         <listheader label="${i18n:_('Expiry date')}" />
-                        <listheader label="${i18n:_('Operations')}" />
+                        <listheader label="${i18n:_('Code')}" visible="@{calendarController.editionController.notResourceCalendar}"/>
+                        <listheader label="${i18n:_('Operations')}"/>
                     </listhead>
                 </listbox>
                 <button label="${i18n:_('Create activation period')}"

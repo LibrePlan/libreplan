@@ -41,9 +41,9 @@ import org.navalplanner.business.workreports.entities.WorkReport;
 public enum EntityNameEnum {
 
     ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
-			"Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
+            "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
 			"Type of work hours"), MATERIAL_CATEGORY("Material category"), WORK_REPORT(
-			"Work report");
+            "Work report"), RESOURCE_CALENDAR("Resource calendar");
 
     private String description;
 
@@ -72,6 +72,7 @@ public enum EntityNameEnum {
         case UNIT_TYPE:
             return (IIntegrationEntityDAO<UnitType>) Registry.getUnitTypeDAO();
         case CALENDAR:
+        case RESOURCE_CALENDAR:
             return (IIntegrationEntityDAO<CalendarData>) Registry
                     .getCalendarDataDAO();
         case WORK_HOURS_TYPE:

@@ -398,7 +398,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         if (parentCalendar == null) {
             parentCalendar = workerModel.getDefaultCalendar();
         }
-        workerModel.setCalendar(parentCalendar.newDerivedResourceCalendar());
+
+        resourceCalendarModel.initCreateDerived(parentCalendar);
+        resourceCalendarModel.generateCalendarCodes();
+        workerModel.setCalendar((ResourceCalendar) resourceCalendarModel
+                .getBaseCalendar());
     }
 
     public void editCalendar() {
@@ -438,7 +442,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
         baseCalendarEditionController = new BaseCalendarEditionController(
                 resourceCalendarModel, editCalendarWindow,
-                createNewVersionWindow) {
+                createNewVersionWindow, messages) {
 
             @Override
             public void goToList() {
@@ -457,10 +461,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             @Override
             public void save() {
+                validateCalendarExceptionCodes();
                 Integer capacity = workerModel.getCapacity();
                 ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
                         .getBaseCalendar();
                 if (calendar != null) {
+                    resourceCalendarModel.generateCalendarCodes();
                     workerModel.setCalendar(calendar);
                 }
                 reloadCurrentWindow();
