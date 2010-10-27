@@ -25,6 +25,7 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.navalplanner.web.resources.worker.CriterionSatisfactionDTO;
 import org.zkoss.zk.ui.WrongValueException;
 
@@ -33,7 +34,8 @@ import org.zkoss.zk.ui.WrongValueException;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IAssignedMachineCriterionsModel {
+public interface IAssignedMachineCriterionsModel extends
+        IIntegrationEntityModel {
 
     void addCriterionSatisfaction();
 

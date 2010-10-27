@@ -26,11 +26,13 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
+import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.UnitType;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Worker;
@@ -48,8 +50,9 @@ public enum EntityNameEnum {
 			"Type of work hours"), MATERIAL_CATEGORY("Material category"), WORK_REPORT(
             "Work report"), WORK_REPORT_TYPE("Work report type"), CALENDAR_EXCEPTION_TYPE(
             "Calendar exception type"), COST_CATEGORY("Cost category"), RESOURCE_CALENDAR(
-            "Resource calendar");;
-
+            "Resource calendar"), CRITERION_SATISFACTION(
+            "Criterion satisfaction"), RESOURCE_COST_CATEGORY_ASSIGNMENT(
+            "Resource cost category assignment");
 
     private String description;
 
@@ -99,6 +102,12 @@ public enum EntityNameEnum {
         case COST_CATEGORY:
             return (IIntegrationEntityDAO<CostCategory>) Registry
                     .getCostCategoryDAO();
+        case CRITERION_SATISFACTION:
+            return (IIntegrationEntityDAO<CriterionSatisfaction>) Registry
+                    .getCriterionSatisfactionDAO();
+        case RESOURCE_COST_CATEGORY_ASSIGNMENT:
+            return (IIntegrationEntityDAO<ResourcesCostCategoryAssignment>) Registry
+                    .getResourcesCostCategoryAssignmentDAO();
         default:
             throw new RuntimeException("can't handle the code sequence of the "
                     + description);

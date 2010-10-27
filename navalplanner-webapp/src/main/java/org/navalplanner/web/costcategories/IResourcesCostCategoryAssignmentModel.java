@@ -24,13 +24,15 @@ import java.util.List;
 
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Model for UI operations related to {@link ResourcesCostCategoryAssignment}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public interface IResourcesCostCategoryAssignmentModel {
+public interface IResourcesCostCategoryAssignmentModel extends
+        IIntegrationEntityModel {
 
     void removeCostCategoryAssignment(ResourcesCostCategoryAssignment assignment);
 
