@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.orders.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,9 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.OrderSequence;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Task;

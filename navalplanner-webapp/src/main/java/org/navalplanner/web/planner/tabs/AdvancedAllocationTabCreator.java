@@ -48,7 +48,6 @@ import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;

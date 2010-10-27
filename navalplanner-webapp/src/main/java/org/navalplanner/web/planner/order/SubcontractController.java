@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.planner.order;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.Date;
 import java.util.List;
 
@@ -37,7 +35,6 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Tabpanel;
 
 /**

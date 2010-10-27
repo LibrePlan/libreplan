@@ -22,14 +22,12 @@ package org.navalplanner.web.users.services;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
-import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;

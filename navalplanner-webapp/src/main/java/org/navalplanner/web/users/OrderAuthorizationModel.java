@@ -38,7 +38,6 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
-import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;

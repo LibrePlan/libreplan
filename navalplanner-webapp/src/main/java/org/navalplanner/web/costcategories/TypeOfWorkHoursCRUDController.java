@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
-import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.ConstraintChecker;

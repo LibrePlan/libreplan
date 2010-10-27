@@ -38,7 +38,6 @@ import org.navalplanner.ws.common.impl.GenericRESTService;
 import org.navalplanner.ws.common.impl.RecoverableErrorException;
 import org.navalplanner.ws.workreports.api.IWorkReportService;
 import org.navalplanner.ws.workreports.api.WorkReportDTO;
-import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
 import org.navalplanner.ws.workreports.api.WorkReportListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

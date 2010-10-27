@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;

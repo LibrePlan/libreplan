@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.orders.criterionrequirements;
 
-import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.web.orders.IOrderElementModel;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 
 /**
