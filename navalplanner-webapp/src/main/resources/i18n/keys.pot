@@ -137,25 +137,8 @@ msgid "Operations"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:125
-msgid "New order sequence"
-msgstr ""
 
-msgid "New criterion sequence"
-msgstr ""
-
-msgid "New label sequence"
-msgstr ""
-
-msgid "New machine sequence"
-msgstr ""
-
-msgid "New worker sequence"
-msgstr ""
-
-msgid "New unit type sequence"
-msgstr ""
-
-msgid "New calendar sequence"
+msgid "Calendar exception types"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:27
@@ -195,6 +178,9 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:108
 msgid "Order view"
+msgstr ""
+
+msgid "New sequence"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/reassign/ReassignCommand.java:296
@@ -257,6 +243,33 @@ msgid "Unit type sequences"
 msgstr ""
 
 msgid "Calendar sequences"
+msgstr ""
+
+msgid "Type of work hours sequences"
+msgstr ""
+
+msgid "Material category sequences"
+msgstr ""
+
+msgid "Work report sequences"
+msgstr ""
+
+msgid "Work report type sequences"
+msgstr ""
+
+msgid "Calendar exception type sequences"
+msgstr ""
+
+msgid "Cost category sequences"
+msgstr ""
+
+msgid "Resource calendar sequences"
+msgstr ""
+
+msgid "Criterion satisfaction sequences"
+msgstr ""
+
+msgid "Resource cost category assignment sequences"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:273
@@ -495,7 +508,11 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:270
 #: navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:21
+
 msgid "Work Report Models"
+
+msgid "Work report types"
+
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:22

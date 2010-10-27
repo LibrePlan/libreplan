@@ -122,7 +122,7 @@ public class ConfigurationController extends GenericForwardComposer {
             final EntityNameEnum entityName) {
         try {
             Button button = (Button) component.getFirstChild().getLastChild();
-            button.setLabel(_("New"));
+            button.setLabel(_("New sequence"));
             button.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override

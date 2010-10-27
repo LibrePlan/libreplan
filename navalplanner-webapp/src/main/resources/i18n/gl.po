@@ -138,26 +138,8 @@ msgid "Operations"
 msgstr "Operacións"
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:125
-msgid "New order sequence"
-msgstr "Nova secuencia de pedido"
-
-msgid "New criterion sequence"
-msgstr "Nova secuencia de criterio"
-
-msgid "New label sequence"
-msgstr "Nova secuencia de etiqueta"
-
-msgid "New machine sequence"
-msgstr "Nova secuencia de maquina"
-
-msgid "New worker sequence"
-msgstr "Nova secuencia de traballador"
-
-msgid "New unit type sequence"
-msgstr "Nova secuencia de unidade de medida"
-
-msgid "New calendar sequence"
-msgstr "Nova secuencia de calendario"
+msgid "Calendar exception types"
+msgstr "Tipos de excepcións de calendario"
 
 #: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:27
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:29
@@ -197,6 +179,9 @@ msgstr "Materiais"
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:108
 msgid "Order view"
 msgstr "Vista de pedido"
+
+msgid "New sequence"
+msgstr "Nova secuencia"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/reassign/ReassignCommand.java:296
 msgid "Reassign"
@@ -259,6 +244,33 @@ msgstr "Secuencias de unidade de medida"
 
 msgid "Calendar sequences"
 msgstr "Secuencias de calendario"
+
+msgid "Type of work hours sequences"
+msgstr "Secuencias de tipos de horas de traballo"
+
+msgid "Material category sequences"
+msgstr "Secuencias de categorias de material"
+
+msgid "Work report sequences"
+msgstr "Secuencias de informes de traballo"
+
+msgid "Work report type sequences"
+msgstr "Secuencias de tipos de informes de traballo"
+
+msgid "Calendar exception type sequences"
+msgstr "Secuencias de tipos de excepcións de calendario"
+
+msgid "Cost category sequences"
+msgstr "Secuencias de categorias de costo"
+
+msgid "Resource calendar sequences"
+msgstr "Secuencias de calendarios de recursos"
+
+msgid "Criterion satisfaction sequences"
+msgstr "Secuencias de criterios satisfeitos"
+
+msgid "Resource cost category assignment sequences"
+msgstr "Secuencias de asignacións de categorias de costo a recursos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:273
 msgid "Reports"
@@ -506,8 +518,13 @@ msgstr "Non se pode borrar un escenario con escenarios derivados"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:270
 #: navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:21
+
 msgid "Work Report Models"
 msgstr "Modelos de partes de traballo"
+
+msgid "Work report types"
+msgstr "Tipos de partes de traballo"
+
 
 #: navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:22
 msgid "Create new version"
