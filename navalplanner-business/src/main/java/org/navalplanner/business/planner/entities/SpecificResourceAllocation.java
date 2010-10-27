@@ -491,8 +491,10 @@ public class SpecificResourceAllocation extends
         List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
         int i = 0;
         for (DayAssignment each : assignments) {
+            EffortDuration durationForAssignment = EffortDuration
+                    .hours(newHoursPerDay[i++]);
             result.add(SpecificDayAssignment.create(each.getDay(),
-                    newHoursPerDay[i++], resource));
+                    durationForAssignment, resource));
         }
         return result;
     }

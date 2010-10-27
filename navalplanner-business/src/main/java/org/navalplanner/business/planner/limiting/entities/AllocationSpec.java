@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 
 public abstract class AllocationSpec {
 
@@ -166,8 +167,8 @@ class ValidAllocationAttempt extends AllocationSpec {
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         int i = 0;
         for (LocalDate each : days) {
-            result.add(SpecificDayAssignment.create(each, assignableHours[i],
-                    resource));
+            EffortDuration hours = EffortDuration.hours(assignableHours[i]);
+            result.add(SpecificDayAssignment.create(each, hours, resource));
             i++;
         }
         return result;
@@ -178,8 +179,8 @@ class ValidAllocationAttempt extends AllocationSpec {
         List<DayAssignment> result = new ArrayList<DayAssignment>();
         int i = 0;
         for (LocalDate each : days) {
-            result.add(GenericDayAssignment.create(each, assignableHours[i],
-                    resource));
+            EffortDuration hours = EffortDuration.hours(assignableHours[i]);
+            result.add(GenericDayAssignment.create(each, hours, resource));
             i++;
         }
         return result;
