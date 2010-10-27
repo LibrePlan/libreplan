@@ -32,6 +32,7 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.stereotype.Component;
