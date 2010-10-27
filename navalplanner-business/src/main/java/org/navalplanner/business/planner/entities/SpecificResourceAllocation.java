@@ -24,7 +24,6 @@ import static org.navalplanner.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -138,7 +137,7 @@ public class SpecificResourceAllocation extends
     }
 
     private DayAssignmentsState buildFromDBState() {
-        return new SpecificDayAssignmentsNoExplicitlySpecifiedScenario();
+        return new NoExplicitlySpecifiedScenario();
     }
 
     @NotNull
@@ -279,22 +278,6 @@ public class SpecificResourceAllocation extends
             return null;
         }
         return container.getIntraDayEnd();
-    }
-
-    private class SpecificDayAssignmentsNoExplicitlySpecifiedScenario extends
-            NoExplicitlySpecifiedScenario {
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignmentsForScenario(
-                Scenario scenario) {
-            return getUnorderedFor(scenario);
-        }
-
-        @Override
-        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
-            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
-        }
-
     }
 
     @OnCopy(Strategy.IGNORE)

@@ -1054,7 +1054,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * is changed since the assignments are cached and the assignments for the
      * previous one would be returned<br />
      */
-    protected abstract class NoExplicitlySpecifiedScenario extends
+    protected class NoExplicitlySpecifiedScenario extends
             DayAssignmentsState {
 
         @Override
@@ -1095,8 +1095,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         protected Collection<T> getUnorderedAssignments() {
-            Scenario currentScenario = currentScenario();
-            return getUnorderedAssignmentsForScenario(currentScenario);
+            Scenario scenario = currentScenario();
+            return retrieveOrCreateContainerFor(scenario).getDayAssignments();
         }
 
         private Scenario currentScenario() {
@@ -1104,13 +1104,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         IntraDayDate getIntraDayEnd() {
-            return getIntraDayEndFor(currentScenario());
+            return retrieveOrCreateContainerFor(currentScenario()).getIntraDayEnd();
         }
-
-        protected abstract IntraDayDate getIntraDayEndFor(Scenario scenario);
-
-        protected abstract Collection<T> getUnorderedAssignmentsForScenario(
-                Scenario scenario);
 
     }
 

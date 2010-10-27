@@ -181,7 +181,7 @@ public class GenericResourceAllocation extends
     }
 
     private DayAssignmentsState buildFromDBState() {
-        return new GenericDayAssignmentsNoExplicitlySpecifiedScenario();
+        return new NoExplicitlySpecifiedScenario();
     }
 
     private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
@@ -304,21 +304,6 @@ public class GenericResourceAllocation extends
             return null;
         }
         return container.getIntraDayEnd();
-    }
-
-    private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
-            NoExplicitlySpecifiedScenario {
-
-        @Override
-        protected Collection<GenericDayAssignment> getUnorderedAssignmentsForScenario(
-                Scenario scenario) {
-            return getUnorderedForScenario(scenario);
-        }
-
-        @Override
-        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
-            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
-        }
     }
 
     @OnCopy(Strategy.IGNORE)
