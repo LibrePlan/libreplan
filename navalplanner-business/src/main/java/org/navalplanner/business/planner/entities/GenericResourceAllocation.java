@@ -120,9 +120,6 @@ public class GenericResourceAllocation extends
                 genericDayAssignmentsContainers);
     }
 
-    @OnCopy(Strategy.IGNORE)
-    private Map<Resource, List<GenericDayAssignment>> orderedDayAssignmentsByResource = null;
-
     private GenericResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
         super(resourcesPerDay, task);
     }
@@ -209,12 +206,8 @@ public class GenericResourceAllocation extends
     }
 
     private Map<Resource, List<GenericDayAssignment>> getOrderedAssignmentsFor() {
-        if (orderedDayAssignmentsByResource == null) {
-            orderedDayAssignmentsByResource = DayAssignment
-                    .byResourceAndOrdered(getDayAssignmentsState()
-                            .getUnorderedAssignments());
-        }
-        return orderedDayAssignmentsByResource;
+        return DayAssignment.byResourceAndOrdered(getDayAssignmentsState()
+                .getUnorderedAssignments());
     }
 
     public Set<Criterion> getCriterions() {
@@ -303,7 +296,6 @@ public class GenericResourceAllocation extends
 
         @Override
         protected void clearFieldsCalculatedFromAssignments() {
-            orderedDayAssignmentsByResource = null;
         }
 
         @Override
@@ -363,7 +355,6 @@ public class GenericResourceAllocation extends
 
         @Override
         protected void clearFieldsCalculatedFromAssignments() {
-            orderedDayAssignmentsByResource = null;
         }
 
         @Override
