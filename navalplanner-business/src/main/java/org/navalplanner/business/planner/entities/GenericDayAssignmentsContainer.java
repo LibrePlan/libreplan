@@ -21,7 +21,6 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -38,7 +37,8 @@ import org.navalplanner.business.workingday.IntraDayDate;
  * for a {@link ResourceAllocation} at a {@link Scenario} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GenericDayAssignmentsContainer extends BaseEntity {
+public class GenericDayAssignmentsContainer extends BaseEntity implements
+        IDayAssignmentsContainer<GenericDayAssignment> {
 
     public static GenericDayAssignmentsContainer create(
             GenericResourceAllocation genericAllocation,
@@ -92,7 +92,7 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
         dayAssignments.addAll(copyToThisContainer(assignments));
     }
 
-    public void removeAll(List<? extends DayAssignment> assignments) {
+    public void removeAll(Collection<? extends DayAssignment> assignments) {
         dayAssignments.removeAll(assignments);
     }
 
