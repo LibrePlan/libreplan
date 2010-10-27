@@ -922,7 +922,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         protected void clearCachedData() {
             dayAssignmentsOrdered = null;
-            clearFieldsCalculatedFromAssignments();
         }
 
         private void setParentFor(Collection<? extends T> assignments) {
@@ -930,8 +929,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 setParentFor(each);
             }
         }
-
-        protected abstract void clearFieldsCalculatedFromAssignments();
 
         protected abstract void setParentFor(T each);
 
@@ -1006,11 +1003,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         protected final void resetTo(Collection<T> assignmentsCopied) {
-            modificationsNotAllowed();
-        }
-
-        @Override
-        protected final void clearFieldsCalculatedFromAssignments() {
             modificationsNotAllowed();
         }
 

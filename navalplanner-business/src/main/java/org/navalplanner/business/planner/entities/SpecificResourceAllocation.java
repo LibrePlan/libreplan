@@ -284,10 +284,6 @@ public class SpecificResourceAllocation extends
         }
 
         @Override
-        protected void clearFieldsCalculatedFromAssignments() {
-        }
-
-        @Override
         protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
             return container.getDayAssignments();
         }
@@ -341,10 +337,6 @@ public class SpecificResourceAllocation extends
         protected void addAssignments(
                 Collection<? extends SpecificDayAssignment> assignments) {
             specificDaysAssignment.addAll(assignments);
-        }
-
-        @Override
-        protected void clearFieldsCalculatedFromAssignments() {
         }
 
         @Override

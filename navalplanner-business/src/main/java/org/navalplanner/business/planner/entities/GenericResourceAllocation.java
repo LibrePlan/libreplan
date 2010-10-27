@@ -295,10 +295,6 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        protected void clearFieldsCalculatedFromAssignments() {
-        }
-
-        @Override
         protected Collection<GenericDayAssignment> getUnorderedAssignments() {
             return container.getDayAssignments();
         }
@@ -351,10 +347,6 @@ public class GenericResourceAllocation extends
 
         TransientState(Set<GenericDayAssignment> genericDayAssignments) {
             this.genericDayAssignments = genericDayAssignments;
-        }
-
-        @Override
-        protected void clearFieldsCalculatedFromAssignments() {
         }
 
         @Override
