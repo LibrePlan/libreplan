@@ -962,7 +962,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        protected abstract DayAssignmentsState switchTo(Scenario scenario);
+        final protected DayAssignmentsState switchTo(Scenario scenario) {
+            DayAssignmentsState result = explicitlySpecifiedState(scenario);
+            copyTransientPropertiesIfAppropiateTo(result);
+            return result;
+        }
+
+        /**
+         * Override if necessary to do extra actions
+         */
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
+        }
     }
 
     protected abstract class TransientState extends DayAssignmentsState {
@@ -1007,19 +1018,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             this.intraDayEnd = intraDayEnd;
         }
 
-        @Override
-        final protected DayAssignmentsState switchTo(Scenario scenario) {
-            DayAssignmentsState result = createExplicitlySpecifiedState(scenario);
-            result.resetTo(getUnorderedAssignments());
-            result.setIntraDayEnd(getIntraDayEnd());
-            return result;
-        }
-
-        protected abstract DayAssignmentsState createExplicitlySpecifiedState(
-                Scenario scenario);
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
+            newStateForScenario.resetTo(getUnorderedAssignments());
+            newStateForScenario.setIntraDayEnd(getIntraDayEnd());
+        };
 
     }
 
+    protected abstract DayAssignmentsState explicitlySpecifiedState(
+            Scenario scenario);
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
      * order to return the assignments for that scenario. This state doesn't
@@ -1085,6 +1093,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         protected abstract Collection<T> getUnorderedAssignmentsForScenario(
                 Scenario scenario);
+
     }
 
     protected abstract DayAssignmentsState getDayAssignmentsState();

@@ -285,13 +285,20 @@ public class GenericResourceAllocation extends
         return new GenericAllocation(new ArrayList<Resource>(resources));
     }
 
+    protected DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
+        GenericDayAssignmentsContainer container = retrieveOrCreateContainerFor(scenario);
+        return new ExplicitlySpecifiedScenarioState(container);
+    }
+
     private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
         private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
         private final GenericDayAssignmentsContainer container;
 
-        ExplicitlySpecifiedScenarioState(Scenario scenario) {
-            this.container = retrieveOrCreateContainerFor(scenario);
+        ExplicitlySpecifiedScenarioState(
+                GenericDayAssignmentsContainer container) {
+            Validate.notNull(container);
+            this.container = container;
         }
 
         @Override
@@ -322,12 +329,6 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(
-                    scenario);
-        }
-
-        @Override
         IntraDayDate getIntraDayEnd() {
             return container.getIntraDayEnd();
         }
@@ -350,12 +351,6 @@ public class GenericResourceAllocation extends
         protected void setParentFor(GenericDayAssignment each) {
             each.setGenericResourceAllocation(outerGenericAllocation);
         }
-
-        protected DayAssignmentsState createExplicitlySpecifiedState(
-                Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(scenario);
-        }
-
     }
 
     private Set<GenericDayAssignment> getUnorderedForScenario(
@@ -384,11 +379,6 @@ public class GenericResourceAllocation extends
         protected Collection<GenericDayAssignment> getUnorderedAssignmentsForScenario(
                 Scenario scenario) {
             return getUnorderedForScenario(scenario);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(scenario);
         }
 
         @Override

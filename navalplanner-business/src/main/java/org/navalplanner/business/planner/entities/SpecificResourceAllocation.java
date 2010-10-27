@@ -267,14 +267,20 @@ public class SpecificResourceAllocation extends
         return Collections.singletonList(resource);
     }
 
+    protected DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
+        SpecificDayAssignmentsContainer container = retrieveOrCreateContainerFor(scenario);
+        return new ExplicitlySpecifiedScenarioState(container);
+    }
+
     private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
 
         private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
         private final SpecificDayAssignmentsContainer container;
 
-        private ExplicitlySpecifiedScenarioState(Scenario scenario) {
-            Validate.notNull(scenario);
-            this.container = retrieveOrCreateContainerFor(scenario);
+        private ExplicitlySpecifiedScenarioState(
+                SpecificDayAssignmentsContainer container) {
+            Validate.notNull(container);
+            this.container = container;
         }
 
         @Override
@@ -315,11 +321,10 @@ public class SpecificResourceAllocation extends
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
 
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(
-                    scenario);
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
         }
+
     }
 
     private class TransientState extends
@@ -335,10 +340,6 @@ public class SpecificResourceAllocation extends
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
 
-        protected DayAssignmentsState createExplicitlySpecifiedState(
-                Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(scenario);
-        }
     }
 
     private Set<SpecificDayAssignment> getUnorderedFor(Scenario scenario) {
@@ -366,11 +367,6 @@ public class SpecificResourceAllocation extends
         protected Collection<SpecificDayAssignment> getUnorderedAssignmentsForScenario(
                 Scenario scenario) {
             return getUnorderedFor(scenario);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(scenario);
         }
 
         @Override
