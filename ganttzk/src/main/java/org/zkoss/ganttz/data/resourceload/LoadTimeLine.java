@@ -155,17 +155,6 @@ public class LoadTimeLine {
         return one.compareTo(other) < 0 ? one : other;
     }
 
-    private static void allChildrenAreNotEmpty(List<LoadTimeLine> lines) {
-        for (LoadTimeLine l : lines) {
-            if (l.isEmpty()) {
-                throw new IllegalArgumentException(l + " is empty");
-            }
-            if (l.hasChildren()) {
-                allChildrenAreNotEmpty(l.getChildren());
-            }
-        }
-    }
-
     public boolean hasChildren() {
         return (!children.isEmpty());
     }

@@ -42,7 +42,6 @@ import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -68,10 +67,6 @@ public class TimeLineRequiredMaterialController extends
     private Datebox startingDate;
 
     private Datebox endingDate;
-
-    private Combobox cbStatus;
-
-    private Listbox listStatus;
 
     private Date filterStartingDate = getDefaultStartingDate();
 

@@ -41,7 +41,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IMachineDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
@@ -54,10 +53,8 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
-import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -96,8 +93,6 @@ public class MachineModel implements IMachineModel {
     @Autowired
     private ICriterionDAO criterionDAO;
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-    @Autowired
     private IWorkerDAO workerDAO;
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -110,10 +105,6 @@ public class MachineModel implements IMachineModel {
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(
             Machine.class);
-
-    @Autowired
-    @Qualifier("subclass")
-    private IBaseCalendarModel baseCalendarModel;
 
     private void reattachCriterionsCache() {
         for (Criterion each: criterions.values()) {

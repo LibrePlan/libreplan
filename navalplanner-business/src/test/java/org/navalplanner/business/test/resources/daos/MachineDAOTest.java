@@ -31,7 +31,6 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.math.BigDecimal;
 import java.util.List;
 
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -43,7 +42,6 @@ import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
-import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -71,21 +69,12 @@ public class MachineDAOTest {
     @Autowired
     IWorkerDAO workerDAO;
 
-    @Autowired
-    private SessionFactory sessionFactory;
-
     private Machine createValidMachine() {
         Machine machine = Machine.create();
         machine.setCode("code");
         machine.setName("name");
         machine.setDescription("description");
         return machine;
-    }
-
-    private Worker createValidWorker() {
-        Worker worker = Worker.create();
-        worker.setFirstName("FirstName");
-        return worker;
     }
 
     @Test

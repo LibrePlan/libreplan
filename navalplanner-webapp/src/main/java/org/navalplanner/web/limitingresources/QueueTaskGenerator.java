@@ -32,7 +32,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -296,11 +295,6 @@ class QueueTaskGeneratorOnCriterion extends QueueTaskGenerator {
                 resourcesSatisfyingCriterionAtSomePoint);
         result.specificByResourceCached = specificByResourceCached;
         return result;
-    }
-
-    private List<GenericResourceAllocation> genericAllocationsOnInterval() {
-        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
-                getAllocationsOnInterval());
     }
 
     @Override

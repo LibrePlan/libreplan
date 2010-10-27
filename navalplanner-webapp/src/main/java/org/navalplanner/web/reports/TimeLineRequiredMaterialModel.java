@@ -83,8 +83,6 @@ public class TimeLineRequiredMaterialModel implements
 
     private Date endingDate;
 
-    private MaterialStatusEnum status;
-
     private List<MaterialAssignment> listMaterialAssignment = new ArrayList<MaterialAssignment>();
 
     private MutableTreeModel<Object> allMaterialCategories = MutableTreeModel

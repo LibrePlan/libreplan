@@ -49,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -84,8 +83,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
-    private Order filterBy;
-
     private org.zkoss.zk.ui.Component parent;
 
     private LimitingResourcesPanel limitingResourcesPanel;
@@ -102,8 +99,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
-
-    private transient IFilterChangedListener filterChangedListener;
 
     public LimitingResourcesController() {
     }
@@ -301,7 +296,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void filterBy(Order order) {
-        this.filterBy = order;
     }
 
     public void saveQueues() {

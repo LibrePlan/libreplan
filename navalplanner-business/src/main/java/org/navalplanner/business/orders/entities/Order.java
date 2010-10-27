@@ -101,8 +101,6 @@ public class Order extends OrderLineGroup {
 
     public static class CurrentVersionInfo {
 
-        private final Scenario scenario;
-
         private final OrderVersion orderVersion;
 
         private final boolean modifyingTheOwnerScenario;
@@ -115,7 +113,6 @@ public class Order extends OrderLineGroup {
         private CurrentVersionInfo(Scenario scenario, OrderVersion orderVersion) {
             Validate.notNull(scenario);
             Validate.notNull(orderVersion);
-            this.scenario = scenario;
             this.orderVersion = orderVersion;
             this.modifyingTheOwnerScenario = orderVersion.isOwnedBy(scenario);
         }

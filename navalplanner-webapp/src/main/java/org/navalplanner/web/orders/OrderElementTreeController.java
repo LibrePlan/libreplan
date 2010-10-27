@@ -87,8 +87,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox orderElementFilter;
 
-    private Hbox orderFilter;
-
     private BandboxMultipleSearch bdFiltersOrderElement;
 
     private Datebox filterStartDateOrderElement;

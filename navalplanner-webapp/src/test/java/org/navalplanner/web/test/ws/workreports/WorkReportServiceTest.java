@@ -40,7 +40,6 @@ import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -105,9 +104,6 @@ public class WorkReportServiceTest {
 
     @Autowired
     private IWorkReportTypeDAO workReportTypeDAO;
-
-    @Autowired
-    private IAdHocTransactionService adHocTransaction;
 
     @Autowired
     private IWorkReportDAO workReportDAO;

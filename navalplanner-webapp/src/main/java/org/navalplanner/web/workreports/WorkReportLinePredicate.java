@@ -80,13 +80,6 @@ public class WorkReportLinePredicate implements IPredicate {
                 date, finishDate));
     }
 
-    private boolean isInTheRangeWorkReportDates(Date date,
-            WorkReportDTO workReportDTO) {
-        // Check if date is into interval between the startdate and finish date
-        return (isGreaterToStartDate(date, workReportDTO.getDateStart()) && isLowerToFinishDate(
-                date, workReportDTO.getDateFinish()));
-    }
-
     private boolean isGreaterToStartDate(Date date, Date startDate) {
         if (startDate == null) {
             return true;

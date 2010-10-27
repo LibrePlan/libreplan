@@ -51,7 +51,6 @@ import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -174,9 +173,6 @@ public class OrderModel implements IOrderModel {
 
     @Autowired
     private IOrderVersionDAO orderVersionDAO;
-
-    @Autowired
-    private IHoursGroupDAO hoursGroupDAO;
 
     @Override
     @Transactional(readOnly = true)

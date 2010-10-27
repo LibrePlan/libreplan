@@ -216,11 +216,6 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Row> getRows() {
-        return this.gridQualityFormItems.getRows().getChildren();
-    }
-
     /**
      * Validates {@link Textbox} checking {@link Constraint}
      * @param comp

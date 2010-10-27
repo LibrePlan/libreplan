@@ -38,7 +38,6 @@ import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -49,7 +48,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -66,9 +64,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
-
-    @Autowired
     private IOrderDAO orderDAO;
 
     @Autowired
@@ -76,9 +71,6 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     @Autowired
     private ILabelDAO labelDAO;
-
-    @Autowired
-    private IScenarioManager scenarioManager;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;

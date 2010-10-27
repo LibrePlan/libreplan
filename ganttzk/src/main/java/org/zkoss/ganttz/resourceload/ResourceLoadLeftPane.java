@@ -228,15 +228,6 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return result;
     }
 
-    private static void limitValue(Div parent, Label label, int maxLength) {
-        String originalValue = label.getValue();
-        if (originalValue == null || originalValue.length() <= maxLength) {
-            return;
-        }
-        label.setValue(originalValue.substring(0, maxLength - 3) + "...");
-        label.setTooltip(createPopup(parent, originalValue));
-    }
-
     private static Popup createPopup(Div parent, String originalValue) {
         Popup result = new Popup();
         result.appendChild(new Label(originalValue));

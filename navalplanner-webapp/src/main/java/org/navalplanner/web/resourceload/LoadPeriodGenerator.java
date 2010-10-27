@@ -33,8 +33,6 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -327,11 +325,6 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
         return result;
     }
 
-    private List<GenericResourceAllocation> genericAllocationsOnInterval() {
-        return ResourceAllocation.getOfType(GenericResourceAllocation.class,
-                getAllocationsOnInterval());
-    }
-
     @Override
     protected int getAssignedHoursFor(ResourceAllocation<?> resourceAllocation) {
         return resourceAllocation.getAssignedHours(start, end);
@@ -352,23 +345,5 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     }
 
     private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();
-
-    private List<SpecificDayAssignment> getSpecificOrderedAssignmentsFor(
-            Resource resource) {
-        if (!specificByResourceCached.containsKey(resource)) {
-            specificByResourceCached.put(resource, DayAssignment
-                    .specific(DayAssignment.orderedByDay(resource
-                            .getAssignments())));
-        }
-        return specificByResourceCached.get(resource);
-    }
-
-    private int sum(List<SpecificDayAssignment> specific) {
-        int result = 0;
-        for (SpecificDayAssignment s : specific) {
-            result += s.getHours();
-        }
-        return result;
-    }
 
 }

@@ -234,10 +234,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return mode.equals(ResourceAllocationFilterEnum.Resource);
     }
 
-    private boolean isModeCriterion() {
-        return mode.equals(ResourceAllocationFilterEnum.Criterion);
-    }
-
     private boolean isModeNone() {
         return mode.equals(FilterEnumNone.None);
     }

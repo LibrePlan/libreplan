@@ -319,10 +319,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return (ITaskLeafConstraint) currentTaskElement;
     }
 
-    private Task currentTaskElementAsTask() {
-        return (Task) currentTaskElement;
-    }
-
     private void hideDurationRow() {
         hours.getFellow("durationRow").setVisible(false);
     }

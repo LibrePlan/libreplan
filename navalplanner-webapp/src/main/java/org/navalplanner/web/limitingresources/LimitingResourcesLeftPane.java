@@ -26,7 +26,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -36,15 +35,12 @@ import org.zkoss.zul.api.Tree;
 public class LimitingResourcesLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
-    private final QueueListComponent limitingResourcesList;
 
     public LimitingResourcesLeftPane(
             MutableTreeModel<LimitingResourceQueue> treeModel,
             QueueListComponent resourceLoadList) {
-        this.limitingResourcesList = resourceLoadList;
         this.modelForTree = treeModel;
     }
-
 
     @Override
     public void afterCompose() {
@@ -82,16 +78,6 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         };
     }
 
-    private LimitingResourceQueue getLineByTreeitem(Treeitem child) {
-        LimitingResourceQueue line = null;
-        try {
-            line = (LimitingResourceQueue) child.getValue();
-        } catch (Exception e) {
-            return null;
-        }
-        return line;
-    }
-
     private Tree getContainerTree() {
         return (Tree) getFellow("loadsTree");
     }
@@ -114,14 +100,6 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         final String conceptName = principal.getResource().getName();
         label.setValue(conceptName);
         result.appendChild(label);
-        return result;
-    }
-
-
-    private static Popup createPopup(Div parent, String originalValue) {
-        Popup result = new Popup();
-        result.appendChild(new Label(originalValue));
-        parent.appendChild(result);
         return result;
     }
 }

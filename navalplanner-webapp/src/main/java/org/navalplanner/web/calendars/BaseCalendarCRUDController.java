@@ -266,15 +266,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         return visibility;
     }
 
-    private void reloadCurrentWindow() {
-        if (baseCalendarModel.isEditing()) {
-            Util.reloadBindings(editWindow);
-        } else {
-            Util.reloadBindings(createWindow);
-        }
-        highlightDaysOnCalendar();
-    }
-
     private void reloadDayInformation() {
         if (baseCalendarModel.isEditing()) {
             Util.reloadBindings(editWindow.getFellow("dayInformation"));

@@ -289,12 +289,6 @@ public abstract class BaseCalendarEditionController extends
         return baseCalendarModel.isDerived();
     }
 
-    private boolean isPast(Date date) {
-        LocalDate localDate = new LocalDate(date);
-        LocalDate currentLocalDate = new LocalDate();
-        return localDate.compareTo(currentLocalDate) <= 0;
-    }
-
     public List<Days> getHoursPerDay() {
         return Arrays.asList(Days.values());
     }

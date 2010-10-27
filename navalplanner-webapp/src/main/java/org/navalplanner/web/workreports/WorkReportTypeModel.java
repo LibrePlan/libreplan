@@ -32,7 +32,6 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -69,9 +68,6 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
-
-    @Autowired
-    private ILabelDAO labelDAO;
 
     private WorkReportType workReportType;
 

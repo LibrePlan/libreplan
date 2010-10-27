@@ -42,13 +42,11 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,9 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
         BUSINESS_SPRING_CONFIG_TEST_FILE })
 @Transactional
 public class TaskTest {
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
 
     private static final OrderVersion mockedOrderVersion = mockOrderVersion();
 

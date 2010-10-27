@@ -41,8 +41,6 @@ import org.zkoss.zul.Label;
  */
 public class OrdersTabCreator {
 
-    private final Map<String, String[]> parameters;
-
     public static ITab create(Mode mode,
             OrderCRUDController orderCRUDController, Component breadcrumbs,
             IOrderPlanningGate orderPlanningGate,
@@ -88,7 +86,6 @@ public class OrdersTabCreator {
         this.orderCRUDController = orderCRUDController;
         this.breadcrumbs = breadcrumbs;
         this.orderPlanningGate = orderPlanningGate;
-        this.parameters = parameters;
     }
 
     private ITab build() {

@@ -22,7 +22,6 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -543,15 +542,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    /**
-     * Locates {@link Textbox} in {@link Row} in the specified position
-     * @param row
-     * @return
-     */
-    private Textbox getTextboxInPosition(Row row, Integer position) {
-        return (Textbox) row.getChildren().get(position);
-    }
-
     @Override
     public void goToList() {
         if (workReportModel.isListingQuery()) {
@@ -836,11 +826,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             }
         });
         row.appendChild(date);
-    }
-
-    private String getFormatDate(Date value) {
-        return value != null ? (new SimpleDateFormat("dd/MM/yyyy"))
-                .format((Date) value) : new String("");
     }
 
     /**

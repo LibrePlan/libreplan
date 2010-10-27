@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +28,11 @@ import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.data.Dependency;
-import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
-import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -46,61 +40,6 @@ import org.zkoss.zul.impl.XulElement;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
 public class LimitingDependencyList extends XulElement implements AfterCompose {
-
-    private final class ChangeTypeAction implements
-            ItemAction<LimitingDependencyComponent> {
-        private final DependencyType type;
-
-        private ChangeTypeAction(DependencyType type) {
-            this.type = type;
-        }
-
-        @Override
-        public void onEvent(final LimitingDependencyComponent choosen,
-                Event event) {
-            // context.changeType(choosen.getDependency(), type);
-        }
-    }
-
-    private final class DependencyVisibilityToggler implements
-            PropertyChangeListener {
-        private final Task source;
-        private final Task destination;
-        private final LimitingDependencyComponent dependencyComponent;
-
-        private DependencyVisibilityToggler(Task source, Task destination,
-                LimitingDependencyComponent dependencyComponent) {
-            this.source = source;
-            this.destination = destination;
-            this.dependencyComponent = dependencyComponent;
-        }
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            if (!evt.getPropertyName().equals("visible")) {
-                return;
-            }
-            if (dependencyMustBeVisible() != isDependencyNowVisible()) {
-                toggleDependencyExistence(dependencyMustBeVisible());
-            }
-        }
-
-        void toggleDependencyExistence(boolean visible) {
-            if (visible) {
-                appendChild(dependencyComponent);
-            } else {
-                removeChild(dependencyComponent);
-            }
-        }
-
-        boolean isDependencyNowVisible() {
-            return dependencyComponent.getParent() != null;
-        }
-
-        boolean dependencyMustBeVisible() {
-            return source.isVisible() && destination.isVisible();
-        }
-    }
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 

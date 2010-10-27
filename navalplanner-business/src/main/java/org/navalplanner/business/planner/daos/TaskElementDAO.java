@@ -27,9 +27,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
-import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -45,18 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
         implements ITaskElementDAO {
-
-    @SuppressWarnings("unchecked")
-    private List<GenericDayAssignment> findOrphanedGenericDayAssignments() {
-        return getSession().createCriteria(GenericDayAssignment.class).add(
-                Restrictions.isNull("genericResourceAllocation")).list();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<SpecificDayAssignment> findOrphanedSpecificDayAssignments() {
-        return getSession().createCriteria(SpecificDayAssignment.class).add(
-                Restrictions.isNull("specificResourceAllocation")).list();
-    }
 
     @SuppressWarnings("unchecked")
     @Override

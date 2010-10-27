@@ -39,7 +39,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -153,10 +152,6 @@ public class OrderModelTest {
     private IExternalCompanyDAO externalCompanyDAO;
 
     private Criterion criterion;
-
-    private Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }
 
     private Order createValidOrder() {
         Order order = Order.create();

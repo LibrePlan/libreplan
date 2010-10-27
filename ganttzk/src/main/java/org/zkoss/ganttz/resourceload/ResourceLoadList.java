@@ -49,11 +49,8 @@ public class ResourceLoadList extends HtmlMacroComponent implements
 
     private Map<LoadTimeLine, ResourceLoadComponent> fromTimeLineToComponent = new HashMap<LoadTimeLine, ResourceLoadComponent>();
 
-    private final MutableTreeModel<LoadTimeLine> timelinesTree;
-
     public ResourceLoadList(TimeTracker timeTracker,
             MutableTreeModel<LoadTimeLine> timelinesTree) {
-        this.timelinesTree = timelinesTree;
         zoomListener = adjustTimeTrackerSizeListener();
         timeTracker.addZoomListener(zoomListener);
         LoadTimeLine current = timelinesTree.getRoot();

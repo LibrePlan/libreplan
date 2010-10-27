@@ -45,7 +45,6 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
@@ -82,8 +81,6 @@ public class MachineCRUDController extends GenericForwardComposer {
     private Window editWindow;
 
     private IMachineModel machineModel;
-
-    private IURLHandlerRegistry URLHandlerRegistry;
 
     private OnlyOneVisible visibility;
 

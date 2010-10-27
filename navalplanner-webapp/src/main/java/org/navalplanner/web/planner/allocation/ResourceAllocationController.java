@@ -118,8 +118,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Label allTotalHours;
     private Label allConsolidatedHours;
 
-    private Label allocationSelectedItems;
-
     private Label allTotalResourcesPerDay;
     private Label allConsolidatedResourcesPerDay;
 
@@ -192,10 +190,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                         getCalculationTypeRadio());
             }
         };
-    }
-
-    private Datebox getTaskEndDate() {
-        return taskEndDate;
     }
 
     private CalculationTypeRadio getCalculationTypeRadio() {

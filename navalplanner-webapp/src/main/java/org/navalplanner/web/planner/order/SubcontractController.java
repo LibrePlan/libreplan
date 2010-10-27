@@ -50,8 +50,6 @@ public class SubcontractController extends GenericForwardComposer {
 
     private ISubcontractModel subcontractModel;
 
-    private IContextWithPlannerTask<TaskElement> context;
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -60,7 +58,6 @@ public class SubcontractController extends GenericForwardComposer {
 
     public void init(Task task,
             IContextWithPlannerTask<TaskElement> context) {
-        this.context = context;
         subcontractModel.init(task, context.getTask());
         Util.reloadBindings(tabpanel);
     }

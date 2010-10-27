@@ -44,8 +44,6 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MutableTreeModel;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -155,7 +153,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel, queueListComponent);
-        registerNeededScripts();
     }
 
     public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
@@ -234,16 +231,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
         return toolbar;
-    }
-
-    private void registerNeededScripts() {
-        // getScriptsRegister().register(
-        // ScriptsRequiredByLimitingResourcesPanel.class);
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(

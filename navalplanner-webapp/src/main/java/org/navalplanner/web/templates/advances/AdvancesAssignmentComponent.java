@@ -42,9 +42,9 @@ import org.zkoss.zul.ListitemRenderer;
 public class AdvancesAssignmentComponent extends HtmlMacroComponent {
 
     private OrderElementTemplate template;
-    private IOrderTemplatesModel model;
 
     private ListitemRenderer advancesRenderer = new ListitemRenderer() {
+
         @Override
         public void render(Listitem item, Object data) throws Exception {
             AdvanceAssignmentTemplate assignment = (AdvanceAssignmentTemplate) data;
@@ -91,7 +91,6 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
 
     public void useModel(IOrderTemplatesModel model,
             OrderElementTemplate template) {
-        this.model = model;
         this.template = template;
     }
 

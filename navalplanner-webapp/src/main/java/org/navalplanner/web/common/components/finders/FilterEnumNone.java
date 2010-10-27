@@ -29,13 +29,6 @@ public enum FilterEnumNone implements IFilterEnum {
 
     None("...");
 
-    /**
-     * Forces to mark the string as needing translation
-     */
-    private static String _(String string) {
-        return string;
-    }
-
     private String description;
 
     private FilterEnumNone(String description) {
