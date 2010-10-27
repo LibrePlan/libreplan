@@ -338,26 +338,12 @@ public class GenericResourceAllocation extends
         }
     }
 
-    private class TransientState extends DayAssignmentsState {
+    private class TransientState extends
+            ResourceAllocation<GenericDayAssignment>.TransientState {
         private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
-        private final Set<GenericDayAssignment> genericDayAssignments;
-
-        private IntraDayDate intraDayEnd;
-
         TransientState(Set<GenericDayAssignment> genericDayAssignments) {
-            this.genericDayAssignments = genericDayAssignments;
-        }
-
-        @Override
-        protected Collection<GenericDayAssignment> getUnorderedAssignments() {
-            return genericDayAssignments;
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            genericDayAssignments.removeAll(assignments);
+            super(genericDayAssignments);
         }
 
         @Override
@@ -365,36 +351,11 @@ public class GenericResourceAllocation extends
             each.setGenericResourceAllocation(outerGenericAllocation);
         }
 
-        @Override
-        protected void addAssignments(
-                Collection<? extends GenericDayAssignment> assignments) {
-            genericDayAssignments.addAll(assignments);
+        protected DayAssignmentsState createExplicitlySpecifiedState(
+                Scenario scenario) {
+            return new ExplicitlySpecifiedScenarioState(scenario);
         }
 
-        @Override
-        protected void resetTo(Collection<GenericDayAssignment> assignments) {
-            genericDayAssignments.clear();
-            genericDayAssignments.addAll(assignments);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
-                    scenario);
-            result.resetTo(genericDayAssignments);
-            result.setIntraDayEnd(getIntraDayEnd());
-            return result;
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return intraDayEnd;
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            this.intraDayEnd = intraDayEnd;
-        }
     }
 
     private Set<GenericDayAssignment> getUnorderedForScenario(

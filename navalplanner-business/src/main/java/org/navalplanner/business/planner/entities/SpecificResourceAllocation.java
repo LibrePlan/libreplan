@@ -322,39 +322,12 @@ public class SpecificResourceAllocation extends
         }
     }
 
-    private class TransientState extends DayAssignmentsState {
+    private class TransientState extends
+            ResourceAllocation<SpecificDayAssignment>.TransientState {
         private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
 
-        private final Set<SpecificDayAssignment> specificDaysAssignment;
-
-        private IntraDayDate intraDayEnd;
-
         TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
-            this.specificDaysAssignment = specificDayAssignments;
-        }
-
-        @Override
-        protected void addAssignments(
-                Collection<? extends SpecificDayAssignment> assignments) {
-            specificDaysAssignment.addAll(assignments);
-        }
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
-            return specificDaysAssignment;
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            specificDaysAssignment.removeAll(assignments);
-        }
-
-        @Override
-        protected void resetTo(
-                Collection<SpecificDayAssignment> assignmentsCopied) {
-            specificDaysAssignment.clear();
-            specificDaysAssignment.addAll(assignmentsCopied);
+            super(specificDayAssignments);
         }
 
         @Override
@@ -362,23 +335,9 @@ public class SpecificResourceAllocation extends
             each.setSpecificResourceAllocation(outerSpecificAllocation);
         }
 
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
-                    scenario);
-            result.resetTo(specificDaysAssignment);
-            result.setIntraDayEnd(intraDayEnd);
-            return result;
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return intraDayEnd;
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            this.intraDayEnd = intraDayEnd;
+        protected DayAssignmentsState createExplicitlySpecifiedState(
+                Scenario scenario) {
+            return new ExplicitlySpecifiedScenarioState(scenario);
         }
     }
 

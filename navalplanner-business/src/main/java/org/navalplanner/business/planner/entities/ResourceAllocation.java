@@ -965,6 +965,61 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         protected abstract DayAssignmentsState switchTo(Scenario scenario);
     }
 
+    protected abstract class TransientState extends DayAssignmentsState {
+
+        private final Set<T> assignments;
+
+        private IntraDayDate intraDayEnd;
+
+        TransientState(Set<T> assignments) {
+            this.assignments = new HashSet<T>(assignments);
+        }
+
+        @Override
+        final protected Collection<T> getUnorderedAssignments() {
+            return assignments;
+        }
+
+        @Override
+        final protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            this.assignments.removeAll(assignments);
+        }
+
+        @Override
+        final protected void addAssignments(Collection<? extends T> assignments) {
+            this.assignments.addAll(assignments);
+        }
+
+        @Override
+        final protected void resetTo(Collection<T> assignments) {
+            this.assignments.clear();
+            this.assignments.addAll(assignments);
+        }
+
+        @Override
+        final IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
+        }
+
+        @Override
+        public final void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
+        }
+
+        @Override
+        final protected DayAssignmentsState switchTo(Scenario scenario) {
+            DayAssignmentsState result = createExplicitlySpecifiedState(scenario);
+            result.resetTo(getUnorderedAssignments());
+            result.setIntraDayEnd(getIntraDayEnd());
+            return result;
+        }
+
+        protected abstract DayAssignmentsState createExplicitlySpecifiedState(
+                Scenario scenario);
+
+    }
+
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
      * order to return the assignments for that scenario. This state doesn't
