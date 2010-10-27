@@ -82,8 +82,9 @@ public class DescriptionValue implements INewObject {
     }
 
     public void setValue(String value) {
-        if (value == null)
+        if (value == null) {
             value = "";
+        }
         this.value = value;
     }
 }

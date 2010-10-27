@@ -132,10 +132,11 @@ public class ResourcesCostCategoryAssignment extends IntegrationEntity {
     public void setResource(Resource resource) {
         Resource oldResource = this.resource;
         this.resource = resource;
-        if(oldResource!=null)
+        if (oldResource != null) {
             oldResource.removeResourcesCostCategoryAssignment(this);
-        if(resource!=null &&
-                !resource.getResourcesCostCategoryAssignments().contains(this)) {
+        }
+        if (resource != null
+                && !resource.getResourcesCostCategoryAssignments().contains(this)) {
             resource.addResourcesCostCategoryAssignment(this);
         }
     }

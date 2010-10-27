@@ -109,14 +109,16 @@ public class CostCategory extends IntegrationEntity {
 
     public void addHourCost(HourCost hourCost) {
         hourCosts.add(hourCost);
-        if(hourCost.getCategory()!=this)
+        if (hourCost.getCategory() != this) {
             hourCost.setCategory(this);
+        }
     }
 
     public void removeHourCost(HourCost hourCost) {
         hourCosts.remove(hourCost);
-        if(hourCost.getCategory()==this)
+        if (hourCost.getCategory() == this) {
             hourCost.setCategory(null);
+        }
     }
 
     public boolean canAddHourCost(HourCost hourCost) {

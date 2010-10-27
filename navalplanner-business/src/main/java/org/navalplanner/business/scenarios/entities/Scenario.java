@@ -237,19 +237,23 @@ public class Scenario extends BaseEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || isNewObject())
+        }
+        if (obj == null || isNewObject()) {
             return false;
+        }
         if (!(obj instanceof Scenario)) {
             return false;
         }
         Scenario other = (Scenario) obj;
         if (getId() == null) {
-            if (other.getId() != null)
+            if (other.getId() != null) {
                 return false;
-        } else if (!getId().equals(other.getId()))
+            }
+        } else if (!getId().equals(other.getId())) {
             return false;
+        }
         return true;
     }
 

@@ -265,12 +265,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private boolean showInvalidProperty() {
         if (getWorkReport() != null) {
-            if (!validateWorkReport())
+            if (!validateWorkReport()) {
                 return true;
+            }
             for (WorkReportLine workReportLine : getWorkReport()
                     .getWorkReportLines()) {
-                if (!validateWorkReportLine(workReportLine))
+                if (!validateWorkReportLine(workReportLine)) {
                     return true;
+                }
             }
         }
         return false;

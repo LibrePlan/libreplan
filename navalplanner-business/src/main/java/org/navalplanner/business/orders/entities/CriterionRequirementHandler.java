@@ -100,8 +100,9 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
         List<T> listOrderElements = getAllChildren(orderElement);
         listOrderElements.add(orderElement);
         for (T element : listOrderElements) {
-            if (existSameCriterionRequirement(element, newRequirement))
+            if (existSameCriterionRequirement(element, newRequirement)) {
                 return false;
+            }
         }
         return true;
     }
@@ -125,8 +126,9 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
             return true;
         }
         for (HoursGroup hoursGroup : getHoursGroups(orderLine)) {
-            if (hoursGroup.existSameCriterionRequirement(newRequirement))
+            if (hoursGroup.existSameCriterionRequirement(newRequirement)) {
                 return true;
+            }
         }
         return false;
     }
@@ -137,8 +139,9 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
             T orderElement, CriterionRequirement newRequirement) {
         Criterion criterion = newRequirement.getCriterion();
         for (CriterionRequirement requirement : getCriterionRequirements(orderElement)) {
-            if (requirement.getCriterion().equals(criterion))
+            if (requirement.getCriterion().equals(criterion)) {
                 return true;
+            }
         }
         return false;
     }

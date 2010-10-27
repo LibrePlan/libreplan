@@ -1006,8 +1006,9 @@ public abstract class Resource extends IntegrationEntity {
 
     public void addResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignments.add(assignment);
-        if(assignment.getResource()!=this)
+        if (assignment.getResource() != this) {
             assignment.setResource(this);
+        }
     }
 
     public void addUnvalidatedResourcesCostCategoryAssignment(
@@ -1019,8 +1020,9 @@ public abstract class Resource extends IntegrationEntity {
 
     public void removeResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignments.remove(assignment);
-        if(assignment.getResource()==this)
+        if (assignment.getResource() == this) {
             assignment.setResource(null);
+        }
     }
 
     @AssertTrue(message="Some criterion satisfactions overlap in time")

@@ -66,8 +66,9 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         c.add(Restrictions.eq("name", name));
 
         ExternalCompany found = (ExternalCompany) c.uniqueResult();
-        if (found == null)
+        if (found == null) {
             throw new InstanceNotFoundException(name, ExternalCompany.class.getName());
+        }
 
         return found;
     }
@@ -101,8 +102,9 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         c.add(Restrictions.eq("nif", nif));
 
         ExternalCompany found = (ExternalCompany) c.uniqueResult();
-        if (found == null)
+        if (found == null) {
             throw new InstanceNotFoundException(nif, ExternalCompany.class.getName());
+        }
 
         return found;
     }

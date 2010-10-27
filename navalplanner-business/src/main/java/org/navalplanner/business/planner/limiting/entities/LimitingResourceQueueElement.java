@@ -221,10 +221,12 @@ public class LimitingResourceQueueElement extends BaseEntity {
     }
 
     public void remove(LimitingResourceQueueDependency d) {
-        if (dependenciesAsOrigin.contains(d))
+        if (dependenciesAsOrigin.contains(d)) {
             dependenciesAsOrigin.remove(d);
-        if (dependenciesAsDestiny.contains(d))
+        }
+        if (dependenciesAsDestiny.contains(d)) {
             dependenciesAsDestiny.remove(d);
+        }
     }
 
     public Set<LimitingResourceQueueDependency> getDependenciesAsOrigin() {

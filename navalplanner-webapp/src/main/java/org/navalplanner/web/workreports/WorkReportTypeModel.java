@@ -320,10 +320,11 @@ public class WorkReportTypeModel implements IWorkReportTypeModel {
     }
 
     private PositionInWorkReportEnum getPosition(boolean sharedByLines) {
-        if (sharedByLines)
+        if (sharedByLines) {
             return PositionInWorkReportEnum.HEADING;
-        else
+        } else {
             return PositionInWorkReportEnum.LINE;
+        }
     }
 
     @Override

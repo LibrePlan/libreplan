@@ -201,8 +201,9 @@ public class OrderElementTest {
         try {
             InvalidValue[] invalidValues =
                     orderElementValidator.getInvalidValues(orderElement);
-            if (invalidValues.length > 0)
+            if (invalidValues.length > 0) {
                 throw new ValidationException(invalidValues);
+            }
         } catch (ValidationException e) {
              fail("It not should throw an exception");
         }
@@ -216,8 +217,9 @@ public class OrderElementTest {
         try {
             InvalidValue[] invalidValues =
                     orderElementValidator.getInvalidValues(orderElement);
-            if (invalidValues.length > 0)
+            if (invalidValues.length > 0) {
                 throw new ValidationException(invalidValues);
+            }
         } catch (ValidationException e) {
             fail("It no should throw an exception");
         }

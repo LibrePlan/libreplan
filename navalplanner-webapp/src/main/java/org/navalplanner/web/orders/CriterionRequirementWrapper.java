@@ -105,7 +105,9 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     public String getCriterionAndType() {
-        if(criterionWithItsType == null) return criterionAndType;
+        if (criterionWithItsType == null) {
+            return criterionAndType;
+        }
         return criterionWithItsType.getNameAndType();
     }
 

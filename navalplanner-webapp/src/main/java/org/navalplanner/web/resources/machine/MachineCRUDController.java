@@ -298,8 +298,9 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private String showInvalidValues(ValidationException e) {
         String result = "";
-        for (InvalidValue each : e.getInvalidValues())
+        for (InvalidValue each : e.getInvalidValues()) {
             result = result + each.getMessage();
+        }
         return result;
     }
 

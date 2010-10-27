@@ -126,10 +126,12 @@ public class HourCost extends IntegrationEntity {
     public void setCategory(CostCategory category) {
         CostCategory oldCategory = this.category;
         this.category = category;
-        if(oldCategory!=null)
+        if (oldCategory != null) {
             oldCategory.removeHourCost(this);
-        if(category!=null && !category.getHourCosts().contains(this))
+        }
+        if (category != null && !category.getHourCosts().contains(this)) {
             category.addHourCost(this);
+        }
     }
 
     public boolean isActiveAtDate(LocalDate date) {

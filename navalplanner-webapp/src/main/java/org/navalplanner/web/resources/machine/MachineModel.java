@@ -208,8 +208,9 @@ public class MachineModel implements IMachineModel {
     @Transactional(readOnly = true)
     public List<MachineWorkersConfigurationUnit> getConfigurationUnitsOfMachine() {
         ArrayList<MachineWorkersConfigurationUnit> elements = new ArrayList<MachineWorkersConfigurationUnit>();
-        if ( machine != null )
+        if (machine != null) {
             elements.addAll(machine.getConfigurationUnits());
+        }
         return elements;
     }
 

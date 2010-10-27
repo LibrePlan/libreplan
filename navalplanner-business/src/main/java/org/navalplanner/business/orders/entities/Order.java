@@ -434,19 +434,23 @@ public class Order extends OrderLineGroup {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null || isNewObject())
+        }
+        if (obj == null || isNewObject()) {
             return false;
+        }
         if (!(obj instanceof Order)) {
             return false;
         }
         Order other = (Order) obj;
         if (getId() == null) {
-            if (other.getId() != null)
+            if (other.getId() != null) {
                 return false;
-        } else if (!getId().equals(other.getId()))
+            }
+        } else if (!getId().equals(other.getId())) {
             return false;
+        }
         return true;
     }
 

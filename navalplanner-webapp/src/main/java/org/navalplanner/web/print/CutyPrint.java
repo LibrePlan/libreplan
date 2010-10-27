@@ -334,8 +334,9 @@ public class CutyPrint {
         }
         if (generatedCSS != null) {
             return generatedCSS.getAbsolutePath();
-        } else
+        } else {
             return srFile;
+        }
     }
 
     private static String widthForTaskNamesColumnCSS(

@@ -120,8 +120,9 @@ public class TaskQualityFormItem implements INewObject {
     @SuppressWarnings("unused")
     @AssertTrue(message = "percentage should be greater than 0% and less than 100%")
     public boolean checkConstraintQualityFormItemPercentage() {
-        if (percentage == null)
+        if (percentage == null) {
             return true;
+        }
         if ((percentage.compareTo(new BigDecimal(100).setScale(2)) <= 0)
                 && (percentage.compareTo(new BigDecimal(0).setScale(2)) > 0)) {
             return true;

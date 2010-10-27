@@ -364,8 +364,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedHoursToOrderElementController assignedHoursController;
 
     public void setupAssignedHoursToOrderElementController() throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         if (assignedHoursController == null) {
@@ -382,8 +383,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
     public void setupManageOrderElementAdvancesController() throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         Component orderElementAdvances = editWindow
@@ -404,8 +406,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedLabelsToOrderElementController()
     throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         if (assignedLabelsController == null) {
@@ -422,8 +425,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedCriterionRequirementsToOrderElementController()
             throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         if (assignedCriterionRequirementController == null) {
@@ -444,8 +448,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void setupAssignedMaterialsToOrderElementController()
             throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         if (assignedMaterialsController == null) {
@@ -462,8 +467,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
     public void setupAssignedTaskQualityFormsToOrderElementController() throws Exception {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         Component orderElementTaskQualityForms = editWindow
@@ -482,8 +488,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     private OrderAuthorizationController orderAuthorizationController;
 
     public void setupOrderAuthorizationController() {
-        if (!confirmLastTab())
+        if (!confirmLastTab()) {
             return;
+        }
         setCurrentTab();
 
         Component orderElementAuthorizations = editWindow
@@ -1220,10 +1227,12 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void showOrderElementFilter() {
-        if (orderFilter != null)
+        if (orderFilter != null) {
             orderFilter.setVisible(false);
-        if (orderElementFilter != null)
+        }
+        if (orderElementFilter != null) {
             orderElementFilter.setVisible(true);
+        }
     }
 
     public void showCreateButtons(boolean showCreate) {
