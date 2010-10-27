@@ -27,12 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
-import org.navalplanner.business.common.entities.EntitySequence;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -84,17 +81,7 @@ public abstract class IntegrationEntityModel implements IIntegrationEntityModel 
     }
 
     protected Integer getNumberOfDigitsCode() {
-        int numberOfDigits = 5;
-        try {
-            EntitySequence entitySequence = getEntitySequenceDAO()
-                    .getActiveEntitySequence(getEntityName());
-            numberOfDigits = entitySequence.getNumberOfDigits();
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        }
-        return numberOfDigits;
+        return entitySequenceDAO.getNumberOfDigitsCode(getEntityName());
     }
 
     @Override

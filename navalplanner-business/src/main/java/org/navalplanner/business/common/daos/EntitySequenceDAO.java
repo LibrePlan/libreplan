@@ -96,6 +96,10 @@ public class EntitySequenceDAO extends
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String getNextEntityCode(EntityNameEnum entityName) {
+        return getNextEntityCodeWithoutTransaction(entityName);
+    }
+
+    public String getNextEntityCodeWithoutTransaction(EntityNameEnum entityName) {
         for (int i = 0; i < 5; i++) {
             try {
                 String code;
@@ -139,4 +143,17 @@ public class EntitySequenceDAO extends
         }
     }
 
+    @Override
+    public Integer getNumberOfDigitsCode(EntityNameEnum entityName) {
+        int numberOfDigits = 5;
+        try {
+            EntitySequence entitySequence = getActiveEntitySequence(entityName);
+            numberOfDigits = entitySequence.getNumberOfDigits();
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (NonUniqueResultException e) {
+            throw new RuntimeException(e);
+        }
+        return numberOfDigits;
+    }
 }

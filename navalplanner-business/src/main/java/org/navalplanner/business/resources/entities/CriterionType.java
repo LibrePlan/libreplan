@@ -524,4 +524,14 @@ public class CriterionType extends IntegrationEntity implements
         this.lastCriterionSequenceCode++;
     }
 
+    public void setGenerateCode(Criterion criterion, int numberOfDigits) {
+        if ((criterion.getCode() == null) || (criterion.getCode().isEmpty())
+                || (!criterion.getCode().startsWith(getCode()))) {
+            incrementLastCriterionSequenceCode();
+            String criterionCode = EntitySequence.formatValue(numberOfDigits,
+                    getLastCriterionSequenceCode());
+            criterion.setCode(getCode()
+                    + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
+        }
+    }
 }

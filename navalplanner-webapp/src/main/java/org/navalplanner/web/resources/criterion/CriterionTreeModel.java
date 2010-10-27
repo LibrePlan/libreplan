@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.InvalidValue;
-import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -450,22 +449,12 @@ public class CriterionTreeModel implements ICriterionTreeModel {
                     || (criterion.getCode().isEmpty())
                     || (!criterion.getCode()
                             .startsWith(criterionType.getCode()))) {
-                setGenerateCode(criterion, numberOfDigits);
+                criterionType.setGenerateCode(criterion, numberOfDigits);
             }
             regenerateCodeForUnsavedCriteria(criterionDTO.getChildren(),
                     numberOfDigits);
         }
     }
 
-    private void setGenerateCode(Criterion criterion, int numberOfDigits) {
-        if ((criterion.getCode() == null) || (criterion.getCode().isEmpty())
-                || (!criterion.getCode().startsWith(criterionType.getCode()))) {
-            criterionType.incrementLastCriterionSequenceCode();
-            String criterionCode = EntitySequence.formatValue(numberOfDigits,
-                    criterionType.getLastCriterionSequenceCode());
-            criterion.setCode(criterionType.getCode()
-                    + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
-        }
-    }
 
 }

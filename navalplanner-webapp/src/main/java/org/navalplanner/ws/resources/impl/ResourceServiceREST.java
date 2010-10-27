@@ -33,13 +33,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.NonUniqueResultException;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
-import org.navalplanner.business.common.entities.EntitySequence;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.daos.IMachineDAO;
@@ -185,17 +182,7 @@ public class ResourceServiceREST
     }
 
     private Integer getNumberOfDigitsCode(EntityNameEnum entityName) {
-        int numberOfDigits = 5;
-        try {
-            EntitySequence entitySequence = entitySequenceDAO
-                    .getActiveEntitySequence(entityName);
-            numberOfDigits = entitySequence.getNumberOfDigits();
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (NonUniqueResultException e) {
-            throw new RuntimeException(e);
-        }
-        return numberOfDigits;
+        return entitySequenceDAO.getNumberOfDigitsCode(entityName);
     }
 
 }

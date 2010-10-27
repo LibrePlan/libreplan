@@ -51,7 +51,11 @@ public interface IEntitySequenceDAO extends IGenericDAO<EntitySequence, Long> {
 
     String getNextEntityCode(EntityNameEnum entityName);
 
+    String getNextEntityCodeWithoutTransaction(EntityNameEnum entityName);
+
     boolean existOtherActiveSequenceByEntityNameForNewObject(
             EntitySequence entitySequence);
+
+    Integer getNumberOfDigitsCode(EntityNameEnum entityName);
 
 }
