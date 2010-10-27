@@ -415,7 +415,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * Constructor for hibernate. Do not use!
      */
     public ResourceAllocation() {
-
+        this.assignmentsState = buildFromDBState();
     }
 
     /**
@@ -431,11 +431,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public void switchToScenario(Scenario scenario) {
         Validate.notNull(scenario);
         currentScenario = scenario;
-        scenarioChangedTo(currentScenario);
+        assignmentsState = assignmentsState.switchTo(scenario);
         switchDerivedAllocationsTo(scenario);
     }
-
-    protected abstract void scenarioChangedTo(Scenario scenario);
 
     private void switchDerivedAllocationsTo(Scenario scenario) {
         for (DerivedAllocation each : derivedAllocations) {
@@ -464,6 +462,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(task);
         this.task = task;
         this.assignmentFunction = assignmentFunction;
+        this.assignmentsState = buildInitialTransientState();
     }
 
     protected ResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
@@ -857,11 +856,36 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public ResourceAllocation<T> copy(Scenario scenario) {
         Validate.notNull(scenario);
         ResourceAllocation<T> copy = createCopy(scenario);
+        copy.assignmentsState = copy.toTransientStateWithInitial(
+                getUnorderedFor(scenario), getIntraDayEndFor(scenario));
         copy.resourcesPerDay = resourcesPerDay;
         copy.originalTotalAssignment = originalTotalAssignment;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         return copy;
+    }
+
+    private DayAssignmentsState toTransientStateWithInitial(
+            Collection<? extends T> initialAssignments, IntraDayDate end) {
+        TransientState result = new TransientState(initialAssignments);
+        result.setIntraDayEnd(end);
+        return result;
+    }
+
+    private Set<T> getUnorderedFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return new HashSet<T>();
+        }
+        return container.getDayAssignments();
+    }
+
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayEnd();
     }
 
     abstract ResourceAllocation<T> createCopy(Scenario scenario);
@@ -883,6 +907,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public int getAssignedHours() {
         return DayAssignment.sum(getAssignments()).roundToHours();
+    }
+
+    @OnCopy(Strategy.IGNORE)
+    private DayAssignmentsState assignmentsState;
+
+    protected DayAssignmentsState getDayAssignmentsState() {
+        return assignmentsState;
+    }
+
+    private TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<T>());
+    }
+
+    private DayAssignmentsState buildFromDBState() {
+        return new NoExplicitlySpecifiedScenario();
     }
 
     protected abstract class DayAssignmentsState {
@@ -974,18 +1013,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
     }
 
-    final protected TransientState buildInitialTransientState() {
-        return new TransientState(new HashSet<T>());
-    }
-
-    final protected DayAssignmentsState toTransientStateWithInitial(
-            Collection<? extends T> initialAssignments,
-            IntraDayDate end) {
-        TransientState result = new TransientState(initialAssignments);
-        result.setIntraDayEnd(end);
-        return result;
-    }
-
     protected abstract void setItselfAsParentFor(T dayAssignment);
 
     protected class TransientState extends DayAssignmentsState {
@@ -1043,6 +1070,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         container = retrieveOrCreateContainerFor(scenario);
         return new ExplicitlySpecifiedScenarioState(container);
     }
+
+    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(
+            Scenario scenario);
 
     protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(
             Scenario scenario);
@@ -1155,8 +1185,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
     }
-
-    protected abstract DayAssignmentsState getDayAssignmentsState();
 
     public int getConsolidatedHours() {
         return DayAssignment.sum(getConsolidatedAssignments()).roundToHours();

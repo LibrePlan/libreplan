@@ -49,7 +49,6 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -104,18 +103,13 @@ public class SpecificResourceAllocation extends
                 resourcesPerDay, task));
     }
 
-    /**
-     * Constructor for hibernate. Do not use!
-     */
     public SpecificResourceAllocation() {
-        state = buildFromDBState();
     }
 
     @Override
     protected SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
             Scenario scenario) {
-        Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
-        SpecificDayAssignmentsContainer retrieved = containers.get(scenario);
+        SpecificDayAssignmentsContainer retrieved = retrieveContainerFor(scenario);
         if (retrieved != null) {
             return retrieved;
         }
@@ -125,19 +119,20 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
+    @Override
+    protected SpecificDayAssignmentsContainer retrieveContainerFor(
+            Scenario scenario) {
+        Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
+        return containers.get(scenario);
+    }
+
     private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
             Task task) {
         super(resourcesPerDay, task);
-        state = buildInitialTransientState();
     }
 
     private SpecificResourceAllocation(Task task) {
         super(task);
-        state = buildInitialTransientState();
-    }
-
-    private DayAssignmentsState buildFromDBState() {
-        return new NoExplicitlySpecifiedScenario();
     }
 
     @NotNull
@@ -230,8 +225,6 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.state = result.toTransientStateWithInitial(
-                getUnorderedFor(scenario), getIntraDayEndFor(scenario));
         result.resource = getResource();
         return result;
     }
@@ -269,28 +262,6 @@ public class SpecificResourceAllocation extends
             return new HashSet<SpecificDayAssignment>();
         }
         return container.getDayAssignments();
-    }
-
-    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
-        SpecificDayAssignmentsContainer container = containersByScenario().get(
-                scenario);
-        if (container == null) {
-            return null;
-        }
-        return container.getIntraDayEnd();
-    }
-
-    @OnCopy(Strategy.IGNORE)
-    private DayAssignmentsState state;
-
-    @Override
-    protected void scenarioChangedTo(Scenario scenario) {
-        this.state = getDayAssignmentsState().switchTo(scenario);
-    }
-
-    @Override
-    protected ResourceAllocation<SpecificDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
-        return state;
     }
 
     @Override

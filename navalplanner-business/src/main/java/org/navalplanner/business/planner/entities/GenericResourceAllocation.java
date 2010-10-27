@@ -51,7 +51,6 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -128,7 +127,6 @@ public class GenericResourceAllocation extends
      * Constructor for Hibernate. DO NOT USE!
      */
     public GenericResourceAllocation() {
-        this.assignmentsState = buildFromDBState();
     }
 
     public static GenericResourceAllocation create(Task task) {
@@ -163,14 +161,12 @@ public class GenericResourceAllocation extends
     private GenericResourceAllocation(Task task) {
         super(task);
         this.criterions = task.getCriterions();
-        this.assignmentsState = buildInitialTransientState();
     }
 
     @Override
     protected GenericDayAssignmentsContainer retrieveOrCreateContainerFor(
             Scenario scenario) {
-        Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
-        GenericDayAssignmentsContainer retrieved = containers.get(scenario);
+        GenericDayAssignmentsContainer retrieved = retrieveContainerFor(scenario);
         if (retrieved != null) {
             return retrieved;
         }
@@ -180,8 +176,11 @@ public class GenericResourceAllocation extends
         return result;
     }
 
-    private DayAssignmentsState buildFromDBState() {
-        return new NoExplicitlySpecifiedScenario();
+    @Override
+    protected GenericDayAssignmentsContainer retrieveContainerFor(
+            Scenario scenario) {
+        Map<Scenario, GenericDayAssignmentsContainer> containers = containersByScenario();
+        return containers.get(scenario);
     }
 
     private Map<Scenario, GenericDayAssignmentsContainer> containersByScenario() {
@@ -287,38 +286,6 @@ public class GenericResourceAllocation extends
         dayAssignment.setGenericResourceAllocation(this);
     }
 
-    private Set<GenericDayAssignment> getUnorderedForScenario(
-            Scenario scenario) {
-        GenericDayAssignmentsContainer container = containersByScenario()
-                .get(scenario);
-        if (container == null) {
-            return new HashSet<GenericDayAssignment>();
-        }
-        return container.getDayAssignments();
-    }
-
-    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
-        GenericDayAssignmentsContainer container = containersByScenario().get(
-                scenario);
-        if (container == null) {
-            return null;
-        }
-        return container.getIntraDayEnd();
-    }
-
-    @OnCopy(Strategy.IGNORE)
-    private DayAssignmentsState assignmentsState;
-
-    @Override
-    protected void scenarioChangedTo(Scenario scenario) {
-        assignmentsState = getDayAssignmentsState().switchTo(scenario);
-    }
-
-    @Override
-    protected ResourceAllocation<GenericDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
-        return assignmentsState;
-    }
-
     @Override
     protected Class<GenericDayAssignment> getDayAssignmentType() {
         return GenericDayAssignment.class;
@@ -348,8 +315,6 @@ public class GenericResourceAllocation extends
     @Override
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation.assignmentsState = allocation.toTransientStateWithInitial(
-                getUnorderedForScenario(scenario), getIntraDayEndFor(scenario));
         allocation.criterions = new HashSet<Criterion>(criterions);
         allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
                 this);
