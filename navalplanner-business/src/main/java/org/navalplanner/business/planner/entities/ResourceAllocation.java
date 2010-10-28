@@ -425,12 +425,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public abstract List<Resource> getAssociatedResources();
 
-    @OnCopy(Strategy.IGNORE)
-    private Scenario currentScenario;
-
     public void switchToScenario(Scenario scenario) {
         Validate.notNull(scenario);
-        currentScenario = scenario;
         assignmentsState = assignmentsState.switchTo(scenario);
         switchDerivedAllocationsTo(scenario);
     }
@@ -1095,10 +1091,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         protected final void removeAssignments(
                 List<? extends DayAssignment> assignments) {
-            modificationsNotAllowed();
-        }
-
-        protected final void setParentFor(T each) {
             modificationsNotAllowed();
         }
 
