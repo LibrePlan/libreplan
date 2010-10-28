@@ -933,6 +933,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         /**
+         * It can be null. It allows to mark that the allocation is started in a
+         * point within a day instead of the start of the day
+         */
+        abstract IntraDayDate getIntraDayStart();
+
+        /**
+         * Set a new intraDayStart.
+         *
+         * @param intraDayStart
+         *            it can be <code>null</code>
+         * @see getIntraDayStart
+         */
+        public abstract void setIntraDayStart(IntraDayDate intraDayStart);
+
+
+        /**
          * It can be null. It allows to mark that the allocation is finished in
          * a point within a day instead of taking the whole day
          */
@@ -1015,6 +1031,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private final Set<T> assignments;
 
+        private IntraDayDate intraDayStart;
+
         private IntraDayDate intraDayEnd;
 
         TransientState(Collection<? extends T> assignments) {
@@ -1041,6 +1059,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         final protected void resetTo(Collection<T> assignments) {
             this.assignments.clear();
             this.assignments.addAll(assignments);
+        }
+
+        @Override
+        public IntraDayDate getIntraDayStart() {
+            return intraDayStart;
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            this.intraDayStart = intraDayStart;
         }
 
         @Override
@@ -1084,11 +1112,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             DayAssignmentsState {
 
         @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            modificationsNotAllowed();
-        }
-
-        @Override
         protected final void removeAssignments(
                 List<? extends DayAssignment> assignments) {
             modificationsNotAllowed();
@@ -1125,8 +1148,25 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return Registry.getScenarioManager().getCurrent();
         }
 
+        @Override
+        IntraDayDate getIntraDayStart() {
+            return retrieveContainerFor(currentScenario()).getIntraDayStart();
+        }
+
+        @Override
         IntraDayDate getIntraDayEnd() {
-            return retrieveOrCreateContainerFor(currentScenario()).getIntraDayEnd();
+            return retrieveOrCreateContainerFor(currentScenario())
+                    .getIntraDayEnd();
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            modificationsNotAllowed();
         }
 
     }
@@ -1160,6 +1200,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         protected void resetTo(Collection<T> assignmentsCopied) {
             container.resetTo(assignmentsCopied);
+        }
+
+        @Override
+        IntraDayDate getIntraDayStart() {
+            return container.getIntraDayStart();
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            container.setIntraDayStart(intraDayStart);
         }
 
         @Override
@@ -1277,6 +1327,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public IntraDayDate getIntraDayStartDate() {
+        IntraDayDate intraDayStart = getDayAssignmentsState()
+                .getIntraDayStart();
+        if (intraDayStart != null) {
+            return intraDayStart;
+        }
         return task.getIntraDayStartDate();
     }
 
