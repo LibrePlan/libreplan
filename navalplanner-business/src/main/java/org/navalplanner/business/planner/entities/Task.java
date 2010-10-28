@@ -359,22 +359,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     }
 
-    public void mergeAllocation(Scenario scenario,
-            CalculatedValue calculatedValue,
-            AggregateOfResourceAllocations aggregate,
-            List<ResourceAllocation<?>> newAllocations,
-            List<ModifiedAllocation> modifications,
-            Collection<? extends ResourceAllocation<?>> toRemove) {
-        if (aggregate.isEmpty()) {
-            return;
-        }
-        final IntraDayDate start = aggregate.getStart();
-        final IntraDayDate end = aggregate.getEnd();
-        mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
-                modifications, toRemove);
-    }
-
-    private void mergeAllocation(Scenario scenario, final IntraDayDate start,
+    public void mergeAllocation(Scenario scenario, final IntraDayDate start,
             final IntraDayDate end,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,

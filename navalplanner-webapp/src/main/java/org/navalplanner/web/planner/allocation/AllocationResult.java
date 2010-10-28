@@ -130,7 +130,12 @@ public class AllocationResult {
 
     public void applyTo(Scenario scenario, Task task) {
         List<ModifiedAllocation> modified = getModified();
-        task.mergeAllocation(scenario, getCalculatedValue(), aggregate,
+        if (aggregate.isEmpty()) {
+            return;
+        }
+        final IntraDayDate start = task.getIntraDayStartDate();
+        final IntraDayDate end = aggregate.getEnd();
+        task.mergeAllocation(scenario, start, end, getCalculatedValue(),
                 getNew(), modified, getNotModified(originals(modified)));
     }
 
