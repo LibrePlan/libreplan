@@ -57,6 +57,11 @@ public class GenericDayAssignmentsContainer extends BaseEntity implements
     /**
      * It can be <code>null</code>
      */
+    private IntraDayDate intraDayStart;
+
+    /**
+     * It can be <code>null</code>
+     */
     private IntraDayDate intraDayEnd;
 
     private GenericDayAssignmentsContainer(GenericResourceAllocation resourceAllocation,
@@ -104,6 +109,14 @@ public class GenericDayAssignmentsContainer extends BaseEntity implements
     private Set<GenericDayAssignment> copyToThisContainer(
             Collection<? extends GenericDayAssignment> assignments) {
         return GenericDayAssignment.copy(this, assignments);
+    }
+
+    public IntraDayDate getIntraDayStart() {
+        return intraDayStart;
+    }
+
+    public void setIntraDayStart(IntraDayDate intraDayStart) {
+        this.intraDayStart = intraDayStart;
     }
 
     public IntraDayDate getIntraDayEnd() {

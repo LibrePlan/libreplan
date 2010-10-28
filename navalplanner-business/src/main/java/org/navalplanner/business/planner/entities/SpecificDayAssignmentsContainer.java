@@ -57,6 +57,11 @@ public class SpecificDayAssignmentsContainer extends BaseEntity implements
     /**
      * It can be <code>null</code>
      */
+    private IntraDayDate intraDayStart;
+
+    /**
+     * It can be <code>null</code>
+     */
     private IntraDayDate intraDayEnd;
 
     @Valid
@@ -109,6 +114,16 @@ public class SpecificDayAssignmentsContainer extends BaseEntity implements
     private Set<SpecificDayAssignment> copyToThisContainer(
             Collection<? extends SpecificDayAssignment> assignments) {
         return SpecificDayAssignment.copy(this, assignments);
+    }
+
+    @Override
+    public IntraDayDate getIntraDayStart() {
+        return intraDayStart;
+    }
+
+    @Override
+    public void setIntraDayStart(IntraDayDate intraDayStart) {
+        this.intraDayStart = intraDayStart;
     }
 
     @Override

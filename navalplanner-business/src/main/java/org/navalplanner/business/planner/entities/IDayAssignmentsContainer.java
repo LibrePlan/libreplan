@@ -43,6 +43,10 @@ public interface IDayAssignmentsContainer<T extends DayAssignment> {
 
     void resetTo(Collection<T> assignments);
 
+    IntraDayDate getIntraDayStart();
+
+    void setIntraDayStart(IntraDayDate intraDayStart);
+
     IntraDayDate getIntraDayEnd();
 
     void setIntraDayEnd(IntraDayDate intraDayEnd);

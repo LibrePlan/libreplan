@@ -88,6 +88,13 @@
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
 
+        <component name="intraDayStart" class="org.navalplanner.business.workingday.IntraDayDate">
+            <property name="date" column="startDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationStartInFirstDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
+
         <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
             <property name="date" column="endDate"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
@@ -115,6 +122,13 @@
         -->
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
+
+        <component name="intraDayStart" class="org.navalplanner.business.workingday.IntraDayDate">
+            <property name="date" column="startDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationStartInFirstDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
 
         <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
             <property name="date" column="endDate"
