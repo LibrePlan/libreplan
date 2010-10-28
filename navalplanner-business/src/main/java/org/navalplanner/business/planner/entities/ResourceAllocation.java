@@ -924,7 +924,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new NoExplicitlySpecifiedScenario();
     }
 
-    protected abstract class DayAssignmentsState {
+    abstract class DayAssignmentsState {
 
         private List<T> dayAssignmentsOrdered = null;
 
@@ -1015,7 +1015,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected abstract void setItselfAsParentFor(T dayAssignment);
 
-    protected class TransientState extends DayAssignmentsState {
+    private class TransientState extends DayAssignmentsState {
 
         private final Set<T> assignments;
 
@@ -1084,7 +1084,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * is changed since the assignments are cached and the assignments for the
      * previous one would be returned<br />
      */
-    protected class NoExplicitlySpecifiedScenario extends
+    private class NoExplicitlySpecifiedScenario extends
             DayAssignmentsState {
 
         @Override
@@ -1139,7 +1139,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    protected class ExplicitlySpecifiedScenarioState extends
+    private class ExplicitlySpecifiedScenarioState extends
             DayAssignmentsState {
 
         private final IDayAssignmentsContainer<T> container;
