@@ -592,10 +592,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             };
         }
 
+        @Override
+        public IAllocateHoursOnInterval fromEndUntil(final LocalDate start) {
+            return new IAllocateHoursOnInterval() {
+
+                @Override
+                public void allocateHours(int hours) {
+                    allocate(IntraDayDate.startOfDay(start),
+                            task.getIntraDayEndDate(), hours(hours));
+                }
+            };
+        }
+
         private void allocate(LocalDate end, EffortDuration durationToAssign) {
             IntraDayDate startInclusive = getStartAfterConsolidated();
+            IntraDayDate endExclusive = IntraDayDate.startOfDay(end);
+            allocate(startInclusive, endExclusive, durationToAssign);
+        }
+
+        private void allocate(IntraDayDate startInclusive,
+                IntraDayDate endExclusive, EffortDuration durationToAssign) {
             List<T> assignmentsCreated = createAssignments(startInclusive,
-                    IntraDayDate.startOfDay(end), durationToAssign);
+                    endExclusive, durationToAssign);
             resetAssignmentsTo(assignmentsCreated);
             updateResourcesPerDay();
         }

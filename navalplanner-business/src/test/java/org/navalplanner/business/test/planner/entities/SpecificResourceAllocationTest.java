@@ -306,6 +306,17 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void canAssignFromEndUntilStart() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromEndUntil(start).allocateHours(32);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
     public void canBeNotifiedWhenADayAssignmentIsRemoved() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
