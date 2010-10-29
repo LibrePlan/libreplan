@@ -101,6 +101,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this.domListen_(this.$n(), "onMouseover", '_showTooltip');
         this.domListen_(this.$n(), "onMouseout", '_hideTooltip');
         if( jq(this.$n()).attr('movingtasksenabled') ) this._addDragDrop();
+        if( jq(this.$n()).attr('resizingtasksenabled')) this._addResize();
     },
     unbind_ : function(event){
         this.domUnlisten_(this.$n(), "onMouseout", '_hideTooltip');
@@ -137,6 +138,18 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
 
             zAu.send(new zk.Event(this, 'onUpdatePosition', [new String(position.left), new String(position.top)]));
         }), null, false);
+    },
+    _addResize : function(){
+        // Configure the task element to be resizable
+        var resize = new YAHOO.util.Resize(this.uuid, {
+            handles : [ 'r' ],
+            proxy : true
+        });
+
+        resize.on("resize", function(event){
+            jq(this.$n()).css({top : ""});
+            zAu.send(new zk.Event(this, 'onUpdateWidth', [new String(jq(this.$n()).width())]));
+        },null , this);
     },
     _createArrow : function(){
         var WGTdependencylist = ganttz.DependencyList.getInstance();
