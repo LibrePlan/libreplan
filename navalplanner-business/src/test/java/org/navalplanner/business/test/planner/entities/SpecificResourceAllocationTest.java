@@ -242,7 +242,6 @@ public class SpecificResourceAllocationTest {
 
     @Test
     public void canAllocateUntilSomeEndDate() {
-        givenAssignedHours(4);
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
         specificResourceAllocation.until(start.plusDays(3)).allocate(
