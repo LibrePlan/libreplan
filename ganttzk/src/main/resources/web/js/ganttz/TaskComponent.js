@@ -112,7 +112,6 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
     },
     consolidateNewDependency : function(task){
         zAu.send( new zk.Event(this, 'onAddDependency', [task.id]));
-        ganttz.DependencyList.getInstance().clear();
     },
     addRelatedDependency : function(dependency){
         if(this._dependencies == undefined) this._dependencies = [];

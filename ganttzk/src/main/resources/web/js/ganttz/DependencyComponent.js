@@ -302,8 +302,10 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
     },
     _consolidateDependency : function(){
         var dependency =  null;
-        if ((dependency = this._isOverTask()) != null)
+        if ((dependency = this._isOverTask()) != null){
             this._WGTorigin.consolidateNewDependency(dependency);
+            ganttz.DependencyList.getInstance().removeChild(this); //A new dependecy line will be created
+        }
     },
     _isOverTask : function() {
         var tasksArray = jq('div[z\\.type="ganttz.task.Task"]');
