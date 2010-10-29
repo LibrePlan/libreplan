@@ -299,11 +299,10 @@ public abstract class TaskElement extends BaseEntity {
                     capacity.minus(min(start.getEffortDuration(), capacity)));
         }
         resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
-        LocalDate resultDay = newStartDate.getDate().plusDays(
-                numberOfDays);
+        LocalDate resultDay = newStartDate.getDate().plusDays(numberOfDays);
         final EffortDuration capacity = calendar.getCapacityOn(PartialDay
                 .wholeDay(resultDay));
-        if (resultDuration.compareTo(capacity) >= 0) {
+        if (resultDuration.compareTo(capacity) > 0) {
             resultDay = resultDay.plusDays(1);
             resultDuration = resultDuration.minus(capacity);
         }
