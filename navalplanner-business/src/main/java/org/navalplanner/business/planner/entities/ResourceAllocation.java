@@ -535,21 +535,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public IAllocateResourcesPerDay until(final LocalDate endExclusive) {
-            return new IAllocateResourcesPerDay() {
+            IntraDayDate startInclusive = getStartAfterConsolidated();
+            IntraDayDate end = IntraDayDate.startOfDay(endExclusive);
+            return new AllocateResourcesPerDayOnInterval(startInclusive, end);
+        }
 
-                @Override
-                public void allocate(ResourcesPerDay resourcesPerDay) {
-                    IntraDayDate startInclusive = getStartAfterConsolidated();
-                    IntraDayDate allocationEnd = IntraDayDate
-                            .startOfDay(endExclusive);
-                    List<T> assignmentsCreated = createAssignments(
-                            resourcesPerDay, startInclusive, allocationEnd);
-                    resetAssignmentsTo(assignmentsCreated, startInclusive,
-                            allocationEnd);
-                    updateResourcesPerDay();
-                }
-
-            };
+        @Override
+        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
+                LocalDate start) {
+            IntraDayDate startInclusive = IntraDayDate
+                    .max(IntraDayDate.startOfDay(start),
+                            getStartAfterConsolidated());
+            IntraDayDate endDate = task.getIntraDayEndDate();
+            return new AllocateResourcesPerDayOnInterval(startInclusive,
+                    endDate);
         }
 
         private List<PartialDay> getDays(IntraDayDate startInclusive,
@@ -559,6 +558,29 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
                     "the end must be equal or posterior than start");
             return IntraDayDate.toList(startInclusive.daysUntil(endExclusive));
+        }
+
+        private final class AllocateResourcesPerDayOnInterval implements
+                IAllocateResourcesPerDay {
+
+            private final IntraDayDate startInclusive;
+
+            private final IntraDayDate endExclusive;
+
+            private AllocateResourcesPerDayOnInterval(
+                    IntraDayDate startInclusive, IntraDayDate endExclusive) {
+                this.startInclusive = startInclusive;
+                this.endExclusive = endExclusive;
+            }
+
+            @Override
+            public void allocate(ResourcesPerDay resourcesPerDay) {
+                List<T> assignmentsCreated = createAssignments(resourcesPerDay,
+                        startInclusive, endExclusive);
+                resetAssignmentsTo(assignmentsCreated, startInclusive,
+                        endExclusive);
+                updateResourcesPerDay();
+            }
         }
 
         private class AllocateHoursOnInterval implements
