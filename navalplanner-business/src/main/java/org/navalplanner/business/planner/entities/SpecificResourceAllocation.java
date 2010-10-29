@@ -255,15 +255,6 @@ public class SpecificResourceAllocation extends
         dayAssignment.setSpecificResourceAllocation(this);
     }
 
-    private Set<SpecificDayAssignment> getUnorderedFor(Scenario scenario) {
-        SpecificDayAssignmentsContainer container = containersByScenario()
-                .get(scenario);
-        if (container == null) {
-            return new HashSet<SpecificDayAssignment>();
-        }
-        return container.getDayAssignments();
-    }
-
     @Override
     public void makeAssignmentsContainersDontPoseAsTransientAnyMore() {
         for (SpecificDayAssignmentsContainer each : specificDayAssignmentsContainers) {
