@@ -611,7 +611,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocate(IntraDayDate startInclusive,
                 IntraDayDate endExclusive, EffortDuration durationToAssign) {
-            List<T> assignmentsCreated = createAssignments(startInclusive,
+            IntraDayDate afterConsolidated = getStartAfterConsolidated();
+            List<T> assignmentsCreated = createAssignments(
+                    IntraDayDate.max(afterConsolidated, startInclusive),
                     endExclusive, durationToAssign);
             resetAssignmentsTo(assignmentsCreated, startInclusive, endExclusive);
             updateResourcesPerDay();
