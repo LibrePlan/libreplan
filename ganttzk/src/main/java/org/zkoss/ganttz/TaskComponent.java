@@ -38,7 +38,6 @@ import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
-import org.zkoss.json.JSONArray;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.au.AuRequest;
 import org.zkoss.zk.au.AuService;
@@ -135,31 +134,27 @@ public class TaskComponent extends Div implements AfterCompose {
             public boolean service(AuRequest request, boolean everError){
                 String command = request.getCommand();
                 final TaskComponent ta;
-                String[] requestData;
 
                 if (command.equals("onUpdatePosition")){
                     ta = retrieveTaskComponent(request);
-                    requestData = retrieveData(request, 2);
 
-                    ta.doUpdatePosition(requestData[0], requestData[1]);
+                    ta.doUpdatePosition((Integer) retrieveData(request, "left"), (Integer) retrieveData(request, "top"));
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
                 }
                 if (command.equals("onUpdateWidth")){
                     ta = retrieveTaskComponent(request);
-                    requestData = retrieveData(request, 1);
 
-                    ta.doUpdateSize(requestData[0]);
+                    ta.doUpdateSize((Integer) retrieveData(request, "width"));
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
                 }
                 if (command.equals("onAddDependency")){
                     ta = retrieveTaskComponent(request);
-                    requestData = retrieveData(request, 1);
 
-                    ta.doAddDependency(requestData[0]);
+                    ta.doAddDependency((String) retrieveData(request, "dependencyId"));
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
@@ -178,16 +173,14 @@ public class TaskComponent extends Div implements AfterCompose {
                 return ta;
             }
 
-            private String[] retrieveData(AuRequest request, int requestLength){
-                String [] requestData =  (String[]) ((JSONArray)request.getData().get("")).toArray(new String[requestLength]);
-
-                if (requestData == null || requestData.length != requestLength) {
+            private Object retrieveData(AuRequest request, String key){
+                Object value = request.getData().get(key);
+                if ( value == null)
                     throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                            new Object[] { Objects.toString(requestData), this });
-                }
+                            new Object[] { key, this });
 
-                return requestData;
-           }
+                return value;
+            }
         });
     }
 
@@ -294,9 +287,9 @@ public class TaskComponent extends Div implements AfterCompose {
                 && task.canBeExplicitlyMoved();
     }
 
-    void doUpdatePosition(String leftX, String topY) {
+    void doUpdatePosition(int leftX, int topY) {
         Date startBeforeMoving = this.task.getBeginDate();
-        this.task.moveTo(getMapper().toDate(Integer.parseInt(leftX)));
+        this.task.moveTo(getMapper().toDate(leftX));
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -304,8 +297,8 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     }
 
-    void doUpdateSize(String size) {
-        this.task.setLengthMilliseconds(getMapper().toMilliseconds(Integer.parseInt(size)));
+    void doUpdateSize(int size) {
+        this.task.setLengthMilliseconds(getMapper().toMilliseconds(size));
         updateWidth();
     }
 

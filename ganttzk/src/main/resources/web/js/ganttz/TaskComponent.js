@@ -112,7 +112,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this._createArrow();
     },
     consolidateNewDependency : function(task){
-        zAu.send( new zk.Event(this, 'onAddDependency', [task.id]));
+        zAu.send(new zk.Event(this, 'onAddDependency', {dependencyId : task.id}));
     },
     addRelatedDependency : function(dependency){
         if(this._dependencies == undefined) this._dependencies = [];
@@ -135,8 +135,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
          // Register the event endDragEvent
         dragdropregion.on('endDragEvent', this.proxy(function(ev) {
             var position = jq(this.$n()).position();
-
-            zAu.send(new zk.Event(this, 'onUpdatePosition', [new String(position.left), new String(position.top)]));
+            zAu.send(new zk.Event(this, 'onUpdatePosition',{left : position.left, top : position.top}))
         }), null, false);
     },
     _addResize : function(){
@@ -148,7 +147,7 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
 
         resize.on("resize", function(event){
             jq(this.$n()).css({top : ""});
-            zAu.send(new zk.Event(this, 'onUpdateWidth', [new String(jq(this.$n()).width())]));
+            zAu.send(new zk.Event(this, 'onUpdateWidth', { width : jq(this.$n()).width() }));
         },null , this);
     },
     _createArrow : function(){
