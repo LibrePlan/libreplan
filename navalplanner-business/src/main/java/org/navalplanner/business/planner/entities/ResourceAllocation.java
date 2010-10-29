@@ -258,7 +258,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 protected <T extends DayAssignment> void setNewDataForAllocation(
                         ResourceAllocation<T> allocation, IntraDayDate end,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
-                    allocation.resetAssignmentsTo(dayAssignments, end);
+                    Task task = AllocationsSpecified.this.task;
+                    allocation.resetAssignmentsTo(dayAssignments,
+                            task.getIntraDayStartDate(), end);
                     allocation.updateResourcesPerDay();
                 }
 
@@ -538,10 +540,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 @Override
                 public void allocate(ResourcesPerDay resourcesPerDay) {
                     IntraDayDate startInclusive = getStartAfterConsolidated();
+                    IntraDayDate allocationEnd = IntraDayDate
+                            .startOfDay(endExclusive);
                     List<T> assignmentsCreated = createAssignments(
-                            resourcesPerDay, startInclusive,
-                            IntraDayDate.startOfDay(endExclusive));
-                    resetAssignmentsTo(assignmentsCreated);
+                            resourcesPerDay, startInclusive, allocationEnd);
+                    resetAssignmentsTo(assignmentsCreated, startInclusive,
+                            allocationEnd);
                     updateResourcesPerDay();
                 }
 
@@ -587,7 +591,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocate(end, hours(hours));
+                    allocate(getStartAfterConsolidated(),
+                            IntraDayDate.startOfDay(end), hours(hours));
                 }
             };
         }
@@ -604,17 +609,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             };
         }
 
-        private void allocate(LocalDate end, EffortDuration durationToAssign) {
-            IntraDayDate startInclusive = getStartAfterConsolidated();
-            IntraDayDate endExclusive = IntraDayDate.startOfDay(end);
-            allocate(startInclusive, endExclusive, durationToAssign);
-        }
-
         private void allocate(IntraDayDate startInclusive,
                 IntraDayDate endExclusive, EffortDuration durationToAssign) {
             List<T> assignmentsCreated = createAssignments(startInclusive,
                     endExclusive, durationToAssign);
-            resetAssignmentsTo(assignmentsCreated);
+            resetAssignmentsTo(assignmentsCreated, startInclusive, endExclusive);
             updateResourcesPerDay();
         }
 
@@ -743,14 +742,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        resetAssignmentsTo(assignments, null);
+        resetAssignmentsTo(assignments, task.getIntraDayStartDate(),
+                task.getIntraDayEndDate());
     }
 
     protected void resetAssignmentsTo(List<T> assignments,
+            IntraDayDate intraDayStart,
             IntraDayDate intraDayEnd) {
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
+        getDayAssignmentsState().setIntraDayStart(intraDayStart);
         getDayAssignmentsState().setIntraDayEnd(intraDayEnd);
     }
 

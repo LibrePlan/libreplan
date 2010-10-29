@@ -317,6 +317,18 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void ifEndIsInTheMiddleOfADayFromEndUntilStartCalculatesResourcesPerDayCorrectly() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        IntraDayDate end = IntraDayDate.create(start.plusDays(3), hours(4));
+        givenSpecificResourceAllocation(IntraDayDate.startOfDay(start), end);
+        specificResourceAllocation.fromEndUntil(start).allocateHours(28);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 4));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
     public void canBeNotifiedWhenADayAssignmentIsRemoved() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
