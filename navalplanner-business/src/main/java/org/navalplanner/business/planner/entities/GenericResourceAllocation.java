@@ -324,7 +324,7 @@ public class GenericResourceAllocation extends
     @Override
     public ResourcesPerDayModification asResourcesPerDayModification() {
         return ResourcesPerDayModification.create(this,
-                getResourcesPerDay(), getAssociatedResources());
+                getNonConsolidatedResourcePerDay(), getAssociatedResources());
     }
 
     @Override

@@ -231,7 +231,8 @@ public class SpecificResourceAllocation extends
 
     @Override
     public ResourcesPerDayModification asResourcesPerDayModification() {
-        return ResourcesPerDayModification.create(this, getResourcesPerDay());
+        return ResourcesPerDayModification.create(this,
+                getNonConsolidatedResourcePerDay());
     }
 
     @Override
