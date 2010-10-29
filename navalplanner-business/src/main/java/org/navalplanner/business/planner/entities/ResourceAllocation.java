@@ -853,7 +853,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(scenario);
         ResourceAllocation<T> copy = createCopy(scenario);
         copy.assignmentsState = copy.toTransientStateWithInitial(
-                getUnorderedFor(scenario), getIntraDayEndFor(scenario));
+                getUnorderedFor(scenario), getIntraDayStartDateFor(scenario),
+                getIntraDayEndFor(scenario));
         copy.resourcesPerDay = resourcesPerDay;
         copy.originalTotalAssignment = originalTotalAssignment;
         copy.task = task;
@@ -862,8 +863,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private DayAssignmentsState toTransientStateWithInitial(
-            Collection<? extends T> initialAssignments, IntraDayDate end) {
+            Collection<? extends T> initialAssignments, IntraDayDate start,
+            IntraDayDate end) {
         TransientState result = new TransientState(initialAssignments);
+        result.setIntraDayStart(start);
         result.setIntraDayEnd(end);
         return result;
     }
@@ -874,6 +877,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return new HashSet<T>();
         }
         return container.getDayAssignments();
+    }
+
+    private IntraDayDate getIntraDayStartDateFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayStart();
     }
 
     private IntraDayDate getIntraDayEndFor(Scenario scenario) {
@@ -1084,6 +1095,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         protected void copyTransientPropertiesIfAppropiateTo(
                 DayAssignmentsState newStateForScenario) {
             newStateForScenario.resetTo(getUnorderedAssignments());
+            newStateForScenario.setIntraDayStart(getIntraDayStart());
             newStateForScenario.setIntraDayEnd(getIntraDayEnd());
         };
 
@@ -1220,10 +1232,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public void setIntraDayEnd(IntraDayDate intraDayEnd) {
             container.setIntraDayEnd(intraDayEnd);
-        }
-
-        protected void copyTransientPropertiesIfAppropiateTo(
-                DayAssignmentsState newStateForScenario) {
         }
 
     }
@@ -1456,6 +1464,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final void mergeAssignments(ResourceAllocation<?> modifications) {
         getDayAssignmentsState().mergeAssignments(modifications);
+        getDayAssignmentsState().setIntraDayStart(
+                modifications.getDayAssignmentsState().getIntraDayStart());
         getDayAssignmentsState().setIntraDayEnd(
                 modifications.getDayAssignmentsState().getIntraDayEnd());
     }
