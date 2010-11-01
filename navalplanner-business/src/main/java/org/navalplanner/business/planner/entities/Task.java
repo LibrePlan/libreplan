@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.planner.entities.StartConstraintType.FINISH_NOT_LATER_THAN;
+import static org.navalplanner.business.planner.entities.StartConstraintType.AS_LATE_AS_POSSIBLE;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -418,7 +421,20 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void explicityMoved(LocalDate date) {
+        date = relativeToEndDateIfNecessary(date);
         getStartConstraint().explicityMovedTo(date);
+    }
+
+    private LocalDate relativeToEndDateIfNecessary(LocalDate date) {
+        StartConstraintType startConstraintType = getStartConstraint()
+                .getStartConstraintType();
+        if (FINISH_NOT_LATER_THAN.equals(startConstraintType)
+                || AS_LATE_AS_POSSIBLE.equals(startConstraintType)) {
+            long diffStartDate = date.toDateTimeAtStartOfDay().getMillis()
+                    - getStartDate().getTime();
+            return new LocalDate(getEndDate().getTime() - diffStartDate);
+        }
+        return date;
     }
 
     public TaskStartConstraint getStartConstraint() {

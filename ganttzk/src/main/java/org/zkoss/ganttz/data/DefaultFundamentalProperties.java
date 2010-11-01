@@ -133,6 +133,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
+    @Override
+    public void setEndDateKeepingSize(GanttDate endDate) {
+        this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
+    }
+
     public String getNotes() {
         return notes;
     }
@@ -239,6 +244,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     @Override
     public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public boolean shouldCalculateEndFirst() {
+        return true;
     }
 
 }

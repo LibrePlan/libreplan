@@ -56,6 +56,8 @@ public interface ITaskFundamentalProperties {
 
     public void setEndDate(GanttDate endDate);
 
+    public void setEndDateKeepingSize(GanttDate value);
+
     public String getNotes();
 
     public void setNotes(String notes);
@@ -95,5 +97,7 @@ public interface ITaskFundamentalProperties {
     public String updateTooltipText();
 
     List<Constraint<GanttDate>> getEndConstraints();
+
+    boolean shouldCalculateEndFirst();
 
 }

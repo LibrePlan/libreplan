@@ -341,6 +341,11 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
+        public void setEndDateKeepingSize(TaskElement task, GanttDate newEnd) {
+            task.setIntraDayEndDate(toIntraDay(newEnd));
+        }
+
+        @Override
         public void setStartDateFor(TaskElement task, GanttDate newStart) {
             task.moveTo(scenario, toIntraDay(newStart));
         }
@@ -348,6 +353,11 @@ public class TemplateModel implements ITemplateModel {
         @Override
         public boolean isFixed(TaskElement task) {
             return task.isLimitingAndHasDayAssignments();
+        }
+
+        @Override
+        public boolean shouldCalculateEndFirst(TaskElement task) {
+            return true;
         }
 
     }

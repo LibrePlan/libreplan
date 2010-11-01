@@ -241,23 +241,37 @@ public abstract class Task implements ITaskFundamentalProperties {
                 previousValue, this.fundamentalProperties.getNotes());
     }
 
-    @Override
-    public void setEndDate(GanttDate value) {
-        if (value == null) {
-            return;
-        }
-        GanttDate previousEnd = fundamentalProperties.getEndDate();
-        fundamentalProperties.setEndDate(value);
-        dependenciesEnforcerHook.setNewEnd(previousEnd,
-                fundamentalProperties.getEndDate());
-    }
-
     public void resizeTo(LocalDate date) {
         resizeTo(GanttDate.createFrom(date));
     }
 
     public void resizeTo(GanttDate date) {
         setEndDate(date);
+    }
+
+    @Override
+    public void setEndDate(GanttDate newEnd) {
+        final boolean keepSize = false;
+        setEndDate(newEnd, keepSize);
+    }
+
+    private void setEndDate(GanttDate value, boolean keepSize) {
+        if (value == null) {
+            return;
+        }
+        GanttDate previousEnd = fundamentalProperties.getEndDate();
+        if (keepSize) {
+            fundamentalProperties.setEndDateKeepingSize(value);
+        } else {
+            fundamentalProperties.setEndDate(value);
+        }
+        dependenciesEnforcerHook.setNewEnd(previousEnd,
+                fundamentalProperties.getEndDate());
+    }
+
+    public void setEndDateKeepingSize(GanttDate newEnd) {
+        final boolean keepSize = true;
+        setEndDate(newEnd, keepSize);
     }
 
     public void removed() {
@@ -392,6 +406,10 @@ public abstract class Task implements ITaskFundamentalProperties {
 
     public List<Constraint<GanttDate>> getEndConstraints() {
        return fundamentalProperties.getEndConstraints();
+    }
+
+    public boolean shouldCalculateEndFirst() {
+        return fundamentalProperties.shouldCalculateEndFirst();
     }
 
 }

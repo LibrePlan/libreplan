@@ -325,12 +325,27 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
-        final IntraDayDate start = getIntraDayStartDate();
-        final IntraDayDate end = getIntraDayEndDate();
-        final int numberOfDays = start.numberOfDaysUntil(end);
-        EffortDuration resultDuration = zero();
+        EffortDuration resultDuration = calculateResultDuration(newStartDate);
         ICalendar calendar = getCalendar() != null ? getCalendar()
                 : SameWorkHoursEveryDay.getDefaultWorkingDay();
+
+        LocalDate resultDay = newStartDate.getDate().plusDays(getNumberOfDays());
+        final EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                .wholeDay(resultDay));
+        if (resultDuration.compareTo(capacity) > 0) {
+            resultDay = resultDay.plusDays(1);
+            resultDuration = resultDuration.minus(capacity);
+        }
+        return IntraDayDate.create(resultDay, resultDuration);
+    }
+
+    private EffortDuration calculateResultDuration(IntraDayDate date) {
+        final IntraDayDate start = getIntraDayStartDate();
+        final IntraDayDate end = getIntraDayEndDate();
+        ICalendar calendar = getCalendar() != null ? getCalendar()
+                : SameWorkHoursEveryDay.getDefaultWorkingDay();
+        EffortDuration resultDuration = zero();
+
         if (getIntraDayStartDate().getEffortDuration().compareTo(
                 getIntraDayEndDate().getEffortDuration()) <= 0) {
             resultDuration = end.getEffortDuration().minus(
@@ -341,13 +356,26 @@ public abstract class TaskElement extends BaseEntity {
             resultDuration = end.getEffortDuration().plus(
                     capacity.minus(min(start.getEffortDuration(), capacity)));
         }
-        resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
-        LocalDate resultDay = newStartDate.getDate().plusDays(numberOfDays);
+        return resultDuration.plus(date.getEffortDuration());
+    }
+
+    private int getNumberOfDays() {
+        final IntraDayDate start = getIntraDayStartDate();
+        final IntraDayDate end = getIntraDayEndDate();
+        return start.numberOfDaysUntil(end);
+    }
+
+    private IntraDayDate calculateStartKeepingLength(IntraDayDate newEndDate) {
+        EffortDuration resultDuration = calculateResultDuration(newEndDate);
+        ICalendar calendar = getCalendar() != null ? getCalendar()
+                : SameWorkHoursEveryDay.getDefaultWorkingDay();
+
+        LocalDate resultDay = newEndDate.getDate().minusDays(getNumberOfDays());
         final EffortDuration capacity = calendar.getCapacityOn(PartialDay
                 .wholeDay(resultDay));
         if (resultDuration.compareTo(capacity) > 0) {
-            resultDay = resultDay.plusDays(1);
-            resultDuration = resultDuration.minus(capacity);
+            resultDay = resultDay.minusDays(1);
+            resultDuration = resultDuration.plus(capacity);
         }
         return IntraDayDate.create(resultDay, resultDuration);
     }
@@ -377,16 +405,29 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void resizeTo(Scenario scenario, Date endDate) {
-        resizeTo(scenario,
+        setEndDate(scenario,
                 IntraDayDate.startOfDay(LocalDate.fromDateFields(endDate)));
     }
 
-    public void resizeTo(Scenario scenario, IntraDayDate endDate) {
+    public void setEndDate(Scenario scenario, IntraDayDate endDate) {
         if (!canBeResized()) {
             return;
         }
         boolean sameDay = getIntraDayEndDate().areSameDay(endDate.getDate());
         setIntraDayEndDate(endDate);
+        if (!sameDay) {
+            moveAllocations(scenario);
+        }
+    }
+
+    public void setEndDateKeepingSize(Scenario scenario, IntraDayDate endDate) {
+        if (!canBeResized()) {
+            return;
+        }
+        boolean sameDay = getIntraDayEndDate().areSameDay(endDate.getDate());
+        IntraDayDate startDate = calculateStartKeepingLength(endDate);
+        setIntraDayEndDate(endDate);
+        setIntraDayStartDate(startDate);
         if (!sameDay) {
             moveAllocations(scenario);
         }

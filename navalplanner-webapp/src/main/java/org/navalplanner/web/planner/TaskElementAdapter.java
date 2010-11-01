@@ -38,8 +38,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.Fraction;
@@ -54,11 +54,13 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -68,7 +70,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -84,10 +85,10 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.GanttDate.Cases;
 import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -134,25 +135,58 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         return Collections.emptyList();
     }
 
-    public static List<Constraint<GanttDate>> getEndConstraintsFor(
-            TaskElement taskElement) {
+    public static List<Constraint<GanttDate>> getEndConstraintsFor(TaskElement taskElement) {
+        LocalDate result;
+
         if (taskElement instanceof ITaskLeafConstraint) {
             ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
             TaskStartConstraint startConstraint = task.getStartConstraint();
-            final StartConstraintType constraintType = startConstraint
-                    .getStartConstraintType();
+            final StartConstraintType constraintType = startConstraint.getStartConstraintType();
+
             switch (constraintType) {
-            case FINISH_NOT_LATER_THAN:
-                return Collections
-                        .singletonList(biggerOrEqualThan(toGantt(startConstraint
-                                .getConstraintDate())));
             case AS_LATE_AS_POSSIBLE:
+                LocalDate deadline = toLocalDate(getOrderDeadline(taskElement));
+                LocalDate latestEndDate = calculateLatestEndDate(taskElement);
+                if (latestEndDate.compareTo(deadline) > 0) {
+                    deadline = latestEndDate;
+                }
+                return Collections.singletonList(equalTo(toGantt(deadline)));
+            case FINISH_NOT_LATER_THAN:
+                result = startConstraint.getConstraintDate();
                 return Collections
-                        .singletonList(equalTo(toGantt(startConstraint
-                                .getConstraintDate())));
+                        .singletonList(biggerOrEqualThan(toGantt(result)));
             }
         }
         return Collections.emptyList();
+    }
+
+    private static Date getOrderDeadline(TaskElement taskElement) {
+        return taskElement.getOrderElement().getOrder().getDeadline();
+    }
+
+    private static LocalDate calculateLatestEndDate(TaskElement taskElement) {
+        Date result = taskElement.getEndDate();
+
+        Order order = getOrder(taskElement);
+        for (OrderElement each: order.getChildren()) {
+            TaskElement task = each.getTaskSource().getTask();
+            Date endDate = task.getEndDate();
+            if (endDate.after(result)) {
+                result = endDate;
+            }
+        }
+        return new LocalDate(result);
+    }
+
+    private static Order getOrder(TaskElement taskElement) {
+        return taskElement.getOrderElement().getOrder();
+    }
+
+    private static LocalDate toLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return new LocalDate(date);
     }
 
     @Autowired
@@ -386,7 +420,21 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.resizeTo(currentScenario,
+                            taskElement.setEndDate(currentScenario,
+                                    toIntraDay(endDate));
+                            return null;
+                        }
+                    });
+        }
+
+        @Override
+        public void setEndDateKeepingSize(final GanttDate endDate) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            stepsBeforePossibleReallocation();
+                            taskElement.setEndDateKeepingSize(currentScenario,
                                     toIntraDay(endDate));
                             return null;
                         }
@@ -839,6 +887,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public boolean isFixed() {
             return taskElement.isLimitingAndHasDayAssignments()
                 || taskElement.hasConsolidations();
+        }
+
+        @Override
+        public boolean shouldCalculateEndFirst() {
+            if (taskElement instanceof ITaskLeafConstraint) {
+                StartConstraintType startConstraintType = ((ITaskLeafConstraint) taskElement)
+                        .getStartConstraint().getStartConstraintType();
+                return (StartConstraintType.FINISH_NOT_LATER_THAN.equals(startConstraintType)
+                            || StartConstraintType.AS_LATE_AS_POSSIBLE.equals(startConstraintType));
+            }
+            return true;
         }
 
     }

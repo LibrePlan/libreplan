@@ -124,6 +124,10 @@ public class GanttDiagramGraph<V, D> {
 
         List<Constraint<GanttDate>> getEndConstraintsFor(V task);
 
+        boolean shouldCalculateEndFirst(V task);
+
+        void setEndDateKeepingSize(V task, GanttDate newEnd);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -243,6 +247,16 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public boolean isFixed(Task task) {
             return task.isFixed();
+        }
+
+        @Override
+        public boolean shouldCalculateEndFirst(Task task) {
+            return task.shouldCalculateEndFirst();
+        }
+
+        @Override
+        public void setEndDateKeepingSize(Task task, GanttDate newEnd) {
+            task.setEndDateKeepingSize(newEnd);
         }
 
     }
@@ -1028,9 +1042,17 @@ public class GanttDiagramGraph<V, D> {
         private boolean enforceStartAndEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
             GanttDate previousEndDate = adapter.getEndDateFor(task);
-            boolean startDateChanged = enforceStartDate(task, incoming);
-            boolean endDateChanged = !parentRecalculation
+            boolean startDateChanged = false, endDateChanged = false;
+
+            if (adapter.shouldCalculateEndFirst(task)) {
+                endDateChanged = !parentRecalculation
                     && enforceEndDate(task, previousEndDate, incoming);
+                startDateChanged = enforceStartDate(task, incoming);
+            } else {
+                startDateChanged = enforceStartDate(task, incoming);
+                endDateChanged = !parentRecalculation
+                        && enforceEndDate(task, previousEndDate, incoming);
+            }
             return startDateChanged || endDateChanged;
         }
 
@@ -1059,8 +1081,14 @@ public class GanttDiagramGraph<V, D> {
                     .withConstraints(respectStartDate)
                     .withConstraints(endConstraintsFor)
                     .apply();
+            System.out.println("### newEnd: " + newEnd);
             if (hasChanged(previousEndDate, newEnd)) {
-                adapter.setEndDateFor(task, newEnd);
+                boolean keepSize = adapter.shouldCalculateEndFirst(task);
+                if (keepSize) {
+                    adapter.setEndDateKeepingSize(task, newEnd);
+                } else {
+                    adapter.setEndDateFor(task, newEnd);
+                }
             }
             return !previousEndDate.equals(newEnd);
         }
