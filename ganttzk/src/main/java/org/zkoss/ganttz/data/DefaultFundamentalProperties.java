@@ -236,4 +236,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     public void setDeadline(Date date) {
     }
 
+    @Override
+    public List<Constraint<GanttDate>> getEndConstraints() {
+        return Collections.emptyList();
+    }
+
 }

@@ -122,6 +122,8 @@ public class GanttDiagramGraph<V, D> {
 
         boolean isFixed(V task);
 
+        List<Constraint<GanttDate>> getEndConstraintsFor(V task);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -225,6 +227,11 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public List<Constraint<GanttDate>> getStartConstraintsFor(Task task) {
             return task.getStartConstraints();
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getEndConstraintsFor(Task task) {
+            return task.getEndConstraints();
         }
 
         @Override
@@ -1043,11 +1050,14 @@ public class GanttDiagramGraph<V, D> {
                     .getCurrentLenghtConstraintFor(task);
             Constraint<GanttDate> respectStartDate = adapter
                     .getEndDateBiggerThanStartDateConstraintFor(task);
+            List<Constraint<GanttDate>> endConstraintsFor = adapter
+                    .getEndConstraintsFor(task);
             GanttDate newEnd = Constraint
                     .<GanttDate> initialValue(null)
                     .withConstraints(currentLength)
                     .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
                     .withConstraints(respectStartDate)
+                    .withConstraints(endConstraintsFor)
                     .apply();
             if (hasChanged(previousEndDate, newEnd)) {
                 adapter.setEndDateFor(task, newEnd);

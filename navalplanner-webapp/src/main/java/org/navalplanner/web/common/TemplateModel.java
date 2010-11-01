@@ -297,6 +297,11 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
+        public List<Constraint<GanttDate>> getEndConstraintsFor(TaskElement task) {
+            return TaskElementAdapter.getEndConstraintsFor(task);
+        }
+
+        @Override
         public List<Constraint<GanttDate>> getStartConstraintsGiven(
                 Set<DependencyWithVisibility> withDependencies) {
             return DependencyWithVisibility.getStartConstraintsGiven(this,

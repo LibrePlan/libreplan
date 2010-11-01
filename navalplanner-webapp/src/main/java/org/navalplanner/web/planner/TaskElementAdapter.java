@@ -129,16 +129,30 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return Collections
                         .singletonList(biggerOrEqualThan(toGantt(startConstraint
                                 .getConstraintDate())));
-            case FINISH_NOT_LATER_THAN:
-                return Collections.emptyList();
-            case AS_LATE_AS_POSSIBLE:
-                return Collections.emptyList();
-            default:
-                throw new RuntimeException("can't handle " + constraintType);
             }
-        } else {
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
+    }
+
+    public static List<Constraint<GanttDate>> getEndConstraintsFor(
+            TaskElement taskElement) {
+        if (taskElement instanceof ITaskLeafConstraint) {
+            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
+            TaskStartConstraint startConstraint = task.getStartConstraint();
+            final StartConstraintType constraintType = startConstraint
+                    .getStartConstraintType();
+            switch (constraintType) {
+            case FINISH_NOT_LATER_THAN:
+                return Collections
+                        .singletonList(biggerOrEqualThan(toGantt(startConstraint
+                                .getConstraintDate())));
+            case AS_LATE_AS_POSSIBLE:
+                return Collections
+                        .singletonList(equalTo(toGantt(startConstraint
+                                .getConstraintDate())));
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Autowired
@@ -744,6 +758,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public List<Constraint<GanttDate>> getStartConstraints() {
             return getStartConstraintsFor(this.taskElement);
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getEndConstraints() {
+            return getEndConstraintsFor(this.taskElement);
         }
 
         @Override

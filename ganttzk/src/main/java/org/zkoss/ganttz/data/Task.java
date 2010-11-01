@@ -390,4 +390,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return LocalDate.fromDateFields(getBeginDate().toDayRoundedDate());
     }
 
+    public List<Constraint<GanttDate>> getEndConstraints() {
+       return fundamentalProperties.getEndConstraints();
+    }
+
 }
