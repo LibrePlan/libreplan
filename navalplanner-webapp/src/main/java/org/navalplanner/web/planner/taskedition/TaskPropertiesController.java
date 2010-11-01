@@ -296,11 +296,31 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     private void showStartConstraintRow(ITaskLeafConstraint task) {
+        TaskStartConstraint taskStartConstraint = task.getStartConstraint();
+        StartConstraintType type = taskStartConstraint.getStartConstraintType();
+
         startConstraint.setVisible(true);
-        StartConstraintType type = task.getStartConstraint()
-                .getStartConstraintType();
         startConstraintTypes.setSelectedItemApi(findComboWithType(type));
         startConstraintDate.setVisible(type.isAssociatedDateRequired());
+        initializeStartConstraintDate(type,
+                taskStartConstraint.getConstraintDateAsDate());
+    }
+
+    private void initializeStartConstraintDate(StartConstraintType startConstraintType, Date date) {
+        if (date == null) {
+            if (StartConstraintType.START_NOT_EARLIER_THAN
+                    .equals(startConstraintType)
+                    || StartConstraintType.START_IN_FIXED_DATE
+                            .equals(startConstraintType)) {
+                startConstraintDate.setValue(currentTaskElement.getStartDate());
+            }
+            if (StartConstraintType.FINISH_NOT_LATER_THAN
+                    .equals(startConstraintType)) {
+                startConstraintDate.setValue(currentTaskElement.getEndDate());
+            }
+        } else {
+            startConstraintDate.setValue(date);
+        }
     }
 
     private Comboitem findComboWithType(StartConstraintType type) {
@@ -319,7 +339,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
         TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
-        startConstraintDate.setValue(taskStartConstraint.getConstraintDateAsDate());
+        initializeStartConstraintDate(constraint.getType(),
+                taskStartConstraint.getConstraintDateAsDate());
     }
 
     private boolean saveConstraintChanges() {
