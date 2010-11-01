@@ -307,12 +307,12 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     /**
-     * Sets the startDate to newStartDate. It can update the endDate
+     * Sets the startDate to newStartDate. It may update endDate
      *
      * @param scenario
      * @param newStartDate
      */
-    public void moveTo(Scenario scenario, IntraDayDate newStartDate) {
+    public void setStartDateKeepingSize(Scenario scenario, IntraDayDate newStartDate) {
         if (newStartDate == null) {
             return;
         }
@@ -324,12 +324,59 @@ public abstract class TaskElement extends BaseEntity {
         }
     }
 
+    /**
+     * Sets the startDate to newStartDate. It does not update endDate
+     *
+     * @param scenario
+     * @param newStartDate
+     */
+    public void setStartDate(Scenario scenario, IntraDayDate newStartDate) {
+        if (newStartDate == null) {
+            return;
+        }
+        IntraDayDate previousStart = this.startDate;
+        setIntraDayStartDate(newStartDate);
+        if (!previousStart.equals(newStartDate)) {
+            moveAllocations(scenario);
+        }
+    }
+
+    /*
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
         EffortDuration resultDuration = calculateResultDuration(newStartDate);
         ICalendar calendar = getCalendar() != null ? getCalendar()
                 : SameWorkHoursEveryDay.getDefaultWorkingDay();
 
         LocalDate resultDay = newStartDate.getDate().plusDays(getNumberOfDays());
+        final EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                .wholeDay(resultDay));
+        if (resultDuration.compareTo(capacity) > 0) {
+            resultDay = resultDay.plusDays(1);
+            resultDuration = resultDuration.minus(capacity);
+        }
+        return IntraDayDate.create(resultDay, resultDuration);
+    }
+    */
+
+    private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
+        final IntraDayDate start = getIntraDayStartDate();
+        final IntraDayDate end = getIntraDayEndDate();
+        final int numberOfDays = start.numberOfDaysUntil(end);
+        EffortDuration resultDuration = zero();
+        ICalendar calendar = getCalendar() != null ? getCalendar()
+                : SameWorkHoursEveryDay.getDefaultWorkingDay();
+        if (getIntraDayStartDate().getEffortDuration().compareTo(
+                getIntraDayEndDate().getEffortDuration()) <= 0) {
+            resultDuration = end.getEffortDuration().minus(
+                    start.getEffortDuration());
+        } else {
+            EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                    .wholeDay(start.getDate()));
+            resultDuration = end.getEffortDuration().plus(
+                    capacity.minus(min(start.getEffortDuration(), capacity)));
+        }
+        resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
+        LocalDate resultDay = newStartDate.getDate().plusDays(numberOfDays);
         final EffortDuration capacity = calendar.getCapacityOn(PartialDay
                 .wholeDay(resultDay));
         if (resultDuration.compareTo(capacity) > 0) {
@@ -370,7 +417,8 @@ public abstract class TaskElement extends BaseEntity {
         ICalendar calendar = getCalendar() != null ? getCalendar()
                 : SameWorkHoursEveryDay.getDefaultWorkingDay();
 
-        LocalDate resultDay = newEndDate.getDate().minusDays(getNumberOfDays());
+        int numberOfDays = getNumberOfDays();
+        LocalDate resultDay = newEndDate.getDate().minusDays(numberOfDays);
         final EffortDuration capacity = calendar.getCapacityOn(PartialDay
                 .wholeDay(resultDay));
         if (resultDuration.compareTo(capacity) > 0) {

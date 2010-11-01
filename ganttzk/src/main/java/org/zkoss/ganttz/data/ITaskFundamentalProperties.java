@@ -42,6 +42,8 @@ public interface ITaskFundamentalProperties {
 
     public GanttDate getBeginDate();
 
+    void setBeginDateKeepingSize(GanttDate newStart);
+
     /**
      * The deadline associated to the task. It can return null if has no
      * deadline associated

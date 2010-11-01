@@ -119,6 +119,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.beginDate = toMilliseconds(beginDate);
     }
 
+    @Override
+    public void setBeginDateKeepingSize(GanttDate beginDate) {
+        this.beginDate = toMilliseconds(beginDate);
+    }
+
     public long getLengthMilliseconds() {
         return lengthMilliseconds;
     }

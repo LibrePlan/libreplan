@@ -160,6 +160,10 @@ public abstract class GanttDate implements Comparable<GanttDate> {
             return datesMapper.toPixels(localDate);
         }
 
+        public String toString() {
+            return localDate.toString();
+        }
+
     }
 
     public static abstract class CustomDate extends GanttDate {

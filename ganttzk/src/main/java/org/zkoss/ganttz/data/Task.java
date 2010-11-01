@@ -156,6 +156,14 @@ public abstract class Task implements ITaskFundamentalProperties {
         Validate.notNull(dependenciesEnforcerHook);
     }
 
+    public void setBeginDateKeepingSize(GanttDate newStart) {
+        GanttDate previousValue = fundamentalProperties.getBeginDate();
+        GanttDate previousEnd = fundamentalProperties.getEndDate();
+        fundamentalProperties.setBeginDateKeepingSize(newStart);
+        dependenciesEnforcerHook.setStartDate(previousValue, previousEnd,
+                newStart);
+    }
+
     public void setBeginDate(GanttDate newStart) {
         GanttDate previousValue = fundamentalProperties.getBeginDate();
         GanttDate previousEnd = fundamentalProperties.getEndDate();
@@ -221,8 +229,11 @@ public abstract class Task implements ITaskFundamentalProperties {
         if (isContainer()) {
             return Constraint.emptyConstraint();
         }
+        // task has a constraint which is relative to the end
+        GanttDate date = shouldCalculateEndFirst() ? getBeginDate()
+                : getEndDate();
         return violationNotificator
-                .withListener(biggerOrEqualThan(getEndDate()));
+                .withListener(biggerOrEqualThan(date));
     }
 
     public Constraint<GanttDate> getEndDateBiggerThanStartDate() {

@@ -20,6 +20,9 @@
 
 package org.navalplanner.web.planner;
 
+import static org.navalplanner.business.planner.entities.StartConstraintType.FINISH_NOT_LATER_THAN;
+import static org.navalplanner.business.planner.entities.StartConstraintType.AS_LATE_AS_POSSIBLE;
+
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
@@ -312,6 +315,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return date.hashCode();
         }
 
+        public String toString() {
+            return date.toString();
+        }
+
         @Override
         public int toPixels(IDatesMapper datesMapper) {
             int pixesUntilDate = datesMapper.toPixels(this.date.getDate());
@@ -401,8 +408,22 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.moveTo(currentScenario,
+                            taskElement.setStartDate(currentScenario,
                                     toIntraDay(beginDate));
+                            return null;
+                        }
+                    });
+        }
+
+        @Override
+        public void setBeginDateKeepingSize(final GanttDate beginDate) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            stepsBeforePossibleReallocation();
+                            taskElement.setStartDateKeepingSize(
+                                    currentScenario, toIntraDay(beginDate));
                             return null;
                         }
                     });
@@ -815,11 +836,34 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public void moveTo(GanttDate date) {
-            setBeginDate(date);
+            GanttDate endDate = relativeToEndDate(taskElement, date);
+
+            setBeginDateKeepingSize(date);
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
-                task.explicityMoved(toLocalDate(date));
+
+                if (shouldCalculateEndFirst(taskElement)) {
+                    task.explicityMoved(toLocalDate(endDate));
+                } else {
+                    task.explicityMoved(toLocalDate(date));
+                }
             }
+        }
+
+        private boolean isForwardScheduling() {
+            return taskElement.isForwardScheduling();
+        }
+
+        private StartConstraintType getStartConstraintType(Task task) {
+            return task.getStartConstraint().getStartConstraintType();
+        }
+
+        private GanttDate relativeToEndDate(TaskElement taskElement, GanttDate date) {
+            Task task = (Task) taskElement;
+            long diffStartDate = date.toDayRoundedDate().getTime()
+                    - task.getStartDate().getTime();
+            return GanttDate.createFrom(new LocalDate(task.getEndDate()
+                    .getTime() + diffStartDate));
         }
 
         @Override
@@ -891,13 +935,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public boolean shouldCalculateEndFirst() {
-            if (taskElement instanceof ITaskLeafConstraint) {
-                StartConstraintType startConstraintType = ((ITaskLeafConstraint) taskElement)
+            return shouldCalculateEndFirst(taskElement);
+        }
+
+        private boolean shouldCalculateEndFirst(TaskElement task) {
+            if (task instanceof ITaskLeafConstraint) {
+                StartConstraintType startConstraintType = ((ITaskLeafConstraint) task)
                         .getStartConstraint().getStartConstraintType();
                 return (StartConstraintType.FINISH_NOT_LATER_THAN.equals(startConstraintType)
                             || StartConstraintType.AS_LATE_AS_POSSIBLE.equals(startConstraintType));
             }
-            return true;
+            return false;
         }
 
     }

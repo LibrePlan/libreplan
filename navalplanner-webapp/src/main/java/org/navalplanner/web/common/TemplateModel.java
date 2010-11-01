@@ -346,8 +346,13 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public void setStartDateFor(TaskElement task, GanttDate newStart) {
-            task.moveTo(scenario, toIntraDay(newStart));
+        public void setStartDateKeepingSize(TaskElement task, GanttDate newStart) {
+            task.setStartDateKeepingSize(scenario, toIntraDay(newStart));
+        }
+
+        @Override
+        public void setStartDate(TaskElement task, GanttDate newStart) {
+            task.setStartDate(scenario, toIntraDay(newStart));
         }
 
         @Override
