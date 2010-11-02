@@ -837,10 +837,53 @@ public class GanttDiagramGraph<V, D> {
                 adapter.isAsLateAsPossible(each.taskPoint.task);
 
             }
+            recalculateAsLateAsPossibleTasks();
             List<V> shrunkContainers = shrunkContainersOfModified(allModified);
             for (V each : getTaskAffectedByShrinking(shrunkContainers)) {
                 doRecalculations(getRecalculationsNeededFrom(each),
                         Collections.singletonList(each));
+            }
+        }
+
+        public void recalculateAsLateAsPossibleTasks() {
+            Set<V> tasks = graph.vertexSet();
+            if (tasks.isEmpty()) {
+                return;
+            }
+
+            GanttDate orderDeadline = adapter
+                    .getOrderDeadline(getFirstTask(tasks));
+            GanttDate latestEndDate = calculateLatestEndDate();
+            if (orderDeadline != null && orderDeadline.after(latestEndDate)) {
+                latestEndDate = orderDeadline;
+            }
+            recalculateAsLateAsPossibleTasks(tasks, latestEndDate);
+        }
+
+        private V getFirstTask(Set<V> tasks) {
+
+            return tasks.iterator().next();
+        }
+
+        private GanttDate calculateLatestEndDate() {
+            GanttDate result = null;
+
+            for (V each: graph.vertexSet()) {
+                GanttDate endDate = adapter.getEndDateFor(each);
+                if (result == null || endDate.after(result)) {
+                    result = endDate;
+                }
+            }
+            return result;
+        }
+
+        public void recalculateAsLateAsPossibleTasks(Set<V> tasks, GanttDate latestEndDate) {
+            for (V each : tasks) {
+                Set<D> outgoingDependencies = graph.outgoingEdgesOf(each);
+                if (adapter.isAsLateAsPossible(each)
+                        && outgoingDependencies.isEmpty()) {
+                    enforceEndDate(each, latestEndDate);
+                }
             }
         }
 
@@ -856,6 +899,33 @@ public class GanttDiagramGraph<V, D> {
                 }
             }
             return tasksAffectedByShrinking;
+        }
+
+        private void enforceEndDate(V task, GanttDate latestEndDate) {
+            if (adapter.getEndDateFor(task).toDayRoundedDate()
+                    .equals(latestEndDate.toDayRoundedDate())) {
+                return;
+            }
+
+            if (adapter.isForwardScheduling(task)) {
+                GanttDate previousStartDate = adapter.getStartDate(task);
+                GanttDate newStart = Constraint.<GanttDate> initialValue(null)
+                        .withConstraints(adapter.getCurrentLenghtConstraintFor(task))
+                        .apply();
+                if (hasChanged(previousStartDate, newStart)) {
+                    adapter.setStartDateKeepingSize(task, newStart);
+                }
+            } else {
+                adapter.setEndDateKeepingSize(task, latestEndDate);
+            }
+        }
+
+        private boolean hasChanged(GanttDate old, GanttDate newValue) {
+            if (old == newValue) {
+                return false;
+            }
+            return (old == null) != (newValue == null)
+                    || old.compareTo(newValue) != 0;
         }
 
         private List<V> shrunkContainersOfModified(
