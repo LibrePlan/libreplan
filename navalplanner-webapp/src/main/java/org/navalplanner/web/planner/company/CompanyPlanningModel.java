@@ -714,7 +714,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Date endDate = null;
         for (Order each : list) {
             TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            startDate = Collections.min(notNull(startDate, each.getInitDate()));
+            List<Date> startDates = notNull(startDate, each.getInitDate());
+            startDate = startDates.isEmpty() ? null : Collections.min(startDates);
             endDate = Collections.max(notNull(endDate, each.getDeadline(),
                     associatedTaskElement.getEndDate()));
         }
