@@ -850,7 +850,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
         }
 
-        private boolean isForwardScheduling() {
+        public boolean isForwardScheduling() {
             return taskElement.isForwardScheduling();
         }
 

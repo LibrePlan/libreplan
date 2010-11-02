@@ -106,4 +106,6 @@ public interface ITaskFundamentalProperties {
 
     boolean isAsLateAsPossible();
 
+    boolean isForwardScheduling();
+
 }

@@ -431,4 +431,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.isAsLateAsPossible();
     }
 
+    public boolean isForwardScheduling() {
+        return fundamentalProperties.isForwardScheduling();
+    }
+
 }

@@ -375,6 +375,11 @@ public class TemplateModel implements ITemplateModel {
             return false;
         }
 
+        @Override
+        public boolean isForwardScheduling(TaskElement task) {
+            return task.isForwardScheduling();
+        }
+
     }
 
     @Autowired

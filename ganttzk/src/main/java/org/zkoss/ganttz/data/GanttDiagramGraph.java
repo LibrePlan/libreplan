@@ -135,6 +135,8 @@ public class GanttDiagramGraph<V, D> {
 
         boolean isAsLateAsPossible(V task);
 
+        boolean isForwardScheduling(V task);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -279,6 +281,11 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public boolean isAsLateAsPossible(Task task) {
             return task.isAsLateAsPossible();
+        }
+
+        @Override
+        public boolean isForwardScheduling(Task task) {
+            return task.isForwardScheduling();
         }
 
     }
