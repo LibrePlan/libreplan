@@ -954,6 +954,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     .getOrder().getDeadline());
         }
 
+        @Override
+        public boolean isAsLateAsPossible() {
+            if (taskElement instanceof Task) {
+                return StartConstraintType.AS_LATE_AS_POSSIBLE
+                        .equals(getStartConstraintType((Task) taskElement));
+            }
+            return false;
+        }
+
     }
 
     @Override

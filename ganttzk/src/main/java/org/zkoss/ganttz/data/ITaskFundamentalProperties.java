@@ -104,4 +104,6 @@ public interface ITaskFundamentalProperties {
 
     GanttDate getOrderDeadline();
 
+    boolean isAsLateAsPossible();
+
 }

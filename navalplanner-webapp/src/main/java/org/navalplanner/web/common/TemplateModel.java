@@ -365,6 +365,16 @@ public class TemplateModel implements ITemplateModel {
             return true;
         }
 
+        @Override
+        public GanttDate getOrderDeadline(TaskElement firstTask) {
+            return null;
+        }
+
+        @Override
+        public boolean isAsLateAsPossible(TaskElement task) {
+            return false;
+        }
+
     }
 
     @Autowired

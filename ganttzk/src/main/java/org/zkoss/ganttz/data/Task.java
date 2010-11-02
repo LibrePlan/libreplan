@@ -427,4 +427,8 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getOrderDeadline();
     }
 
+    public boolean isAsLateAsPossible() {
+        return fundamentalProperties.isAsLateAsPossible();
+    }
+
 }

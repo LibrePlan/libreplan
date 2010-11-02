@@ -261,4 +261,9 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return null;
     }
 
+    @Override
+    public boolean isAsLateAsPossible() {
+        return false;
+    }
+
 }

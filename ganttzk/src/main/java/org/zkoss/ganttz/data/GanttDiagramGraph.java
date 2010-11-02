@@ -133,6 +133,8 @@ public class GanttDiagramGraph<V, D> {
 
         GanttDate getOrderDeadline(V firstTask);
 
+        boolean isAsLateAsPossible(V task);
+
     }
 
     static class GanttZKAdapter implements IAdapter<Task, Dependency> {
@@ -272,6 +274,11 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public GanttDate getOrderDeadline(Task task) {
             return task.getOrderDeadline();
+        }
+
+        @Override
+        public boolean isAsLateAsPossible(Task task) {
+            return task.isAsLateAsPossible();
         }
 
     }
@@ -820,6 +827,8 @@ public class GanttDiagramGraph<V, D> {
                 if (modified) {
                     allModified.add(each.taskPoint.task);
                 }
+                adapter.isAsLateAsPossible(each.taskPoint.task);
+
             }
             List<V> shrunkContainers = shrunkContainersOfModified(allModified);
             for (V each : getTaskAffectedByShrinking(shrunkContainers)) {
