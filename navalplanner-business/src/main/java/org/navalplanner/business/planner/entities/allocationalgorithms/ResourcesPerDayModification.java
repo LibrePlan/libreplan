@@ -43,6 +43,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -246,10 +247,11 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract String getNoValidPeriodsMessageDueToIntersectionMessage();
 
-    public boolean isDayFilled(LocalDate day, EffortDuration taken) {
-        return getBeingModified().getAllocationCalendar()
-                .asDurationOn(PartialDay.wholeDay(day), goal).equals(taken);
+    public boolean thereAreMoreSpaceAvailableAt(IntraDayDate date) {
+        LocalDate day = date.getDate();
+        EffortDuration dayDuration = getBeingModified().getAllocationCalendar()
+                .asDurationOn(PartialDay.wholeDay(day), goal);
+        return dayDuration.compareTo(date.getEffortDuration()) > 0;
     }
-
 
 }

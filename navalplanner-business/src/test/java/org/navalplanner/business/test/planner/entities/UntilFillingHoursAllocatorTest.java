@@ -112,6 +112,17 @@ public class UntilFillingHoursAllocatorTest {
     }
 
     @Test
+    public void theEndDateIsTheDayAfterIfItIsCompletelyFilled() {
+        LocalDate start = new LocalDate();
+        givenStartDate(IntraDayDate.create(start, hours(1)));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(7);
+        assertThat(endDate, equalTo(startDate.nextDayAtStart()));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(0)));
+    }
+
+    @Test
     public void allTheRequestedHoursAreAssignedFor() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         ResourceAllocation.allocating(allocations).untilAllocating(32);

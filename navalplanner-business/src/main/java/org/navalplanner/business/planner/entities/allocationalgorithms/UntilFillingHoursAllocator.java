@@ -113,8 +113,7 @@ public abstract class UntilFillingHoursAllocator {
                     taken.plus(current.getEffortDuration()));
             effortRemaining = effortRemaining.minus(taken);
         }
-        if (resourcesPerDayModification.isDayFilled(lastDate.getDate(),
-                taken)) {
+        if (!resourcesPerDayModification.thereAreMoreSpaceAvailableAt(lastDate)) {
             return lastDate.nextDayAtStart();
         }
         return lastDate;
