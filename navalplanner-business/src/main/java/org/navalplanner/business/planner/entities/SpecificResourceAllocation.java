@@ -157,33 +157,33 @@ public class SpecificResourceAllocation extends
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         Validate.notNull(resource);
-        new SpecificAssignmentsAllocation().allocate(resourcesPerDay);
+        new SpecificAssignmentsAllocator().allocate(resourcesPerDay);
     }
 
     @Override
     public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocation()
+        return new SpecificAssignmentsAllocator()
                 .resourcesPerDayUntil(endExclusive);
     }
 
     @Override
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start) {
-        SpecificAssignmentsAllocation allocator = new SpecificAssignmentsAllocation();
+        SpecificAssignmentsAllocator allocator = new SpecificAssignmentsAllocator();
         return allocator.resourcesPerDayFromEndUntil(start);
     }
 
     @Override
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocation().fromStartUntil(endExclusive);
+        return new SpecificAssignmentsAllocator().fromStartUntil(endExclusive);
     }
 
     @Override
     public IAllocateHoursOnInterval fromEndUntil(LocalDate start) {
-        return new SpecificAssignmentsAllocation().fromEndUntil(start);
+        return new SpecificAssignmentsAllocator().fromEndUntil(start);
     }
 
-    private final class SpecificAssignmentsAllocation extends
-            AssignmentsAllocation {
+    private final class SpecificAssignmentsAllocator extends
+            AssignmentsAllocator {
 
         @Override
         protected List<SpecificDayAssignment> distributeForDay(LocalDate day,
@@ -200,7 +200,7 @@ public class SpecificResourceAllocation extends
 
     @Override
     public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end) {
-        return new SpecificAssignmentsAllocation().onInterval(start, end);
+        return new SpecificAssignmentsAllocator().onInterval(start, end);
     }
 
     @Override

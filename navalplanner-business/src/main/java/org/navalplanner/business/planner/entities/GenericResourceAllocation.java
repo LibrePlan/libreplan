@@ -225,7 +225,7 @@ public class GenericResourceAllocation extends
         }
     }
 
-    private class GenericAllocation extends AssignmentsAllocation {
+    private class GenericAllocation extends AssignmentsAllocator {
 
         private EffortDistributor hoursDistributor;
         private final List<Resource> resources;

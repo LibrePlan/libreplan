@@ -509,7 +509,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public abstract IAllocatable withPreviousAssociatedResources();
 
-    protected abstract class AssignmentsAllocation implements IAllocatable {
+    protected abstract class AssignmentsAllocator implements IAllocatable {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
