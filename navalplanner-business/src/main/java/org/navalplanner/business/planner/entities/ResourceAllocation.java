@@ -144,6 +144,41 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         };
     }
 
+    public enum Direction {
+        FORWARD {
+            @Override
+            public IntraDayDate getDateFromWhichToAllocate(Task task) {
+                return IntraDayDate.max(task.getFirstDayNotConsolidated(),
+                        task.getIntraDayStartDate());
+            }
+
+            @Override
+            void limitAvailabilityOn(AvailabilityTimeLine availability,
+                    IntraDayDate dateFromWhichToAllocate) {
+                availability.invalidUntil(dateFromWhichToAllocate
+                        .asExclusiveEnd());
+            }
+        },
+        BACKWARD {
+            @Override
+            public IntraDayDate getDateFromWhichToAllocate(Task task) {
+                return task.getIntraDayEndDate();
+            }
+
+            @Override
+            void limitAvailabilityOn(AvailabilityTimeLine availability,
+                    IntraDayDate dateFromWhichToAllocate) {
+                availability.invalidFrom(dateFromWhichToAllocate.getDate());
+            }
+        };
+
+        public abstract IntraDayDate getDateFromWhichToAllocate(Task task);
+
+        abstract void limitAvailabilityOn(AvailabilityTimeLine availability,
+                IntraDayDate dateFromWhichToAllocate);
+
+    }
+
     public static AllocationsSpecified allocating(
             List<ResourcesPerDayModification> resourceAllocations) {
         return new AllocationsSpecified(resourceAllocations);
@@ -229,7 +264,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public IntraDayDate untilAllocating(int hoursToAllocate) {
-            return untilAllocating(hoursToAllocate, doNothing());
+            return untilAllocating(Direction.FORWARD, hoursToAllocate);
+        }
+
+        public IntraDayDate untilAllocating(Direction direction,
+                int hoursToAllocate) {
+            return untilAllocating(direction, hoursToAllocate, doNothing());
         }
 
         private static INotFulfilledReceiver doNothing() {
@@ -244,7 +284,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public IntraDayDate untilAllocating(int hoursToAllocate,
                 final INotFulfilledReceiver receiver) {
+            return untilAllocating(Direction.FORWARD, hoursToAllocate, receiver);
+        }
+
+        public IntraDayDate untilAllocating(Direction direction,
+                int hoursToAllocate, final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
+                    direction,
                     task, allocations) {
 
                 @Override
@@ -256,17 +302,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(
-                        ResourceAllocation<T> allocation, IntraDayDate end,
+                        ResourceAllocation<T> allocation,
+                        IntraDayDate resultDate,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
                     Task task = AllocationsSpecified.this.task;
-                    allocation.resetAssignmentsTo(dayAssignments,
-                            task.getIntraDayStartDate(), end);
+                    if (isForwardScheduling()) {
+                        allocation.resetAssignmentsTo(dayAssignments,
+                                task.getIntraDayStartDate(), resultDate);
+                    } else {
+                        allocation.resetAssignmentsTo(dayAssignments,
+                                resultDate, task.getIntraDayEndDate());
+                    }
                     allocation.updateResourcesPerDay();
                 }
 
                 @Override
                 protected CapacityResult thereAreAvailableHoursFrom(
-                        IntraDayDate start,
+                        IntraDayDate dateFromWhichToAllocate,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
                     ICalendar calendar = getCalendar(resourcesPerDayModification);
@@ -274,7 +326,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getGoal();
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
-                    availability.invalidUntil(start.asExclusiveEnd());
+                    getDirection().limitAvailabilityOn(availability,
+                            dateFromWhichToAllocate);
                     return ThereAreHoursOnWorkHoursCalculator
                             .thereIsAvailableCapacityFor(calendar,
                                     availability, resourcesPerDay,

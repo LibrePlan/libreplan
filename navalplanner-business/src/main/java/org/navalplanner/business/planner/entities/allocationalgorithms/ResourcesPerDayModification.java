@@ -254,4 +254,9 @@ public abstract class ResourcesPerDayModification extends
         return dayDuration.compareTo(date.getEffortDuration()) > 0;
     }
 
+    public EffortDuration durationAtDay(PartialDay day) {
+        return getBeingModified().getAllocationCalendar().asDurationOn(day,
+                goal);
+    }
+
 }

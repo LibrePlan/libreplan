@@ -341,4 +341,8 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return IntraDayDate.startOfDay(getDate().plusDays(1));
     }
 
+    public IntraDayDate previousDayAtStart() {
+        return IntraDayDate.startOfDay(getDate().minusDays(1));
+    }
+
 }
