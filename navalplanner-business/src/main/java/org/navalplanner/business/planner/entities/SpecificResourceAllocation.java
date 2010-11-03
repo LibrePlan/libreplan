@@ -161,14 +161,15 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateResourcesPerDay until(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocation().until(endExclusive);
+    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive) {
+        return new SpecificAssignmentsAllocation()
+                .resourcesPerDayUntil(endExclusive);
     }
 
     @Override
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start) {
-        return new SpecificAssignmentsAllocation()
-                .resourcesPerDayFromEndUntil(start);
+        SpecificAssignmentsAllocation allocator = new SpecificAssignmentsAllocation();
+        return allocator.resourcesPerDayFromEndUntil(start);
     }
 
     @Override

@@ -244,8 +244,8 @@ public class SpecificResourceAllocationTest {
     public void canAllocateUntilSomeEndDate() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.until(start.plusDays(3)).allocate(
-                ResourcesPerDay.amount(1));
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(3))
+                .allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8,
                 8));
     }
@@ -445,8 +445,8 @@ public class SpecificResourceAllocationTest {
             }
         });
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.until(start.plusDays(4)).allocate(
-                ResourcesPerDay.amount(1));
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(4))
+                .allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getResourcesPerDay(),
                 equalTo(ResourcesPerDay.amount(1)));
     }
@@ -458,8 +458,8 @@ public class SpecificResourceAllocationTest {
         givenResourceCalendarAlwaysReturning(8);
         IntraDayDate end = IntraDayDate.startOfDay(start.getDate().plusDays(4));
         givenSpecificResourceAllocation(start, end);
-        specificResourceAllocation.until(end.asExclusiveEnd()).allocate(
-                ResourcesPerDay.amount(1));
+        specificResourceAllocation.resourcesPerDayUntil(end.asExclusiveEnd())
+                .allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getResourcesPerDay(),
                 equalTo(ResourcesPerDay.amount(1)));
     }

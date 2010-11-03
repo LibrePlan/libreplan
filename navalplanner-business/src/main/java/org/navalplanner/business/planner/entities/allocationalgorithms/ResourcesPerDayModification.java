@@ -69,8 +69,8 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public void applyAllocationUntil(LocalDate endExclusive) {
-            genericAllocation.forResources(getResources()).until(endExclusive)
-                    .allocate(getGoal());
+            genericAllocation.forResources(getResources())
+                    .resourcesPerDayUntil(endExclusive).allocate(getGoal());
         }
 
         @Override
@@ -136,7 +136,8 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public void applyAllocationUntil(LocalDate endExclusive) {
-            resourceAllocation.until(endExclusive).allocate(getGoal());
+            resourceAllocation.resourcesPerDayUntil(endExclusive).allocate(
+                    getGoal());
         }
 
         @Override

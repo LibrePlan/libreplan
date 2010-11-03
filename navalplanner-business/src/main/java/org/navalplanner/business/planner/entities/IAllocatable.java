@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
  */
 public interface IAllocatable extends IAllocateResourcesPerDay {
 
-    public IAllocateResourcesPerDay until(LocalDate endExclusive);
+    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive);
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
 
