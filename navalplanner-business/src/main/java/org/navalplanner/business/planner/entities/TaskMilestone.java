@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -113,6 +114,11 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     @AssertTrue(message = "order element associated to a milestone must be null")
     private boolean theOrderElementMustBeNull() {
         return getOrderElement() == null;
+    }
+
+    @Override
+    protected IntraDayDate calculateNewEndGiven(IntraDayDate newStartDate) {
+        return newStartDate;
     }
 
     @Override

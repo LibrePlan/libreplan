@@ -1020,25 +1020,24 @@ public class GanttDiagramGraph<V, D> {
 
         private boolean enforceStartAndEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
-            GanttDate previousEndDate = adapter.getEndDateFor(task);
             boolean startDateChanged = enforceStartDate(task, incoming);
-            boolean endDateChanged = !parentRecalculation
-                    && enforceEndDate(task, previousEndDate, incoming);
-            return startDateChanged || endDateChanged;
+            if (startDateChanged) {
+                enforceEndDate(task, incoming);
+            }
+            return startDateChanged;
         }
 
         private boolean enforceEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
-            GanttDate previousEndDate = adapter.getEndDateFor(task);
-            return enforceEndDate(task, previousEndDate, incoming);
+            return enforceEndDate(task, incoming);
         }
 
         @SuppressWarnings("unchecked")
-        private boolean enforceEndDate(V task, GanttDate previousEndDate,
-                Set<D> incoming) {
+        private boolean enforceEndDate(V task, Set<D> incoming) {
             if (adapter.isFixed(task)) {
                 return false;
             }
+            GanttDate previousEndDate = adapter.getEndDateFor(task);
             Constraint<GanttDate> currentLength = adapter
                     .getCurrentLenghtConstraintFor(task);
             Constraint<GanttDate> respectStartDate = adapter

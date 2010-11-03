@@ -112,6 +112,13 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
+    protected IntraDayDate calculateNewEndGiven(IntraDayDate newStartDate) {
+        // the end date is calculated in GanttDiagramGraph using incoming
+        // dependencies from children
+        return newStartDate;
+    }
+
+    @Override
     protected void moveAllocations(Scenario scenario) {
         // do nothing
     }
@@ -198,4 +205,5 @@ public class TaskGroup extends TaskElement {
         }
         return result;
     }
+
 }
