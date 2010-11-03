@@ -47,6 +47,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.planner.entities.Task;
@@ -1352,8 +1353,66 @@ class Row {
         }
     };
 
-    private IAssignmentFunctionConfiguration[] functions = { none,
-            defaultStrechesFunction, strechesWithInterpolation };
+    private IAssignmentFunctionConfiguration sigmoidFunction = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            try {
+                Messagebox.show(_("Sigmoid function applied to current resource"),
+                        _("Sigmoid function"),
+                        Messagebox.OK, Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getName() {
+            return _("Sigmoid");
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function instanceof SigmoidFunction;
+        }
+
+        @Override
+        public void applyDefaultFunction(
+                ResourceAllocation<?> resourceAllocation) {
+            if (isChangeConfirmed()) {
+                resourceAllocation.setAssignmentFunction(SigmoidFunction
+                        .create());
+                reloadHours();
+            }
+        }
+
+        private void reloadHours() {
+            reloadHoursSameRowForDetailItems();
+            reloadAllHours();
+            fireCellChanged();
+        }
+
+        private boolean isChangeConfirmed() {
+            try {
+                int status = Messagebox
+                        .show(_("You are going to change the assignment function. Are you sure?"),
+                                _("Confirm change"), Messagebox.YES
+                                        | Messagebox.NO, Messagebox.QUESTION);
+                return Messagebox.YES == status;
+            } catch (InterruptedException e) {
+
+            }
+            return false;
+        }
+
+    };
+
+    private IAssignmentFunctionConfiguration[] functions = {
+            none,
+            defaultStrechesFunction,
+            strechesWithInterpolation,
+            sigmoidFunction
+    };
 
     private boolean isLimiting;
 
