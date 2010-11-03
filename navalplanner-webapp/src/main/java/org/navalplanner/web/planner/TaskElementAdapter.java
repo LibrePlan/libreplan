@@ -745,8 +745,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public void moveTo(GanttDate date) {
             setBeginDate(date);
-            if (taskElement instanceof Task) {
-                Task task = (Task) taskElement;
+            if (taskElement instanceof ITaskLeafConstraint) {
+                ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
                 task.explicityMoved(toLocalDate(date));
             }
         }
