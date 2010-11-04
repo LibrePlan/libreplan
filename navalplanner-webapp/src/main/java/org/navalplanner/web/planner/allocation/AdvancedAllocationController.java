@@ -1195,23 +1195,31 @@ class Row {
         }
     }
 
+    private Hbox hboxAssigmentFunctionsCombobox = null;
+
     Component getFunction() {
         if (isGroupingRow()) {
             return new Label();
         } else if (isLimiting) {
             return new Label(_("Limiting assignment"));
         } else {
-            Hbox hbox = new Hbox();
-
-            Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
-            appendListener(assignmentFunctionsCombo);
-
-            hbox.appendChild(assignmentFunctionsCombo);
-            hbox
-                    .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
-
-            return hbox;
+            if (hboxAssigmentFunctionsCombobox == null) {
+                initializeAssigmentFunctionsCombobox();
+            }
+            return hboxAssigmentFunctionsCombobox;
         }
+    }
+
+    private void initializeAssigmentFunctionsCombobox() {
+        hboxAssigmentFunctionsCombobox = new Hbox();
+
+        Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
+        appendListener(assignmentFunctionsCombo);
+        assignmentFunctionsCombo.setValue("None");
+
+        hboxAssigmentFunctionsCombobox.appendChild(assignmentFunctionsCombo);
+        hboxAssigmentFunctionsCombobox
+                .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
     }
 
     private void appendListener(final Combobox assignmentFunctionsCombo) {
