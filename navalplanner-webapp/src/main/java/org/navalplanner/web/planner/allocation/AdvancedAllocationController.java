@@ -1237,10 +1237,18 @@ class Row {
                         boolean hasChanged = !choosen
                                 .isTargetedTo(assignmentFunction);
                         boolean noPreviousAllocation = assignmentFunction == null;
-                        if (hasChanged
-                                && (noPreviousAllocation || isChangeConfirmed())) {
-                            choosen
-                                    .applyDefaultFunction(resourceAllocation);
+                        if (hasChanged) {
+                            boolean changeConfirmed = false;
+                            if (noPreviousAllocation || (changeConfirmed = isChangeConfirmed()) ) {
+                                choosen.applyDefaultFunction(resourceAllocation);
+                                assignmentFunctionsCombo.setVariable("previousValue", assignmentFunctionsCombo.getValue(), true);
+                                return;
+                            }
+
+                            if (!changeConfirmed) {
+                                String previousValue = (String) assignmentFunctionsCombo.getVariable("previousValue", true);
+                                assignmentFunctionsCombo.setValue(previousValue);
+                            }
                         }
                     }
 
