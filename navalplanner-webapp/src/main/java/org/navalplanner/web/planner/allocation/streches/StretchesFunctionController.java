@@ -54,6 +54,8 @@ import org.zkoss.zul.api.Window;
 
 public class StretchesFunctionController extends GenericForwardComposer {
 
+    private static final String EXIT_STATUS = "EXIT_STATUS";
+
     public interface IGraphicGenerator {
 
         public boolean areChartsEnabled(IStretchesFunctionModel model);
@@ -99,9 +101,10 @@ public class StretchesFunctionController extends GenericForwardComposer {
         reloadStretchesListAndCharts();
     }
 
-    public void showWindow() {
+    public int showWindow() {
         try {
             window.doModal();
+            return (Integer) window.getVariable("EXIT_STATUS", true);
         } catch (SuspendNotAllowedException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -112,7 +115,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     public void confirm() throws InterruptedException {
         try {
             stretchesFunctionModel.confirm();
-            window.setVisible(false);
+            exit();
         } catch (ValidationException e) {
             Messagebox.show(e.getMessage(), _("Error"), Messagebox.OK,
                     Messagebox.ERROR);
@@ -126,8 +129,22 @@ public class StretchesFunctionController extends GenericForwardComposer {
                 Messagebox.QUESTION);
         if (Messagebox.YES == status) {
             stretchesFunctionModel.cancel();
-            window.setVisible(false);
+            close();
         }
+    }
+
+    private void close() {
+        window.setVariable(EXIT_STATUS, Messagebox.CANCEL, true);
+        window.setVisible(false);
+    }
+
+    private void exit() {
+        window.setVariable(EXIT_STATUS, Messagebox.OK, true);
+        window.setVisible(false);
+    }
+
+    public void onClose(Event event) {
+        close();
     }
 
     public List<Stretch> getStretches() {
