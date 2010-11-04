@@ -26,8 +26,33 @@ import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
 
 /**
- * @author Óscar González Fernández
+ * <p>
+ * It's a special purpose date type for ganttzk library. Since ganttzk could be
+ * used by several implementations it must have freedom to allow different
+ * underlying implementations.
+ * </p>
+ * <p>
+ * There are two base cases:
+ * <ul>
+ * <li>the {@link LocalDateBased} one that is basically a LocalDate date. It's
+ * normally used to receive values from interface. For example when moving a
+ * Task a {@link LocalDateBased} date is generated with the position the task
+ * has been moved.</li>
+ * <li>the {@link CustomDate}. This is one intended to be overridden by the user
+ * of ganttzk.
+ * </ul>
+ * These base cases are used as a basis for a form of degenerate pattern
+ * matching in {@link #byCases(ICases)}, resembling the visitor pattern. This
+ * scheme allows ganttzk to work with both kinds of dates and perform different
+ * operations depending on the type.
+ * </p>
+ * <p>
+ * Please note that ganttzk is intended to work with only one type of
+ * {@link CustomDate} at the same time. It's a bad idea to mix several types of
+ * CustomDate.
+ * </p>
  *
+ * @author Óscar González Fernández
  */
 public abstract class GanttDate implements Comparable<GanttDate> {
 

@@ -37,6 +37,30 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
+ * <p>
+ * A date type that represents a point inside a working day. This doesn't
+ * translate directly to a concrete DateTime because the working day can start
+ * at an arbitrary hour.
+ * </p>
+ * <p>
+ * It represents the instant at which {@link #effortDuration} has been elapsed
+ * in the working day specified by the field {@link #date}. Since the amount of
+ * time for a working day is measured with an {@link EffortDuration}, to
+ * indicate the point inside a working day an {@link EffortDuration} is
+ * specified.
+ * </p>
+ * <p>
+ * For example, a IntraDayDate with a date such as 23/07/2010 and an effort
+ * duration of 2 hours represents the moment on 23/07/2010 at which 2 hours of
+ * the working day had been elapsed. Normally this object can't be converted to
+ * a precise {@link DateTime} due to not knowing the timetable of the workers.
+ * Nevertheless, this object is useful anyway in order to know how many effort
+ * is left at the working day.
+ * </p>
+ *
+ * @see PartialDay
+ * @see LocalDate
+ * @see EffortDuration
  * @author Óscar González Fernández
  *
  */
@@ -148,8 +172,9 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
     }
 
     /**
-     * It's an interval of {@link IntraDayDate}. It allows to know how much
-     * effort can be spent in this day
+     * It's an interval of {@link IntraDayDate}. It must not elapse more than
+     * one day. It allows to represent a subinterval of the working day. It
+     * allows to know how much effort can be spent in this day.
      */
     public static class PartialDay {
 

@@ -28,6 +28,20 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 
+/**
+ * <p>
+ * It represents some amount of effort. It's composed by some hours, minutes and
+ * seconds. Less granularity than a second can't be specified.
+ * </p>
+ * <p>
+ * This object can represent the predicted amount of work that a task takes, the
+ * scheduled amount of work for a working day, the amount of effort that a
+ * worker can work in a given day, etc.
+ * </p>
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ *
+ */
 public class EffortDuration implements Comparable<EffortDuration> {
 
 
