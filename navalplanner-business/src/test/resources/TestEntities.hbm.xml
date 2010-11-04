@@ -1,41 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-access="field">
-  <class name="org.navalplanner.business.common.test.partialtime.EntityContainingPartialDate">
-    <id name="id">
-      <generator class="hilo">
-        <param name="max_lo">100</param>
-      </generator>
-    </id>
-    <version name="version" type="long"/>
-    <property name="partialDate" type="org.navalplanner.business.common.partialtime.hibernate.PartialDateType">
-        <column name="normalizedInstant"></column>
-        <column name="granularity"></column>
-    </property>
-  </class>
-  <class name="org.navalplanner.business.common.test.partialtime.EntityContainingIntervalOfPartialDates">
-      <id name="id">
-      <generator class="hilo">
-        <param name="max_lo">100</param>
-      </generator>
-    </id>
-    <version name="version" type="long"/>
-    <property name="interval" type="org.navalplanner.business.common.partialtime.hibernate.IntervalOfPartialDatesType">
-        <column name="start_instant"></column>
-        <column name="start_granularity"></column>
-        <column name="end_instant"></column>
-        <column name="end_granularity"></column>
-    </property>
-  </class>
-  <class name="org.navalplanner.business.common.test.partialtime.EntityContainingTimeQuantity">
-      <id name="id">
-      <generator class="hilo">
-        <param name="max_lo">100</param>
-      </generator>
-    </id>
-    <version name="version" type="long"/>
-    <property name="timeQuantity" type="org.navalplanner.business.common.partialtime.hibernate.TimeQuantityType"></property>
-  </class>
   <class name="org.navalplanner.business.test.workingday.hibernate.EntityContainingResourcePerDay">
   <id name="id">
       <generator class="hilo">
