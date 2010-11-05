@@ -28,6 +28,7 @@
         <property name="expandCompanyPlanningViewCharts" not-null="true" />
         <property name="expandOrderPlanningViewCharts" not-null="true" />
         <property name="expandResourceLoadViewCharts" not-null="true" />
+        <property name="monteCarloMethodTabVisible" not-null="true" />
 
     </class>
 

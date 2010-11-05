@@ -349,6 +349,23 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean isMonteCarloMethodTabVisible() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isMonteCarloMethodTabVisible();
+    }
+
+    @Override
+    public void setMonteCarloMethodTabVisible(
+            Boolean visible) {
+        if (configuration != null) {
+            configuration
+                    .setMonteCarloMethodTabVisible(visible);
+        }
+    }
+
+    @Override
     public Boolean isExpandCompanyPlanningViewCharts() {
         if (configuration == null) {
             return null;

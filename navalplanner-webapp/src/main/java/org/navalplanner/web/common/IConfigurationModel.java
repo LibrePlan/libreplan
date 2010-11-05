@@ -89,6 +89,10 @@ public interface IConfigurationModel {
 
     Boolean isExpandResourceLoadViewCharts();
 
+    Boolean isMonteCarloMethodTabVisible();
+
+    void setMonteCarloMethodTabVisible(Boolean visible);
+
     /*
      * Final conversation steps
      */

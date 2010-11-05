@@ -122,6 +122,10 @@ public class OrderPlanningController implements Composer {
                 .retrieve();
     }
 
+    public List<org.navalplanner.business.planner.entities.Task> getCriticalPath() {
+        return planner.getCriticalPath();
+    }
+
     public void setOrder(Order order,
             ICommand<TaskElement>... additionalCommands) {
         Validate.notNull(additionalCommands);

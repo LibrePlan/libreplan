@@ -376,4 +376,14 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isExpandResourceLoadViewCharts();
     }
 
+    public void setMonteCarloMethodTabVisible(
+            Boolean expandResourceLoadViewCharts) {
+        configurationModel
+                .setMonteCarloMethodTabVisible(expandResourceLoadViewCharts);
+    }
+
+    public Boolean isMonteCarloMethodTabVisible() {
+        return configurationModel.isMonteCarloMethodTabVisible();
+    }
+
 }

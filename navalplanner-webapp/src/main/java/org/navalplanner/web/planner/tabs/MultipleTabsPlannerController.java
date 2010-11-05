@@ -25,6 +25,7 @@ import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 import java.util.Map;
 
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -36,6 +37,7 @@ import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
+import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.company.CompanyPlanningController;
@@ -47,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
@@ -137,6 +140,8 @@ public class MultipleTabsPlannerController implements Composer,
 
     private ITab limitingResourcesTab;
 
+    private ITab monteCarloTab;
+
     private ITab ordersTab;
 
     private ITab advancedAllocationTab;
@@ -156,6 +161,9 @@ public class MultipleTabsPlannerController implements Composer,
     private LimitingResourcesController limitingResourcesController;
 
     @Autowired
+    private MonteCarloController monteCarloController;
+
+    @Autowired
     private LimitingResourcesController limitingResourcesControllerGlobal;
 
     private org.zkoss.zk.ui.Component breadcrumbs;
@@ -171,6 +179,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Autowired
     private URLHandlerRegistry registry;
@@ -237,19 +248,34 @@ public class MultipleTabsPlannerController implements Composer,
 
                 }, parameters);
 
+        final boolean isMontecarloVisible = isMonteCarloVisible();
+        if (isMontecarloVisible) {
+            monteCarloTab = MonteCarloTabCreator.create(mode, monteCarloController,
+                    orderPlanningController, breadcrumbs);
+        }
+
         final State<Void> typeChanged = typeChangedState();
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
                 .create(mode,
                 transactionService, orderDAO, taskElementDAO, resourceDAO,
                 scenarioManager.getCurrent(), returnToPlanningTab()));
 
-        return TabsConfiguration.create()
+        TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
             .add(tabWithNameReloading(ordersTab, typeChanged))
-.add(
-                visibleOnlyAtOrderMode(advancedAllocationTab));
+            .add(visibleOnlyAtOrderMode(advancedAllocationTab));
+
+        if (isMontecarloVisible) {
+            tabsConfiguration.add(visibleOnlyAtOrderMode(monteCarloTab));
+        }
+
+        return tabsConfiguration;
+    }
+
+    private boolean isMonteCarloVisible() {
+        return configurationDAO.getConfiguration().isMonteCarloMethodTabVisible();
     }
 
     @SuppressWarnings("unchecked")
@@ -324,6 +350,7 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     @Override
+    @Transactional(readOnly=true)
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         Planner.registerNeededScripts();
         tabsSwitcher = (TabSwitcher) comp;

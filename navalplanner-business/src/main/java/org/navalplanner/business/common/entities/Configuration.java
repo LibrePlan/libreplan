@@ -61,6 +61,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean expandResourceLoadViewCharts = true;
 
+    private Boolean monteCarloMethodTabVisible = false;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -174,6 +176,14 @@ public class Configuration extends BaseEntity {
 
     public Boolean isExpandResourceLoadViewCharts() {
         return expandResourceLoadViewCharts;
+    }
+
+    public Boolean isMonteCarloMethodTabVisible() {
+        return monteCarloMethodTabVisible;
+    }
+
+    public void setMonteCarloMethodTabVisible(Boolean monteCarloMethodTabVisible) {
+        this.monteCarloMethodTabVisible = monteCarloMethodTabVisible;
     }
 
 }
