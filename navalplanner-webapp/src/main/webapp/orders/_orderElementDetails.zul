@@ -19,7 +19,7 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.DetailsOrderElementController">
+    apply="org.navalplanner.web.orders.DetailsOrderElementController" width="100%">
     <!-- Details data -->
     <grid id="details" fixedLayout="true">
         <columns>
