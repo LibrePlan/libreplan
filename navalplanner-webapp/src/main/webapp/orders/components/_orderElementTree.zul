@@ -36,9 +36,6 @@
                 constraint="no negative" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
                 onClick="treeController.addElement(self.parent);" disabled="true" />
-            <button label="${i18n:_('Create Template')}"
-                onClick="treeController.createTemplateFromSelectedOrderElement();"
-                visible="${treeComponent.createTemplateEnabled}"/>
             <button id="btnNewFromTemplate" label="${i18n:_('Create From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
                 visible="${treeComponent.createFromTemplateEnabled}"/>
