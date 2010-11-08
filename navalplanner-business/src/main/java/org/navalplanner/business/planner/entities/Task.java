@@ -270,13 +270,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         this.calculatedValue = calculatedValue;
     }
 
-    public void setDaysDuration(Integer duration) {
-        Validate.notNull(duration);
-        Validate.isTrue(duration >= 0);
-        DateTime endDate = toDateTime(getStartDate()).plusDays(duration);
-        setEndDate(endDate.toDate());
-    }
-
     public Integer getDaysDuration() {
         Days daysBetween = Days.daysBetween(new LocalDate(
                 toDateTime(getStartDate())), new LocalDate(
