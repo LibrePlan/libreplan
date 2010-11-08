@@ -135,16 +135,68 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         return orderModel.getOrderElementTreeModel();
     }
 
-    public void createTemplate() {
+    public void createTemplateFromSelectedOrderElement() {
         if (tree.getSelectedCount() == 1) {
             createTemplate(getSelectedNode());
         } else {
-            try {
-                Messagebox.show(_("Choose a order element "
-                        + "from which create a template from"));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void editSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            showEditionOrderElement(tree.getSelectedItem());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void moveSelectedOrderElementUp() {
+        if (tree.getSelectedCount() == 1) {
+            up(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void moveSelectedOrderElementDown() {
+        if (tree.getSelectedCount() == 1) {
+            down(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void indentSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            indent(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void unindentSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            unindent(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void deleteSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            remove(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    private void showSelectAnElementMessageBox() {
+        try {
+            Messagebox.show(_("Choose an order element "
+                    + "to operate on it"));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -710,11 +762,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         protected void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
             addCell(createEditButton(currentOrderElement, item),
-                    createTemplateButton(currentOrderElement),
-                    createDownButton(item,currentOrderElement),
-                    createUpButton(item,currentOrderElement),
-                    createUnindentButton(item, currentOrderElement),
-                    createIndentButton(item, currentOrderElement),
                     createRemoveButton(currentOrderElement));
         }
 
@@ -729,21 +776,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                         }
                     });
             return editbutton;
-        }
-
-        private Component createTemplateButton(
-                final OrderElement currentOrderElement) {
-            Button templateButton = createButton(
-                    "/common/img/ico_derived1.png", _("Create Template"),
-                    "/common/img/ico_derived.png",
-                    "icono",
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            createTemplate(currentOrderElement);
-                        }
-                    });
-            return templateButton;
         }
 
     }
