@@ -146,7 +146,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     }
 
     public String getAddElementLabel() {
-        return _("New order element");
+        return _("Add");
     }
 
     public boolean isCreateTemplateEnabled() {

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 12:44+0200\n"
-"PO-Revision-Date: 2010-10-27 13:10+0200\n"
+"POT-Creation-Date: 2010-11-08 19:55+0100\n"
+"PO-Revision-Date: 2010-11-08 19:55+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
@@ -4233,10 +4233,6 @@ msgstr "Recurso limitante"
 msgid "Calendar allocation"
 msgstr "Asignación de calendario"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:145
-msgid "Choose a order element from which create a template from"
-msgstr "Elija un elemento de pedido a partir del cual crear una plantilla"
-
 #: navalplanner-webapp/src/main/webapp/materials/materials.zul:85
 #: navalplanner-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
 #: navalplanner-webapp/src/main/webapp/orders/_assignmentsBox.zul:33
@@ -6666,6 +6662,46 @@ msgstr "Permitida edición de todos los pedidos"
 #: navalplanner-business/src/main/java/org/navalplanner/business/users/entities/UserRole.java:37
 msgid "Order creation allowed"
 msgstr "Permitida creación de pedidos"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:39
+msgid "Add From Template"
+msgstr "Añadir a partir de plantilla"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:44
+msgid "Operations with selected order element:"
+msgstr "Operaciones con el elemento de pedido seleccionado:"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:46
+msgid "Edit selected order element"
+msgstr "Editar elemento de pedido seleccionado"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:50
+msgid "Create template from selected order element"
+msgstr "Crear plantilla a partir de elemento de pedido seleccionado"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:54
+msgid "Move selected order element down"
+msgstr "Mover elemento de pedido seleccionado hacia abajo"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:58
+msgid "Move selected order element up"
+msgstr "Mover elemento de pedido seleccionado hacia arriba"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:62
+msgid "Unindent selected order element"
+msgstr "Desindentar elemento de pedido seleccionado"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:66
+msgid "Indent selected order element"
+msgstr "Indentar elemento de pedido seleccionado"
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:70
+msgid "Delete selected order element"
+msgstr "Borrar elemento de pedido seleccionado"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:196
+msgid "Choose an order element to operate on it"
+msgstr "Elija un elemento de pedido para operar sobre él"
 
 #~ msgid "Name/Code"
 #~ msgstr "Nombre/Código"

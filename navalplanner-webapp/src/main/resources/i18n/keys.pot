@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-10-27 12:44+0200\n"
+"POT-Creation-Date: 2010-11-08 19:55+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -4142,10 +4142,6 @@ msgstr ""
 msgid "Calendar allocation"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:145
-msgid "Choose a order element from which create a template from"
-msgstr ""
-
 #: navalplanner-webapp/src/main/webapp/materials/materials.zul:85
 #: navalplanner-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:32
 #: navalplanner-webapp/src/main/webapp/orders/_assignmentsBox.zul:33
@@ -6492,4 +6488,44 @@ msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/users/entities/UserRole.java:37
 msgid "Order creation allowed"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:39
+msgid "Add From Template"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:44
+msgid "Operations with selected order element:"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:46
+msgid "Edit selected order element"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:50
+msgid "Create template from selected order element"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:54
+msgid "Move selected order element down"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:58
+msgid "Move selected order element up"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:62
+msgid "Unindent selected order element"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:66
+msgid "Indent selected order element"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:70
+msgid "Delete selected order element"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:196
+msgid "Choose an order element to operate on it"
 msgstr ""
