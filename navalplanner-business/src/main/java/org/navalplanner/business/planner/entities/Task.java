@@ -23,6 +23,7 @@ package org.navalplanner.business.planner.entities;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -115,6 +116,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private Integer priority;
 
     private Consolidation consolidation;
+
+    private BigDecimal workableDays;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -686,6 +689,14 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
         }
         return getIntraDayStartDate();
+    }
+
+    public void setWorkableDays(BigDecimal workableDays) {
+        this.workableDays = workableDays;
+    }
+
+    public BigDecimal getWorkableDays() {
+        return workableDays;
     }
 
 }
