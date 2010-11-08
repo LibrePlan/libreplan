@@ -25,7 +25,6 @@ import java.util.Set;
 
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
 
 /**
@@ -34,7 +33,7 @@ import org.zkoss.ganttz.data.Task;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
+public interface ICriticalPathCalculable<T> {
 
     List<T> getInitialTasks();
 

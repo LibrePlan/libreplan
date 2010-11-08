@@ -52,7 +52,8 @@ import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
  * dependencies and in the duration of the tasks using listeners. <br/>
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GanttDiagramGraph<V, D> {
+public class GanttDiagramGraph<V, D extends IDependency<V>> implements
+        ICriticalPathCalculable<V> {
 
     private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
 
@@ -76,7 +77,7 @@ public class GanttDiagramGraph<V, D> {
         return GANTTZK_ADAPTER;
     }
 
-    public interface IAdapter<V, D> {
+    public interface IAdapter<V, D extends IDependency<V>> {
         List<V> getChildren(V task);
 
         boolean isContainer(V task);
@@ -241,8 +242,7 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public static class GanttZKDiagramGraph extends
-            GanttDiagramGraph<Task, Dependency> implements
-            ICriticalPathCalculable<Task> {
+            GanttDiagramGraph<Task, Dependency> {
 
         private GanttZKDiagramGraph(
                 List<Constraint<GanttDate>> globalStartConstraints,
@@ -344,7 +344,8 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    public static <V, D> GanttDiagramGraph<V, D> create(IAdapter<V, D> adapter,
+    public static <V, D extends IDependency<V>> GanttDiagramGraph<V, D> create(
+            IAdapter<V, D> adapter,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
@@ -1215,7 +1216,7 @@ public class GanttDiagramGraph<V, D> {
         return result;
     }
 
-    public D getDependencyFrom(V from, V to) {
+    public IDependency<V> getDependencyFrom(V from, V to) {
         return graph.getEdge(from, to);
     }
 
@@ -1322,13 +1323,15 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    public static class TaskPoint<T, D> {
+    public static class TaskPoint<T, D extends IDependency<T>> {
 
-        public static <T, D> TaskPoint<T, D> both(IAdapter<T, D> adapter, T task) {
+        public static <T, D extends IDependency<T>> TaskPoint<T, D> both(
+                IAdapter<T, D> adapter, T task) {
             return new TaskPoint<T, D>(adapter, task, PointType.BOTH);
         }
 
-        public static <T, D> TaskPoint<T, D> endOf(IAdapter<T, D> adapter,
+        public static <T, D extends IDependency<T>> TaskPoint<T, D> endOf(
+                IAdapter<T, D> adapter,
                 T task) {
             return new TaskPoint<T, D>(adapter, task, PointType.END);
         }

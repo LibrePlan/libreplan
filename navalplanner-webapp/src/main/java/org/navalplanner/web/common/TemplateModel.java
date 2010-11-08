@@ -29,8 +29,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -41,11 +41,11 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Dependency;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -66,6 +66,7 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
@@ -90,7 +91,8 @@ import org.zkoss.zk.ui.util.Clients;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TemplateModel implements ITemplateModel {
 
-    private static class DependencyWithVisibility {
+    private static class DependencyWithVisibility implements
+            IDependency<TaskElement> {
 
         public static DependencyWithVisibility createInvisible(
                 TaskElement source, TaskElement destination, DependencyType type) {
@@ -108,7 +110,7 @@ public class TemplateModel implements ITemplateModel {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
                 TaskElement source = each.getSource();
-                DependencyType type = each.getGraphicalType();
+                DependencyType type = each.getType();
                 result.addAll(type.getStartConstraints(source, adapter));
             }
             return result;
@@ -120,7 +122,7 @@ public class TemplateModel implements ITemplateModel {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
                 TaskElement source = each.getSource();
-                DependencyType type = each.getGraphicalType();
+                DependencyType type = each.getType();
                 result.addAll(type.getEndConstraints(source, adapter));
             }
             return result;
@@ -157,7 +159,7 @@ public class TemplateModel implements ITemplateModel {
             return destination;
         }
 
-        public DependencyType getGraphicalType() {
+        public DependencyType getType() {
             return type;
         }
 
@@ -179,7 +181,7 @@ public class TemplateModel implements ITemplateModel {
         }
 
         public PointType getPointType() {
-            return getGraphicalType().getPointModified();
+            return getType().getPointModified();
         }
 
     }
@@ -310,7 +312,7 @@ public class TemplateModel implements ITemplateModel {
 
         @Override
         public DependencyType getType(DependencyWithVisibility dependency) {
-            return dependency.getGraphicalType();
+            return dependency.getType();
         }
 
         @Override
