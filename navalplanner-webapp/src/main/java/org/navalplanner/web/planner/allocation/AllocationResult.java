@@ -19,7 +19,6 @@
  */
 package org.navalplanner.web.planner.allocation;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,7 +45,7 @@ public class AllocationResult {
 
     public static AllocationResult create(Task task,
             CalculatedValue calculatedValue, List<AllocationRow> rows,
-            BigDecimal newWorkableDays) {
+            Integer newWorkableDays) {
         List<ResourceAllocation<?>> newAllocations = AllocationRow
                 .getNewFrom(rows);
         List<ModifiedAllocation> modified = AllocationRow.getModifiedFrom(rows);
@@ -94,9 +93,9 @@ public class AllocationResult {
      * The number of workable days with wich the allocation has been done. Can
      * be <code>null</code>
      */
-    private final BigDecimal newWorkableDays;
+    private final Integer newWorkableDays;
 
-    private AllocationResult(Task task, BigDecimal newWorkableDays,
+    private AllocationResult(Task task, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,

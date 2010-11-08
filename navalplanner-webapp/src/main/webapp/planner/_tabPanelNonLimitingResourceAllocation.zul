@@ -83,7 +83,7 @@
                     </hbox>
                         <!-- Planned Workable Days -->
                         <label style="font-weight: bold" value="${i18n:_('Planned workable days :')}" />
-                        <decimalbox id="dbTaskWorkableDays" width="90px" />
+                        <intbox id="taskWorkableDays" width="90px" />
                     <hbox>
 
                     </hbox>

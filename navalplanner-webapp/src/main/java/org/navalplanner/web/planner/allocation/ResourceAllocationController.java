@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.allocation;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -114,7 +113,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Checkbox extendedViewCheckbox;
 
-    private Decimalbox dbTaskWorkableDays;
+    private Intbox taskWorkableDays;
 
     //  Orientative task end according to number of workable days
     private Date plannedTaskEnd;
@@ -240,7 +239,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     .setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
 
-            formBinder.setWorkableDays(dbTaskWorkableDays);
+            formBinder.setWorkableDays(taskWorkableDays);
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
@@ -269,21 +268,18 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Label lbTaskEnd;
 
     private void initTaskWorkableDays(org.navalplanner.business.planner.entities.Task task) {
-        dbTaskWorkableDays.setValue(new BigDecimal(task.getDaysDuration()));
+        taskWorkableDays.setValue(task.getDaysDuration());
         plannedTaskEnd = resourceAllocationModel.getTaskEnd();
-        dbTaskWorkableDays.setValue(new BigDecimal(task.getDaysDuration()));
-        dbTaskWorkableDays.addEventListener(Events.ON_CHANGE, new EventListener() {
+        taskWorkableDays.setValue(task.getDaysDuration());
+        taskWorkableDays.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Decimalbox decimalbox = (Decimalbox) event.getTarget();
-                setPlannedTaskEnd(calculateEndDate(getDuration(decimalbox)));
+                setPlannedTaskEnd(calculateEndDate(taskWorkableDays
+                        .getValue()));
                 updateTaskEndDateInTaskPropertiesPanel(getPlannedTaskEnd());
                 Util.reloadBindings(lbTaskEnd);
-            }
-
-            private int getDuration(Decimalbox decimalbox) {
-                return decimalbox.getValue() != null ? decimalbox.getValue().toBigInteger().intValue() : 0;
             }
 
             private void updateTaskEndDateInTaskPropertiesPanel(Date endDate) {
@@ -448,7 +444,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component input(
                     ResourceAllocationController resourceAllocationController) {
-                return resourceAllocationController.dbTaskWorkableDays;
+                return resourceAllocationController.taskWorkableDays;
             }
         },
         NUMBER_OF_HOURS(CalculatedValue.NUMBER_OF_HOURS) {

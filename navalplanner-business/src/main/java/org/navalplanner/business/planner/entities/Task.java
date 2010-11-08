@@ -24,7 +24,6 @@ import static java.util.Collections.emptyList;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -118,7 +117,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     private Consolidation consolidation;
 
-    private BigDecimal workableDays;
+    private Integer workableDays;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -363,7 +362,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void mergeAllocation(Scenario scenario, final IntraDayDate start,
-            final IntraDayDate end, BigDecimal newWorkableDays,
+            final IntraDayDate end, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
@@ -688,7 +687,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         return getIntraDayStartDate();
     }
 
-    public BigDecimal getWorkableDays() {
+    public Integer getWorkableDays() {
         return workableDays;
     }
 

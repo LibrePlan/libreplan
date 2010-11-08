@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -289,7 +288,7 @@ public class AllocationRowsHandler {
                 formBinder.getAllocationEnd());
     }
 
-    private BigDecimal getWorkableDaysIfApplyable() {
+    private Integer getWorkableDaysIfApplyable() {
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
         case RESOURCES_PER_DAY:

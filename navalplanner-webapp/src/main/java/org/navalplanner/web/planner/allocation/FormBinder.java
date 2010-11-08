@@ -111,7 +111,7 @@ public class FormBinder {
 
     private List<AllocationRow> rows = Collections.emptyList();
 
-    private Decimalbox taskWorkableDays;
+    private Intbox taskWorkableDays;
 
     private Date taskStartDate;
 
@@ -287,7 +287,7 @@ public class FormBinder {
         this.taskStartDate = startDate;
     }
 
-    public void setWorkableDays(Decimalbox duration) {
+    public void setWorkableDays(Intbox duration) {
         this.taskWorkableDays = duration;
         taskDurationDisabilityRule();
         onChangeEnableApply(taskWorkableDays);
@@ -440,7 +440,7 @@ public class FormBinder {
         return result.plusDays(getWorkableDays().intValue());
     }
 
-    public BigDecimal getWorkableDays() {
+    public Integer getWorkableDays() {
         return taskWorkableDays.getValue();
     }
 
