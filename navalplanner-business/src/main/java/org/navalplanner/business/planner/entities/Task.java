@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static java.util.Collections.emptyList;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
@@ -369,12 +370,13 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void mergeAllocation(Scenario scenario, final IntraDayDate start,
-            final IntraDayDate end,
+            final IntraDayDate end, BigDecimal newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
+        this.workableDays = newWorkableDays;
         setIntraDayStartDate(start);
         setIntraDayEndDate(end);
         for (ModifiedAllocation pair : modifications) {
@@ -542,12 +544,14 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
+
         updateDerived(copied);
+
+        List<ResourceAllocation<?>> newAllocations = emptyList(),
+        modifiedAllocations = emptyList();
         mergeAllocation(onScenario, getIntraDayStartDate(),
-                getIntraDayEndDate(),
-                calculatedValue, Collections
-                        .<ResourceAllocation<?>> emptyList(), copied,
-                Collections.<ResourceAllocation<?>> emptyList());
+                getIntraDayEndDate(), workableDays, calculatedValue,
+                newAllocations, copied, modifiedAllocations);
     }
 
     private void updateDerived(List<ModifiedAllocation> allocations) {
@@ -689,10 +693,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
         }
         return getIntraDayStartDate();
-    }
-
-    public void setWorkableDays(BigDecimal workableDays) {
-        this.workableDays = workableDays;
     }
 
     public BigDecimal getWorkableDays() {

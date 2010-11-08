@@ -277,7 +277,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public void onEvent(Event event) throws Exception {
                 Decimalbox decimalbox = (Decimalbox) event.getTarget();
-                setTaskWorkableDays(decimalbox.getValue());
                 setPlannedTaskEnd(calculateEndDate(getDuration(decimalbox)));
                 updateTaskEndDateInTaskPropertiesPanel(getPlannedTaskEnd());
                 Util.reloadBindings(lbTaskEnd);
@@ -314,10 +313,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private void setPlannedTaskEnd(Date taskEnd) {
         this.plannedTaskEnd = taskEnd;
-    }
-
-    private void setTaskWorkableDays(BigDecimal decimal) {
-        resourceAllocationModel.setWorkableDays(decimal);
     }
 
     public enum HoursRendererColumn {

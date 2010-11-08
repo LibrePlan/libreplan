@@ -19,6 +19,7 @@
  */
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -44,13 +45,14 @@ import org.navalplanner.business.workingday.IntraDayDate;
 public class AllocationResult {
 
     public static AllocationResult create(Task task,
-            CalculatedValue calculatedValue, List<AllocationRow> rows) {
+            CalculatedValue calculatedValue, List<AllocationRow> rows,
+            BigDecimal newWorkableDays) {
         List<ResourceAllocation<?>> newAllocations = AllocationRow
                 .getNewFrom(rows);
         List<ModifiedAllocation> modified = AllocationRow.getModifiedFrom(rows);
-        return new AllocationResult(task, calculatedValue, createAggregate(
-                newAllocations, modified),
-                newAllocations, modified);
+        return new AllocationResult(task, newWorkableDays, calculatedValue,
+                createAggregate(newAllocations, modified), newAllocations,
+                modified);
     }
 
     private static AggregateOfResourceAllocations createAggregate(
@@ -69,7 +71,8 @@ public class AllocationResult {
                 scenario, resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
                 ModifiedAllocation.modified(modifiedAllocations));
-        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
+        return new AllocationResult(task, task.getWorkableDays(),
+                task.getCalculatedValue(), aggregate,
                 Collections.<ResourceAllocation<?>> emptyList(),
                 modifiedAllocations);
 
@@ -87,8 +90,13 @@ public class AllocationResult {
 
     private final IntraDayDate end;
 
-    private AllocationResult(
-            Task task,
+    /**
+     * The number of workable days with wich the allocation has been done. Can
+     * be <code>null</code>
+     */
+    private final BigDecimal newWorkableDays;
+
+    private AllocationResult(Task task, BigDecimal newWorkableDays,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,
@@ -97,6 +105,7 @@ public class AllocationResult {
         Validate.notNull(calculatedValue);
         Validate.notNull(task);
         this.task = task;
+        this.newWorkableDays = newWorkableDays;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
         this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
@@ -127,8 +136,9 @@ public class AllocationResult {
         }
         final IntraDayDate start = task.getIntraDayStartDate();
         final IntraDayDate end = aggregate.getEnd();
-        task.mergeAllocation(scenario, start, end, getCalculatedValue(),
-                getNew(), modified, getNotModified(originals(modified)));
+        task.mergeAllocation(scenario, start, end, newWorkableDays,
+                getCalculatedValue(), getNew(), modified,
+                getNotModified(originals(modified)));
     }
 
     private List<ResourceAllocation<?>> originals(

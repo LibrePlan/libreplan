@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -246,7 +247,7 @@ public class AllocationRowsHandler {
         }
         createDerived();
         AllocationResult result = AllocationResult.create(task,
-                calculatedValue, currentRows);
+                calculatedValue, currentRows, getWorkableDaysIfApplyable());
         AllocationRow.loadDataFromLast(currentRows);
         return result;
     }
@@ -286,6 +287,19 @@ public class AllocationRowsHandler {
                 .createHoursModificationsAndAssociate(task, currentRows);
         ResourceAllocation.allocatingHours(hours).allocateUntil(
                 formBinder.getAllocationEnd());
+    }
+
+    private BigDecimal getWorkableDaysIfApplyable() {
+        switch (calculatedValue) {
+        case NUMBER_OF_HOURS:
+        case RESOURCES_PER_DAY:
+            return formBinder.getWorkableDays();
+        case WORKABLE_DAYS:
+            return null;
+        default:
+            throw new RuntimeException("unexpected calculatedValue: "
+                    + calculatedValue);
+        }
     }
 
     private void createDerived() {

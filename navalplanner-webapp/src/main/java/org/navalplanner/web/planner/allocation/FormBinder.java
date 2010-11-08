@@ -437,7 +437,11 @@ public class FormBinder {
 
     public LocalDate getAllocationEnd() {
         LocalDate result = new LocalDate(taskStartDate);
-        return result.plusDays(taskWorkableDays.getValue().intValue());
+        return result.plusDays(getWorkableDays().intValue());
+    }
+
+    public BigDecimal getWorkableDays() {
+        return taskWorkableDays.getValue();
     }
 
     public void setDeleteButtonFor(AllocationRow row,
