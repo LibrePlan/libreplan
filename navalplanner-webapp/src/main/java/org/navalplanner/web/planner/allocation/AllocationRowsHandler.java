@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,8 +58,6 @@ public class AllocationRowsHandler {
 
     private CalculatedValue calculatedValue;
 
-    private Integer daysDuration;
-
     private final IWorkerFinder workersFinder;
 
     private AllocationRowsHandler(Task task, List<AllocationRow> initialRows,
@@ -69,7 +66,6 @@ public class AllocationRowsHandler {
         this.workersFinder = workersFinder;
         this.currentRows = new ArrayList<AllocationRow>(initialRows);
         this.calculatedValue = task.getCalculatedValue();
-        this.daysDuration = task.getDaysDuration();
     }
 
     public void addSpecificResourceAllocationFor(List<Resource> resource) {
@@ -251,7 +247,6 @@ public class AllocationRowsHandler {
         createDerived();
         AllocationResult result = AllocationResult.create(task,
                 calculatedValue, currentRows);
-        daysDuration = result.getDaysDuration();
         AllocationRow.loadDataFromLast(currentRows);
         return result;
     }
@@ -318,7 +313,6 @@ public class AllocationRowsHandler {
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
         this.calculatedValue = calculatedValue;
-        this.daysDuration = task.getDaysDuration();
     }
 
     public AllocationResult getInitialAllocation(Scenario currentScenario) {
@@ -330,10 +324,6 @@ public class AllocationRowsHandler {
         return task;
     }
 
-    public Integer getDaysDuration() {
-        return daysDuration;
-    }
-
     public Set<Resource> getAllocationResources() {
         Set<Resource> result = new HashSet<Resource>();
         for (AllocationRow each : currentRows) {
@@ -342,17 +332,8 @@ public class AllocationRowsHandler {
         return result;
     }
 
-    public Date getEnd() {
-        LocalDate start = getStartDate();
-        return toDate(start.plusDays(getDaysDuration()));
-    }
-
     public LocalDate getStartDate() {
         return new LocalDate(task.getStartDate());
-    }
-
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     public void removeAll() {

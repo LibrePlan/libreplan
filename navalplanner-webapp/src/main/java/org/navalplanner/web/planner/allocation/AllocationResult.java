@@ -77,8 +77,6 @@ public class AllocationResult {
 
     private final AggregateOfResourceAllocations aggregate;
 
-    private final Integer daysDuration;
-
     private final CalculatedValue calculatedValue;
 
     private final Task task;
@@ -101,8 +99,6 @@ public class AllocationResult {
         this.task = task;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
-        this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
-                : aggregate.getDaysDuration();
         this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
         this.newAllocations = newAllocations;
         this.modified = modified;
@@ -110,10 +106,6 @@ public class AllocationResult {
 
     public AggregateOfResourceAllocations getAggregate() {
         return aggregate;
-    }
-
-    public Integer getDaysDuration() {
-        return daysDuration;
     }
 
     private List<ResourceAllocation<?>> getNew() {
