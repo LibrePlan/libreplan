@@ -1255,3 +1255,7 @@ body .perspectives-column {
 .advanced-allocation-layout {
     height: 100%;
 }
+
+div.z-grid-header .second_level_ tr {
+    overflow: visible;
+}
