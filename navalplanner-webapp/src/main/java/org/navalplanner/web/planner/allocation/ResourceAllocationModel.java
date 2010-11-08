@@ -413,14 +413,6 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public BigDecimal getTaskDuration() {
-        if (task == null) {
-            return BigDecimal.ZERO;
-        }
-        return new BigDecimal(task.getDaysDuration());
-    }
-
-    @Override
     public void setWorkableDays(BigDecimal decimal) {
         if (task != null) {
             task.setWorkableDays(decimal);

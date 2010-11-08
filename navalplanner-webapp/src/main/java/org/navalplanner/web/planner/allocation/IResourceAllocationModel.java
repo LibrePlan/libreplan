@@ -80,8 +80,6 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
 
     Date getTaskEnd();
 
-    BigDecimal getTaskDuration();
-
     void setWorkableDays(BigDecimal decimal);
 
 }

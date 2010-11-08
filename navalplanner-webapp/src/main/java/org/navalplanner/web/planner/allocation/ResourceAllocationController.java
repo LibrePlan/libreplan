@@ -271,7 +271,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private void initTaskWorkableDays(org.navalplanner.business.planner.entities.Task task) {
         dbTaskWorkableDays.setValue(new BigDecimal(task.getDaysDuration()));
         plannedTaskEnd = resourceAllocationModel.getTaskEnd();
-        dbTaskWorkableDays.setValue(resourceAllocationModel.getTaskDuration());
+        dbTaskWorkableDays.setValue(new BigDecimal(task.getDaysDuration()));
         dbTaskWorkableDays.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
