@@ -23,8 +23,8 @@
 
 <div>
 <tree id="tasksTree" fixedLayout="true" sclass="taskTreeCols">
-    <treecols sizable="false" >
-        <treecol label="${i18n:_('Name')}" sclass="tree-text" height="32px" />
+    <treecols sizable="false" height="33px">
+        <treecol label="${i18n:_('Name')}" sclass="tree-text" />
         <treecol label="${i18n:_('Start')}" width="76px" />
         <treecol label="${i18n:_('End')}" width="76px" />
     </treecols>
