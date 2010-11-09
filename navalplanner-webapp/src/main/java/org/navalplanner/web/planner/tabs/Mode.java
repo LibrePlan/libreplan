@@ -24,6 +24,9 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
+import org.zkoss.ganttz.TabsRegistry;
+import org.zkoss.ganttz.TabsRegistry.IBeforeShowAction;
+import org.zkoss.ganttz.extensions.ITab;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -64,6 +67,15 @@ public class Mode {
         return current.getOrder();
     }
 
+    /**
+     * <p>
+     * Changes the mode to {@link ModeType#ORDER}. This causes to show the tab
+     * for the order mode of the given order.
+     * </p>
+     * Beware that calling this method and then later showing another tab causes
+     * an unnecessary repaint. So if you need to change the tab and the mode,
+     * use {@link TabsRegistry#show(ITab, IBeforeShowAction)} instead.
+     */
     public void goToOrderMode(Order order) {
         changeTo(current.createOrderMode(order));
     }
