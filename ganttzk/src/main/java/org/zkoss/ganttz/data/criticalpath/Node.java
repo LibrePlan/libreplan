@@ -26,6 +26,7 @@ import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
 
 
@@ -46,12 +47,19 @@ public class Node<T, D extends IDependency<T>> {
     private Integer latestStart = null;
     private Integer latestFinish = null;
 
-    private ICriticalPathCalculable<T> graph;
+    private LocalDate beginDate = null;
+    private LocalDate endDate = null;
 
     public Node(T task, Set<? extends T> previousTasks,
-            Set<? extends T> nextTasks, ICriticalPathCalculable<T> graph) {
+            Set<? extends T> nextTasks, GanttDate startDate, GanttDate endDate) {
         this.task = task;
-        this.graph = graph;
+
+        if (startDate != null) {
+            this.beginDate = new LocalDate(startDate.toDayRoundedDate());
+        }
+        if (endDate != null) {
+            this.endDate = new LocalDate(endDate.toDayRoundedDate());
+        }
 
         this.earliestStart = 0;
         this.earliestFinish = getDuration();
@@ -111,14 +119,7 @@ public class Node<T, D extends IDependency<T>> {
             return 0;
         }
 
-        LocalDate beginDate = new LocalDate(graph.getStartDate(task)
-                .toDayRoundedDate());
-        LocalDate endDate = getTaskEndDate();
         return Days.daysBetween(beginDate, endDate).getDays();
-    }
-
-    private LocalDate getTaskEndDate() {
-        return new LocalDate(graph.getEndDateFor(task).toDayRoundedDate());
     }
 
     @Override

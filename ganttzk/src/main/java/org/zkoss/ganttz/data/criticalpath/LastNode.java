@@ -31,9 +31,8 @@ import org.zkoss.ganttz.data.IDependency;
  */
 public class LastNode<T, D extends IDependency<T>> extends Node<T, D> {
 
-    public LastNode(Set<? extends T> previousTasks,
-            ICriticalPathCalculable<T> graph) {
-        super(null, previousTasks, null, graph);
+    public LastNode(Set<? extends T> previousTasks) {
+        super(null, previousTasks, null, null, null);
     }
 
     public void updateLatestValues() {

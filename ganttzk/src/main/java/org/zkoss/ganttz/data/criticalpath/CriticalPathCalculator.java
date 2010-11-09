@@ -91,13 +91,11 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private InitialNode<T, D> createBeginningOfProjectNode() {
-        return new InitialNode<T, D>(new HashSet<T>(graph.getInitialTasks()),
-                graph);
+        return new InitialNode<T, D>(new HashSet<T>(graph.getInitialTasks()));
     }
 
     private LastNode<T, D> createEndOfProjectNode() {
-        return new LastNode<T, D>(new HashSet<T>(graph.getLatestTasks()),
- graph);
+        return new LastNode<T, D>(new HashSet<T>(graph.getLatestTasks()));
     }
 
     private Map<T, Node<T, D>> createGraphNodes() {
@@ -106,7 +104,8 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         for (T task : graph.getTasks()) {
             Node<T, D> node = new Node<T, D>(task, graph
                     .getIncomingTasksFor(task),
-                    graph.getOutgoingTasksFor(task), graph);
+                    graph.getOutgoingTasksFor(task), graph.getStartDate(task),
+                    graph.getEndDateFor(task));
             result.put(task, node);
         }
 

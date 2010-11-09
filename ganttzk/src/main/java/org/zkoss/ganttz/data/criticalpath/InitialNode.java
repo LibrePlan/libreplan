@@ -32,9 +32,8 @@ import org.zkoss.ganttz.data.IDependency;
  */
 public class InitialNode<T, D extends IDependency<T>> extends Node<T, D> {
 
-    public InitialNode(Set<? extends T> nextTasks,
-            ICriticalPathCalculable<T> graph) {
-        super(null, null, nextTasks, graph);
+    public InitialNode(Set<? extends T> nextTasks) {
+        super(null, null, nextTasks, null, null);
     }
 
 }
