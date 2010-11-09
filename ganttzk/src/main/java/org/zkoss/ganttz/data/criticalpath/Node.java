@@ -26,7 +26,8 @@ import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.IDependency;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 
 
 /**
@@ -35,7 +36,7 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class Node<T extends ITaskFundamentalProperties> {
+public class Node<T, D extends IDependency<T>> {
 
     private T task;
     private Set<T> previousTasks = new HashSet<T>();
@@ -46,9 +47,12 @@ public class Node<T extends ITaskFundamentalProperties> {
     private Integer latestStart = null;
     private Integer latestFinish = null;
 
+    private IAdapter<T, D> adapter;
+
     public Node(T task, Set<? extends T> previousTasks,
-            Set<? extends T> nextTasks) {
+            Set<? extends T> nextTasks, IAdapter<T, D> adapter) {
         this.task = task;
+        this.adapter = adapter;
 
         this.earliestStart = 0;
         this.earliestFinish = getDuration();
@@ -108,14 +112,14 @@ public class Node<T extends ITaskFundamentalProperties> {
             return 0;
         }
 
-        LocalDate beginDate = new LocalDate(task.getBeginDate()
+        LocalDate beginDate = new LocalDate(adapter.getStartDate(task)
                 .toDayRoundedDate());
         LocalDate endDate = getTaskEndDate();
         return Days.daysBetween(beginDate, endDate).getDays();
     }
 
     private LocalDate getTaskEndDate() {
-        return new LocalDate(task.getEndDate().toDayRoundedDate());
+        return new LocalDate(adapter.getEndDateFor(task).toDayRoundedDate());
     }
 
     @Override

@@ -125,7 +125,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
     }
 
-    static class GanttZKAdapter implements IAdapter<Task, Dependency> {
+    public static class GanttZKAdapter implements IAdapter<Task, Dependency> {
 
         @Override
         public List<Task> getChildren(Task task) {

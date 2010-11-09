@@ -33,7 +33,7 @@ import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -41,19 +41,23 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
+public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private ICriticalPathCalculable<T> graph;
 
     private LocalDate initDate;
 
-    private Map<T, Node<T>> nodes;
+    private IAdapter<T, D> adapter;
 
-    private InitialNode<T> bop;
-    private LastNode<T> eop;
+    private Map<T, Node<T, D>> nodes;
 
-    public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
+    private InitialNode<T, D> bop;
+    private LastNode<T, D> eop;
+
+    public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph,
+            IAdapter<T, D> adapter) {
         this.graph = graph;
+        this.adapter = adapter;
 
         initDate = calculateInitDate();
 
@@ -82,25 +86,28 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
     private List<GanttDate> getStartDates() {
         List<GanttDate> result = new ArrayList<GanttDate>();
         for (T task : graph.getInitialTasks()) {
-            result.add(task.getBeginDate());
+            result.add(adapter.getStartDate(task));
         }
         return result;
     }
 
-    private InitialNode<T> createBeginningOfProjectNode() {
-        return new InitialNode<T>(new HashSet<T>(graph.getInitialTasks()));
+    private InitialNode<T, D> createBeginningOfProjectNode() {
+        return new InitialNode<T, D>(new HashSet<T>(graph.getInitialTasks()),
+                adapter);
     }
 
-    private LastNode<T> createEndOfProjectNode() {
-        return new LastNode<T>(new HashSet<T>(graph.getLatestTasks()));
+    private LastNode<T, D> createEndOfProjectNode() {
+        return new LastNode<T, D>(new HashSet<T>(graph.getLatestTasks()),
+                adapter);
     }
 
-    private Map<T, Node<T>> createGraphNodes() {
-        Map<T, Node<T>> result = new HashMap<T, Node<T>>();
+    private Map<T, Node<T, D>> createGraphNodes() {
+        Map<T, Node<T, D>> result = new HashMap<T, Node<T, D>>();
 
         for (T task : graph.getTasks()) {
-            Node<T> node = new Node<T>(task, graph.getIncomingTasksFor(task),
-                    graph.getOutgoingTasksFor(task));
+            Node<T, D> node = new Node<T, D>(task, graph
+                    .getIncomingTasksFor(task),
+                    graph.getOutgoingTasksFor(task), adapter);
             result.put(task, node);
         }
 
@@ -117,7 +124,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         return DependencyType.END_START;
     }
 
-    private void forward(Node<T> currentNode, T previousTask) {
+    private void forward(Node<T, D> currentNode, T previousTask) {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
         int earliestFinish = currentNode.getEarliestFinish();
@@ -137,7 +144,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                     }
                 }
 
-                Node<T> node = nodes.get(task);
+                Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
                 Constraint<GanttDate> constraint = getDateConstraint(task);
@@ -166,7 +173,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         }
     }
 
-    private void setEarliestStart(Node<T> node, int earliestStart,
+    private void setEarliestStart(Node<T, D> node, int earliestStart,
             Constraint<GanttDate> constraint) {
         if (constraint != null) {
             GanttDate date = GanttDate.createFrom(initDate
@@ -184,14 +191,15 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
             return null;
         }
 
-        List<Constraint<GanttDate>> constraints = task.getStartConstraints();
+        List<Constraint<GanttDate>> constraints = adapter
+                .getStartConstraintsFor(task);
         if (constraints == null) {
             return null;
         }
         return Constraint.coalesce(constraints);
     }
 
-    private void backward(Node<T> currentNode, T nextTask) {
+    private void backward(Node<T, D> currentNode, T nextTask) {
         T currentTask = currentNode.getTask();
         int latestStart = currentNode.getLatestStart();
         int latestFinish = currentNode.getLatestFinish();
@@ -211,7 +219,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
                     }
                 }
 
-                Node<T> node = nodes.get(task);
+                Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
                 Constraint<GanttDate> constraint = getDateConstraint(task);
@@ -240,7 +248,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
         }
     }
 
-    private void setLatestFinish(Node<T> node, int latestFinish,
+    private void setLatestFinish(Node<T, D> node, int latestFinish,
             Constraint<GanttDate> constraint) {
         if (constraint != null) {
             int duration = node.getDuration();
@@ -257,7 +265,7 @@ public class CriticalPathCalculator<T extends ITaskFundamentalProperties> {
     private List<T> getTasksOnCriticalPath() {
         List<T> result = new ArrayList<T>();
 
-        for (Node<T> node : nodes.values()) {
+        for (Node<T, D> node : nodes.values()) {
             if (node.getLatestStart() == node.getEarliestStart()) {
                 result.add(node.getTask());
             }
