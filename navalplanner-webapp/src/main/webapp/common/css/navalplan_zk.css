@@ -1380,7 +1380,11 @@ tr.z-tree-row-seld .z-row-cnt {
 }
 
 .projects-list .date {
-    width:120px;
+    width:100px;
+}
+
+.projects-list .customer {
+    max-width:150px;
 }
 
 .z-band-popup td.z-list-cell {

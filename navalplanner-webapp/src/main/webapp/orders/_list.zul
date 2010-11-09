@@ -23,17 +23,16 @@
         pageSize="10" fixedLayout="true"
         rowRenderer= "@{controller.ordersRowRender}"
         onInitRender ="controller.sortOrders();" sclass="clickable-rows projects-list">
-        <columns>
-            <column label="${i18n:_('Name')}" align="center" sort="auto(lower(name))" sclass="name"/>
-            <column label="${i18n:_('Code')}" align="center" sort="auto(lower(code))"/>
+        <columns sizable="true">
+            <column label="${i18n:_('Name')}" sort="auto(lower(name))" sclass="name"/>
+            <column label="${i18n:_('Code')}" sort="auto(lower(code))" align="center" width="130px"/>
             <column id="columnDateStart" label="${i18n:_('Starting date')}" align="center" sort="auto(initDate,deadline)" sortDirection="ascending" sclass="date"/>
-            <column label="${i18n:_('Deadline')}" align="center" sort="auto(deadline,initDate)" sclass="date"/>
-            <column label="${i18n:_('Customer')}" align="center" sort="auto(lower(customer))" sclass="customer" />
-            <column label="${i18n:_('Customer reference')}" align="center"/>
-            <column label="${i18n:_('Total Budget')}" align="center"/>
-            <column label="${i18n:_('Total Hours')}" align="center" sclass="hours" />
-            <column label="${i18n:_('State')}" align="center"/>
-            <column label="${i18n:_('Operations')}" align="center"/>
+            <column label="${i18n:_('Deadline')}" sort="auto(deadline,initDate)" align="center" sclass="date"/>
+            <column label="${i18n:_('Customer')}" sort="auto(customerReference)" width="150px"/>
+            <column label="${i18n:_('Total Budget')}" sort="auto(totalBudget)" align="right" width="100px"/>
+            <column label="${i18n:_('Hours')}" sort="auto(totalHours)" align="right" width="80px"/>
+            <column label="${i18n:_('State')}" sort="auto(totalBudget)" align="center" width="90px"/>
+            <column label="${i18n:_('Operations')}" width="100px"/>
         </columns>
     </grid>
 
