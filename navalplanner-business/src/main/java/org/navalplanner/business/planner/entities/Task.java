@@ -269,13 +269,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         this.calculatedValue = calculatedValue;
     }
 
-    public Integer getDaysDuration() {
-        Days daysBetween = Days.daysBetween(new LocalDate(
-                toDateTime(getStartDate())), new LocalDate(
-                toDateTime(getEndDate())));
-        return daysBetween.getDays();
-    }
-
     private DateTime toDateTime(Date startDate) {
         return new DateTime(startDate.getTime());
     }
@@ -688,7 +681,16 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public Integer getWorkableDays() {
+        if (workableDays == null) {
+            return getDaysBetweenDates();
+        }
         return workableDays;
+    }
+
+    public Integer getDaysBetweenDates() {
+        Days daysBetween = Days.daysBetween(getStartAsLocalDate(),
+                getIntraDayEndDate().asExclusiveEnd());
+        return daysBetween.getDays();
     }
 
 }

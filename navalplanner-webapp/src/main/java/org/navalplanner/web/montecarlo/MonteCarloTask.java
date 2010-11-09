@@ -67,7 +67,7 @@ public class MonteCarloTask {
 
     private MonteCarloTask(Task task) {
         this.task = task;
-        duration = BigDecimal.valueOf(task.getDaysDuration());
+        duration = BigDecimal.valueOf(task.getDaysBetweenDates());
         pessimisticDuration = duration.multiply(BigDecimal.valueOf(1.50));
         pessimisticDurationPercentage = 30;
         normalDuration = duration;

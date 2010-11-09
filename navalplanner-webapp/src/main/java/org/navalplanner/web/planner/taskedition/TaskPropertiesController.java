@@ -327,7 +327,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void showDurationRow(Task task) {
         hours.getFellow("durationRow").setVisible(true);
-        duration.setValue(task.getDaysDuration());
+        duration.setValue(task.getWorkableDays());
     }
 
     @Override

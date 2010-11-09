@@ -34,7 +34,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 import java.util.Arrays;
 import java.util.Date;
 
-import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -47,6 +47,8 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -172,9 +174,31 @@ public class TaskTest {
 
     @Test
     public void theDaysBetweenIsCalculatedBasedOnlyOnDatesNotHours() {
-        task.setStartDate(new DateTime(2008, 10, 5, 23, 0, 0, 0).toDate());
-        task.setEndDate(new DateTime(2008, 10, 6, 1, 0, 0, 0).toDate());
-        assertThat(task.getDaysDuration(), equalTo(1));
+        task.setIntraDayStartDate(IntraDayDate.create(
+                new LocalDate(2010, 1, 13), EffortDuration.hours(3)));
+        task.setIntraDayEndDate(IntraDayDate.startOfDay(new LocalDate(2010, 1,
+                14)));
+        assertThat(task.getWorkableDays(), equalTo(1));
+    }
+
+    @Test
+    public void atLeastOneWorkableDayEvenIfStartAndEndDatesAreAtTheSameDay() {
+        LocalDate day = new LocalDate(2010, 1, 13);
+        task.setIntraDayStartDate(IntraDayDate.create(day,
+                EffortDuration.hours(3)));
+        task.setIntraDayEndDate(IntraDayDate.create(day,
+                EffortDuration.hours(4)));
+        assertThat(task.getWorkableDays(), equalTo(1));
+    }
+
+    @Test
+    public void ifTheEndIsInTheMiddleOfADayTheWholeDayIsCounted() {
+        LocalDate start = new LocalDate(2010, 1, 13);
+        task.setIntraDayStartDate(IntraDayDate.create(start,
+                EffortDuration.hours(3)));
+        task.setIntraDayEndDate(IntraDayDate.create(start.plusDays(1),
+                EffortDuration.minutes(1)));
+        assertThat(task.getWorkableDays(), equalTo(2));
     }
 
     /**
