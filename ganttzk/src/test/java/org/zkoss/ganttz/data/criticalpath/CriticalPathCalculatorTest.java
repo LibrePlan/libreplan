@@ -31,12 +31,16 @@ import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.bigg
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
+import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -61,6 +65,154 @@ public class CriticalPathCalculatorTest {
                 toDate(start.plusDays(durationDays))).anyTimes();
         replay(result);
         return result;
+    }
+
+    private CriticalPathCalculator<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> buildCalculator() {
+        return CriticalPathCalculator.create(stubAdapter());
+    }
+
+    private IAdapter<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> stubAdapter() {
+        return new IAdapter<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>>() {
+
+            private void notImplemented() {
+                throw new UnsupportedOperationException("not implemented");
+            }
+            @Override
+            public List<ITaskFundamentalProperties> getChildren(
+                    ITaskFundamentalProperties task) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public boolean isContainer(ITaskFundamentalProperties task) {
+                notImplemented();
+                return false;
+            }
+
+            @Override
+            public void registerDependenciesEnforcerHookOn(
+                    ITaskFundamentalProperties task,
+                    IDependenciesEnforcerHookFactory<ITaskFundamentalProperties> hookFactory) {
+                notImplemented();
+            }
+
+            @Override
+            public GanttDate getStartDate(ITaskFundamentalProperties task) {
+                return task.getBeginDate();
+            }
+
+            @Override
+            public void setStartDateFor(ITaskFundamentalProperties task,
+                    GanttDate newStart) {
+                notImplemented();
+            }
+
+            @Override
+            public GanttDate getEndDateFor(ITaskFundamentalProperties task) {
+                return task.getEndDate();
+            }
+
+            @Override
+            public void setEndDateFor(ITaskFundamentalProperties task,
+                    GanttDate newEnd) {
+                notImplemented();
+            }
+
+            @Override
+            public GanttDate getSmallestBeginDateFromChildrenFor(
+                    ITaskFundamentalProperties container) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public Constraint<GanttDate> getCurrentLenghtConstraintFor(
+                    ITaskFundamentalProperties task) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
+                    ITaskFundamentalProperties task) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
+                    Set<IDependency<ITaskFundamentalProperties>> incoming) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getStartConstraintsGiven(
+                    Set<IDependency<ITaskFundamentalProperties>> withDependencies) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getStartConstraintsFor(
+                    ITaskFundamentalProperties task) {
+                return task.getStartConstraints();
+            }
+
+            @Override
+            public ITaskFundamentalProperties getSource(
+                    IDependency<ITaskFundamentalProperties> dependency) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public ITaskFundamentalProperties getDestination(
+                    IDependency<ITaskFundamentalProperties> dependency) {
+                return dependency.getDestination();
+            }
+
+            @Override
+            public Class<IDependency<ITaskFundamentalProperties>> getDependencyType() {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public IDependency<ITaskFundamentalProperties> createInvisibleDependency(
+                    ITaskFundamentalProperties origin,
+                    ITaskFundamentalProperties destination, DependencyType type) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public DependencyType getType(
+                    IDependency<ITaskFundamentalProperties> dependency) {
+                return dependency.getType();
+            }
+
+            @Override
+            public TaskPoint<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> getDestinationPoint(
+                    IDependency<ITaskFundamentalProperties> dependency) {
+                notImplemented();
+                return null;
+            }
+
+            @Override
+            public boolean isVisible(
+                    IDependency<ITaskFundamentalProperties> dependency) {
+                notImplemented();
+                return true;
+            }
+
+            @Override
+            public boolean isFixed(ITaskFundamentalProperties task) {
+                notImplemented();
+                return false;
+            }
+        };
     }
 
     private ITaskFundamentalProperties createTaskWithBiggerOrEqualThanConstraint(
@@ -1393,7 +1545,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void trivialBaseCase() {
         givenOneTask(10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1467,7 +1619,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void trivialBaseCaseWithTwoTasksNotConnected() {
         givenTwoTasksNotConnected(5, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1477,7 +1629,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasks() {
         givenPairOfTasks(10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1490,7 +1642,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoPairOfTasksNotConnected() {
         givenTwoPairOfTasksNotConnected(10, 5, 6, 4);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1503,7 +1655,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoPairOfTasksNotConnected2() {
         givenTwoPairOfTasksNotConnected(8, 1, 6, 4);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1516,7 +1668,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTaskConnectedAndOneIndependentTask() {
         givenTwoTaskConnectedAndOneIndependentTask(5, 10, 12);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1529,7 +1681,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTaskConnectedAndOneIndependentTask2() {
         givenTwoTaskConnectedAndOneIndependentTask(5, 10, 20);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1539,7 +1691,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTaskConnectedAndOneIndependentTaskWithTheSameDuration() {
         givenTwoTaskConnectedAndOneIndependentTask(10, 10, 20);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1548,7 +1700,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void oneTaskWithTwoDependantTasks() {
         givenOneTaskWithTwoDependantTasks(4, 5, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1561,7 +1713,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void oneTaskWithTwoDependantTasks2() {
         givenOneTaskWithTwoDependantTasks(4, 5, 1);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1574,7 +1726,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTaskWithOneCommonDependantTask() {
         givenTwoTaskWithOneCommonDependantTask(4, 2, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1586,7 +1738,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTaskWithOneCommonDependantTask2() {
         givenTwoTaskWithOneCommonDependantTask(4, 10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1598,7 +1750,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void oneTaskWithTwoDependantTasksAndOneCommonDependantTask() {
         givenOneTaskWithTwoDependantTasksAndOneCommonDependantTask(4, 2, 5, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1611,7 +1763,7 @@ public class CriticalPathCalculatorTest {
     public void twoTaskWithOneCommonDependantTaskWithTwoDependantTasks() {
         givenTwoTaskWithOneCommonDependantTaskWithTwoDependantTasks(2, 6, 4, 8,
                 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1624,7 +1776,7 @@ public class CriticalPathCalculatorTest {
     public void twoTaskWithOneCommonDependantTaskWithTwoDependantTasks2() {
         givenTwoTaskWithOneCommonDependantTaskWithTwoDependantTasks(4, 2, 10,
                 8, 6);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1636,7 +1788,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void example() {
         givenExample(20);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1648,7 +1800,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void example2() {
         givenExample(10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(4));
@@ -1660,7 +1812,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void example3() {
         givenExample(19);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(6));
@@ -1675,7 +1827,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksStartStart() {
         givenPairOfTasksStartStart(5, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1688,7 +1840,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksStartStart2() {
         givenPairOfTasksStartStart(8, 4);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1698,7 +1850,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksStartStart3() {
         givenPairOfTasksStartStart(5, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1710,7 +1862,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksStartStartFirstOfThemWithOneSubtask() {
         givenPairOfTasksStartStartFirstOfThemWithOneSubtask(4, 6, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1723,7 +1875,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksStartStartFirstOfThemWithOneSubtask2() {
         givenPairOfTasksStartStartFirstOfThemWithOneSubtask(4, 6, 15);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1737,7 +1889,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTasksWithSubtasksRelatedWithStartStart() {
         givenTwoTasksWithSubtasksRelatedWithStartStart(4, 3, 5, 6);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1750,7 +1902,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTasksWithSubtasksRelatedWithStartStart2() {
         givenTwoTasksWithSubtasksRelatedWithStartStart(2, 10, 4, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1764,7 +1916,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTasksWithSubtasksRelatedWithStartStart3() {
         givenTwoTasksWithSubtasksRelatedWithStartStart(4, 7, 5, 6);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(4));
@@ -1778,7 +1930,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleStartStart() {
         givenExampleStartStart(5, 3, 10, 2);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1792,7 +1944,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleStartStart2() {
         givenExampleStartStart(5, 3, 4, 8);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1806,7 +1958,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleStartStart3() {
         givenExampleStartStart(5, 8, 4, 2);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1820,7 +1972,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksEndEnd() {
         givenPairOfTasksEndEnd(10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1834,7 +1986,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksEndEnd2() {
         givenPairOfTasksEndEnd(5, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1844,7 +1996,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksEndEndFirstOfThemWithOneSubtask() {
         givenPairOfTasksEndEndFirstOfThemWithOneSubtask(4, 3, 2);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1858,7 +2010,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void pairOfTasksEndEndFirstOfThemWithOneSubtask2() {
         givenPairOfTasksEndEndFirstOfThemWithOneSubtask(2, 3, 6);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1868,7 +2020,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTasksWithSubtasksRelatedWithEndEnd() {
         givenTwoTasksWithSubtasksRelatedWithEndEnd(5, 3, 4, 2);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1882,7 +2034,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void twoTasksWithSubtasksRelatedWithEndEnd2() {
         givenTwoTasksWithSubtasksRelatedWithEndEnd(5, 2, 4, 6);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1896,7 +2048,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleEndEnd() {
         givenExampleEndEnd(5, 4, 2, 3);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1910,7 +2062,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleEndEnd2() {
         givenExampleEndEnd(5, 2, 4, 3);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1924,7 +2076,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void exampleEndEnd3() {
         givenExampleEndEnd(2, 4, 3, 10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1935,7 +2087,7 @@ public class CriticalPathCalculatorTest {
     public void oneTaskWithTwoDependantTasksLastOneWithEqualConstraint() {
         givenOneTaskWithTwoDependantTasksLastOneWithEqualConstraint(2, 5, 3,
                 START.plusDays(5));
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1946,7 +2098,7 @@ public class CriticalPathCalculatorTest {
     public void oneTaskWithTwoDependantTasksLastOneWithEqualConstraint2() {
         givenOneTaskWithTwoDependantTasksLastOneWithEqualConstraint(2, 5, 3,
                 START.plusDays(3));
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -1961,7 +2113,7 @@ public class CriticalPathCalculatorTest {
     public void oneTaskWithTwoDependantTasksLastOneWithBiggerOrEqualThanConstraint() {
         givenOneTaskWithTwoDependantTasksLastOneWithBiggerOrEqualThanConstraint(
                 2, 5, 3, START.plusDays(5));
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(1));
@@ -1972,7 +2124,7 @@ public class CriticalPathCalculatorTest {
     public void oneTaskWithTwoDependantTasksLastOneWithBiggerOrEqualThanConstraint2() {
         givenOneTaskWithTwoDependantTasksLastOneWithBiggerOrEqualThanConstraint(
                 2, 6, 4, START.plusDays(3));
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1986,7 +2138,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void taskContainerWithOneSubtask() {
         givenTaskContainerWithOneSubtask(10);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -1999,7 +2151,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void taskContainerWithTwoSubtasks() {
         givenTaskContainerWithTwoSubtasks(10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(2));
@@ -2012,7 +2164,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void taskContainerWithOneSubtaskDependingOnOneTask() {
         givenTaskContainerWithOneSubtaskDependingOnOneTask(10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));
@@ -2026,7 +2178,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void oneTaskDependingOnTaskContainerWithOneSubtask() {
         givenOneTaskDependingOnTaskContainerWithOneSubtask(10, 5);
-        List<ITaskFundamentalProperties> criticalPath = new CriticalPathCalculator<ITaskFundamentalProperties>()
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
         assertThat(criticalPath.size(), equalTo(3));

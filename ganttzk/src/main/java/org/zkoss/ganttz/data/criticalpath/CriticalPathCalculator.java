@@ -32,8 +32,8 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
+import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -42,6 +42,11 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class CriticalPathCalculator<T, D extends IDependency<T>> {
+
+    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create(
+            IAdapter<T, D> adapter) {
+        return new CriticalPathCalculator<T, D>(adapter);
+    }
 
     private ICriticalPathCalculable<T> graph;
 
@@ -54,10 +59,12 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     private InitialNode<T, D> bop;
     private LastNode<T, D> eop;
 
-    public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph,
-            IAdapter<T, D> adapter) {
-        this.graph = graph;
+    private CriticalPathCalculator(IAdapter<T, D> adapter) {
         this.adapter = adapter;
+    }
+
+    public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
+        this.graph = graph;
 
         initDate = calculateInitDate();
 

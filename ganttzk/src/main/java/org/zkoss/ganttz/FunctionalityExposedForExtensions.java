@@ -39,14 +39,14 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKAdapter;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -381,8 +381,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     @Override
     public void showCriticalPath() {
-        List<Task> criticalPath = new CriticalPathCalculator<Task, Dependency>()
-                .calculateCriticalPath(diagramGraph, new GanttZKAdapter());
+        List<Task> criticalPath = CriticalPathCalculator.create(new GanttZKAdapter()).calculateCriticalPath(diagramGraph);
         for (Task task : diagramGraph.getTasks()) {
             if (criticalPath.contains(task)) {
                 task.setInCriticalPath(true);
