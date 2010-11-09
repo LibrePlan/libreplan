@@ -49,6 +49,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
+import org.zkoss.ganttz.TabsRegistry.IBeforeShowAction;
 import org.zkoss.ganttz.adapters.State;
 import org.zkoss.ganttz.adapters.TabsConfiguration;
 import org.zkoss.ganttz.adapters.TabsConfiguration.ChangeableTab;
@@ -190,8 +191,8 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToScheduleOf(Order order) {
-                        mode.goToOrderMode(order);
-                        getTabsRegistry().show(planningTab);
+                        getTabsRegistry()
+                                .show(planningTab, changeModeTo(order));
                     }
 
                     @Override
@@ -203,8 +204,8 @@ public class MultipleTabsPlannerController implements Composer,
                     public void goToTaskResourceAllocation(Order order,
                             TaskElement task) {
                         orderPlanningController.setShowedTask(task);
-                        mode.goToOrderMode(order);
-                        getTabsRegistry().show(planningTab);
+                        getTabsRegistry()
+                                .show(planningTab, changeModeTo(order));
                     }
 
                 }, breadcrumbs);
@@ -218,14 +219,13 @@ public class MultipleTabsPlannerController implements Composer,
 
                     @Override
                     public void goToScheduleOf(Order order) {
-                        mode.goToOrderMode(order);
-                        getTabsRegistry().show(planningTab);
+                        getTabsRegistry()
+                                .show(planningTab, changeModeTo(order));
                     }
 
                     @Override
                     public void goToOrderDetails(Order order) {
-                        mode.goToOrderMode(order);
-                        getTabsRegistry().show(ordersTab);
+                        getTabsRegistry().show(ordersTab, changeModeTo(order));
                     }
 
                     @Override
@@ -389,14 +389,12 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrder(Order order) {
-        mode.goToOrderMode(order);
-        getTabsRegistry().show(planningTab);
+        getTabsRegistry().show(planningTab, changeModeTo(order));
     }
 
     @Override
     public void goToOrderElementDetails(OrderElement orderElement, Order order) {
-        getTabsRegistry().show(ordersTab);
-        mode.goToOrderMode(order);
+        getTabsRegistry().show(ordersTab, changeModeTo(order));
         orderCRUDController.highLight(orderElement);
     }
 
@@ -407,25 +405,31 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrderDetails(Order order) {
-        mode.goToOrderMode(order);
-        getTabsRegistry().show(ordersTab);
+        getTabsRegistry().show(ordersTab, changeModeTo(order));
     }
 
     @Override
     public void goToResourcesLoad(Order order) {
-        mode.goToOrderMode(order);
-        getTabsRegistry().show(resourceLoadTab);
+        getTabsRegistry().show(resourceLoadTab, changeModeTo(order));
     }
 
     @Override
     public void goToAdvancedAllocation(Order order) {
-        mode.goToOrderMode(order);
-        getTabsRegistry().show(advancedAllocationTab);
+        getTabsRegistry().show(advancedAllocationTab, changeModeTo(order));
     }
 
     @Override
     public void goToCreateotherOrderFromTemplate(OrderTemplate template) {
         getTabsRegistry().show(ordersTab);
         orderCRUDController.showCreateFormFromTemplate(template);
+    }
+
+    private IBeforeShowAction changeModeTo(final Order order) {
+        return new IBeforeShowAction() {
+            @Override
+            public void doAction() {
+                mode.goToOrderMode(order);
+            }
+        };
     }
 }

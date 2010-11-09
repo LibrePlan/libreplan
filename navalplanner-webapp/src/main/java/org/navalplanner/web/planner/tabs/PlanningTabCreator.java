@@ -171,7 +171,6 @@ public class PlanningTabCreator {
                         OrderElement orderElement = task.getOrderElement();
                         if (orderElement instanceof Order) {
                             Order order = (Order) orderElement;
-                            mode.goToOrderMode(order);
                             tabsController.goToOrderDetails(order);
                         }
                     }
@@ -203,7 +202,6 @@ public class PlanningTabCreator {
                         OrderElement orderElement = task.getOrderElement();
                         if (orderElement instanceof Order) {
                             Order order = (Order) orderElement;
-                            mode.goToOrderMode(order);
                             tabsController.goToResourcesLoad(order);
                         }
                     }
@@ -235,7 +233,6 @@ public class PlanningTabCreator {
                         OrderElement orderElement = task.getOrderElement();
                         if (orderElement instanceof Order) {
                             Order order = (Order) orderElement;
-                            mode.goToOrderMode(order);
                             tabsController.goToAdvancedAllocation(order);
                         }
                     }

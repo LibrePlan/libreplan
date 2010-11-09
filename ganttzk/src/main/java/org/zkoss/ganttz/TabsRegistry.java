@@ -54,8 +54,23 @@ public class TabsRegistry {
         tabs.add(tab);
     }
 
+    public interface IBeforeShowAction {
+        public void doAction();
+    }
+
+    private static final IBeforeShowAction DO_NOTHING = new IBeforeShowAction() {
+        @Override
+        public void doAction() {
+        }
+    };
+
     public void show(ITab tab) {
+        show(tab, DO_NOTHING);
+    }
+
+    public void show(ITab tab, IBeforeShowAction beforeShowAction) {
         hideAllExcept(tab);
+        beforeShowAction.doAction();
         tab.show();
         parent.invalidate();
         activateMenuIfRegistered(tab);
