@@ -5738,7 +5738,7 @@ msgid "missing code in a work report."
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:30
-msgid "New order element name:"
+msgid "New order element:"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/ResourceFilterEnum.java:28

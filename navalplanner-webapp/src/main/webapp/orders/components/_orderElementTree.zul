@@ -25,13 +25,14 @@
 
 <vbox width="100%">
 
+        <hbox valign="pack" style="margin-bottom:4px;" width="100%">
         <hbox valign="pack">
             <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Order Element')}" caption="${i18n:_('Choosing Template')}" />
-            <label value="${i18n:_('New order element name:')}" />
-            <textbox value="" id="newOrderElementName" width="200px"
+            <label value="${i18n:_('New order element:')}" />
+            <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
             <label value="${i18n:_('Hours:')}" />
-            <intbox value="0" id="newOrderElementHours" width="50px"
+            <intbox value="0" id="newOrderElementHours" width="40px"
                 onOK="treeController.addElement(self.parent);"
                 constraint="no negative" disabled="true" />
             <button id="btnNew" label="${treeComponent.addElementLabel}"
@@ -39,37 +40,36 @@
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
                 visible="${treeComponent.createFromTemplateEnabled}"/>
-        </hbox>
-        <hbox valign="pack">
-            <label value="${i18n:_('Operations with selected order element:')}" />
-            <button id="editOrderElementButton" image="/common/img/ico_editar1.png"
+        </hbox><hbox style="float:right" valign="pack">
+            <label value="${i18n:_('Selected node:')}" />
+            <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected order element')}"
                 onClick="treeController.editSelectedOrderElement();" />
-            <button id="createTemplateButton" image="/common/img/ico_derived1.png"
+            <button id="createTemplateButton" sclass="icono" image="/common/img/ico_derived1.png"
                 hoverImage="/common/img/ico_derived.png"
                 tooltiptext="${i18n:_('Create template from selected order element')}"
                 onClick="treeController.createTemplateFromSelectedOrderElement();" />
-            <button id="downButton" image="/common/img/ico_bajar1.png"
+            <button id="downButton" sclass="icono" image="/common/img/ico_bajar1.png"
                 hoverImage="/common/img/ico_bajar.png"
                 tooltiptext="${i18n:_('Move selected order element down')}"
                 onClick="treeController.moveSelectedOrderElementDown();" />
-            <button id="upButton" image="/common/img/ico_subir1.png"
+            <button id="upButton" sclass="icono" image="/common/img/ico_subir1.png"
                 hoverImage="/common/img/ico_subir.png"
                 tooltiptext="${i18n:_('Move selected order element up')}"
                 onClick="treeController.moveSelectedOrderElementUp();" />
-            <button id="leftButton" image="/common/img/ico_izq1.png"
+            <button id="leftButton" sclass="icono" image="/common/img/ico_izq1.png"
                 hoverImage="/common/img/ico_izq.png"
                 tooltiptext="${i18n:_('Unindent selected order element')}"
                 onClick="treeController.unindentSelectedOrderElement();" />
-            <button id="rightButton" image="/common/img/ico_derecha1.png"
+            <button id="rightButton" sclass="icono" image="/common/img/ico_derecha1.png"
                 hoverImage="/common/img/ico_derecha.png"
                 tooltiptext="${i18n:_('Indent selected order element')}"
                 onClick="treeController.indentSelectedOrderElement();" />
-            <button id="deleteOrderElementButton" image="/common/img/ico_borrar1.png"
+            <button id="deleteOrderElementButton" sclass="icono" image="/common/img/ico_borrar1.png"
                 hoverImage="/common/img/ico_borrar.png"
                 tooltiptext="${i18n:_('Delete selected order element')}"
                 onClick="treeController.deleteSelectedOrderElement();" />
-        </hbox>  
+        </hbox></hbox>
     <vbox width="100%">
         <tree id="tree" height="440px" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"

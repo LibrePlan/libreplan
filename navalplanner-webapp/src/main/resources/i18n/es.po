@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-11-08 19:55+0100\n"
-"PO-Revision-Date: 2010-11-08 19:55+0100\n"
+"PO-Revision-Date: 2010-11-09 11:42+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "MIME-Version: 1.0\n"
@@ -5888,8 +5888,8 @@ msgid "missing code in a work report."
 msgstr "falta el código en un parte de trabajo."
 
 #: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:30
-msgid "New order element name:"
-msgstr "Nombre del nuevo elemento de pedido:"
+msgid "New order element:"
+msgstr "Nuevo elemento de pedido:"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/ResourceFilterEnum.java:28
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/ResourceAllocationFilterEnum.java:28
@@ -6702,6 +6702,9 @@ msgstr "Borrar elemento de pedido seleccionado"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:196
 msgid "Choose an order element to operate on it"
 msgstr "Elija un elemento de pedido para operar sobre él"
+
+#~ msgid "New order element name:"
+#~ msgstr "Nombre del nuevo elemento de pedido:"
 
 #~ msgid "Name/Code"
 #~ msgstr "Nombre/Código"
