@@ -156,7 +156,20 @@ public class CriticalPathCalculatorTest {
                 .andReturn(new HashSet<ITaskFundamentalProperties>())
                 .anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
+    }
+
+    private void addTaskMethods(List<ITaskFundamentalProperties> listOfTasks) {
+        for (ITaskFundamentalProperties task : listOfTasks) {
+            expect(diagramGraphExample.getStartDate(task)).andReturn(
+                    task.getBeginDate()).anyTimes();
+            expect(diagramGraphExample.getStartConstraintsFor(task)).andReturn(
+                    task.getStartConstraints()).anyTimes();
+            expect(diagramGraphExample.getEndDateFor(task)).andReturn(
+                    task.getEndDate()).anyTimes();
+        }
     }
 
     /**
@@ -193,6 +206,8 @@ public class CriticalPathCalculatorTest {
                         .getOutgoingTasksFor(isA(ITaskFundamentalProperties.class)))
                 .andReturn(new HashSet<ITaskFundamentalProperties>())
                 .anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -234,6 +249,8 @@ public class CriticalPathCalculatorTest {
                                 .asList(subtask1))).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask1)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -293,6 +310,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -344,6 +363,8 @@ public class CriticalPathCalculatorTest {
                 .andReturn(new HashSet<ITaskFundamentalProperties>())
                 .anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -391,6 +412,8 @@ public class CriticalPathCalculatorTest {
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -443,6 +466,8 @@ public class CriticalPathCalculatorTest {
                                 .asList(subtask1))).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask1)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -502,6 +527,8 @@ public class CriticalPathCalculatorTest {
                         .asList(finalTask))).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(finalTask)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -572,6 +599,8 @@ public class CriticalPathCalculatorTest {
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(finalTask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -664,6 +693,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.getOutgoingTasksFor(task10)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -705,6 +736,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(task2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -755,6 +788,8 @@ public class CriticalPathCalculatorTest {
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(task2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -816,6 +851,8 @@ public class CriticalPathCalculatorTest {
                                 .asList(subtask2))).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -879,6 +916,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.getOutgoingTasksFor(subtask3)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -920,6 +959,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(task2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -971,6 +1012,8 @@ public class CriticalPathCalculatorTest {
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(task2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -1032,6 +1075,8 @@ public class CriticalPathCalculatorTest {
                                 .asList(subtask2))).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -1095,6 +1140,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.getOutgoingTasksFor(subtask3)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -1145,6 +1192,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -1194,6 +1243,8 @@ public class CriticalPathCalculatorTest {
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
         expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
                 new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -1250,6 +1301,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -1327,6 +1380,8 @@ public class CriticalPathCalculatorTest {
         expect(diagramGraphExample.contains(taskContainer, subtask2))
                 .andReturn(true).anyTimes();
 
+        addTaskMethods(listOfTasks);
+
         replay(diagramGraphExample);
     }
 
@@ -1390,6 +1445,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
@@ -1464,6 +1521,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+
+        addTaskMethods(listOfTasks);
 
         replay(diagramGraphExample);
     }
