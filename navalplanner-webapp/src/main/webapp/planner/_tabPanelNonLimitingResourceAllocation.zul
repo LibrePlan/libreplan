@@ -74,11 +74,11 @@
                     <hbox>
                         <!-- Planned Task Start -->
                         <label style="font-weight: bold" value="${i18n:_('Planned start :')}" />
-                        <label value="@{allocationController.plannedTaskStart,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                        <label id="lbTaskStart" />
 
                         <!-- Planned Task End -->
                         <label style="font-weight: bold" value="${i18n:_('Planned end :')}" />
-                        <label id="lbTaskEnd" value="@{allocationController.plannedTaskEnd,converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
+                        <label id="lbTaskEnd" />
 
                     </hbox>
                         <!-- Planned Workable Days -->

@@ -31,7 +31,6 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -46,6 +45,7 @@ import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
@@ -58,7 +58,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -114,9 +113,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Checkbox extendedViewCheckbox;
 
     private Intbox taskWorkableDays;
-
-    //  Orientative task end according to number of workable days
-    private Date plannedTaskEnd;
 
     private Decimalbox allResourcesPerDay;
 
@@ -225,7 +221,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
             }
             allocationRows = resourceAllocationModel.initAllocationsFor(task,
                     context, planningState);
-            initTaskWorkableDays(task);
 
             formBinder = allocationRows.createFormBinder(planningState
                     .getCurrentScenario(), resourceAllocationModel);
@@ -239,7 +234,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     .setAllConsolidatedResourcesPerDay(allConsolidatedResourcesPerDay);
             formBinder.setAllResourcesPerDay(allResourcesPerDay);
 
-            formBinder.setWorkableDays(taskWorkableDays);
+            TaskPropertiesController taskPropertiesController = editTaskController
+                    .getTaskPropertiesController();
+            formBinder.setWorkableDays(taskWorkableDays,
+                    taskPropertiesController, lbTaskStart, lbTaskEnd);
+
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
@@ -265,50 +264,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
     }
 
+    private Label lbTaskStart;
+
     private Label lbTaskEnd;
-
-    private void initTaskWorkableDays(org.navalplanner.business.planner.entities.Task task) {
-        taskWorkableDays.setValue(task.getWorkableDays());
-        plannedTaskEnd = resourceAllocationModel.getTaskEnd();
-        taskWorkableDays.addEventListener(Events.ON_CHANGE,
-                new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                setPlannedTaskEnd(calculateEndDate(taskWorkableDays
-                        .getValue()));
-                updateTaskEndDateInTaskPropertiesPanel(getPlannedTaskEnd());
-                Util.reloadBindings(lbTaskEnd);
-            }
-
-            private void updateTaskEndDateInTaskPropertiesPanel(Date endDate) {
-                editTaskController.getTaskPropertiesController().updateTaskEndDate(endDate);
-            }
-
-        });
-    }
-
-    private Date calculateEndDate(int duration) {
-        LocalDate result = new LocalDate(getPlannedTaskStart());
-        result = result.plusDays(duration);
-        return toDate(result);
-    }
-
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
-    }
-
-    public Date getPlannedTaskStart() {
-        return resourceAllocationModel.getTaskStart();
-    }
-
-    public Date getPlannedTaskEnd() {
-        return plannedTaskEnd;
-    }
-
-    private void setPlannedTaskEnd(Date taskEnd) {
-        this.plannedTaskEnd = taskEnd;
-    }
 
     public enum HoursRendererColumn {
 

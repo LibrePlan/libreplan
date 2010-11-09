@@ -32,11 +32,13 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -47,6 +49,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -287,10 +290,50 @@ public class FormBinder {
         this.taskStartDate = startDate;
     }
 
-    public void setWorkableDays(Intbox duration) {
+    public void setWorkableDays(Intbox duration,
+            final TaskPropertiesController taskPropertiesController,
+            final Label labelTaskStart, final Label labelTaskEnd) {
+
+        Task task = allocationRowsHandler.getTask();
+        showValueOfDateOn(labelTaskStart, task.getStartAsLocalDate());
+        showValueOfDateOn(labelTaskEnd, task.getEndAsLocalDate());
+
         this.taskWorkableDays = duration;
+        taskWorkableDays.setValue(task.getWorkableDays());
+        taskWorkableDays.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Date newEndDate = calculateEndDate(taskWorkableDays
+                                .getValue());
+                        taskPropertiesController.updateTaskEndDate(newEndDate);
+                        showValueOfDateOn(labelTaskEnd,
+                                LocalDate.fromDateFields(newEndDate));
+                    }
+                });
         taskDurationDisabilityRule();
         onChangeEnableApply(taskWorkableDays);
+    }
+
+    private void showValueOfDateOn(final Label label, LocalDate date) {
+        DateTimeFormatter formatter = DateTimeFormat.forStyle("S-").withLocale(
+                Locales.getCurrent());
+        label.setValue(formatter.print(date));
+    }
+
+    private Date calculateEndDate(int duration) {
+        LocalDate result = new LocalDate(getPlannedTaskStart());
+        result = result.plusDays(duration);
+        return toDate(result);
+    }
+
+    private Date toDate(LocalDate date) {
+        return date.toDateTimeAtStartOfDay().toDate();
+    }
+
+    public Date getPlannedTaskStart() {
+        return resourceAllocationModel.getTaskStart();
     }
 
     public void setAllResourcesPerDay(Decimalbox allResourcesPerDay) {
