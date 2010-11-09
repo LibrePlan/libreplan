@@ -23,7 +23,6 @@ package org.zkoss.ganttz.data.criticalpath;
 import java.util.Set;
 
 import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 
 /**
  * Class that represents the last node of the graph.
@@ -33,8 +32,8 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 public class LastNode<T, D extends IDependency<T>> extends Node<T, D> {
 
     public LastNode(Set<? extends T> previousTasks,
-            IAdapter<T, D> adapter) {
-        super(null, previousTasks, null, adapter);
+            ICriticalPathCalculable<T> graph) {
+        super(null, previousTasks, null, graph);
     }
 
     public void updateLatestValues() {

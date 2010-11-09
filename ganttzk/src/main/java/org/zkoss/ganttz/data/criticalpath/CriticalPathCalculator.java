@@ -32,7 +32,6 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
@@ -43,25 +42,18 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
-    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create(
-            IAdapter<T, D> adapter) {
-        return new CriticalPathCalculator<T, D>(adapter);
+    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create() {
+        return new CriticalPathCalculator<T, D>();
     }
 
     private ICriticalPathCalculable<T> graph;
 
     private LocalDate initDate;
 
-    private IAdapter<T, D> adapter;
-
     private Map<T, Node<T, D>> nodes;
 
     private InitialNode<T, D> bop;
     private LastNode<T, D> eop;
-
-    private CriticalPathCalculator(IAdapter<T, D> adapter) {
-        this.adapter = adapter;
-    }
 
     public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
         this.graph = graph;
@@ -93,19 +85,19 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     private List<GanttDate> getStartDates() {
         List<GanttDate> result = new ArrayList<GanttDate>();
         for (T task : graph.getInitialTasks()) {
-            result.add(adapter.getStartDate(task));
+            result.add(graph.getStartDate(task));
         }
         return result;
     }
 
     private InitialNode<T, D> createBeginningOfProjectNode() {
         return new InitialNode<T, D>(new HashSet<T>(graph.getInitialTasks()),
-                adapter);
+                graph);
     }
 
     private LastNode<T, D> createEndOfProjectNode() {
         return new LastNode<T, D>(new HashSet<T>(graph.getLatestTasks()),
-                adapter);
+ graph);
     }
 
     private Map<T, Node<T, D>> createGraphNodes() {
@@ -114,7 +106,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         for (T task : graph.getTasks()) {
             Node<T, D> node = new Node<T, D>(task, graph
                     .getIncomingTasksFor(task),
-                    graph.getOutgoingTasksFor(task), adapter);
+                    graph.getOutgoingTasksFor(task), graph);
             result.put(task, node);
         }
 
@@ -198,7 +190,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             return null;
         }
 
-        List<Constraint<GanttDate>> constraints = adapter
+        List<Constraint<GanttDate>> constraints = graph
                 .getStartConstraintsFor(task);
         if (constraints == null) {
             return null;

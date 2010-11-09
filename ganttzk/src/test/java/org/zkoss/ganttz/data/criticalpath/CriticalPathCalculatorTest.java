@@ -31,16 +31,12 @@ import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.bigg
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
-import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -68,151 +64,7 @@ public class CriticalPathCalculatorTest {
     }
 
     private CriticalPathCalculator<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> buildCalculator() {
-        return CriticalPathCalculator.create(stubAdapter());
-    }
-
-    private IAdapter<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> stubAdapter() {
-        return new IAdapter<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>>() {
-
-            private void notImplemented() {
-                throw new UnsupportedOperationException("not implemented");
-            }
-            @Override
-            public List<ITaskFundamentalProperties> getChildren(
-                    ITaskFundamentalProperties task) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public boolean isContainer(ITaskFundamentalProperties task) {
-                notImplemented();
-                return false;
-            }
-
-            @Override
-            public void registerDependenciesEnforcerHookOn(
-                    ITaskFundamentalProperties task,
-                    IDependenciesEnforcerHookFactory<ITaskFundamentalProperties> hookFactory) {
-                notImplemented();
-            }
-
-            @Override
-            public GanttDate getStartDate(ITaskFundamentalProperties task) {
-                return task.getBeginDate();
-            }
-
-            @Override
-            public void setStartDateFor(ITaskFundamentalProperties task,
-                    GanttDate newStart) {
-                notImplemented();
-            }
-
-            @Override
-            public GanttDate getEndDateFor(ITaskFundamentalProperties task) {
-                return task.getEndDate();
-            }
-
-            @Override
-            public void setEndDateFor(ITaskFundamentalProperties task,
-                    GanttDate newEnd) {
-                notImplemented();
-            }
-
-            @Override
-            public GanttDate getSmallestBeginDateFromChildrenFor(
-                    ITaskFundamentalProperties container) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public Constraint<GanttDate> getCurrentLenghtConstraintFor(
-                    ITaskFundamentalProperties task) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
-                    ITaskFundamentalProperties task) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-                    Set<IDependency<ITaskFundamentalProperties>> incoming) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public List<Constraint<GanttDate>> getStartConstraintsGiven(
-                    Set<IDependency<ITaskFundamentalProperties>> withDependencies) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public List<Constraint<GanttDate>> getStartConstraintsFor(
-                    ITaskFundamentalProperties task) {
-                return task.getStartConstraints();
-            }
-
-            @Override
-            public ITaskFundamentalProperties getSource(
-                    IDependency<ITaskFundamentalProperties> dependency) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public ITaskFundamentalProperties getDestination(
-                    IDependency<ITaskFundamentalProperties> dependency) {
-                return dependency.getDestination();
-            }
-
-            @Override
-            public Class<IDependency<ITaskFundamentalProperties>> getDependencyType() {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public IDependency<ITaskFundamentalProperties> createInvisibleDependency(
-                    ITaskFundamentalProperties origin,
-                    ITaskFundamentalProperties destination, DependencyType type) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public DependencyType getType(
-                    IDependency<ITaskFundamentalProperties> dependency) {
-                return dependency.getType();
-            }
-
-            @Override
-            public TaskPoint<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> getDestinationPoint(
-                    IDependency<ITaskFundamentalProperties> dependency) {
-                notImplemented();
-                return null;
-            }
-
-            @Override
-            public boolean isVisible(
-                    IDependency<ITaskFundamentalProperties> dependency) {
-                notImplemented();
-                return true;
-            }
-
-            @Override
-            public boolean isFixed(ITaskFundamentalProperties task) {
-                notImplemented();
-                return false;
-            }
-        };
+        return CriticalPathCalculator.create();
     }
 
     private ITaskFundamentalProperties createTaskWithBiggerOrEqualThanConstraint(

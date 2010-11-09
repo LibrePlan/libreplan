@@ -1415,6 +1415,21 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return result;
     }
 
+    @Override
+    public GanttDate getEndDateFor(V task) {
+        return adapter.getEndDateFor(task);
+    }
+
+    @Override
+    public List<Constraint<GanttDate>> getStartConstraintsFor(V task) {
+        return adapter.getStartConstraintsFor(task);
+    }
+
+    @Override
+    public GanttDate getStartDate(V task) {
+        return adapter.getStartDate(task);
+    }
+
 }
 
 interface IReentranceCases {

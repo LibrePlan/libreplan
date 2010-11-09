@@ -23,7 +23,6 @@ package org.zkoss.ganttz.data.criticalpath;
 import java.util.Set;
 
 import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 
 
 /**
@@ -34,8 +33,8 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 public class InitialNode<T, D extends IDependency<T>> extends Node<T, D> {
 
     public InitialNode(Set<? extends T> nextTasks,
-            IAdapter<T, D> adapter) {
-        super(null, null, nextTasks, adapter);
+            ICriticalPathCalculable<T> graph) {
+        super(null, null, nextTasks, graph);
     }
 
 }
