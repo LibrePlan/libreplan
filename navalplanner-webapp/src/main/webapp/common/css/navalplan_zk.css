@@ -1442,3 +1442,11 @@ display:none;
 .filter-more-options .z-groupbox-hl {
     cursor:pointer;
 }
+
+#ganttpanel #timetracker {
+    overflow: hidden;
+}
+
+.second_level_ #watermark .timetracker_column_even {
+    height: 99999px;
+}
