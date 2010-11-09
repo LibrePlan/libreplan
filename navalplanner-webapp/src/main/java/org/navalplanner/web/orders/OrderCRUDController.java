@@ -576,6 +576,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void refreshOrderWindow() {
+        orderElementTreeController.resetCellsMarkedAsModified();
         updateDisabilitiesOnInterface();
         refreshCodeTextboxesOnly();
         getVisibility().showOnly(editWindow);

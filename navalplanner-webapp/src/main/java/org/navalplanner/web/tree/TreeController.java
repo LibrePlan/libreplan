@@ -641,6 +641,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected abstract String createTooltipText(T currentElement);
 
+    protected Set<Treecell> cellsMarkedAsModified = new HashSet<Treecell>();
+
     protected void markModifiedTreeitem(Treerow item) {
         Treecell tc = (Treecell) item.getFirstChild();
         // Check if marked label has been previously added
@@ -649,7 +651,15 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             modifiedMark.setTooltiptext(_("Modified"));
             modifiedMark.setSclass("modified-mark");
             tc.appendChild(modifiedMark);
+            cellsMarkedAsModified.add(tc);
         }
+    }
+
+    public void resetCellsMarkedAsModified() {
+        for(Treecell cell : cellsMarkedAsModified) {
+            cell.removeChild(cell.getLastChild());
+        }
+        cellsMarkedAsModified.clear();
     }
 
     protected boolean readOnly = true;
