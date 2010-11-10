@@ -513,6 +513,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             advancedAllocationHorizontalPagination
                     .setDisabled(advancedAllocationHorizontalPagination
                             .getItems().size() < 2);
+            advancedAllocationHorizontalPagination.setSelectedIndex(0);
         }
 
         public void goToHorizontalPage(int interval) {
@@ -864,6 +865,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 advancedAllocationVerticalPagination.appendChild(item);
                 verticalPaginationIndexes.add(new Integer(i));
             }
+            advancedAllocationVerticalPagination.setSelectedIndex(0);
         }
     }
 
