@@ -990,4 +990,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
+    @Override
+    protected void refreshHoursBox(OrderElement node) {
+        List<OrderElement> parentNodes = getModel().getParents(node);
+        // Remove the last element because it's an
+        // Order node, not an OrderElement
+        parentNodes.remove(parentNodes.size() - 1);
+        for (OrderElement parent : parentNodes) {
+            getRenderer().hoursIntBoxByOrderElement.get(parent)
+                    .setValue(parent.getWorkHours());
+        }
+    }
+
 }

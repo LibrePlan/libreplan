@@ -189,8 +189,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         // Parse hours
         try {
             if (tree.getSelectedCount() == 1) {
-                getModel().addElementAt(getSelectedNode(), name.getValue(),
+                T node = getSelectedNode();
+                getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
+                refreshHoursBox(node);
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
             }
@@ -204,6 +206,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         name.focus();
     }
 
+    protected abstract void refreshHoursBox(T node);
 
     protected abstract void filterByPredicateIfAny();
 

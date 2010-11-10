@@ -220,4 +220,9 @@ public class TemplatesTreeController extends
             return tooltipText.toString();
         }
 
+    @Override
+    protected void refreshHoursBox(OrderElementTemplate node) {
+        // we do nothing, since there isn't an hours box in this tree
+    }
+
 }
