@@ -59,10 +59,7 @@
         <panel title="${i18n:_('Filter by task status')}"
             border="normal" >
             <panelchildren>
-                <listbox id="lbTaskStatus"
-                        model="@{controller.tasksStatus}"
-                        mold="select"
-                        itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer" />
+                <listbox id="lbTaskStatus" mold="select" />
             </panelchildren>
         </panel>
 

@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 
 /**
@@ -73,7 +74,21 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
+        setupTaskStatusListbox();
         workingArrangementsPerOrderModel.init();
+    }
+
+    private void setupTaskStatusListbox() {
+        for(TaskStatusEnum status : getTasksStatus()) {
+            Listitem item = new Listitem();
+            item.setParent(lbTaskStatus);
+            item.setValue(status);
+            item.appendChild(new Listcell(status.toString()));
+            lbTaskStatus.appendChild(item);
+            if(status.equals(TaskStatusEnum.ALL)) {
+                item.setSelected(true);
+            }
+        }
     }
 
     public List<Order> getAllOrders() {
