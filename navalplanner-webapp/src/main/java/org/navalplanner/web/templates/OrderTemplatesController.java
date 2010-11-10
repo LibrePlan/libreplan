@@ -49,6 +49,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Image;
@@ -289,6 +292,14 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
         tree.setModel(orderElementsTree.getController().getTreeModel());
+        tree.addEventListener(Events.ON_SELECT, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                //undo the work done by this event
+                //to be able to control it from the ON_CLICK event
+                tree.clearSelection();
+            }
+        });
     }
 
     private void setTreeRenderer(TreeComponent orderElementsTree) {
