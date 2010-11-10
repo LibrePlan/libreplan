@@ -169,7 +169,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.registerListener(this, page);
         initCurrentList();
-        listType.setSelectedIndex(0);
+        if(listType != null) {
+            //listType is null in reports -> work report lines
+            listType.setSelectedIndex(0);
+        }
     }
 
     private void initCurrentList() {
