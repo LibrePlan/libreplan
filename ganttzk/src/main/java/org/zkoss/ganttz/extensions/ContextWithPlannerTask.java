@@ -123,4 +123,9 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         return context.getGanttDiagramGraph();
     }
 
+    @Override
+    public List<T> getCriticalPath() {
+        return context.getCriticalPath();
+    }
+
 }

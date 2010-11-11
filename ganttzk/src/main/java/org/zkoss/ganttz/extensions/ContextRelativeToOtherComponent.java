@@ -121,4 +121,9 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         return context.getGanttDiagramGraph();
     }
 
+    @Override
+    public List<T> getCriticalPath() {
+        return context.getCriticalPath();
+    }
+
 }
