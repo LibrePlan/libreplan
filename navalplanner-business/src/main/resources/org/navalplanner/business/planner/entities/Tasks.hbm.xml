@@ -67,6 +67,8 @@
                 <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             </component>
 
+            <property name="workableDays" column="WORKABLE_DAYS" />
+
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
                 cascade="all"/>
 

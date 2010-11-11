@@ -70,7 +70,7 @@ public class AllocationResult {
                 scenario, resourceAllocations);
         AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
                 ModifiedAllocation.modified(modifiedAllocations));
-        return new AllocationResult(task, task.getWorkableDays(),
+        return new AllocationResult(task, task.getSpecifiedWorkableDays(),
                 task.getCalculatedValue(), aggregate,
                 Collections.<ResourceAllocation<?>> emptyList(),
                 modifiedAllocations);

@@ -361,7 +361,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
-        this.workableDays = newWorkableDays;
+        this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null
+                : newWorkableDays;
         setIntraDayStartDate(start);
         setIntraDayEndDate(end);
         for (ModifiedAllocation pair : modifications) {
@@ -455,6 +456,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     @Override
     protected IntraDayDate calculateNewEndGiven(IntraDayDate newStartDate) {
+        if (workableDays != null) {
+            return IntraDayDate.startOfDay(calculateEndGivenWorkableDays(
+                    newStartDate.getDate(), workableDays));
+        }
         return calculateEndKeepingLength(newStartDate);
     }
 
@@ -687,11 +692,14 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         return workableDays;
     }
 
-
     public Integer getDaysBetweenDates() {
         Days daysBetween = Days.daysBetween(getStartAsLocalDate(),
                 getIntraDayEndDate().asExclusiveEnd());
         return daysBetween.getDays();
+    }
+
+    public Integer getSpecifiedWorkableDays() {
+        return workableDays;
     }
 
     private Integer getWorkableDaysBetweenDates() {
@@ -713,6 +721,12 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public LocalDate calculateEndGivenWorkableDays(int workableDays) {
         LocalDate result = getIntraDayStartDate().getDate();
+        return calculateEndGivenWorkableDays(result, workableDays);
+    }
+
+    private LocalDate calculateEndGivenWorkableDays(LocalDate start,
+            int workableDays) {
+        LocalDate result = start;
         for (int i = 0; i < workableDays; result = result.plusDays(1)) {
             if (isWorkable(result)) {
                 i++;
