@@ -204,11 +204,6 @@ public class AllocationRowsHandler {
                 && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
-        if (calculatedValue != CalculatedValue.END_DATE
-                && formBinder.getAllocationEnd().isBefore(
-                new LocalDate(task.getStartDate()))) {
-            formBinder.markEndDateMustBeAfterStartDate();
-        }
         if (calculatedValue != CalculatedValue.RESOURCES_PER_DAY) {
             List<AllocationRow> rows = getRowsWithEmptyResourcesPerDay();
             if (!rows.isEmpty()) {

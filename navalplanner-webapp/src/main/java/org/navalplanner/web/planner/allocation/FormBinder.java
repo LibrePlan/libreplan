@@ -34,7 +34,6 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
@@ -527,16 +526,6 @@ public class FormBinder {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
                         Criterion.getCaptionFor(resourceType, criterions)));
-    }
-
-    public void markEndDateMustBeAfterStartDate() {
-        DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
-                Locales.getCurrent());
-        LocalDate start = allocationRowsHandler.getStartDate();
-        throw new WrongValueException(taskWorkableDays, _(
-                "end date: {0} must be after start date: {1}",
-                getAllocationEnd().toString(formatter), start
-                        .toString(formatter)));
     }
 
     public void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
