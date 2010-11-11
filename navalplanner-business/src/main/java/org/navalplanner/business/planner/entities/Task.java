@@ -695,9 +695,13 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     private Integer getWorkableDaysBetweenDates() {
+        LocalDate end = getIntraDayEndDate().asExclusiveEnd();
+        return getWorkableDaysUntil(end);
+    }
+
+    public Integer getWorkableDaysUntil(LocalDate end) {
         int result = 0;
         LocalDate start = getStartAsLocalDate();
-        LocalDate end = getIntraDayEndDate().asExclusiveEnd();
         for (LocalDate current = start; current.compareTo(end) < 0; current = current
                 .plusDays(1)) {
             if (isWorkable(current)) {
