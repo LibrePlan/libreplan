@@ -275,7 +275,8 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     private boolean isMonteCarloVisible() {
-        return configurationDAO.getConfiguration().isMonteCarloMethodTabVisible();
+        Boolean result = configurationDAO.getConfiguration().isMonteCarloMethodTabVisible();
+        return result != null ? result.booleanValue() : false;
     }
 
     @SuppressWarnings("unchecked")
