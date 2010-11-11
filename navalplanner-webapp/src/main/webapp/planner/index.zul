@@ -35,7 +35,7 @@
 ]]>
 </zscript>
     <div id="idContextMenuTaskAssignment">
-        <div />
+        <div></div>
     </div>
     <tabSwitcher self="@{define(content)}" apply="${multipleTabsPlanner}">
     </tabSwitcher>

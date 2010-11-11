@@ -30,7 +30,7 @@
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.externalcompanies.ExternalCompanyCRUDController">
-        <vbox id="messagesContainer"></vbox>
+        <vbox id="messagesContainer" width="100%"></vbox>
 
         <list top_id="listWindow" />
         <edition top_id="createWindow" />

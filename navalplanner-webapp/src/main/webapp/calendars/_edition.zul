@@ -27,7 +27,7 @@
         <tabpanels>
             <tabpanel>
 
-        <grid  fixedLayout="true" style="margin-bottom: 10px;">
+        <grid fixedLayout="true" style="margin-bottom: 10px;">
             <columns>
                 <column width="200px" />
                 <column/>
@@ -48,9 +48,9 @@
             </rows>
         </grid>
 
-    <hbox>
+    <hbox width="100%">
 
-        <vbox id="dayInformation">
+        <vbox id="dayInformation" width="100%">
 
             <calendarhighlighteddays id="calendarWidget"
                 value="@{calendarController.editionController.selectedDay,access='both'}"
@@ -81,11 +81,18 @@
 
             <tabpanel>
 
-            <vbox id="exceptionInformation">
-                <hbox>
-                    <grid width="500px">
+            <vbox id="exceptionInformation" width="100%">
+
+            <grid width="100%" sclass="calendar-exceptions">
+            <columns>
+                        <column width="450px"/>
+                        <column />
+            </columns>
+            <rows>
+                <row>
+                    <grid>
                     <columns>
-                        <column/>
+                        <column width="180px" />
                         <column />
                     </columns>
                     <rows>
@@ -112,10 +119,12 @@
                     </rows>
                     </grid>
 
+
+
                     <listbox id="exceptionsList"
                         model="@{calendarController.editionController.calendarExceptions}"
                         itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
-                        rows="4">
+                        rows="4" width="100%">
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
                             <listheader label="${i18n:_('Exception Type')}" />
@@ -123,9 +132,11 @@
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>
-                </hbox>
+                    </row>
+                    </rows>
+                </grid>
 
-                <hbox>
+                <hbox width="100%">
                     <button label="${i18n:_('Create exception')}"
                         onClick="calendarController.editionController.createException();"
                         visible="@{calendarController.editionController.isNotOwnExceptionDay}" />
@@ -139,9 +150,9 @@
 
             <tabpanel>
 
-            <vbox>
+            <vbox width="100%">
 
-                <hbox>
+                <hbox width="100%">
 
                     <listbox id="hoursPerDay"
                         model="@{calendarController.editionController.getHoursPerDay}"
