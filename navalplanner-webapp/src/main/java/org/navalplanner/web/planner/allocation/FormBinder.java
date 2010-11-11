@@ -299,6 +299,9 @@ public class FormBinder {
         showValueOfDateOn(labelTaskEnd, task.getEndAsLocalDate());
 
         this.taskWorkableDays = duration;
+        taskWorkableDays.setConstraint(new SimpleConstraint(
+                SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
+
         taskWorkableDays.setValue(task.getWorkableDays());
         taskWorkableDays.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
