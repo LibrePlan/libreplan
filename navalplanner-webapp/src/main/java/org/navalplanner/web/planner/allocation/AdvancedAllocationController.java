@@ -854,6 +854,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         if (rowsCached != null) {
             verticalPage = 0;
             verticalPaginationIndexes = new ArrayList<Integer>();
+            advancedAllocationVerticalPagination.getChildren().clear();
             for(int i=0; i<rowsCached.size(); i=
                     correctVerticalPageDownPosition(i+VERTICAL_MAX_ELEMENTS)) {
                 int endPosition = correctVerticalPageUpPosition(Math.min(
