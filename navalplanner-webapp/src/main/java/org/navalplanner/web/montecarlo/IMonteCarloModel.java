@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 
 
 /**
@@ -39,7 +39,7 @@ public interface IMonteCarloModel {
 
     Map<LocalDate, BigDecimal> calculateMonteCarlo(int times);
 
-    void setCriticalPath(Order order, List<Task> criticalPath);
+    void setCriticalPath(Order order, List<TaskElement> criticalPath);
 
     String getOrderName();
 

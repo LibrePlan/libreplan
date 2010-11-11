@@ -36,6 +36,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -55,15 +56,17 @@ public class MonteCarloModel implements IMonteCarloModel {
     private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
 
     @Override
-    @Transactional(readOnly=true)
-    public void setCriticalPath(Order order, List<Task> criticalPath) {
+    @Transactional(readOnly = true)
+    public void setCriticalPath(Order order, List<TaskElement> criticalPath) {
         this.criticalPath.clear();
-        for (Task each: sortByStartDate(criticalPath)) {
-            this.criticalPath.add(MonteCarloTask.create(each));
+        for (TaskElement each : sortByStartDate(criticalPath)) {
+            if (each instanceof Task) {
+                this.criticalPath.add(MonteCarloTask.create((Task) each));
+            }
         }
     }
 
-    private List<Task> sortByStartDate(List<Task> tasks) {
+    private List<TaskElement> sortByStartDate(List<TaskElement> tasks) {
         Collections.sort(tasks, Task.getByStartDateComparator());
         return tasks;
     }
