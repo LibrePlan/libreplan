@@ -663,8 +663,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         return false;
     }
 
-    public void updateTaskEndDate(Date endDate) {
-        getGanttTaskDTO().endDate = endDate;
+    public void updateTaskEndDate(LocalDate endDate) {
+        getGanttTaskDTO().endDate = endDate.toDateTimeAtStartOfDay().toDate();
         Util.reloadBindings(endDateBox);
     }
 }

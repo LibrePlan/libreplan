@@ -308,11 +308,12 @@ public class FormBinder {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Date newEndDate = calculateEndDate(taskWorkableDays
-                                .getValue());
+                        Task task = allocationRowsHandler.getTask();
+                        LocalDate newEndDate = task
+                                .calculateEndGivenWorkableDays(taskWorkableDays
+                                        .getValue());
                         taskPropertiesController.updateTaskEndDate(newEndDate);
-                        showValueOfDateOn(labelTaskEnd,
-                                LocalDate.fromDateFields(newEndDate));
+                        showValueOfDateOn(labelTaskEnd, newEndDate);
                     }
                 });
         taskDurationDisabilityRule();
@@ -325,18 +326,9 @@ public class FormBinder {
         label.setValue(formatter.print(date));
     }
 
-    private Date calculateEndDate(int duration) {
-        LocalDate result = new LocalDate(getPlannedTaskStart());
-        result = result.plusDays(duration);
-        return toDate(result);
-    }
-
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
-    }
-
-    public Date getPlannedTaskStart() {
-        return resourceAllocationModel.getTaskStart();
+    public LocalDate getAllocationEnd() {
+        Task task = allocationRowsHandler.getTask();
+        return task.calculateEndGivenWorkableDays(taskWorkableDays.getValue());
     }
 
     public void setAllResourcesPerDay(Decimalbox allResourcesPerDay) {
@@ -479,11 +471,6 @@ public class FormBinder {
             throw new RuntimeException("assignedHoursComponent returns null");
         }
         return result;
-    }
-
-    public LocalDate getAllocationEnd() {
-        LocalDate result = new LocalDate(taskStartDate);
-        return result.plusDays(getWorkableDays().intValue());
     }
 
     public Integer getWorkableDays() {

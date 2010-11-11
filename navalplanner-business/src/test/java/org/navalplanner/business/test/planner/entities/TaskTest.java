@@ -22,21 +22,27 @@ package org.navalplanner.business.test.planner.entities;
 
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.getCurrentArguments;
+import static org.easymock.EasyMock.isA;
 import static org.easymock.classextension.EasyMock.createNiceMock;
 import static org.easymock.classextension.EasyMock.replay;
+import static org.easymock.classextension.EasyMock.resetToNice;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.Arrays;
 import java.util.Date;
 
+import org.easymock.IAnswer;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -49,6 +55,7 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -74,6 +81,8 @@ public class TaskTest {
 
     private HoursGroup hoursGroup;
 
+    private BaseCalendar calendar;
+
     public TaskTest() {
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
@@ -82,11 +91,20 @@ public class TaskTest {
         order.setInitDate(new Date());
         OrderLine orderLine = OrderLine.create();
         order.add(orderLine);
+        order.setCalendar(stubCalendar());
         SchedulingDataForVersion version = TaskElementTest
                 .mockSchedulingDataForVersion(orderLine);
         TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
         task = Task.createTask(taskSource);
+    }
+
+    private BaseCalendar stubCalendar() {
+        calendar = createNiceMock(BaseCalendar.class);
+        expect(calendar.getCapacityOn(isA(PartialDay.class)))
+                .andReturn(hours(8)).anyTimes();
+        replay(calendar);
+        return calendar;
     }
 
     @Test
@@ -173,7 +191,7 @@ public class TaskTest {
     }
 
     @Test
-    public void theDaysBetweenIsCalculatedBasedOnlyOnDatesNotHours() {
+    public void theWorkableDaysAreCalculatedBasedOnlyOnDatesNotHours() {
         task.setIntraDayStartDate(IntraDayDate.create(
                 new LocalDate(2010, 1, 13), EffortDuration.hours(3)));
         task.setIntraDayEndDate(IntraDayDate.startOfDay(new LocalDate(2010, 1,
@@ -199,6 +217,30 @@ public class TaskTest {
         task.setIntraDayEndDate(IntraDayDate.create(start.plusDays(1),
                 EffortDuration.minutes(1)));
         assertThat(task.getWorkableDays(), equalTo(2));
+    }
+
+    @Test
+    public void ifSomeDayIsNotWorkableIsNotCounted() {
+        final LocalDate start = new LocalDate(2010, 1, 13);
+
+        resetToNice(calendar);
+        expect(calendar.getCapacityOn(isA(PartialDay.class))).andAnswer(
+                new IAnswer<EffortDuration>() {
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        Object[] args = getCurrentArguments();
+                        PartialDay day = (PartialDay) args[0];
+                        return day.getDate().equals(start.plusDays(1)) ? hours(0)
+                                : hours(8);
+                    }
+                }).anyTimes();
+        replay(calendar);
+
+        task.setIntraDayStartDate(IntraDayDate.create(start,
+                EffortDuration.hours(3)));
+        task.setIntraDayEndDate(IntraDayDate.create(start.plusDays(1),
+                EffortDuration.minutes(1)));
+        assertThat(task.getWorkableDays(), equalTo(1));
     }
 
     /**
