@@ -1,7 +1,13 @@
 package org.navalplanner.web.montecarlo;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -44,7 +50,9 @@ public class MonteCarloGraphController extends GenericForwardComposer {
     public void generateMonteCarloGraph(String orderName, Map<LocalDate, BigDecimal> data) {
         CategoryModel xymodel = new SimpleCategoryModel();
 
-        for (LocalDate each: data.keySet()) {
+        List<LocalDate> dates = new ArrayList(data.keySet());
+        Collections.sort(dates);
+        for (LocalDate each: dates) {
             String labelDate = each.toString();
             xymodel.setValue(orderName, labelDate, data.get(each));
         }
