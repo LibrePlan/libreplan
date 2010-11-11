@@ -47,7 +47,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
         return createWithoutTaskSource(milestone);
     }
 
-    private CalculatedValue calculatedValue = CalculatedValue.WORKABLE_DAYS;
+    private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
     private TaskStartConstraint startConstraint = new TaskStartConstraint();
 
@@ -83,7 +83,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
 
     public CalculatedValue getCalculatedValue() {
         if (calculatedValue == null) {
-            return CalculatedValue.WORKABLE_DAYS;
+            return CalculatedValue.END_DATE;
         }
         return calculatedValue;
     }

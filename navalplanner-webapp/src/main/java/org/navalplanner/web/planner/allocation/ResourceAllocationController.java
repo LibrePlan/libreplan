@@ -392,7 +392,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public enum CalculationTypeRadio {
 
-        WORKABLE_DAYS(CalculatedValue.WORKABLE_DAYS) {
+        WORKABLE_DAYS(CalculatedValue.END_DATE) {
             @Override
             public String getName() {
                 return _("Calculate Workable Days");

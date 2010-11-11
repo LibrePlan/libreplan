@@ -341,7 +341,7 @@ public class FormBinder {
 
     private void taskDurationDisabilityRule() {
         this.taskWorkableDays.setDisabled(allocationRowsHandler
-                .getCalculatedValue() == CalculatedValue.WORKABLE_DAYS);
+                .getCalculatedValue() == CalculatedValue.END_DATE);
     }
 
     private void allResourcesPerDayVisibilityRule() {

@@ -25,5 +25,6 @@ package org.navalplanner.business.planner.entities;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public enum CalculatedValue {
-    NUMBER_OF_HOURS, WORKABLE_DAYS, RESOURCES_PER_DAY;
+
+    NUMBER_OF_HOURS, END_DATE, RESOURCES_PER_DAY;
 }
