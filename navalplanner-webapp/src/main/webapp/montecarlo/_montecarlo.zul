@@ -55,6 +55,23 @@
 
             <separator bar="false" spacing="100px" orient="vertical"/>
 
+            <hbox>
+                <grid>
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Critical path')}" />
+                            <listbox id="lbCriticalPaths" mold="select"/>
+                        </row>
+                    </rows>
+                </grid>
+            </hbox>
+
+            <separator bar="false" spacing="100px" orient="vertical"/>
+
             <!-- Launch montecarlo -->
             <hbox>
                 <grid>

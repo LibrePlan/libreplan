@@ -162,7 +162,7 @@ public class MonteCarloTask {
     }
 
     public String toString() {
-        return String.format("%s:%f:(%f,%f):(%f,%f):(%f,%f)", task.getName(),
+        return String.format("%s:%f:(%f,%d):(%f,%d):(%f,%d)", task.getName(),
                 duration, pessimisticDuration, pessimisticDurationPercentage,
                 normalDuration, normalDurationPercentage, optimisticDuration,
                 optimisticDurationPercentage);

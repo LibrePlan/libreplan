@@ -35,12 +35,14 @@ import org.navalplanner.business.planner.entities.TaskElement;
  */
 public interface IMonteCarloModel {
 
-    List<MonteCarloTask> getCriticalPathTasks();
-
-    Map<LocalDate, BigDecimal> calculateMonteCarlo(int times);
+    Map<LocalDate, BigDecimal> calculateMonteCarlo(List<MonteCarloTask> tasks, int times);
 
     void setCriticalPath(Order order, List<TaskElement> criticalPath);
 
     String getOrderName();
+
+    List<String> getCriticalPathNames();
+
+    List<MonteCarloTask> getCriticalPath(String name);
 
 }

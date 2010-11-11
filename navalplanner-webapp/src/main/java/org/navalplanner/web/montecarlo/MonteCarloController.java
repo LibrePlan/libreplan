@@ -30,7 +30,6 @@ import java.util.Map;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.planner.allocation.streches.IStretchesFunctionModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -48,11 +47,12 @@ import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
-import org.zkoss.zul.XYModel;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -81,6 +81,8 @@ public class MonteCarloController extends GenericForwardComposer {
 
     private Checkbox cbGroupByWeeks;
 
+    private Listbox lbCriticalPaths;
+
     private Window monteCarloChartWindow;
 
     public MonteCarloController() {
@@ -90,7 +92,17 @@ public class MonteCarloController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
+
         ibIterations.setValue(DEFAULT_ITERATIONS);
+        lbCriticalPaths.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                reloadGridCritialPathTasks();
+            }
+
+        });
+
         btnRunMonteCarlo.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
@@ -98,7 +110,7 @@ public class MonteCarloController extends GenericForwardComposer {
                 int iterations = getIterations();
                 validateRowsPercentages();
                 Map<LocalDate, BigDecimal> monteCarloData = monteCarloModel
-                        .calculateMonteCarlo(iterations);
+                        .calculateMonteCarlo(getSelectedCriticalPath(), iterations);
                 showMonteCarloGraph(monteCarloData);
             }
 
@@ -169,35 +181,39 @@ public class MonteCarloController extends GenericForwardComposer {
             }
 
         });
+        feedCriticalPathsList();
         reloadGridCritialPathTasks();
     }
 
+    private void feedCriticalPathsList() {
+        lbCriticalPaths.setModel(new SimpleListModel(monteCarloModel
+                .getCriticalPathNames()));
+    }
+
     private void reloadGridCritialPathTasks() {
-        gridCriticalPathTasks.setModel(new SimpleListModel(
-                getCriticalPathTasks()));
+        List<MonteCarloTask> selectedCriticalPath = getSelectedCriticalPath();
+        if (selectedCriticalPath != null) {
+            gridCriticalPathTasks.setModel(new SimpleListModel(
+                    selectedCriticalPath));
+        }
         if (gridCriticalPathTasks.getRowRenderer() == null) {
             gridCriticalPathTasks.setRowRenderer(gridCriticalPathTasksRender);
         }
     }
 
-    public List<MonteCarloTask> getCriticalPathTasks() {
-        return monteCarloModel.getCriticalPathTasks();
+    public List<MonteCarloTask> getSelectedCriticalPath() {
+        Listitem selectedItem = lbCriticalPaths.getSelectedItem();
+        String selectedPath = selectedItem != null ? selectedItem.getLabel()
+                : null;
+        return monteCarloModel.getCriticalPath(selectedPath);
     }
 
     public void setCriticalPath(Order order, List criticalPath) {
         monteCarloModel.setCriticalPath(order, criticalPath);
-    }
-
-    public interface IGraphicGenerator {
-
-        public boolean areChartsEnabled(IStretchesFunctionModel model);
-
-        XYModel getDedicationChart(
-                IStretchesFunctionModel stretchesFunctionModel);
-
-        XYModel getAccumulatedHoursChartData(
-                IStretchesFunctionModel stretchesFunctionModel);
-
+        if (lbCriticalPaths != null) {
+            feedCriticalPathsList();
+            reloadGridCritialPathTasks();
+        }
     }
 
     private class CriticalPathTasksRender implements RowRenderer {
