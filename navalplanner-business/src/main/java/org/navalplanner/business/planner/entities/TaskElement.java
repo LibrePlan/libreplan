@@ -314,9 +314,14 @@ public abstract class TaskElement extends BaseEntity {
         }
         boolean sameDay = this.endDate.areSameDay(endDate.getDate());
         setIntraDayEndDate(endDate);
+        updateWorkableDays();
         if (!sameDay) {
             moveAllocations(scenario);
         }
+    }
+
+    // default implementation meant to be override
+    protected void updateWorkableDays() {
     }
 
     protected abstract boolean canBeResized();

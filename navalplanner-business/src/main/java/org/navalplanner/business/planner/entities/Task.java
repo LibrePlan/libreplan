@@ -629,6 +629,13 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
+    protected void updateWorkableDays() {
+        if (workableDays != null) {
+            workableDays = getWorkableDaysBetweenDates();
+        }
+    }
+
+    @Override
     public boolean canBeExplicitlyResized() {
         return canBeResized() && !isSubcontracted();
     }
