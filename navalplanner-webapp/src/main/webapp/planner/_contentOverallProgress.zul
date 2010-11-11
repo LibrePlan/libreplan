@@ -1,0 +1,59 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<div sclass="plannergraph">
+
+    <vbox style="margin-left: 25px" >
+
+        <separator />
+
+        <!-- Advance percentage -->
+        <label style="font-weight: bold; font-size: 14px" value="${i18n:_('Spread progress')}" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressAdvancePercentage" style="margin-right: 5px" width="400px" />
+            <label id="lbAdvancePercentage" style="font-weight: bold; font-size: 14px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Critical path by duration -->
+        <label style="font-weight: bold; font-size: 14px" value="${i18n:_('Critical path by duration')}" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressCriticalPathByDuration" style="margin-right: 5px" width="400px" />
+            <label id="lbCriticalPathByDuration" style="font-weight: bold; font-size: 14px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Critical path by number of hours -->
+        <label style="font-weight: bold; font-size: 14px" value="${i18n:_('Critical path by number of hours')}" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressCriticalPathByNumHours" style="margin-right: 5px" width="400px" />
+            <label id="lbCriticalPathByNumHours" style="font-weight: bold; font-size: 14px" />
+        </hbox>
+
+    </vbox>
+
+</div>

@@ -47,6 +47,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -136,6 +137,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
@@ -143,6 +145,7 @@ import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -271,6 +274,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
+    private OverAllProgressContent overallProgressContent;
+
     private final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
 
@@ -369,32 +374,181 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configureModificators(orderReloaded, configuration);
         planner.setConfiguration(configuration);
 
-        Timeplot chartLoadTimeplot = createEmptyTimeplot();
-        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
-        OrderEarnedValueChartFiller earnedValueChartFiller = new OrderEarnedValueChartFiller(
-                orderReloaded);
-        earnedValueChartFiller.calculateValues(planner.getTimeTracker()
-                .getRealInterval());
-        appendTabpanels(chartComponent, chartLoadTimeplot,
-                chartEarnedValueTimeplot, earnedValueChartFiller);
+        // Prepare tabpanels
+        Tabpanels chartTabpanels = new Tabpanels();
 
-        Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
-                orderReloaded), chartLoadTimeplot, planner);
-        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
-                loadChart);
-        Chart earnedValueChart = setupChart(orderReloaded,
-                earnedValueChartFiller,
-                chartEarnedValueTimeplot, planner);
-        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
-                earnedValueChart);
-        setEventListenerConfigurationCheckboxes(earnedValueChart);
+        // Create 'Load' tab
+        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        chartTabpanels.appendChild(createLoadTimeplotTab(chartLoadTimeplot));
+
+        // Create 'Earned value' tab
+        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
+        OrderEarnedValueChartFiller earnedValueChartFiller = createOrderEarnedValueChartFiller(planner.getTimeTracker());
+        chartTabpanels.appendChild(createEarnedValueTab(chartEarnedValueTimeplot, earnedValueChartFiller));
+
+        // Create 'Overall progress' tab
+        Hbox chartOverallProgressTimeplot = new Hbox();
+        chartTabpanels.appendChild(createOverallProgressTab(chartOverallProgressTimeplot));
+
+        // Append tab panels
+        chartComponent.appendChild(chartTabpanels);
+
+        setupLoadChart(chartLoadTimeplot, planner, configuration, saveCommand);
+        setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, configuration, saveCommand);
+        ProgressType progressType = configurationDAO.getConfiguration().getProgressType();
+        setupOverallProgress(chartComponent, progressType, planner, configuration, saveCommand);
+
         planner.addGraphChangeListenersFromConfiguration(configuration);
+    }
+
+    private Tabpanel createOverallProgressTab(
+            Hbox chartOverallProgressTimeplot) {
+        Tabpanel result = new Tabpanel();
+        org.zkoss.zk.ui.Component component = Executions.createComponents(
+                "/planner/_tabPanelOverallProgress.zul", result, null);
+        component.setParent(result);
+        return result;
     }
 
     private Timeplot createEmptyTimeplot() {
         Timeplot timeplot = new Timeplot();
         timeplot.appendChild(new Plotinfo());
         return timeplot;
+    }
+
+    private Tabpanel createLoadTimeplotTab(
+            Timeplot loadChart) {
+        Tabpanel result = new Tabpanel();
+        appendLoadChartAndLegend(result, loadChart);
+        return result;
+    }
+
+    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
+            Timeplot loadChart) {
+        Hbox hbox = new Hbox();
+        hbox.appendChild(getLoadChartLegend());
+        hbox.setSclass("load-chart");
+
+        Div div = new Div();
+        div.appendChild(loadChart);
+        div.setSclass("plannergraph");
+        hbox.appendChild(div);
+
+        loadChartPannel.appendChild(hbox);
+    }
+
+    private OrderEarnedValueChartFiller createOrderEarnedValueChartFiller(TimeTracker timeTracker) {
+        OrderEarnedValueChartFiller result = new OrderEarnedValueChartFiller(orderReloaded);
+        result.calculateValues(timeTracker.getRealInterval());
+        return result;
+    }
+
+    private Tabpanel createEarnedValueTab(
+            Timeplot chartEarnedValueTimeplot,
+            OrderEarnedValueChartFiller earnedValueChartFiller) {
+        Tabpanel result = new Tabpanel();
+        appendEarnedValueChartAndLegend(result, chartEarnedValueTimeplot,
+                earnedValueChartFiller);
+        return result;
+    }
+
+    private void appendEarnedValueChartAndLegend(
+            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
+            final OrderEarnedValueChartFiller earnedValueChartFiller) {
+        Vbox vbox = new Vbox();
+        vbox.setClass("legend-container");
+        vbox.setAlign("center");
+        vbox.setPack("center");
+
+        Hbox dateHbox = new Hbox();
+        dateHbox.appendChild(new Label(_("Select date:")));
+
+        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
+        Datebox datebox = new Datebox(initialDateForIndicatorValues
+                .toDateTimeAtStartOfDay().toDate());
+        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
+        dateHbox.appendChild(datebox);
+
+        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
+                datebox);
+        vbox.appendChild(dateHbox);
+
+        vbox.appendChild(getEarnedValueChartConfigurableLegend(
+                earnedValueChartFiller, initialDateForIndicatorValues));
+
+        Hbox hbox = new Hbox();
+        hbox.setSclass("earned-value-chart");
+
+        hbox.appendChild(vbox);
+
+        Div div = new Div();
+        div.appendChild(chartEarnedValueTimeplot);
+        div.setSclass("plannergraph");
+
+        hbox.appendChild(div);
+
+        earnedValueChartPannel.appendChild(hbox);
+    }
+
+    private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner,
+            PlannerConfiguration<TaskElement> configuration,
+            ISaveCommand saveCommand) {
+        Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
+                orderReloaded), chartLoadTimeplot, planner);
+        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
+                loadChart);
+    }
+
+    private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
+            OrderEarnedValueChartFiller earnedValueChartFiller,
+            Planner planner, PlannerConfiguration<TaskElement> configuration,
+            ISaveCommand saveCommand) {
+        Chart earnedValueChart = setupChart(orderReloaded,
+                earnedValueChartFiller, chartEarnedValueTimeplot, planner);
+        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
+                earnedValueChart);
+        setEventListenerConfigurationCheckboxes(earnedValueChart);
+    }
+
+    private void setupOverallProgress(Tabbox chartComponent,
+            final ProgressType progressType, Planner planner, PlannerConfiguration<TaskElement> configuration,
+            ISaveCommand saveCommand) {
+
+        chartComponent.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Tab selectedTab = getSelectedTab((SelectEvent) event);
+
+                if (isOverAllProgressSelected(selectedTab)) {
+                    if (overallProgressContent == null) {
+                        final Tabpanel tabpanel = getSelectedPanel(selectedTab);
+                        overallProgressContent = new OverAllProgressContent(tabpanel, progressType);
+                    }
+                    overallProgressContent.update();
+                }
+            }
+
+            private boolean isOverAllProgressSelected(Tab selectedTab) {
+                return selectedTab != null
+                    && selectedTab.getLabel().equals(_("Overall progress"));
+            }
+
+            private Tabpanel getSelectedPanel(Tab selectedTab) {
+                Tabbox tabbox = (Tabbox) selectedTab.getParent().getParent();
+                return tabbox.getSelectedPanel();
+            }
+
+            private Tab getSelectedTab(SelectEvent event) {
+                Set<Tab> tabs = event.getSelectedItems();
+                if (tabs != null) {
+                    return tabs.iterator().next();
+                }
+                return null;
+            }
+
+        });
+
     }
 
     private void addPrintSupport(
@@ -451,9 +605,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return deadlineMarker;
     }
 
-
-
-
     public static IDetailItemModificator createBankHolidayMarker() {
         return new BankHolidaysMarker();
     }
@@ -462,40 +613,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Tabs chartTabs = new Tabs();
         chartTabs.appendChild(new Tab(_("Load")));
         chartTabs.appendChild(new Tab(_("Earned value")));
+        chartTabs.appendChild(new Tab(_("Overall progress")));
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setSclass("charts-tabbox");
-    }
-
-    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
-            Timeplot chartEarnedValueTimeplot,
-            OrderEarnedValueChartFiller earnedValueChartFiller) {
-        Tabpanels chartTabpanels = new Tabpanels();
-
-        Tabpanel loadChartPannel = new Tabpanel();
-        appendLoadChartAndLegend(loadChartPannel, loadChart);
-        chartTabpanels.appendChild(loadChartPannel);
-
-        Tabpanel earnedValueChartPannel = new Tabpanel();
-        appendEarnedValueChartAndLegend(earnedValueChartPannel,
-                chartEarnedValueTimeplot, earnedValueChartFiller);
-        chartTabpanels.appendChild(earnedValueChartPannel);
-
-        chartComponent.appendChild(chartTabpanels);
-    }
-
-    private void appendLoadChartAndLegend(Tabpanel loadChartPannel,
-            Timeplot loadChart) {
-        Hbox hbox = new Hbox();
-        hbox.appendChild(getLoadChartLegend());
-        hbox.setSclass("load-chart");
-
-        Div div = new Div();
-        div.appendChild(loadChart);
-        div.setSclass("plannergraph");
-        hbox.appendChild(div);
-
-        loadChartPannel.appendChild(hbox);
     }
 
     private org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -506,44 +627,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         Executions.createComponents("/planner/_legendLoadChartOrder.zul", hbox,
                 null);
         return hbox;
-    }
-
-    private void appendEarnedValueChartAndLegend(
-            Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
-            final OrderEarnedValueChartFiller earnedValueChartFiller) {
-        Vbox vbox = new Vbox();
-        vbox.setClass("legend-container");
-        vbox.setAlign("center");
-        vbox.setPack("center");
-
-        Hbox dateHbox = new Hbox();
-        dateHbox.appendChild(new Label(_("Select date:")));
-
-        LocalDate initialDateForIndicatorValues = earnedValueChartFiller.initialDateForIndicatorValues();
-        Datebox datebox = new Datebox(initialDateForIndicatorValues
-                .toDateTimeAtStartOfDay().toDate());
-        datebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
-        dateHbox.appendChild(datebox);
-
-        appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox,
-                datebox);
-        vbox.appendChild(dateHbox);
-
-        vbox.appendChild(getEarnedValueChartConfigurableLegend(
-                earnedValueChartFiller, initialDateForIndicatorValues));
-
-        Hbox hbox = new Hbox();
-        hbox.setSclass("earned-value-chart");
-
-        hbox.appendChild(vbox);
-
-        Div div = new Div();
-        div.appendChild(chartEarnedValueTimeplot);
-        div.setSclass("plannergraph");
-
-        hbox.appendChild(div);
-
-        earnedValueChartPannel.appendChild(hbox);
     }
 
     private Constraint dateMustBeInsideVisualizationArea(
@@ -1446,6 +1529,74 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 forceLoadCriterionRequirements(element);
             }
         }
+    }
+
+    /**
+     *
+     * @author Diego Pino García<dpino@igalia.com>
+     *
+     * Helper class to show the content of a OverallProgress panel
+     *
+     */
+    private class OverAllProgressContent {
+
+        private Progressmeter progressCriticalPathByDuration;
+
+        private Label lbCriticalPathByDuration;
+
+        private Progressmeter progressCriticalPathByNumHours;
+
+        private Label lbCriticalPathByNumHours;
+
+        private Progressmeter progressAdvancePercentage;
+
+        private Label lbAdvancePercentage;
+
+
+        public OverAllProgressContent(Tabpanel tabpanel, ProgressType progressType) {
+            progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByDuration");
+            lbCriticalPathByDuration = (Label) tabpanel.getFellowIfAny("lbCriticalPathByDuration");
+            progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByNumHours");
+            lbCriticalPathByNumHours = (Label) tabpanel.getFellowIfAny("lbCriticalPathByNumHours");
+            progressAdvancePercentage = (Progressmeter) tabpanel.getFellowIfAny("progressAdvancePercentage");
+            lbAdvancePercentage = (Label) tabpanel.getFellowIfAny("lbAdvancePercentage");
+        }
+
+        public void update() {
+            TaskGroup rootTask = planningState.getRootTask();
+
+            setAdvancePercentage(rootTask.getAdvancePercentage());
+            setCriticalPathByDuration(rootTask.getCriticalPathProgressByDuration());
+            setCriticalPathByNumHours(rootTask.getCriticalPathProgressByNumHours());
+        }
+
+        private void setAdvancePercentage(BigDecimal value) {
+            if (value != null) {
+                value = value.multiply(BigDecimal.valueOf(100));
+                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                lbAdvancePercentage.setValue(value.toString() + " %");
+                progressAdvancePercentage.setValue(value.intValue());
+            }
+        }
+
+        public void setCriticalPathByDuration(BigDecimal value) {
+            if (value != null) {
+                value = value.multiply(BigDecimal.valueOf(100));
+                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                lbCriticalPathByDuration.setValue(value.toString() + " %");
+                progressCriticalPathByDuration.setValue(value.intValue());
+            }
+        }
+
+        public void setCriticalPathByNumHours(BigDecimal value) {
+            if (value != null) {
+                value = value.multiply(BigDecimal.valueOf(100));
+                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                lbCriticalPathByNumHours.setValue(value.toString() + " %");
+                progressCriticalPathByNumHours.setValue(value.intValue());
+            }
+        }
+
     }
 
 }
