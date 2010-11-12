@@ -31,6 +31,7 @@ Written by
 - Oscar González <ogonzalez@igalia.com>
 - Diego Pino <dpino@igalia.com>
 - Manuel Rego <mrego@igalia.com>
+- José María Casanova <jmcasanova@igalia.com> 
 - Lorenzo Tilve <ltilve@igalia.com>
 - Jacobo Aragunde <jaragunde@igalia.com>
 - Susana Montes <smontes@wirelessgalicia.com>
