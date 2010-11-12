@@ -1302,6 +1302,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer)).andReturn(
+                Arrays.asList(subtask1)).anyTimes();
 
         addTaskMethods(listOfTasks);
 
@@ -1380,6 +1382,8 @@ public class CriticalPathCalculatorTest {
                 .andReturn(true).anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask2))
                 .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer)).andReturn(
+                Arrays.asList(subtask1, subtask2)).anyTimes();
 
         addTaskMethods(listOfTasks);
 
@@ -1446,6 +1450,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer)).andReturn(
+                Arrays.asList(subtask1)).anyTimes();
 
         addTaskMethods(listOfTasks);
 
@@ -1522,6 +1528,8 @@ public class CriticalPathCalculatorTest {
                 .anyTimes();
         expect(diagramGraphExample.contains(taskContainer, subtask1))
                 .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer)).andReturn(
+                Arrays.asList(subtask1)).anyTimes();
 
         addTaskMethods(listOfTasks);
 

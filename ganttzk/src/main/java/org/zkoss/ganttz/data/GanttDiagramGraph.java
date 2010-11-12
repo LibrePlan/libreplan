@@ -1430,6 +1430,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return adapter.getStartDate(task);
     }
 
+    @Override
+    public List<V> getChildren(V task) {
+        if (!isContainer(task)) {
+            return Collections.emptyList();
+        }
+        return adapter.getChildren(task);
+    }
+
 }
 
 interface IReentranceCases {

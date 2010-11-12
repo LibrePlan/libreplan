@@ -21,6 +21,8 @@
 package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -90,25 +92,83 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return result;
     }
 
+    private Collection<T> removeContainers(Collection<T> tasks) {
+        if (tasks == null) {
+            return Collections.emptyList();
+        }
+        List<T> noConatinersTasks = new ArrayList<T>();
+        for (T t : tasks) {
+            if (graph.isContainer(t)) {
+                List<T> children = graph.getChildren(t);
+                noConatinersTasks.addAll(removeContainers(children));
+            } else {
+                noConatinersTasks.add(t);
+            }
+        }
+        return noConatinersTasks;
+    }
+
     private InitialNode<T, D> createBeginningOfProjectNode() {
-        return new InitialNode<T, D>(new HashSet<T>(graph.getInitialTasks()));
+        return new InitialNode<T, D>(new HashSet<T>(removeContainers(graph
+                .getInitialTasks())));
     }
 
     private LastNode<T, D> createEndOfProjectNode() {
-        return new LastNode<T, D>(new HashSet<T>(graph.getLatestTasks()));
+        return new LastNode<T, D>(new HashSet<T>(removeContainers(graph
+                .getLatestTasks())));
     }
 
     private Map<T, Node<T, D>> createGraphNodes() {
         Map<T, Node<T, D>> result = new HashMap<T, Node<T, D>>();
 
         for (T task : graph.getTasks()) {
-            Node<T, D> node = new Node<T, D>(task, graph
-                    .getIncomingTasksFor(task),
-                    graph.getOutgoingTasksFor(task), graph.getStartDate(task),
-                    graph.getEndDateFor(task));
-            result.put(task, node);
+            if (!graph.isContainer(task)) {
+                Set<T> in = substituteContainerForChildren(task, graph
+                        .getIncomingTasksFor(task), false);
+                Set<T> out = substituteContainerForChildren(task, graph
+                        .getOutgoingTasksFor(task), true);
+                Node<T, D> node = new Node<T, D>(task, in, out, graph
+                        .getStartDate(task), graph.getEndDateFor(task));
+                result.put(task, node);
+            }
         }
 
+        return result;
+    }
+
+    private Set<T> substituteContainerForChildren(T origin, Set<T> tasks,
+            boolean outgoing) {
+        if (tasks == null) {
+            return Collections.emptySet();
+        }
+        Set<T> result = new HashSet<T>();
+        for (T task : tasks) {
+            if (graph.isContainer(task)) {
+                if (!graph.contains(task, origin)) {
+                    // If it is NOT its parent
+                    result.addAll(removeContainers(Arrays.asList(task)));
+                } else { // If it IS its parent
+                    Set<T> related;
+                    // Get related tasks
+                    if (outgoing) {
+                        related = graph.getOutgoingTasksFor(task);
+                    } else {
+                        related = graph.getIncomingTasksFor(task);
+                    }
+                    Set<T> relatedTasksAvoidingSiblings = new HashSet<T>();
+                    // Remove siblings
+                    for (T t : related) {
+                        if (!graph.contains(task, t)) {
+                            relatedTasksAvoidingSiblings.add(t);
+                        }
+                    }
+                    result
+                            .addAll(removeContainers(relatedTasksAvoidingSiblings));
+                }
+            } else {
+                result.add(task);
+            }
+        }
         return result;
     }
 

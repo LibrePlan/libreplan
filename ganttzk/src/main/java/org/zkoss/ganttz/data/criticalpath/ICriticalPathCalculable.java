@@ -59,4 +59,6 @@ public interface ICriticalPathCalculable<T> {
 
     List<Constraint<GanttDate>> getStartConstraintsFor(T task);
 
+    List<T> getChildren(T task);
+
 }
