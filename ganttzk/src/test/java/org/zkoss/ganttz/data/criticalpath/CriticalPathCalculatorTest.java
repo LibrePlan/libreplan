@@ -25,6 +25,7 @@ import static org.easymock.EasyMock.isA;
 import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
@@ -2052,10 +2053,11 @@ public class CriticalPathCalculatorTest {
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
-        assertThat(criticalPath.size(), equalTo(2));
+        assertThat(criticalPath.size(), equalTo(1));
         for (ITaskFundamentalProperties task : criticalPath) {
             assertThat(daysBetweenStartAndEnd(task),
                     equalTo(10));
+            assertFalse(diagramGraphExample.isContainer(task));
         }
     }
 
@@ -2065,10 +2067,11 @@ public class CriticalPathCalculatorTest {
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
-        assertThat(criticalPath.size(), equalTo(2));
+        assertThat(criticalPath.size(), equalTo(1));
         for (ITaskFundamentalProperties task : criticalPath) {
             assertThat(daysBetweenStartAndEnd(task),
                     equalTo(10));
+            assertFalse(diagramGraphExample.isContainer(task));
         }
     }
 
@@ -2078,11 +2081,12 @@ public class CriticalPathCalculatorTest {
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
-        assertThat(criticalPath.size(), equalTo(3));
+        assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
             assertThat(daysBetweenStartAndEnd(task),
                     anyOf(equalTo(10),
                     equalTo(5)));
+            assertFalse(diagramGraphExample.isContainer(task));
         }
     }
 
@@ -2092,10 +2096,11 @@ public class CriticalPathCalculatorTest {
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 
-        assertThat(criticalPath.size(), equalTo(3));
+        assertThat(criticalPath.size(), equalTo(2));
         for (ITaskFundamentalProperties task : criticalPath) {
             assertThat(daysBetweenStartAndEnd(task),
                     anyOf(equalTo(10), equalTo(5)));
+            assertFalse(diagramGraphExample.isContainer(task));
         }
     }
 
