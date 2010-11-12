@@ -60,9 +60,12 @@ public class MonteCarloGraphController extends GenericForwardComposer {
 
         List<LocalDate> dates = new ArrayList(data.keySet());
         Collections.sort(dates);
-        for (LocalDate date: dates) {
-            String labelDate = date.toString();
-            result.setValue(orderName, labelDate, data.get(date));
+        LocalDate first = dates.get(0);
+        LocalDate last = dates.get(dates.size() - 1);
+        for (LocalDate i = first; i.isBefore(last) || i.isEqual(last); i = i
+                .plusDays(1)) {
+            String labelDate = i.toString();
+            result.setValue(orderName, labelDate, data.get(i));
         }
         return result;
     }
@@ -75,15 +78,16 @@ public class MonteCarloGraphController extends GenericForwardComposer {
         Integer first = weeks.get(0);
         Integer last = weeks.get(weeks.size() - 1);
         for (Integer i = first; i <= last; i = i + 1) {
-            String labelDate = "W" + i;
-            BigDecimal probability = data.get(i);
-            if (probability == null) {
-                probability = BigDecimal.ZERO;
-            }
-            result.setValue(orderName, labelDate, probability);
+            plotWeekValue(result, orderName, "W" + i, data.get(i));
         }
-
         return result;
+    }
+
+    private void plotWeekValue(CategoryModel model, String orderName, String date, BigDecimal probability) {
+        if (probability == null) {
+            probability = BigDecimal.ZERO;
+        }
+        model.setValue(orderName, date, probability);
     }
 
     private Map<Integer, BigDecimal> groupByWeek(Map<LocalDate, BigDecimal> data) {
