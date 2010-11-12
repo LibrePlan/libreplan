@@ -29,8 +29,9 @@
         </tabs>
         <tabpanels>
             <tabpanel>
+                <vbox sclass="mybox" width="100%">
                   <!-- Work report type details  -->
-                    <grid fixedLayout="false">
+                    <grid fixedLayout="false" width="100%">
                         <columns>
                             <column width="200px" />
                             <column />
@@ -155,6 +156,7 @@
                 </panelchildren>
                 </panel>
                 <separator bar="false" spacing="100px" orient="vertical"/>
+                </vbox>
             </tabpanel>
 
             <tabpanel>

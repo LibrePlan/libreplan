@@ -459,7 +459,7 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:270
 #: navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:21
-msgid "Work Report Types"
+msgid "Work Report Models"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:22

@@ -266,7 +266,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                     subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
                     subItem(_("Unit Measures"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
                     subItem(_("Work Hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                    subItem(_("Work Report Types"),"/workreports/workReportTypes.zul","09-partes.html#id2")));
+                            subItem(_("Work Report Models"),
+                                    "/workreports/workReportTypes.zul",
+                                    "09-partes.html#id2")));
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",

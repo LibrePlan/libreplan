@@ -1458,3 +1458,8 @@ display:none;
 .calendar-exceptions div.z-grid-body {
     overflow: hidden;
 }
+
+/* Expand vertical boxes for non-ffox browsers */
+.z-vbox {
+    width:100%;
+}

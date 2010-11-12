@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-11-08 19:55+0100\n"
-"PO-Revision-Date: 2010-11-09 19:08+0100\n"
+"PO-Revision-Date: 2010-11-11 11:51+0100\n"
 "Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "MIME-Version: 1.0\n"
@@ -470,8 +470,8 @@ msgstr "Non se pode borrar un escenario con escenarios derivados"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:270
 #: navalplanner-webapp/src/main/webapp/workreports/_listWorkReportTypes.zul:21
-msgid "Work Report Types"
-msgstr "Tipos de partes de traballo"
+msgid "Work Report Models"
+msgstr "Modelos de partes de traballo"
 
 #: navalplanner-webapp/src/main/webapp/calendars/_createNewVersion.zul:22
 msgid "Create new version"
