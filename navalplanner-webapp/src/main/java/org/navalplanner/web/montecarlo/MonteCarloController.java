@@ -43,6 +43,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -77,6 +78,8 @@ public class MonteCarloController extends GenericForwardComposer {
     private Intbox ibIterations;
 
     private Button btnRunMonteCarlo;
+
+    private Checkbox cbGroupByWeeks;
 
     private Window monteCarloChartWindow;
 
@@ -157,8 +160,10 @@ public class MonteCarloController extends GenericForwardComposer {
                         "/planner/montecarlo_function.zul", self, args);
                 MonteCarloGraphController controller = (MonteCarloGraphController) result
                         .getVariable("monteCarloGraphController", true);
+
                 final String orderName = monteCarloModel.getOrderName();
-                controller.generateMonteCarloGraph(orderName, data);
+                final boolean groupByWeeks = cbGroupByWeeks.isChecked();
+                controller.generateMonteCarloGraph(orderName, data, groupByWeeks);
 
                 return result;
             }

@@ -61,17 +61,24 @@
                     <columns>
                         <column width="200px" />
                         <column />
+                        <column />
                     </columns>
                     <rows>
+                        <row>
+                            <label value="${i18n:_('Group by weeks')}" />
+                            <checkbox id="cbGroupByWeeks"
+                                width="200px" />
+                            <label value="" />
+                        </row>
                         <row>
                             <label value="${i18n:_('Number of iterations')}" />
                             <intbox id="ibIterations"
                                 width="200px"
                                 constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                            <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" />
                         </row>
                     </rows>
                 </grid>
-                <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" />
             </hbox>
 
         </window>
