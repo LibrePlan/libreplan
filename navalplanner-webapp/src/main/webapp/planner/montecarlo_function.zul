@@ -33,10 +33,40 @@
         border="false"
         closable="true" >
 
+    <n:center>
+        <label style="font-family: Tahoma; font-weight: bold; font-size: 18px" value="${i18n:_('MonteCarlo chart')}" />
+    </n:center>
+
+    <separator spacing="10px" orient="horizontal" />
+
+    <hbox>
+        <grid>
+            <columns>
+                <column width="150px"/>
+                <column />
+                <column width="150px"/>
+                <column />
+                <column width="150px"/>
+                <column />
+            </columns>
+            <rows>
+                <row>
+                    <label value="${i18n:_('Start date')}" />
+                    <datebox id="dateboxStartDateProbability"
+                        onChange="monteCarloGraphController.showProbabilityDensity(self, dateboxEndDateProbability)" />
+                    <label value="${i18n:_('End date')}" />
+                    <datebox id="dateboxEndDateProbability"
+                        onChange="monteCarloGraphController.showProbabilityDensity(dateboxStartDateProbability, self)" />
+                    <label value="${i18n:_('Probability')}" />
+                    <decimalbox id="dbIntervalProbability" />
+                </row>
+            </rows>
+        </grid>
+    </hbox>
+
     <hbox>
         <vbox id="charts">
             <chart id="monteCarloChart"
-                title="${i18n:_('MonteCarlo chart')}"
                 height="600px" width="800px"
                 type="bar"
                 period="day"
