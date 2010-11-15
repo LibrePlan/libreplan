@@ -32,15 +32,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.proxy.HibernateProxy;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
 
 
 /**
@@ -52,7 +53,7 @@ public class DeepCopy {
             .<Class<?>> asList(Boolean.class, String.class, BigDecimal.class,
                     Double.class, Float.class, Integer.class, Short.class,
                     Byte.class, Character.class, LocalDate.class,
-                    DateTime.class));
+                    DateTime.class, EffortDuration.class));
 
     public static boolean isImmutableType(Class<?> klass) {
         return klass.isPrimitive() || isEnum(klass)

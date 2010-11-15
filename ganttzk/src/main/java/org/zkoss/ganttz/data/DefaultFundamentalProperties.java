@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
+import org.zkoss.ganttz.data.GanttDate.CustomDate;
+import org.zkoss.ganttz.data.GanttDate.ICases;
+import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -83,26 +87,50 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         this.name = name;
     }
 
-    public Date getBeginDate() {
-        return new Date(beginDate);
+    private static GanttDate toGanttDate(long milliseconds) {
+        return GanttDate.createFrom(new DateTime(milliseconds).toLocalDate());
     }
 
-    public long setBeginDate(Date beginDate) {
-        this.beginDate = beginDate.getTime();
-        return lengthMilliseconds;
+    private static long toMilliseconds(GanttDate date) {
+        return date.byCases(new ICases<Long>() {
+
+            @Override
+            public Long on(LocalDateBased localDateBased) {
+                return localDateBased.getLocalDate().toDateTimeAtStartOfDay()
+                        .getMillis();
+            }
+
+            @Override
+            public Long on(CustomDate customType) {
+                throw new UnsupportedOperationException("no custom "
+                        + GanttDate.class.getSimpleName() + " for "
+                        + DefaultFundamentalProperties.class.getSimpleName());
+            }
+        });
+    }
+
+    @Override
+    public GanttDate getBeginDate() {
+        return toGanttDate(beginDate);
+    }
+
+    @Override
+    public void setBeginDate(GanttDate beginDate) {
+        this.beginDate = toMilliseconds(beginDate);
     }
 
     public long getLengthMilliseconds() {
         return lengthMilliseconds;
     }
 
-    public void setLengthMilliseconds(long lengthMilliseconds) {
-        if (lengthMilliseconds < 0) {
-            throw new IllegalArgumentException(
-                    "a task must not have a negative length. Received value: "
-                            + lengthMilliseconds);
-        }
-        this.lengthMilliseconds = lengthMilliseconds;
+    @Override
+    public GanttDate getEndDate() {
+        return toGanttDate(beginDate + getLengthMilliseconds());
+    }
+
+    @Override
+    public void setEndDate(GanttDate endDate) {
+        this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
     public String getNotes() {
@@ -114,13 +142,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public Date getHoursAdvanceEndDate() {
-        return new Date(hoursAdvanceEndDate);
+    public GanttDate getHoursAdvanceEndDate() {
+        return GanttDate.createFrom(new Date(hoursAdvanceEndDate));
     }
 
     @Override
-    public Date getAdvanceEndDate() {
-        return advanceEndDate != null ? new Date(advanceEndDate.getTime())
+    public GanttDate getAdvanceEndDate() {
+        return advanceEndDate != null ? GanttDate.createFrom(new Date(
+                advanceEndDate.getTime()))
                 : null;
     }
     @Override
@@ -149,12 +178,12 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public List<Constraint<Date>> getStartConstraints() {
+    public List<Constraint<GanttDate>> getStartConstraints() {
         return Collections.emptyList();
     }
 
     @Override
-    public void moveTo(Date date) {
+    public void moveTo(GanttDate date) {
         setBeginDate(date);
     }
 
@@ -195,7 +224,7 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
-    public Date getConsolidatedline() {
+    public GanttDate getConsolidatedline() {
         return null;
     }
 

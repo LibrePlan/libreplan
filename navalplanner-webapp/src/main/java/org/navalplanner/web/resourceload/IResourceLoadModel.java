@@ -20,9 +20,9 @@
 
 package org.navalplanner.web.resourceload;
 
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -56,13 +56,13 @@ public interface IResourceLoadModel {
 
     void clearCriteriaToShow();
 
-    void setInitDateFilter(Date value);
+    void setInitDateFilter(LocalDate value);
 
-    void setEndDateFilter(Date value);
+    void setEndDateFilter(LocalDate value);
 
-    Date getInitDateFilter();
+    LocalDate getInitDateFilter();
 
-    Date getEndDateFilter();
+    LocalDate getEndDateFilter();
 
     List<DayAssignment> getDayAssignments();
 

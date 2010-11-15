@@ -21,6 +21,7 @@
 package org.navalplanner.ws.calendarexceptiontypes.api;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
  * Service for managing {@link CalendarExceptionType} entities.
@@ -30,5 +31,8 @@ import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 public interface ICalendarExceptionTypeService {
 
     CalendarExceptionTypeListDTO getCalendarExceptionType();
+
+    InstanceConstraintViolationsListDTO addCalendarExceptionTypes(
+            CalendarExceptionTypeListDTO calendarExceptionTypeListDTO);
 
 }

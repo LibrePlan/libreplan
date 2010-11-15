@@ -51,7 +51,7 @@
                 <newdatasortablegrid id="directLabels" height="200px" fixedLayout="true"
                     model="@{assignedLabelsController.labels}">
                     <columns>
-                        <newdatasortablecolumn label="${i18n:_('Label type')}" sort="auto(type.name)"/>
+                        <newdatasortablecolumn label="${i18n:_('Label type')}" sort="auto(lower(type.name))"/>
                         <newdatasortablecolumn label="${i18n:_('Value')}" />
                         <newdatasortablecolumn label="${i18n:_('Operations')}" />
                     </columns>

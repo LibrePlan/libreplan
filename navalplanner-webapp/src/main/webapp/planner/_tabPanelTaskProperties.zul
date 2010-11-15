@@ -22,10 +22,14 @@
 
 <tabpanel id="${arg.id}">
     <grid>
+    <columns>
+        <column width="300px"/>
+        <column />
+    </columns>
         <rows>
             <row>
                 <label value="${i18n:_('Name')}" />
-                <textbox id="name" value="@{propertiesController.ganttTaskDTO.name}" />
+                <textbox id="name" value="@{propertiesController.ganttTaskDTO.name}" width="400px" />
             </row>
             <row>
                 <label value="${i18n:_('Start')}" />
@@ -43,7 +47,7 @@
             </row>
             <row>
                 <label value="${i18n:_('Notes')}" />
-                <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" />
+                <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" width="400px" rows="3"/>
             </row>
             <row>
                 <label value="${i18n:_('Hours')}" />
@@ -56,7 +60,7 @@
             <row id="startConstraint">
                 <label value="${i18n:_('Constraint')}" />
                 <vbox>
-                    <combobox id="startConstraintTypes" />
+                    <combobox id="startConstraintTypes" width="300px" />
                     <datebox id="startConstraintDate" constraint ="no empty"
                         value="@{editController.startConstraintDate}" />
                 </vbox>

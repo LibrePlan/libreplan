@@ -23,15 +23,16 @@ package org.zkoss.ganttz;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
@@ -63,9 +64,6 @@ public class TaskComponent extends Div implements AfterCompose {
     private static final int HEIGHT_PER_TASK = 10;
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
 
-
-    private static Pattern pixelsSpecificationPattern = Pattern
-            .compile("\\s*(\\d+)px\\s*;?\\s*");
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
@@ -103,11 +101,11 @@ public class TaskComponent extends Div implements AfterCompose {
 
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-        taskViolationListener = new IConstraintViolationListener<Date>() {
+        taskViolationListener = new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<Date> constraint,
-                    Date value) {
+            public void constraintViolated(Constraint<GanttDate> constraint,
+                    GanttDate value) {
                 // TODO mark graphically task as violated
             }
         };
@@ -252,7 +250,7 @@ public class TaskComponent extends Div implements AfterCompose {
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
 
-    private IConstraintViolationListener<Date> taskViolationListener;
+    private IConstraintViolationListener<GanttDate> taskViolationListener;
 
     public TaskRow getRow() {
         if (getParent() == null) {
@@ -287,9 +285,11 @@ public class TaskComponent extends Div implements AfterCompose {
                 && task.canBeExplicitlyMoved();
     }
 
+
     void doUpdatePosition(int leftX, int topY) {
-        Date startBeforeMoving = this.task.getBeginDate();
-        this.task.moveTo(getMapper().toDate(leftX));
+        GanttDate startBeforeMoving = this.task.getBeginDate();
+        LocalDate newPosition = getMapper().toDate(leftX);
+        this.task.moveTo(GanttDate.createFrom(newPosition));
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
         if (remainsInOriginalPosition) {
@@ -298,7 +298,10 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     void doUpdateSize(int size) {
-        this.task.setLengthMilliseconds(getMapper().toMilliseconds(size));
+        DateTime end = new DateTime(this.task.getBeginDate()
+                .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
+                size));
+        this.task.resizeTo(end.toLocalDate());
         updateWidth();
     }
 
@@ -377,7 +380,7 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         setLeft("0");
-        setLeft(getMapper().toPixels(this.task.getBeginDate()) + "px");
+        setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
         DependencyList dependencyList = getDependencyList();
@@ -391,13 +394,17 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateWidth() {
         setWidth("0");
-        setWidth(getMapper().toPixels(this.task.getLengthMilliseconds())
-                + "px");
+        int pixelsEnd = this.task.getEndDate().toPixels(getMapper());
+        int pixelsStart = this.task.getBeginDate().toPixels(getMapper());
+
+        setWidth((pixelsEnd - pixelsStart) + "px");
     }
 
     private void updateDeadline() {
         if (task.getDeadline() != null) {
-            String position = getMapper().toPixels(task.getDeadline()) + "px";
+            String position = getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getDeadline()))
+                    + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         } else {
             // Move deadline out of visible area
@@ -405,8 +412,11 @@ public class TaskComponent extends Div implements AfterCompose {
         }
 
         if (task.getConsolidatedline() != null) {
-            String position = (getMapper().toPixels(task.getConsolidatedline()) - CONSOLIDATED_MARK_HALF_WIDTH)
-                    + "px";
+            int pixels = getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getConsolidatedline()
+                            .toDayRoundedDate()))
+                    - CONSOLIDATED_MARK_HALF_WIDTH;
+            String position = pixels + "px";
             response(null, new AuInvoke(this, "moveConsolidatedline", position));
         } else {
             // Move consolidated line out of visible area
@@ -415,6 +425,9 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateCompletionIfPossible() {
+        if (task instanceof Milestone) {
+            return;
+        }
         try {
             updateCompletion();
         } catch (Exception e) {
@@ -423,31 +436,23 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
-        long beginMilliseconds = this.task.getBeginDate().getTime();
+        int startPixels = this.task.getBeginDate().toPixels(getMapper());
 
-        long hoursAdvanceEndMilliseconds = this.task.getHoursAdvanceEndDate()
-                .getTime()
-                - beginMilliseconds;
-        if (hoursAdvanceEndMilliseconds < 0) {
-            hoursAdvanceEndMilliseconds = 0;
-        }
-        String widthHoursAdvancePercentage = getMapper().toPixels(
-                hoursAdvanceEndMilliseconds)
-                + "px";
+        String widthHoursAdvancePercentage = pixelsFromStartUntil(startPixels,
+                this.task.getHoursAdvanceEndDate()) + "px";
         response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
 
-        long advanceEndMilliseconds = this.task.getAdvanceEndDate()
-                .getTime()
-                - beginMilliseconds;
-        if (advanceEndMilliseconds < 0) {
-            advanceEndMilliseconds = 0;
-        }
-        String widthAdvancePercentage = getMapper().toPixels(
-                advanceEndMilliseconds)
-                + "px";
+        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+                this.task.getAdvanceEndDate()) + "px";
         response(null, new AuInvoke(this, "resizeCompletion2Advance",
                 widthAdvancePercentage));
+    }
+
+    private int pixelsFromStartUntil(int startPixels, GanttDate until) {
+        int endPixels = until.toPixels(getMapper());
+        assert endPixels >= startPixels;
+        return endPixels - startPixels;
     }
 
     public void updateTooltipText() {

@@ -1,0 +1,54 @@
+
+/* Work reports */
+.listWorkReportLines  td.z-row-inner,
+.listWorkReportLines td.z-group-foot-inner {
+	padding: 0;
+}
+
+.listWorkReportLines .date-column {
+    width: 110px;
+}
+
+.listWorkReportLines .hours-column {
+    width: 70px;
+}
+
+.listWorkReportLines .operations-column {
+    width: 40px;
+}
+
+.listWorkReportLines .resource-column {
+    width: 170px;
+}
+
+.listWorkReportLines .code-column {
+    width: 150px;
+}
+
+.listWorkReportLines .order-code-column {
+    width: 180px;
+}
+
+.listWorkReportLines .hours-type-column {
+    width: 80px;
+}
+
+.listWorkReportLines .hours-column {
+    width: 50px;
+}
+
+.listWorkReportLines .z-textbox,
+.listWorkReportLines .z-intbox {
+    width:90% !important;
+}
+
+.listWorkReportLines .z-combobox-inp,
+.listWorkReportLines .z-datebox,
+.listWorkReportLines .z-datebox-inp,
+.listWorkReportLines .z-datebox-focus .z-datebox-inp {
+    width:80% !important;
+}
+
+.z-tabpanel {
+    overflow-y: auto;
+}

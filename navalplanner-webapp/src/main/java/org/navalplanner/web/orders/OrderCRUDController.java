@@ -93,6 +93,7 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.Vbox;
@@ -174,6 +175,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showOrderElementFilter();
         showCreateButtons(false);
         orderModel.prepareCreationFrom(template);
+        addEditWindowIfNecessary();
         showEditWindow(_("Create order from Template"));
     }
 
@@ -224,11 +226,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
 
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            createOrderButton.setDisabled(false);
-            createOrderFromTemplateButton.setDisabled(false);
-        }
-
         // Configuration of the order filter
         Component filterComponent = Executions.createComponents(
                 "/orders/_orderFilter.zul", orderFilter,
@@ -242,6 +239,8 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("bdFilters");
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
+
+        checkCreationPermissions();
     }
 
     private void initEditOrderElementWindow() {
@@ -254,6 +253,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         Util.createBindingsFor(editOrderElementWindow);
         Util.reloadBindings(editOrderElementWindow);
+    }
+
+    private void addEditWindowIfNecessary() {
+        if (editWindow == null) {
+            addEditWindow();
+        }
     }
 
     private void addEditWindow() {
@@ -310,7 +315,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderElementTreeController.setTreeComponent(orderElementsTree);
             orderElementsTree.useController(orderElementTreeController);
             orderElementTreeController.setReadOnly(readOnly);
-            
+
             setTreeRenderer(orderElementsTree);
             reloadTree(orderElementsTree);
         }
@@ -318,14 +323,14 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void reloadTree(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setModel(orderElementTreeController.getTreeModel()); 
+        tree.setModel(orderElementTreeController.getTreeModel());
     }
-    
+
     private void setTreeRenderer(TreeComponent orderElementsTree) {
         final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
         tree.setTreeitemRenderer(orderElementTreeController.getRenderer());
     }
-    
+
     /*
      * Operations to do before to change the selected tab
      */
@@ -520,19 +525,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         return (Order) orderModel.getOrder();
     }
 
-    public void saveAndContinue() {        
+    public void saveAndContinue() {
+
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
         final boolean couldSave = save();
+
         if (couldSave) {
-            if(orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
-                orderModel.initEdit(order);
-                initialStatus = order.getState();
-                updateDisabilitiesOnInterface();
-                initializeTabs();
-                showWindow(editWindow);
+
+            if (orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
+                refreshOrderWindow();
 
                 // come back to the current tab after initialize all tabs.
                 resetSelectedTab();
@@ -543,7 +547,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 if (isNewObject) {
                     this.planningControllerEntryPoints.goToOrderDetails(order);
                 }
-
             }
             else {
                 try {
@@ -554,7 +557,23 @@ public class OrderCRUDController extends GenericForwardComposer {
                     throw new RuntimeException(e);
                 }
             }
-        }        
+        }
+    }
+
+    private void refreshOrderWindow() {
+        updateDisabilitiesOnInterface();
+        refreshCodeTextboxesOnly();
+        getVisibility().showOnly(editWindow);
+    }
+
+    private void refreshCodeTextboxesOnly() {
+        if(orderElementTreeController != null) {
+            Map<OrderElement, Textbox> orderElementCodeTextBoxes =
+                orderElementTreeController.getOrderElementCodeTextboxes();
+            for(OrderElement element :orderElementCodeTextBoxes.keySet()) {
+                orderElementCodeTextBoxes.get(element).setValue(element.getCode());
+            }
+        }
     }
 
     public void saveAndExit() {
@@ -565,7 +584,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
     }
 
-    private boolean save() {        
+    private boolean save() {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
@@ -585,7 +604,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             if (!assignedTaskQualityFormController.confirm()) {
                 setCurrentTab();
                 return false;
-        }
+            }
         }
 
         createPercentageAdvances();
@@ -684,15 +703,15 @@ public class OrderCRUDController extends GenericForwardComposer {
         clearFilterDates();
     }
 
+    private void showWindow(Window window) {
+        getVisibility().showOnly(window);
+        Util.reloadBindings(window);
+    }
+
     public void reloadHoursGroupOrder() {
         if (getCurrentTab().getId().equals("tabRequirements")) {
             assignedCriterionRequirementController.reload();
         }
-    }
-
-    private void showWindow(Window window) {
-        getVisibility().showOnly(window);
-        Util.reloadBindings(window);
     }
 
     public void cancel() {
@@ -795,26 +814,53 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
         }
 
+        orderModel.initEdit(order);
         if (editWindow != null) {
+            resetTabControllers();
+            selectDefaultTab();
             return;
         }
 
-        orderModel.initEdit(order);
-        addEditWindow();
-        initialStatus = order.getState();
-        updateDisabilitiesOnInterface();
+        prepareEditWindow();
         showEditWindow(_("Edit order"));
     }
 
+    private void resetTabControllers() {
+        orderElementTreeController = null;
+        assignedHoursController = null;
+        manageOrderElementAdvancesController = null;
+        assignedLabelsController = null;
+        assignedCriterionRequirementController = null;
+        assignedMaterialsController = null;
+        assignedTaskQualityFormController = null;
+        orderAuthorizationController = null;
+    }
+
+    private void prepareEditWindow() {
+        addEditWindow();
+        updateDisabilitiesOnInterface();
+        initializeCustomerComponent();
+        selectDefaultTab();
+    }
 
     private void showEditWindow(String title) {
-        addEditWindow();
         initializeTabs();
         editWindow.setTitle(title);
-        showWindow(editWindow);
-        selectDefaultTab();
-        reloadDefaultTab();
-        loadCustomerComponent();
+        getVisibility().showOnly(editWindow);
+    }
+
+    private void initializeCustomerComponent() {
+        bdExternalCompanies = (BandboxSearch) editWindow
+                .getFellow("bdExternalCompanies");
+        bdExternalCompanies.setListboxEventListener(
+                Events.ON_SELECT, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        final Object object = bdExternalCompanies
+                                .getSelectedElement();
+                        orderModel.setExternalCompany((ExternalCompany) object);
+                    }
+                });
     }
 
     public void setupOrderDetails() {
@@ -829,7 +875,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         Util.createBindingsFor(tabPanel);
         Util.reloadBindings(tabPanel);
     }
-    
+
     private void initializeTabs() {
         final IOrderElementModel orderElementModel = getOrderElementModel();
 
@@ -866,28 +912,17 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         try {
             showOrderElementFilter();
-            showCreateButtons(false);
+            hideCreateButtons();
             orderModel.prepareForCreate();
-            updateDisabilitiesOnInterface();
+            prepareEditWindow();
             showEditWindow(_("Create order"));
-            checkCreationPermissions();
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
-    private void loadCustomerComponent() {
-        bdExternalCompanies = (BandboxSearch) editWindow
-                .getFellow("bdExternalCompanies");
-        bdExternalCompanies.setListboxEventListener(
-                Events.ON_SELECT, new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-                        final Object object = bdExternalCompanies
-                                .getSelectedElement();
-                        orderModel.setExternalCompany((ExternalCompany) object);
-                    }
-                });
+    private void hideCreateButtons() {
+        showCreateButtons(false);
     }
 
     public void setPlanningControllerEntryPoints(
@@ -1208,14 +1243,12 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     /**
      * Checks the creation permissions of the current user and enables/disables
-     * the save buttons accordingly.
+     * the create buttons accordingly.
      */
     private void checkCreationPermissions() {
-        if(SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
-            saveOrderAndContinueButton.setDisabled(false);
-        }
-        else {
-            saveOrderAndContinueButton.setDisabled(true);
+        if (!SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            createOrderButton.setDisabled(true);
+            createOrderFromTemplateButton.setDisabled(true);
         }
     }
 
@@ -1226,6 +1259,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void updateDisabilitiesOnInterface() {
         Order order = (Order) orderModel.getOrder();
 
+        initialStatus = order.getState();
+
         boolean permissionForWriting = orderModel.userCanWrite(order,
                 SecurityUtils.getSessionUserLoginName());
         boolean isInStoredState = order.getState() == OrderStatusEnum.STORED;
@@ -1233,7 +1268,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         readOnly = !permissionForWriting || isInStoredState;
 
-        if(orderElementTreeController != null) {
+        if (orderElementTreeController != null) {
             orderElementTreeController.setReadOnly(readOnly);
         }
         saveOrderAndContinueButton.setDisabled(!permissionForWriting

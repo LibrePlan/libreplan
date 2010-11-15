@@ -22,23 +22,18 @@ package org.navalplanner.web.common.components.finders;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private IWorkerDAO workerDAO;
-
-    private static final List<Worker> workerList = new ArrayList<Worker>();
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private IFilterEnum workerFilterEnum = new IFilterEnum() {
         @Override
@@ -47,33 +42,20 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
-    @Transactional(readOnly = true)
-    public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-            @Override
-                    public Void execute() {
-                        loadWorkers();
-                        return null;
-                    }
-                });
-    }
-
-    @Transactional(readOnly = true)
-    private void loadWorkers() {
-        workerList.clear();
-        workerList.addAll(workerDAO.getAll());
-    }
-
     @Override
     public List<FilterPair> getFirstTenFilters() {
-        Iterator<Worker> iteratorWorker = workerList.iterator();
+        Iterator<Worker> iteratorWorker = getListWorkers().iterator();
         while(iteratorWorker.hasNext() && getListMatching().size() < 10) {
             Worker worker = iteratorWorker.next();
             getListMatching().add(new FilterPair(
                     workerFilterEnum, worker.getShortDescription(), worker));
         }
+        addNoneFilter();
         return getListMatching();
+    }
+
+    private List<Worker> getListWorkers() {
+        return databaseSnapshots.snapshotListWorkers();
     }
 
     @Override
@@ -89,7 +71,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     }
     private void searchInWorkers(String filter) {
         boolean limited = (filter.length() < 3);
-        for(Worker worker : workerList) {
+        for (Worker worker : getListWorkers()) {
             String name = StringUtils.deleteWhitespace(
                     worker.getShortDescription().toLowerCase());
             if(name.contains(filter)) {
@@ -99,9 +81,4 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     }
 
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
-    }
 }

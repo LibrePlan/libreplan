@@ -21,14 +21,14 @@
 <?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
     signature="java.lang.String _(java.lang.String name)" ?>
 
-<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native" height="100%">
 <zscript><![CDATA[
 resourcesLoadPanel = self;
 ]]>
 </zscript>
 
 
-    <borderlayout sclass="resourcesloadlayout" width="auto">
+    <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
        <north height="30px" border="0" sclass="toolbar-box">
        <hbox align="center" id="toolbar">
         <separator/>

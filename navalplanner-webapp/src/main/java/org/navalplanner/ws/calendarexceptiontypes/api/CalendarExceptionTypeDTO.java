@@ -43,20 +43,24 @@ public class CalendarExceptionTypeDTO extends IntegrationEntityDTO {
     @XmlAttribute(name = "over-assignable")
     public boolean overAssignable;
 
+    @XmlAttribute
+    public int duration;
+
     public CalendarExceptionTypeDTO() {
     }
 
     public CalendarExceptionTypeDTO(String code, String name, String color,
-            boolean overAssignable) {
+            boolean overAssignable, int duration) {
         super(code);
         this.name = name;
         this.color = color;
         this.overAssignable = overAssignable;
+        this.duration = duration;
     }
 
     public CalendarExceptionTypeDTO(String name, String color,
-            boolean overAssignable) {
-        this(generateCode(), name, color, overAssignable);
+            boolean overAssignable, int duration) {
+        this(generateCode(), name, color, overAssignable, duration);
     }
 
     @Override

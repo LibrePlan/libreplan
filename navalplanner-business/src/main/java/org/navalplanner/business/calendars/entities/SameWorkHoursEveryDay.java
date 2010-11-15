@@ -21,11 +21,11 @@
 package org.navalplanner.business.calendars.entities;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public class SameWorkHoursEveryDay implements IWorkHours {
+public class SameWorkHoursEveryDay implements ICalendar {
 
     private static final SameWorkHoursEveryDay DEFAULT_WORKING_DAY = new SameWorkHoursEveryDay(
             8);
@@ -42,20 +42,18 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     }
 
     @Override
-    public Integer getCapacityAt(LocalDate date) {
-        return hours;
+    public EffortDuration getCapacityOn(PartialDay partialDay) {
+        return partialDay.limitDuration(EffortDuration.hours(hours));
     }
 
     @Override
-    public Integer toHours(LocalDate day, ResourcesPerDay amount) {
-        return BaseCalendar.roundToHours(amount
-                .asDurationGivenWorkingDayOf(EffortDuration
-                        .hours(getCapacityAt(day))));
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
+        return amount.asDurationGivenWorkingDayOf(getCapacityOn(day));
     }
 
     @Override
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
         return true;
     }
 
@@ -63,4 +61,5 @@ public class SameWorkHoursEveryDay implements IWorkHours {
     public AvailabilityTimeLine getAvailability() {
         return AvailabilityTimeLine.allValid();
     }
+
 }

@@ -30,7 +30,8 @@ import org.joda.time.ReadablePeriod;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
+public class DetailFiveTimeTrackerState extends
+        TimeTrackerStateWithSubintervalsFitting {
 
     private static final int NUMBER_OF_DAYS_MINIMUM = 50;
     public static final int FIRST_LEVEL_SIZE = 210;
@@ -93,8 +94,8 @@ public class DetailFiveTimeTrackerState extends TimeTrackerStateUsingJodaTime {
     }
 
     @Override
-    protected Days getMinimumPeriod() {
-        return Days.days(NUMBER_OF_DAYS_MINIMUM);
+    protected Period getMinimumPeriod() {
+        return PeriodType.DAYS.amount(NUMBER_OF_DAYS_MINIMUM);
     }
 
     @Override

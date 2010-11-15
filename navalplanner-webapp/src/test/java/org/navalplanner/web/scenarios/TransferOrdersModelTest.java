@@ -230,11 +230,12 @@ public class TransferOrdersModelTest {
         transactionService.runOnTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
+                // reload order so it has the relationship with destination
+                Order orderReloaded = orderDAO.findExistingEntity(order.getId());
                 transferOrdersModel.setSourceScenario(source);
                 transferOrdersModel.setDestinationScenario(destination);
 
-                transferOrdersModel.transfer(order);
-
+                transferOrdersModel.transfer(orderReloaded);
                 return null;
             }
         });

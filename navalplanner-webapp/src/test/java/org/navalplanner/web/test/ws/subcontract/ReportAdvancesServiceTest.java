@@ -50,9 +50,11 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -118,6 +120,9 @@ public class ReportAdvancesServiceTest {
     private IOrderDAO orderDAO;
 
     @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
@@ -145,7 +150,7 @@ public class ReportAdvancesServiceTest {
 
     @Test
     public void validAdvancesReport() {
-        Order order = givenValidOrderAlreadyStored();
+        Order order = givenOrder();
         String orderElementCode = order.getChildren().get(0).getCode();
 
         Date date = new Date();
@@ -195,6 +200,16 @@ public class ReportAdvancesServiceTest {
                 .asList(orderElementWithAdvanceMeasurementsDTO));
     }
 
+    private Order givenOrder() {
+        return transactionService
+                .runOnAnotherTransaction(new IOnTransaction<Order>() {
+                    @Override
+                    public Order execute() {
+                        return givenValidOrderAlreadyStored();
+                    }
+                });
+    }
+
     private Order givenValidOrderAlreadyStored() {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
@@ -212,8 +227,12 @@ public class ReportAdvancesServiceTest {
         orderLine.setName("Order line name");
 
         orderDAO.save(order);
-
-        return order;
+        orderDAO.flush();
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
     }
 
 }

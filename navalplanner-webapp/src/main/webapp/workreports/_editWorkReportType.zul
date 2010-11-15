@@ -122,7 +122,7 @@
                 <newdatasortablegrid id="listDescriptionFields" mold="paging" pageSize="4" fixedLayout="true"
                     model="@{controller.descriptionFields}" rowRenderer= "@{controller.descriptionFieldsRowRender}">
                     <columns>
-                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(fieldName)" sortDirection="ascending"/>
+                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(fieldName))" sortDirection="ascending"/>
                       <newdatasortablecolumn label="${i18n:_('Length')}" width="200px" align="center"/>
                       <newdatasortablecolumn label="${i18n:_('Position')}" width="200px" align="center"/>
                       <newdatasortablecolumn visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>
@@ -146,7 +146,7 @@
                 <newdatasortablegrid id="listWorkReportLabelTypeAssigments" mold="paging" pageSize="4" fixedLayout="true"
                     model="@{controller.workReportLabelTypeAssigments}" rowRenderer= "@{controller.workReportLabelTypeAssigmentRowRender}">
                     <columns>
-                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(labelType.name)" sortDirection="ascending"/>
+                      <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(labelType.name))" sortDirection="ascending"/>
                       <newdatasortablecolumn label="${i18n:_('Position')}" width="200px" align="center"/>
                       <newdatasortablecolumn label="${i18n:_('Default Label')}" width="200px" align="center"/>
                       <newdatasortablecolumn visible = "@{controller.editable}" label="${i18n:_('Operations')}" width="150px" align="center"/>

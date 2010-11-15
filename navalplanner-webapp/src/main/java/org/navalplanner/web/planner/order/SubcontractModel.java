@@ -36,6 +36,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
 
 /**
  * Model for UI operations related with subcontract process and
@@ -117,21 +118,20 @@ public class SubcontractModel implements ISubcontractModel {
     private void convertOnStartOnFixedDate(Task task) {
         TaskStartConstraint taskConstraint = task.getStartConstraint();
         if (taskConstraint.isValid(StartConstraintType.START_IN_FIXED_DATE,
-                task.getStartDate())) {
+                task.getIntraDayStartDate().getDate())) {
             taskConstraint.update(StartConstraintType.START_IN_FIXED_DATE, task
-                    .getStartDate());
+                    .getIntraDayStartDate().getDate());
         }
     }
 
     private void recalculateTaskLength() {
-        Date previousStartDate = ganttTask.getBeginDate();
-        long previousLength = ganttTask.getLengthMilliseconds();
+        GanttDate previousStartDate = ganttTask.getBeginDate();
+        GanttDate previousEnd = ganttTask.getEndDate();
 
         task.setStartDate(startDate);
         task.setEndDate(endDate);
 
-        ganttTask.fireChangesForPreviousValues(previousStartDate,
-                previousLength);
+        ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
     }
 
     @Override

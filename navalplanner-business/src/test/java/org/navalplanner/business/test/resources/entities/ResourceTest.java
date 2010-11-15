@@ -19,6 +19,7 @@
  */
 
 package org.navalplanner.business.test.resources.entities;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,6 +30,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.date;
 import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -516,8 +518,9 @@ public class ResourceTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plus(Days.days(1));
         SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
-                today, 10, worker);
-        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow, 10,
+                today, hours(10), worker);
+        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow,
+                hours(10),
                 worker);
         givenWorkerWithAssignments(specificDayAssignment, another);
 
@@ -532,12 +535,13 @@ public class ResourceTest {
         LocalDate today = new LocalDate();
         LocalDate tomorrow = today.plus(Days.days(1));
         SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
-                today, 10, worker);
-        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow, 10,
+                today, hours(10), worker);
+        SpecificDayAssignment another = new SpecificDayAssignment(tomorrow,
+                hours(10),
                 worker);
         givenWorkerWithAssignments(specificDayAssignment, another);
 
-        DayAssignment other = new SpecificDayAssignment(today, 3, worker);
+        DayAssignment other = new SpecificDayAssignment(today, hours(3), worker);
         worker.addNewAssignments(Arrays.asList(other));
         assertTrue(worker.getAssignments().size() == assignments.size() + 1);
     }
@@ -554,12 +558,11 @@ public class ResourceTest {
         givenWorker();
         LocalDate today = new LocalDate();
         SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
-                today, 10, worker);
-        SpecificDayAssignment another = new SpecificDayAssignment(today, 3,
-                worker);
-        SpecificDayAssignment atAnotherDay = new SpecificDayAssignment(today
-                .plusDays(1), 1,
-                worker);
+                today, hours(10), worker);
+        SpecificDayAssignment another = new SpecificDayAssignment(today,
+                hours(3), worker);
+        SpecificDayAssignment atAnotherDay = new SpecificDayAssignment(
+                today.plusDays(1), hours(1), worker);
         givenWorkerWithAssignments(specificDayAssignment, another, atAnotherDay);
 
         assertThat(worker.getAssignedHours(today), equalTo(13));
@@ -570,11 +573,11 @@ public class ResourceTest {
         givenWorker();
         LocalDate today = new LocalDate();
         SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
-                today, 10, worker);
+                today, hours(10), worker);
         givenWorkerWithAssignments(specificDayAssignment);
         worker.getAssignedHours(today);
-        SpecificDayAssignment another = new SpecificDayAssignment(today, 3,
-                worker);
+        SpecificDayAssignment another = new SpecificDayAssignment(today,
+                hours(3), worker);
         worker.addNewAssignments(Arrays.asList(another));
 
         assertThat(worker.getAssignedHours(today), equalTo(13));

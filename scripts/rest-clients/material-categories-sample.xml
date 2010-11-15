@@ -1,42 +1,26 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <material-category-list xmlns="http://rest.ws.navalplanner.org">
-  <material-category name="Imported materials without category"
-  code="000-000" />
-  <material-category name="ship hull" code="000-001">
-    <material-list>
-      <material disabled="false" unitType="000-002"
-      defaultPrice="6.00" description="fiberglass"
-      code="000-002" />
-      <material disabled="false" defaultPrice="9.50"
-      description="steel" code="000-003" />
-      <material disabled="false" unitType="000-006"
-      defaultPrice="8.00" description="aluminum" code="000-001" />
-    </material-list>
-  </material-category>
-  <material-category name="paint"
-  code="000-003">
-    <subcategories>
-      <material-category parent="000-003"
-      name="Antifouling"
-      code="000-003-001">
-        <material-list>
-          <material disabled="false" defaultPrice="7.50"
-          description="autopulimentante de alto rendimiento"
-          code="000-004" />
-          <material disabled="false" defaultPrice="5.60"
-          description="High Performance autopulimentante"
-          code="000-005" />
-        </material-list>
-      </material-category>
-      <material-category parent="000-003"
-      name="GelCoat" code="000-003-002">
-        <material-list>
-          <material disabled="false" defaultPrice="0.00"
-          description="polyester finish" code="000-006" />
-          <material disabled="false" defaultPrice="0.00"
-          description="polyester finish with gun" code="000-007" />
-        </material-list>
-      </material-category>
-    </subcategories>
+  <material-category code="10" name="Screws" >
+     <material-list>
+       <material code="SCREW12" description="Screws Serie-12" price="123.12" unit-type="10" disabled="false"/>
+       <material code="SCREW13" description="Screws Serie-13" price="123.12" unit-type="10" disabled="false"/>
+       <material code="SCREW15" description="Screws Serie-15" price="123.12" unit-type="10" disabled="false"/>
+     </material-list>
+     <children>
+       <material-category code="20" name="Slotted Screws" >
+          <material-list>
+            <material code="SCREWS12" description="Screws Serie-12" price="123.12" unit-type="10" disabled="false"/>
+            <material code="SCREWS13" description="Screws Serie-13" price="123.12" unit-type="10" disabled="false"/>
+            <material code="SCREWS15" description="Screws Serie-15" price="123.12" unit-type="10" disabled="false"/>
+          </material-list>
+       </material-category>
+       <material-category code="23" name="Phillips Screws" >
+          <material-list>
+            <material code="SCREWP12" description="Screws Serie-12" price="123.12" unit-type="10" disabled="false"/>
+            <material code="SCREWP13" description="Screws Serie-13" price="123.12" unit-type="10" disabled="false"/>
+            <material code="SCREWP15" description="Screws Serie-15" price="123.12" unit-type="10" disabled="true"/>
+          </material-list>
+       </material-category>
+     </children>
   </material-category>
 </material-category-list>

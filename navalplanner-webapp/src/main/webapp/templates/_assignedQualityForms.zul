@@ -44,7 +44,7 @@
                     model="@{assignedQualityForms.assigned}">
                     <columns>
                         <column width="25px"/>
-                        <column label="${i18n:_('Name name')}" sort="auto(name)" sortDirection="descending"/>
+                        <column label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
                         <column label="${i18n:_('Type')}" />
                         <column label="${i18n:_('Operations')}" />
                     </columns>

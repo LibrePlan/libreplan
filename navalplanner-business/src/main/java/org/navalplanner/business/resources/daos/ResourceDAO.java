@@ -35,6 +35,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
@@ -92,14 +93,27 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
     }
 
     @Override
-    public List<Resource> findSatisfyingCriterionsAtSomePoint(
+    public List<Resource> findSatisfyingAllCriterionsAtSomePoint(
             Collection<? extends Criterion> criterions) {
         Validate.notNull(criterions);
         Validate.noNullElements(criterions);
         if (criterions.isEmpty()) {
             return list(Resource.class);
         }
-        return findRelatedWithSomeOfTheCriterions(criterions);
+        return selectSatisfiyingAllAtSomePoint(
+                findRelatedWithSomeOfTheCriterions(criterions), criterions);
+    }
+
+    private List<Resource> selectSatisfiyingAllAtSomePoint(
+            List<Resource> resources,
+            Collection<? extends Criterion> criterions) {
+        List<Resource> result = new ArrayList<Resource>();
+        for (Resource each : resources) {
+            if (each.satisfiesCriterionsAtSomePoint(criterions)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -107,36 +121,12 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             Collection<? extends Criterion> criterions) {
         String strQuery = "SELECT DISTINCT resource "
                 + "FROM Resource resource "
-                + "LEFT OUTER JOIN resource.criterionSatisfactions criterionSatisfactions "
-                + "LEFT OUTER JOIN criterionSatisfactions.criterion criterion "
+                + "JOIN resource.criterionSatisfactions criterionSatisfactions "
+                + "JOIN criterionSatisfactions.criterion criterion "
                 + "WHERE criterion IN (:criterions)";
         Query query = getSession().createQuery(strQuery);
         query.setParameterList("criterions", criterions);
         return (List<Resource>) query.list();
-    }
-
-    @Override
-    public List<Resource> findSatisfyingAllCriterions(
-            Collection<? extends Criterion> criteria,
-            boolean limitingResource) {
-
-        return selectSatisfiyingAllCriterions(new ArrayList<Resource>(
-                getResources()), criteria, limitingResource);
-    }
-
-    private List<Resource> selectSatisfiyingAllCriterions(
-            List<Resource> resources,
-            Collection<? extends Criterion> criterions,
-            Boolean limitingResource) {
-
-        List<Resource> result = new ArrayList<Resource>();
-        for (Resource each : resources) {
-            if (limitingResource.equals(each.isLimitingResource())
-                    && each.satisfiesCriterions(criterions)) {
-                result.add(each);
-            }
-        }
-        return result;
     }
 
     @Override
@@ -284,6 +274,51 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         // Get result
         return query.list();
+    }
+
+    @Override
+    public List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(
+            Integer year, Integer month) {
+
+        String strQuery =
+            "SELECT wrlresource.id, SUM(wrl.numHours) "
+          + "FROM WorkReportLine wrl "
+          + "LEFT OUTER JOIN wrl.resource wrlresource ";
+
+        if (year != null) {
+            strQuery += "WHERE YEAR(wrl.date) = :year ";
+        }
+        if (month != null) {
+            strQuery += "AND MONTH(wrl.date) = :month ";
+        }
+
+        strQuery += "GROUP BY wrlresource.id, MONTH(wrl.date) ";
+
+        Query query = getSession().createQuery(strQuery);
+        if (year != null) {
+            query.setParameter("year", year);
+        }
+        if (month != null) {
+            query.setParameter("month", month);
+        }
+
+        List<HoursWorkedPerWorkerInAMonthDTO> result = toDTO(query.list());
+        return result;
+    }
+
+    private List<HoursWorkedPerWorkerInAMonthDTO> toDTO(List<Object> rows) {
+        List<HoursWorkedPerWorkerInAMonthDTO> result = new ArrayList<HoursWorkedPerWorkerInAMonthDTO>();
+
+        for (Object row: rows) {
+            Object[] columns = (Object[]) row;
+            Worker worker = (Worker) findExistingEntity((Long) columns[0]);
+            Long numHours = (Long) columns[1];
+
+            HoursWorkedPerWorkerInAMonthDTO dto = new HoursWorkedPerWorkerInAMonthDTO(
+                    worker, numHours);
+            result.add(dto);
+        }
+        return result;
     }
 
 }

@@ -28,7 +28,11 @@
 <?component name="button" extends="button" mold="trendy"?>
 
 <zk>
+<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
 
+<borderlayout height="100%" width="100%" >
+<north border="none">
+<n:div>
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
@@ -38,10 +42,6 @@
 
 <scripts />
 
-<div xmlns:n="http://www.zkoss.org/2005/zk/native"
-    apply="${templateCtrl}">
-
-<n:div>
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
   <n:tr>
     <n:td width="180" valign="center">
@@ -95,8 +95,11 @@
             </n:tr>
           </n:table>
         </n:div>
+</n:div>
+</north>
 
-    <borderlayout class="main-layout" width="auto">
+<center border="none">
+    <borderlayout width="auto" height="100%">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
         <n:div>
@@ -106,11 +109,13 @@
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
         </n:div>
     </west>
-    <center class="main-area">
-        <div self="@{insert(content)}"/>
-    </center>
+
+    <center self="@{insert(content)}"  class="main-area"/>
+
     </borderlayout>
 
+</center>
+<south border="none">
 <n:table width="100%">
   <n:tr class="footer">
     <n:td height="40" align="right" valign="bottom">
@@ -120,9 +125,10 @@
 
   </n:tr>
 </n:table>
-</n:div>
-</div>
-<div />
+</south>
 
+</borderlayout>
+
+</div>
 
 </zk>

@@ -31,6 +31,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Valid;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -148,6 +150,14 @@ public class LimitingResourceQueueElement extends BaseEntity {
     public void setEndHour(int hour) {
         endQueuePosition.setHour(hour);
         notifyQueueElementIsMoved();
+    }
+
+    public Duration getLengthBetween() {
+        DateTime start = getStartDate().toDateTimeAtStartOfDay().plusHours(
+                getStartHour());
+        DateTime end = getEndDate().toDateTimeAtStartOfDay().plusHours(
+                getEndHour());
+        return new Duration(start, end);
     }
 
     public Date getEarlierStartDateBecauseOfGantt() {

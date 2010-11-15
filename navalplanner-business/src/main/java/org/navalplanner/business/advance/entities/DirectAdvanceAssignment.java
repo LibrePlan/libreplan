@@ -139,7 +139,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         if (advanceMeasurement == null) {
             return BigDecimal.ZERO;
         }
-        return advanceMeasurement.getValue().divide(maxValue, 2,
+        return advanceMeasurement.getValue().divide(maxValue, 4,
                 RoundingMode.DOWN);
     }
 

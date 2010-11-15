@@ -23,7 +23,7 @@
     <newdatasortablegrid mold="paging" pageSize="5" fixedLayout="true"
             model="@{hoursGroupWrapper.criterionRequirementWrappersView}">
             <columns>
-                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(criterionAndType)" sortDirection="ascending"/>
+                <newdatasortablecolumn label="${i18n:_('Criterion name')}" sort="auto(lower(criterionAndType))" sortDirection="ascending"/>
                 <newdatasortablecolumn label="${i18n:_('Type')}" sort="auto(type)" width="120px" align="center"/>
                 <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px" align="center"/>
             </columns>

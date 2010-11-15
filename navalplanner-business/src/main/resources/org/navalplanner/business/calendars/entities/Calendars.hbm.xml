@@ -78,10 +78,11 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <property name="name" access="field" unique="true" />
-        <property name="color" access="field"/>
-        <property name="notAssignable" access="field"/>
+        <property name="name" unique="true" />
+        <property name="color" />
+        <property name="notAssignable" />
 
+        <property name="duration" type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
     </class>
 
     <!-- CalendarData -->

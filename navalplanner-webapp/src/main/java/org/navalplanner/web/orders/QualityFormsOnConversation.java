@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
@@ -61,6 +62,10 @@ public class QualityFormsOnConversation {
     private void initialize(QualityForm qualityForm) {
         qualityForm.getName();
         qualityForm.getQualityFormType();
+        if (qualityForm.isReportAdvance()) {
+            AdvanceType advanceType = qualityForm.getAdvanceType();
+            advanceType.getUnitName();
+        }
         for (QualityFormItem qualityFormItem : qualityForm
                 .getQualityFormItems()) {
             qualityFormItem.getName();

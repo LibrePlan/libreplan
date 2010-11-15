@@ -40,7 +40,9 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
+import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -116,12 +118,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Label allTotalHours;
     private Label allConsolidatedHours;
 
+    private Label allocationSelectedItems;
+
     private Label allTotalResourcesPerDay;
     private Label allConsolidatedResourcesPerDay;
 
     private Button applyButton;
+    private Button advancedAllocationButton;
 
     private NewAllocationSelector newAllocationSelector;
+
+    private NewAllocationSelectorCombo newAllocationSelectorCombo;
 
     private Tab tbResourceAllocation;
 
@@ -146,9 +153,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allResourcesPerDay = new Decimalbox();
         allResourcesPerDay.setWidth("80px");
         newAllocationSelector.setLimitingResourceFilter(false);
+        newAllocationSelectorCombo.setLimitingResourceFilter(false);
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();
+
     }
 
     private void initAllocationLabels() {
@@ -232,6 +241,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setAllocationsGrid(allocationsGrid);
             formBinder.setMessagesForUser(messagesForUser);
             formBinder.setWorkerSearchTab(workerSearchTab);
+            formBinder
+                    .setNewAllocationSelectorCombo(newAllocationSelectorCombo);
             formBinder.setCheckbox(recommendedAllocationCheckbox);
 
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
@@ -243,6 +254,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     resourceAllocationModel.getHoursAggregatedByCriterions()));
             orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
+            newAllocationSelectorCombo
+                    .setAllocationsAdder(resourceAllocationModel);
         } catch (WrongValueException e) {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
@@ -282,7 +295,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         private static String asString(ResourceEnum resourceType) {
             switch (resourceType) {
-            case RESOURCE:
             case MACHINE:
             case WORKER:
                 return _(resourceType.getDisplayName());
@@ -318,14 +330,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
      *
      * @param e
      */
-    public void onSelectWorkers(Event e) {
+    public void onSelectWorkers( AllocationSelector allocationSelector) {
         try {
-            newAllocationSelector.addChoosen();
+            allocationSelector.addChoosen();
         } finally {
             tbResourceAllocation.setSelected(true);
-            newAllocationSelector.clearAll();
+            advancedAllocationButton.setVisible(true);
+            applyButton.setVisible(true);
+            allocationSelector.clearAll();
             Util.reloadBindings(allocationsGrid);
         }
+    }
+
+    public void goToAdvancedSearch() {
+        advancedAllocationButton.setVisible(false);
+        applyButton.setVisible(false);
+        workerSearchTab.setSelected(true);
     }
 
     /**
@@ -364,6 +384,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
      */
     public void onCloseSelectWorkers() {
         tbResourceAllocation.setSelected(true);
+        advancedAllocationButton.setVisible(true);
+        applyButton.setVisible(true);
         newAllocationSelector.clearAll();
     }
 

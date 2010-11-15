@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,6 +35,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 
 
 /**
@@ -134,9 +137,8 @@ public class SpecificDayAssignment extends DayAssignment {
 
     private static SpecificDayAssignment copyFromWithoutParent(
             SpecificDayAssignment assignment) {
-        SpecificDayAssignment copy = create(assignment.getDay(), assignment
-                .getHours(), assignment
-                        .getResource());
+        SpecificDayAssignment copy = create(assignment.getDay(),
+                assignment.getDuration(), assignment.getResource());
         copy.setConsolidated(assignment.isConsolidated());
         return copy;
     }
@@ -156,14 +158,20 @@ public class SpecificDayAssignment extends DayAssignment {
     @NotNull
     private SpecificDayAssignmentsContainer container;
 
+    @Deprecated
     public static SpecificDayAssignment create(LocalDate day, int hours,
             Resource resource) {
-        return create(new SpecificDayAssignment(day,
-                hours, resource));
+        return create(new SpecificDayAssignment(day, hours(hours), resource));
     }
 
-    public SpecificDayAssignment(LocalDate day, int hours, Resource resource) {
-        super(day, hours, resource);
+    public static SpecificDayAssignment create(LocalDate day,
+            EffortDuration duration, Resource resource) {
+        return create(new SpecificDayAssignment(day, duration, resource));
+    }
+
+    public SpecificDayAssignment(LocalDate day, EffortDuration duration,
+            Resource resource) {
+        super(day, duration, resource);
         this.parentState = new ContainerNotSpecified();
     }
 
@@ -196,8 +204,9 @@ public class SpecificDayAssignment extends DayAssignment {
     }
 
     @Override
-    public DayAssignment withHours(int newHours) {
-        SpecificDayAssignment result = create(getDay(), newHours, getResource());
+    public DayAssignment withDuration(EffortDuration newDuration) {
+        SpecificDayAssignment result = create(getDay(), newDuration,
+                getResource());
         if (container != null) {
             result.parentState.setParent(container);
         } else if (this.getSpecificResourceAllocation() != null) {

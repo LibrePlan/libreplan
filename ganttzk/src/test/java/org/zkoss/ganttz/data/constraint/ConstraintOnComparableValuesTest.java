@@ -21,18 +21,20 @@ package org.zkoss.ganttz.data.constraint;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.Date;
 
 import org.junit.Test;
 
-public class DateConstraintTest {
+public class ConstraintOnComparableValuesTest {
 
     private Date now = new Date();
 
-    private Constraint<Date> biggerOrEqualThanNow = DateConstraint
-            .biggerOrEqualThan(now);
-    private Constraint<Date> equalToNow = DateConstraint.equalTo(now);
+    private Constraint<Date> biggerOrEqualThanNow = biggerOrEqualThan(now);
+
+    private Constraint<Date> equalToNow = ConstraintOnComparableValues
+            .<Date> equalTo(now);
 
     @Test
     public void canCreateConstraintBiggerThan() {
@@ -42,7 +44,8 @@ public class DateConstraintTest {
 
     @Test
     public void biggerOrEqualThanNullLeaveValuesUnmodified() {
-        Constraint<Date> biggerThanNull = DateConstraint.biggerOrEqualThan(null);
+        Constraint<Date> biggerThanNull = ConstraintOnComparableValues
+                .<Date> biggerOrEqualThan(null);
         Date eraStart = new Date(0);
         assertThat(biggerThanNull.applyConstraintTo(new Date(0)),
                 equalTo(eraStart));
@@ -62,7 +65,8 @@ public class DateConstraintTest {
 
     @Test
     public void equalToNullLeaveValuesUnmodified() {
-        Constraint<Date> equalToNull = DateConstraint.equalTo(null);
+        Constraint<Date> equalToNull = ConstraintOnComparableValues
+                .<Date> equalTo(null);
         Date value = new Date(now.getTime() + 1000);
         assertThat(equalToNull.applyTo(value), equalTo(value));
     }

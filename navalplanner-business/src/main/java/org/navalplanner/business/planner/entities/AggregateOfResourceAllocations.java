@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -85,29 +86,47 @@ public class AggregateOfResourceAllocations {
         return sum;
     }
 
-    public LocalDate getStart() {
-        if(isEmpty()){
-            throw new IllegalStateException("the aggregate is empty");
-        }
-        return getAllocationsSortedByStartDate().get(0).getStartDate();
+    private LocalDate getStartAsLocalDate() {
+        IntraDayDate start = getStart();
+        return start != null ? start.getDate() : null;
     }
 
-    public LocalDate getEnd(){
-        if(isEmpty()){
+    public IntraDayDate getStart() {
+        if (isEmpty()) {
             throw new IllegalStateException("the aggregate is empty");
         }
-        LocalDate result = null;
+        return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
+    }
+
+    private LocalDate getEndAsLocalDate() {
+        IntraDayDate end = getEnd();
+        return end != null ? end.getDate() : null;
+    }
+
+    /**
+     * Calculates the latest end of all the allocations of this aggregate
+     *
+     * @return
+     * @throws IllegalStateException
+     *             if the aggregate is empty
+     */
+    public IntraDayDate getEnd() {
+        if (isEmpty()) {
+            throw new IllegalStateException("the aggregate is empty");
+        }
+        IntraDayDate result = null;
         for (ResourceAllocation<?> allocation : resourceAllocations) {
-            result = bigger(allocation.getEndDate(), result);
+            result = bigger(allocation.getIntraDayEndDate(), result);
         }
         return result;
     }
 
     public Integer getDaysDuration() {
-        return Days.daysBetween(getStart(), getEnd()).getDays();
+        return Days.daysBetween(getStartAsLocalDate(), getEndAsLocalDate())
+                .getDays();
     }
 
-    private LocalDate bigger(LocalDate one, LocalDate other) {
+    private IntraDayDate bigger(IntraDayDate one, IntraDayDate other) {
         if (one == null) {
             return other;
         }

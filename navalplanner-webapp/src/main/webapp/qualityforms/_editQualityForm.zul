@@ -29,10 +29,10 @@
         <tabpanels>
             <tabpanel>
                 <!--  Name qualityForm -->
-                <vbox style="margin-bottom: 5px">
-                    <grid>
+                <vbox style="margin-bottom: 5px" width="100%">
+                    <grid fixedLayout="true">
                         <columns>
-                            <column width="200px" />
+                            <column width="250px" />
                             <column />
                         </columns>
                         <rows>
@@ -45,11 +45,14 @@
                             <row>
                                 <label value="${i18n:_('Description')}" />
                                 <textbox id="qualityFormDescription"
-                                    rows="6" width="500px"
+                                    rows="3" width="500px"
                                     value="@{controller.qualityForm.description}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Quality form type')}" />
+                                <hbox>
+                                    <label value="${i18n:_('Quality form type')}" />
+                                    <image height="15px" src="/common/img/axuda.gif" tooltip="quality-forms-popup" />
+                                </hbox>
                                 <listbox id="listQualityFormTypes" mold="select" rows="1"
                                     model="@{controller.qualityFormTypes}"
                                     onSelect="controller.changeQualityFormType();"
@@ -70,18 +73,18 @@
                             <button label="${i18n:_('New quality form item')}"
                             onClick="controller.createQualityFormItem()" />
                         </hbox>
-                        <grid id="gridQualityFormItems" height="220px"
+                        <grid id="gridQualityFormItems" height="200px"
                             model="@{controller.qualityFormItems}" fixedLayout="true">
                             <columns sizable="true">
                                 <column label="${i18n:_('Name')}"/>
-                                <column label="${i18n:_('Position')}" align="center" width="150px"
+                                <column label="${i18n:_('Position')}" align="center" width="120px"
                                     sort="auto(position)" sortDirection="ascending"/>
-                                <column visible="@{controller.byPercentage}" label="${i18n:_('Percentage')}" align="center" width="200px"/>
-                                <column label="${i18n:_('Operations')}" align="center" width="150px"/>
+                                <column visible="@{controller.byPercentage}" label="${i18n:_('Percentage')}" align="center" width="180px"/>
+                                <column label="${i18n:_('Operations')}" align="center" width="120px"/>
                             </columns>
                             <rows>
                                 <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
-                                    <textbox value="@{qualityFormItem.name}" width="250px"
+                                    <textbox value="@{qualityFormItem.name}" width="95%"
                                         constraint="@{controller.checkConstraintQualityFormItemName}"/>
                                     <label value="@{qualityFormItem.position}" width="50px"/>
 
@@ -131,4 +134,9 @@
             onClick="controller.close()"
             sclass="cancel-button global-action"/>
     </hbox>
+
+    <popup id="quality-forms-popup" width="700px" >
+        <iframe id="iframe" src="/help/${i18n:_('en')}/12-formularios-calidad.html#administracion-de-formularios-de-calidade" width="100%" />
+    </popup>
+
 </window>

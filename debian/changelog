@@ -1,8 +1,14 @@
+navalplan (20100908) lucid; urgency=low
+
+  * Updated to upstream.
+
+ -- Jose Maria Casanova Crespo (Chema) <jmcasanova@igalia.com>  Wed, 8 Sep 2010 00:00:00 +0000
+
 navalplan (20100415) karmic; urgency=low
 
   * Updated to upstream.
 
- -- Jose Maria Casanova <jmcasanova@igalia.com>  Thu, 15 Mar 2010 14:30:00 +0000
+ --  Jose Maria Casanova Crespo (Chema) <jmcasanova@igalia.com>  Thu, 15 Mar 2010 14:30:00 +0000
 
 navalplan (20100324) karmic; urgency=low
 

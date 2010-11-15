@@ -32,6 +32,8 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.from;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveHours;
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +63,8 @@ import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 public class GenericResourceAllocationTest {
@@ -91,13 +95,18 @@ public class GenericResourceAllocationTest {
     private Task givenTaskWithStartAndEnd(Interval interval) {
         Task task = createNiceMock(Task.class);
         setupCriterions(task);
-
+        IntraDayDate start = IntraDayDate.startOfDay(interval.getStart()
+                .toLocalDate());
+        IntraDayDate end = IntraDayDate.startOfDay(interval.getEnd()
+                .toLocalDate());
         expect(task.getStartDate()).andReturn(interval.getStart().toDate())
                 .anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
         expect(task.getEndDate()).andReturn(interval.getEnd().toDate())
                 .anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(
-                interval.getStart().toLocalDate()).anyTimes();
+        expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start)
+                .anyTimes();
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         replay(task);
         return this.task = task;
@@ -142,9 +151,18 @@ public class GenericResourceAllocationTest {
         worker1 = createNiceMock(Worker.class);
         worker2 = createNiceMock(Worker.class);
         worker3 = createNiceMock(Worker.class);
+        mockZeroLoad(worker1, worker2, worker3);
         setupCalendarIsNull(worker1);
         buildWorkersList();
         replay(worker1, worker2, worker3);
+    }
+
+    public static void mockZeroLoad(Resource... resources) {
+        for (Resource each : resources) {
+            expect(
+                    each.getAssignedDurationDiscounting(isA(Object.class),
+                            isA(LocalDate.class))).andReturn(zero()).anyTimes();
+        }
     }
 
     private void buildWorkersList() {
@@ -161,8 +179,8 @@ public class GenericResourceAllocationTest {
         expect(result.getAssignedHours(isA(LocalDate.class))).andReturn(hours)
                 .anyTimes();
         expect(
-                result.getAssignedHoursDiscounting(isA(Object.class),
-                        isA(LocalDate.class))).andReturn(hours).anyTimes();
+                result.getAssignedDurationDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(hours(hours)).anyTimes();
         expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
                 satisfactionsForPredefinedCriterions(result)).anyTimes();
         replay(result);
@@ -219,29 +237,26 @@ public class GenericResourceAllocationTest {
     private <T extends BaseCalendar> T createCalendar(Class<T> klass,
             final int hoursPerDay) {
         BaseCalendar baseCalendar = createNiceMock(klass);
-        expect(baseCalendar.getWorkableHours(isA(Date.class))).andReturn(
-                hoursPerDay).anyTimes();
-        expect(baseCalendar.getCapacityAt(isA(LocalDate.class))).andReturn(
-                hoursPerDay).anyTimes();
+        expect(baseCalendar.getCapacityOn(isA(PartialDay.class))).andReturn(
+                hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
-        expect(
-                baseCalendar.toHours(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andAnswer(
-                new IAnswer<Integer>() {
-
-                    @Override
-                    public Integer answer() throws Throwable {
-                        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
-                        return BaseCalendar.roundToHours(resourcesPerDay
-                                .asDurationGivenWorkingDayOf(EffortDuration
-                                        .hours(hoursPerDay)));
-                    }
-                }).anyTimes();
         expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(baseCalendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
+        IAnswer<EffortDuration> durationAnswer = new IAnswer<EffortDuration>() {
+            @Override
+            public EffortDuration answer() throws Throwable {
+                ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
+                return resourcesPerDay
+                        .asDurationGivenWorkingDayOf(hours(hoursPerDay));
+            }
+        };
+        expect(
+                baseCalendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class))).andAnswer(durationAnswer)
+                .anyTimes();
         if (baseCalendar instanceof ResourceCalendar) {
             ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
             expect(resourceCalendar.getCapacity()).andReturn(1);
@@ -412,7 +427,8 @@ public class GenericResourceAllocationTest {
     public void allocatingSeveralResourcesPerDayHavingJustOneResourceProducesOvertime() {
         LocalDate start = new LocalDate(2006, 10, 5);
         final Integer standardHoursPerDay = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityAt(start);
+                .getDefaultWorkingDay()
+                .getCapacityOn(PartialDay.wholeDay(start)).getHours();
         final int TASK_DURATION_DAYS = 4;
         givenBaseCalendarWithoutExceptions(standardHoursPerDay);
         givenTaskWithStartAndEnd(toInterval(start, Period
@@ -453,7 +469,8 @@ public class GenericResourceAllocationTest {
         LocalDate start = new LocalDate(2006, 10, 5);
         final int TASK_DURATION_DAYS = 1;
         final Integer defaultWorkableHours = SameWorkHoursEveryDay
-                .getDefaultWorkingDay().getCapacityAt(start);
+                .getDefaultWorkingDay()
+                .getCapacityOn(PartialDay.wholeDay(start)).getHours();
         givenBaseCalendarWithoutExceptions(defaultWorkableHours);
         givenTaskWithStartAndEnd(toInterval(start, Period
                 .days(TASK_DURATION_DAYS)));
@@ -549,9 +566,9 @@ public class GenericResourceAllocationTest {
         expect(worker.getAssignedHours(isA(LocalDate.class))).andReturn(
                 fullLoadForAll).anyTimes();
         expect(
-                worker.getAssignedHoursDiscounting(isA(Object.class),
-                                                   isA(LocalDate.class)))
-                        .andReturn(fullLoadForAll).anyTimes();
+                worker.getAssignedDurationDiscounting(isA(Object.class),
+                        isA(LocalDate.class))).andReturn(hours(fullLoadForAll))
+                .anyTimes();
         expect(worker.getCalendar()).andReturn(createCalendar(capacity, 8))
                 .anyTimes();
         replay(worker);
@@ -560,12 +577,14 @@ public class GenericResourceAllocationTest {
 
     private ResourceCalendar createCalendar(int capacity, int unit) {
         ResourceCalendar calendar = createNiceMock(ResourceCalendar.class);
-        expect(calendar.getCapacityAt(isA(LocalDate.class))).andReturn(
-                capacity * unit).anyTimes();
-        expect(calendar.toHours(isA(LocalDate.class),
-                        isA(ResourcesPerDay.class))).andReturn(unit).anyTimes();
         expect(calendar.isActive(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
+
+        expect(
+                calendar.asDurationOn(isA(PartialDay.class),
+                        isA(ResourcesPerDay.class))).andReturn(hours(unit))
+                .anyTimes();
+
         expect(calendar.canWork(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(calendar.getCapacity()).andReturn(capacity).anyTimes();

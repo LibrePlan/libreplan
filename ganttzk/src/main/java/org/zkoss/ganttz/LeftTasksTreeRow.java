@@ -29,7 +29,9 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.util.Locales;
@@ -383,11 +385,10 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             task.setName(getNameBox().getValue());
         } else if (updatedComponent == getStartDateBox()) {
             Date begin = getStartDateBox().getValue();
-            task.moveTo(begin);
+            task.moveTo(GanttDate.createFrom(begin));
         } else if (updatedComponent == getEndDateBox()) {
             Date newEnd = getEndDateBox().getValue();
-            task.setLengthMilliseconds(newEnd.getTime()
-                    - task.getBeginDate().getTime());
+            task.resizeTo(LocalDate.fromDateFields(newEnd));
         }
     }
 
@@ -397,21 +398,26 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
             getNameBox().setDisabled(!canRenameTask());
             getNameBox().setTooltiptext(task.getName());
 
-            getStartDateBox().setValue(task.getBeginDate());
+            getStartDateBox().setValue(
+                    task.getBeginDate().toDayRoundedDate());
             getStartDateBox().setDisabled(!canChangeStartDate());
             getStartDateTextBox().setDisabled(!canChangeStartDate());
 
-            getEndDateBox().setValue(task.getEndDate());
+            getEndDateBox().setValue(task.getEndDate().toDayRoundedDate());
             getEndDateBox().setDisabled(!canChangeEndDate());
             getEndDateTextBox().setDisabled(!canChangeEndDate());
 
-            getStartDateTextBox().setValue(asString(task.getBeginDate()));
-            getEndDateTextBox().setValue(asString(task.getEndDate()));
+            getStartDateTextBox().setValue(
+                    asString(task.getBeginDate().toDayRoundedDate()));
+            getEndDateTextBox().setValue(
+                    asString(task.getEndDate().toDayRoundedDate()));
         } else {
             nameLabel.setValue(task.getName());
             nameLabel.setTooltiptext(task.getName());
-            startDateLabel.setValue(asString(task.getBeginDate()));
-            endDateLabel.setValue(asString(task.getEndDate()));
+            startDateLabel.setValue(asString(task.getBeginDate()
+                    .toDayRoundedDate()));
+            endDateLabel.setValue(asString(task.getEndDate()
+                    .toDayRoundedDate()));
         }
     }
 

@@ -37,6 +37,7 @@
         <intercept-url pattern="/qualityforms/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/users/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/externalcompanies/**" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/workreports/workReportTypes.zul" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
         <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=true"/>
 

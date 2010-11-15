@@ -20,14 +20,16 @@
 
 package org.navalplanner.web.common.components;
 
-import java.util.HashSet;
+import java.util.List;
 
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
+import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.api.Radio;
 import org.zkoss.zul.api.Radiogroup;
 
@@ -37,26 +39,71 @@ import org.zkoss.zul.api.Radiogroup;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class NewAllocationSelector extends HtmlMacroComponent {
+public class NewAllocationSelector extends AllocationSelector {
 
     public enum AllocationType {
+        GENERIC_WORKERS(_("generic workers allocation")) {
+            @Override
+            public void addTo(NewAllocationSelectorController controller,
+                    INewAllocationsAdder allocationsAdder) {
+                allocationsAdder.addGeneric(ResourceEnum.WORKER,
+                        controller.getSelectedCriterions(),
+                        controller.getSelectedWorkers());
+            }
+
+            @Override
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchWorkers();
+            }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                return Criterion.getCaptionFor(ResourceEnum.WORKER, criterions);
+            }
+        },
+        GENERIC_MACHINES(_("generic machines allocation")) {
+            @Override
+            public void addTo(
+                    NewAllocationSelectorController controller,
+                    INewAllocationsAdder allocationsAdder) {
+                List<Criterion> criteria = controller.getSelectedCriterions();
+                allocationsAdder.addGeneric(
+                        ResourceEnum.MACHINE,
+                        criteria, controller.getSelectedWorkers());
+            }
+
+            @Override
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchMachines();
+            }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                return Criterion
+                        .getCaptionFor(ResourceEnum.MACHINE, criterions);
+            }
+        },
         SPECIFIC(_("specific allocation")) {
             @Override
             public void addTo(NewAllocationSelectorController controller,
                     INewAllocationsAdder allocationsAdder) {
                 allocationsAdder.addSpecific(controller.getSelectedWorkers());
             }
-        },
-        GENERIC(_("generic allocation")) {
+
             @Override
-            public void addTo(
-                    NewAllocationSelectorController controller,
-                    INewAllocationsAdder allocationsAdder) {
-                allocationsAdder.addGeneric(new HashSet<Criterion>(controller
-                        .getSelectedCriterions()), controller
-                        .getSelectedWorkers());
+            public IResourcesQuery<?> doQueryOn(
+                    IResourceSearchModel resourceSearchModel) {
+                return resourceSearchModel.searchBoth();
+            }
+
+            @Override
+            public String asCaption(List<Criterion> criterions) {
+                throw new UnsupportedOperationException();
             }
         };
+
 
         /**
          * Forces to mark the string as needing translation
@@ -97,33 +144,16 @@ public class NewAllocationSelector extends HtmlMacroComponent {
         public abstract void addTo(
                 NewAllocationSelectorController newAllocationSelectorController,
                 INewAllocationsAdder allocationsAdder);
+
+        public abstract IResourcesQuery<?> doQueryOn(
+                IResourceSearchModel resourceSearchModel);
+
+        public abstract String asCaption(List<Criterion> criterions);
     }
 
-    private INewAllocationsAdder allocationsAdder;
-
-    public void clearAll() {
-        getController().clearAll();
-    }
-
-    private NewAllocationSelectorController getController() {
+    public NewAllocationSelectorController getController() {
         return (NewAllocationSelectorController) this
                 .getVariable("controller", true);
-    }
-
-    public void addChoosen() {
-        getController().addTo(allocationsAdder);
-    }
-
-    public void setAllocationsAdder(INewAllocationsAdder allocationsAdder) {
-        this.allocationsAdder = allocationsAdder;
-        if (getController() != null) {
-            getController().clearAll();
-        }
-
-    }
-
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        getController().setLimitingResourceFilter(limitingResource);
     }
 
     public void allowSelectMultipleResources(boolean multiple) {

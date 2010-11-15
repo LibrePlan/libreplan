@@ -22,14 +22,14 @@
 <window id="${arg.top_id}" title="${arg.title}">
     <tabbox>
         <tabs>
-            <tab label="${i18n:_('Edit')}"  width="850"></tab>
+            <tab label="${i18n:_('Edit')}" width="850"></tab>
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="true" width="800px">
+                <grid fixedLayout="true">
                     <columns>
-                        <column width="400px"/>
-                        <column width="400px"/>
+                        <column width="200px"/>
+                        <column/>
                     </columns>
                     <rows>
                         <row>
@@ -43,7 +43,8 @@
                                 onChange="controller.setResource(self.selectedItem)" />
                         </row>
                         <row>
-                            <label value="${i18n:_('Multiple values per resource')}"/>
+                            <label value="${i18n:_('Multiple values per resource')}"
+                                tooltiptext="${i18n:_('Allow multiple values of this type of criterion in the same period of time')}"/>
                             <checkbox checked="@{controller.criterionType.allowSimultaneousCriterionsPerResource}"/>
                         </row>
                         <row>
@@ -59,7 +60,7 @@
 
                         <row>
                             <label value="${i18n:_('Description')}" />
-                            <textbox value="@{controller.criterionType.description}" rows="3" width="390px"/>
+                            <textbox value="@{controller.criterionType.description}" rows="2" width="390px"/>
                         </row>
                         <row>
                             <label value="${i18n:_('Code')}" />
@@ -74,17 +75,17 @@
                         </row>
                     </rows>
                 </grid>
-                <separator bar="false" spacing="40px" orient="vertical"/>
+                <separator bar="false" height="10px" orient="vertical"/>
                 <criterionsTree/>
             </tabpanel>
         </tabpanels>
     </tabbox>
-     <hbox>
+    <hbox>
         <button id="save" onClick="controller.saveAndClose();"
             label="${i18n:_('Save')}" sclass="save-button global-action" />
         <button id="save_and_continue" onClick="controller.saveAndContinue();"
             label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
         <button id="close" onClick="controller.close();"
-            label="${i18n:_('Close')}" sclass="cancel-button global-action"/>
+            label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
     </hbox>
 </window>

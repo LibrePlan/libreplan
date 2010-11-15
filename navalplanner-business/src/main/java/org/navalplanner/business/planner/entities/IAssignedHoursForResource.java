@@ -21,6 +21,7 @@ package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -28,6 +29,6 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public interface IAssignedHoursForResource {
 
-    public int getAssignedHoursAt(Resource resource, LocalDate day);
+    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day);
 
 }

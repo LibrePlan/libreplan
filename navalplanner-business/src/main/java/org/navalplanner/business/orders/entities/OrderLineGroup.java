@@ -88,7 +88,7 @@ public class OrderLineGroup extends OrderElement implements
 
         @Override
         protected void onChildRemovedAdditionalActions(OrderElement removedChild) {
-            if (removedChild.isScheduled()) {
+            if (removedChild.isScheduled() && getThis().isScheduled()) {
                 removeChildTask(removedChild);
             }
         }
@@ -384,9 +384,9 @@ public class OrderLineGroup extends OrderElement implements
                 result = result.add(childPercentage.multiply(new BigDecimal(
                         childHours)));
             }
-
-            result = result.setScale(2).divide(new BigDecimal(hours),
+            result = result.divide(new BigDecimal(hours).setScale(2), 4,
                     RoundingMode.DOWN);
+
         }
 
         return result;
@@ -1011,6 +1011,48 @@ public class OrderLineGroup extends OrderElement implements
 
     public OrderVersion getCurrentOrderVersion() {
         return getCurrentSchedulingData().getOriginOrderVersion();
+    }
+
+    public OrderElement findRepeatedOrderCode() {
+        Set<String> codes = new HashSet<String>();
+        codes.add(getCode());
+
+        for (OrderElement each : getAllOrderElements()) {
+            String code = each.getCode();
+            if (code != null && !code.isEmpty()) {
+                if (codes.contains(code)) {
+                    return each;
+                }
+                codes.add(code);
+            }
+        }
+
+        return null;
+    }
+
+    public HoursGroup findRepeatedHoursGroupCode() {
+        Set<String> codes = new HashSet<String>();
+
+        for (HoursGroup hoursGroup : getHoursGroups()) {
+            String code = hoursGroup.getCode();
+            if (code != null && !code.isEmpty()) {
+                if (codes.contains(code)) {
+                    return hoursGroup;
+                }
+                codes.add(code);
+            }
+        }
+
+        return null;
+    }
+
+    public List<OrderElement> getAllOrderElements() {
+        List<OrderElement> result = new ArrayList<OrderElement>(
+                this.getChildren());
+        for (OrderElement orderElement : this.getChildren()) {
+            result.addAll(orderElement.getAllChildren());
+        }
+        return result;
     }
 
 }

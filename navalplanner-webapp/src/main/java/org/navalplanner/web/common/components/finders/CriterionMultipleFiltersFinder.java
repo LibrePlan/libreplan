@@ -22,23 +22,18 @@ package org.navalplanner.web.common.components.finders;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionDAO criterionDAO;
-
-    private static final List<Criterion> criterionList = new ArrayList<Criterion>();
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     private IFilterEnum criterionFilterEnum = new IFilterEnum() {
         @Override
@@ -47,33 +42,20 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
-    @Transactional(readOnly = true)
-    public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-            @Override
-                    public Void execute() {
-                        loadCriteria();
-                        return null;
-                    }
-                });
-    }
-
-    @Transactional(readOnly = true)
-    private void loadCriteria() {
-        criterionList.clear();
-        criterionList.addAll(criterionDAO.getAll());
-    }
-
     @Override
     public List<FilterPair> getFirstTenFilters() {
-        Iterator<Criterion> iteratorCriterion = criterionList.iterator();
+        Iterator<Criterion> iteratorCriterion = getCriterions().iterator();
         while(iteratorCriterion.hasNext() && getListMatching().size() < 10) {
             Criterion criterion = iteratorCriterion.next();
             getListMatching().add(new FilterPair(
                     criterionFilterEnum, criterion.getName(), criterion));
         }
+        addNoneFilter();
         return getListMatching();
+    }
+
+    private List<Criterion> getCriterions() {
+        return databaseSnapshots.snapshotListCriterion();
     }
 
     @Override
@@ -88,7 +70,7 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     }
     private void searchInCriteria(String filter) {
-        for(Criterion criterion : criterionList) {
+        for (Criterion criterion : getCriterions()) {
             String name = StringUtils.deleteWhitespace(
                     criterion.getName().toLowerCase());
             if(name.contains(filter)) {
@@ -98,9 +80,4 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     }
 
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(OrderElementFilterEnum.None,
-                        OrderElementFilterEnum.None.toString(), null));
-    }
 }

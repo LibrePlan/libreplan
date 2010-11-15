@@ -372,14 +372,14 @@ Exemplo de ficheiro de importación
          <material code="TOR15" description="Tornillos Serie-15" price="123.12" unit-type="10" disabled="false"/>
        </material-list>
        <children>
-         <material-category code=20" name="Tornillos Planos" >
+         <material-category code="20" name="Tornillos Planos" >
             <material-list>
               <material code="TORP12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORP13" description="Tornillos Serie-13" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORP15" description="Tornillos Serie-15" price="123.12" unit-type="10" disabled="false"/>
             </material-list>
          </material-category>
-         <material-category code=23" name="Tornillos Estrella" >
+         <material-category code="23" name="Tornillos Estrella" >
             <material-list>
               <material code="TORE12" description="Tornillos Serie-12" price="123.12" unit-type="10" disabled="false"/>
               <material code="TORE13" description="Tornillos Serie-13" price="123.12" unit-type="10" disabled="false"/>
@@ -435,14 +435,14 @@ Exemplo de ficheiro de importación
          <label code="1002" name="Media" />
          <label code="1003" name="Alta" />
        </labels-list>
-    </label>
+    </label-type>
     <label-type code="20" name="Complexidade" >
        <labels-list>
          <label code="2001" name="Baja" />
          <label code="2002" name="Media" />
          <label code="2003" name="Alta" />
        </labels-list>
-    </label>
+    </label-type>
    </labels-type-list>
 
 
@@ -495,7 +495,8 @@ Información de realización da chamada
    * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/criteriontypes
    * *Método POST*
 
-Descrición do formato do ficheiro XML
+Descrición do formato do ficheiro XML::
+
    * Nodo criterion-type-list: raíz da importación de tipos de criterios. Pode conter un ou varios nodos do tipo criterion-type.
 
       * Nodo criterion-type: representa un tipo de criterio.
@@ -596,7 +597,7 @@ Descrición
      * A incorporación de categorías de custo permitirá a importación da información das categorías de custo dende outras aplicacións.
      * As categorías de custo incorporan a información dos custos de precio por hora du tipo de recurso segundo o tipo de hora de traballo que realice.
      * As categorías de custo teñen un precio por hora distinto ao longo do tempo.
-     * Exemplo: Categorías de custo: Oficial de primeira. Ten un precio asociado de hora extra de 20€ a hora durante o ano 2010.
+     * Exemplo: Categorías de custo: Oficial de primeira. Ten un precio asociado de hora extra de 20 euros á hora durante o ano 2010.
 
 Roles
      * Cliente: proporciona nova información sobre as categorías de custo ao servidor NavalPlan.
@@ -629,24 +630,32 @@ Descrición do fluxo
 Exemplo de ficheiro de importación
  ::
 
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
   <cost-category-list xmlns="http://rest.ws.navalplanner.org">
-    <cost-category code="12" name="Oficial 1" enabled="true" >
-       <hour-cost-list>
-        <hour-cost hour-type="12" price="12.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="13" price="15.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="12" price="13.32" init-date="2010-01-01" />
-        <hour-cost hour-type="13" price="16.32" init-date="2009-01-01" />
-       </hour-cost-list>
+    <cost-category enabled="true" name="Categoria A"
+    code="18d6ef79-5b45-4928-bfd5-ec80a374699c">
+      <hour-cost-list>
+        <hour-cost work-hours-type="t1"
+        endDate="2010-04-27T12:26:47.010+01:00"
+        initDate="2010-03-17T12:26:47.010+01:00" priceCost="5.00"
+        code="31001efc-64f2-45be-acb0-045b1d9562ee" />
+        <hour-cost work-hours-type="t2"
+        endDate="2010-04-27T12:26:47.010+01:00"
+        initDate="2010-03-11T12:26:47.014+01:00" priceCost="8.00"
+        code="fa840393-2718-4cbd-ba8e-c7f6503a7e9b" />
+      </hour-cost-list>
     </cost-category>
-    <cost-category code="33" name="Oficial 1" enabled="true" >
-       <hour-cost-list>
-        <hour-cost hour-type="12" price="10.32" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="13" price="12.12" init-date="2009-11-22" end-date="2009-12-31"/>
-        <hour-cost hour-type="12" price="14.32" init-date="2010-01-01" />
-        <hour-cost hour-type="13" price="15.32" init-date="2009-01-01" />
-       </hour-cost-list>
+    <cost-category enabled="true" name="Categoria B"
+    code="b1029095-6ec4-484b-a620-5f0562cef800">
+     <hour-cost-list>
+      <hour-cost work-hours-type="t3"
+         endDate="2010-05-27T12:26:47.010+01:00"
+         initDate="2010-05-17T12:26:47.010+01:00" priceCost="6.50"
+         code="72974982374kjfkjsdjsjdfsjls" />
+     </hour-cost-list>
     </cost-category>
   </cost-category-list>
+
 
 Incorporación de Recursos
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -693,7 +702,8 @@ Información de realización da chamada
    * *Exemplo URL*:http://www.navalplan.org/navalplanner-webapp/ws/rest/services/resources
    * *Método POST*
 
-Descrición do formato do ficheiro XML
+Descrición do formato do ficheiro XML::
+
    * Nodo resource-list: raíz da importación de recursos. Poder conter un ou varios nodos de tipo machine ou worker.
 
       * Nodo machine: representa un recurso máquina.
@@ -946,7 +956,7 @@ Exemplo de ficheiro de importación
          <indirect-criterion-requirement code="20" is-valid="true"/>
         </criterion-requirements>
         <hours-group-list>
-         <hours-group code="HG-1" working-hours="2000" resource-type="WORKER" >
+         <hours-group code="HG-2" working-hours="2000" resource-type="WORKER" >
           <criterion-requirements>
            <indirect-criterion-requirement code="10" is-valid="true"/>
            <indirect-criterion-requirement code="20" is-valid="true"/>
@@ -969,7 +979,7 @@ Exemplo de ficheiro de importación
         <label name="medium" type="risk" />
       </labels>
       <hours-group-list>
-       <hours-group code="HG-1" working-hours="1500" resource-type="WORKER">
+       <hours-group code="HG-3" working-hours="1500" resource-type="WORKER">
         <criterion-requirements>
          <indirect-criterion-requirement code="10" is-valid="true"/>
          <indirect-criterion-requirement code="20" is-valid="true" />
@@ -983,6 +993,177 @@ Exemplo de ficheiro de importación
    .....
    </order>
   </order-list>
+
+
+Incorporación de Calendarios
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * A incorporación de calendarios permitirá a importación da información dos calendarios dende outras aplicacións.
+     * Os calendarios empréganse para determinar a dispoñinibilidade dos traballadores na aplicación.
+
+Roles
+     * Cliente: proporciona nova información sobre os calendarios ao servidor NavalPlan.
+     * Servidor: procesa a petición do cliente incorporando a nova información dos calendarios.
+
+Precondicións
+    * Os calendarios terán unha codificación unica dentro da empresa.
+
+Postcondicións
+    *  Os novos calendarios serán incorporados ao sistema.
+    *  Os calendarios xa existentes verán actualizada a súa información.
+
+Clases involucradas en NavalPlan
+ .. image:: images/calendars.png
+    :width: 450
+    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a alta de calendarios e actualiza os datos dos xa existentes.
+  #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
+  #. A aplicación cliente procesa a saída XML do servizo e reporta o éxito ou os erros detectados polo servizo.
+
+Exemplo de ficheiro de importación
+ ::
+
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <base-calendar-list xmlns="http://rest.ws.navalplanner.org">
+  <base-calendar name="Spanish Calendar" code="000-001">
+      <calendar-exception-list>
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-01-01"
+          code="001-001" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-01-06"
+          code="001-002" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-04-22"
+          code="001-003" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-05-01"
+          code="001-004" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-08-15"
+          code="001-005" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-10-12"
+          code="001-006" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-11-01"
+          code="001-007" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-06"
+          code="001-008" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-08"
+          code="001-009" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-12-25"
+          code="001-010" />
+      </calendar-exception-list>
+      <calendar-data-list>
+        <calendar-data code="001-001">
+          <hours-per-day-list>
+            <hours-per-day hours="8" day="MONDAY" />
+            <hours-per-day hours="8" day="TUESDAY" />
+            <hours-per-day hours="8" day="WEDNESDAY" />
+            <hours-per-day hours="8" day="THURSDAY" />
+            <hours-per-day hours="8" day="FRIDAY" />
+          </hours-per-day-list>
+        </calendar-data>
+      </calendar-data-list>
+    </base-calendar>
+    <base-calendar code="000-002" name="Galician Calendar"
+      parent="000-001">
+      <calendar-exception-list>
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-04-21"
+          code="002-001" />
+        <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+          hours="0" date="2011-05-17"
+          code="002-002" />
+      </calendar-exception-list>
+      <calendar-data-list>
+        <calendar-data code="001-002">
+          <hours-per-day-list>
+            <hours-per-day hours="8" day="MONDAY" />
+            <hours-per-day hours="8" day="TUESDAY" />
+            <hours-per-day hours="8" day="WEDNESDAY" />
+            <hours-per-day hours="8" day="THURSDAY" />
+            <hours-per-day hours="8" day="FRIDAY" />
+          </hours-per-day-list>
+        </calendar-data>
+      </calendar-data-list>
+    </base-calendar>
+  </base-calendar-list>
+
+
+Incorporación de Tipos de Horas de Traballo
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * A incorporación de tipos de horas de traballo permitirá a importación da información dos tipos de horas dende outras aplicacións.
+     * Os tipos de horas de traballo empréganse para determinar as categorías de coste na aplicación.
+
+Roles
+     * Cliente: proporciona nova información sobre os tipos de horas de traballo ao servidor NavalPlan.
+     * Servidor: procesa a petición do cliente incorporando a nova información dos tipos de horas de traballo.
+
+Precondicións
+    * Os tipos de horas de traballo terán unha codificación unica dentro da empresa.
+
+Postcondicións
+    *  Os novos tipos de horas de traballo serán incorporados ao sistema.
+    *  Os tipos de horas xa existentes verán actualizada a súa información.
+
+Clases involucradas en NavalPlan
+ .. image:: images/costcategories.png
+    :width: 150
+    :alt: Diagrama de Clases do dominio de Tipos de Horas de Traballo en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra xerará un ficheiro seguindo o formato detallado.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a alta de tipos de horas de traballo e actualiza os datos dos xa existentes.
+  #. O servizo web devolve nun XML a saída de erros ou a correcta execución do servizo.
+  #. A aplicación cliente procesa a saída XML do servizo e reporta o éxito ou os erros detectados polo servizo.
+
+Exemplo de ficheiro de importación
+ ::
+
+  <?xml version="1.0" encoding="utf-8" standalone="yes"?>
+  <type-work-hours-list xmlns="http://rest.ws.navalplanner.org">
+  <!-- Ok-->
+    <type-work-hours enabled="true" defaultPrice="8.00" name="Hora Extra" code="t1" />
+
+  <!-- Ok-->
+    <type-work-hours enabled="false" defaultPrice="5.00" name="Normal" code="t2" />
+
+  <!-- Ok-->
+    <type-work-hours enabled="true" defaultPrice="9.50" name="Plus Nocturnidad" code="t3" />
+
+  <!-- [ without enabled property ] Ok -->
+    <type-work-hours defaultPrice="9.50" name="t4-name" code="t4" />
+
+  <!-- [ without defaultPrice property ] Ok -->
+  <type-work-hours enabled="true" name="t5-name" code="t5" />
+
+  <!-- [ without name property ] -->
+    <type-work-hours enabled="true" defaultPrice="9.50" code="t6" />
+
+  <!-- [ without code property ] -->
+  <type-work-hours enabled="true" defaultPrice="9.50" name="t7-name"  />
+
+  <!-- [ with a repeated name ] -->
+    <type-work-hours enabled="true" defaultPrice="9.50" name="Normal" code="t8" />
+
+  <!-- [ with a repeated code ] OK updated -->
+  <type-work-hours enabled="true" defaultPrice="9.50" name="t9-name" code="t1" />
+
+  </type-work-hours-list>
+
 
 Exportación de Horas Traballadas por Recursos
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1012,12 +1193,12 @@ Clases involucradas en NavalPlan
 Descrición do fluxo
   1. A aplicación cliente que se integra fara unha petición ao servizo indicando o periodo de tempo e opcionalmente o código do recurso.
   #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
-  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de hotras traballadas polos recursos no periodo.
-  #. O servizo web devolve o XML ou a saida de erros se a execución do servizo non foi correcta.
+  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de horas traballadas polos recursos no periodo.
+  #. O servizo web devolve o XML ou a saída de erros se a execución do servizo non foi correcta.
   #. A aplicación cliente procesa a saída XML do servizo e incorpora os datos sobre horas traballadas ou procesa os erros detectados polo servizo.
 
 
-Exemplo de ficheiro de importación:
+Exemplo de ficheiro de exportación:
  ::
 
   <resource-worked-hours-list xmlns="http://rest.ws.navalplanner.org" start-date="2009-10-01" end-date="2009-10-31">
@@ -1026,6 +1207,51 @@ Exemplo de ficheiro de importación:
    <resource-worked-hours resource="323" hours="142" >
    <resource-worked-hours resource="324" hours="124" >
   </resource-worked-hours-list>
+
+Exportación de Tipos de Excepcións do Calendario
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Descrición
+     * Os diferentes días dos calendarios poden marcarse con diferentes tipos de excepcións do calendario.
+     * O servizo de exportación dos tipos de excepción permite consultar os diferentes tipos de excepcións do calendario definidos na aplicación.
+
+Roles
+     * Cliente: pide a aplicación NavalPlan sen necesidade de pasar ningún argumento.
+     * Servidor: procesa a petición do cliente xerando un ficheiro XML coa información dos tipos de excepcións do calendario.
+
+Postcondicións
+    *  Obtense a lista de tipos de excepcións do calendario definidos na aplicación.
+
+Clases involucradas en NavalPlan
+ .. image:: images/calendars.png
+    :width: 450
+    :alt: Diagrama de Clases do dominio de Calendarios en NavalPlan
+
+Descrición do fluxo
+  1. A aplicación cliente que se integra fara unha petición ao servizo.
+  #. A aplicación cliente realiza a chamada ao servizo web cos datos de autorización.
+  #. O servizo web procesa a petición, e xera un ficheiro XML coa información de tipos de excepcións do calendario.
+  #. O servizo web devolve o XML ou a saída de erros se a execución do servizo non foi correcta.
+  #. A aplicación cliente procesa a saída XML do servizo e incorpora os datos sobre tipos de excepcións ou procesa os erros detectados polo servizo.
+
+
+Exemplo de ficheiro de exportación:
+ ::
+
+  <calendar-exception-type-list xmlns="http://rest.ws.navalplanner.org">
+    <calendar-exception-type over-assignable="false" color="red"
+      name="BANK_HOLIDAY" code="BANK_HOLIDAY" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="HOLIDAY" code="HOLIDAY" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="LEAVE" code="LEAVE" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="SICK_LEAVE" code="SICK_LEAVE" />
+    <calendar-exception-type over-assignable="false" color="red"
+      name="STRIKE" code="STRIKE" />
+    <calendar-exception-type over-assignable="true" color="orange"
+      name="WORKABLE_BANK_HOLIDAY" code="WORKABLE_BANK_HOLIDAY" />
+  </calendar-exception-type-list>
 
 
 Fluxos con outras instancias de NavalPlan

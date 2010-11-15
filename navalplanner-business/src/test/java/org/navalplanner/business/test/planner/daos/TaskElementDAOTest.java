@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -64,12 +65,15 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.daos.TaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
@@ -519,5 +523,65 @@ public class TaskElementDAOTest {
         assertNotNull(subcontractedTaskDataFound.getTask());
     }
 
+    @Autowired
+    private IResourceDAO resourceDAO;
+
+    private org.navalplanner.business.resources.entities.Resource createValidWorker() {
+        Worker worker = Worker.create();
+        worker.setFirstName(UUID.randomUUID().toString());
+        worker.setSurname(UUID.randomUUID().toString());
+        worker.setNif(UUID.randomUUID().toString());
+        resourceDAO.save(worker);
+        return worker;
+    }
+
+    @Test
+    public void testSaveTaskElementUpdatesSumOfHoursAllocatedAttribute()
+            throws InstanceNotFoundException {
+        IOnTransaction<Long> createTaskElement =
+            new IOnTransaction<Long>() {
+
+            @Override
+            public Long execute() {
+                Task task = createValidTask();
+                TaskGroup taskGroup = createValidTaskGroup();
+                taskGroup.addTaskElement(task);
+
+                SpecificResourceAllocation allocation =
+                    SpecificResourceAllocation.create(task);
+                allocation.setResource(createValidWorker());
+                LocalDate start = new LocalDate(2000, 2, 4);
+                allocation.onInterval(start, start.plusDays(2)).allocateHours(16);
+                assertTrue(allocation.getAssignedHours() > 0);
+
+                task.addResourceAllocation(allocation);
+                taskElementDAO.save(taskGroup);
+
+                return task.getId();
+            }
+        };
+
+        final Long id = transactionService.runOnTransaction(createTaskElement);
+
+        IOnTransaction<Void> checkAllocatedHoursWereUpdated =
+            new IOnTransaction<Void>() {
+
+            @Override
+            public Void execute() {
+                TaskElement task1;
+                try {
+                    task1 = taskElementDAO.find(id);
+                } catch (InstanceNotFoundException e) {
+                    fail();
+                    return null;
+                }
+                assertTrue(task1.getSumOfHoursAllocated() == 16);
+                assertTrue(task1.getParent().getSumOfHoursAllocated() == 16);
+
+                return null;
+            }
+        };
+        transactionService.runOnTransaction(checkAllocatedHoursWereUpdated);
+    }
 
 }

@@ -38,7 +38,7 @@
         <tabs>
             <tab id="tabDetails" label="${i18n:_('Details')}" selected="true"
                 onSelect="orderElementController.clearAll();"/>
-            <tab id="tabAssignedHours" label="${i18n:_('Assigned hours')}"
+            <tab id="tabAssignedHours" label="${i18n:_('Imputed hours')}"
                 onSelect="orderElementController.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
                 onSelect="orderElementController.setupManageOrderElementAdvancesController();"/>

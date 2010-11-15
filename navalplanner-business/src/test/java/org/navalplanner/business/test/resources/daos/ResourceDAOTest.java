@@ -21,9 +21,9 @@
 package org.navalplanner.business.test.resources.daos;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -117,7 +117,7 @@ public class ResourceDAOTest {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
         List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterions(criterions, false);
+                .findSatisfyingAllCriterionsAtSomePoint(criterions);
         assertNotNull(result);
         assertEquals(1, result.size());
     }
@@ -173,9 +173,9 @@ public class ResourceDAOTest {
         criterions.add(createCriterion("criterion3"));
 
         List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterions(criterions, false);
+                .findSatisfyingAllCriterionsAtSomePoint(criterions);
         assertNotNull(result);
-        assertTrue(result.size() != 1);
+        assertThat(result.size(), not(equalTo(1)));
     }
 
 }

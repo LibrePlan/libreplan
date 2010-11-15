@@ -1,0 +1,128 @@
+<!--
+    This file is part of NavalPlan
+
+    Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+    Desenvolvemento Tecnolóxico de Galicia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?page title="${i18n:_('NavalPlan: Hours Worked Per Worker In A Month')}" id="reports"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
+
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+<?component name="combobox_output_format" macroURI="combobox_output_format.zul"
+    class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
+
+<?component name="extendedjasperreport"
+    class="org.navalplanner.web.common.components.ExtendedJasperreport"
+    extends="jasperreport" ?>
+
+<zk id="hoursWorkedPerWorker" xmlns:n="http://www.zkoss.org/2005/zk/native">
+
+    <!--
+    <n:script>
+        var label = document.getElementById("z_sq_83");
+        if(label.value != ""){
+            alert('holaaaaa');
+            new Label("Hi, JavaScript!").setParent(win);
+        }
+    </n:script>
+    -->
+
+    <window self="@{define(content)}"
+        apply="org.navalplanner.web.reports.HoursWorkedPerWorkerInAMonthController"
+        title="${i18n:_('Hours Worked Per Resource In A Month')}"
+        border="normal" >
+
+        <!-- Select workers -->
+        <panel title="${i18n:_('Filter by month')}"
+                border="normal"
+                style="overflow:auto">
+
+            <panelchildren>
+                <hbox>
+                    <vbox>
+                        <label value="${i18n:_('Year')}" />
+                        <listbox id="lbYears" rows="1" mold="select">
+                            <listitem label="${i18n:_('2010')}" value="2010" />
+                            <listitem label="${i18n:_('2011')}" value="2011" />
+                        </listbox>
+                    </vbox>
+                    <vbox>
+                        <label value="${i18n:_('Month')}" />
+                        <listbox id="lbMonths" rows="1" mold="select">
+                            <listitem label="${i18n:_('January')}" value="1" />
+                            <listitem label="${i18n:_('February')}" value="2" />
+                            <listitem label="${i18n:_('March')}" value="3" />
+                            <listitem label="${i18n:_('April')}" value="4" />
+                            <listitem label="${i18n:_('May')}" value="5" />
+                            <listitem label="${i18n:_('June')}" value="6" />
+                            <listitem label="${i18n:_('July')}" value="7" />
+                            <listitem label="${i18n:_('August')}" value="8" />
+                            <listitem label="${i18n:_('September')}" value="9" />
+                            <listitem label="${i18n:_('October')}" value="10" />
+                            <listitem label="${i18n:_('November')}" value="11" />
+                            <listitem label="${i18n:_('December')}" value="12" />
+                        </listbox>
+                    </vbox>
+                </hbox>
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <!-- Select output format -->
+        <panel title="${i18n:_('Format')}" border="normal"
+            style="overflow:auto">
+            <panelchildren>
+                <grid width="700px">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Output format:')}" />
+                            <combobox_output_format id="outputFormat" />
+                        </row>
+                    </rows>
+                </grid>
+
+            </panelchildren>
+        </panel>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <hbox style="display: none" id="URItext">
+            <label value="${i18n:_('Click on ')}" />
+            <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
+                    label="${i18n:_('direct link')}" />
+            <label value="${i18n:_(' to go to output directly')}" />
+        </hbox>
+
+        <separator spacing="10px" orient="horizontal" />
+
+        <button label="Show" onClick="controller.showReport(report)" />
+
+        <extendedjasperreport style="display: none" id="report" />
+
+    </window>
+
+</zk>

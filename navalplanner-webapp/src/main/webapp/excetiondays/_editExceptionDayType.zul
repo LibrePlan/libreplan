@@ -1,0 +1,73 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.id}">
+    <tabbox>
+        <tabs>
+            <tab label="${i18n:_('Edit')}"></tab>
+        </tabs>
+        <tabpanels>
+            <tabpanel>
+                <grid fixedLayout="true">
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Name')}"/>
+                            <textbox id="tbName"
+                                value="@{controller.exceptionDayType.name}"
+                                width="300px" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Color')}" />
+                            <textbox id="tbColor"
+                                value="@{controller.exceptionDayType.color}"
+                                width="300px"/>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Over assignable')}" />
+                            <checkbox id="cbNotOverAssignable"
+                                checked="@{controller.exceptionDayType.overAssignable}" />
+                        </row>
+                         <row>
+                            <label value="${i18n:_('Duration')}" />
+                            <effortDurationPicker id="edpDuration" />
+                        </row>
+                    </rows>
+                </grid>
+            </tabpanel>
+        </tabpanels>
+    </tabbox>
+
+    <!-- Control buttons -->
+    <button onClick="controller.saveAndExit()"
+        label="${i18n:_('Save')}"
+        sclass="save-button global-action"/>
+    <button onClick="controller.saveAndContinue()"
+        label="${i18n:_('Save and Continue')}"
+        sclass="save-button global-action"/>
+    <button onClick="controller.cancel()"
+        label="${i18n:_('Cancel')}"
+        sclass="cancel-button global-action"/>
+
+</window>

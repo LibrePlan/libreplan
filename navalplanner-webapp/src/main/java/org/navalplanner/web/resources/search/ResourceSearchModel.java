@@ -20,28 +20,39 @@
 
 package org.navalplanner.web.resources.search;
 
+import static org.hibernate.criterion.Restrictions.eq;
+import static org.hibernate.criterion.Restrictions.ilike;
+import static org.hibernate.criterion.Restrictions.in;
+import static org.hibernate.criterion.Restrictions.like;
+import static org.hibernate.criterion.Restrictions.or;
+
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.hibernate.Criteria;
+import org.hibernate.SessionFactory;
+import org.hibernate.classic.Session;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IMachineDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -50,106 +61,214 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public class ResourceSearchModel implements IResourceSearchModel {
 
-    @Autowired
-    private IWorkerDAO workerDAO;
+    private static final Log LOG = LogFactory.getLog(ResourceSearchModel.class);
 
     @Autowired
-    private IMachineDAO machineDAO;
+    private IAdHocTransactionService adHocTransactionService;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private SessionFactory sessionFactory;
+
+    public IResourcesQuery<Machine> searchMachines() {
+        return new Query<Machine>(Machine.class);
+    }
+
+    @Override
+    public IResourcesQuery<Worker> searchWorkers() {
+        return new Query<Worker>(Worker.class);
+    }
+
+    class Query<T extends Resource> implements IResourcesQuery<T> {
+
+        private final Class<T> klass;
+
+        private String name = null;
+
+        private List<Criterion> criteria = null;
+
+        private boolean limiting = false;
+
+        public Query(Class<T> klass) {
+            this.klass = klass;
+        }
+
+        @Override
+        public IResourcesQuery<T> byName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        @Override
+        public IResourcesQuery<T> byCriteria(
+                Collection<? extends Criterion> criteria) {
+            Validate.noNullElements(criteria);
+            this.criteria = new ArrayList<Criterion>(criteria);
+            return this;
+        }
+
+        @Override
+        public IResourcesQuery<T> byLimiting(boolean limiting) {
+            this.limiting = limiting;
+            return this;
+        }
+
+        @Override
+        public List<T> execute() {
+            return adHocTransactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<List<T>>() {
+                        @Override
+                        @SuppressWarnings("unchecked")
+                        public List<T> execute() {
+                            Session session = sessionFactory
+                                    .getCurrentSession();
+                            List<T> resources = buildCriteria(session).list();
+                            return restrictToSatisfyAllCriteria(resources);
+                        }
+
+                    });
+        }
+
+        private Criteria buildCriteria(Session session) {
+            Criteria result = session.createCriteria(klass);
+            result.add(eq("limitingResource", limiting));
+            addQueryByName(result);
+            addFindRelatedWithSomeOfTheCriterions(result);
+            result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+            return result;
+        }
+
+        private void addFindRelatedWithSomeOfTheCriterions(Criteria criteria) {
+            if (!criteriaSpecified()) {
+                return;
+            }
+            criteria.createCriteria("criterionSatisfactions")
+                    .add(in("criterion", this.criteria));
+        }
+
+        private boolean criteriaSpecified() {
+            return this.criteria != null && !this.criteria.isEmpty();
+        }
+
+        private void addQueryByName(Criteria criteria) {
+            if (name == null) {
+                return;
+            }
+            final String nameWithWildcards = "%" + name + "%";
+            if (klass.equals(Worker.class)) {
+                criteria.add(or(
+                        or(ilike("firstName", nameWithWildcards),
+                                ilike("surname", nameWithWildcards)),
+                        like("nif", nameWithWildcards)));
+            } else if (klass.equals(Machine.class)) {
+                criteria.add(or(ilike("name", nameWithWildcards),
+                        ilike("code", nameWithWildcards)));
+            } else {
+                LOG.warn("can't handle " + klass);
+            }
+        }
+
+        private List<T> restrictToSatisfyAllCriteria(List<T> resources) {
+            if (!criteriaSpecified()) {
+                return resources;
+            }
+            List<T> result = new ArrayList<T>();
+            for (T each : resources) {
+                if (each.satisfiesCriterionsAtSomePoint(criteria)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        @Override
+        public Map<CriterionType, Set<Criterion>> getCriteria() {
+            return adHocTransactionService
+                    .runOnReadOnlyTransaction(getCriterionsTree(klass));
+        }
+    }
+
+    @Override
+    public IResourcesQuery<?> searchBy(ResourceEnum resourceType) {
+        Validate.notNull(resourceType);
+        switch (resourceType) {
+        case MACHINE:
+            return searchMachines();
+        case WORKER:
+            return searchWorkers();
+        default:
+            throw new RuntimeException("can't handle " + resourceType);
+        }
+    }
+
+    @Override
+    public IResourcesQuery<Resource> searchBoth() {
+        final IResourcesQuery<Worker> searchWorkers = searchWorkers();
+        final IResourcesQuery<Machine> searchMachines = searchMachines();
+        return new IResourcesQuery<Resource>() {
+
+            @Override
+            public IResourcesQuery<Resource> byName(String name) {
+                searchWorkers.byName(name);
+                searchMachines.byName(name);
+                return this;
+            }
+
+            @Override
+            public IResourcesQuery<Resource> byCriteria(
+                    Collection<? extends Criterion> criteria) {
+                searchWorkers.byCriteria(criteria);
+                searchMachines.byCriteria(criteria);
+                return this;
+            }
+
+            @Override
+            public IResourcesQuery<Resource> byLimiting(boolean limiting) {
+                searchWorkers.byLimiting(limiting);
+                searchMachines.byLimiting(limiting);
+                return this;
+            }
+
+            @Override
+            public List<Resource> execute() {
+                List<Resource> result = new ArrayList<Resource>();
+                List<Worker> workers = searchWorkers.execute();
+                result.addAll(workers);
+                List<Machine> machines = searchMachines.execute();
+                result.addAll(machines);
+                return result;
+            }
+
+            @Override
+            public Map<CriterionType, Set<Criterion>> getCriteria() {
+                return adHocTransactionService
+                        .runOnReadOnlyTransaction(getCriterionsTree(Resource.class));
+            }
+        };
+    }
 
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    @Override
-    @Transactional(readOnly = true)
-    public Map<CriterionType, Set<Criterion>> getCriterions() {
-        HashMap<CriterionType, Set<Criterion>> result = new HashMap<CriterionType, Set<Criterion>>();
-
-        List<Criterion> criterions = criterionDAO.getAll();
-        for (Criterion criterion : criterions) {
-            CriterionType key = criterion.getType();
-            Set<Criterion> values = (!result.containsKey(key)) ?
-                    new HashSet<Criterion>() : (Set<Criterion>) result.get(key);
-            values.add(criterion);
-            result.put(key, values);
-        }
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> findResources(String name, List<Criterion> criteria, boolean limitingResource) {
-        return findByNameAndCriterions(name, criteria, limitingResource);
-    }
-
-    private List<Resource> findByNameAndCriterions(String name,
-            List<Criterion> criteria, boolean limitingResource) {
-
-        final boolean emptyName = StringUtils.isEmpty(name);
-        if (criteria.isEmpty() && emptyName) {
-            return getAllResources(limitingResource);
-        }
-
-        Set<Resource> resourcesMatchingCriteria = null;
-        if (!criteria.isEmpty()) {
-            resourcesMatchingCriteria = new HashSet<Resource>(resourceDAO
-                    .findSatisfyingAllCriterions(criteria, limitingResource));
-            if (resourcesMatchingCriteria.isEmpty()) {
-                return new ArrayList<Resource>();
+    private IOnTransaction<Map<CriterionType, Set<Criterion>>> getCriterionsTree(
+            final Class<? extends Resource> klassTheCriterionTypeMustBeRelatedWith) {
+        return new IOnTransaction<Map<CriterionType, Set<Criterion>>>() {
+            @Override
+            public Map<CriterionType, Set<Criterion>> execute() {
+                Map<CriterionType, Set<Criterion>> result = new LinkedHashMap<CriterionType, Set<Criterion>>();
+                for (Criterion criterion : criterionDAO
+                        .getAllSortedByTypeAndName()) {
+                    CriterionType key = criterion.getType();
+                    if (klassTheCriterionTypeMustBeRelatedWith
+                            .isAssignableFrom(key.getResource().asClass())) {
+                        if (!result.containsKey(key)) {
+                            result.put(key, new LinkedHashSet<Criterion>());
+                        }
+                        result.get(key).add(criterion);
+                    }
+                }
+                return result;
             }
-        }
-        if (emptyName) {
-            return new ArrayList<Resource>(resourcesMatchingCriteria);
-        }
-        Set<Resource> result = intersect(findWorkers(name,
-                limitingResource), resourcesMatchingCriteria);
-        result.addAll(intersect(findMachines(name, limitingResource),
-                resourcesMatchingCriteria));
-        return new ArrayList<Resource>(result);
-    }
-
-    private List<Worker> findWorkers(String name, boolean limitingResource) {
-        return workerDAO.findByNameSubpartOrNifCaseInsensitive(name,
-                limitingResource);
-    }
-
-    private List<Machine> findMachines(String name, boolean limitingResource) {
-        return machineDAO.findByNameOrCode(name, limitingResource);
-    }
-
-    private List<Resource> getAllResources(boolean limitingResource) {
-        return (limitingResource) ? resourceDAO.getAllLimitingResources()
-                : resourceDAO.getAllNonLimitingResources();
-    }
-
-    private static Set<Resource> intersect(List<? extends Resource> all,
-            Set<Resource> filteringBy) {
-        if (filteringBy == null) {
-            return new HashSet<Resource>(all);
-        }
-        Set<Resource> result = new HashSet<Resource>(filteringBy);
-        result.retainAll(all);
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> getAllResources() {
-        return resourceDAO.getResources();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> getAllLimitingResources() {
-        return resourceDAO.getAllLimitingResources();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Resource> getAllNonLimitingResources() {
-        return resourceDAO.getAllNonLimitingResources();
+        };
     }
 
 }

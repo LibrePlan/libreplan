@@ -20,11 +20,11 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,7 +40,7 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.Granularity;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -50,7 +50,7 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends IntegrationEntity implements IWorkHours {
+public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private static final EffortDuration DEFAULT_VALUE = EffortDuration.zero();
 
@@ -287,20 +287,8 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         return null;
     }
 
-    /**
-     * Returns the number of workable hours for a specific date depending on the
-     * calendar restrictions.
-     */
-    public Integer getWorkableHours(Date date) {
-        return getCapacityAt(new LocalDate(date));
-    }
-
-    /**
-     * Returns the number of workable hours for a specific date depending on the
-     * calendar restrictions.
-     */
-    public Integer getCapacityAt(LocalDate date) {
-        return roundToHours(getWorkableTimeAt(date));
+    public EffortDuration getCapacityOn(PartialDay date) {
+        return date.limitDuration(getWorkableTimeAt(date.getDate()));
     }
 
     public EffortDuration getWorkableTimeAt(LocalDate date) {
@@ -383,13 +371,21 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
      * the calendar restrictions.
      */
     public Integer getWorkableHours(LocalDate init, LocalDate end) {
-        int total = 0;
+        return getWorkableDuration(init, end).roundToHours();
+    }
+
+    /**
+     * Returns the workable duration for a specific period depending on the
+     * calendar restrictions.
+     */
+    public EffortDuration getWorkableDuration(LocalDate init, LocalDate end) {
+        EffortDuration result = zero();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            total += getCapacityAt(current);
+            result = result.plus(getCapacityOn(PartialDay.wholeDay(current)));
             init = init.plusDays(1);
         }
-        return total;
+        return result;
     }
 
     /**
@@ -529,11 +525,9 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
             }
             return DayType.ANCESTOR_EXCEPTION;
         }
-
-        if (getCapacityAt(date) == 0) {
+        if (getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
             return DayType.ZERO_HOURS;
         }
-
         return DayType.NORMAL;
     }
 
@@ -734,7 +728,7 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
                 .plusDays(1)) {
-            if (getCapacityAt(current) == 0) {
+            if (getCapacityOn(PartialDay.wholeDay(current)).isZero()) {
                 result.add(current);
             }
         }
@@ -890,28 +884,14 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         calendarAvailability.setEndDate(endDate);
     }
 
-    public static int roundToHours(EffortDuration effortDuration) {
-        if (effortDuration.equals(EffortDuration.zero())) {
-            return 0;
-        }
-        return Math.max(1, roundHalfUpToHours(effortDuration.decompose()));
-    }
-
-    private static int roundHalfUpToHours(
-            EnumMap<Granularity, Integer> components) {
-        int seconds = components.get(Granularity.SECONDS);
-        int minutes = components.get(Granularity.MINUTES)
-                + (seconds < 30 ? 0 : 1);
-        int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
-        return hours;
-    }
-
     @Override
-    public Integer toHours(LocalDate day, ResourcesPerDay resourcesPerDay) {
-        final EffortDuration workableHours = getWorkableTimeAt(day);
-        return roundToHours(limitOverAssignability(day,
-                resourcesPerDay.asDurationGivenWorkingDayOf(workableHours),
-                workableHours));
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
+        EffortDuration workableDuration = day
+                .limitDuration(getWorkableTimeAt(day.getDate()));
+        EffortDuration asDuration = amount
+                .asDurationGivenWorkingDayOf(workableDuration);
+        return limitOverAssignability(day.getDate(), asDuration,
+                workableDuration);
     }
 
     private EffortDuration limitOverAssignability(LocalDate day,
@@ -921,8 +901,8 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
         if (overAssignable) {
             return effortInitiallyCalculated;
         } else {
-            return Collections.min(Arrays.asList(effortInitiallyCalculated,
-                    multiplyByCapacity(workableHoursAtDay)));
+            return EffortDuration.min(effortInitiallyCalculated,
+                    multiplyByCapacity(workableHoursAtDay));
         }
     }
 
@@ -934,10 +914,11 @@ public class BaseCalendar extends IntegrationEntity implements IWorkHours {
     }
 
     @Override
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate) {
-        return ThereAreHoursOnWorkHoursCalculator.thereAreHoursOn(this,
-                availability, resourcesPerDay, hoursToAllocate);
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate) {
+        return ThereAreHoursOnWorkHoursCalculator.thereIsAvailableCapacityFor(
+                this, availability, resourcesPerDay, durationToAllocate)
+                .thereIsCapacityAvailable();
     }
 
     public boolean onlyGivesZeroHours() {

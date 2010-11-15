@@ -1,0 +1,62 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<window id="${arg.id}" title="${i18n:_('Exception Day Types List')}">
+
+    <newdatasortablegrid id="listExceptionDayTypes"
+        model="@{controller.exceptionDayTypes}"
+        mold="paging" pageSize="10"
+        fixedLayout="true">
+
+        <columns>
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
+            <newdatasortablecolumn label="${i18n:_('Color')}"/>
+            <newdatasortablecolumn label="${i18n:_('Over assignable')}" />
+            <newdatasortablecolumn label="${i18n:_('Duration')}" />
+
+            <newdatasortablecolumn label="${i18n:_('Operations')}" />
+        </columns>
+        <rows>
+            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}">
+                <label value="@{exceptionDayType.name}" />
+                <label value="@{exceptionDayType.color}" />
+                <label value="@{exceptionDayType.overAssignableStr}" />
+                <label value="@{exceptionDayType.durationStr}" />
+
+                <!-- Operation -->
+                <hbox>
+                    <button sclass="icono" image="/common/img/ico_editar1.png"
+                        hoverImage="/common/img/ico_editar.png"
+                        tooltiptext="${i18n:_('Edit')}"
+                        onClick="controller.goToEditForm(self.parent.parent.value)"/>
+
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.showRemoveConfirmationMessage(event)"/>
+                </hbox>
+            </row>
+        </rows>
+    </newdatasortablegrid>
+
+    <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
+        sclass="create-button global-action"/>
+
+ </window>

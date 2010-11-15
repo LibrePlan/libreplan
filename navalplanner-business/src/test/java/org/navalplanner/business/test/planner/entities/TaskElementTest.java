@@ -240,10 +240,10 @@ public class TaskElementTest {
     @Test
     @SuppressWarnings("unchecked")
     public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
-        Date initDate = asDate(new LocalDate(2005, 10, 5));
+        LocalDate initDate = new LocalDate(2005, 10, 5);
         OrderLineGroup group = OrderLineGroup.create();
         addOrderTo(group);
-        group.setInitDate(initDate);
+        group.setInitDate(asDate(initDate));
         OrderLine orderLine = OrderLine.create();
         group.add(orderLine);
         LocalDate deadline = new LocalDate(2007, 4, 4);
@@ -291,14 +291,15 @@ public class TaskElementTest {
         };
     }
 
-    private static Matcher<TaskStartConstraint> hasValue(final Date value) {
+    private static Matcher<TaskStartConstraint> hasValue(final LocalDate value) {
         return new BaseMatcher<TaskStartConstraint>() {
 
             @Override
             public boolean matches(Object object) {
                 if (object instanceof TaskStartConstraint) {
                     TaskStartConstraint startConstraint = (TaskStartConstraint) object;
-                    Date constraintDate = startConstraint.getConstraintDate();
+                    LocalDate constraintDate = startConstraint
+                            .getConstraintDate();
                     boolean bothNotNull = value != null
                                                 && constraintDate != null;
                     return value == constraintDate || bothNotNull

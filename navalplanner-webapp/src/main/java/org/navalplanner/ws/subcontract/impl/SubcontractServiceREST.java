@@ -22,7 +22,6 @@ package org.navalplanner.ws.subcontract.impl;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +31,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IOrderSequenceDAO;
@@ -49,7 +51,9 @@ import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
+import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTOId;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
+import org.navalplanner.ws.common.api.OrderDTO;
 import org.navalplanner.ws.common.api.OrderElementDTO;
 import org.navalplanner.ws.common.impl.ConfigurationOrderElementConverter;
 import org.navalplanner.ws.common.impl.ConstraintViolationConverter;
@@ -59,7 +63,6 @@ import org.navalplanner.ws.subcontract.api.ISubcontractService;
 import org.navalplanner.ws.subcontract.api.SubcontractedTaskDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * REST-based implementation of {@link ISubcontractService}
@@ -86,98 +89,131 @@ public class SubcontractServiceREST implements ISubcontractService {
     @Autowired
     private IScenarioDAO scenarioDAO;
 
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
+
+    static class ViolationError extends RuntimeException {
+        private final List<InstanceConstraintViolationsDTO> violations;
+
+        ViolationError(InstanceConstraintViolationsDTO... violations) {
+            Validate.noNullElements(violations);
+            this.violations = Arrays.asList(violations);
+        }
+
+        ViolationError(String code, String message) {
+            this(createConstraintViolationFor(code, message));
+        }
+
+        public List<InstanceConstraintViolationsDTO> getViolations() {
+            return violations;
+        }
+
+        public InstanceConstraintViolationsListDTO toViolationList() {
+            return new InstanceConstraintViolationsListDTO(violations);
+        }
+    }
+
     @Override
     @POST
     @Consumes("application/xml")
-    @Transactional
     public InstanceConstraintViolationsListDTO subcontract(
-            SubcontractedTaskDataDTO subcontractedTaskDataDTO) {
+            final SubcontractedTaskDataDTO subcontractedTaskDataDTO) {
+        try {
+            doSubcontract(subcontractedTaskDataDTO);
+        } catch (ViolationError e) {
+            return e.toViolationList();
+        }
+        return new InstanceConstraintViolationsListDTO();
+    }
 
-        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = new ArrayList<InstanceConstraintViolationsDTO>();
+    private void doSubcontract(final SubcontractedTaskDataDTO subcontractedTask)
+            throws ViolationError {
 
-        InstanceConstraintViolationsDTO instanceConstraintViolationsDTO = null;
-
-        if (StringUtils.isEmpty(subcontractedTaskDataDTO.externalCompanyNif)) {
-            return getErrorMessage(subcontractedTaskDataDTO.subcontractedCode,
+        if (StringUtils.isEmpty(subcontractedTask.externalCompanyNif)) {
+            throw new ViolationError(subcontractedTask.subcontractedCode,
                     "external company nif not specified");
         }
 
-        ExternalCompany externalCompany;
-        try {
-            externalCompany = externalCompanyDAO
-                    .findUniqueByNif(subcontractedTaskDataDTO.externalCompanyNif);
-        } catch (InstanceNotFoundException e1) {
-            return getErrorMessage(subcontractedTaskDataDTO.externalCompanyNif,
-                    "external company not found");
-        }
-
+        final ExternalCompany externalCompany = adHocTransactionService
+                .runOnTransaction(new IOnTransaction<ExternalCompany>() {
+                    @Override
+                    public ExternalCompany execute() {
+                        return findExternalCompanyFor(subcontractedTask);
+                    }
+                });
         if (!externalCompany.isClient()) {
-            return getErrorMessage(subcontractedTaskDataDTO.externalCompanyNif,
+            throw new ViolationError(subcontractedTask.externalCompanyNif,
                     "external company is not registered as client");
         }
 
-        OrderElementDTO orderElementDTO = subcontractedTaskDataDTO.orderElementDTO;
+        final OrderElementDTO orderElementDTO = subcontractedTask.orderElementDTO;
         if (orderElementDTO == null) {
-            return getErrorMessage(subcontractedTaskDataDTO.subcontractedCode,
+            throw new ViolationError(subcontractedTask.subcontractedCode,
                     "order element not specified");
         }
-
         try {
-            Scenario current = Registry.getScenarioManager().getCurrent();
-            OrderVersion version = OrderVersion.createInitialVersion(current);
+            adHocTransactionService
+                    .runOnTransaction(new IOnTransaction<Void>() {
 
-            OrderElement orderElement = OrderElementConverter.toEntity(version,
-                    orderElementDTO, ConfigurationOrderElementConverter
-                            .noAdvanceMeasurements());
-
-            Order order;
-            if (orderElement instanceof Order) {
-                order = (Order) orderElement;
-                order.setVersionForScenario(current, version);
-                order.useSchedulingDataFor(version);
-            } else {
-                order = wrapInOrder(current, version, orderElement);
-            }
-
-            addOrderToDerivedScenarios(current, version, order);
-
-            order.moveCodeToExternalCode();
-            order.setCodeAutogenerated(true);
-            String code = orderSequenceDAO.getNextOrderCode();
-            if (code == null) {
-                return getErrorMessage(
-                        subcontractedTaskDataDTO.orderElementDTO.code,
-                        "unable to generate the code for the new order, please try again later");
-            }
-
-            order.setCode(code);
-            generateCodes(order);
-
-            order.setState(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
-
-            if (subcontractedTaskDataDTO.workDescription != null) {
-                order.setName(subcontractedTaskDataDTO.workDescription);
-            }
-            order.setCustomer(externalCompany);
-            order
-                    .setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
-            order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
-
-            order.validate();
-            orderElementDAO.save(order);
+                        @Override
+                        public Void execute() {
+                            createOrder(subcontractedTask, externalCompany,
+                                    orderElementDTO);
+                            return null;
+                        }
+                    });
         } catch (ValidationException e) {
-            instanceConstraintViolationsDTO = ConstraintViolationConverter
-                    .toDTO(Util.generateInstanceId(1, orderElementDTO.code), e
-                            .getInvalidValues());
+            InstanceConstraintViolationsDTO violation = ConstraintViolationConverter
+                    .toDTO(new InstanceConstraintViolationsDTOId(new Long(1),
+                            orderElementDTO.code, OrderDTO.ENTITY_TYPE), e);
+            throw new ViolationError(violation);
+        }
+    }
+
+    private void createOrder(
+            final SubcontractedTaskDataDTO subcontractedTaskDataDTO,
+            final ExternalCompany externalCompany,
+            final OrderElementDTO orderElementDTO) throws ViolationError{
+        Scenario current = Registry.getScenarioManager().getCurrent();
+        OrderVersion version = OrderVersion.createInitialVersion(current);
+        OrderElement orderElement = OrderElementConverter.toEntity(version,
+                orderElementDTO,
+                ConfigurationOrderElementConverter.noAdvanceMeasurements());
+
+        Order order;
+        if (orderElement instanceof Order) {
+            order = (Order) orderElement;
+            order.setVersionForScenario(current, version);
+            order.useSchedulingDataFor(version);
+        } else {
+            order = wrapInOrder(current, version,
+                    orderElement);
         }
 
-        if (instanceConstraintViolationsDTO != null) {
-            instanceConstraintViolationsList
-                    .add(instanceConstraintViolationsDTO);
+        addOrderToDerivedScenarios(current, version, order);
+
+        order.moveCodeToExternalCode();
+        order.setCodeAutogenerated(true);
+        String code = orderSequenceDAO.getNextOrderCode();
+        if (code == null) {
+            throw new ViolationError(subcontractedTaskDataDTO.orderElementDTO.code,
+                    "unable to generate the code for the new order, please try again later");
         }
 
-        return new InstanceConstraintViolationsListDTO(
-                instanceConstraintViolationsList);
+        order.setCode(code);
+        generateCodes(order);
+
+        order.setState(OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER);
+
+        if (subcontractedTaskDataDTO.workDescription != null) {
+            order.setName(subcontractedTaskDataDTO.workDescription);
+        }
+        order.setCustomer(externalCompany);
+        order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
+        order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
+
+        order.validate();
+        orderElementDAO.save(order);
     }
 
     private void addOrderToDerivedScenarios(Scenario currentScenario,
@@ -219,12 +255,22 @@ public class SubcontractServiceREST implements ISubcontractService {
         return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
-    private InstanceConstraintViolationsListDTO getErrorMessage(String code,
-            String message) {
-        // FIXME review errors returned
-        return new InstanceConstraintViolationsListDTO(Arrays
-                .asList(InstanceConstraintViolationsDTO.create(Util
-                        .generateInstanceId(1, code), message)));
+    private ExternalCompany findExternalCompanyFor(
+            final SubcontractedTaskDataDTO subcontractedTask)
+            throws ViolationError {
+        try {
+            return externalCompanyDAO
+                    .findUniqueByNif(subcontractedTask.externalCompanyNif);
+        } catch (InstanceNotFoundException e) {
+            throw new ViolationError(subcontractedTask.externalCompanyNif,
+                    "external company not found");
+        }
+    }
+
+    private static InstanceConstraintViolationsDTO createConstraintViolationFor(
+            String code, String message) {
+        return InstanceConstraintViolationsDTO.create(
+                Util.generateInstanceId(1, code), message);
     }
 
 }

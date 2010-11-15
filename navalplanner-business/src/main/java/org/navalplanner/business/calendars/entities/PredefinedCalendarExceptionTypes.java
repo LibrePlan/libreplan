@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * Defines the default {@link CalendarExceptionType}.
@@ -44,6 +47,16 @@ public enum PredefinedCalendarExceptionTypes {
 
     public CalendarExceptionType getCalendarExceptionType() {
         return calendarExceptionType;
+    }
+
+    public static boolean contains(CalendarExceptionType exceptionType) {
+        PredefinedCalendarExceptionTypes[] predefinedExceptionTypes = PredefinedCalendarExceptionTypes.values();
+        for (PredefinedCalendarExceptionTypes each: predefinedExceptionTypes) {
+            if (each.getCalendarExceptionType().getName().equals(exceptionType.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

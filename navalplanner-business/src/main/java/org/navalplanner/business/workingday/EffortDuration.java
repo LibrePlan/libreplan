@@ -20,7 +20,11 @@
 
 package org.navalplanner.business.workingday;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 
@@ -129,12 +133,148 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return seconds - other.seconds;
     }
 
-    public EffortDuration multiplyBy(int integer) {
-        return EffortDuration.seconds(this.seconds * integer);
+    /**
+     * Multiplies this duration by a scalar <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result
+     * would be incorrect.
+     * @param n
+     * @return a duration that is the multiply of n and <code>this</code>
+     */
+    public EffortDuration multiplyBy(int n) {
+        return EffortDuration.seconds(this.seconds * n);
+    }
+
+    /**
+     * Divides this duration by a scalar
+     * @param n
+     *            a number greater than zero
+     * @return a new duration that is the result of dividing <code>this</code>
+     *         by n
+     */
+    public EffortDuration divideBy(int n) {
+        Validate.isTrue(n > 0);
+        return new EffortDuration(seconds / n);
+    }
+
+    /**
+     * <p>
+     * Divides this duration by other returning the quotient.
+     * </p>
+     * There can be a remainder left.
+     * @see #remainderFor(EffortDuration)
+     * @param other
+     * @return
+     */
+    public int divideBy(EffortDuration other) {
+        return seconds / other.seconds;
+    }
+
+    /**
+     * Calculates the remainder resulting of doing the integer division of both
+     * durations
+     *
+     * @see #divideBy(EffortDuration)
+     * @param other
+     * @return the remainder
+     */
+    public EffortDuration remainderFor(EffortDuration other) {
+        int dividend = divideBy(other);
+        return this.minus(other.multiplyBy(dividend));
+    }
+
+    /**
+     * Pluses two {@link EffortDuration}. <br />
+     * <b>Warning:<b /> This method can cause an integer overflow and the result
+     * would be incorrect.
+     * @param other
+     * @return a duration that is the sum of <code>this</code>
+     *         {@link EffortDuration} and the other duration
+     */
+    public EffortDuration plus(EffortDuration other) {
+        return new EffortDuration(seconds + other.seconds);
     }
 
     public boolean isZero() {
         return seconds == 0;
+    }
+
+    /**
+     * Substracts two {@link EffortDuration}. Because {@link EffortDuration
+     * durations} cannot be negative <code>this</code> must be bigger than the
+     * parameter or the same
+     *
+     * @param duration
+     * @return the result of substracting the two durations
+     * @throws IllegalArgumentException
+     *             if the parameter is bigger than <code>this</code>
+     */
+    public EffortDuration minus(EffortDuration duration) {
+        Validate.isTrue(this.compareTo(duration) >= 0,
+                "minued must not be smaller than subtrahend");
+        return new EffortDuration(seconds - duration.seconds);
+    }
+
+    public BigDecimal toHoursAsDecimalWithScale(int scale) {
+        BigDecimal result = BigDecimal.ZERO;
+        final BigDecimal secondsPerHour = new BigDecimal(3600);
+        for (Entry<Granularity, Integer> each : decompose().entrySet()) {
+            BigDecimal seconds = new BigDecimal(each.getKey().toSeconds(
+                    each.getValue()));
+            result = result.add(seconds.divide(secondsPerHour, scale,
+                    BigDecimal.ROUND_HALF_UP));
+        }
+        return result;
+    }
+
+    /**
+     * <p>
+     * Converts this duration in a number of hours. Uses a typical half up
+     * round, so for example one hour and half is converted to two hours. There
+     * is an exception though, when the duration is less than one hour and is
+     * not zero it's returned one. This is handy for avoiding infinite loops in
+     * some algorithms; when all code is converted to use {@link EffortDuration
+     * Effort Durations} this will no longer be necessary.
+     * </p>
+     * So there are three cases:
+     * <ul>
+     * <li>the duration is zero, 0 is returned</li>
+     * <li>if duration > 0 and duration < 1, 1 is returned</li>
+     * <li>if duration >= 1, typical half up round is done. For example 1 hour
+     * and 20 minutes returns 1 hour, 1 hour and 30 minutes 2 hours</li>
+     * </ul>
+     *
+     * @return an integer number of hours
+     */
+    public int roundToHours() {
+        if (this.isZero()) {
+            return 0;
+        }
+        return Math.max(1, roundHalfUpToHours(this.decompose()));
+    }
+
+    public static EffortDuration min(EffortDuration... durations) {
+        return Collections.min(Arrays.asList(durations));
+    }
+
+    public static EffortDuration max(EffortDuration... durations) {
+        return Collections.max(Arrays.asList(durations));
+    }
+
+    private static int roundHalfUpToHours(
+            EnumMap<Granularity, Integer> components) {
+        int seconds = components.get(Granularity.SECONDS);
+        int minutes = components.get(Granularity.MINUTES)
+                + (seconds < 30 ? 0 : 1);
+        int hours = components.get(Granularity.HOURS) + (minutes < 30 ? 0 : 1);
+        return hours;
+    }
+
+    public String toString() {
+        EnumMap<Granularity, Integer> valuesForEachUnit = decompose();
+        Integer hours = valuesForEachUnit.get(Granularity.HOURS);
+        Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
+        Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
+        return hours + ":" + minutes + ":" + seconds;
     }
 
 }

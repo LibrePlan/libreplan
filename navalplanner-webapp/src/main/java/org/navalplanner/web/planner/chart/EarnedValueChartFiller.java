@@ -27,10 +27,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.web.I18nHelper;
 import org.zkforge.timeplot.Plotinfo;
@@ -47,9 +49,71 @@ import org.zkoss.ganttz.util.Interval;
  */
 public abstract class EarnedValueChartFiller extends ChartFiller {
 
+    public static <K, V> void forValuesAtSameKey(Map<K, V> a, Map<K, V> b,
+            IOperation<K, V> onSameKey) {
+        for (Entry<K, V> each : a.entrySet()) {
+            V aValue = each.getValue();
+            V bValue = b.get(each.getKey());
+            onSameKey.operate(each.getKey(), aValue, bValue);
+        }
+    }
+    public interface IOperation<K, V> {
+
+        public void operate(K key, V a, V b);
+
+        public void undefinedFor(K key);
+    }
+
+    protected static abstract class PreconditionChecker<K, V> implements
+            IOperation<K, V> {
+
+        private final IOperation<K, V> decorated;
+
+        protected PreconditionChecker(IOperation<K, V> decorated) {
+            this.decorated = decorated;
+        }
+
+        @Override
+        public void operate(K key, V a, V b) {
+            if (isOperationDefinedFor(key, a, b)) {
+                decorated.operate(key, a, b);
+            } else {
+                decorated.undefinedFor(key);
+            }
+        }
+
+        protected abstract boolean isOperationDefinedFor(K key, V a, V b);
+
+        @Override
+        public void undefinedFor(K key) {
+            decorated.undefinedFor(key);
+        }
+
+    }
+
+    public static <K, V> IOperation<K, V> notNullOperands(
+            final IOperation<K, V> operation) {
+        return new PreconditionChecker<K, V>(operation) {
+            @Override
+            protected boolean isOperationDefinedFor(K key, V a, V b) {
+                return a != null && b != null;
+            }
+        };
+    }
+
+    public static <K> IOperation<K, BigDecimal> secondOperandNotZero(
+            final IOperation<K, BigDecimal> operation) {
+        return new PreconditionChecker<K, BigDecimal>(operation) {
+            @Override
+            protected boolean isOperationDefinedFor(K key, BigDecimal a, BigDecimal b) {
+                return b.signum() != 0;
+            }
+        };
+    }
+
     public static boolean includes(Interval interval, LocalDate date) {
-        LocalDate start = LocalDate.fromDateFields(interval.getStart());
-        LocalDate end = LocalDate.fromDateFields(interval.getFinish());
+        LocalDate start = interval.getStart();
+        LocalDate end = interval.getFinish();
         return start.compareTo(date) <= 0 && date.compareTo(end) < 0;
     }
     public enum EarnedValueType {
@@ -144,36 +208,15 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateCostVariance() {
         // CV = BCWP - ACWP
-        SortedMap<LocalDate, BigDecimal> cv = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-
-        for (LocalDate day : bcwp.keySet()) {
-            if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
-                cv.put(day, bcwp.get(day).subtract(acwp.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.CV, cv);
+        indicators.put(EarnedValueType.CV,
+                substract(EarnedValueType.BCWP, EarnedValueType.ACWP));
     }
 
     private void calculateScheduleVariance() {
         // SV = BCWP - BCWS
-        SortedMap<LocalDate, BigDecimal> sv = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> bcws = indicators
-                .get(EarnedValueType.BCWS);
 
-        for (LocalDate day : bcwp.keySet()) {
-            if ((bcwp.get(day) != null) && (bcws.get(day) != null)) {
-                sv.put(day, bcwp.get(day).subtract(bcws.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.SV, sv);
+        indicators.put(EarnedValueType.SV,
+                substract(EarnedValueType.BCWP, EarnedValueType.BCWS));
     }
 
     private void calculateBudgetAtCompletion() {
@@ -192,103 +235,130 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
 
     private void calculateEstimateAtCompletion() {
         // EAC = (ACWP/BCWP) * BAC
-        SortedMap<LocalDate, BigDecimal> eac = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
+        SortedMap<LocalDate, BigDecimal> dividend = divide(
+                EarnedValueType.ACWP, EarnedValueType.BCWP,
+                BigDecimal.ZERO);
         SortedMap<LocalDate, BigDecimal> bac = indicators
                 .get(EarnedValueType.BAC);
+        indicators.put(EarnedValueType.EAC, multiply(dividend, bac));
+    }
 
-        for (LocalDate day : acwp.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if ((bcwp.get(day) != null) && (acwp.get(day) != null)
-                    && (bac.get(day) != null)
-                    && (bcwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                value = acwp.get(day).divide(bcwp.get(day), RoundingMode.DOWN)
-                        .multiply(bac.get(day));
+    private static SortedMap<LocalDate, BigDecimal> multiply(
+            Map<LocalDate, BigDecimal> firstFactor,
+            Map<LocalDate, BigDecimal> secondFactor) {
+        final SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(firstFactor, secondFactor,
+                multiplicationOperation(result));
+        return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> multiplicationOperation(
+            final SortedMap<LocalDate, BigDecimal> result) {
+        return notNullOperands(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal a,
+                    BigDecimal b) {
+                result.put(key, a.multiply(b));
             }
-            eac.put(day, value);
-        }
 
-        indicators.put(EarnedValueType.EAC, eac);
+            @Override
+            public void undefinedFor(LocalDate key) {
+                result.put(key, BigDecimal.ZERO);
+            }
+        });
     }
 
     private void calculateVarianceAtCompletion() {
-        // VAC = BAC - EAC
-        SortedMap<LocalDate, BigDecimal> vac = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bac = indicators
-                .get(EarnedValueType.BAC);
-        SortedMap<LocalDate, BigDecimal> eac = indicators
-                .get(EarnedValueType.EAC);
-
-        for (LocalDate day : bac.keySet()) {
-            if ((eac.get(day) != null) && (bac.get(day) != null)) {
-                vac.put(day, bac.get(day).subtract(eac.get(day)));
-            }
-        }
-
-        indicators.put(EarnedValueType.VAC, vac);
+        indicators.put(EarnedValueType.VAC,
+                substract(EarnedValueType.BAC, EarnedValueType.EAC));
     }
 
     private void calculateEstimatedToComplete() {
         // ETC = EAC - ACWP
-        SortedMap<LocalDate, BigDecimal> etc = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> eac = indicators
-                .get(EarnedValueType.EAC);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
+        indicators.put(EarnedValueType.ETC,
+                substract(EarnedValueType.EAC, EarnedValueType.ACWP));
+    }
 
-        for (LocalDate day : eac.keySet()) {
-            if ((eac.get(day) != null) && (acwp.get(day) != null)) {
-                etc.put(day, eac.get(day).subtract(acwp.get(day)));
+    private SortedMap<LocalDate, BigDecimal> substract(EarnedValueType minuend,
+            EarnedValueType subtrahend) {
+        return substract(indicators.get(minuend), indicators.get(subtrahend));
+    }
+
+    private static SortedMap<LocalDate, BigDecimal> substract(
+            Map<LocalDate, BigDecimal> minuend,
+            Map<LocalDate, BigDecimal> subtrahend) {
+        final SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(minuend, subtrahend, substractionOperation(result));
+        return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> substractionOperation(
+            final SortedMap<LocalDate, BigDecimal> result) {
+        return notNullOperands(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal minuedValue,
+                    BigDecimal subtrahendValue) {
+                result.put(key,
+                        minuedValue.subtract(subtrahendValue));
             }
-        }
 
-        indicators.put(EarnedValueType.ETC, etc);
+            @Override
+            public void undefinedFor(LocalDate key) {
+            }
+        });
     }
 
     private void calculateCostPerformanceIndex() {
         // CPI = BCWP / ACWP
-        SortedMap<LocalDate, BigDecimal> cpi = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> acwp = indicators
-                .get(EarnedValueType.ACWP);
-
-        for (LocalDate day : bcwp.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if ((acwp.get(day) != null)
-                    && (acwp.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                if ((bcwp.get(day) != null) && (acwp.get(day) != null)) {
-                    value = bcwp.get(day).divide(acwp.get(day),
-                            RoundingMode.DOWN);
-                }
-            }
-            cpi.put(day, value);
-        }
-
-        indicators.put(EarnedValueType.CPI, cpi);
+        indicators.put(EarnedValueType.CPI,
+                divide(EarnedValueType.BCWP, EarnedValueType.ACWP,
+                        BigDecimal.ZERO));
     }
 
     private void calculateSchedulePerformanceIndex() {
         // SPI = BCWP / BCWS
-        SortedMap<LocalDate, BigDecimal> spi = new TreeMap<LocalDate, BigDecimal>();
-        SortedMap<LocalDate, BigDecimal> bcwp = indicators
-                .get(EarnedValueType.BCWP);
-        SortedMap<LocalDate, BigDecimal> bcws = indicators
-                .get(EarnedValueType.BCWS);
+        indicators.put(EarnedValueType.SPI,
+                divide(EarnedValueType.BCWP, EarnedValueType.BCWS,
+                        BigDecimal.ZERO));
+    }
 
-        for (LocalDate day : bcwp.keySet()) {
-            BigDecimal value = BigDecimal.ZERO;
-            if ((bcws.get(day) != null) && (bcwp.get(day) != null)
-                    && (bcws.get(day).compareTo(BigDecimal.ZERO) != 0)) {
-                value = bcwp.get(day).divide(bcws.get(day), RoundingMode.DOWN);
+    private SortedMap<LocalDate, BigDecimal> divide(EarnedValueType dividend,
+            EarnedValueType divisor, BigDecimal defaultIfNotComputable) {
+        Validate.notNull(indicators.get(dividend));
+        Validate.notNull(indicators.get(divisor));
+        return divide(indicators.get(dividend), indicators.get(divisor),
+                defaultIfNotComputable);
+    }
+
+    private static SortedMap<LocalDate, BigDecimal> divide(
+            Map<LocalDate, BigDecimal> dividend,
+            Map<LocalDate, BigDecimal> divisor,
+            final BigDecimal defaultIfNotComputable) {
+        final TreeMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+        forValuesAtSameKey(dividend, divisor,
+                divisionOperation(result, defaultIfNotComputable));
+        return result;
+    }
+
+    private static IOperation<LocalDate, BigDecimal> divisionOperation(
+            final TreeMap<LocalDate, BigDecimal> result,
+            final BigDecimal defaultIfNotComputable) {
+        return notNullOperands(secondOperandNotZero(new IOperation<LocalDate, BigDecimal>() {
+
+            @Override
+            public void operate(LocalDate key, BigDecimal dividendValue,
+                    BigDecimal divisorValue) {
+                result.put(key, dividendValue.divide(divisorValue,
+                        RoundingMode.DOWN));
             }
-            spi.put(day, value);
-        }
 
-        indicators.put(EarnedValueType.SPI, spi);
+            @Override
+            public void undefinedFor(LocalDate key) {
+                result.put(key, defaultIfNotComputable);
+            }
+      }));
     }
 
     protected abstract Set<EarnedValueType> getSelectedIndicators();
@@ -337,8 +407,8 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     public LocalDate initialDateForIndicatorValues() {
         Interval chartInterval = getIndicatorsDefinitionInterval();
         LocalDate today = new LocalDate();
-        return includes(chartInterval, today) ? today
-                : LocalDate.fromDateFields(chartInterval.getFinish());
+        return includes(chartInterval, today) ? today : chartInterval
+                .getFinish();
     }
     protected void addZeroBeforeTheFirstValue(
             SortedMap<LocalDate, BigDecimal> map) {

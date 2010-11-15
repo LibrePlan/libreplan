@@ -20,22 +20,16 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Implements all the methods needed to search the criterion to filter the
@@ -47,51 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
-    private ICriterionTypeDAO criterionTypeDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private ICostCategoryDAO costCategoryDAO;
-
-    private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
-
-    private static final List<CostCategory> costCategories = new ArrayList<CostCategory>();
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
     protected ResourcesMultipleFiltersFinder() {
-
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void init() {
-        getAdHocTransactionService()
-                .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        loadCriterions();
-                        loadCostCategories();
-                        return null;
-                    }
-                });
-    }
-
-    private void loadCriterions() {
-        mapCriterions.clear();
-        List<CriterionType> criterionTypes = criterionTypeDAO
-                .getCriterionTypes();
-        for (CriterionType criterionType : criterionTypes) {
-            List<Criterion> criterions = new ArrayList<Criterion>(criterionDAO
-                    .findByType(criterionType));
-
-            mapCriterions.put(criterionType, criterions);
-        }
-    }
-
-    private void loadCostCategories() {
-        costCategories.clear();
-        costCategories.addAll(costCategoryDAO.findActive());
     }
 
     @Override
@@ -99,29 +51,34 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().clear();
         fillWithFirstTenFiltersCriterions();
         fillWithFirstTenFiltersCostCategories();
-        getListMatching().add(
-                new FilterPair(OrderFilterEnum.None,
-                OrderFilterEnum.None.toString(), null));
+        addNoneFilter();
         return getListMatching();
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
+        Map<CriterionType, List<Criterion>> criterionsMap = getCriterionsMap();
+        Iterator<CriterionType> iteratorCriterionType = criterionsMap.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
             CriterionType type = iteratorCriterionType.next();
             for (int i = 0; getListMatching().size() < 10
-                    && i < mapCriterions.get(type).size(); i++) {
-                Criterion criterion = mapCriterions.get(type).get(i);
+                    && i < criterionsMap.get(type).size(); i++) {
+                Criterion criterion = criterionsMap.get(type).get(i);
                 addCriterion(type, criterion);
             }
         }
         return getListMatching();
     }
 
+    private Map<CriterionType, List<Criterion>> getCriterionsMap() {
+        return databaseSnapshots.snapshotCriterionsMap();
+    }
+
     private List<FilterPair> fillWithFirstTenFiltersCostCategories() {
+        List<CostCategory> costCategories = databaseSnapshots
+                .snapshotListCostCategories();
         for (int i = 0; getListMatching().size() < 10
- && i < costCategories.size(); i++) {
+                && i < costCategories.size(); i++) {
             CostCategory costCategory = costCategories.get(i);
             addCostCategory(costCategory);
         }
@@ -142,6 +99,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
 
     private void searchInCriterionTypes(String filter) {
         boolean limited = (filter.length() < 3);
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         for (CriterionType type : mapCriterions.keySet()) {
             String name = StringUtils.deleteWhitespace(type.getName()
                     .toLowerCase());
@@ -154,6 +112,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCriterions(CriterionType type, String filter) {
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         for (Criterion criterion : mapCriterions.get(type)) {
             String name = StringUtils.deleteWhitespace(criterion.getName()
                     .toLowerCase());
@@ -167,6 +126,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void setFilterPairCriterionType(CriterionType type, boolean limited) {
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         for (Criterion criterion : mapCriterions.get(type)) {
             addCriterion(type, criterion);
             if ((limited) && (getListMatching().size() > 9)) {
@@ -176,7 +136,8 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void searchInCostCategories(String filter) {
-        for (CostCategory costCategory : costCategories) {
+        for (CostCategory costCategory : databaseSnapshots
+                .snapshotListCostCategories()) {
             String name = StringUtils.deleteWhitespace(costCategory.getName()
                     .toLowerCase());
             if (name.contains(filter)) {
@@ -201,12 +162,6 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().add(
                 new FilterPair(ResourceFilterEnum.CostCategory,
                 pattern, costCategory));
-    }
-
-    private void addNoneFilter() {
-        getListMatching().add(
-                new FilterPair(ResourceFilterEnum.None,
-                ResourceFilterEnum.None.toString(), null));
     }
 
 }

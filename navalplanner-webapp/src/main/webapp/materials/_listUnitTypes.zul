@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Unit Types List')}">
+<window id="${arg.top_id}" title="${i18n:_('Unit Measures List')}">
     <newdatasortablegrid id="listing" model="@{controller.unitTypes}" mold="paging"
         pageSize="10" fixedLayout="true"
         rowRenderer="@{controller.unitTypeRenderer}" >

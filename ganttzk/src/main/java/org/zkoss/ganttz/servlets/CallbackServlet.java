@@ -86,8 +86,7 @@ public class CallbackServlet extends HttpServlet {
 
     public static String registerAndCreateURLFor(HttpServletRequest request,
             IServletRequestHandler handler, boolean withContextPath) {
-        // theorically could be an infinite loop, must be improved. Gods of
-        // computer science forgive me
+        // theoretically could be an infinite loop, could be improved.
         String generatedKey = "";
         HandlerWithRegisterTime toBeRegistered = new HandlerWithRegisterTime(
                 handler);

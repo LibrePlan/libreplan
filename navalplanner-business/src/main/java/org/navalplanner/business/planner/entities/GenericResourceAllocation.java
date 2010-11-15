@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -30,12 +32,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
-import org.navalplanner.business.calendars.entities.IWorkHours;
-import org.navalplanner.business.planner.entities.HoursDistributor.IResourceSelector;
-import org.navalplanner.business.planner.entities.HoursDistributor.ResourceWithAssignedHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
+import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -43,9 +46,13 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -102,6 +109,9 @@ public class GenericResourceAllocation extends
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
+    @OnCopy(Strategy.SHARE)
+    private ResourceEnum resourceType;
+
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
     @Valid
@@ -129,10 +139,26 @@ public class GenericResourceAllocation extends
                 task));
     }
 
-    public static GenericResourceAllocation createForLimiting(Task task,
+    public static GenericResourceAllocation create(Task task,
             Collection<? extends Criterion> criterions) {
+        return create(task, inferType(criterions), criterions);
+    }
+
+    public static ResourceEnum inferType(
+            Collection<? extends Criterion> criterions) {
+        if (criterions.isEmpty()) {
+            return ResourceEnum.WORKER;
+        }
+        Criterion first = criterions.iterator().next();
+        return first.getType().getResource();
+    }
+
+    public static GenericResourceAllocation create(Task task,
+            ResourceEnum resourceType, Collection<? extends Criterion> criterions) {
+        Validate.notNull(resourceType);
         GenericResourceAllocation result = new GenericResourceAllocation(task);
         result.criterions = new HashSet<Criterion>(criterions);
+        result.resourceType = resourceType;
         result.setResourcesPerDayToAmount(1);
         return create(result);
     }
@@ -212,23 +238,23 @@ public class GenericResourceAllocation extends
 
     private class GenericAllocation extends AssignmentsAllocation {
 
-        private HoursDistributor hoursDistributor;
+        private EffortDistributor hoursDistributor;
         private final List<Resource> resources;
 
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
-            hoursDistributor = new HoursDistributor(resources,
+            hoursDistributor = new EffortDistributor(resources,
                     getAssignedHoursForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
         }
 
         @Override
         protected List<GenericDayAssignment> distributeForDay(LocalDate day,
-                int totalHours) {
+                EffortDuration effort) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
-            for (ResourceWithAssignedHours each : hoursDistributor
-                    .distributeForDay(day, totalHours)) {
-                result.add(GenericDayAssignment.create(day, each.hours,
+            for (ResourceWithAssignedDuration each : hoursDistributor
+                    .distributeForDay(day, effort)) {
+                result.add(GenericDayAssignment.create(day, each.duration,
                         each.resource));
             }
             return result;
@@ -258,8 +284,8 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    protected IWorkHours getWorkHoursGivenTaskHours(IWorkHours taskWorkHours) {
-        return taskWorkHours;
+    protected ICalendar getCalendarGivenTaskCalendar(ICalendar taskCalendar) {
+        return taskCalendar;
     }
 
     public IAllocatable forResources(Collection<? extends Resource> resources) {
@@ -312,12 +338,24 @@ public class GenericResourceAllocation extends
             return new ExplicitlySpecifiedScenarioState(
                     scenario);
         }
+
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
+        }
     }
 
     private class TransientState extends DayAssignmentsState {
         private final GenericResourceAllocation outerGenericAllocation = GenericResourceAllocation.this;
 
         private final Set<GenericDayAssignment> genericDayAssignments;
+
+        private IntraDayDate intraDayEnd;
 
         TransientState(Set<GenericDayAssignment> genericDayAssignments) {
             this.genericDayAssignments = genericDayAssignments;
@@ -361,7 +399,18 @@ public class GenericResourceAllocation extends
             ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
                     scenario);
             result.resetTo(genericDayAssignments);
+            result.setIntraDayEnd(getIntraDayEnd());
             return result;
+        }
+
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
         }
     }
 
@@ -373,6 +422,15 @@ public class GenericResourceAllocation extends
             return new HashSet<GenericDayAssignment>();
         }
         return container.getDayAssignments();
+    }
+
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
+        GenericDayAssignmentsContainer container = containersByScenario().get(
+                scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayEnd();
     }
 
     private class GenericDayAssignmentsNoExplicitlySpecifiedScenario extends
@@ -387,6 +445,11 @@ public class GenericResourceAllocation extends
         @Override
         protected DayAssignmentsState switchTo(Scenario scenario) {
             return new ExplicitlySpecifiedScenarioState(scenario);
+        }
+
+        @Override
+        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
+            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
         }
     }
 
@@ -408,16 +471,15 @@ public class GenericResourceAllocation extends
         return GenericDayAssignment.class;
     }
 
-    public List<DayAssignment> createAssignmentsAtDay(
-            List<Resource> resources, LocalDate day,
-            ResourcesPerDay resourcesPerDay, final int maxLimit) {
-        final int hours = Math.min(calculateTotalToDistribute(day,
-                resourcesPerDay), maxLimit);
+    public List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
+            PartialDay day, ResourcesPerDay resourcesPerDay,
+            final EffortDuration maxLimit) {
+        final EffortDuration durations = min(
+                calculateTotalToDistribute(day, resourcesPerDay), maxLimit);
         GenericAllocation genericAllocation = new GenericAllocation(resources);
         return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
-                day, hours));
+                day.getDate(), durations));
     }
-
 
     @Override
     public List<Resource> getAssociatedResources() {
@@ -433,8 +495,8 @@ public class GenericResourceAllocation extends
     @Override
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
-        allocation
-                .toTransientStateWithInitial(getUnorderedForScenario(scenario));
+        allocation.toTransientStateWithInitial(
+                getUnorderedForScenario(scenario), getIntraDayEndFor(scenario));
         allocation.criterions = new HashSet<Criterion>(criterions);
         allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
                 this);
@@ -442,8 +504,9 @@ public class GenericResourceAllocation extends
     }
 
     private void toTransientStateWithInitial(
-            Set<GenericDayAssignment> initialAssignments) {
+            Set<GenericDayAssignment> initialAssignments, IntraDayDate end) {
         this.assignmentsState = new TransientState(initialAssignments);
+        this.assignmentsState.setIntraDayEnd(end);
     }
 
     @Override
@@ -467,7 +530,7 @@ public class GenericResourceAllocation extends
 
     @Override
     public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
-        return resourceDAO.findSatisfyingCriterionsAtSomePoint(getCriterions());
+        return resourceDAO.findSatisfyingAllCriterionsAtSomePoint(getCriterions());
     }
 
     public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(
@@ -529,6 +592,10 @@ public class GenericResourceAllocation extends
             resetAssignmentsTo(GenericDayAssignment
                     .copyToAssignmentsWithoutParent(originAssignments));
         }
+    }
+
+    public ResourceEnum getResourceType() {
+        return resourceType != null ? resourceType : inferType(criterions);
     }
 
 }

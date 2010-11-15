@@ -258,7 +258,7 @@ public class OrderElementTest {
                 new BigDecimal(600), false);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(10)
-                .setScale(2).divide(new BigDecimal(100))));
+                .setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -273,7 +273,7 @@ public class OrderElementTest {
                 new BigDecimal(200), true, future);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(10)
-                .setScale(2).divide(new BigDecimal(100))));
+                .setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -291,7 +291,7 @@ public class OrderElementTest {
                         1000), new BigDecimal(600), true);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(60)
-                .setScale(2).divide(new BigDecimal(100))));
+                .setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -313,7 +313,7 @@ public class OrderElementTest {
                 new BigDecimal(600), false);
 
         assertThat(orderLine.getAdvancePercentage(), equalTo(new BigDecimal(20)
-                .setScale(2).divide(new BigDecimal(100))));
+                .setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -347,7 +347,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                40).setScale(2).divide(new BigDecimal(100))));
+                40).setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -381,7 +381,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                10).setScale(2).divide(new BigDecimal(100))));
+                10).setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -404,7 +404,7 @@ public class OrderElementTest {
                 new BigDecimal(2000), new BigDecimal(200), true);
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                20).divide(new BigDecimal(100)).setScale(2)));
+                20).divide(new BigDecimal(100)).setScale(4)));
     }
 
     @Test
@@ -435,7 +435,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                20).setScale(2).divide(new BigDecimal(100))));
+                20).setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -467,7 +467,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                22).divide(new BigDecimal(100))));
+                22).divide(new BigDecimal(100)).setScale(4)));
     }
 
     @Test
@@ -492,7 +492,7 @@ public class OrderElementTest {
                         100), new BigDecimal(90), true);
 
         assertThat(orderLineGroup.getAdvancePercentage(),
-                equalTo(new BigDecimal(90).setScale(2).divide(
+                equalTo(new BigDecimal(90).setScale(4).divide(
                         new BigDecimal(100))));
     }
 
@@ -516,7 +516,7 @@ public class OrderElementTest {
                         100), new BigDecimal(90), false);
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                20).divide(new BigDecimal(100)).setScale(2)));
+                20).divide(new BigDecimal(100)).setScale(4)));
     }
 
     @Test
@@ -545,7 +545,7 @@ public class OrderElementTest {
                 new BigDecimal(350), four, new BigDecimal(400));
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                43).divide(new BigDecimal(100)).setScale(2)));
+                4333).divide(new BigDecimal(10000)).setScale(4)));
 
         Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
                 .getDirectAdvanceAssignments();
@@ -700,7 +700,7 @@ public class OrderElementTest {
                 new BigDecimal(350), four, new BigDecimal(400));
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                43).divide(new BigDecimal(100)).setScale(2)));
+                4333).divide(new BigDecimal(10000)).setScale(4)));
 
         Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
                 .getDirectAdvanceAssignments();
@@ -734,23 +734,27 @@ public class OrderElementTest {
 
         AdvanceMeasurement next = iterator.next();
         assertThat(next.getDate(), equalTo(one));
-        assertThat(next.getValue(), equalTo(new BigDecimal(6).setScale(2)));
+        assertThat(next.getValue(), equalTo(new BigDecimal(66600).setScale(4)
+                .divide(new BigDecimal(10000))));
 
         next = iterator.next();
         assertThat(next.getDate(), equalTo(two));
-        assertThat(next.getValue(), equalTo(new BigDecimal(13).setScale(2)));
+        assertThat(next.getValue(), equalTo(new BigDecimal(133300).setScale(4)
+                .divide(new BigDecimal(10000))));
 
         next = iterator.next();
         assertThat(next.getDate(), equalTo(three));
-        assertThat(next.getValue(), equalTo(new BigDecimal(36).setScale(2)));
+        assertThat(next.getValue(), equalTo(new BigDecimal(366600).setScale(4)
+                .divide(new BigDecimal(10000))));
 
         next = iterator.next();
         assertThat(next.getDate(), equalTo(four));
-        assertThat(next.getValue(), equalTo(new BigDecimal(40).setScale(2)));
+        assertThat(next.getValue(), equalTo(new BigDecimal(40).setScale(4)));
 
         next = iterator.next();
         assertThat(next.getDate(), equalTo(five));
-        assertThat(next.getValue(), equalTo(new BigDecimal(43).setScale(2)));
+        assertThat(next.getValue(), equalTo(new BigDecimal(4333).setScale(4)
+                .divide(new BigDecimal(100))));
     }
 
     @Test
@@ -789,7 +793,7 @@ public class OrderElementTest {
         assertThat(orderLineGroup_1.getIndirectAdvanceAssignments().size(),
                 equalTo(3));
         assertThat(orderLineGroup_1.getAdvancePercentage(),
-                equalTo(new BigDecimal(50).setScale(2).divide(
+                equalTo(new BigDecimal(50).setScale(4).divide(
                         new BigDecimal(100))));
     }
 
@@ -826,7 +830,7 @@ public class OrderElementTest {
         assertThat(orderLineGroup_1.getIndirectAdvanceAssignments().size(),
                 equalTo(3));
         assertThat(orderLineGroup_1.getAdvancePercentage(),
-                equalTo(new BigDecimal(20).setScale(2).divide(
+                equalTo(new BigDecimal(20).setScale(4).divide(
                         new BigDecimal(100))));
     }
 
@@ -847,7 +851,7 @@ public class OrderElementTest {
                 new BigDecimal(100), new BigDecimal(20), true);
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                26).divide(new BigDecimal(100))));
+                2666).divide(new BigDecimal(10000)).setScale(4)));
 
         Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
                 .getIndirectAdvanceAssignments();
@@ -861,7 +865,7 @@ public class OrderElementTest {
         }
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                26).divide(new BigDecimal(100))));
+                26).setScale(4).divide(new BigDecimal(100))));
     }
 
     @Test
@@ -890,7 +894,7 @@ public class OrderElementTest {
                 new BigDecimal(20), five, new BigDecimal(50));
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                46).divide(new BigDecimal(100)).setScale(2)));
+                4666).setScale(4).divide(new BigDecimal(10000))));
 
         Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement
                 .getDirectAdvanceAssignments();
@@ -969,7 +973,7 @@ public class OrderElementTest {
                 new BigDecimal(1000), three, new BigDecimal(5000));
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                8).divide(new BigDecimal(100)).setScale(2)));
+                833).divide(new BigDecimal(10000)).setScale(4)));
 
         Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
                 .getIndirectAdvanceAssignments();
@@ -990,8 +994,8 @@ public class OrderElementTest {
         assertThat(advanceAssignment.getLastAdvanceMeasurement().getValue(),
                 equalTo(new BigDecimal(5000)));
         assertThat(advanceAssignment.getAdvancePercentage(),
-                equalTo(new BigDecimal(45).divide(new BigDecimal(100))
-                        .setScale(2)));
+                equalTo(new BigDecimal(4545).divide(new BigDecimal(10000))
+                        .setScale(4)));
     }
 
     @Test
@@ -1016,7 +1020,7 @@ public class OrderElementTest {
                 new BigDecimal(1000), true);
 
         assertThat(orderElement.getAdvancePercentage(), equalTo(new BigDecimal(
-                8).divide(new BigDecimal(100)).setScale(2)));
+                833).divide(new BigDecimal(10000)).setScale(4)));
 
         Set<IndirectAdvanceAssignment> indirectAdvanceAssignments = ((OrderLineGroup) orderElement)
                 .getIndirectAdvanceAssignments();
@@ -1037,8 +1041,8 @@ public class OrderElementTest {
         assertThat(advanceAssignment.getLastAdvanceMeasurement().getValue(),
                 equalTo(new BigDecimal(5000)));
         assertThat(advanceAssignment.getAdvancePercentage(),
-                equalTo(new BigDecimal(45).divide(new BigDecimal(100))
-                        .setScale(2)));
+                equalTo(new BigDecimal(4545).divide(new BigDecimal(10000))
+                        .setScale(4)));
     }
 
     public static void removeReportGlobalAdvanceFromChildrenAdvance(

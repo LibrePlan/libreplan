@@ -108,8 +108,6 @@ public interface IBaseCalendarModel {
 
     DayType getTypeOfDay(LocalDate date);
 
-    Integer getHoursOfDay();
-
     EffortDuration getWorkableTime();
 
     void createException(CalendarExceptionType type, Date startDate,

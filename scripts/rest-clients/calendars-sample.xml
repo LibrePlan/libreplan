@@ -1,67 +1,68 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <base-calendar-list xmlns="http://rest.ws.navalplanner.org">
-<base-calendar parent="000-000" name="Spain Calendar"
-  code="000-001">
+<base-calendar name="Spanish Calendar" code="000-001">
     <calendar-exception-list>
-      <calendar-exception calendar-exception-type-code="HOLIDAY"
-      hours="8" date="2010-04-07"
-      code="000-004" />
-      <calendar-exception calendar-exception-type-code="HOLIDAY"
-      hours="7" date="2010-04-12"
-      code="000-005" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-01-01"
+        code="001-001" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-01-06"
+        code="001-002" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-04-22"
+        code="001-003" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-05-01"
+        code="001-004" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-08-15"
+        code="001-005" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-10-12"
+        code="001-006" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-11-01"
+        code="001-007" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-12-06"
+        code="001-008" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-12-08"
+        code="001-009" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-12-25"
+        code="001-010" />
     </calendar-exception-list>
     <calendar-data-list>
-      <calendar-data code="000-003">
+      <calendar-data code="001-001">
         <hours-per-day-list>
-          <hours-per-day hours="2" day="MONDAY" />
-          <hours-per-day hours="3" day="TUESDAY" />
-          <hours-per-day hours="4" day="WEDNESDAY" />
-          <hours-per-day hours="5" day="THURSDAY" />
+          <hours-per-day hours="8" day="MONDAY" />
+          <hours-per-day hours="8" day="TUESDAY" />
+          <hours-per-day hours="8" day="WEDNESDAY" />
+          <hours-per-day hours="8" day="THURSDAY" />
+          <hours-per-day hours="8" day="FRIDAY" />
         </hours-per-day-list>
       </calendar-data>
     </calendar-data-list>
   </base-calendar>
-  <base-calendar parent="000-000"
-  name="Galician Calendar"
-  code="000-001">
+  <base-calendar code="000-002" name="Galician Calendar"
+    parent="000-001">
     <calendar-exception-list>
-      <calendar-exception calendar-exception-type-code="HOLIDAY"
-      hours="0" date="2011-05-31"
-      code="000-000" />
-      <calendar-exception calendar-exception-type-code="LEAVE"
-      hours="8" date="2010-04-11"
-      code="000-001" />
-      <calendar-exception calendar-exception-type-code="STRIKE"
-      hours="8" date="2010-05-17"
-      code="000-002" />
-      <calendar-exception calendar-exception-type-code="HOLIDAY"
-      hours="7" date="2010-04-22"
-      code="000-003" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-04-21"
+        code="002-001" />
+      <calendar-exception calendar-exception-type-code="BANK_HOLIDAY"
+        hours="0" date="2011-05-17"
+        code="002-002" />
     </calendar-exception-list>
     <calendar-data-list>
-      <calendar-data expiring-date="2010-06-15"
-      code="000-000-002">
+      <calendar-data code="001-002">
         <hours-per-day-list>
-          <hours-per-day hours="5" day="MONDAY" />
-          <hours-per-day hours="5" day="TUESDAY" />
-          <hours-per-day hours="5" day="WEDNESDAY" />
-          <hours-per-day hours="5" day="THURSDAY" />
-          <hours-per-day hours="5" day="FRIDAY" />
-        </hours-per-day-list>
-      </calendar-data>
-      <calendar-data expiring-date="2010-06-25"
-      code="000-000-001">
-        <hours-per-day-list>
-          <hours-per-day hours="9" day="MONDAY" />
-          <hours-per-day hours="9" day="THURSDAY" />
-          <hours-per-day hours="9" day="FRIDAY" />
-        </hours-per-day-list>
-      </calendar-data>
-      <calendar-data code="000-000-021">
-        <hours-per-day-list>
-          <hours-per-day hours="7" day="MONDAY" />
-          <hours-per-day hours="7" day="THURSDAY" />
-          <hours-per-day hours="7" day="FRIDAY" />
+          <hours-per-day hours="8" day="MONDAY" />
+          <hours-per-day hours="8" day="TUESDAY" />
+          <hours-per-day hours="8" day="WEDNESDAY" />
+          <hours-per-day hours="8" day="THURSDAY" />
+          <hours-per-day hours="8" day="FRIDAY" />
         </hours-per-day-list>
       </calendar-data>
     </calendar-data-list>

@@ -28,6 +28,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
+import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
@@ -50,22 +51,12 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
     List<Resource> findResourcesRelatedTo(List<Task> tasks);
 
     /**
-     * Returns a list of {@link Resource} satisfying all criterions
-     *
+     * Returns a list of {@link Resource} satisfying all criteria at some point
+     * in time
      * @param criterions
      * @return
      */
-    List<Resource> findSatisfyingAllCriterions(
-            Collection<? extends Criterion> criterions,
-            boolean limitingResource);
-
-    /**
-     * Returns a list of {@link Resource} satisfying at least one criterion from criterions
-     *
-     * @param criterions
-     * @return
-     */
-    List<Resource> findSatisfyingCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
+    List<Resource> findSatisfyingAllCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
 
     /**
      * Returns all {@link Machine}
@@ -130,9 +121,18 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * the specified dates.
      * @return
      */
-    public List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
+    List<HoursWorkedPerResourceDTO> getWorkingHoursPerWorker(
             List<Resource> resources, List<Label> labels,
             List<Criterion> criterions, Date startingDate,
             Date endingDate);
+
+    /**
+     * Returns all {@link HoursWorkedPerWorkerInAMonthDTO} in year and month
+     *
+     * @param year
+     * @param month
+     * @return
+     */
+    List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(Integer year, Integer month);
 
 }

@@ -19,6 +19,8 @@
    <!-- Letting Spring do automatically exception translation -->
    <bean  class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
+   <bean id="hibernateDatabaseModificationsListener" class="org.navalplanner.business.hibernate.notification.HibernateDatabaseModificationsListener" scope="singleton"/>
+
     <!-- Hibernate Session Factory. -->
     <bean id="sessionFactory"
     class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"
@@ -84,6 +86,19 @@
                 </value>
                 </list>
         </property>
+            <property name="eventListeners">
+                <map>
+                    <entry key="post-insert">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                    <entry key="post-delete">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                    <entry key="post-update">
+                        <ref bean="hibernateDatabaseModificationsListener"/>
+                    </entry>
+                </map>
+            </property>
     </bean>
 
     <!-- Spring Transaction manager  -->

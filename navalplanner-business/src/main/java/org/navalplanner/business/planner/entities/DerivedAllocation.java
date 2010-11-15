@@ -117,7 +117,7 @@ public class DerivedAllocation extends BaseEntity {
         }
 
         int getHours() {
-            return DayAssignment.sum(getUnorderedAssignments());
+            return DayAssignment.sum(getUnorderedAssignments()).roundToHours();
         }
 
         abstract void resetAssignmentsTo(

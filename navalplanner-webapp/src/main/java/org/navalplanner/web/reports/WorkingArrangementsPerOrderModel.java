@@ -40,10 +40,10 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskStatusEnum;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.reports.dtos.WorkingArrangementPerOrderDTO;
 import org.navalplanner.business.reports.dtos.WorkingArrangementPerOrderDTO.DependencyWorkingArrangementDTO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -98,7 +98,6 @@ public class WorkingArrangementsPerOrderModel implements
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
     static {
-        applicableResources.add(ResourceEnum.RESOURCE);
         applicableResources.add(ResourceEnum.WORKER);
     }
 

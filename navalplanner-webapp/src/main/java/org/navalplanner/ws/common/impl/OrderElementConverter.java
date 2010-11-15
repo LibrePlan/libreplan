@@ -48,6 +48,7 @@ import org.navalplanner.business.materials.bootstrap.PredefinedMaterialCategorie
 import org.navalplanner.business.materials.entities.Material;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.materials.entities.MaterialCategory;
+import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.ICriterionRequirable;
 import org.navalplanner.business.orders.entities.Order;
@@ -244,15 +245,24 @@ public final class OrderElementConverter {
     public final static OrderElement toEntity(OrderVersion orderVersion,
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration) {
+
         if (orderVersion == null) {
             Scenario current = Registry.getScenarioManager().getCurrent();
             orderVersion = OrderVersion.createInitialVersion(current);
         }
         OrderElement orderElement = toEntityExceptCriterionRequirements(
                 orderVersion, orderElementDTO, configuration);
+
+        // FIXME Review why this validation is needed here, it breaks the
+        // subcontract service. This was introduced at commit 341145a5
+        // Validate OrderElement.code and HoursGroup.code must be unique
+        // Order.checkConstraintOrderUniqueCode(orderElement);
+        // HoursGroup.checkConstraintHoursGroupUniqueCode(orderElement);
+
         if (configuration.isCriterionRequirements()) {
             addOrCriterionRequirements(orderElement, orderElementDTO);
         }
+
         return orderElement;
     }
 
@@ -354,6 +364,7 @@ public final class OrderElementConverter {
             OrderElementDTO orderElementDTO,
             ConfigurationOrderElementConverter configuration)
             throws ValidationException {
+
         Validate.notNull(parentOrderVersion);
         OrderElement orderElement;
 
@@ -597,6 +608,16 @@ public final class OrderElementConverter {
                     update(orderElement.getOrderElement(childDTO.code),
                             childDTO, configuration);
                 } else {
+                    if (checkConstraintUniqueOrderCode(orderElementDTO)) {
+                        throw new ValidationException(
+                                _("Order element {0} : Duplicate code in DB"
+                                        + orderElementDTO.code));
+                    }
+                    if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
+                        throw new ValidationException(
+                                _("Hours Group {0} : Duplicate code in DB"
+                                        + orderElementDTO.code));
+                    }
                     ((OrderLineGroup) orderElement).add(toEntity(childDTO,
                             configuration));
                 }
@@ -657,6 +678,52 @@ public final class OrderElementConverter {
             orderElement.setDescription(orderElementDTO.description);
         }
 
+    }
+
+    /**
+     * Returns true is there's another {@link OrderElement} in DB with the same code
+     *
+     * @param orderElement
+     * @return
+     */
+    private static boolean checkConstraintUniqueOrderCode(OrderElementDTO orderElement) {
+        try {
+            OrderElement existsByCode = Registry.getOrderElementDAO()
+                    .findByCode(orderElement.code);
+            return existsByCode != null;
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if there's another {@link HoursGroup} in DB with the same code
+     *
+     * @param orderElement
+     * @return
+     */
+    private static boolean checkConstraintUniqueHoursGroupCode(OrderElementDTO orderElement) {
+        if (orderElement instanceof OrderLineDTO) {
+            return checkConstraintUniqueHoursGroupCode((OrderLineDTO) orderElement);
+        }
+        return false;
+    }
+
+    private static boolean checkConstraintUniqueHoursGroupCode(OrderLineDTO orderLine) {
+        try {
+            IHoursGroupDAO hoursGroupDAO = Registry.getHoursGroupDAO();
+            Set<HoursGroupDTO> hoursGroups = orderLine.hoursGroups;
+            for (HoursGroupDTO each: hoursGroups) {
+                HoursGroup hoursGroup = hoursGroupDAO.findByCodeAnotherTransaction(each.code);
+                if (hoursGroup != null) {
+                    return true;
+                }
+            }
+        } catch (InstanceNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public final static void update(HoursGroup hoursGroup,

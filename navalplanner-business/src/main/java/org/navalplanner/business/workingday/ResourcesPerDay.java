@@ -76,9 +76,11 @@ public class ResourcesPerDay {
         return amount(new BigDecimal(integerFormat).movePointLeft(2));
     }
 
-    public static ResourcesPerDay calculateFrom(int hoursWorking, int workableHours) {
-        return amount(new BigDecimal(hoursWorking).divide(new BigDecimal(
-                workableHours), 2, RoundingMode.HALF_UP));
+    public static ResourcesPerDay calculateFrom(EffortDuration durationWorking,
+            EffortDuration durationWorkable) {
+        return amount(new BigDecimal(durationWorking.getSeconds()).divide(
+                new BigDecimal(durationWorkable.getSeconds()), 2,
+                RoundingMode.HALF_UP));
     }
 
     public static ResourcesPerDay amount(int amount) {

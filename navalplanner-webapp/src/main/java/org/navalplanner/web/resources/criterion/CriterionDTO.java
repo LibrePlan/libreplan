@@ -26,14 +26,13 @@
 package org.navalplanner.web.resources.criterion;
 
 import java.util.ArrayList;
-import java.util.List;
-import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionType;
-
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 /**
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -65,11 +64,15 @@ public class CriterionDTO {
         this.newObject = false;
     }
 
-    public static List<CriterionDTO> asListDTO(Set<Criterion> setChildren,CriterionDTO parent){
+    public static List<CriterionDTO> asListDTO(List<Criterion> setChildren,
+            CriterionDTO parent) {
         List<CriterionDTO> listChildren = new ArrayList<CriterionDTO>();
         for(Criterion criterion : setChildren){
             CriterionDTO criterionDTO = new CriterionDTO(criterion);
-            criterionDTO.setChildren(asListDTO(criterion.getChildren(),criterionDTO));
+            criterion.getChildren();
+            List<Criterion> orderedChildren = Criterion.sortByName(criterion
+                    .getChildren());
+            criterionDTO.setChildren(asListDTO(orderedChildren, criterionDTO));
             criterionDTO.setParent(parent);
             listChildren.add(criterionDTO);
         }

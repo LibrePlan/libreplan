@@ -20,31 +20,35 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
-public interface IWorkHours {
+public interface ICalendar {
 
     /**
-     * Translates the received amount into the corresponding hours at the given
-     * date
+     * Translates the received amount into the corresponding duration at the
+     * given date. It takes into account the partial capacity of the day.
+     *
      * @param day
      * @param amount
      * @return
      */
-    public Integer toHours(LocalDate day, ResourcesPerDay amount);
+    public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount);
 
     /**
-     * Calculates the capacity at a given date. It means all the hours that
-     * could be worked without having overtime
+     * Calculates the capacity duration at a given day. It means all the time
+     * that could be worked without having overtime. It considers the
+     * {@link PartialDay} so if the day it's not complete the capacity is
+     * reduced
      * @param date
      *            the date at which the capacity is calculated
-     * @return the capacity at which the resource can work
+     * @return the capacity at which the resource can work at the day specified
      */
-    public Integer getCapacityAt(LocalDate date);
+    public EffortDuration getCapacityOn(PartialDay partialDay);
 
     public AvailabilityTimeLine getAvailability();
 
-    public boolean thereAreHoursOn(AvailabilityTimeLine availability,
-            ResourcesPerDay resourcesPerDay, int hoursToAllocate);
+    public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
+            ResourcesPerDay resourcesPerDay, EffortDuration durationToAllocate);
 }

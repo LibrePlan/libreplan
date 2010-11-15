@@ -42,6 +42,8 @@ When users are in the editing option of a resource, they can access the followin
    * Name
    * Surname(s)
    * National ID document (DNI)
+   * Limiting resource (see section)
+
 
 .. figure:: images/worker-personal-data.png
    :scale: 50
@@ -146,14 +148,14 @@ When editing machines, the system shows a series of tabs that can be used to man
 
    Assigning cost categories to machines
 
-Virtual worker groups 
+Virtual worker groups
 ================================
 
 The program enables users to create resources in the system, which are not real workers but simulated staff that enable production capacity to be increased at a specific time according to the configured settings in the calendar.
 
 Through virtual worker groups, it is possible to check how project planning would be affected by contracting and assigning staff who fulfil the defined criteria, thus facilitating the decision-making process.
 
-The tabs for creating virtual worker groups are the same as the ones to configure workers: 
+The tabs for creating virtual worker groups are the same as the ones to configure workers:
 
    * General details
    * Assigned criteria
@@ -167,3 +169,9 @@ The difference with respect to workers is that virtual worker groups have a name
 
    Virtual resources
 
+Limiting resources
+================================
+
+Limiting resources are an specific type of productive elements which just can be either not assigned or with a 100% of dedication. What it the same, they are not capable of having more than one task scheduled at the same time nor overassigned.
+
+For each limiting resource a queue is automatically created so the tasks they have scheduled can be managed in an specific manner using the assignment methods provided, creating automatic assignments between the tasks and the queues matching required criteria or moving tasks between queues.

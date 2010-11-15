@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -40,11 +39,13 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
@@ -163,6 +164,8 @@ public class FormBinder {
     };
 
     private boolean recommendedAllocation = false;
+
+    private NewAllocationSelectorCombo newAllocationSelectorCombo;
 
     private Tab workerSearchTab;
 
@@ -490,20 +493,22 @@ public class FormBinder {
         return resourcesDescriptions;
     }
 
-    public void markNoResourcesMatchedByCriterions(
+    public void markNoResourcesMatchedByCriterions(ResourceEnum resourceType,
             Collection<? extends Criterion> criterions) {
         messagesForUser
                 .showMessage(
                         Level.ERROR,
                         _(
                                 "there are no resources for required criteria: {0}. So the generic allocation can't be added",
-                        Criterion.getNames(criterions)));
+                                Criterion.getCaptionFor(resourceType,
+                                        criterions)));
     }
 
-    public void markThereisAlreadyAssignmentWith(Set<Criterion> criterions) {
+    public void markThereisAlreadyAssignmentWith(ResourceEnum resourceType,
+            Collection<? extends Criterion> criterions) {
         messagesForUser.showMessage(Level.ERROR, _(
                 "already exists an allocation for criteria {0}",
-                Criterion.getNames(criterions)));
+                        Criterion.getCaptionFor(resourceType, criterions)));
     }
 
     public void markEndDateMustBeAfterStartDate() {
@@ -555,7 +560,7 @@ public class FormBinder {
         this.recommendedAllocationCheckbox = recommendedAllocation;
         this.recommendedAllocationCheckbox
                 .setChecked(this.recommendedAllocation);
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
         recommendedCheckboxListener = new EventListener() {
 
             @Override
@@ -579,7 +584,7 @@ public class FormBinder {
         resourcesPerDayDistributorForRecommendedAllocation = ResourcesPerDay
                 .distributor(hoursDistributorForRecommendedAllocation);
         this.recommendedAllocation = true;
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
         applyDisabledRules();
         allHoursInput.addEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
@@ -619,15 +624,21 @@ public class FormBinder {
                 .removeEventListener(Events.ON_CHANGE,
                 allHoursInputChange);
         applyDisabledRules();
-        disableIfNeededWorkerSearchTab();
+        disableIfNeededWorkerSearch();
     }
 
-    private void disableIfNeededWorkerSearchTab() {
+    private void disableIfNeededWorkerSearch() {
         workerSearchTab.setDisabled(this.recommendedAllocation);
+        newAllocationSelectorCombo.setDisabled(this.recommendedAllocation);
     }
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
+    }
+
+    public void setNewAllocationSelectorCombo(
+            NewAllocationSelectorCombo newAllocationSelectorCombo) {
+        this.newAllocationSelectorCombo = newAllocationSelectorCombo;
     }
 
     private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {

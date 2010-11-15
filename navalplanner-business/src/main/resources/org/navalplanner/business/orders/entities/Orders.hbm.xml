@@ -26,7 +26,7 @@
         </set>
 
         <!-- Assess many-to-many bidireccional -->
-        <set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="all">
+        <set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="save-update">
             <key column="ORDER_ELEMENT_ID" not-null="true"/>
             <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label"/>
         </set>
@@ -161,7 +161,7 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="code" access="field" not-null="true" />
+        <property name="code" access="field" not-null="true" unique="true" />
 
         <property name="resourceType" access="field" >
             <type name="org.hibernate.type.EnumType">

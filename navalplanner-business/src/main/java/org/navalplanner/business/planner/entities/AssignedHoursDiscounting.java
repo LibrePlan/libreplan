@@ -21,6 +21,7 @@ package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 
 public class AssignedHoursDiscounting implements
         IAssignedHoursForResource {
@@ -31,8 +32,8 @@ public class AssignedHoursDiscounting implements
         this.allocation = discountFrom;
     }
 
-    @Override
-    public int getAssignedHoursAt(Resource resource, LocalDate day) {
-        return resource.getAssignedHoursDiscounting(allocation, day);
+    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
+        return resource.getAssignedDurationDiscounting(allocation, day);
     }
+
 }

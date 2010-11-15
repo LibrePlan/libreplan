@@ -48,11 +48,14 @@ public class EffortDurationPicker extends Hbox {
 
     public EffortDurationPicker() {
         hours = new Spinner();
+        hours.setCols(2);
         setMinFor(hours, 0);
         minutes = new Spinner();
-        setRangeFor(minutes, 0, 60);
+        minutes.setCols(2);
+        setRangeFor(minutes, 0, 59);
         seconds = new Spinner();
-        setRangeFor(seconds, 0, 60);
+        seconds.setCols(2);
+        setRangeFor(seconds, 0, 59);
         appendWithLabel(hours, _("Hours"));
         appendWithLabel(minutes, _("Minutes"));
         appendWithLabel(seconds, _("Seconds"));
@@ -132,6 +135,9 @@ public class EffortDurationPicker extends Hbox {
     }
 
     public void setValue(EffortDuration effortDuration) {
+        if (effortDuration == null) {
+            effortDuration = EffortDuration.zero();
+        }
         updateUIWithValuesFrom(effortDuration);
     }
 

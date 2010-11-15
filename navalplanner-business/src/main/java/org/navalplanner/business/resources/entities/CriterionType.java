@@ -28,12 +28,12 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.stereotype.Component;
-
 /**
  * Base implementation of {@link ICriterionType} <br />
 
@@ -284,8 +284,7 @@ public class CriterionType extends IntegrationEntity implements
      */
     @Override
     public boolean criterionCanBeRelatedTo(Class<? extends Resource> klass) {
-        return ResourceEnum.RESOURCE.equals(getResource())
-                || getResource().isAssignableFrom(klass);
+        return getResource().isAssignableFrom(klass);
     }
 
 
@@ -497,6 +496,28 @@ public class CriterionType extends IntegrationEntity implements
 
     public void setGenerateCode(Boolean generateCode) {
         this.generateCode = generateCode;
+    }
+
+    /**
+     * It checks there are no {@link AdvanceAssignment} any criteria of this
+     * {@link CriterionType} has been assigned to any {@link Resource}
+     * @throws ChangeTypeCriterionTypeException
+     */
+    @AssertTrue(message = "Criteria of this criterion type has been assigned to some resource.")
+    protected boolean checkConstraintChangeType() {
+        /* Check the constraint. */
+        ICriterionTypeDAO criterionTypeDAO = Registry.getCriterionTypeDAO();
+
+        if (isNewObject()) {
+            return true;
+        }
+
+        if (!criterionTypeDAO.hasDiferentTypeSaved(getId(), getResource())) {
+            return true;
+        }
+
+        return (!(criterionTypeDAO
+                .checkChildrenAssignedToAnyResource(this)));
     }
 
 }

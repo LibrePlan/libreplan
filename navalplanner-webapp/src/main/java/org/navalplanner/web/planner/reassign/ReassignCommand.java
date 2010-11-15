@@ -23,7 +23,6 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import static org.zkoss.ganttz.util.LongOperationFeedback.and;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,9 +44,10 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.LongOperationFeedback;
@@ -145,15 +145,15 @@ public class ReassignCommand implements IReassignCommand {
                 final int total = reassignations.size();
                 for (final WithAssociatedEntity each : reassignations) {
                     Task ganttTask = each.ganntTask;
-                    final Date previousBeginDate = ganttTask.getBeginDate();
-                    final long previousLength = ganttTask
-                            .getLengthMilliseconds();
+                    final GanttDate previousBeginDate = ganttTask
+                            .getBeginDate();
+                    final GanttDate previousEnd = ganttTask.getEndDate();
 
                     transactionService
                             .runOnReadOnlyTransaction(reassignmentTransaction(each));
                     diagramGraph.enforceRestrictions(each.ganntTask);
                     ganttTask.fireChangesForPreviousValues(previousBeginDate,
-                            previousLength);
+                            previousEnd);
                     updater.doUpdate(showCompleted(i, total));
                     i++;
                 }

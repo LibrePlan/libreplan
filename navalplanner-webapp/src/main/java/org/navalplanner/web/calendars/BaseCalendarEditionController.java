@@ -47,11 +47,13 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.navalplanner.web.common.components.EffortDurationPicker;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
@@ -76,6 +78,9 @@ public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
 
     private static String asString(EffortDuration duration) {
+        if (duration == null) {
+            return "";
+        }
         EnumMap<Granularity, Integer> decomposed = duration.decompose();
 
         String result = _("{0}h", decomposed.get(Granularity.HOURS));
@@ -126,25 +131,85 @@ public abstract class BaseCalendarEditionController extends
             prepareParentCombo();
         }
         prepareExceptionTypeCombo();
-        exceptionDurationPicker = addEffortDurationPickerAtDurationRow(comp);
+        exceptionDurationPicker = addEffortDurationPickerAtWorkableTimeRow(comp);
     }
 
-    private EffortDurationPicker addEffortDurationPickerAtDurationRow(
+    private EffortDurationPicker addEffortDurationPickerAtWorkableTimeRow(
             Component comp) {
-        Component container = comp.getFellow("exceptionDayDurationRow");
-        EffortDurationPicker result = new EffortDurationPicker();
-        result.setValue(EffortDuration.zero());
-        container.appendChild(result);
+        EffortDurationPicker result = ensureOnePickerOn(comp);
+        setEffortDurationPicker(getSelectedExceptionType());
         return result;
     }
 
-    private void prepareExceptionTypeCombo() {
-        Combobox exceptionTypes = (Combobox) window
-                .getFellow("exceptionTypes");
-        fillExceptionTypesComboAndMakrSelectedItem(exceptionTypes);
+    private void setEffortDurationPicker(CalendarExceptionType exceptionType) {
+        EffortDurationPicker durationPicker = getEffortDurationPicker();
+        EffortDuration effortDuration = exceptionType != null ? exceptionType
+                .getDuration() : EffortDuration.zero();
+        durationPicker.setValue(effortDuration);
     }
 
-    private void fillExceptionTypesComboAndMakrSelectedItem(
+    private EffortDurationPicker getEffortDurationPicker() {
+        Component container = self.getFellowIfAny("exceptionDayWorkableTimeRow");
+        List<EffortDurationPicker> existent = ComponentsFinder
+                .findComponentsOfType(EffortDurationPicker.class,
+                        container.getChildren());
+        return !existent.isEmpty() ? (EffortDurationPicker) existent
+                .iterator().next() : null;
+    }
+
+    private CalendarExceptionType getSelectedExceptionType() {
+        Comboitem selectedItem = exceptionTypes.getSelectedItem();
+        if (selectedItem != null) {
+            return (CalendarExceptionType) selectedItem.getValue();
+        }
+        return null;
+    }
+
+    private EffortDurationPicker ensureOnePickerOn(Component comp) {
+        Component container = comp.getFellow("exceptionDayWorkableTimeRow");
+        @SuppressWarnings("unchecked")
+        List<EffortDurationPicker> existent = ComponentsFinder
+                .findComponentsOfType(EffortDurationPicker.class,
+                        container.getChildren());
+        if (!existent.isEmpty()) {
+            return existent.get(0);
+        } else {
+            EffortDurationPicker result = new EffortDurationPicker();
+            container.appendChild(result);
+            return result;
+        }
+    }
+
+    private Combobox exceptionTypes;
+
+    private void prepareExceptionTypeCombo() {
+        exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
+        fillExceptionTypesComboAndMarkSelectedItem(exceptionTypes);
+        addSelectListener(exceptionTypes);
+    }
+
+    private void addSelectListener(final Combobox exceptionTypes) {
+        exceptionTypes.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Comboitem selectedItem = getSelectedItem((SelectEvent) event);
+                if (selectedItem != null) {
+                    setEffortDurationPicker(getValue(selectedItem));
+                }
+            }
+
+            private Comboitem getSelectedItem(SelectEvent event) {
+                return (Comboitem) event.getSelectedItems().iterator().next();
+            }
+
+            private CalendarExceptionType getValue(Comboitem item) {
+                return (CalendarExceptionType) item.getValue();
+            }
+        });
+    }
+
+    private void fillExceptionTypesComboAndMarkSelectedItem(
             Combobox exceptionTypes) {
         exceptionTypes.getChildren().clear();
         CalendarExceptionType type = baseCalendarModel
@@ -362,9 +427,7 @@ public abstract class BaseCalendarEditionController extends
         dateboxStartDate.setValue(selectedDay);
         Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
         dateboxEndDate.setValue(selectedDay);
-        exceptionDurationPicker
-                .setValue(baseCalendarModel.isExceptional() ? baseCalendarModel
-                        .getWorkableTime() : EffortDuration.zero());
+        exceptionDurationPicker.setValue(baseCalendarModel.getWorkableTime());
     }
 
     private void highlightDaysOnCalendar() {

@@ -45,20 +45,20 @@
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
     </bean>
 
-    <bean id="ordersMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="ordersMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton" />
 
-    <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>
 
-    <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="resourcesMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.ResourcesMultipleFiltersFinder" scope="singleton" />
 
-    <bean id="workerMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="limitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.LimitingResourceAllocationMultipleFiltersFinder" scope="singleton"/>
 
-    <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"
-        init-method="init" />
+    <bean id="nonLimitingResourceAllocationMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.NonLimitingResourceAllocationMultipleFiltersFinder" scope="singleton" />
+
+    <bean id="workerMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.WorkerMultipleFiltersFinder" scope="singleton"/>
+
+    <bean id="criterionMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.CriterionMultipleFiltersFinder" scope="singleton"/>
+
     <bean id="scenarioManager"
         class="org.navalplanner.web.scenarios.CurrentUserScenarioAwareManager"
         scope="singleton"/>

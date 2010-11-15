@@ -59,6 +59,12 @@
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
+            <property name="resourceType">
+              <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
+              </type>
+            </property>
+
             <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
                 <key column="RESOURCE_ALLOCATION_ID" />
                 <one-to-many class="GenericDayAssignmentsContainer"/>
@@ -81,6 +87,14 @@
         -->
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
+
+        <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
+            <property name="date" column="endDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationInLastDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
+
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="SPECIFIC_CONTAINER_ID" />
             <one-to-many class="SpecificDayAssignment"/>
@@ -101,6 +115,14 @@
         -->
         <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
         <many-to-one name="scenario" />
+
+        <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
+            <property name="date" column="endDate"
+                type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="effortDuration" column="durationInLastDay"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        </component>
+
         <set name="dayAssignments" cascade="all-delete-orphan">
             <key column="GENERIC_CONTAINER_ID" />
             <one-to-many class="GenericDayAssignment"/>

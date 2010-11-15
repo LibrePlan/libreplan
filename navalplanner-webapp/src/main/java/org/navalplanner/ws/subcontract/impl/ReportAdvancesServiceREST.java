@@ -32,6 +32,7 @@ import javax.ws.rs.Produces;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
@@ -41,7 +42,11 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
+import org.navalplanner.business.scenarios.entities.OrderVersion;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.ws.common.api.AdvanceMeasurementDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsDTO;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
@@ -119,6 +124,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
                 DirectAdvanceAssignment advanceAssignmentSubcontractor = orderElement
                         .getDirectAdvanceAssignmentSubcontractor();
+
                 if (advanceAssignmentSubcontractor == null) {
                     DirectAdvanceAssignment reportGlobal = orderElement
                             .getReportGlobalAdvanceAssignment();
@@ -160,6 +166,24 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                     }
                 }
 
+                // set the advance assingment subcontractor like spread
+                AdvanceAssignment spreadAdvance = orderElement
+                        .getReportGlobalAdvanceAssignment();
+                if (spreadAdvance != null
+                        && !spreadAdvance
+                                .equals(advanceAssignmentSubcontractor)) {
+                    spreadAdvance.setReportGlobalAdvance(false);
+                    advanceAssignmentSubcontractor.setReportGlobalAdvance(true);
+                }
+                // update the advance percentage in its related task
+                Scenario scenarioMaster = PredefinedScenarios.MASTER
+                        .getScenario();
+                Order order = orderElementDAO
+                        .loadOrderAvoidingProxyFor(orderElement);
+                OrderVersion orderVersion = order.getScenarios().get(
+                        scenarioMaster);
+                updateAdvancePercentage(orderVersion, orderElement);
+
                 orderElement.validate();
                 orderElementDAO.save(orderElement);
             } catch (ValidationException e) {
@@ -183,4 +207,15 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 instanceConstraintViolationsList);
     }
 
+    private void updateAdvancePercentage(OrderVersion orderVersion,
+            OrderElement orderElement) {
+        orderElement.useSchedulingDataFor(orderVersion);
+        orderElement.updateAdvancePercentageTaskElement();
+        OrderElement parent = orderElement.getParent();
+        while (parent != null) {
+            parent.useSchedulingDataFor(orderVersion);
+            parent.updateAdvancePercentageTaskElement();
+            parent = parent.getParent();
+        }
+    }
 }

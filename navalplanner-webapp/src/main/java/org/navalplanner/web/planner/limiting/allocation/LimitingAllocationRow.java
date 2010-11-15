@@ -19,8 +19,6 @@
  */
 package org.navalplanner.web.planner.limiting.allocation;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,6 +33,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 
 /**
@@ -100,11 +99,12 @@ public class LimitingAllocationRow {
         }
     }
 
-    public static LimitingAllocationRow create(Set<Criterion> criteria,
+    public static LimitingAllocationRow create(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources, Task task, int priority) {
         LimitingAllocationRow result = new LimitingAllocationRow(
-                GenericResourceAllocation.createForLimiting(task, criteria), task,
-                priority);
+                GenericResourceAllocation.create(task, resourceType, criteria),
+                task, priority);
         result.setResources(resources);
         return result;
     }
@@ -127,7 +127,7 @@ public class LimitingAllocationRow {
 
     public AllocationType getAllocationType() {
         return (resourceAllocation instanceof SpecificResourceAllocation) ? AllocationType.SPECIFIC
-                : AllocationType.GENERIC;
+                : AllocationType.GENERIC_WORKERS;
     }
 
     public String getAllocationTypeStr() {
@@ -136,9 +136,9 @@ public class LimitingAllocationRow {
 
     public String getAllocation() {
         final AllocationType type = getAllocationType();
-        if (AllocationType.GENERIC.equals(type)) {
+        if (AllocationType.GENERIC_WORKERS.equals(type)) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            return Criterion.getNames(generic.getCriterions());
+            return Criterion.getCaptionForCriterionsFrom(generic);
         }
         if (AllocationType.SPECIFIC.equals(type)) {
             return formatResources(resourceAllocation.getAssociatedResources());

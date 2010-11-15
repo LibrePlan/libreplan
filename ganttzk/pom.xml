@@ -55,6 +55,11 @@
             <groupId>org.xnap.commons</groupId>
             <artifactId>gettext-commons</artifactId>
         </dependency>
+        <!-- Commons Math-->
+        <dependency>
+            <groupId>commons-math</groupId>
+            <artifactId>commons-math</artifactId>
+        </dependency>
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>

@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -107,6 +108,40 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
             return true;
         }
         return uniqueByInternalName(criterionType) != null;
+    }
+
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean hasDiferentTypeSaved(Long id, ResourceEnum resource) {
+        try {
+            CriterionType type = find(id);
+            return (!(type.getResource().equals(resource)));
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean checkChildrenAssignedToAnyResource(
+            CriterionType criterionType) {
+        Validate.notNull(criterionType);
+
+        String strQuery = "SELECT COUNT(*) "
+                + "FROM Criterion criterion, CriterionSatisfaction satisfaction "
+                + "LEFT OUTER JOIN satisfaction.criterion sat_crit "
+                + "WHERE sat_crit.id = criterion.id "
+                + "AND criterion.type = :criterionType ";
+
+        Query query = getSession().createQuery(strQuery);
+
+        if (criterionType != null) {
+            query.setParameter("criterionType", criterionType);
+        }
+
+        if ((Long) query.uniqueResult() == 0) {
+            return false;
+        }
+        return true;
     }
 
     @Override

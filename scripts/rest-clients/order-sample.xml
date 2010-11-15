@@ -16,14 +16,14 @@
           </order-line>
           <order-line code="ORDER-1-OE-1-2" name="Order element 1.2">
             <hours-groups>
-              <hours-group code="HG-1" working-hours="2000" resource-type="WORKER" />
+              <hours-group code="HG-2" working-hours="2000" resource-type="WORKER" />
             </hours-groups>
           </order-line>
         </children>
       </order-line-group>
       <order-line code="ORDER-1-OE-2" name="Order element 2">
         <hours-groups>
-          <hours-group code="HG-1" working-hours="1500" resource-type="WORKER" />
+          <hours-group code="HG-3" working-hours="1500" resource-type="WORKER" />
         </hours-groups>
       </order-line>
     </children>

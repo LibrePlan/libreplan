@@ -21,10 +21,8 @@
 package org.navalplanner.web.planner.company;
 
 import java.util.Collection;
-import java.util.Date;
-import java.util.List;
 
-import org.navalplanner.business.orders.entities.Order;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -52,11 +50,9 @@ public interface ICompanyPlanningModel {
 
     public void setTabsController(MultipleTabsPlannerController tabsController);
 
-    List<Order> getOrdersToShow();
+    LocalDate getFilterStartDate();
 
-    Date getFilterStartDate();
-
-    Date getFilterFinishDate();
+    LocalDate getFilterFinishDate();
 
     void goToCreateOtherOrderFromTemplate(OrderTemplate template);
 }

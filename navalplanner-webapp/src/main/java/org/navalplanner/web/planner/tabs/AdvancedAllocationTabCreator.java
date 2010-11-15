@@ -48,14 +48,15 @@ import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
-import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
+import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
@@ -124,12 +125,12 @@ public class AdvancedAllocationTabCreator {
 
                 @Override
                 public LocalDate getStart() {
-                    return aggregate.getStart();
+                    return aggregate.getStart().getDate();
                 }
 
                 @Override
                 public LocalDate getEnd() {
-                    return aggregate.getEnd();
+                    return aggregate.getEnd().asExclusiveEnd();
                 }
 
                 @Override
@@ -181,8 +182,9 @@ public class AdvancedAllocationTabCreator {
         }
 
         private void applyChanges() {
-            taskElementDAO.save(task);
+            taskElementDAO.reattach(task);
             allocationResult.applyTo(currentScenario, task);
+            taskElementDAO.save(task);
         }
     }
 

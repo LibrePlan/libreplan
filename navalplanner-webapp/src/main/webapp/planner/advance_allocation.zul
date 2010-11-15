@@ -27,7 +27,7 @@
 ]]>
 </zscript>
 
-<n:div>
+<n:div class="advanced-allocation-layout">
 <div id="noDataLayout">
     <n:h4 class="message_WARNING">${i18n:_('No Allocations have been done')}</n:h4>
 </div>

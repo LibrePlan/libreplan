@@ -116,7 +116,7 @@
         </panel>
 
         <!-- Assign Criterion -->
-        <panel title="${i18n:_('Filter by criterions')}" border="normal"
+        <panel title="${i18n:_('Filter by criteria')}" border="normal"
             style="overflow:auto">
             <panelchildren>
                 <vbox>

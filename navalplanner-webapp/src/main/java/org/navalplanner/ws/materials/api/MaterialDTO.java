@@ -37,10 +37,10 @@ public class MaterialDTO extends IntegrationEntityDTO {
     @XmlAttribute
     public String description;
 
-    @XmlAttribute
+    @XmlAttribute(name = "price")
     public BigDecimal defaultPrice;
 
-    @XmlAttribute
+    @XmlAttribute(name = "unit-type")
     public String unitType;
 
     @XmlAttribute

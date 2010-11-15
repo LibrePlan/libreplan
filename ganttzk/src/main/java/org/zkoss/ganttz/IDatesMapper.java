@@ -20,19 +20,20 @@
 
 package org.zkoss.ganttz;
 
-import java.util.Date;
+import org.joda.time.LocalDate;
+import org.joda.time.ReadableDuration;
 
 public interface IDatesMapper {
 
     final long MILISECONDS_PER_HOUR = 3600000;
 
-    int toPixels(Date date);
+    int toPixels(LocalDate date);
 
-    Date toDate(int pixel);
+    LocalDate toDate(int pixel);
 
-    int toPixels(long milliseconds);
+    int toPixels(ReadableDuration duration);
 
-    long toMilliseconds(int pixels);
+    ReadableDuration toDuration(int pixels);
 
     int toPixelsAbsolute(long milliseconds);
 

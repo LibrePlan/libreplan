@@ -18,6 +18,18 @@
     </component>
 
     <component>
+        <component-name>l10n</component-name>
+        <component-class>org.navalplanner.web.common.components.L10n</component-class>
+        <extends>label</extends>
+    </component>
+
+    <component>
+        <component-name>effortDurationPicker</component-name>
+        <component-class>org.navalplanner.web.common.components.EffortDurationPicker</component-class>
+        <extends>hbox</extends>
+    </component>
+
+    <component>
         <component-name>calendarhighlighteddays</component-name>
         <component-class>org.navalplanner.web.common.components.CalendarHighlightedDays</component-class>
         <macro-uri>/common/components/calendarhighlighteddays.zul</macro-uri>

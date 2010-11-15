@@ -20,11 +20,15 @@
 
 package org.navalplanner.business.orders.daos;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
-import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -40,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class HoursGroupDAO extends GenericDAOHibernate<HoursGroup, Long>
+public class HoursGroupDAO extends IntegrationEntityDAO<HoursGroup>
         implements IHoursGroupDAO {
 
     @Override
@@ -86,6 +90,39 @@ public class HoursGroupDAO extends GenericDAOHibernate<HoursGroup, Long>
         } else {
             return result;
         }
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public HoursGroup findRepeatedHoursGroupCodeInDB(List<HoursGroup> hoursGroupList) {
+        final Map<String, HoursGroup> hoursGroups = createMapByCode(hoursGroupList);
+        final Map<String, HoursGroup> hoursGroupsInDB = createMapByCode(getAll());
+
+        for (String code : hoursGroups.keySet()) {
+            HoursGroup hoursGroup = hoursGroups.get(code);
+            HoursGroup hoursGroupInDB = hoursGroupsInDB.get(code);
+
+            // There's an element in the DB with the same code and it's a
+            // different element
+            if (hoursGroupInDB != null
+                    && !hoursGroupInDB.getId().equals(hoursGroup.getId())) {
+                return hoursGroup;
+            }
+        }
+        return null;
+    }
+
+    private List<HoursGroup> getAll() {
+        return list(HoursGroup.class);
+    }
+
+    private Map<String, HoursGroup> createMapByCode(List<HoursGroup> hoursGroups) {
+        Map<String, HoursGroup> result = new HashMap<String, HoursGroup>();
+        for (HoursGroup each: hoursGroups) {
+            final String code = each.getCode();
+            result.put(code, each);
+        }
+        return result;
     }
 
 }

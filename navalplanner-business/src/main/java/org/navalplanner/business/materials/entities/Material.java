@@ -41,7 +41,7 @@ public class Material extends IntegrationEntity implements Comparable {
 
     private UnitType unitType;
 
-    private Boolean disabled;
+    private Boolean disabled = Boolean.FALSE;
 
     private MaterialCategory category = null;
 

@@ -22,7 +22,7 @@
     <newdatasortablegrid id="listing" model="@{controller.companies}" mold="paging"
         pageSize="10">
         <columns sizable="true">
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(name)" />
+            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" />
             <newdatasortablecolumn label="${i18n:_('NIF')}" />
             <newdatasortablecolumn label="${i18n:_('Client')}" />
             <newdatasortablecolumn label="${i18n:_('Subcontractor')}" />

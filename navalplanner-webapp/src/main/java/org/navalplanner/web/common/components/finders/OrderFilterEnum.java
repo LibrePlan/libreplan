@@ -27,7 +27,7 @@ import org.navalplanner.business.i18n.I18nHelper;
 
 public enum OrderFilterEnum implements IFilterEnum {
 
-    None("..."), Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(
+    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(
             _("Customer")), State(_("State")), Code(_("Code")), CustomerReference(
             _("Customer Reference"));
 

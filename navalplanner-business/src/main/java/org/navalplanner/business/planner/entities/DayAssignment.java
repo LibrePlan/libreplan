@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,10 +82,11 @@ public abstract class DayAssignment extends BaseEntity {
         return start;
     }
 
-    public static int sum(Collection<? extends DayAssignment> assignments) {
-        int result = 0;
-        for (DayAssignment dayAssignment : assignments) {
-            result += dayAssignment.getHours();
+    public static EffortDuration sum(
+            Collection<? extends DayAssignment> assignments) {
+        EffortDuration result = zero();
+        for (DayAssignment each : assignments) {
+            result = result.plus(each.getDuration());
         }
         return result;
     }
@@ -173,17 +176,27 @@ public abstract class DayAssignment extends BaseEntity {
 
     }
 
-    protected DayAssignment(LocalDate day, int hours, Resource resource) {
+    protected DayAssignment(LocalDate day, EffortDuration duration,
+            Resource resource) {
         Validate.notNull(day);
-        Validate.isTrue(hours >= 0);
+        Validate.notNull(duration);
         Validate.notNull(resource);
         this.day = day;
-        this.duration = EffortDuration.hours(hours);
+        this.duration = duration;
         this.resource = resource;
     }
 
+    /**
+     * @deprecated Use {@link #getDuration()}
+     */
+    @Deprecated
     public int getHours() {
         return duration.getHours();
+    }
+
+    @NotNull
+    public EffortDuration getDuration() {
+        return duration;
     }
 
     public Resource getResource() {
@@ -249,6 +262,6 @@ public abstract class DayAssignment extends BaseEntity {
      */
     public abstract Scenario getScenario();
 
-    public abstract DayAssignment withHours(int newHours);
+    public abstract DayAssignment withDuration(EffortDuration newDuration);
 
 }

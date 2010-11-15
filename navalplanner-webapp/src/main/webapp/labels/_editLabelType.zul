@@ -29,8 +29,8 @@
         <tabpanels>
             <tabpanel>
                 <!--  Name labeltype -->
-                <vbox style="margin-bottom: 5px">
-                    <grid>
+                <vbox style="margin-bottom: 5px" width="100%" >
+                    <grid fixedLayout="true">
                         <columns>
                             <column width="200px" />
                             <column />
@@ -70,7 +70,7 @@
                             model="@{controller.labels}" fixedLayout="true">
                             <columns sizable="true">
                                 <column label="${i18n:_('Name')}" width="400px"
-                                    sort="auto(name)" sortDirection="ascending" />
+                                    sort="auto(lower(name))" sortDirection="ascending" />
                                 <column label="${i18n:_('Code')}" width="400px" />
                                 <column label="${i18n:_('Operations')}" width="100px" />
                             </columns>

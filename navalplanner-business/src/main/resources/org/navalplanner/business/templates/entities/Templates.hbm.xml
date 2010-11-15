@@ -41,7 +41,7 @@
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignmentTemplate" />
         </set>
 
-        <set name="labels" table="ORDER_ELEMENT_TEMPLATE_LABEL">
+        <set name="labels" table="ORDER_ELEMENT_TEMPLATE_LABEL" cascade="save-update">
             <key column="ORDER_ELEMENT_TEMPLATE_ID" not-null="true" />
             <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label"/>
         </set>

@@ -84,7 +84,6 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
     static {
-        applicableResources.add(ResourceEnum.RESOURCE);
         applicableResources.add(ResourceEnum.WORKER);
     }
 

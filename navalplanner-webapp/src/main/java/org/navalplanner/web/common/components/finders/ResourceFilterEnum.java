@@ -25,7 +25,7 @@ package org.navalplanner.web.common.components.finders;
 
 public enum ResourceFilterEnum implements IFilterEnum {
 
-    None("..."), Criterion(_("Criterion")), CostCategory(_("Cost category"));
+    Criterion(_("Criterion")), CostCategory(_("Cost category"));
 
     /**
      * Forces to mark the string as needing translation

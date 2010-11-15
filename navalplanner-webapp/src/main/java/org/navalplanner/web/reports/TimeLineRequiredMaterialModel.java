@@ -44,6 +44,7 @@ import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.reports.dtos.TimeLineRequiredMaterialDTO;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -106,9 +107,6 @@ public class TimeLineRequiredMaterialModel implements
 
     private void loadAllOrders() {
         allOrders = orderDAO.getOrdersByScenario(scenarioManager.getCurrent());
-        for (Order each : allOrders) {
-            initializeOrderElements(each.getAllChildren());
-        }
     }
 
     @Override
@@ -145,11 +143,24 @@ public class TimeLineRequiredMaterialModel implements
         return selectedOrders;
     }
 
+    private void reattachmentOrder(Order order) {
+        orderDAO.reattachUnmodifiedEntity(order);
+        initializeOrderElements(order.getAllOrderElements());
+    }
+
     @Override
     @Transactional(readOnly = true)
     public JRDataSource getTimeLineRequiredMaterial(Date startingDate,
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
+        for (Order each : listOrders) {
+            reattachmentOrder(each);
+        }
+        Scenario currentScenario = scenarioManager.getCurrent();
+        for (Order each : listOrders) {
+            each.useSchedulingDataFor(currentScenario);
+        }
+
         List<TimeLineRequiredMaterialDTO> result = filterConsult(startingDate,
                 endingDate, status, listOrders, categories, materials);
 

@@ -9,6 +9,8 @@
   <unit-type measure="m3" code="000-007" />
   <unit-type measure="tn" code="000-008" />
 
+  <unit-type measure="box" code="10" />
+
 <!-- code repeated -->
   <unit-type measure="m1" code="000-001" />
 <!-- without code  -->

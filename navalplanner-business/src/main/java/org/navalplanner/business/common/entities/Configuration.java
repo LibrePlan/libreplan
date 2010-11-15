@@ -41,19 +41,19 @@ public class Configuration extends BaseEntity {
 
     private String companyCode;
 
-    private Boolean generateCodeForCriterion = false;
+    private Boolean generateCodeForCriterion = true;
 
-    private Boolean generateCodeForLabel = false;
+    private Boolean generateCodeForLabel = true;
 
-    private Boolean generateCodeForWorkReport = false;
+    private Boolean generateCodeForWorkReport = true;
 
-    private Boolean generateCodeForResources = false;
+    private Boolean generateCodeForResources = true;
 
-    private Boolean generateCodeForTypesOfWorkHours = false;
+    private Boolean generateCodeForTypesOfWorkHours = true;
 
-    private Boolean generateCodeForMaterialCategories = false;
+    private Boolean generateCodeForMaterialCategories = true;
 
-    private Boolean generateCodeForUnitTypes = false;
+    private Boolean generateCodeForUnitTypes = true;
 
     private Boolean expandCompanyPlanningViewCharts = false;
 

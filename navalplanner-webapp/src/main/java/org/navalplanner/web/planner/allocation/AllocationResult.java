@@ -35,6 +35,7 @@ import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -86,6 +87,8 @@ public class AllocationResult {
 
     private final List<Task.ModifiedAllocation> modified;
 
+    private final IntraDayDate end;
+
     private AllocationResult(
             Task task,
             CalculatedValue calculatedValue,
@@ -100,6 +103,7 @@ public class AllocationResult {
         this.aggregate = aggregate;
         this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
                 : aggregate.getDaysDuration();
+        this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
         this.newAllocations = newAllocations;
         this.modified = modified;
     }
@@ -186,7 +190,15 @@ public class AllocationResult {
     }
 
     public LocalDate getStart() {
-        return new LocalDate(task.getStartDate().getTime());
+        return task.getStartAsLocalDate();
+    }
+
+    public IntraDayDate getIntraDayStart() {
+        return task.getIntraDayStartDate();
+    }
+
+    public IntraDayDate getIntraDayEnd() {
+        return end;
     }
 
 }

@@ -27,43 +27,48 @@ import static org.easymock.EasyMock.replay;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.navalplanner.business.workingday.IntraDayDate.PartialDay.wholeDay;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
-import org.navalplanner.business.calendars.entities.IWorkHours;
+import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 public class CombinedWorkHoursTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void cannotAcceptOnlyNullElements() {
-        IWorkHours[] nullWorkHours = null;
+        ICalendar[] nullWorkHours = null;
         CombinedWorkHours.minOf(nullWorkHours);
     }
 
     public void someElementsCanBeNull() {
         CombinedWorkHours minOf = CombinedWorkHours.minOf(null,
-                createNiceMock(IWorkHours.class));
+                createNiceMock(ICalendar.class));
         assertNotNull(minOf);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void mustHaveatLeastOne() {
-        IWorkHours[] emptyArray = {};
+        ICalendar[] emptyArray = {};
         CombinedWorkHours.minOf(emptyArray);
     }
 
     @Test
     public void returnsTheMinOfCalendars() {
-        IWorkHours minOf = CombinedWorkHours
+        ICalendar minOf = CombinedWorkHours
                 .minOf(hours(4), hours(2), hours(7));
-        Integer hours = minOf.getCapacityAt(new LocalDate(2000, 3, 3));
-        assertThat(hours, equalTo(2));
+        EffortDuration duration = minOf.getCapacityOn(wholeDay(new LocalDate(
+                2000, 3, 3)));
+        assertThat(duration, equalTo(EffortDuration.hours(2)));
     }
 
-    private IWorkHours hours(int hours) {
-        IWorkHours result = createNiceMock(IWorkHours.class);
-        expect(result.getCapacityAt(isA(LocalDate.class))).andReturn(hours);
+    private ICalendar hours(int hours) {
+        ICalendar result = createNiceMock(ICalendar.class);
+        expect(result.getCapacityOn(isA(PartialDay.class))).andReturn(
+                EffortDuration.hours(hours));
         replay(result);
         return result;
     }

@@ -28,6 +28,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -69,7 +70,11 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
     public Order loadOrderAvoidingProxyFor(OrderElement orderElement);
 
     /**
-     * Returns the number of assigned hours for an {@link OrderElement}
+     * Returns the number of assigned hours for an {@link OrderElement}.
+     *
+     * It is recommended to use {@link OrderElement}.getSumChargedHours().
+     * getTotalChargedHours() instead, because getAssignedHours calculates
+     * that number iterating on the element's children.
      *
      * @param orderElement
      *            must be attached
@@ -77,6 +82,18 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      */
     int getAssignedHours(OrderElement orderElement);
 
+    /**
+     * Returns the number of directly assigned hours for an {@link OrderElement}.
+     * It means that the hours assigned to its children aren't included.
+     *
+     * It is recommended to use {@link OrderElement}.getSumChargedHours().
+     * getDirectChargedHours() instead, because getAssignedHours calculates
+     * that number iterating on the element's WorkReporLines.
+     *
+     * @param orderElement
+     *            must be attached
+     * @return The direct number of hours
+     */
     int getAssignedDirectHours(OrderElement orderElement);
 
     /**
@@ -120,5 +137,22 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
 
     void updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
             Set<WorkReportLine> workReportLineSet) throws InstanceNotFoundException;
+
+    /**
+     * Returns codes in DB searching in all order elements but excluding orderElements
+     *
+     * @param orderElements
+     * @return
+     */
+    Set<String> getAllCodesExcluding(List<OrderElement> orderElements);
+
+    /**
+     * Checks if there's another {@link OrderElement} in DB which code is the same as
+     * some of the ones in order (and its children)
+     *
+     * @param order
+     * @return
+     */
+    OrderElement findRepeatedOrderCodeInDB(OrderElement order);
 
 }

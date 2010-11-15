@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.planner.chart;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
@@ -41,10 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkforge.timeplot.data.PlotDataSource;
@@ -64,71 +66,48 @@ import org.zkoss.zk.ui.Executions;
  */
 public abstract class ChartFiller implements IChartFiller {
 
-    protected abstract class HoursByDayCalculator<T> {
-        public SortedMap<LocalDate, BigDecimal> calculate(
+    protected abstract class EffortByDayCalculator<T> {
+        public SortedMap<LocalDate, EffortDuration> calculate(
                 Collection<? extends T> elements) {
-            SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
+            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
             if (elements.isEmpty()) {
                 return result;
             }
             for (T element : elements) {
                 if (included(element)) {
-                    int hours = getHoursFor(element);
+                    EffortDuration duration = getDurationFor(element);
                     LocalDate day = getDayFor(element);
-                    if (!result.containsKey(day)) {
-                        result.put(day, BigDecimal.ZERO);
-                    }
-                    result.put(day, result.get(day).add(new BigDecimal(hours)));
+                    EffortDuration previous = result.get(day);
+                    previous = previous == null ? zero() : previous;
+                    result.put(day, previous.plus(duration));
                 }
             }
-            return convertAsNeededByZoom(result);
+            return groupAsNeededByZoom(result);
         }
 
         protected abstract LocalDate getDayFor(T element);
 
-        protected abstract int getHoursFor(T element);
+        protected abstract EffortDuration getDurationFor(T element);
 
         protected boolean included(T each) {
             return true;
         }
     }
 
-    protected class DefaultDayAssignmentCalculator extends
-            HoursByDayCalculator<DayAssignment> {
-        public DefaultDayAssignmentCalculator() {
-        }
-
-        @Override
-        protected LocalDate getDayFor(DayAssignment element) {
-            return element.getDay();
-        }
-
-        @Override
-        protected int getHoursFor(DayAssignment element) {
-            return element.getHours();
-        }
-    }
-
-    protected final int sumHoursForDay(
-            Collection<? extends Resource> resources,
-            LocalDate day) {
-        int sum = 0;
+    protected static EffortDuration sumCalendarCapacitiesForDay(
+            Collection<? extends Resource> resources, LocalDate day) {
+        PartialDay wholeDay = PartialDay.wholeDay(day);
+        EffortDuration sum = zero();
         for (Resource resource : resources) {
-            sum += hoursFor(resource, day);
+            sum = sum.plus(calendarCapacityFor(resource,
+                    wholeDay));
         }
         return sum;
     }
 
-    private int hoursFor(Resource resource, LocalDate day) {
-        int result = 0;
-        ResourceCalendar calendar = resource.getCalendar();
-        if (calendar != null) {
-            result += calendar.getCapacityAt(day);
-        } else {
-            result += SameWorkHoursEveryDay.getDefaultWorkingDay()
-                    .getCapacityAt(day);
-        }
-        return result;
+    protected static EffortDuration calendarCapacityFor(Resource resource,
+            PartialDay day) {
+        return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 
     protected abstract class GraphicSpecificationCreator implements
@@ -138,8 +117,8 @@ public abstract class ChartFiller implements IChartFiller {
         private final SortedMap<LocalDate, BigDecimal> map;
         private final LocalDate start;
 
-        protected GraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        protected GraphicSpecificationCreator(LocalDate finish,
+                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
             this.finish = new LocalDate(finish);
             this.map = map;
             this.start = new LocalDate(start);
@@ -253,8 +232,8 @@ public abstract class ChartFiller implements IChartFiller {
     protected class DefaultGraphicSpecificationCreator extends
             GraphicSpecificationCreator {
 
-        private DefaultGraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        private DefaultGraphicSpecificationCreator(LocalDate finish,
+                SortedMap<LocalDate, BigDecimal> map, LocalDate start) {
             super(finish, map, start);
         }
 
@@ -272,8 +251,9 @@ public abstract class ChartFiller implements IChartFiller {
     protected class JustDaysWithInformationGraphicSpecificationCreator extends
             GraphicSpecificationCreator {
 
-        public JustDaysWithInformationGraphicSpecificationCreator(Date finish,
-                SortedMap<LocalDate, BigDecimal> map, Date start) {
+        public JustDaysWithInformationGraphicSpecificationCreator(
+                LocalDate finish, SortedMap<LocalDate, BigDecimal> map,
+                LocalDate start) {
             super(finish, map, start);
         }
 
@@ -303,35 +283,6 @@ public abstract class ChartFiller implements IChartFiller {
     public abstract void fillChart(Timeplot chart, Interval interval,
             Integer size);
 
-    protected String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final Date start, final Date finish) {
-        GraphicSpecificationCreator graphicSpecificationCreator = new DefaultGraphicSpecificationCreator(
-                finish, mapDayAssignments, start);
-        return getServletUri(mapDayAssignments, start, finish,
-                graphicSpecificationCreator);
-    }
-
-    protected String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final Date start, final Date finish,
-            final GraphicSpecificationCreator graphicSpecificationCreator) {
-        if (mapDayAssignments.isEmpty()) {
-            return "";
-        }
-
-        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
-                .values()));
-        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
-                .values()));
-
-        HttpServletRequest request = (HttpServletRequest) Executions
-                .getCurrent().getNativeRequest();
-        String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator, false);
-        return uri;
-    }
-
     private void setMinimumValueForChartIfLess(BigDecimal min) {
         if (minimumValueForChart.compareTo(min) > 0) {
             minimumValueForChart = min;
@@ -344,7 +295,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    private LocalDate getThursdayOfThisWeek(LocalDate date) {
+    private static LocalDate getThursdayOfThisWeek(LocalDate date) {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
@@ -387,17 +338,42 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    protected SortedMap<LocalDate, BigDecimal> convertAsNeededByZoom(
-            SortedMap<LocalDate, BigDecimal> map) {
+    protected SortedMap<LocalDate, EffortDuration> groupAsNeededByZoom(
+            SortedMap<LocalDate, EffortDuration> map) {
         if (isZoomByDay()) {
             return map;
-        } else {
-            return groupByWeek(map);
         }
+        return groupByWeekDurations(map);
     }
 
-    @Override
-    public TimeGeometry getTimeGeometry(Interval interval) {
+    protected SortedMap<LocalDate, EffortDuration> groupByWeekDurations(
+            SortedMap<LocalDate, EffortDuration> map) {
+        return average(accumulatePerWeek(map));
+    }
+
+    private static SortedMap<LocalDate, EffortDuration> accumulatePerWeek(
+            SortedMap<LocalDate, EffortDuration> map) {
+        SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+        for (Entry<LocalDate, EffortDuration> each : map.entrySet()) {
+            LocalDate centerOfWeek = getThursdayOfThisWeek(each.getKey());
+            EffortDuration accumulated = result.get(centerOfWeek);
+            accumulated = accumulated == null ? zero() : accumulated;
+            result.put(centerOfWeek, accumulated.plus(each.getValue()));
+        }
+        return result;
+    }
+
+    private static SortedMap<LocalDate, EffortDuration> average(
+            SortedMap<LocalDate, EffortDuration> accumulatedPerWeek) {
+        SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
+        for (Entry<LocalDate, EffortDuration> each : accumulatedPerWeek
+                .entrySet()) {
+            result.put(each.getKey(), each.getValue().divideBy(7));
+        }
+        return result;
+    }
+
+    protected TimeGeometry getTimeGeometry(Interval interval) {
         LocalDate start = new LocalDate(interval.getStart());
         LocalDate finish = new LocalDate(interval.getFinish());
 
@@ -417,8 +393,7 @@ public abstract class ChartFiller implements IChartFiller {
         return timeGeometry;
     }
 
-    @Override
-    public ValueGeometry getValueGeometry() {
+    protected ValueGeometry getValueGeometry() {
         DefaultValueGeometry valueGeometry = new DefaultValueGeometry();
         valueGeometry.setMin(getMinimumValueForChart().intValue());
         valueGeometry.setMax(getMaximumValueForChart().intValue());
@@ -428,36 +403,29 @@ public abstract class ChartFiller implements IChartFiller {
         return valueGeometry;
     }
 
-    @Override
-    public SortedMap<LocalDate, Map<Resource, Integer>> groupDayAssignmentsByDayAndResource(
+    protected SortedMap<LocalDate, Map<Resource, EffortDuration>> groupDurationsByDayAndResource(
             List<DayAssignment> dayAssignments) {
-        SortedMap<LocalDate, Map<Resource, Integer>> map = new TreeMap<LocalDate, Map<Resource, Integer>>();
+        SortedMap<LocalDate, Map<Resource, EffortDuration>> map = new TreeMap<LocalDate, Map<Resource, EffortDuration>>();
 
         for (DayAssignment dayAssignment : dayAssignments) {
-            LocalDate day = dayAssignment.getDay();
+            final LocalDate day = dayAssignment.getDay();
+            final EffortDuration dayAssignmentDuration = dayAssignment
+                    .getDuration();
+            Resource resource = dayAssignment.getResource();
             if (map.get(day) == null) {
-                HashMap<Resource, Integer> resourcesMap = new HashMap<Resource, Integer>();
-                resourcesMap.put(dayAssignment.getResource(), dayAssignment
-                        .getHours());
-                map.put(day, resourcesMap);
-            } else {
-                if (map.get(day).get(dayAssignment.getResource()) == null) {
-                    map.get(day).put(dayAssignment.getResource(),
-                            dayAssignment.getHours());
-                } else {
-                    Integer hours = map.get(day).get(
-                            dayAssignment.getResource());
-                    hours += dayAssignment.getHours();
-                    map.get(day).put(dayAssignment.getResource(), hours);
-                }
+                map.put(day, new HashMap<Resource, EffortDuration>());
             }
+            Map<Resource, EffortDuration> forDay = map.get(day);
+            EffortDuration previousDuration = forDay.get(resource);
+            previousDuration = previousDuration != null ? previousDuration
+                    : EffortDuration.zero();
+            forDay.put(dayAssignment.getResource(),
+                    previousDuration.plus(dayAssignmentDuration));
         }
-
         return map;
     }
 
-    @Override
-    public void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
+    protected void addCost(SortedMap<LocalDate, BigDecimal> currentCost,
             SortedMap<LocalDate, BigDecimal> additionalCost) {
         for (LocalDate day : additionalCost.keySet()) {
             if (!currentCost.containsKey(day)) {
@@ -468,8 +436,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    @Override
-    public SortedMap<LocalDate, BigDecimal> accumulateResult(
+    protected SortedMap<LocalDate, BigDecimal> accumulateResult(
             SortedMap<LocalDate, BigDecimal> map) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
         if (map.isEmpty()) {
@@ -486,8 +453,7 @@ public abstract class ChartFiller implements IChartFiller {
         return result;
     }
 
-    @Override
-    public SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
+    protected SortedMap<LocalDate, BigDecimal> convertToBigDecimal(
             SortedMap<LocalDate, Integer> map) {
         SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
@@ -548,27 +514,77 @@ public abstract class ChartFiller implements IChartFiller {
         }
     }
 
-    @Override
-    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+    protected Plotinfo createPlotinfoFromDurations(SortedMap<LocalDate, EffortDuration> map,
+            Interval interval) {
+        return createPlotinfo(toHoursDecimal(map), interval);
+    }
+
+    public static <K> SortedMap<K, BigDecimal> toHoursDecimal(
+            Map<K, EffortDuration> map) {
+        SortedMap<K, BigDecimal> result = new TreeMap<K, BigDecimal>();
+        for (Entry<K, EffortDuration> each : map.entrySet()) {
+            result.put(each.getKey(), each.getValue()
+                    .toHoursAsDecimalWithScale(2));
+        }
+        return result;
+    }
+
+    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval) {
         return createPlotinfo(map, interval, false);
     }
 
-    @Override
-    public Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
+    protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, boolean justDaysWithInformation) {
-        String uri;
+        return createPlotInfoFrom(createDataSourceUri(map, interval,
+                justDaysWithInformation));
+    }
+
+    private String createDataSourceUri(SortedMap<LocalDate, BigDecimal> map,
+            Interval interval, boolean justDaysWithInformation) {
+        return getServletUri(
+                map,
+                interval.getStart(),
+                interval.getFinish(),
+                createGraphicSpecification(map, interval,
+                        justDaysWithInformation));
+    }
+
+    private GraphicSpecificationCreator createGraphicSpecification(
+            SortedMap<LocalDate, BigDecimal> map, Interval interval,
+            boolean justDaysWithInformation) {
         if (justDaysWithInformation) {
-            uri = getServletUri(map, interval.getStart(), interval
-                .getFinish(),
-                new JustDaysWithInformationGraphicSpecificationCreator(interval
-                        .getFinish(), map, interval.getStart()));
+            return new JustDaysWithInformationGraphicSpecificationCreator(
+                    interval.getFinish(), map, interval.getStart());
         } else {
-            uri = getServletUri(map, interval.getStart(), interval.getFinish());
+            return new DefaultGraphicSpecificationCreator(interval.getFinish(),
+                    map, interval.getStart());
+        }
+    }
+
+    private String getServletUri(
+            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
+            final LocalDate start, final LocalDate finish,
+            final GraphicSpecificationCreator graphicSpecificationCreator) {
+        if (mapDayAssignments.isEmpty()) {
+            return "";
         }
 
+        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
+                .values()));
+        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
+                .values()));
+
+        HttpServletRequest request = (HttpServletRequest) Executions
+                .getCurrent().getNativeRequest();
+        String uri = CallbackServlet.registerAndCreateURLFor(request,
+                graphicSpecificationCreator);
+        return uri;
+    }
+
+    private Plotinfo createPlotInfoFrom(String dataSourceUri) {
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(adaptCallbackForTimePlot(uri));
+        pds.setDataSourceUri(adaptCallbackForTimePlot(dataSourceUri));
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
@@ -588,8 +604,8 @@ public abstract class ChartFiller implements IChartFiller {
     private String adaptCallbackForTimePlot(String uri){
         return ! uri.equals("") ? uri.substring(1) : uri;
     }
-    @Override
-    public void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
+
+    protected void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
             ValueGeometry valueGeometry, TimeGeometry timeGeometry) {
         plotinfo.setValueGeometry(valueGeometry);
         plotinfo.setTimeGeometry(timeGeometry);

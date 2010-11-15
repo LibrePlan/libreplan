@@ -48,12 +48,14 @@
     </zscript>
 
     <window id="editTaskWindow"
+            sclass="edit-task-window"
             apply="${arg.editController}"
             title="${i18n:_('Edit task')}"
-            border="normal"
-            width="870px"
+            border="0"
+            width="980px"
             visible="false"
             closable="true"
+            sizable="true"
             onClose="editController.close(event)" >
 
         <vbox id="messagesContainer" />
@@ -75,9 +77,9 @@
 
         <hbox>
             <button id="ok" label="${i18n:_('Accept')}"
-                onClick="editController.accept()" />
+                onClick="editController.accept()" sclass="save-button global-action" />
             <button id="cancel" label="${i18n:_('Cancel')}"
-                onClick="editController.cancel()" />
+                onClick="editController.cancel()" sclass="cancel-button global-action" />
         </hbox>
 
     </window>

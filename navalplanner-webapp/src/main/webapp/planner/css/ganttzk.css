@@ -73,6 +73,19 @@
     padding-left:2px;
 }
 
+.listdetails input.task_title {
+    width: auto;
+}
+
+.listdetails div.z-tree-cell-cnt {
+	width: 500px; !important;
+}
+
+/*.listdetails input {
+	width: 80%; !important;
+} */
+
+
 #listdetails_container .z-datebox-inp,
 #listdetails_container div.z-tree-col-cnt {
     font-size: 9px !important;
@@ -92,16 +105,33 @@
 }
 
 .listdetails .depth_2 input.task_title {
-    width: 69.5%;
+    width: 78%;
 }
 
 .listdetails .depth_3 .task_title {
-    width: 57.5%;
+    width: 74%;
 }
 
 .listdetails .depth_4 .task_title {
-    width: 45%;
+    width: 70%;
 }
+
+.listdetails .depth_5 .task_title {
+    width: 66%;
+}
+
+.listdetails .depth_6 .task_title {
+    width: 62%;
+}
+
+.listdetails .depth_7 .task_title {
+    width: 58%;
+}
+
+.listdetails .depth_8 .task_title {
+    width: 54%;
+}
+
 
 .listdetails {
     min-width:200px;
@@ -372,11 +402,11 @@ div.box.limiting-unassigned {
 /* Watermark alternate row color */
 #watermark .timetracker_column_even {
     background-color: #EEEEEE !important;
-    height: 458px;
+    height: 650px;
 }
 
 .limitingresources #watermark .bankHoliday {
-    height: 458px;
+    height: 650px;
 }
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
@@ -752,6 +782,10 @@ div.limitingresourcesleftpane  {
     position: relative;
 }
 
+.timetrackergap {
+    height: 32px;
+}
+
 .tree-datecolumn {
     width: 100px;
 }
@@ -773,8 +807,13 @@ div.z-tree {
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
-    height:550px;
+/*    height: 100%; */
 }
+
+.temp-class {
+height: 100%
+}
+
 .orderslayout {
     height:550px;
 }
@@ -1011,7 +1050,7 @@ div.z-tree {
 }
 
 #timetrackerheader table {
-    height:15px;
+    height:16px;
 }
 
 #timetrackerheader .z-grid-body {
@@ -1185,4 +1224,33 @@ body .perspectives-column {
 
 .subcontracted-task .completion2 {
     background-color: #484e4d;
+}
+
+#watermark .timetracker_column {
+    height: 650px;
+}
+
+/* Workaround for zk 100% height just root components */
+.main-area {height: 100%;}
+.main-area .z-center-body > span {height: 100%; display: block;}
+.main-area .z-center-body > span > div > span { height: 100%; display: block;}
+.main-area .z-center-body > span > div { height: 100%;}
+.main-area .z-center-body > span > div > div  { height: 100%;}
+.main-area .z-center-body > span > div > div > span { height: 100%; display: block;}
+.main-area .z-center-body > span > div > div > div { height: 100%;}
+.main-area .z-center-body > span > div > div > div > span { height: 100%; display: block;}
+
+.main-area > span {height: 100%; display: block;}
+.main-area > span > div { height: 100%;}
+.main-area > span > div > span { height: 100%; display: block;}
+.main-area > span > div > div { height: 100%;}
+.main-area > span > div > div > span { height: 100%; display: block;}
+
+.main-area .advanced-assignment-area .z-center-body > span,
+.main-area .advanced-assignment-area .z-center-body > span > div > div {
+    height: auto;
+}
+
+.advanced-allocation-layout {
+    height: 100%;
 }

@@ -600,9 +600,11 @@ public class ManageOrderElementAdvancesModel implements
             return BigDecimal.ZERO;
         }
 
-        BigDecimal division = value.divide(maxValue, 2, RoundingMode.DOWN);
-        return (division.multiply(new BigDecimal(100))).setScale(0,
+        BigDecimal division = value.divide(maxValue.setScale(2), 4,
                 RoundingMode.DOWN);
+        return (division.multiply(new BigDecimal(100))).setScale(2,
+                RoundingMode.DOWN);
+
     }
 
     @Override

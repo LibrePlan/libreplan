@@ -40,7 +40,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -253,11 +252,16 @@ public class CriterionTreeController extends GenericForwardComposer {
 
             Button removebutton = createButtonRemove(criterionForThisRow);
             removebutton.setParent(tcOperations);
-            if(criterionForThisRow.isNewObject()){
+            if (criterionsModel.isDeletable(criterionForThisRow.getCriterion())) {
             removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
                 getModel().removeNode(criterionForThisRow);
+                                if (!criterionForThisRow.isNewObject()) {
+                                    criterionsModel
+                                            .addForRemoval(criterionForThisRow
+                                                    .getCriterion());
+                                }
                 reloadTree();
                 }
             });
@@ -307,14 +311,21 @@ public class CriterionTreeController extends GenericForwardComposer {
 
     private Button createButtonRemove(CriterionDTO criterion){
         Button removebutton;
-        if(criterion.isNewObject()){
+
+        int num = criterionsModel.numberOfRelatedEntities(criterion
+                .getCriterion());
+
+        if (criterionsModel.isDeletable(criterion.getCriterion())) {
             removebutton = new Button("", "/common/img/ico_borrar1.png");
             removebutton.setHoverImage("/common/img/ico_borrar.png");
             removebutton.setTooltiptext(_("Delete"));
-        }else{
+        } else {
             removebutton = new Button("", "/common/img/ico_borrar_out.png");
-            removebutton.setTooltiptext(_("Not deletable"));
+            removebutton.setTooltiptext(criterion.getCriterion().getChildren()
+                    .isEmpty() ? (num + " " + _("references"))
+                    : _("Criterion has subelements"));
         }
+
         removebutton.setSclass("icono");
         return removebutton;
     }
@@ -414,17 +425,19 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         public static TreeViewStateSnapshot snapshotOpened(Tree tree) {
-            Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
-                    .getItems().iterator();
             Set<Object> dataOpen = new HashSet<Object>();
             Set<Object> all = new HashSet<Object>();
-            while (itemsIterator.hasNext()) {
-                Treeitem treeitem = (Treeitem) itemsIterator.next();
-                Object value = getAssociatedValue(treeitem);
-                if (treeitem.isOpen()) {
-                    dataOpen.add(value);
+            if (tree != null && tree.getTreechildrenApi() != null) {
+                Iterator<Treeitem> itemsIterator = tree.getTreechildrenApi()
+                        .getItems().iterator();
+                while (itemsIterator.hasNext()) {
+                    Treeitem treeitem = (Treeitem) itemsIterator.next();
+                    Object value = getAssociatedValue(treeitem);
+                    if (treeitem.isOpen()) {
+                        dataOpen.add(value);
+                    }
+                    all.add(value);
                 }
-                all.add(value);
             }
             return new TreeViewStateSnapshot(dataOpen, all);
         }

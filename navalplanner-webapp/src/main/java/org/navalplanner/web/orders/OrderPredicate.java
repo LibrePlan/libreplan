@@ -128,6 +128,13 @@ public class OrderPredicate implements IPredicate {
                 return true;
             }
         }
+        for(OrderElement child : order.getAllChildren()) {
+            for(CriterionRequirement criterionRequirement : child.getCriterionRequirements()) {
+                if(criterionRequirement.getCriterion().getId().equals(filterCriterion.getId())){
+                    return true;
+                }
+            }
+        }
         return false;
     }
 

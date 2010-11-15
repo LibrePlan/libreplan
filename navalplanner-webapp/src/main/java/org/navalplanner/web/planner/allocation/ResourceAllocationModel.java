@@ -38,11 +38,11 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -51,13 +51,16 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
@@ -74,6 +77,9 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IResourceSearchModel searchModel;
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
@@ -105,13 +111,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
                 .addSpecificResourceAllocationFor(reloadResources(resources));
     }
 
-    private List<Resource> reloadResources(
-            Collection<? extends Resource> resources) {
-        List<Resource> result = new ArrayList<Resource>();
-        for (Resource each : resources) {
+    @SuppressWarnings("unchecked")
+    private <T extends Resource> List<T> reloadResources(
+            Collection<? extends T> resources) {
+        List<T> result = new ArrayList<T>();
+        for (T each : resources) {
             Resource reloaded = resourceDAO.findExistingEntity(each.getId());
             reattachResource(reloaded);
-            result.add(reloaded);
+            result.add((T) reloaded);
         }
         return result;
     }
@@ -126,21 +133,25 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         int i = 0;
         for (AggregatedHoursGroup each : hoursGroups) {
             hours[i++] = each.getHours();
-            List<Resource> resourcesFound = resourceDAO
-                    .findSatisfyingCriterionsAtSomePoint(each.getCriterions());
-            allocationRowsHandler.addGeneric(each.getCriterions(),
-                    reloadResources(resourcesFound), each.getHours());
+            List<? extends Resource> resourcesFound = searchModel
+                    .searchBy(each.getResourceType())
+                    .byCriteria(each.getCriterions()).execute();
+            allocationRowsHandler.addGeneric(each.getResourceType(),
+                    each.getCriterions(), reloadResources(resourcesFound),
+                    each.getHours());
         }
         return ProportionalDistributor.create(hours);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void addGeneric(Set<Criterion> criterions,
+    public void addGeneric(ResourceEnum resourceType,
+            Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched) {
         reassociateResourcesWithSession();
         List<Resource> reloadResources = reloadResources(resourcesMatched);
-        allocationRowsHandler.addGeneric(criterions, reloadResources);
+        allocationRowsHandler.addGeneric(resourceType, criteria,
+                reloadResources);
     }
 
     @Override
@@ -185,11 +196,10 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private void applyAllocationWithDateChangesNotification(
             IOnTransaction<?> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
-        Date previousStartDate = ganttTask.getBeginDate();
-        long previousLength = ganttTask.getLengthMilliseconds();
+        GanttDate previousStartDate = ganttTask.getBeginDate();
+        GanttDate previousEnd = ganttTask.getEndDate();
         transactionService.runOnReadOnlyTransaction(allocationDoer);
-        ganttTask.fireChangesForPreviousValues(previousStartDate,
-                previousLength);
+        ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
     }
 
     private void stepsBeforeDoingAllocation() {
@@ -242,8 +252,8 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         reattachCriterions(this.task.getHoursGroup().getValidCriterions());
         loadResources(this.task.getSatisfiedResourceAllocations());
         loadDerivedAllocations(this.task.getSatisfiedResourceAllocations());
-        List<AllocationRow> initialRows = AllocationRow.toRows(task
-                .getNonLimitingResourceAllocations(), resourceDAO);
+        List<AllocationRow> initialRows = AllocationRow.toRows(
+                task.getNonLimitingResourceAllocations(), searchModel);
         allocationRowsHandler = AllocationRowsHandler.create(task, initialRows,
                 createWorkerFinder());
         return allocationRowsHandler;
@@ -254,17 +264,14 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
 
             @Override
             public Collection<Worker> findWorkersMatching(
-                    Collection<? extends Criterion> requiredCriterions) {
+                    Collection<? extends Criterion> requiredCriteria) {
                 reassociateResourcesWithSession();
-                List<Resource> allSatisfyingCriterions;
-                if (!requiredCriterions.isEmpty()) {
-                    allSatisfyingCriterions = resourceDAO
-                            .findSatisfyingCriterionsAtSomePoint(requiredCriterions);
-                } else {
-                    allSatisfyingCriterions = new ArrayList<Resource>();
+                List<Worker> workers = new ArrayList<Worker>();
+                if (!requiredCriteria.isEmpty()) {
+                    workers = searchModel.searchWorkers()
+                            .byCriteria(requiredCriteria).execute();
                 }
-                return Resource.workers(reloadResources(Resource
-                        .workers(allSatisfyingCriterions)));
+                return reloadResources(workers);
             }
         };
     }

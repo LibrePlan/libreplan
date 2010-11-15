@@ -23,6 +23,7 @@ package org.navalplanner.business.orders.daos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -40,6 +41,7 @@ import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
@@ -180,8 +182,9 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
-        BigDecimal assignedHours = new BigDecimal(
-                getAssignedHours(orderElement)).setScale(2);
+        final Integer totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
+                .getSumChargedHours().getTotalChargedHours() : new Integer(0);
+        BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
                 .setScale(2);
 
@@ -567,6 +570,72 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                     relationOrderElementIdAndIndirectChargedHours);
         }
         updateIndirectChargedHoursWithMap(relationOrderElementIdAndIndirectChargedHours);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    @Transactional(readOnly = true)
+    public Set<String> getAllCodesExcluding(List<OrderElement> orderElements) {
+
+        String strQuery = "SELECT order.infoComponent.code FROM OrderElement order ";
+
+        final List<Long> ids = getNoEmptyIds(orderElements);
+        if (!ids.isEmpty()) {
+            strQuery += "WHERE order.id NOT IN (:ids)";
+        }
+
+        Query query = getSession().createQuery(strQuery);
+        if (!ids.isEmpty()) {
+            query.setParameterList("ids", ids);
+        }
+        return new HashSet<String>(query.list());
+    }
+
+    private List<Long> getNoEmptyIds(List<OrderElement> orderElements) {
+        List<Long> result = new ArrayList<Long>();
+        for (OrderElement each: orderElements) {
+            final Long id = each.getId();
+            if (id != null) {
+                result.add(id);
+            }
+        }
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly= true, propagation = Propagation.REQUIRES_NEW)
+    public OrderElement findRepeatedOrderCodeInDB(OrderElement order) {
+        final Map<String, OrderElement> orderElements = createMapByCode(getOrderAndAllChildren(order));
+        final Map<String, OrderElement> orderElementsInDB = createMapByCode(getAll());
+
+        for (String code : orderElements.keySet()) {
+            OrderElement orderElement = orderElements.get(code);
+            OrderElement orderElementInDB = orderElementsInDB.get(code);
+
+            // There's an element in the DB with the same code and it's a
+            // different element
+            if (orderElementInDB != null
+                    && !orderElementInDB.getId().equals(orderElement.getId())) {
+                return orderElement;
+            }
+        }
+        return null;
+    }
+
+    private List<OrderElement> getOrderAndAllChildren(OrderElement order) {
+        List<OrderElement> result = new ArrayList<OrderElement>();
+        result.add(order);
+        result.addAll(order.getAllChildren());
+        return result;
+    }
+
+    private Map<String, OrderElement> createMapByCode(List<OrderElement> orderElements) {
+        Map<String, OrderElement> result = new HashMap<String, OrderElement>();
+        for (OrderElement each: orderElements) {
+            final String code = each.getCode();
+            result.put(code, each);
+        }
+        return result;
     }
 
 }

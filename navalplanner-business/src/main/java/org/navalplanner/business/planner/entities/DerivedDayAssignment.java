@@ -19,6 +19,8 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
@@ -27,6 +29,7 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
+import org.navalplanner.business.workingday.EffortDuration;
 
 
 /**
@@ -35,9 +38,17 @@ import org.navalplanner.business.util.deepcopy.Strategy;
  */
 public class DerivedDayAssignment extends DayAssignment {
 
+    @Deprecated
     public static DerivedDayAssignment create(LocalDate day, int hours,
             Resource resource, DerivedAllocation derivedAllocation) {
-        return create(new DerivedDayAssignment(day, hours, resource,
+        return create(new DerivedDayAssignment(day, hours(hours), resource,
+                derivedAllocation));
+    }
+
+    public static DerivedDayAssignment create(LocalDate day,
+            EffortDuration duration, Resource resource,
+            DerivedAllocation derivedAllocation) {
+        return create(new DerivedDayAssignment(day, duration, resource,
                 derivedAllocation));
     }
 
@@ -110,18 +121,21 @@ public class DerivedDayAssignment extends DayAssignment {
     @OnCopy(Strategy.IGNORE)
     private ParentState parentState;
 
-    private DerivedDayAssignment(LocalDate day, int hours, Resource resource) {
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
+            Resource resource) {
         super(day, hours, resource);
         Validate.isTrue(resource instanceof Worker);
     }
 
-    private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
+            Resource resource,
             DerivedAllocation derivedAllocation) {
         this(day, hours, resource);
         this.parentState = new TransientParentState(derivedAllocation);
     }
 
-    private DerivedDayAssignment(LocalDate day, int hours, Resource resource,
+    private DerivedDayAssignment(LocalDate day, EffortDuration hours,
+            Resource resource,
             DerivedDayAssignmentsContainer container) {
         this(day, hours, resource);
         Validate.notNull(container);
@@ -140,7 +154,8 @@ public class DerivedDayAssignment extends DayAssignment {
 
     private static DerivedDayAssignment create(LocalDate day, int hours,
             Resource resource, DerivedDayAssignmentsContainer container) {
-        return create(new DerivedDayAssignment(day, hours, resource, container));
+        return create(new DerivedDayAssignment(day,
+                EffortDuration.hours(hours), resource, container));
     }
 
     DerivedDayAssignment copyAsChildOf(DerivedAllocation derivedAllocation) {
@@ -160,7 +175,7 @@ public class DerivedDayAssignment extends DayAssignment {
     }
 
     @Override
-    public DayAssignment withHours(int newHours) {
+    public DayAssignment withDuration(EffortDuration newDuration) {
         throw new UnsupportedOperationException();
     }
 

@@ -55,6 +55,7 @@ import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult
 import org.navalplanner.web.templates.IOrderTemplatesControllerEntryPoints;
 import org.navalplanner.web.tree.TreeController;
 import org.zkoss.ganttz.IPredicate;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -80,6 +81,7 @@ import org.zkoss.zul.impl.api.InputElement;
  * Controller for {@link OrderElement} tree view of {@link Order} entities <br />
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
@@ -232,26 +234,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-
-        // Add the expand/collapse button to the tool bar
-        final Button expandAllButton = new Button();
-        expandAllButton.setId("expandAllButton");
-        expandAllButton.setClass("planner-command");
-        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
-        expandAllButton.setImage("/common/img/ico_expand.png");
-        expandAllButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                if (expandAllButton.getSclass().equals("planner-command")) {
-                    expandAll();
-                    expandAllButton.setSclass("planner-command clicked");
-                } else {
-                    collapseAll();
-                    expandAllButton.setSclass("planner-command");
-                }
-            }
-        });
-        orderElementFilter.getParent().getChildren().add(expandAllButton);
+        orderElementFilter.getChildren().clear();
+        appendExpandCollapseButton();
 
         // Configuration of the order elements filter
         Component filterComponent = Executions.createComponents(
@@ -269,6 +253,36 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
+    }
+
+    private void appendExpandCollapseButton() {
+        List<Component> children = orderElementFilter.getParent().getChildren();
+
+        // Is already added?
+        Button button = (Button) ComponentsFinder.findById("expandAllButton", children);
+        if (button != null) {
+            return;
+        }
+
+        // Append expand/collapse button
+        final Button expandAllButton = new Button();
+        expandAllButton.setId("expandAllButton");
+        expandAllButton.setClass("planner-command");
+        expandAllButton.setTooltiptext(_("Expand/Collapse all"));
+        expandAllButton.setImage("/common/img/ico_expand.png");
+        expandAllButton.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                if (expandAllButton.getSclass().equals("planner-command")) {
+                    expandAll();
+                    expandAllButton.setSclass("planner-command clicked");
+                } else {
+                    collapseAll();
+                    expandAllButton.setSclass("planner-command");
+                }
+            }
+        });
+        children.add(expandAllButton);
     }
 
     public void expandAll() {
@@ -308,6 +322,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         public static Navigation getIntentFrom(KeyEvent keyEvent) {
             return values()[keyEvent.getKeyCode() - 37];
         }
+    }
+
+    private Map<OrderElement, Textbox> orderElementCodeTextboxes = new HashMap<OrderElement, Textbox>();
+
+    public Map<OrderElement, Textbox> getOrderElementCodeTextboxes() {
+        return orderElementCodeTextboxes;
     }
 
     public class OrderElementTreeitemRenderer extends Renderer {
@@ -515,13 +535,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return currentElement.getSchedulingState();
         }
 
-
         @Override
         protected void onDoubleClickForSchedulingStateCell(
                 final OrderElement currentOrderElement) {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
+            updateOrderElementHours(currentOrderElement);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {
@@ -556,6 +576,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             addCell(textBoxCode);
             registerKeyboardListener(textBoxCode);
+            orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
         void addInitDateCell(final OrderElement currentOrderElement) {
@@ -609,7 +630,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 intboxHours.setDisabled(true);
             }
-            addCell(intboxHours);
+
+            Treecell cellHours = addCell(intboxHours);
+            setReadOnlyHoursCell(currentOrderElement, intboxHours, cellHours);
             registerKeyboardListener(intboxHours);
         }
 
@@ -844,6 +867,32 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
+        updateOrderElementHours(currentOrderElement);
+    }
+
+    private void updateOrderElementHours(OrderElement orderElement) {
+        if ((!readOnly) && (orderElement instanceof OrderLine)) {
+            Intbox boxHours = (Intbox) getRenderer().hoursIntBoxByOrderElement
+                .get(orderElement);
+            boxHours.setValue(orderElement.getWorkHours());
+            Treecell tc = (Treecell) boxHours.getParent();
+            setReadOnlyHoursCell(orderElement, boxHours, tc);
+            boxHours.invalidate();
+        }
+    }
+
+    private void setReadOnlyHoursCell(OrderElement orderElement,
+            Intbox boxHours, Treecell tc) {
+        if ((!readOnly) && (orderElement instanceof OrderLine)) {
+            if (orderElement.getHoursGroups().size() > 1) {
+                boxHours.setReadonly(true);
+                tc
+                    .setTooltiptext(_("Not editable for containing more that an hours group."));
+            } else {
+                boxHours.setReadonly(false);
+                tc.setTooltiptext(_(""));
+            }
+        }
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
@@ -908,6 +957,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                                     element.getName()));
         } else {
             super.remove(element);
+            orderElementCodeTextboxes.remove(element);
         }
     }
 

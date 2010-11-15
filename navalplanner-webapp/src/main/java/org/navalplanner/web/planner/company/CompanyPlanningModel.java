@@ -21,6 +21,7 @@
 package org.navalplanner.web.planner.company;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -29,44 +30,36 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.ICostCalculator;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
+import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
@@ -140,27 +133,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private IOrderDAO orderDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
-    private IDayAssignmentDAO dayAssignmentDAO;
-
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
-
-    @Autowired
-    private IWorkReportLineDAO workReportLineDAO;
-
-    @Autowired
     private IUserDAO userDAO;
 
     @Autowired
     private IAdHocTransactionService transactionService;
 
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
-
-    @Autowired
-    private ICostCalculator hoursCostCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
@@ -176,10 +154,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private Scenario currentScenario;
 
-    private List<Order> ordersToShow;
+    @Autowired
+    private PredefinedDatabaseSnapshots databaseSnapshots;
 
-    private Date filterStartDate;
-    private Date filterFinishDate;
+    private LocalDate filterStartDate;
+    private LocalDate filterFinishDate;
     private static final EnumSet<OrderStatusEnum> STATUS_VISUALIZED = EnumSet
             .of(OrderStatusEnum.ACCEPTED, OrderStatusEnum.OFFERED,
                     OrderStatusEnum.STARTED,
@@ -245,58 +224,62 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             configuration.setDoubleClickCommand(doubleClickCommand);
         }
 
-        ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
+        if (SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            ICommand<TaskElement> createNewOrderCommand = new ICommand<TaskElement>() {
 
-            @Override
-            public String getName() {
-                return _("Create new order");
-            }
-
-            @Override
-            public String getImage() {
-                return "/common/img/ico_add.png";
-            }
-
-            @Override
-            public void doAction(IContext<TaskElement> context) {
-                tabs.goToCreateForm();
-            }
-
-        };
-
-        configuration.addGlobalCommand(createNewOrderCommand);
-
-        ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
-
-            @Override
-            public String getName() {
-                return _("Create new order from template");
-            }
-
-            @Override
-            public String getImage() {
-                return "/common/img/ico_copy.png";
-            }
-
-            @Override
-            public void doAction(IContext<TaskElement> context) {
-                TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner.getFellowIfAny("templateFinderPopup");
-                Button createOrderFromTemplateButton = planner.findCommandComponent(getName());
-                if(templateFinderPopup != null){
-                    templateFinderPopup.openForOrderCreation(
-                            createOrderFromTemplateButton, "after_start",
-                            new IOnResult<OrderTemplate>() {
-                             @Override
-                             public void found(OrderTemplate template) {
-                                    goToCreateOtherOrderFromTemplate(template);
-                                }
-                            });
+                @Override
+                public String getName() {
+                    return _("Create new order");
                 }
-            }
 
-        };
+                @Override
+                public String getImage() {
+                    return "/common/img/ico_add.png";
+                }
 
-        configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
+                @Override
+                public void doAction(IContext<TaskElement> context) {
+                    tabs.goToCreateForm();
+                }
+
+            };
+
+            configuration.addGlobalCommand(createNewOrderCommand);
+
+            ICommand<TaskElement> createNewOrderFromTemplateCommand = new ICommand<TaskElement>() {
+
+                @Override
+                public String getName() {
+                    return _("Create new order from template");
+                }
+
+                @Override
+                public String getImage() {
+                    return "/common/img/ico_copy.png";
+                }
+
+                @Override
+                public void doAction(IContext<TaskElement> context) {
+                    TemplateFinderPopup templateFinderPopup = (TemplateFinderPopup) planner
+                            .getFellowIfAny("templateFinderPopup");
+                    Button createOrderFromTemplateButton = planner
+                            .findCommandComponent(getName());
+                    if (templateFinderPopup != null) {
+                        templateFinderPopup.openForOrderCreation(
+                                createOrderFromTemplateButton, "after_start",
+                                new IOnResult<OrderTemplate>() {
+                                    @Override
+                                    public void found(OrderTemplate template) {
+                                        goToCreateOtherOrderFromTemplate(template);
+                                    }
+                                });
+                    }
+                }
+
+            };
+
+            configuration.addGlobalCommand(createNewOrderFromTemplateCommand);
+        }
 
         addAdditionalCommands(additional, configuration);
         addPrintSupport(configuration);
@@ -316,7 +299,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
         else {
             //if the chart is not expanded, we load the data later with a listener
-            ((South) planner.getFellow("graphics")).addEventListener("onOpen",
+            ((South) planner.getFellow("graphics"))
+                    .addEventListener("onOpen",
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -336,7 +320,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void setupChartAndItsContent(final Planner planner,
-            final Tabbox chartComponent) {
+           final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
         appendTabpanels(chartComponent);
@@ -607,6 +591,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setFlattenTreeEnabled(false);
         configuration.setRenamingTasksEnabled(false);
         configuration.setTreeEditable(false);
+        configuration.setShowAllResourcesEnabled(false);
     }
 
     private void addAdditionalCommands(
@@ -705,28 +690,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private PlannerConfiguration<TaskElement> createConfiguration(
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
+        taskElementAdapter.setPreventCalculateResourcesText(true);
         List<TaskElement> toShow;
         toShow = retainOnlyTopLevel(predicate);
 
-        forceLoadOfDataAssociatedTo(toShow);
-        forceLoadOfDependenciesCollections(toShow);
-        forceLoadOfWorkingHours(toShow);
-        forceLoadOfLabels(toShow);
         return new PlannerConfiguration<TaskElement>(taskElementAdapter,
                 new TaskElementNavigator(), toShow);
     }
 
-    private void forceLoadOfDataAssociatedTo(List<TaskElement> toShow) {
-        for (TaskElement each : toShow) {
-            OrderPlanningModel.forceLoadOfDataAssociatedTo(each);
-        }
-    }
-
-
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         User user;
-        ordersToShow = new ArrayList<Order>();
+        List<Order> ordersToShow = new ArrayList<Order>();
 
         try {
             user = userDAO.findByLoginName(SecurityUtils.getSessionUserLoginName());
@@ -740,16 +715,23 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
         for (Order order : list) {
-            order.useSchedulingDataFor(currentScenario);
+            order.useSchedulingDataFor(currentScenario, false);
             TaskGroup associatedTaskElement = order.getAssociatedTaskElement();
 
             if (associatedTaskElement != null
                     && STATUS_VISUALIZED.contains(order.getState())
                     && (predicate == null || predicate.accepts(order))) {
+                associatedTaskElement.setSimplifiedAssignedStatusCalculationEnabled(true);
                 result.add(associatedTaskElement);
                 ordersToShow.add(order);
             }
         }
+        Collections.sort(result,new Comparator<TaskElement>(){
+            @Override
+            public int compare(TaskElement arg0, TaskElement arg1) {
+                return arg0.getStartDate().compareTo(arg1.getStartDate());
+            }
+        });
         setDefaultFilterValues(ordersToShow);
         return result;
     }
@@ -763,8 +745,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             endDate = Collections.max(notNull(endDate, each.getDeadline(),
                     associatedTaskElement.getEndDate()));
         }
-        filterStartDate = startDate;
-        filterFinishDate = endDate;
+        filterStartDate = startDate != null ? LocalDate
+                .fromDateFields(startDate) : null;
+        filterFinishDate = endDate != null ? LocalDate.fromDateFields(endDate)
+                : null;
     }
 
     private static <T> List<T> notNull(T... values) {
@@ -777,68 +761,17 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return result;
     }
 
-    private void forceLoadOfWorkingHours(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                orderElement.getWorkHours();
-            }
-            if (!taskElement.isLeaf()) {
-                forceLoadOfWorkingHours(taskElement.getChildren());
-            }
-        }
-    }
-
-    private void forceLoadOfDependenciesCollections(
-            Collection<? extends TaskElement> elements) {
-        for (TaskElement task : elements) {
-            forceLoadOfDepedenciesCollections(task);
-            if (!task.isLeaf()) {
-                forceLoadOfDependenciesCollections(task.getChildren());
-            }
-        }
-    }
-
-    private void forceLoadOfDepedenciesCollections(TaskElement task) {
-        task.getDependenciesWithThisOrigin().size();
-        task.getDependenciesWithThisDestination().size();
-    }
-
-    private void forceLoadOfLabels(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement != null) {
-                orderElement.getLabels().size();
-            }
-        }
-    }
-
     // spring method injection
     protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     @Override
-    public List<Order> getOrdersToShow() {
-        return ordersToShow;
-    }
-
-    @Override
-    public Date getFilterStartDate() {
+    public LocalDate getFilterStartDate() {
         return filterStartDate;
     }
 
-    private LocalDate getFilterStartLocalDate() {
-        return filterStartDate != null ?
-                LocalDate.fromDateFields(filterStartDate) : null;
-    }
-
     @Override
-    public Date getFilterFinishDate() {
+    public LocalDate getFilterFinishDate() {
         return filterFinishDate;
-    }
-
-    private LocalDate getFilterFinishLocalDate() {
-        return filterFinishDate != null ?
-                LocalDate.fromDateFields(filterFinishDate) : null;
     }
 
     private class CompanyLoadChartFiller extends ChartFiller {
@@ -853,21 +786,24 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             resetMinimumAndMaximumValueForChart();
 
-            Date start = filterStartDate!=null ? filterStartDate : interval.getStart();
-            Date finish = filterFinishDate != null ? filterFinishDate
+            LocalDate start = filterStartDate != null ? filterStartDate
+                    : interval.getStart();
+            LocalDate finish = filterFinishDate != null ? filterFinishDate
                     : interval.getFinish();
 
-            Plotinfo plotInfoLoad = createPlotinfo(getLoad(start, finish), interval);
+            Plotinfo plotInfoLoad = createPlotinfoFromDurations(
+                    getLoad(start, finish), interval);
             plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
             plotInfoLoad.setLineWidth(0);
 
-            Plotinfo plotInfoMax = createPlotinfo(
+            Plotinfo plotInfoMax = createPlotinfoFromDurations(
                     getCalendarMaximumAvailability(start, finish), interval);
             plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
             plotInfoMax.setFillColor("#FFFFFF");
             plotInfoMax.setLineWidth(2);
 
-            Plotinfo plotInfoOverload = createPlotinfo(getOverload(start, finish), interval);
+            Plotinfo plotInfoOverload = createPlotinfoFromDurations(
+                    getOverload(start, finish), interval);
             plotInfoOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
             plotInfoOverload.setLineWidth(0);
 
@@ -882,138 +818,21 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             chart.setHeight("150px");
         }
 
-        private SortedMap<LocalDate, BigDecimal> getLoad(Date start, Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
-                    currentScenario, LocalDate.fromDateFields(start), LocalDate
-                            .fromDateFields(finish));
-            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
-
-            return mapDayAssignments;
+        private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
+                LocalDate finish) {
+            return groupAsNeededByZoom(databaseSnapshots.
+                    snapshotResourceLoadChartData().getLoad().subMap(start, finish));
         }
 
-        private SortedMap<LocalDate, BigDecimal> getOverload(Date start,
-                Date finish) {
-            List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(currentScenario, LocalDate.fromDateFields(start), LocalDate.fromDateFields(finish));
-
-            SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped = groupDayAssignmentsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, BigDecimal> mapMaxAvailability = calculateHoursAdditionByDay(
-                    resourceDAO.list(Resource.class), start, finish);
-
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if ((day.compareTo(new LocalDate(start)) >= 0)
-                        && (day.compareTo(new LocalDate(finish)) <= 0)) {
-                    BigDecimal overloadHours = mapDayAssignments.get(day);
-                    BigDecimal maxHours = mapMaxAvailability.get(day);
-                    mapDayAssignments.put(day, overloadHours.add(maxHours));
-                }
-            }
-
-            return mapDayAssignments;
+        private SortedMap<LocalDate, EffortDuration> getOverload(
+                LocalDate start, LocalDate finish) {
+            return groupAsNeededByZoom(
+                    databaseSnapshots.snapshotResourceLoadChartData().getOverload().subMap(start, finish));
         }
 
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayWithoutOverload(
-                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-            for (LocalDate day : dayAssignmentGrouped.keySet()) {
-                int result = 0;
-
-                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
-                    BaseCalendar calendar = resource.getCalendar();
-
-                    int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityAt(day);
-                    if (calendar != null) {
-                        workableHours = calendar.getCapacityAt(day);
-                    }
-
-                    int assignedHours = dayAssignmentGrouped.get(day).get(
-                            resource);
-
-                    if (assignedHours <= workableHours) {
-                        result += assignedHours;
-                    } else {
-                        result += workableHours;
-                    }
-                }
-
-                map.put(day, result);
-            }
-
-            return convertAsNeededByZoom(convertToBigDecimal(map));
-        }
-
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDayJustOverload(
-                SortedMap<LocalDate, Map<Resource, Integer>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, Integer> map = new TreeMap<LocalDate, Integer>();
-
-            for (LocalDate day : dayAssignmentGrouped.keySet()) {
-                int result = 0;
-
-                for (Resource resource : dayAssignmentGrouped.get(day).keySet()) {
-                    BaseCalendar calendar = resource.getCalendar();
-
-                    int workableHours = SameWorkHoursEveryDay
-                            .getDefaultWorkingDay().getCapacityAt(day);
-                    if (calendar != null) {
-                        workableHours = calendar.getCapacityAt(day);
-                    }
-
-                    int assignedHours = dayAssignmentGrouped.get(day).get(
-                            resource);
-
-                    if (assignedHours > workableHours) {
-                        result += assignedHours - workableHours;
-                    }
-                }
-
-                map.put(day, result);
-            }
-
-            return convertAsNeededByZoom(convertToBigDecimal(map));
-        }
-
-        private SortedMap<LocalDate, BigDecimal> getCalendarMaximumAvailability(
-                Date start, Date finish) {
-            SortedMap<LocalDate, BigDecimal> mapDayAssignments = calculateHoursAdditionByDay(
-                    resourceDAO.list(Resource.class), start, finish);
-
-            return mapDayAssignments;
-        }
-
-        private SortedMap<LocalDate, BigDecimal> calculateHoursAdditionByDay(
-                List<Resource> resources, Date start, Date finish) {
-            return new HoursByDayCalculator<Entry<LocalDate, List<Resource>>>() {
-
-                @Override
-                protected LocalDate getDayFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    return element.getKey();
-                }
-
-                @Override
-                protected int getHoursFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    LocalDate day = element.getKey();
-                    List<Resource> resources = element.getValue();
-                    return sumHoursForDay(resources, day);
-                }
-
-            }.calculate(getResourcesByDateBetween(
-                    resources, start, finish));
-        }
-
-        private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-                List<Resource> resources, Date start, Date finish) {
-            LocalDate end = new LocalDate(finish);
-            Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-            for (LocalDate date = new LocalDate(start); date.compareTo(end) <= 0; date = date
-                    .plusDays(1)) {
-                result.put(date, resources);
-            }
-            return result.entrySet();
+        private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
+                LocalDate start, LocalDate finish) {
+            return databaseSnapshots.snapshotResourceLoadChartData().getAvailability().subMap(start, finish);
         }
 
     }
@@ -1021,16 +840,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private class CompanyEarnedValueChartFiller extends EarnedValueChartFiller {
 
         protected void calculateBudgetedCostWorkScheduled(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
+            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask =
+                databaseSnapshots.snapshotEstimatedCostPerTask();
+            Collection<TaskElement> list = filterTasksByDate(
+                    estimatedCostPerTask.keySet(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(estimatedCost, hoursCostCalculator
-                            .getEstimatedCost((Task) taskElement,
-                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
-                }
+                addCost(estimatedCost, estimatedCostPerTask.get(taskElement));
             }
 
             estimatedCost = accumulateResult(estimatedCost);
@@ -1051,8 +870,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         private SortedMap<LocalDate, BigDecimal> getWorkReportCost() {
             SortedMap<LocalDate, BigDecimal> result = new TreeMap<LocalDate, BigDecimal>();
 
-            List<WorkReportLine> workReportLines = workReportLineDAO
-                    .findFilteredByDate(filterStartDate, filterFinishDate);
+            Collection<WorkReportLine> workReportLines = filterWorkReportLinesByDate(
+                    databaseSnapshots.snapshotWorkReportLines(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             if (workReportLines.isEmpty()) {
                 return result;
@@ -1072,16 +892,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
 
         protected void calculateBudgetedCostWorkPerformed(Interval interval) {
-            List<TaskElement> list = taskElementDAO.listFilteredByDate(filterStartDate, filterFinishDate);
+            Map<TaskElement, SortedMap<LocalDate, BigDecimal>> advanceCostPerTask =
+                databaseSnapshots.snapshotAdvanceCostPerTask();
+            Collection<TaskElement> list = filterTasksByDate(
+                    advanceCostPerTask.keySet(),
+                    asDate(filterStartDate), asDate(filterFinishDate));
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
             for (TaskElement taskElement : list) {
-                if (taskElement instanceof Task) {
-                    addCost(advanceCost, hoursCostCalculator
-                            .getAdvanceCost((Task) taskElement,
-                            getFilterStartLocalDate(), getFilterFinishLocalDate()));
-                }
+                addCost(advanceCost, advanceCostPerTask.get(taskElement));
             }
 
             advanceCost = accumulateResult(advanceCost);
@@ -1093,6 +913,34 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         @Override
         protected Set<EarnedValueType> getSelectedIndicators() {
             return getEarnedValueSelectedIndicators();
+        }
+
+        private Collection<TaskElement> filterTasksByDate(
+                Collection<TaskElement> tasks, Date startDate, Date endDate) {
+            if(startDate == null && endDate == null) {
+                return tasks;
+            }
+            for(TaskElement task : tasks) {
+                if((startDate != null && task.getEndDate().compareTo(startDate)<0) ||
+                    (endDate != null && task.getStartDate().compareTo(endDate)>0)) {
+                    tasks.remove(task);
+                }
+            }
+            return tasks;
+        }
+
+        private Collection<WorkReportLine> filterWorkReportLinesByDate(
+                Collection<WorkReportLine> lines, Date startDate, Date endDate) {
+            if(startDate == null && endDate == null) {
+                return lines;
+            }
+            for(WorkReportLine line: lines) {
+                if((startDate != null && line.getDate().compareTo(startDate)<0) ||
+                    (endDate != null && line.getDate().compareTo(endDate)>0)) {
+                    lines.remove(line);
+                }
+            }
+            return lines;
         }
     }
 
