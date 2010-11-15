@@ -61,6 +61,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
@@ -295,6 +296,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
+        setupFilterLimitingResourceListbox();
     }
 
     private void initFilterComponent() {
@@ -694,8 +696,16 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     }
 
-    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
-        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
+    private void setupFilterLimitingResourceListbox() {
+        for(LimitingResourceEnum resourceEnum :
+            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+            Listitem item = new Listitem();
+            item.setParent(filterLimitingResource);
+            item.setValue(resourceEnum);
+            item.appendChild(new Listcell(resourceEnum.toString()));
+            filterLimitingResource.appendChild(item);
+        }
+        filterLimitingResource.setSelectedIndex(0);
     }
 
     public Set<LimitingResourceEnum> getLimitingResourceOptionList() {

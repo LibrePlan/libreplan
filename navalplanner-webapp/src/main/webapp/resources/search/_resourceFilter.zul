@@ -42,9 +42,7 @@
 
     <!-- Limiting resource -->
     <label value="${i18n:_('Limiting resource')}"/>
-    <listbox id="filterLimitingResource"
-        mold="select"
-        model="@{controller.limitingResourceFilterOptionList}" />
+    <listbox id="filterLimitingResource" mold="select" />
     </hbox>
       </groupbox>
 

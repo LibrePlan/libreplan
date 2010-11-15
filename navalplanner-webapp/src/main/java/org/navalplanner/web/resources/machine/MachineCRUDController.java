@@ -62,6 +62,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
@@ -135,6 +136,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         setupResourcesCostCategoryAssignmentController(comp);
         showListWindow();
         initFilterComponent();
+        setupFilterLimitingResourceListbox();
     }
 
     private void showListWindow() {
@@ -554,8 +556,16 @@ public class MachineCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
-        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
+    private void setupFilterLimitingResourceListbox() {
+        for(LimitingResourceEnum resourceEnum :
+            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+            Listitem item = new Listitem();
+            item.setParent(filterLimitingResource);
+            item.setValue(resourceEnum);
+            item.appendChild(new Listcell(resourceEnum.toString()));
+            filterLimitingResource.appendChild(item);
+        }
+        filterLimitingResource.setSelectedIndex(0);
     }
 
     public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
