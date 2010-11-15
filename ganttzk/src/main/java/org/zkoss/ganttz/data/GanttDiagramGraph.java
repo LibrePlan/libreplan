@@ -1022,7 +1022,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         private boolean enforceStartAndEnd(V task) {
             Set<D> incoming = graph.incomingEdgesOf(task);
             boolean startDateChanged = enforceStartDate(task, incoming);
-            if (startDateChanged) {
+            if (startDateChanged || parentRecalculation) {
                 enforceEndDate(task, incoming);
             }
             return startDateChanged;
