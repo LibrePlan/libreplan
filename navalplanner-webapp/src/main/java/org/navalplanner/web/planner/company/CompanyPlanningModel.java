@@ -22,6 +22,9 @@ package org.navalplanner.web.planner.company;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,18 +103,19 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zk.au.out.AuInsertAfter;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.South;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
@@ -331,21 +335,62 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    private void setupChartAndItsContent(Planner planner,
-            Tabbox chartComponent) {
+    private void setupChartAndItsContent(final Planner planner,
+            final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
         Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
         CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
                 .getRealInterval());
         // avoid adding Timeplot since it has some pending issues
-        // appendTabpanels(chartComponent, chartLoadTimeplot,
-        // chartEarnedValueTimeplot, earnedValueChartFiller);
+//         appendTabpanels(chartComponent, chartLoadTimeplot,
+//         chartEarnedValueTimeplot, earnedValueChartFiller);
+
+        appendTabpanels2(chartComponent);
+        appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
-        Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
-                earnedValueChartFiller, planner);
-        setEventListenerConfigurationCheckboxes(earnedValueChart);
+//        Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
+//                earnedValueChartFiller, planner);
+//        setEventListenerConfigurationCheckboxes(earnedValueChart);
+
+        chartComponent.getTabs().getLastChild().addEventListener(Events.ON_SELECT, new EventListener() {
+            public void onEvent(Event event) throws Exception {
+                createOnDemandEarnedValueTimePlot(chartComponent, planner);
+            }
+        });
+    }
+
+    private void createOnDemandEarnedValueTimePlot(final Tabbox chartComponent, final Planner planner){
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
+                CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
+                earnedValueChartFiller.calculateValues(planner.getTimeTracker().getRealInterval());
+                Tabpanel earnedValueTabpanel = new Tabpanel();
+                Tabpanel tmp = appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
+                chartComponent.getTabpanels().appendChild(earnedValueTabpanel);
+                setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
+
+                Writer out = new StringWriter();
+                try {
+                    tmp.redraw(out);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                Clients.response("aa",
+                        new AuInsertAfter(
+                                chartComponent.getTabpanels().getFirstChild(),
+                                out.toString()
+                                ));
+                return null;
+            }
+        });
+
+
+
     }
 
 
@@ -362,6 +407,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
         chartComponent.appendChild(chartTabs);
         chartTabs.setWidth("124px");
+    }
+
+    private void appendTabpanels2(Tabbox chartComponent){
+        chartComponent.appendChild(new Tabpanels());
+    }
+
+    private void appendTab(Tabbox chartComponent, Tabpanel panel){
+        chartComponent.getTabpanels().appendChild(panel);
     }
 
     private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
@@ -399,7 +452,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         });
     }
 
-    public static void appendLoadChartAndLegend(Tabpanel loadChartPannel,
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPannel,
             Timeplot loadChart) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
@@ -410,6 +463,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         hbox.appendChild(div);
 
         loadChartPannel.appendChild(hbox);
+        return loadChartPannel;
     }
 
     public static org.zkoss.zk.ui.Component getLoadChartLegend() {
@@ -422,7 +476,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return hbox;
     }
 
-    private void appendEarnedValueChartAndLegend(
+    private Tabpanel appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
             CompanyEarnedValueChartFiller earnedValueChartFiller) {
         Vbox vbox = new Vbox();
@@ -458,6 +512,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         hbox.appendChild(div);
 
         earnedValueChartPannel.appendChild(hbox);
+
+        return earnedValueChartPannel;
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
