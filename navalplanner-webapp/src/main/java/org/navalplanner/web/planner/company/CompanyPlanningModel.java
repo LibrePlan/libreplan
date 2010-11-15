@@ -338,21 +338,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     private void setupChartAndItsContent(final Planner planner,
             final Tabbox chartComponent) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
-        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
-        CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
-        earnedValueChartFiller.calculateValues(planner.getTimeTracker()
-                .getRealInterval());
-        // avoid adding Timeplot since it has some pending issues
-//         appendTabpanels(chartComponent, chartLoadTimeplot,
-//         chartEarnedValueTimeplot, earnedValueChartFiller);
 
-        appendTabpanels2(chartComponent);
+        appendTabpanels(chartComponent);
         appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
 
         setupChart(chartLoadTimeplot, new CompanyLoadChartFiller(), planner);
-//        Chart earnedValueChart = setupChart(chartEarnedValueTimeplot,
-//                earnedValueChartFiller, planner);
-//        setEventListenerConfigurationCheckboxes(earnedValueChart);
 
         chartComponent.getTabs().getLastChild().addEventListener(Events.ON_SELECT, new EventListener() {
             public void onEvent(Event event) throws Exception {
@@ -369,13 +359,14 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
                 earnedValueChartFiller.calculateValues(planner.getTimeTracker().getRealInterval());
                 Tabpanel earnedValueTabpanel = new Tabpanel();
-                Tabpanel tmp = appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
-                chartComponent.getTabpanels().appendChild(earnedValueTabpanel);
+
+                appendEarnedValueChartAndLegend(earnedValueTabpanel, chartEarnedValueTimeplot, earnedValueChartFiller);
+                appendTab(chartComponent, earnedValueTabpanel);
                 setupChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner);
 
                 Writer out = new StringWriter();
                 try {
-                    tmp.redraw(out);
+                    earnedValueTabpanel.redraw(out);
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -388,9 +379,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 return null;
             }
         });
-
-
-
     }
 
 
@@ -409,29 +397,12 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         chartTabs.setWidth("124px");
     }
 
-    private void appendTabpanels2(Tabbox chartComponent){
+    private void appendTabpanels(Tabbox chartComponent){
         chartComponent.appendChild(new Tabpanels());
     }
 
     private void appendTab(Tabbox chartComponent, Tabpanel panel){
         chartComponent.getTabpanels().appendChild(panel);
-    }
-
-    private void appendTabpanels(Tabbox chartComponent, Timeplot loadChart,
-            Timeplot chartEarnedValueTimeplot,
-            CompanyEarnedValueChartFiller earnedValueChartFiller) {
-        Tabpanels chartTabpanels = new Tabpanels();
-
-        Tabpanel loadChartPannel = new Tabpanel();
-        appendLoadChartAndLegend(loadChartPannel, loadChart);
-        chartTabpanels.appendChild(loadChartPannel);
-
-        Tabpanel earnedValueChartPannel = new Tabpanel();
-        appendEarnedValueChartAndLegend(earnedValueChartPannel,
-                chartEarnedValueTimeplot, earnedValueChartFiller);
-        chartTabpanels.appendChild(earnedValueChartPannel);
-
-        chartComponent.appendChild(chartTabpanels);
     }
 
     private void appendEventListenerToDateboxIndicators(
@@ -476,7 +447,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return hbox;
     }
 
-    private Tabpanel appendEarnedValueChartAndLegend(
+    private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPannel, Timeplot chartEarnedValueTimeplot,
             CompanyEarnedValueChartFiller earnedValueChartFiller) {
         Vbox vbox = new Vbox();
@@ -512,8 +483,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         hbox.appendChild(div);
 
         earnedValueChartPannel.appendChild(hbox);
-
-        return earnedValueChartPannel;
     }
 
     private org.zkoss.zk.ui.Component getEarnedValueChartConfigurableLegend(
