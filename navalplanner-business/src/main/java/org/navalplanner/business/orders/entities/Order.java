@@ -269,10 +269,13 @@ public class Order extends OrderLineGroup {
     public List<TaskElement> getAllChildrenAssociatedTaskElements() {
         List<TaskElement> result = new ArrayList<TaskElement>();
 
-        List<OrderElement> children = getAllChildren();
-        for (OrderElement orderElement : children) {
-            result.add(orderElement.getAssociatedTaskElement());
+        for (OrderElement orderElement : getAllChildren()) {
+            TaskElement taskElement = orderElement.getAssociatedTaskElement();
+            if (taskElement != null) {
+                result.add(taskElement);
+            }
         }
+        Validate.noNullElements(result);
 
         return result;
     }
