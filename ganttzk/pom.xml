@@ -58,6 +58,11 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
+        <!-- Commons collections -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
         <!-- ZK  -->
         <dependency>
             <groupId>org.zkoss.zk</groupId>

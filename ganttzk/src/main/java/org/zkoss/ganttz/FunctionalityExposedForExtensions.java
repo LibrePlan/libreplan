@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
@@ -39,13 +40,13 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -386,11 +387,16 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         List<Task> criticalPath = criticalPathCalculator
                 .calculateCriticalPath(diagramGraph);
         for (Task task : diagramGraph.getTasks()) {
-            if (criticalPath.contains(task)) {
-                task.setInCriticalPath(true);
-            } else {
-                task.setInCriticalPath(false);
-            }
+            task.setInCriticalPath(isInCriticalPath(criticalPath, task));
+        }
+    }
+
+    private boolean isInCriticalPath(List<Task> criticalPath, Task task) {
+        if (task.isContainer() && !task.isExpanded()) {
+            List<Task> allTaskLeafs = ((TaskContainer) task).getAllTaskLeafs();
+            return CollectionUtils.containsAny(criticalPath, allTaskLeafs);
+        } else {
+            return criticalPath.contains(task);
         }
     }
 
