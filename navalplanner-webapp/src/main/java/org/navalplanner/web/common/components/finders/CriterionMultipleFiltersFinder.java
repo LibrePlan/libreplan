@@ -44,6 +44,7 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Override
     public List<FilterPair> getFirstTenFilters() {
+        getListMatching().clear();
         Iterator<Criterion> iteratorCriterion = getCriterions().iterator();
         while(iteratorCriterion.hasNext() && getListMatching().size() < 10) {
             Criterion criterion = iteratorCriterion.next();

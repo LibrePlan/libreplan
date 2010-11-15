@@ -44,6 +44,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Override
     public List<FilterPair> getFirstTenFilters() {
+        getListMatching().clear();
         Iterator<Worker> iteratorWorker = getListWorkers().iterator();
         while(iteratorWorker.hasNext() && getListMatching().size() < 10) {
             Worker worker = iteratorWorker.next();
