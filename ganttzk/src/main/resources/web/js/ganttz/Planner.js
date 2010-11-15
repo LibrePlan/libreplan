@@ -57,7 +57,7 @@ ganttz.Planner = zk.$extends(zk.Macro,{
     },
     _zoomLevelChanged : function(event){
         var zoomindex = event.domTarget.selectedIndex;
-        var scrollLeft = jq('#timetracker').scrollLeft();
+        var scrollLeft = parseFloat(jq('.timetrackergap').css('left').replace(/px/, ""));
         zAu.send(new zk.Event(this, 'onZoomLevelChange', {zoomindex : zoomindex, scrollLeft : scrollLeft}));
     }
 },{
