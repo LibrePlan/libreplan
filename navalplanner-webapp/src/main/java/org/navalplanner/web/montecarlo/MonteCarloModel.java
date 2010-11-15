@@ -242,7 +242,8 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private Task retrieveTaskFromModel(Task task) {
         for (TaskElement each: orderTasks) {
-            if (each.getId().equals(task.getId())) {
+            String code = each.getOrderElement().getCode();
+            if (code.equals(task.getOrderElement().getCode())) {
                 return (Task) each;
             }
         }
