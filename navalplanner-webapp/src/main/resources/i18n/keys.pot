@@ -6534,3 +6534,6 @@ msgstr ""
 msgid "Supported Chrome, Firefox, Safari and Epiphany browsers"
 msgstr ""
 
+#: navalplanner-webapp/src/main/webapp/resources/search/_resourceFilter.zul:34
+msgid "More options"
+msgstr ""

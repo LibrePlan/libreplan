@@ -6707,6 +6707,10 @@ msgstr "Elija un elemento de pedido para operar sobre él"
 msgid "Supported Chrome, Firefox, Safari and Epiphany browsers"
 msgstr "Compatible con navegadores Chrome, Firefox, Safari y Epiphany"
 
+#: navalplanner-webapp/src/main/webapp/resources/search/_resourceFilter.zul:34
+msgid "More options"
+msgstr "Más opciones"
+
 #~ msgid "New order element name:"
 #~ msgstr "Nombre del nuevo elemento de pedido:"
 

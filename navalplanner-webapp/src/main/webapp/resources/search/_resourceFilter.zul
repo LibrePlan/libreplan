@@ -31,7 +31,7 @@
     <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
 <groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false">
-        <caption label="More options" />
+        <caption label="${i18n:_('More options')}" />
 
 <hbox>
     <!-- Filter by date -->
