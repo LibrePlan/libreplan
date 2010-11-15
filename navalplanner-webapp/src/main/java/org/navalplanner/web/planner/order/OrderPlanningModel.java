@@ -374,8 +374,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         earnedValueChartFiller.calculateValues(planner.getTimeTracker()
                 .getRealInterval());
         // avoid adding Timeplot since it has some pending issues
-        // appendTabpanels(chartComponent, chartLoadTimeplot,
-        // chartEarnedValueTimeplot, earnedValueChartFiller);
+         appendTabpanels(chartComponent, chartLoadTimeplot,
+         chartEarnedValueTimeplot, earnedValueChartFiller);
 
         Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
                 orderReloaded), chartLoadTimeplot, planner);

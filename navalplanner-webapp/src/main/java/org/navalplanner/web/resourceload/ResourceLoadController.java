@@ -516,8 +516,8 @@ public class ResourceLoadController implements Composer {
         Tabpanels chartTabpanels = new Tabpanels();
         Tabpanel loadChartPannel = new Tabpanel();
         // avoid adding Timeplot since it has some pending issues
-        // CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-        // buildLoadChart());
+         CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+         buildLoadChart());
         chartTabpanels.appendChild(loadChartPannel);
         chartComponent.appendChild(chartTabpanels);
 
