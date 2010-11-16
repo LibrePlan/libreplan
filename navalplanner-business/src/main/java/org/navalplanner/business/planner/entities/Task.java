@@ -47,6 +47,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
@@ -117,6 +118,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private Consolidation consolidation;
 
     private Integer workableDays;
+
+    private Direction lastAllocationDirection = Direction.FORWARD;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -468,11 +471,12 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                     setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
                 }
                 setIntraDayStartDate(newStartDate);
-                doReassignment();
+                doReassignment(Direction.FORWARD);
             }
 
-            private void doReassignment() {
-                reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
+            private void doReassignment(Direction direction) {
+                reassign(scenario, direction,
+                        new WithTheSameHoursAndResourcesPerDay());
             }
 
             @Override
@@ -482,7 +486,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                 }
                 setIntraDayEndDate(endDate);
                 updateWorkableDays();
-                doReassignment();
+                doReassignment(lastAllocationDirection);
             }
 
             private void updateWorkableDays() {
@@ -575,10 +579,13 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourceDAO resourceDAO) {
-        reassign(scenario, new WithAnotherResources(resourceDAO));
+        reassign(scenario, lastAllocationDirection, new WithAnotherResources(
+                resourceDAO));
     }
 
-    private void reassign(Scenario onScenario, AllocationModificationStrategy strategy) {
+    private void reassign(Scenario onScenario, Direction direction,
+            AllocationModificationStrategy strategy) {
+        this.lastAllocationDirection = direction;
         if (isLimiting()) {
             return;
         }
@@ -586,21 +593,35 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                 getSatisfiedResourceAllocations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
-        List<ResourcesPerDayModification> allocations = strategy
-                .getResourcesPerDayModified(toBeModified);
-        if (allocations.isEmpty()) {
+        if (toBeModified.isEmpty()) {
             return;
         }
+        doAllocation(strategy, direction, toBeModified);
+        updateDerived(copied);
+
+        List<ResourceAllocation<?>> newAllocations = emptyList(),
+        modifiedAllocations = emptyList();
+        mergeAllocation(onScenario, getIntraDayStartDate(),
+                getIntraDayEndDate(), workableDays, calculatedValue,
+                newAllocations, copied, modifiedAllocations);
+    }
+
+    private void doAllocation(AllocationModificationStrategy strategy,
+            Direction direction, List<ResourceAllocation<?>> toBeModified) {
+        List<ResourcesPerDayModification> allocations = strategy
+                .getResourcesPerDayModified(toBeModified);
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations)
-                              .allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             break;
         case END_DATE:
-            IntraDayDate end = ResourceAllocation
-                                .allocating(allocations)
-                                .untilAllocating(getAssignedHours());
-            setIntraDayEndDate(end);
+            IntraDayDate date = ResourceAllocation.allocating(allocations)
+                    .untilAllocating(direction, getAssignedHours());
+            if (direction == Direction.FORWARD) {
+                setIntraDayEndDate(date);
+            } else {
+                setIntraDayStartDate(date);
+            }
             break;
         case RESOURCES_PER_DAY:
             List<HoursModification> hoursModified = strategy
@@ -611,14 +632,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
-
-        updateDerived(copied);
-
-        List<ResourceAllocation<?>> newAllocations = emptyList(),
-        modifiedAllocations = emptyList();
-        mergeAllocation(onScenario, getIntraDayStartDate(),
-                getIntraDayEndDate(), workableDays, calculatedValue,
-                newAllocations, copied, modifiedAllocations);
     }
 
     private void updateDerived(List<ModifiedAllocation> allocations) {

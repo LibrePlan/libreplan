@@ -69,6 +69,12 @@
 
             <property name="workableDays" column="WORKABLE_DAYS" />
 
+            <property name="lastAllocationDirection" column="ALLOCATION_DIRECTION">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.navalplanner.business.planner.entities.ResourceAllocation$Direction</param>
+                </type>
+            </property>
+
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
                 cascade="all"/>
 
