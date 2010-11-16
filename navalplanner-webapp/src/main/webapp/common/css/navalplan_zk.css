@@ -21,8 +21,7 @@
         width: 300px;
     }
 
-.plannerlayout #watermark,
-.plannerlayout #watermark .timetracker_column_even {
+.plannerlayout #watermark {
     height: 99999px !important;
 }
 
@@ -1451,7 +1450,8 @@ display:none;
     overflow: hidden;
 }
 
-.second_level_ #watermark .timetracker_column_even {
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .bankHoliday {
     height: 99999px;
 }
 
