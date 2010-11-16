@@ -40,13 +40,13 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -349,7 +349,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private boolean canAddDependency(Dependency dependency) {
-        return diagramGraph.doesNotProvokeLoop(dependency)
+        return diagramGraph.canAddDependency(dependency)
                 && adapter.canAddDependency(toDomainDependency(dependency));
     }
 
@@ -364,8 +364,11 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     public void changeType(Dependency dependency, DependencyType type) {
-        removeDependency(dependency);
-        addDependency(dependency.createWithType(type));
+        Dependency newDependency = dependency.createWithType(type);
+        if (diagramGraph.canAddDependency(newDependency)) {
+            removeDependency(dependency);
+            addDependency(newDependency);
+        }
     }
 
     @Override

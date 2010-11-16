@@ -1152,6 +1152,32 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         enforcer.enforceRestrictionsOn(destination);
     }
 
+    public boolean canAddDependency(D dependency) {
+        return !isForbidden(dependency) && doesNotProvokeLoop(dependency);
+    }
+
+    private boolean isForbidden(D dependency) {
+        if (!adapter.isVisible(dependency)) {
+            // the invisible dependencies, the ones used to implement container
+            // behavior are not forbidden
+            return false;
+        }
+
+        boolean endEndDependency = DependencyType.END_END == dependency
+                .getType();
+        boolean startStartDependency = DependencyType.START_START == dependency
+                .getType();
+
+        V source = adapter.getSource(dependency);
+        V destination = adapter.getDestination(dependency);
+        boolean destinationIsContainer = adapter.isContainer(destination);
+        boolean sourceIsContainer = adapter.isContainer(source);
+
+        return (destinationIsContainer && endEndDependency)
+                || (sourceIsContainer && startStartDependency);
+    }
+
+
     public void add(D dependency) {
         add(dependency, true);
     }
@@ -1161,6 +1187,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     private void add(D dependency, boolean enforceRestrictions) {
+        if (isForbidden(dependency)) {
+            return;
+        }
         V source = adapter.getSource(dependency);
         V destination = adapter.getDestination(dependency);
         graph.addEdge(source, destination, dependency);
