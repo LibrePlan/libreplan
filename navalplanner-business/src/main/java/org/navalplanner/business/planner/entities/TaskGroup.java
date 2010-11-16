@@ -112,21 +112,17 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected DateHandler getDatesHandler(Scenario scenario) {
-        return new DateHandler(scenario) {
+    protected IDatesHandler createDatesHandler(Scenario scenario) {
+        return new IDatesHandler() {
 
             @Override
-            protected void moveAllocations() {
-                // do nothing
+            public void moveTo(IntraDayDate newStartDate) {
+                setIntraDayStartDate(newStartDate);
             }
 
             @Override
-            protected IntraDayDate calculateNewEndGiven(
-                    IntraDayDate newStartDate) {
-                // the end date is calculated in GanttDiagramGraph using
-                // incoming
-                // dependencies from children
-                return newStartDate;
+            public void resizeTo(IntraDayDate endDate) {
+                setIntraDayEndDate(endDate);
             }
         };
     }

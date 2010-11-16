@@ -455,16 +455,28 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected DateHandler getDatesHandler(Scenario scenario) {
-        return new DateHandler(scenario) {
+    protected IDatesHandler createDatesHandler(final Scenario scenario) {
+        return new IDatesHandler() {
 
             @Override
-            protected void moveAllocations() {
+            public void moveTo(IntraDayDate newStartDate) {
+                IntraDayDate previousStart = getIntraDayStartDate();
+                if (previousStart.equals(newStartDate)) {
+                    return;
+                }
+                if (calculatedValue != CalculatedValue.END_DATE
+                        || getSatisfiedResourceAllocations().isEmpty()) {
+                    setIntraDayEndDate(calculateNewEndGiven(newStartDate));
+                }
+                setIntraDayStartDate(newStartDate);
+                doReassignment();
+            }
+
+            private void doReassignment() {
                 reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
             }
 
-            @Override
-            protected IntraDayDate calculateNewEndGiven(
+            private IntraDayDate calculateNewEndGiven(
                     IntraDayDate newStartDate) {
                 if (workableDays != null) {
                     return IntraDayDate
@@ -475,12 +487,42 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
 
             @Override
-            protected void updateWorkableDays() {
-                if (workableDays != null) {
-                    workableDays = getWorkableDaysBetweenDates();
+            public void resizeTo(IntraDayDate endDate) {
+                if (!canBeResized() || getIntraDayEndDate().equals(endDate)) {
+                    return;
                 }
+                setIntraDayEndDate(endDate);
+                updateWorkableDays();
+                doReassignment();
+            }
+
+            private void updateWorkableDays() {
+                assert calculatedValue != CalculatedValue.END_DATE;
+                workableDays = getWorkableDaysBetweenDates();
             }
         };
+    }
+
+    protected abstract class DatesHandlerForAllocatable implements
+            IDatesHandler {
+
+        protected final Scenario scenario;
+
+        public DatesHandlerForAllocatable(Scenario scenario) {
+            Validate.notNull(scenario);
+            this.scenario = scenario;
+        }
+
+
+
+        protected abstract IntraDayDate calculateNewEndGiven(
+                IntraDayDate newStartDate);
+
+        protected abstract void moveAllocations();
+
+        // default implementation meant to be override
+        protected void updateWorkableDays() {
+        }
     }
 
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {

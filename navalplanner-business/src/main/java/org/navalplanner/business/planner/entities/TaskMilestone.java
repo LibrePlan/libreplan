@@ -117,18 +117,18 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected DateHandler getDatesHandler(Scenario scenario) {
-        return new DateHandler(scenario) {
+    protected IDatesHandler createDatesHandler(Scenario scenario) {
+        return new IDatesHandler() {
 
             @Override
-            protected void moveAllocations() {
-                // do nothing
+            public void moveTo(IntraDayDate newStartDate) {
+                setIntraDayStartDate(newStartDate);
+                setIntraDayEndDate(newStartDate);
             }
 
             @Override
-            protected IntraDayDate calculateNewEndGiven(
-                    IntraDayDate newStartDate) {
-                return newStartDate;
+            public void resizeTo(IntraDayDate endDate) {
+                moveTo(endDate);
             }
         };
     }

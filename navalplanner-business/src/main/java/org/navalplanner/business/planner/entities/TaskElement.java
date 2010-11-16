@@ -299,54 +299,39 @@ public abstract class TaskElement extends BaseEntity {
         getDatesHandler(scenario).resizeTo(endDate);
     }
 
-    protected abstract DateHandler getDatesHandler(Scenario scenario);
-
-    public abstract class DateHandler {
-
-        protected final Scenario scenario;
-
-        public DateHandler(Scenario scenario) {
-            Validate.notNull(scenario);
-            this.scenario = scenario;
-        }
-
-        public void moveTo(IntraDayDate newStartDate) {
-            if (newStartDate == null) {
-                return;
-            }
-            TaskElement thisTaskElement = TaskElement.this;
-            IntraDayDate previousStart = thisTaskElement.startDate;
-            thisTaskElement.endDate = calculateNewEndGiven(newStartDate);
-            setIntraDayStartDate(newStartDate);
-            if (!previousStart.equals(newStartDate)) {
-                moveAllocations();
-            }
-        }
-
-        protected abstract IntraDayDate calculateNewEndGiven(
-                IntraDayDate newStartDate);
-
-        protected abstract void moveAllocations();
-
-        public void resizeTo(IntraDayDate endDate) {
-            if (!canBeResized()) {
-                return;
-            }
-            TaskElement thisTaskElement = TaskElement.this;
-            boolean sameDay = thisTaskElement.endDate.areSameDay(endDate
-                    .getDate());
-            setIntraDayEndDate(endDate);
-            updateWorkableDays();
-            if (!sameDay) {
-                moveAllocations();
-            }
-        }
-
-        // default implementation meant to be override
-        protected void updateWorkableDays() {
-        }
+    private IDatesHandler getDatesHandler(Scenario scenario) {
+        return ignoreNullDates(createDatesHandler(scenario));
     }
 
+    private IDatesHandler ignoreNullDates(final IDatesHandler decorated) {
+        return new IDatesHandler() {
+
+            @Override
+            public void resizeTo(IntraDayDate endDate) {
+                if (endDate == null) {
+                    return;
+                }
+                decorated.resizeTo(endDate);
+            }
+
+            @Override
+            public void moveTo(IntraDayDate newStartDate) {
+                if (newStartDate == null) {
+                    return;
+                }
+                decorated.moveTo(newStartDate);
+            }
+        };
+    }
+
+    protected abstract IDatesHandler createDatesHandler(Scenario scenario);
+
+    public interface IDatesHandler {
+
+        void moveTo(IntraDayDate newStartDate);
+
+        void resizeTo(IntraDayDate endDate);
+    }
 
     protected abstract boolean canBeResized();
 
