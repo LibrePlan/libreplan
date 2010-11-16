@@ -110,15 +110,22 @@ public class MonteCarloGraphController extends GenericForwardComposer {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
-    private CategoryModel generateMonteCarloGraphByWeek(String orderName, Map<Integer, BigDecimal> data) {
+    private String weekLabelFor(LocalDate date) {
+        return "W" + date.getWeekOfWeekyear();
+    }
+
+    private String weekAndYearLabelFor(LocalDate date) {
+        return "W" + date.getWeekOfWeekyear() + "-" + date.getYear();
+    }
+
+    private CategoryModel generateMonteCarloGraphByWeek(String orderName, Map<String, BigDecimal> data) {
         CategoryModel result = new SimpleCategoryModel();
 
-        List<Integer> weeks = new ArrayList(data.keySet());
-        Collections.sort(weeks);
-        Integer first = weeks.get(0);
-        Integer last = weeks.get(weeks.size() - 1);
-        for (Integer i = first; i <= last; i = i + 1) {
-            plotWeekValue(result, orderName, "W" + i, data.get(i));
+        LocalDate first = getFirstDate();
+        LocalDate last = getLastDate();
+        for (LocalDate i = first; i.compareTo(last) <= 0; i = i.plusDays(1)) {
+            plotWeekValue(result, orderName, weekLabelFor(i),
+                    data.get(weekAndYearLabelFor(i)));
         }
         return result;
     }
@@ -130,15 +137,15 @@ public class MonteCarloGraphController extends GenericForwardComposer {
         model.setValue(orderName, date, probability);
     }
 
-    private Map<Integer, BigDecimal> groupByWeek(Map<LocalDate, BigDecimal> data) {
-        Map<Integer, BigDecimal> result = new HashMap<Integer, BigDecimal>();
+    private Map<String, BigDecimal> groupByWeek(Map<LocalDate, BigDecimal> data) {
+        Map<String, BigDecimal> result = new HashMap<String, BigDecimal>();
 
         // Group values of each date by week
         for (LocalDate date: data.keySet()) {
-            Integer week = Integer.valueOf(date.getWeekOfWeekyear());
-            BigDecimal value = result.get(week);
+            String weekLabel = weekAndYearLabelFor(date);
+            BigDecimal value = result.get(weekLabel);
             value = (value != null) ? value.add(data.get(date)) : data.get(date);
-            result.put(week, value);
+            result.put(weekLabel, value);
         }
         return result;
     }
