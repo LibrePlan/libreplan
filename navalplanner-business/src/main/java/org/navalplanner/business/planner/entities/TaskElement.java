@@ -265,21 +265,8 @@ public abstract class TaskElement extends BaseEntity {
      * @param newStartDate
      */
     public void moveTo(Scenario scenario, IntraDayDate newStartDate) {
-        if (newStartDate == null) {
-            return;
-        }
-        IntraDayDate previousStart = this.startDate;
-        this.endDate = calculateNewEndGiven(newStartDate);
-        setIntraDayStartDate(newStartDate);
-        if (!previousStart.equals(newStartDate)) {
-            moveAllocations(scenario);
-        }
+        getDatesHandler(scenario).moveTo(newStartDate);
     }
-
-    protected abstract IntraDayDate calculateNewEndGiven(
-            IntraDayDate newStartDate);
-
-    protected abstract void moveAllocations(Scenario scenario);
 
     @NotNull
     public Date getEndDate() {
@@ -309,20 +296,57 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void resizeTo(Scenario scenario, IntraDayDate endDate) {
-        if (!canBeResized()) {
-            return;
+        getDatesHandler(scenario).resizeTo(endDate);
+    }
+
+    protected abstract DateHandler getDatesHandler(Scenario scenario);
+
+    public abstract class DateHandler {
+
+        protected final Scenario scenario;
+
+        public DateHandler(Scenario scenario) {
+            Validate.notNull(scenario);
+            this.scenario = scenario;
         }
-        boolean sameDay = this.endDate.areSameDay(endDate.getDate());
-        setIntraDayEndDate(endDate);
-        updateWorkableDays();
-        if (!sameDay) {
-            moveAllocations(scenario);
+
+        public void moveTo(IntraDayDate newStartDate) {
+            if (newStartDate == null) {
+                return;
+            }
+            TaskElement thisTaskElement = TaskElement.this;
+            IntraDayDate previousStart = thisTaskElement.startDate;
+            thisTaskElement.endDate = calculateNewEndGiven(newStartDate);
+            setIntraDayStartDate(newStartDate);
+            if (!previousStart.equals(newStartDate)) {
+                moveAllocations();
+            }
+        }
+
+        protected abstract IntraDayDate calculateNewEndGiven(
+                IntraDayDate newStartDate);
+
+        protected abstract void moveAllocations();
+
+        public void resizeTo(IntraDayDate endDate) {
+            if (!canBeResized()) {
+                return;
+            }
+            TaskElement thisTaskElement = TaskElement.this;
+            boolean sameDay = thisTaskElement.endDate.areSameDay(endDate
+                    .getDate());
+            setIntraDayEndDate(endDate);
+            updateWorkableDays();
+            if (!sameDay) {
+                moveAllocations();
+            }
+        }
+
+        // default implementation meant to be override
+        protected void updateWorkableDays() {
         }
     }
 
-    // default implementation meant to be override
-    protected void updateWorkableDays() {
-    }
 
     protected abstract boolean canBeResized();
 

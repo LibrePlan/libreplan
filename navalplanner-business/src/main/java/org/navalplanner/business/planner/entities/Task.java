@@ -455,12 +455,32 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected IntraDayDate calculateNewEndGiven(IntraDayDate newStartDate) {
-        if (workableDays != null) {
-            return IntraDayDate.startOfDay(calculateEndGivenWorkableDays(
-                    newStartDate.getDate(), workableDays));
-        }
-        return calculateEndKeepingLength(newStartDate);
+    protected DateHandler getDatesHandler(Scenario scenario) {
+        return new DateHandler(scenario) {
+
+            @Override
+            protected void moveAllocations() {
+                reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
+            }
+
+            @Override
+            protected IntraDayDate calculateNewEndGiven(
+                    IntraDayDate newStartDate) {
+                if (workableDays != null) {
+                    return IntraDayDate
+                            .startOfDay(calculateEndGivenWorkableDays(
+                                    newStartDate.getDate(), workableDays));
+                }
+                return calculateEndKeepingLength(newStartDate);
+            }
+
+            @Override
+            protected void updateWorkableDays() {
+                if (workableDays != null) {
+                    workableDays = getWorkableDaysBetweenDates();
+                }
+            }
+        };
     }
 
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
@@ -489,11 +509,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             resultDuration = resultDuration.minus(capacity);
         }
         return IntraDayDate.create(resultDay, resultDuration);
-    }
-
-    @Override
-    protected void moveAllocations(Scenario scenario) {
-        reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
@@ -626,13 +641,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     protected boolean canBeResized() {
         return calculatedValue != CalculatedValue.END_DATE
                 || resourceAllocations.isEmpty();
-    }
-
-    @Override
-    protected void updateWorkableDays() {
-        if (workableDays != null) {
-            workableDays = getWorkableDaysBetweenDates();
-        }
     }
 
     @Override
