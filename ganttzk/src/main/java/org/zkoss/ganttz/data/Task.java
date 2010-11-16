@@ -253,11 +253,14 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void resizeTo(LocalDate date) {
+        if (date.compareTo(getBeginDateAsLocalDate()) < 0) {
+            return;
+        }
         resizeTo(GanttDate.createFrom(date));
     }
 
-    public void resizeTo(GanttDate date) {
-        setEndDate(date);
+    public void resizeTo(GanttDate newEnd) {
+        fundamentalProperties.resizeTo(newEnd);
     }
 
     public void removed() {

@@ -480,6 +480,23 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
 
             @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                if (getIntraDayEndDate().equals(newEnd)) {
+                    return;
+                }
+                if (calculatedValue != CalculatedValue.END_DATE
+                        || getSatisfiedResourceAllocations().isEmpty()) {
+                    setIntraDayStartDate(calculateNewStartGivenEnd(newEnd));
+                }
+                setIntraDayEndDate(newEnd);
+                doReassignment(Direction.BACKWARD);
+            }
+
+            private IntraDayDate calculateNewStartGivenEnd(IntraDayDate newEnd) {
+                return calculateStartKeepingLength(newEnd);
+            }
+
+            @Override
             public void resizeTo(IntraDayDate endDate) {
                 if (!canBeResized() || getIntraDayEndDate().equals(endDate)) {
                     return;
@@ -493,6 +510,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                 assert calculatedValue != CalculatedValue.END_DATE;
                 workableDays = getWorkableDaysBetweenDates();
             }
+
         };
     }
 
@@ -520,7 +538,12 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
-        return durationBetweenDates.from(newStartDate);
+        return durationBetweenDates.fromStartToEnd(newStartDate);
+    }
+
+    private IntraDayDate calculateStartKeepingLength(IntraDayDate newEnd) {
+        DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+        return durationBetweenDates.fromEndToStart(newEnd);
     }
 
     private DurationBetweenDates getDurationBetweenDates() {
@@ -560,20 +583,54 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
         }
 
-        public IntraDayDate from(IntraDayDate newStartDate) {
-            EffortDuration resultDuration = remainderDuration.plus(newStartDate
-                    .getEffortDuration());
+        public IntraDayDate fromStartToEnd(IntraDayDate newStartDate) {
             LocalDate resultDay = calculateEndGivenWorkableDays(
                     newStartDate.getDate(), numberOfWorkableDays);
-            EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                    .wholeDay(resultDay));
-            while (resultDuration.compareTo(capacity) > 0) {
-                resultDay = resultDay.plusDays(1);
-                resultDuration = resultDuration.minus(capacity);
-                capacity = calendar.getCapacityOn(PartialDay
-                        .wholeDay(resultDay));
+            return plusDuration(IntraDayDate.startOfDay(resultDay),
+                    remainderDuration.plus(newStartDate.getEffortDuration()));
+        }
+
+        private IntraDayDate plusDuration(IntraDayDate start,
+                EffortDuration remaining) {
+            IntraDayDate result = IntraDayDate.startOfDay(start.getDate());
+            remaining = remaining.plus(start.getEffortDuration());
+            LocalDate current = start.getDate();
+            while (!remaining.isZero()) {
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(current));
+                result = IntraDayDate.create(current, remaining);
+                remaining = remaining.minus(min(capacity, remaining));
+                current = current.plusDays(1);
             }
-            return IntraDayDate.create(resultDay, resultDuration);
+            return result;
+        }
+
+        public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
+            LocalDate resultDay = calculateStartGivenWorkableDays(
+                    newEnd.getDate(), numberOfWorkableDays);
+            return minusDuration(plusDuration(
+                    IntraDayDate.startOfDay(resultDay),
+                            newEnd.getEffortDuration()), remainderDuration);
+        }
+
+        private IntraDayDate minusDuration(IntraDayDate date,
+                EffortDuration decrement) {
+            IntraDayDate result = IntraDayDate.create(
+                    date.getDate(),
+                    date.getEffortDuration().minus(
+                            min(decrement, date.getEffortDuration())));
+            decrement = decrement
+                    .minus(min(date.getEffortDuration(), decrement));
+            LocalDate resultDay = date.getDate();
+            while (!decrement.isZero()) {
+                resultDay = resultDay.minusDays(1);
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(resultDay));
+                decrement = decrement.minus(min(capacity, decrement));
+                result = IntraDayDate.create(resultDay,
+                        capacity.minus(min(capacity, decrement)));
+            }
+            return result;
         }
     }
 
@@ -819,6 +876,17 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         LocalDate result = start;
         for (int i = 0; i < workableDays; result = result.plusDays(1)) {
             if (isWorkable(result)) {
+                i++;
+            }
+        }
+        return result;
+    }
+
+    private LocalDate calculateStartGivenWorkableDays(LocalDate end,
+            int workableDays) {
+        LocalDate result = end;
+        for (int i = 0; i < workableDays; result = result.minusDays(1)) {
+            if (isWorkable(result.minusDays(1))) {
                 i++;
             }
         }

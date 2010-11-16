@@ -56,6 +56,8 @@ public interface ITaskFundamentalProperties {
 
     public void setEndDate(GanttDate endDate);
 
+    public void resizeTo(GanttDate endDate);
+
     public String getNotes();
 
     public void setNotes(String notes);

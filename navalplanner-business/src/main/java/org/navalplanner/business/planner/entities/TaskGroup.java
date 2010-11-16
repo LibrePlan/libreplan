@@ -124,6 +124,11 @@ public class TaskGroup extends TaskElement {
             public void resizeTo(IntraDayDate endDate) {
                 setIntraDayEndDate(endDate);
             }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                setIntraDayEndDate(newEnd);
+            }
         };
     }
 

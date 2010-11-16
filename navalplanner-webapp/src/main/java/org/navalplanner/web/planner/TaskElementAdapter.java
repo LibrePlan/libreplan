@@ -370,6 +370,20 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
+                            taskElement.moveEndTo(currentScenario,
+                                    toIntraDay(endDate));
+                            return null;
+                        }
+                    });
+        }
+
+        @Override
+        public void resizeTo(final GanttDate endDate) {
+            transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            stepsBeforePossibleReallocation();
                             taskElement.resizeTo(currentScenario,
                                     toIntraDay(endDate));
                             return null;

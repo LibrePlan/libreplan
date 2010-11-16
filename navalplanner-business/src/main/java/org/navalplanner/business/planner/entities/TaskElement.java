@@ -299,6 +299,10 @@ public abstract class TaskElement extends BaseEntity {
         getDatesHandler(scenario).resizeTo(endDate);
     }
 
+    public void moveEndTo(Scenario scenario, IntraDayDate intraDay) {
+        getDatesHandler(scenario).moveEndTo(intraDay);
+    }
+
     private IDatesHandler getDatesHandler(Scenario scenario) {
         return ignoreNullDates(createDatesHandler(scenario));
     }
@@ -321,6 +325,14 @@ public abstract class TaskElement extends BaseEntity {
                 }
                 decorated.moveTo(newStartDate);
             }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                if (newEnd == null) {
+                    return;
+                }
+                decorated.moveEndTo(newEnd);
+            }
         };
     }
 
@@ -329,6 +341,8 @@ public abstract class TaskElement extends BaseEntity {
     public interface IDatesHandler {
 
         void moveTo(IntraDayDate newStartDate);
+
+        void moveEndTo(IntraDayDate newEnd);
 
         void resizeTo(IntraDayDate endDate);
     }

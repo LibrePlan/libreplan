@@ -130,6 +130,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public void setEndDate(GanttDate endDate) {
+        this.beginDate = toMilliseconds(endDate) - this.lengthMilliseconds;
+    }
+
+    @Override
+    public void resizeTo(GanttDate endDate) {
         this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 

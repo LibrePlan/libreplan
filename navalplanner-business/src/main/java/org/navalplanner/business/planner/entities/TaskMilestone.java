@@ -130,6 +130,11 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
             public void resizeTo(IntraDayDate endDate) {
                 moveTo(endDate);
             }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                moveTo(newEnd);
+            }
         };
     }
 
