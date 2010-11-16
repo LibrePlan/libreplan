@@ -22,7 +22,6 @@ package org.navalplanner.business.planner.entities;
 
 import static java.util.Collections.emptyList;
 import static org.navalplanner.business.workingday.EffortDuration.min;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -526,31 +525,51 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
-        final IntraDayDate start = getIntraDayStartDate();
-        final IntraDayDate end = getIntraDayEndDate();
-        final int numberOfDays = start.numberOfDaysUntil(end);
-        EffortDuration resultDuration = zero();
         ICalendar calendar = getCalendar() != null ? getCalendar()
                 : SameWorkHoursEveryDay.getDefaultWorkingDay();
-        if (getIntraDayStartDate().getEffortDuration().compareTo(
-                getIntraDayEndDate().getEffortDuration()) <= 0) {
-            resultDuration = end.getEffortDuration().minus(
-                    start.getEffortDuration());
-        } else {
+        DurationBetweenDates durationBetweenDates = new DurationBetweenDates(
+                calendar, getIntraDayStartDate(), getIntraDayEndDate());
+        return durationBetweenDates.from(newStartDate);
+    }
+
+    private static class DurationBetweenDates {
+
+        private final int numberOfDays;
+
+        private final EffortDuration remainderDuration;
+
+        private final ICalendar calendar;
+
+        public DurationBetweenDates(ICalendar calendar, IntraDayDate start,
+                IntraDayDate end) {
+            this.calendar = calendar;
+            this.numberOfDays = start.numberOfDaysUntil(end);
+            if (start.getEffortDuration().compareTo(end.getEffortDuration()) <= 0) {
+                this.remainderDuration = end.getEffortDuration().minus(
+                        start.getEffortDuration());
+            } else {
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(start.getDate()));
+                this.remainderDuration = end.getEffortDuration()
+                        .plus(capacity.minus(min(start.getEffortDuration(),
+                                capacity)));
+            }
+        }
+
+        public IntraDayDate from(IntraDayDate newStartDate) {
+            EffortDuration resultDuration = remainderDuration.plus(newStartDate
+                    .getEffortDuration());
+            LocalDate resultDay = newStartDate.getDate().plusDays(numberOfDays);
             EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                    .wholeDay(start.getDate()));
-            resultDuration = end.getEffortDuration().plus(
-                    capacity.minus(min(start.getEffortDuration(), capacity)));
+                    .wholeDay(resultDay));
+            while (resultDuration.compareTo(capacity) > 0) {
+                resultDay = resultDay.plusDays(1);
+                resultDuration = resultDuration.minus(capacity);
+                capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(resultDay));
+            }
+            return IntraDayDate.create(resultDay, resultDuration);
         }
-        resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
-        LocalDate resultDay = newStartDate.getDate().plusDays(numberOfDays);
-        final EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                .wholeDay(resultDay));
-        if (resultDuration.compareTo(capacity) > 0) {
-            resultDay = resultDay.plusDays(1);
-            resultDuration = resultDuration.minus(capacity);
-        }
-        return IntraDayDate.create(resultDay, resultDuration);
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
