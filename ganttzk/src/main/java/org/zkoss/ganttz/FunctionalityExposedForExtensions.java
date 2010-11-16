@@ -363,12 +363,23 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         getDependencyList().remove(dependency);
     }
 
-    public void changeType(Dependency dependency, DependencyType type) {
+    /**
+     * Substitutes the dependency for a new one with the same source and
+     * destination but with the specified type. If the new dependency cannot be
+     * added, the old one remains.
+     * @param dependency
+     * @param type
+     *            the new type
+     * @return true only if the new dependency can be added.
+     */
+    public boolean changeType(Dependency dependency, DependencyType type) {
         Dependency newDependency = dependency.createWithType(type);
-        if (diagramGraph.canAddDependency(newDependency)) {
+        boolean canAddDependency = diagramGraph.canAddDependency(newDependency);
+        if (canAddDependency) {
             removeDependency(dependency);
             addDependency(newDependency);
         }
+        return canAddDependency;
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -60,7 +61,20 @@ public class DependencyList extends XulElement implements AfterCompose {
 
         @Override
         public void onEvent(final DependencyComponent choosen, Event event) {
-            context.changeType(choosen.getDependency(), type);
+            boolean canBeAdded = context.changeType(choosen.getDependency(),
+                    type);
+            if (!canBeAdded) {
+                warnUser(_("The specified dependency is not allowed"));
+            }
+        }
+
+        private void warnUser(String message) {
+            try {
+                Messagebox.show(message, null, Messagebox.OK,
+                        Messagebox.EXCLAMATION, 0, null);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
