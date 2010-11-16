@@ -393,13 +393,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 Integer hours = taskElement.getSumOfHoursAllocated();
 
                 if (hours == 0) {
-                    return getBeginDate();
-                } else {
-                    BigDecimal percentage = new BigDecimal(assignedHours)
-                            .setScale(2).divide(new BigDecimal(hours),
-                                    RoundingMode.DOWN);
-                    result = calculateLimitDate(percentage);
+                    hours = orderElement.getWorkHours();
+                    if (hours == 0) {
+                        return getBeginDate();
+                    }
                 }
+                BigDecimal percentage = new BigDecimal(assignedHours)
+                        .setScale(2).divide(new BigDecimal(hours),
+                                RoundingMode.DOWN);
+                result = calculateLimitDate(percentage);
+
             }
 
             return result;
@@ -420,7 +423,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     .setScale(2);
 
             if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
-                return BigDecimal.ZERO;
+                estimatedHours = new BigDecimal(orderElement.getWorkHours())
+                        .setScale(2);
+                if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                    return BigDecimal.ZERO;
+                }
             }
             return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
         }
