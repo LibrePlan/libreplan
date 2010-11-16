@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
@@ -44,6 +45,7 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -51,9 +53,24 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
+ *
+ *         Calculates the MonteCarlo function for a list of tasks. Usually this
+ *         list of tasks represents a critical path. There could be many
+ *         critical paths in scheduling.
+ *
+ *         A big chunk of code goes for determining all the possible critical
+ *         paths, departing from a list of elements that contains all the tasks
+ *         which are in the critical path. The algorithm determines first all
+ *         the possible starting tasks and navigates them forward until reaching
+ *         an end.
+ *
+ *         Navigating from a task to a taskgroup is a bit cumbersome. The
+ *         algorithm considers than when there is a link between a task a
+ *         taskgroup, the task is connected with all the taskgroup's children
+ *         which have: a) no incoming dependencies b) has no incoming
+ *         dependencies from a task that it's not a children of that taskgroup.
  *
  */
 @Component
@@ -78,21 +95,60 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private List<TaskElement> orderTasks = new ArrayList<TaskElement>();
 
+    private List<TaskElement> tasksInCriticalPath;
+
     @Override
     @Transactional(readOnly = true)
-    public void setCriticalPath(Order order, List<TaskElement> tasksInCriticalPath) {
+    public void setCriticalPath(Order order,
+            List<TaskElement> tasksInCriticalPath) {
+        // Initializes tasks inside order (necessary to navigate its taskgroups)
         useSchedulingDataForCurrentScenario(order);
+        orderTasks.clear();
         orderTasks.addAll(order.getAllChildrenAssociatedTaskElements());
         initializeTasks(orderTasks);
 
+        tasksInCriticalPath = noTaskMilestones(tasksInCriticalPath);
         initializeOrderName(tasksInCriticalPath);
+        this.tasksInCriticalPath = retrieveTaskFromModel(tasksInCriticalPath);
 
         int i = 1;
         criticalPaths.clear();
-        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(sortByStartDate(onlyTasks((tasksInCriticalPath))));
+        List<Task> startingTasks = sortByStartDate(onlyTasks((this.tasksInCriticalPath)));
+        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(startingTasks);
         for (List<Task> path : allCriticalPaths) {
-            criticalPaths.put(CRITICAL_PATH + " " + i++, toMonteCarloTaskList(path));
+            criticalPaths.put(CRITICAL_PATH + " " + i++,
+                    toMonteCarloTaskList(path));
         }
+    }
+
+    private List<TaskElement> retrieveTaskFromModel(List<TaskElement> tasks) {
+        List<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement each: tasks) {
+            TaskElement task = retrieveTaskFromModel(each);
+            if (task != null) {
+                result.add(task);
+            }
+        }
+        return result;
+    }
+
+    private TaskElement retrieveTaskFromModel(TaskElement task) {
+        for (TaskElement each : orderTasks) {
+            if (isSameTask(each, task)) {
+                return (Task) each;
+            }
+        }
+        return null;
+    }
+
+    private List<TaskElement> noTaskMilestones(List<TaskElement> tasks) {
+        List<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement each: tasks) {
+            if (!(each instanceof TaskMilestone)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     private void useSchedulingDataForCurrentScenario(Order order) {
@@ -101,7 +157,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     }
 
     private void initializeTasks(List<TaskElement> taskElements) {
-        for (TaskElement each: taskElements) {
+        for (TaskElement each : taskElements) {
             initializeTaskElement(each);
         }
     }
@@ -116,7 +172,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     }
 
     private void initializeDependencies(TaskElement taskElement) {
-        for (Dependency each: taskElement.getDependenciesWithThisDestination()) {
+        for (Dependency each : taskElement.getDependenciesWithThisDestination()) {
             Hibernate.initialize(each.getOrigin());
             Hibernate.initialize(each.getDestination());
         }
@@ -149,39 +205,72 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private List<Task> onlyTasks(List<TaskElement> tasks) {
         List<Task> result = new ArrayList<Task>();
-        for (TaskElement each: tasks) {
+        for (TaskElement each : tasks) {
             if (each instanceof Task) {
                 result.add((Task) each);
             }
         }
         return result;
     }
+
+    /**
+     * Constructs all possible paths starting from those tasks in the critical
+     * path have no incoming dependencies or have incoming dependencies to other
+     * tasks not in the critical path.
+     *
+     * Once all possible path were constructed, filter only those paths which
+     * all their tasks are in the list of tasks in the critical path
+     *
+     * @param tasksInCriticalPath
+     * @return
+     */
     private List<List<Task>> buildAllPossibleCriticalPaths(
             List<Task> tasksInCriticalPath) {
 
         List<List<Task>> result = new ArrayList<List<Task>>();
-
         List<List<Task>> allPaths = new ArrayList<List<Task>>();
-        for (Task each: tasksWithoutIncomingDependencies(tasksInCriticalPath)) {
+
+        for (Task each : getStartingTasks(tasksInCriticalPath)) {
             buildAllPossiblePaths(each, new ArrayList<Task>(), allPaths);
         }
-        for (List<Task> path: allPaths) {
-            if (isCriticalPath(path, tasksInCriticalPath)) {
+        for (List<Task> path : allPaths) {
+            if (isCriticalPath(path)) {
                 result.add(path);
             }
         }
         return result;
     }
 
-    private List<Task> getDestinationsFrom(Task _task) {
+    /**
+     * Returns the list of starting tasks
+     *
+     * A task is a starting task if a) has no incoming dependencies b) the only
+     * incoming dependencies that it has are to other tasks which are no tasks in
+     * the critical path
+     *
+     * @param tasks
+     * @return
+     */
+    private List<Task> getStartingTasks(List<Task> tasks) {
+        List<Task> result = new ArrayList<Task>();
+        for (Task each : tasks) {
+            List<Task> origins = getOriginsFrom(each);
+            if (onlyTasksInCriticalPath(origins).isEmpty()) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private List<Task> getOriginsFrom(Task task) {
         List<Task> result = new ArrayList<Task>(), tasks;
 
-        Task task = retrieveTaskFromModel(_task);
-        tasks = getDestinationsFrom(task.getDependenciesWithThisOrigin());
+        tasks = getOriginsFrom(task.getDependenciesWithThisDestination());
         if (!tasks.isEmpty()) {
             result.addAll(tasks);
         } else {
-            tasks = getDestinationsFrom(task.getParent().getDependenciesWithThisOrigin());
+            tasks = getOriginsFrom(task.getParent()
+                    .getDependenciesWithThisDestination());
             if (!tasks.isEmpty()) {
                 result.addAll(tasks);
             }
@@ -189,13 +278,15 @@ public class MonteCarloModel implements IMonteCarloModel {
         return result;
     }
 
-    private List<Task> getDestinationsFrom(Set<Dependency> dependencies) {
+    private List<Task> getOriginsFrom(Set<Dependency> dependencies) {
         List<Task> result = new ArrayList<Task>();
-        for (Dependency each: dependencies) {
-            TaskElement taskElement = each.getDestination();
+        for (Dependency each : dependencies) {
+            TaskElement taskElement = each.getOrigin();
             if (taskElement instanceof TaskGroup) {
                 final TaskGroup taskGroup = (TaskGroup) taskElement;
-                result.addAll(toTaskIfNecessary(taskGroup.getChildren()));
+                List<TaskElement> children = onlyTasksInCriticalPath(taskGroup
+                        .getChildren());
+                result.addAll(toTaskIfNecessary(children));
             }
             if (taskElement instanceof Task) {
                 result.add((Task) taskElement);
@@ -204,79 +295,54 @@ public class MonteCarloModel implements IMonteCarloModel {
         return result;
     }
 
-    private Collection<? extends Task> toTaskIfNecessary(
-            List<TaskElement> taskElements) {
-       List<Task> result = new ArrayList<Task>();
-       for (TaskElement each: taskElements) {
-           if (each instanceof TaskGroup) {
-               final TaskGroup taskGroup = (TaskGroup) each;
-               result.addAll(toTaskIfNecessary(taskGroup.getChildren()));
-           }
-           if (each instanceof Task) {
-               result.add((Task) each);
-           }
-       }
-       return result;
+    private List<TaskElement> onlyTasksInCriticalPath(
+            List<? extends TaskElement> tasks) {
+        return onlyTasksInGroup(tasks, tasksInCriticalPath);
     }
 
-    private List<Task> tasksWithoutIncomingDependencies(List<Task> tasks) {
-        List<Task> result = new ArrayList<Task>();
-        for (Task each: tasks) {
-            if (getIncomingDependencies(each).isEmpty()) {
+    private List<TaskElement> onlyTasksInGroup(
+            List<? extends TaskElement> tasks, List<? extends TaskElement> group) {
+        List<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement each : tasks) {
+            if (inTaskList(each, group)) {
                 result.add(each);
             }
         }
         return result;
     }
 
-    private List<Dependency> getIncomingDependencies(Task _task) {
-        Task task = retrieveTaskFromModel(_task);
-        if (task == null) {
-            throw new RuntimeException(_("Couldn't find %s in model", _task.getName()));
-        }
-        List<Dependency> result = new ArrayList<Dependency>();
-        result.addAll(task.getDependenciesWithThisDestination());
-        result.addAll(task.getParent().getDependenciesWithThisDestination());
-        return result;
-    }
-
-    private Task retrieveTaskFromModel(Task task) {
-        for (TaskElement each: orderTasks) {
-            String code = each.getOrderElement().getCode();
-            if (code.equals(task.getOrderElement().getCode())) {
-                return (Task) each;
+    private boolean inTaskList(TaskElement task, List<? extends TaskElement> tasks) {
+        for (TaskElement each : tasks) {
+            if (isSameTask(task, each)) {
+                return true;
             }
         }
-        return null;
+        return false;
     }
 
-    private boolean isCriticalPath(List<Task> path,
-            List<Task> tasksInCriticalPath) {
-       final List<Long> tasksInCriticalPathIds = getIds(tasksInCriticalPath);
-       for (Task each: path) {
-           if (!tasksInCriticalPathIds.contains(each.getId())) {
-               return false;
-           }
-       }
-       return true;
+    private boolean isSameTask(TaskElement task1, TaskElement task2) {
+        return task1.getOrderElement().getCode()
+                .equals(task2.getOrderElement().getCode());
     }
 
-    private List<Long> getIds(List<Task> tasks) {
-        List<Long> result = new ArrayList<Long>();
-        for (Task each: tasks) {
-            result.add(each.getId());
+    private boolean isCriticalPath(List<Task> path) {
+        for (Task each : path) {
+            if (!inTaskList(each, tasksInCriticalPath)) {
+                return false;
+            }
         }
-        return result;
+        return true;
     }
 
-    private void buildAllPossiblePaths(Task task, List<Task> path, List<List<Task>> allPaths) {
+    private void buildAllPossiblePaths(Task task, List<Task> path,
+            List<List<Task>> allPaths) {
         List<Task> destinations = getDestinationsFrom(task);
         if (destinations.size() == 0) {
             path.add(task);
             allPaths.add(path);
             return;
         }
-        for (Task each: destinations) {
+        for (Task each : destinations) {
             List<Task> oldPath = copyPath(path);
             path.add(task);
             buildAllPossiblePaths((Task) each, path, allPaths);
@@ -286,22 +352,91 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private List<Task> copyPath(List<Task> path) {
         List<Task> result = new ArrayList<Task>();
-        for (Task each: path) {
+        for (Task each : path) {
             result.add(each);
+        }
+        return result;
+    }
+
+    private List<Task> getDestinationsFrom(Task task) {
+        List<Task> result = new ArrayList<Task>(), tasks;
+
+        tasks = getDestinationsFrom(task.getDependenciesWithThisOrigin());
+        if (!tasks.isEmpty()) {
+            result.addAll(tasks);
+        } else {
+            tasks = getDestinationsFrom(task.getParent()
+                    .getDependenciesWithThisOrigin());
+            if (!tasks.isEmpty()) {
+                result.addAll(tasks);
+            }
+        }
+        return result;
+    }
+
+    private List<Task> getDestinationsFrom(Set<Dependency> dependencies) {
+        List<Task> result = new ArrayList<Task>();
+        for (Dependency each : dependencies) {
+            TaskElement taskElement = each.getDestination();
+            if (taskElement instanceof TaskGroup) {
+                final TaskGroup taskGroup = (TaskGroup) taskElement;
+                List<TaskElement> tasks = onlyTasksWithIncomingDependenciesToOtherTasksNotInThisGroup(taskGroup
+                        .getChildren());
+                result.addAll(toTaskIfNecessary(tasks));
+            }
+            if (taskElement instanceof Task) {
+                result.add((Task) taskElement);
+            }
+        }
+        return result;
+    }
+
+    private List<TaskElement> onlyTasksWithIncomingDependenciesToOtherTasksNotInThisGroup(
+            List<TaskElement> tasks) {
+        List<TaskElement> result = new ArrayList<TaskElement>();
+        for (TaskElement each : tasks) {
+            Set<Dependency> dependencies = each
+                    .getDependenciesWithThisDestination();
+            if (dependencies.isEmpty()) {
+                result.add(each);
+                continue;
+            }
+            for (Dependency dependency : dependencies) {
+                TaskElement origin = dependency.getOrigin();
+                if (origin instanceof Task && !inTaskList(origin, tasks)) {
+                    result.add(origin);
+                }
+            }
+        }
+        return result;
+    }
+
+    private Collection<? extends Task> toTaskIfNecessary(
+            List<TaskElement> taskElements) {
+        List<Task> result = new ArrayList<Task>();
+        for (TaskElement each : taskElements) {
+            if (each instanceof TaskGroup) {
+                final TaskGroup taskGroup = (TaskGroup) each;
+                result.addAll(toTaskIfNecessary(taskGroup.getChildren()));
+            }
+            if (each instanceof Task) {
+                result.add((Task) each);
+            }
         }
         return result;
     }
 
     private List<MonteCarloTask> toMonteCarloTaskList(List<Task> path) {
         List<MonteCarloTask> result = new ArrayList<MonteCarloTask>();
-        for (Task each: path) {
+        for (Task each : path) {
             result.add(MonteCarloTask.create(each));
         }
         return result;
     }
 
     @Override
-    public Map<LocalDate, BigDecimal> calculateMonteCarlo(List<MonteCarloTask> tasks, int iterations) {
+    public Map<LocalDate, BigDecimal> calculateMonteCarlo(
+            List<MonteCarloTask> tasks, int iterations) {
         Map<LocalDate, BigDecimal> monteCarloValues = new HashMap<LocalDate, BigDecimal>();
         adjustDurationDays(tasks);
         initializeEstimationRanges(tasks);
@@ -311,23 +446,32 @@ public class MonteCarloModel implements IMonteCarloModel {
         for (int i = 0; i < iterations; i++) {
             LocalDate endDate = calculateEndDateFor(tasks, randomGenerator);
             BigDecimal times = monteCarloValues.get(endDate);
-            times = times != null ? times.add(BigDecimal.ONE): BigDecimal.ONE;
+            times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
             monteCarloValues.put(endDate, times);
         }
 
         // Convert number of times to probability
-        for (LocalDate key: monteCarloValues.keySet()) {
+        for (LocalDate key : monteCarloValues.keySet()) {
             BigDecimal times = monteCarloValues.get(key);
-            BigDecimal probability = times.divide(BigDecimal
-                    .valueOf(iterations), 8, RoundingMode.HALF_UP);
+            BigDecimal probability = times.divide(
+                    BigDecimal.valueOf(iterations), 8, RoundingMode.HALF_UP);
             monteCarloValues.put(key, probability);
         }
 
         return monteCarloValues;
     }
 
+    @Override
     public String getOrderName() {
         return orderName;
+    }
+
+    private String toString(List<? extends TaskElement> tasks) {
+        List<String> result = new ArrayList<String>();
+        for (TaskElement each : tasks) {
+            result.add(each.getName());
+        }
+        return StringUtils.join(result, ",");
     }
 
     private void adjustDurationDays(List<MonteCarloTask> tasks) {
@@ -342,13 +486,14 @@ public class MonteCarloModel implements IMonteCarloModel {
         }
     }
 
-    private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks, Random randomGenerator) {
+    private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,
+            Random randomGenerator) {
         Validate.notEmpty(tasks);
         BigDecimal durationDays = BigDecimal.ZERO;
         MonteCarloTask first = tasks.get(0);
         LocalDate result = first.getTask().getStartAsLocalDate();
 
-        for (MonteCarloTask each: tasks) {
+        for (MonteCarloTask each : tasks) {
             BigDecimal randomNumber = generate(randomGenerator);
             durationDays = getDuration(each, randomNumber);
             result = result.plusDays(durationDays.intValue());
@@ -363,7 +508,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     private BigDecimal getDuration(MonteCarloTask each, BigDecimal random) {
         ESTIMATION_TYPE type = getEstimationType(each, random);
         Validate.notNull(type);
-        switch(type) {
+        switch (type) {
         case PESSIMISTIC:
             BigDecimal duration = each.getPessimisticDuration();
             return duration;
@@ -377,7 +522,7 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private void initializeEstimationRanges(List<MonteCarloTask> tasks) {
         estimationRangesForTasks.clear();
-        for (MonteCarloTask each: tasks) {
+        for (MonteCarloTask each : tasks) {
             createEstimationRangesFor(each);
         }
     }
@@ -411,9 +556,11 @@ public class MonteCarloModel implements IMonteCarloModel {
                 ESTIMATION_TYPE.PESSIMISTIC);
     }
 
-    public ESTIMATION_TYPE getEstimationType(MonteCarloTask task, BigDecimal random) {
-        Set<EstimationRange> estimationRanges = estimationRangesForTasks.get(task);
-        for (EstimationRange each: estimationRanges) {
+    public ESTIMATION_TYPE getEstimationType(MonteCarloTask task,
+            BigDecimal random) {
+        Set<EstimationRange> estimationRanges = estimationRangesForTasks
+                .get(task);
+        for (EstimationRange each : estimationRanges) {
             if (each.contains(random)) {
                 return each.getEstimationType();
             }
@@ -443,9 +590,7 @@ public class MonteCarloModel implements IMonteCarloModel {
     }
 
     enum ESTIMATION_TYPE {
-        PESSIMISTIC,
-        NORMAL,
-        OPTIMISTIC;
+        PESSIMISTIC, NORMAL, OPTIMISTIC;
     }
 
 }
