@@ -226,12 +226,12 @@ public class MonteCarloController extends GenericForwardComposer {
 
             row.appendChild(taskName(task));
             row.appendChild(duration(task));
-            row.appendChild(pessimisticDuration(task));
-            row.appendChild(pessimisticDurationPercentage(task));
-            row.appendChild(normalDuration(task));
-            row.appendChild(normalDurationPercentage(task));
             row.appendChild(optimisticDuration(task));
             row.appendChild(optimisticDurationPercentage(task));
+            row.appendChild(normalDuration(task));
+            row.appendChild(normalDurationPercentage(task));
+            row.appendChild(pessimisticDuration(task));
+            row.appendChild(pessimisticDurationPercentage(task));
         }
 
         private Label taskName(final MonteCarloTask task) {

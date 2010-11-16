@@ -36,9 +36,9 @@
 
                 <auxhead>
                     <auxheader colspan="2"/>
-                    <auxheader label="${i18n:_('Pessimistic')}" colspan="2" align="center"/>
-                    <auxheader label="${i18n:_('Normal')}" colspan="2" align="center"/>
                     <auxheader label="${i18n:_('Optimistic')}" colspan="2" align="center"/>
+                    <auxheader label="${i18n:_('Normal')}" colspan="2" align="center"/>
+                    <auxheader label="${i18n:_('Pessimistic')}" colspan="2" align="center"/>
                 </auxhead>
 
                 <columns >
