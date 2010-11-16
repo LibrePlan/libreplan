@@ -136,9 +136,9 @@
             </combobox>
 
             <hbox>
-                <button label="${i18n:_('Assign')}" sclass="save-button"
+                <button label="${i18n:_('Assign')}" sclass="save-button global-action"
                     onClick="calendarController.assign(calendarCombo.selectedItem);" />
-                <button label="${i18n:_('Cancel')}" sclass="cancel-button"
+                <button label="${i18n:_('Cancel')}" sclass="cancel-button global-action"
                     onClick="calendarController.cancel();" />
             </hbox>
 
