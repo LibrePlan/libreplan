@@ -204,7 +204,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
-
+        currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
         boolean expandPlanningViewChart = configurationDAO.
                 getConfiguration().isExpandCompanyPlanningViewCharts();
@@ -664,6 +664,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setPreventCalculateResourcesText(true);
+        taskElementAdapter.useScenario(currentScenario);
         List<TaskElement> toShow;
         toShow = retainOnlyTopLevel(predicate);
 
@@ -684,7 +685,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             //anyway, if it happenned we return an empty list
             return result;
         }
-        currentScenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
         for (Order order : list) {

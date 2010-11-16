@@ -38,10 +38,11 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +60,7 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -68,7 +70,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -84,10 +85,10 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.GanttDate.Cases;
 import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -302,6 +303,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         protected TaskElementWrapper(Scenario currentScenario,
                 TaskElement taskElement) {
+            Validate.notNull(currentScenario);
             this.currentScenario = currentScenario;
             this.taskElement = taskElement;
         }
