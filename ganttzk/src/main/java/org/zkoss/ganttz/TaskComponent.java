@@ -36,8 +36,8 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -227,8 +227,11 @@ public class TaskComponent extends Div implements AfterCompose {
         cssClass += isResizingTasksEnabled() ? " yui-resize" : "";
         if (isContainer()) {
             cssClass += task.isExpanded() ? " expanded" : " closed ";
+            cssClass += task.isInCriticalPath() && !task.isExpanded() ? " critical"
+                    : "";
+        } else {
+            cssClass += task.isInCriticalPath() ? " critical" : "";
         }
-        cssClass += task.isInCriticalPath() ? " critical" : "";
         cssClass += " " + task.getAssignedStatus();
         if (task.isLimiting()) {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "

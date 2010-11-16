@@ -392,7 +392,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private boolean isInCriticalPath(List<Task> criticalPath, Task task) {
-        if (task.isContainer() && !task.isExpanded()) {
+        if (task.isContainer()) {
             List<Task> allTaskLeafs = ((TaskContainer) task).getAllTaskLeafs();
             return CollectionUtils.containsAny(criticalPath, allTaskLeafs);
         } else {
