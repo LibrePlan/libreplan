@@ -513,14 +513,12 @@ public class MonteCarloModel implements IMonteCarloModel {
         Validate.notEmpty(tasks);
         BigDecimal durationDays = BigDecimal.ZERO;
         MonteCarloTask first = tasks.get(0);
-        LocalDate result = first.getTask().getStartAsLocalDate();
 
         for (MonteCarloTask each : tasks) {
             BigDecimal randomNumber = generate(randomGenerator);
-            durationDays = getDuration(each, randomNumber);
-            result = result.plusDays(durationDays.intValue());
+            durationDays = durationDays.add(getDuration(each, randomNumber));
         }
-        return result;
+        return first.getStartDate().plusDays(durationDays.intValue());
     }
 
     private BigDecimal generate(Random randomGenerator) {

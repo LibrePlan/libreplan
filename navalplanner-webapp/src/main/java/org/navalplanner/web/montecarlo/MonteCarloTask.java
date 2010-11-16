@@ -1,7 +1,6 @@
 package org.navalplanner.web.montecarlo;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
@@ -26,7 +25,7 @@ public class MonteCarloTask {
     }
 
     public static BigDecimal calculateRealDurationFor(MonteCarloTask task, BigDecimal daysDuration) {
-        LocalDate start = new LocalDate(task.getStartDate());
+        LocalDate start = task.getStartDate();
         Validate.notNull(start);
         LocalDate end = calculateEndDateFor(task, daysDuration);
         Days daysBetween = Days.daysBetween(start, end);
@@ -38,7 +37,7 @@ public class MonteCarloTask {
         LocalDate start = new LocalDate(task.getStartDate());
         LocalDate day = start;
 
-        int duration = daysDuration.intValue();
+        double duration = daysDuration.doubleValue();
         for (int i = 0; i < duration;) {
             EffortDuration workableTime = calendar.getWorkableTimeAt(day);
             if (!EffortDuration.zero().equals(workableTime)) {
@@ -91,8 +90,8 @@ public class MonteCarloTask {
         return task;
     }
 
-    private Date getStartDate() {
-        return task.getStartDate();
+    public LocalDate getStartDate() {
+        return task.getStartAsLocalDate();
     }
 
     private BaseCalendar getCalendar() {
