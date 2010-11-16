@@ -515,4 +515,8 @@ public class ConfigurationModel implements IConfigurationModel {
                 entitySequence);
     }
 
+    public boolean checkFrefixFormat(EntitySequence sequence) {
+        return (sequence.checkConstraintWithoutLowBar() && sequence
+                .checkConstraintPrefixWithoutWhiteSpaces());
+    }
 }

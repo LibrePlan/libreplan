@@ -45,23 +45,32 @@ import org.navalplanner.business.workreports.entities.WorkReportType;
  */
 public enum EntityNameEnum {
 
-    ORDER("Order"), CRITERION("Criterion"), LABEL("Label"), MACHINE("Machine"), WORKER(
-            "Worker"), UNIT_TYPE("Unit type"), CALENDAR("Calendar"), WORK_HOURS_TYPE(
-			"Type of work hours"), MATERIAL_CATEGORY("Material category"), WORK_REPORT(
-            "Work report"), WORK_REPORT_TYPE("Work report type"), CALENDAR_EXCEPTION_TYPE(
-            "Calendar exception type"), COST_CATEGORY("Cost category"), RESOURCE_CALENDAR(
-            "Resource calendar"), CRITERION_SATISFACTION(
-            "Criterion satisfaction"), RESOURCE_COST_CATEGORY_ASSIGNMENT(
-            "Resource cost category assignment");
+    ORDER("Order", false), CRITERION("Criterion", true), LABEL("Label", true), MACHINE(
+            "Machine", true), WORKER("Worker", true), UNIT_TYPE("Unit type",
+            true), CALENDAR("Calendar", true), WORK_HOURS_TYPE(
+            "Type of work hours", true), MATERIAL_CATEGORY("Material category",
+            true), WORK_REPORT("Work report", true), WORKREPORTTYPE(
+            "Work report type", false), CALENDAR_EXCEPTION_TYPE(
+            "Calendar exception type", true), COST_CATEGORY("Cost category",
+            true), RESOURCE_CALENDAR("Resource calendar", true), CRITERION_SATISFACTION(
+            "Criterion satisfaction", true), RESOURCE_COST_CATEGORY_ASSIGNMENT(
+            "Resource cost category assignment", true);
 
     private String description;
 
-    private EntityNameEnum(String description) {
+    private boolean canContainLowBar;
+
+    private EntityNameEnum(String description, boolean canContainLowBar) {
         this.description = description;
+        this.canContainLowBar = canContainLowBar;
     }
 
     public String getDescription() {
         return this.description;
+    }
+
+    public boolean canContainLowBar() {
+        return this.canContainLowBar;
     }
 
     public IIntegrationEntityDAO<? extends IntegrationEntity> getIntegrationEntityDAO() {
@@ -93,7 +102,7 @@ public enum EntityNameEnum {
         case WORK_REPORT:
             return (IIntegrationEntityDAO<WorkReport>) Registry
                     .getWorkReportDAO();
-        case WORK_REPORT_TYPE:
+        case WORKREPORTTYPE:
             return (IIntegrationEntityDAO<WorkReportType>) Registry
                     .getWorkReportTypeDAO();
         case CALENDAR_EXCEPTION_TYPE:

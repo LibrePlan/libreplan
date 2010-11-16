@@ -120,4 +120,6 @@ public interface IConfigurationModel {
     void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars);
 
     Boolean getGenerateCodeForBaseCalendars();
+
+    boolean checkFrefixFormat(EntitySequence sequence);
 }

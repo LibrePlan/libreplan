@@ -532,7 +532,7 @@ public class WorkReportTypeModel extends IntegrationEntityModel implements
     }
 
     public EntityNameEnum getEntityName() {
-        return EntityNameEnum.WORK_REPORT_TYPE;
+        return EntityNameEnum.WORKREPORTTYPE;
     }
 
     public Set<IntegrationEntity> getChildren() {

@@ -144,6 +144,21 @@ public class EntitySequence extends BaseEntity {
         return false;
     }
 
+    @AssertTrue(message = "format sequence code invalid. It must not contain '_'")
+    public boolean checkConstraintWithoutLowBar() {
+        if ((prefix == null) || (prefix.isEmpty())) {
+            return false;
+        }
+        if ((entityName != null) && (entityName.canContainLowBar())) {
+            return true;
+        } else {
+            if (prefix.contains("_")) {
+                return false;
+            }
+            return true;
+        }
+    }
+
     public static String formatValue(int numberOfDigits, int value) {
         String format = "";
         for (int i = 0; i < numberOfDigits; i++) {

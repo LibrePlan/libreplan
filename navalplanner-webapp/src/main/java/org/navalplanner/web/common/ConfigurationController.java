@@ -41,6 +41,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
@@ -437,7 +438,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     }
                 }
             });
-            textbox.setConstraint("no empty:" + _("cannot be null or empty"));
+            textbox.setConstraint(checkConstraintFormatPrefix());
 
             if (entitySequence.isAlreadyInUse()) {
                 textbox.setDisabled(true);
@@ -467,7 +468,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     }
                 }
             });
-            intbox.setConstraint("no empty:" + _("cannot be null or empty"));
+            intbox.setConstraint(checkConstraintNumberOfDigits());
 
             if (entitySequence.isAlreadyInUse()) {
                 intbox.setDisabled(true);
@@ -514,6 +515,49 @@ public class ConfigurationController extends GenericForwardComposer {
             row.appendChild(removeButton);
         }
 
+    }
+
+    public Constraint checkConstraintFormatPrefix() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                Row row = (Row) comp.getParent();
+                EntitySequence sequence = (EntitySequence) row.getValue();
+                if (!sequence.isAlreadyInUse()) {
+                    String prefixValue = (String) value;
+                    sequence.setPrefix(prefixValue);
+                    if (!configurationModel.checkFrefixFormat(sequence)) {
+                        String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
+                        if (sequence.getEntityName().canContainLowBar()) {
+                            message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
+                        }
+                        throw new WrongValueException(comp, message);
+                    }
+                }
+            }
+        };
+    }
+
+    public Constraint checkConstraintNumberOfDigits(){
+        return new Constraint(){
+
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Row row = (Row) comp.getParent();
+                EntitySequence sequence = (EntitySequence) row.getValue();
+                if (!sequence.isAlreadyInUse()) {
+                    Integer numberOfDigits = (Integer) value;
+                    try {
+                    sequence.setNumberOfDigits(numberOfDigits);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(comp, e.getMessage());
+                    }
+                }
+            }
+        };
     }
 
     public void addEntitySequence(EntityNameEnum entityName) {
