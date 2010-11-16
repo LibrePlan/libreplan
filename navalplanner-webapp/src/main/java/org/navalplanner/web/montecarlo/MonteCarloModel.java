@@ -436,8 +436,9 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     @Override
     public Map<LocalDate, BigDecimal> calculateMonteCarlo(
-            List<MonteCarloTask> tasks, int iterations) {
+            List<MonteCarloTask> _tasks, int iterations) {
         Map<LocalDate, BigDecimal> monteCarloValues = new HashMap<LocalDate, BigDecimal>();
+        List<MonteCarloTask> tasks = copyOf(_tasks);
         adjustDurationDays(tasks);
         initializeEstimationRanges(tasks);
 
@@ -457,8 +458,15 @@ public class MonteCarloModel implements IMonteCarloModel {
                     BigDecimal.valueOf(iterations), 8, RoundingMode.HALF_UP);
             monteCarloValues.put(key, probability);
         }
-
         return monteCarloValues;
+    }
+
+    private List<MonteCarloTask> copyOf(List<MonteCarloTask> _tasks) {
+        List<MonteCarloTask> result = new ArrayList<MonteCarloTask>();
+        for (MonteCarloTask each: _tasks) {
+            result.add(MonteCarloTask.copy(each));
+        }
+        return result;
     }
 
     @Override
