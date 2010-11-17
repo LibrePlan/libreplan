@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -706,10 +705,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     public void accept(AllocationResult allocation) {
         resourceAllocationModel.accept(allocation);
-    }
-
-    public void setStartDate(Date date) {
-        resourceAllocationModel.setStartDate(date);
     }
 
     public boolean hasResourceAllocations() {

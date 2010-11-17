@@ -73,8 +73,6 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
 
     ProportionalDistributor addDefaultAllocations();
 
-    void setStartDate(Date date);
-
     Date getTaskEnd();
 
 }

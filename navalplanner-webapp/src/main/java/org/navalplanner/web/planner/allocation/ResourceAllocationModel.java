@@ -396,11 +396,4 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
         return task.getEndDate();
     }
 
-    @Override
-    public void setStartDate(Date date) {
-        if (task != null) {
-            task.setStartDate(date);
-        }
-    }
-
 }
