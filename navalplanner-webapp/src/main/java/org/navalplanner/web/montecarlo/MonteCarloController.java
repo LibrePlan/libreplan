@@ -49,6 +49,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Progressmeter;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
@@ -83,6 +84,8 @@ public class MonteCarloController extends GenericForwardComposer {
 
     private Listbox lbCriticalPaths;
 
+    private Progressmeter progressMonteCarloCalculation;
+
     private Window monteCarloChartWindow;
 
     public MonteCarloController() {
@@ -110,7 +113,8 @@ public class MonteCarloController extends GenericForwardComposer {
                 int iterations = getIterations();
                 validateRowsPercentages();
                 Map<LocalDate, BigDecimal> monteCarloData = monteCarloModel
-                        .calculateMonteCarlo(getSelectedCriticalPath(), iterations);
+                        .calculateMonteCarlo(getSelectedCriticalPath(),
+                                iterations, progressMonteCarloCalculation);
                 showMonteCarloGraph(monteCarloData);
             }
 
@@ -156,6 +160,7 @@ public class MonteCarloController extends GenericForwardComposer {
                 monteCarloChartWindow = createMonteCarloGraphWindow(data);
                 try {
                     monteCarloChartWindow.doModal();
+                    progressMonteCarloCalculation.setValue(0);
                 } catch (SuspendNotAllowedException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

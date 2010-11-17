@@ -53,6 +53,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zul.Progressmeter;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -436,12 +437,14 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     @Override
     public Map<LocalDate, BigDecimal> calculateMonteCarlo(
-            List<MonteCarloTask> _tasks, int iterations) {
+            List<MonteCarloTask> _tasks, int iterations,
+            Progressmeter progressMonteCarloCalculation) {
         Map<LocalDate, BigDecimal> monteCarloValues = new HashMap<LocalDate, BigDecimal>();
         List<MonteCarloTask> tasks = copyOf(_tasks);
         adjustDurationDays(tasks);
         initializeEstimationRanges(tasks);
 
+        final int onepercent = iterations / 100;
         Random randomGenerator = new Random((new Date()).getTime());
         // Calculate number of times a date is repeated
         for (int i = 0; i < iterations; i++) {
@@ -449,6 +452,9 @@ public class MonteCarloModel implements IMonteCarloModel {
             BigDecimal times = monteCarloValues.get(endDate);
             times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
             monteCarloValues.put(endDate, times);
+            if (i % onepercent == 0) {
+                increaseOneUnit(progressMonteCarloCalculation);
+            }
         }
 
         // Convert number of times to probability
@@ -459,6 +465,12 @@ public class MonteCarloModel implements IMonteCarloModel {
             monteCarloValues.put(key, probability);
         }
         return monteCarloValues;
+    }
+
+    private void increaseOneUnit(Progressmeter progressmeter) {
+        final int currentValue = progressmeter.getValue();
+        progressmeter.setValue(currentValue + 1);
+        progressmeter.invalidate();
     }
 
     private List<MonteCarloTask> copyOf(List<MonteCarloTask> _tasks) {
