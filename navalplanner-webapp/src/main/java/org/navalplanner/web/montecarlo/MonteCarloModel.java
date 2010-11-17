@@ -46,13 +46,15 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.DesktopUnavailableException;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Progressmeter;
 
 /**
@@ -89,7 +91,7 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private String DEFAULT_CRITICAL_PATH = CRITICAL_PATH + " 1";
 
-    private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
+//    private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
 
     private Map<String, List<MonteCarloTask>> criticalPaths = new HashMap<String, List<MonteCarloTask>>();
 
@@ -439,23 +441,9 @@ public class MonteCarloModel implements IMonteCarloModel {
     public Map<LocalDate, BigDecimal> calculateMonteCarlo(
             List<MonteCarloTask> _tasks, int iterations,
             Progressmeter progressMonteCarloCalculation) {
-        Map<LocalDate, BigDecimal> monteCarloValues = new HashMap<LocalDate, BigDecimal>();
-        List<MonteCarloTask> tasks = copyOf(_tasks);
-        adjustDurationDays(tasks);
-        initializeEstimationRanges(tasks);
 
-        final int onepercent = iterations / 100;
-        Random randomGenerator = new Random((new Date()).getTime());
-        // Calculate number of times a date is repeated
-        for (int i = 0; i < iterations; i++) {
-            LocalDate endDate = calculateEndDateFor(tasks, randomGenerator);
-            BigDecimal times = monteCarloValues.get(endDate);
-            times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
-            monteCarloValues.put(endDate, times);
-            if (i % onepercent == 0) {
-                increaseOneUnit(progressMonteCarloCalculation);
-            }
-        }
+        MonteCarloCalculation monteCarloCalculation = new MonteCarloCalculation(copyOf(_tasks), iterations, progressMonteCarloCalculation);
+        Map<LocalDate, BigDecimal> monteCarloValues = monteCarloCalculation.doCalculation();
 
         // Convert number of times to probability
         for (LocalDate key : monteCarloValues.keySet()) {
@@ -465,12 +453,6 @@ public class MonteCarloModel implements IMonteCarloModel {
             monteCarloValues.put(key, probability);
         }
         return monteCarloValues;
-    }
-
-    private void increaseOneUnit(Progressmeter progressmeter) {
-        final int currentValue = progressmeter.getValue();
-        progressmeter.setValue(currentValue + 1);
-        progressmeter.invalidate();
     }
 
     private List<MonteCarloTask> copyOf(List<MonteCarloTask> _tasks) {
@@ -494,121 +476,121 @@ public class MonteCarloModel implements IMonteCarloModel {
         return StringUtils.join(result, ",");
     }
 
-    private void adjustDurationDays(List<MonteCarloTask> tasks) {
-        for (MonteCarloTask each : tasks) {
-            each.setPessimisticDuration(MonteCarloTask
-                    .calculateRealDurationFor(each,
-                            each.getPessimisticDuration()));
-            each.setNormalDuration(MonteCarloTask.calculateRealDurationFor(
-                    each, each.getNormalDuration()));
-            each.setOptimisticDuration(MonteCarloTask.calculateRealDurationFor(
-                    each, each.getOptimisticDuration()));
+    private class MonteCarloCalculation {
+
+        private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
+
+        private List<MonteCarloTask> tasks;
+
+        private int iterations;
+
+        private Progressmeter progressmeter;
+
+        public MonteCarloCalculation(List<MonteCarloTask> tasks,
+                int iterations, Progressmeter progressmeter) {
+            adjustDurationDays(tasks);
+            initializeEstimationRanges(tasks);
+            this.tasks = tasks;
+            this.iterations = iterations;
+            this.progressmeter = progressmeter;
         }
-    }
 
-    private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,
-            Random randomGenerator) {
-        Validate.notEmpty(tasks);
-        BigDecimal durationDays = BigDecimal.ZERO;
-        MonteCarloTask first = tasks.get(0);
+        public Map<LocalDate, BigDecimal> doCalculation() {
+            Map<LocalDate, BigDecimal> result = new HashMap<LocalDate, BigDecimal>();
 
-        for (MonteCarloTask each : tasks) {
-            BigDecimal randomNumber = generate(randomGenerator);
-            durationDays = durationDays.add(getDuration(each, randomNumber));
+            final int ONE_PERCENT = iterations / 100;
+            Random randomGenerator = new Random((new Date()).getTime());
+            // Calculate number of times a date is repeated
+            for (int i = 0; i < iterations; i++) {
+                LocalDate endDate = calculateEndDateFor(tasks, randomGenerator);
+                BigDecimal times = result.get(endDate);
+                times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
+                result.put(endDate, times);
+                if (i % ONE_PERCENT == 0) {
+                    increaseProgressMeter();
+                }
+            }
+
+            return result;
         }
-        return first.getStartDate().plusDays(durationDays.intValue());
-    }
 
-    private BigDecimal generate(Random randomGenerator) {
-        return BigDecimal.valueOf(randomGenerator.nextDouble());
-    }
-
-    private BigDecimal getDuration(MonteCarloTask each, BigDecimal random) {
-        ESTIMATION_TYPE type = getEstimationType(each, random);
-        Validate.notNull(type);
-        switch (type) {
-        case PESSIMISTIC:
-            BigDecimal duration = each.getPessimisticDuration();
-            return duration;
-        case NORMAL:
-            return each.getNormalDuration();
-        case OPTIMISTIC:
-            return each.getOptimisticDuration();
+        private void increaseProgressMeter() {
+            final int currentValue = progressmeter.getValue();
+            progressmeter.setValue(currentValue + 1);
+            progressmeter.invalidate();
         }
-        return BigDecimal.ZERO;
-    }
 
-    private void initializeEstimationRanges(List<MonteCarloTask> tasks) {
-        estimationRangesForTasks.clear();
-        for (MonteCarloTask each : tasks) {
-            createEstimationRangesFor(each);
+        private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,
+                Random randomGenerator) {
+            Validate.notEmpty(tasks);
+            BigDecimal durationDays = BigDecimal.ZERO;
+            MonteCarloTask first = tasks.get(0);
+
+            for (MonteCarloTask each : tasks) {
+                BigDecimal randomNumber = generate(randomGenerator);
+                durationDays = durationDays.add(getDuration(each, randomNumber));
+            }
+            return first.getStartDate().plusDays(durationDays.intValue());
         }
-    }
 
-    private void createEstimationRangesFor(MonteCarloTask task) {
-        Set<EstimationRange> estimationRanges = new HashSet<EstimationRange>();
-        estimationRanges.add(pessimisticRangeFor(task));
-        estimationRanges.add(normalRangeFor(task));
-        estimationRanges.add(optimisticRangeFor(task));
-        estimationRangesForTasks.put(task, estimationRanges);
-    }
+        private BigDecimal generate(Random randomGenerator) {
+            return BigDecimal.valueOf(randomGenerator.nextDouble());
+        }
 
-    private EstimationRange optimisticRangeFor(MonteCarloTask task) {
-        return new EstimationRange(
-                task.getOptimisticDurationPercentageLowerLimit(),
-                task.getOptimisticDurationPercentageUpperLimit(),
-                ESTIMATION_TYPE.OPTIMISTIC);
-    }
+        private BigDecimal getDuration(MonteCarloTask each, BigDecimal random) {
+            ESTIMATION_TYPE type = getEstimationType(each, random);
+            Validate.notNull(type);
+            switch (type) {
+            case PESSIMISTIC:
+                BigDecimal duration = each.getPessimisticDuration();
+                return duration;
+            case NORMAL:
+                return each.getNormalDuration();
+            case OPTIMISTIC:
+                return each.getOptimisticDuration();
+            }
+            return BigDecimal.ZERO;
+        }
 
-    private EstimationRange normalRangeFor(MonteCarloTask task) {
-        return new EstimationRange(
-                task.getNormalDurationPercentageLowerLimit(),
-                task.getNormalDurationPercentageUpperLimit(),
-                ESTIMATION_TYPE.NORMAL);
-    }
-
-    private EstimationRange pessimisticRangeFor(MonteCarloTask task) {
-        return new EstimationRange(
-                task.getPessimisticDurationPercentageLowerLimit(),
-                task.getPessimisticDurationPercentageUpperLimit(),
-                ESTIMATION_TYPE.PESSIMISTIC);
-    }
-
-    public ESTIMATION_TYPE getEstimationType(MonteCarloTask task,
-            BigDecimal random) {
-        Set<EstimationRange> estimationRanges = estimationRangesForTasks
-                .get(task);
-        for (EstimationRange each : estimationRanges) {
-            if (each.contains(random)) {
-                return each.getEstimationType();
+        private void adjustDurationDays(List<MonteCarloTask> tasks) {
+            for (MonteCarloTask each : tasks) {
+                each.setPessimisticDuration(MonteCarloTask
+                        .calculateRealDurationFor(each,
+                                each.getPessimisticDuration()));
+                each.setNormalDuration(MonteCarloTask.calculateRealDurationFor(
+                        each, each.getNormalDuration()));
+                each.setOptimisticDuration(MonteCarloTask.calculateRealDurationFor(
+                        each, each.getOptimisticDuration()));
             }
         }
-        return null;
-    }
 
-    private class EstimationRange {
-        BigDecimal min;
-        BigDecimal max;
-        ESTIMATION_TYPE estimationType;
-
-        public EstimationRange(BigDecimal min, BigDecimal max,
-                ESTIMATION_TYPE estimationType) {
-            this.min = min;
-            this.max = max;
-            this.estimationType = estimationType;
+        private void initializeEstimationRanges(List<MonteCarloTask> tasks) {
+            estimationRangesForTasks.clear();
+            for (MonteCarloTask each : tasks) {
+                createEstimationRangesFor(each);
+            }
         }
 
-        public boolean contains(BigDecimal value) {
-            return (value.compareTo(min) >= 0 && value.compareTo(max) <= 0);
+        private void createEstimationRangesFor(MonteCarloTask task) {
+            Set<EstimationRange> estimationRanges = new HashSet<EstimationRange>();
+            estimationRanges.add(EstimationRange.pessimisticRangeFor(task));
+            estimationRanges.add(EstimationRange.normalRangeFor(task));
+            estimationRanges.add(EstimationRange.optimisticRangeFor(task));
+            estimationRangesForTasks.put(task, estimationRanges);
         }
 
-        public ESTIMATION_TYPE getEstimationType() {
-            return estimationType;
+        public ESTIMATION_TYPE getEstimationType(MonteCarloTask task,
+                BigDecimal random) {
+            Set<EstimationRange> estimationRanges = estimationRangesForTasks
+                    .get(task);
+            for (EstimationRange each : estimationRanges) {
+                if (each.contains(random)) {
+                    return each.getEstimationType();
+                }
+            }
+            return null;
         }
-    }
 
-    enum ESTIMATION_TYPE {
-        PESSIMISTIC, NORMAL, OPTIMISTIC;
     }
 
 }
