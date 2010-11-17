@@ -21,6 +21,7 @@
 package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,8 +57,12 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     private InitialNode<T, D> bop;
     private LastNode<T, D> eop;
 
+    private Map<T, Map<T, DependencyType>> dependencies;
+
     public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
         this.graph = graph;
+
+        dependencies = new HashMap<T, Map<T, DependencyType>>();
 
         initDate = calculateInitDate();
 
@@ -153,16 +158,59 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 } else {
                     related = graph.getOutgoingTasksFor(t);
                 }
-                result.addAll(removeChildrenAndParents(t, related));
+                Collection<T> toAdd = removeChildrenAndParents(t, related);
+                result.addAll(toAdd);
+
+                for (T i : toAdd) {
+                    if (graph.isContainer(i)) {
+                        IDependency<T> dependency;
+                        if (incoming) {
+                            dependency = graph.getDependencyFrom(i, t);
+                        } else {
+                            dependency = graph.getDependencyFrom(t, i);
+                        }
+
+                        if (dependency != null
+                                && dependency.getType() != DependencyType.END_START) {
+                            for (T j : removeContainers(Arrays.asList(i))) {
+                                if (incoming) {
+                                    addDepedency(j, task, dependency.getType());
+                                } else {
+                                    addDepedency(task, j, dependency.getType());
+                                }
+                            }
+                        }
+                    }
+                }
             } else {
                 result.add(t);
+
+                if (graph.isContainer(t)) {
+                    IDependency<T> dependency;
+                    if (incoming) {
+                        dependency = graph.getDependencyFrom(t, task);
+                    } else {
+                        dependency = graph.getDependencyFrom(task, t);
+                    }
+
+                    if (dependency != null
+                            && dependency.getType() != DependencyType.END_START) {
+                        for (T i : removeContainers(Arrays.asList(t))) {
+                            if (incoming) {
+                                addDepedency(i, task, dependency.getType());
+                            } else {
+                                addDepedency(task, i, dependency.getType());
+                            }
+                        }
+                    }
+                }
             }
         }
 
         return new HashSet<T>(removeContainers(result));
     }
 
-    private Collection<? extends T> removeChildrenAndParents(T task, Set<T> tasks) {
+    private Collection<T> removeChildrenAndParents(T task, Set<T> tasks) {
         Set<T> result = new HashSet<T>();
         for (T t : tasks) {
             if (!graph.contains(task, t)) {
@@ -175,11 +223,28 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return result;
     }
 
+    private void addDepedency(T from, T destination, DependencyType type) {
+        Map<T, DependencyType> destinations = dependencies.get(from);
+        if (destinations == null) {
+            destinations = new HashMap<T, DependencyType>();
+            dependencies.put(from, destinations);
+        }
+        destinations.put(destination, type);
+    }
+
     private DependencyType getDependencyTypeEndStartByDefault(T from, T to) {
         if ((from != null) && (to != null)) {
             IDependency<T> dependency = graph.getDependencyFrom(from, to);
             if (dependency != null) {
                 return dependency.getType();
+            } else {
+                Map<T, DependencyType> destinations = dependencies.get(from);
+                if (destinations != null) {
+                    DependencyType type = destinations.get(to);
+                    if (type != null) {
+                        return type;
+                    }
+                }
             }
         }
         return DependencyType.END_START;
