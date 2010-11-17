@@ -500,6 +500,7 @@ public class OrderModel implements IOrderModel {
 
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
+        dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
         dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
         dontPoseAsTransientObjectAnymore(orderElement.getLabels());
