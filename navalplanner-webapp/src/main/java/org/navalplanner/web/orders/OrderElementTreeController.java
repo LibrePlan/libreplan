@@ -511,11 +511,20 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
             else {
                 // Moving from a parent node to its children
+                Treechildren treechildren = parent.getTreechildren();
+
+                if(treechildren.getChildren().size() == 0) {
+                    //the children are unloaded yet
+                    focusGoDown(parent, position, true);
+                    return;
+                }
                 Treerow downTreerow =
-                    ((Treeitem)parent.getTreechildren().getChildren().get(0)).getTreerow();
+                        ((Treeitem)treechildren.getChildren().get(0)).getTreerow();
 
                 if(!downTreerow.isVisible()) {
+                    //children are loaded but not visible
                     focusGoDown(parent, position, true);
+                    return;
                 }
 
                 focusCorrectBox(downTreerow, position, Navigation.RIGHT);
