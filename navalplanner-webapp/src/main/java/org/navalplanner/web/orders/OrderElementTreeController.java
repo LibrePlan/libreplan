@@ -444,8 +444,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             if(myPosition > 0) {
                 // the current node is not the first brother
-                if(((Treeitem)treeItems.get(myPosition - 1)).getTreechildren() == null) {
-                    //the previous brother doesn't have children, or we don't care
+                Treechildren treechildren =
+                    ((Treeitem)treeItems.get(myPosition - 1)).getTreechildren();
+                if(treechildren == null || treechildren.getChildren().size() == 0) {
+                    //the previous brother doesn't have children,
+                    //or it has children but they are unloaded
                     Treerow upTreerow =
                         ((Treeitem)treeItems.get(myPosition - 1)).getTreerow();
 
