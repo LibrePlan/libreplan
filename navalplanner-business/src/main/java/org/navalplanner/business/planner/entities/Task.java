@@ -26,18 +26,14 @@ import static org.navalplanner.business.workingday.EffortDuration.min;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
-import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ICalendar;
@@ -66,8 +62,6 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Task extends TaskElement implements ITaskLeafConstraint {
-
-    private static final Log LOG = LogFactory.getLog(Task.class);
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
@@ -98,10 +92,12 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     @Valid
+    @SuppressWarnings("unused")
     private Set<ResourceAllocation<?>> getResourceAlloations() {
         return new HashSet<ResourceAllocation<?>>(resourceAllocations);
     }
 
+    @SuppressWarnings("unused")
     @AfterCopy
     private void ifLimitingAllocationRemove() {
         if (isLimiting()) {
@@ -269,10 +265,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     public void setCalculatedValue(CalculatedValue calculatedValue) {
         Validate.notNull(calculatedValue);
         this.calculatedValue = calculatedValue;
-    }
-
-    private DateTime toDateTime(Date startDate) {
-        return new DateTime(startDate.getTime());
     }
 
     /**
@@ -732,10 +724,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         };
     }
 
-
-    private LocalDate asLocalDate(Date date) {
-        return new LocalDate(date.getTime());
-    }
 
     public List<AggregatedHoursGroup> getAggregatedByCriterions() {
         return getTaskSource().getAggregatedByCriterions();
