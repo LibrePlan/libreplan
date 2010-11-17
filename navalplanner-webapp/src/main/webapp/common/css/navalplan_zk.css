@@ -1463,3 +1463,11 @@ display:none;
 .z-vbox {
     width:100%;
 }
+
+.earned-parameter-column .z-label,
+.earned-parameter-column .z-checkbox-cnt {
+    font-size: 10px;
+}
+.earned-parameter-column {
+    white-space: nowrap;
+}
