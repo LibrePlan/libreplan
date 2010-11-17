@@ -39,6 +39,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.Dependency;
@@ -97,10 +98,15 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private List<TaskElement> tasksInCriticalPath;
 
+    private Order order;
+
     @Override
     @Transactional(readOnly = true)
-    public void setCriticalPath(Order order,
+    public void setCriticalPath(Order _order,
             List<TaskElement> tasksInCriticalPath) {
+
+        order = getFromDB(_order);
+
         // Initializes tasks inside order (necessary to navigate its taskgroups)
         useSchedulingDataForCurrentScenario(order);
         orderTasks.clear();
@@ -118,6 +124,14 @@ public class MonteCarloModel implements IMonteCarloModel {
         for (List<Task> path : allCriticalPaths) {
             criticalPaths.put(CRITICAL_PATH + " " + i++,
                     toMonteCarloTaskList(path));
+        }
+    }
+
+    private Order getFromDB(Order order) {
+        try {
+            return orderDAO.find(order.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 

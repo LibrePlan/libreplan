@@ -85,8 +85,6 @@ public class MonteCarloTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
 
-                monteCarloController.setCriticalPath(mode.getOrder(),
-                        orderPlanningController.getCriticalPath());
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("monteCarloController",
                         monteCarloController);
@@ -101,6 +99,8 @@ public class MonteCarloTabCreator {
 
             @Override
             protected void afterShowAction() {
+                monteCarloController.setCriticalPath(mode.getOrder(),
+                        orderPlanningController.getCriticalPath());
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));

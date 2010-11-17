@@ -181,8 +181,6 @@ public class MonteCarloController extends GenericForwardComposer {
             }
 
         });
-        feedCriticalPathsList();
-        reloadGridCritialPathTasks();
     }
 
     private void feedCriticalPathsList() {
