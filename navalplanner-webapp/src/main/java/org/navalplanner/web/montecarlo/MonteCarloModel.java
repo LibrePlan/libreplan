@@ -94,33 +94,29 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private String orderName = "";
 
-    private List<TaskElement> orderTasks = new ArrayList<TaskElement>();
-
     private List<TaskElement> tasksInCriticalPath;
-
-    private Order order;
 
     @Override
     @Transactional(readOnly = true)
-    public void setCriticalPath(Order _order,
+    public void setCriticalPath(Order order,
             List<TaskElement> tasksInCriticalPath) {
 
-        order = getFromDB(_order);
+        Order orderReloaded = getFromDB(order);
 
         // Initializes tasks inside order (necessary to navigate its taskgroups)
-        useSchedulingDataForCurrentScenario(order);
-        orderTasks.clear();
-        orderTasks.addAll(order.getAllChildrenAssociatedTaskElements());
+        useSchedulingDataForCurrentScenario(orderReloaded);
+        List<TaskElement> orderTasks = new ArrayList<TaskElement>();
+        orderTasks.addAll(orderReloaded.getAllChildrenAssociatedTaskElements());
         initializeTasks(orderTasks);
 
-        tasksInCriticalPath = noTaskMilestones(tasksInCriticalPath);
+        tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
+        this.tasksInCriticalPath = retrieveFromOrderTasks(
+                tasksInCriticalPath, orderTasks);
         initializeOrderName(tasksInCriticalPath);
-        this.tasksInCriticalPath = retrieveTaskFromModel(tasksInCriticalPath);
 
         int i = 1;
         criticalPaths.clear();
-        List<Task> startingTasks = sortByStartDate(onlyTasks((this.tasksInCriticalPath)));
-        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(startingTasks);
+        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(sortByStartDate(this.tasksInCriticalPath));
         for (List<Task> path : allCriticalPaths) {
             criticalPaths.put(CRITICAL_PATH + " " + i++,
                     toMonteCarloTaskList(path));
@@ -135,10 +131,10 @@ public class MonteCarloModel implements IMonteCarloModel {
         }
     }
 
-    private List<TaskElement> retrieveTaskFromModel(List<TaskElement> tasks) {
+    private List<TaskElement> retrieveFromOrderTasks(List<TaskElement> tasks, List<TaskElement> orderTasks) {
         List<TaskElement> result = new ArrayList<TaskElement>();
         for (TaskElement each: tasks) {
-            TaskElement task = retrieveTaskFromModel(each);
+            TaskElement task = retrieveTaskFromModel(each, orderTasks);
             if (task != null) {
                 result.add(task);
             }
@@ -146,23 +142,13 @@ public class MonteCarloModel implements IMonteCarloModel {
         return result;
     }
 
-    private TaskElement retrieveTaskFromModel(TaskElement task) {
+    private TaskElement retrieveTaskFromModel(TaskElement task, List<TaskElement> orderTasks) {
         for (TaskElement each : orderTasks) {
             if (isSameTask(each, task)) {
                 return (Task) each;
             }
         }
         return null;
-    }
-
-    private List<TaskElement> noTaskMilestones(List<TaskElement> tasks) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement each: tasks) {
-            if (!(each instanceof TaskMilestone)) {
-                result.add(each);
-            }
-        }
-        return result;
     }
 
     private void useSchedulingDataForCurrentScenario(Order order) {
@@ -212,13 +198,13 @@ public class MonteCarloModel implements IMonteCarloModel {
         return criticalPaths.get(name);
     }
 
-    private List<Task> sortByStartDate(List<Task> tasks) {
+    private List sortByStartDate(List tasks) {
         Collections.sort(tasks, Task.getByStartDateComparator());
         return tasks;
     }
 
-    private List<Task> onlyTasks(List<TaskElement> tasks) {
-        List<Task> result = new ArrayList<Task>();
+    private List<TaskElement> onlyTasks(List<TaskElement> tasks) {
+        List<TaskElement> result = new ArrayList<TaskElement>();
         for (TaskElement each : tasks) {
             if (each instanceof Task) {
                 result.add((Task) each);
