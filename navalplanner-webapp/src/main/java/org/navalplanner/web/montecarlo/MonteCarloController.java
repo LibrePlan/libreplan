@@ -188,6 +188,7 @@ public class MonteCarloController extends GenericForwardComposer {
     private void feedCriticalPathsList() {
         lbCriticalPaths.setModel(new SimpleListModel(monteCarloModel
                 .getCriticalPathNames()));
+        lbCriticalPaths.setSelectedIndex(0);
     }
 
     private void reloadGridCritialPathTasks() {
