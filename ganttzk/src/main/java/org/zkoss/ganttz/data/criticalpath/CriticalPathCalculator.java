@@ -21,7 +21,6 @@
 package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -123,12 +122,12 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
         for (T task : graph.getTasks()) {
             if (!graph.isContainer(task)) {
-                Set<T> in = substituteContainerForChildren(task, graph
-                        .getIncomingTasksFor(task), false);
-                Set<T> out = substituteContainerForChildren(task, graph
-                        .getOutgoingTasksFor(task), true);
+                Set<T> in = getRelatedTasksFor(task, true);
+                Set<T> out = getRelatedTasksFor(task, false);
+
                 Node<T, D> node = new Node<T, D>(task, in, out, graph
                         .getStartDate(task), graph.getEndDateFor(task));
+
                 result.put(task, node);
             }
         }
@@ -136,37 +135,41 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return result;
     }
 
-    private Set<T> substituteContainerForChildren(T origin, Set<T> tasks,
-            boolean outgoing) {
-        if (tasks == null) {
-            return Collections.emptySet();
-        }
+    private Set<T> getRelatedTasksFor(T task, boolean incoming) {
         Set<T> result = new HashSet<T>();
-        for (T task : tasks) {
-            if (graph.isContainer(task)) {
-                if (!graph.contains(task, origin)) {
-                    // If it is NOT its parent
-                    result.addAll(removeContainers(Arrays.asList(task)));
-                } else { // If it IS its parent
-                    Set<T> related;
-                    // Get related tasks
-                    if (outgoing) {
-                        related = graph.getOutgoingTasksFor(task);
-                    } else {
-                        related = graph.getIncomingTasksFor(task);
-                    }
-                    Set<T> relatedTasksAvoidingSiblings = new HashSet<T>();
-                    // Remove siblings
-                    for (T t : related) {
-                        if (!graph.contains(task, t)) {
-                            relatedTasksAvoidingSiblings.add(t);
-                        }
-                    }
-                    result
-                            .addAll(removeContainers(relatedTasksAvoidingSiblings));
+
+        Set<T> relatedTasks;
+        if (incoming) {
+            relatedTasks = graph.getIncomingTasksFor(task);
+        } else {
+            relatedTasks = graph.getOutgoingTasksFor(task);
+        }
+
+        for (T t : relatedTasks) {
+            if (graph.isContainer(t) && graph.contains(t, task)) {
+                Set<T> related;
+                if (incoming) {
+                    related = graph.getIncomingTasksFor(t);
+                } else {
+                    related = graph.getOutgoingTasksFor(t);
                 }
+                result.addAll(removeChildrenAndParents(t, related));
             } else {
-                result.add(task);
+                result.add(t);
+            }
+        }
+
+        return new HashSet<T>(removeContainers(result));
+    }
+
+    private Collection<? extends T> removeChildrenAndParents(T task, Set<T> tasks) {
+        Set<T> result = new HashSet<T>();
+        for (T t : tasks) {
+            if (!graph.contains(task, t)) {
+                if (!graph.isContainer(t)
+                        || !graph.contains(t, task)) {
+                    result.add(t);
+                }
             }
         }
         return result;
