@@ -244,12 +244,13 @@ public class TemplateModel implements ITemplateModel {
         }
 
         @Override
-        public Constraint<GanttDate> getCurrentLenghtConstraintFor(
+        public List<Constraint<GanttDate>> getCurrentLenghtConstraintFor(
                 TaskElement task) {
             if (isContainer(task)) {
-                return Constraint.emptyConstraint();
+                return Collections.emptyList();
             }
-            return biggerOrEqualThan(this.getEndDateFor(task));
+            return Collections.singletonList(biggerOrEqualThan(this
+                    .getEndDateFor(task)));
         }
 
         @Override
@@ -267,12 +268,6 @@ public class TemplateModel implements ITemplateModel {
                 DependencyWithVisibility dependency) {
             return new TaskPoint<TaskElement, DependencyWithVisibility>(this,
                     dependency.getDestination(), dependency.getPointType());
-        }
-
-        @Override
-        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
-                TaskElement task) {
-            return biggerOrEqualThan(getStartDate(task));
         }
 
         @Override

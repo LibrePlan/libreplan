@@ -27,6 +27,7 @@ import java.beans.PropertyChangeSupport;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -217,12 +218,13 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getEndDate();
     }
 
-    public Constraint<GanttDate> getCurrentLengthConstraint() {
+    @Override
+    public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
         if (isContainer()) {
-            return Constraint.emptyConstraint();
+            return Collections.emptyList();
         }
-        return violationNotificator
-                .withListener(biggerOrEqualThan(getEndDate()));
+        return violationNotificator.withListener(fundamentalProperties
+                .getCurrentLengthConstraint());
     }
 
     public Constraint<GanttDate> getEndDateBiggerThanStartDate() {

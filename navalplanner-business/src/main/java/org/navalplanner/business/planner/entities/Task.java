@@ -634,6 +634,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         }
     }
 
+    public Direction getLastAllocationDirection() {
+        return lastAllocationDirection;
+    }
+
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourceDAO resourceDAO) {
         reassign(scenario, lastAllocationDirection, new WithAnotherResources(

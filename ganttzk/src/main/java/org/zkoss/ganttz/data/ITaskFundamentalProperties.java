@@ -96,4 +96,6 @@ public interface ITaskFundamentalProperties {
 
     public String updateTooltipText();
 
+    public List<Constraint<GanttDate>> getCurrentLengthConstraint();
+
 }

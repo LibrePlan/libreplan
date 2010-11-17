@@ -64,6 +64,7 @@ import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
@@ -763,6 +764,18 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public List<Constraint<GanttDate>> getStartConstraints() {
             return getStartConstraintsFor(this.taskElement);
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
+            if (taskElement instanceof Task) {
+                Task task = (Task) taskElement;
+                if (task.getLastAllocationDirection() == Direction.FORWARD) {
+                    return Collections
+                            .singletonList(biggerOrEqualThan(getEndDate()));
+                }
+            }
+            return Collections.emptyList();
         }
 
         @Override

@@ -95,9 +95,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         GanttDate getSmallestBeginDateFromChildrenFor(V container);
 
-        Constraint<GanttDate> getCurrentLenghtConstraintFor(V task);
-
-        Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(V task);
+        List<Constraint<GanttDate>> getCurrentLenghtConstraintFor(V task);
 
         List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
                 Set<D> incoming);
@@ -186,14 +184,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         @Override
-        public Constraint<GanttDate> getCurrentLenghtConstraintFor(Task task) {
-            return task.getCurrentLengthConstraint();
-        }
-
-        @Override
-        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
+        public List<Constraint<GanttDate>> getCurrentLenghtConstraintFor(
                 Task task) {
-            return task.getEndDateBiggerThanStartDate();
+            return task.getCurrentLengthConstraint();
         }
 
         @Override
@@ -1040,15 +1033,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 return false;
             }
             GanttDate previousEndDate = adapter.getEndDateFor(task);
-            Constraint<GanttDate> currentLength = adapter
+            List<Constraint<GanttDate>> currentLength = adapter
                     .getCurrentLenghtConstraintFor(task);
-            Constraint<GanttDate> respectStartDate = adapter
-                    .getEndDateBiggerThanStartDateConstraintFor(task);
             GanttDate newEnd = Constraint
                     .<GanttDate> initialValue(null)
                     .withConstraints(currentLength)
                     .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
-                    .withConstraints(respectStartDate)
                     .apply();
             if (hasChanged(previousEndDate, newEnd)) {
                 adapter.setEndDateFor(task, newEnd);
