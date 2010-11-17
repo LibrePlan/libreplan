@@ -22,8 +22,6 @@ package org.navalplanner.web.planner.taskedition;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -32,7 +30,6 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -447,22 +444,8 @@ public class EditTaskController extends GenericForwardComposer {
         return isTask(taskElement);
     }
 
-    public Date getStartConstraintDate() {
-        if ((taskElement == null) || (!isTaskLeafConstraint())) {
-            return null;
-        }
-        return ((ITaskLeafConstraint) taskElement).getStartConstraint()
-                .getConstraintDateAsDate();
-    }
-
     private boolean isTaskLeafConstraint() {
         return (taskElement != null && taskElement instanceof ITaskLeafConstraint);
-    }
-
-    public void setStartConstraintDate(Date date) {
-        if ((taskElement != null) && (isTask())) {
-            resourceAllocationController.setStartDate(date);
-        }
     }
 
     public void showNonPermitChangeResourceAllocationType() {

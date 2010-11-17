@@ -277,7 +277,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         StartConstraintType type = task.getStartConstraint()
                 .getStartConstraintType();
         startConstraintTypes.setSelectedItemApi(findComboWithType(type));
-        startConstraintDate.setVisible(type.isAssociatedDateRequired());
+        updateStartConstraint(type);
     }
 
     private Comboitem findComboWithType(StartConstraintType type) {
@@ -294,9 +294,17 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void constraintTypeChoosen(WebStartConstraintType constraint) {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
+        updateStartConstraint(constraint.getType());
+    }
+
+    private void updateStartConstraint(StartConstraintType type) {
         TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
                 .getStartConstraint();
-        startConstraintDate.setValue(taskStartConstraint.getConstraintDateAsDate());
+        startConstraintDate.setVisible(type.isAssociatedDateRequired());
+        if (taskStartConstraint.getConstraintDateAsDate() != null) {
+            startConstraintDate.setValue(taskStartConstraint
+                    .getConstraintDateAsDate());
+        }
     }
 
     private boolean saveConstraintChanges() {

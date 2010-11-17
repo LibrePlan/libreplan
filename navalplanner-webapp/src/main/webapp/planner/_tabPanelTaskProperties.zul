@@ -61,8 +61,7 @@
                 <label value="${i18n:_('Constraint')}" />
                 <vbox>
                     <combobox id="startConstraintTypes" width="300px" />
-                    <datebox id="startConstraintDate" constraint ="no empty"
-                        value="@{editController.startConstraintDate}" />
+                    <datebox id="startConstraintDate" constraint ="no empty"/>
                 </vbox>
             </row>
             <row id="resourceAllocationType" visible="@{editController.isTask}">
