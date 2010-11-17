@@ -1863,6 +1863,115 @@ public class CriticalPathCalculatorTest {
         replay(diagramGraphExample);
     }
 
+    /**
+     * <pre>
+     * _-- #### C1 #### --_
+     * |                  |
+     * |-- #### S1 #### --|
+     * |                  |
+     * |_- #### C2 #### -_|
+     *  |                |
+     *  |- #### S2 #### -|
+     * </pre>
+     */
+    private void givenTaskContainerWithAnotherContainer(int daysSubtask1,
+            int daysSubtask2) {
+        diagramGraphExample = createNiceMock(ICriticalPathCalculable.class);
+
+        ITaskFundamentalProperties taskContainer1 = createTask(START, Math.max(
+                daysSubtask1, daysSubtask2));
+        ITaskFundamentalProperties subtask1 = createTask(START, daysSubtask1);
+        ITaskFundamentalProperties taskContainer2 = createTask(START,
+                daysSubtask2);
+        ITaskFundamentalProperties subtask2 = createTask(START, daysSubtask2);
+
+        List<ITaskFundamentalProperties> listOfTasks = Arrays.asList(
+                taskContainer1, subtask1, taskContainer2, subtask2);
+
+        expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
+                .anyTimes();
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
+                Arrays.asList(taskContainer1)).anyTimes();
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
+                Arrays.asList(taskContainer1)).anyTimes();
+
+        IDependency<ITaskFundamentalProperties> dependencyStartStart = createDependency(
+                taskContainer1, subtask1, DependencyType.START_START);
+        expect(diagramGraphExample.getDependencyFrom(taskContainer1, subtask1))
+                .andReturn(dependencyStartStart).anyTimes();
+        IDependency<ITaskFundamentalProperties> dependencyEndEnd = createDependency(
+                subtask1, taskContainer1, DependencyType.END_END);
+        expect(diagramGraphExample.getDependencyFrom(subtask1, taskContainer1))
+                .andReturn(dependencyEndEnd).anyTimes();
+
+        IDependency<ITaskFundamentalProperties> dependencyStartStart2 = createDependency(
+                taskContainer1, taskContainer2, DependencyType.START_START);
+        expect(diagramGraphExample.getDependencyFrom(taskContainer1, taskContainer2))
+                .andReturn(dependencyStartStart2).anyTimes();
+        IDependency<ITaskFundamentalProperties> dependencyEndEnd2 = createDependency(
+                taskContainer2, taskContainer1, DependencyType.END_END);
+        expect(diagramGraphExample.getDependencyFrom(taskContainer2, taskContainer1))
+                .andReturn(dependencyEndEnd2).anyTimes();
+
+        IDependency<ITaskFundamentalProperties> dependencyStartStart3 = createDependency(
+                taskContainer2, subtask2, DependencyType.START_START);
+        expect(diagramGraphExample.getDependencyFrom(taskContainer2, subtask2))
+                .andReturn(dependencyStartStart3).anyTimes();
+        IDependency<ITaskFundamentalProperties> dependencyEndEnd3 = createDependency(
+                subtask2, taskContainer2, DependencyType.END_END);
+        expect(diagramGraphExample.getDependencyFrom(subtask2, taskContainer2))
+                .andReturn(dependencyEndEnd3).anyTimes();
+
+        expect(diagramGraphExample.getIncomingTasksFor(taskContainer1))
+                .andReturn(
+                        new HashSet<ITaskFundamentalProperties>(Arrays.asList(
+                                subtask1, taskContainer2))).anyTimes();
+        expect(diagramGraphExample.getIncomingTasksFor(subtask1)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays
+                        .asList(taskContainer1))).anyTimes();
+        expect(diagramGraphExample.getIncomingTasksFor(taskContainer2))
+                .andReturn(
+                        new HashSet<ITaskFundamentalProperties>(Arrays.asList(
+                                taskContainer1, subtask2))).anyTimes();
+        expect(diagramGraphExample.getIncomingTasksFor(subtask2)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays
+                        .asList(taskContainer2))).anyTimes();
+
+        expect(diagramGraphExample.getOutgoingTasksFor(taskContainer1))
+                .andReturn(
+                        new HashSet<ITaskFundamentalProperties>(Arrays.asList(
+                                subtask1, taskContainer2))).anyTimes();
+        expect(diagramGraphExample.getOutgoingTasksFor(subtask1)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays
+                        .asList(taskContainer1))).anyTimes();
+        expect(diagramGraphExample.getOutgoingTasksFor(taskContainer2))
+                .andReturn(
+                        new HashSet<ITaskFundamentalProperties>(Arrays.asList(
+                                taskContainer1, subtask2))).anyTimes();
+        expect(diagramGraphExample.getOutgoingTasksFor(subtask2)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays
+                        .asList(taskContainer2))).anyTimes();
+
+        expect(diagramGraphExample.isContainer(taskContainer1)).andReturn(true)
+                .anyTimes();
+        expect(diagramGraphExample.contains(taskContainer1, subtask1))
+                .andReturn(true).anyTimes();
+        expect(diagramGraphExample.contains(taskContainer1, taskContainer2))
+                .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer1)).andReturn(
+                Arrays.asList(subtask1, taskContainer2)).anyTimes();
+        expect(diagramGraphExample.isContainer(taskContainer2)).andReturn(true)
+                .anyTimes();
+        expect(diagramGraphExample.contains(taskContainer2, subtask2))
+                .andReturn(true).anyTimes();
+        expect(diagramGraphExample.getChildren(taskContainer2)).andReturn(
+                Arrays.asList(subtask2)).anyTimes();
+
+        addTaskMethods(listOfTasks);
+
+        replay(diagramGraphExample);
+    }
+
     @Test
     public void trivialBaseCaseWithTwoTasksNotConnected() {
         givenTwoTasksNotConnected(5, 10);
@@ -2477,6 +2586,32 @@ public class CriticalPathCalculatorTest {
         for (ITaskFundamentalProperties task : criticalPath) {
             assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(10),
                     equalTo(4), equalTo(9)));
+            assertFalse(diagramGraphExample.isContainer(task));
+        }
+    }
+
+    @Test
+    public void taskContainerWithAnotherContainer() {
+        givenTaskContainerWithAnotherContainer(10, 5);
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
+                .calculateCriticalPath(diagramGraphExample);
+
+        assertThat(criticalPath.size(), equalTo(1));
+        for (ITaskFundamentalProperties task : criticalPath) {
+            assertThat(daysBetweenStartAndEnd(task), equalTo(10));
+            assertFalse(diagramGraphExample.isContainer(task));
+        }
+    }
+
+    @Test
+    public void taskContainerWithAnotherContainer2() {
+        givenTaskContainerWithAnotherContainer(5, 10);
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
+                .calculateCriticalPath(diagramGraphExample);
+
+        assertThat(criticalPath.size(), equalTo(1));
+        for (ITaskFundamentalProperties task : criticalPath) {
+            assertThat(daysBetweenStartAndEnd(task), equalTo(10));
             assertFalse(diagramGraphExample.isContainer(task));
         }
     }
