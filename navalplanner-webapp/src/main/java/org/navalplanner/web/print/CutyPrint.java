@@ -60,7 +60,9 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
     // Estimated maximum execution time (ms)
-    private static final int CUTYCAPT_TIMEOUT = 60000;
+    private static final int CUTYCAPT_TIMEOUT = 100000;
+
+    private static final int CAPTURE_DELAY = 10000;
 
     // Taskdetails left padding
     private static int TASKDETAILS_BASE_WIDTH = 310;
@@ -72,6 +74,7 @@ public class CutyPrint {
      * src/main/webapp/planner/css/ganttzk.css
      */
     private static final int BASE_TASK_NAME_PIXELS = 121;
+
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
 
@@ -180,8 +183,7 @@ public class CutyPrint {
         captureString += " --min-width=" + plannerWidth;
 
         // Static width and time delay parameters (FIX)
-        captureString += " --delay=3000 ";
-
+        captureString += " --delay=" + CAPTURE_DELAY;
 
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
