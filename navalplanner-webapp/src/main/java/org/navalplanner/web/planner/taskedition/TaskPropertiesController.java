@@ -408,7 +408,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             ok = saveConstraintChanges();
         }
         if (ok) {
-            taskEditFormComposer.accept();
+            taskEditFormComposer.acceptWithoutCopyingDates();
         }
     }
 

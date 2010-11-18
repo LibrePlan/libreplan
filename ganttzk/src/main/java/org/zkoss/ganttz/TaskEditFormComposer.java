@@ -71,7 +71,13 @@ public class TaskEditFormComposer extends GenericForwardComposer {
 
     public void accept() {
         if (currentTask != null) {
-            copyFromDTO(taskDTO, currentTask);
+            copyFromDTO(taskDTO, currentTask, true);
+        }
+    }
+
+    public void acceptWithoutCopyingDates() {
+        if (currentTask != null) {
+            copyFromDTO(taskDTO, currentTask, false);
         }
     }
 
@@ -105,10 +111,13 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         return result;
     }
 
-    private void copyFromDTO(TaskDTO taskDTO, Task currentTask) {
+    private void copyFromDTO(TaskDTO taskDTO, Task currentTask,
+            boolean copyDates) {
         currentTask.setName(taskDTO.name);
-        currentTask.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
-        currentTask.resizeTo(GanttDate.createFrom(taskDTO.endDate));
+        if (copyDates) {
+            currentTask.setBeginDate(GanttDate.createFrom(taskDTO.beginDate));
+            currentTask.resizeTo(GanttDate.createFrom(taskDTO.endDate));
+        }
         currentTask.setNotes(taskDTO.notes);
         currentTask.setDeadline(taskDTO.deadlineDate);
     }
