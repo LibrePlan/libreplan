@@ -1045,6 +1045,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             if (hasChanged(previousEndDate, newEnd)) {
                 adapter.setEndDateFor(task, newEnd);
             }
+
+            // check that start constraints are not violated
+            GanttDate newStart = calculateStartDateFor(task, incoming);
+            if (newStart.compareTo(adapter.getStartDate(task)) > 0) {
+                adapter.setStartDateFor(task, newStart);
+                newEnd = adapter.getEndDateFor(task);
+            }
             return !previousEndDate.equals(newEnd);
         }
 
