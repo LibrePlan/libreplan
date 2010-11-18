@@ -80,8 +80,16 @@ public class Node<T, D extends IDependency<T>> {
         return Collections.unmodifiableSet(previousTasks);
     }
 
+    public void addPreviousTask(T task) {
+        previousTasks.add(task);
+    }
+
     public Set<T> getNextTasks() {
         return Collections.unmodifiableSet(nextTasks);
+    }
+
+    public void addNextTask(T task) {
+        nextTasks.add(task);
     }
 
     public int getEarliestStart() {

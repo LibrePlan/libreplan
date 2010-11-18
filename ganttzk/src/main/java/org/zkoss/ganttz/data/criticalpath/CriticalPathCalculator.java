@@ -127,8 +127,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
         for (T task : graph.getTasks()) {
             if (!graph.isContainer(task)) {
-                Set<T> in = getRelatedTasksFor(task, true);
-                Set<T> out = getRelatedTasksFor(task, false);
+                Set<T> in = withoutContainers(task, graph
+                        .getIncomingTasksFor(task));
+                Set<T> out = withoutContainers(task, graph
+                        .getOutgoingTasksFor(task));
 
                 Node<T, D> node = new Node<T, D>(task, in, out, graph
                         .getStartDate(task), graph.getEndDateFor(task));
@@ -137,93 +139,81 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             }
         }
 
-        return result;
-    }
+        for (T task : graph.getTasks()) {
+            if (graph.isContainer(task)) {
+                Collection<T> allChildren = removeContainers(Arrays
+                        .asList(task));
 
-    private Set<T> getRelatedTasksFor(T task, boolean incoming) {
-        Set<T> result = new HashSet<T>();
-
-        Set<T> relatedTasks;
-        if (incoming) {
-            relatedTasks = graph.getIncomingTasksFor(task);
-        } else {
-            relatedTasks = graph.getOutgoingTasksFor(task);
-        }
-
-        for (T t : relatedTasks) {
-            if (graph.isContainer(t) && graph.contains(t, task)) {
-                Set<T> related;
-                if (incoming) {
-                    related = graph.getIncomingTasksFor(t);
-                } else {
-                    related = graph.getOutgoingTasksFor(t);
+                Set<T> in = removeChildrenAndParents(task, graph
+                        .getIncomingTasksFor(task));
+                for (T t : in) {
+                    IDependency<T> dependency = graph
+                            .getDependencyFrom(t, task);
+                    DependencyType type = DependencyType.END_START;
+                    if (dependency != null) {
+                        type = dependency.getType();
+                    }
+                    addDepedenciesAndRelatedTasks(result,
+                            removeContainers(Arrays.asList(t)), allChildren,
+                            type);
                 }
-                Collection<T> toAdd = removeChildrenAndParents(t, related);
-                result.addAll(toAdd);
 
-                for (T i : toAdd) {
-                    if (graph.isContainer(i)) {
-                        IDependency<T> dependency;
-                        if (incoming) {
-                            dependency = graph.getDependencyFrom(i, t);
-                        } else {
-                            dependency = graph.getDependencyFrom(t, i);
-                        }
-
-                        if (dependency != null
-                                && dependency.getType() != DependencyType.END_START) {
-                            for (T j : removeContainers(Arrays.asList(i))) {
-                                if (incoming) {
-                                    addDepedency(j, task, dependency.getType());
-                                } else {
-                                    addDepedency(task, j, dependency.getType());
-                                }
-                            }
-                        }
+                Set<T> out = removeChildrenAndParents(task, graph
+                        .getOutgoingTasksFor(task));
+                for (T t : out) {
+                    IDependency<T> dependency = graph
+                            .getDependencyFrom(task, t);
+                    DependencyType type = DependencyType.END_START;
+                    if (dependency != null) {
+                        type = dependency.getType();
                     }
-                }
-            } else {
-                result.add(t);
-
-                if (graph.isContainer(t)) {
-                    IDependency<T> dependency;
-                    if (incoming) {
-                        dependency = graph.getDependencyFrom(t, task);
-                    } else {
-                        dependency = graph.getDependencyFrom(task, t);
-                    }
-
-                    if (dependency != null
-                            && dependency.getType() != DependencyType.END_START) {
-                        for (T i : removeContainers(Arrays.asList(t))) {
-                            if (incoming) {
-                                addDepedency(i, task, dependency.getType());
-                            } else {
-                                addDepedency(task, i, dependency.getType());
-                            }
-                        }
-                    }
+                    addDepedenciesAndRelatedTasks(result, allChildren,
+                            removeContainers(Arrays.asList(t)), type);
                 }
             }
         }
 
-        return new HashSet<T>(removeContainers(result));
+        return result;
     }
 
-    private Collection<T> removeChildrenAndParents(T task, Set<T> tasks) {
+    private void addDepedenciesAndRelatedTasks(Map<T, Node<T, D>> graph,
+            Collection<T> origins,
+            Collection<T> destinations, DependencyType type) {
+        for (T origin : origins) {
+            for (T destination : destinations) {
+                graph.get(origin).addNextTask(destination);
+                graph.get(destination).addPreviousTask(origin);
+                addDependency(origin, destination, type);
+            }
+        }
+    }
+
+    private Set<T> withoutContainers(T task, Set<T> tasks) {
         Set<T> result = new HashSet<T>();
         for (T t : tasks) {
-            if (!graph.contains(task, t)) {
-                if (!graph.isContainer(t)
-                        || !graph.contains(t, task)) {
-                    result.add(t);
-                }
+            if (!graph.isContainer(t)) {
+                result.add(t);
             }
         }
         return result;
     }
 
-    private void addDepedency(T from, T destination, DependencyType type) {
+    private Set<T> removeChildrenAndParents(T task, Set<T> tasks) {
+        Set<T> result = new HashSet<T>();
+        if (!graph.isContainer(task)) {
+            return result;
+        }
+
+        for (T t : tasks) {
+            if (!graph.contains(task, t) && !graph.contains(t, task)) {
+                result.add(t);
+            }
+        }
+
+        return result;
+    }
+
+    private void addDependency(T from, T destination, DependencyType type) {
         Map<T, DependencyType> destinations = dependencies.get(from);
         if (destinations == null) {
             destinations = new HashMap<T, DependencyType>();
