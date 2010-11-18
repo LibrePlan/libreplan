@@ -35,6 +35,8 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -53,6 +55,8 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
+
+    private static final Log LOG = LogFactory.getLog(TaskElement.class);
 
     public interface IDatesInterceptor {
         public void setStartDate(IntraDayDate previousStart,
@@ -251,6 +255,9 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayStartDate(IntraDayDate startDate) {
+        if (startDate == null) {
+            LOG.error(doNotProvideNullsDiscouragingMessage());
+        }
         IntraDayDate previousStart = getIntraDayStartDate();
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.startDate = startDate;
@@ -281,9 +288,19 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayEndDate(IntraDayDate endDate) {
+        if (endDate == null) {
+            LOG.error(doNotProvideNullsDiscouragingMessage());
+        }
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.endDate = endDate;
         datesInterceptor.setNewEnd(previousEnd, this.endDate);
+    }
+
+    private String doNotProvideNullsDiscouragingMessage() {
+        return "The provided date shouldn't be null.\n"
+                + "Providing null values to start or end dates is not safe.\n"
+                + "In a near future an exception will be thrown if you provide a null value to a start or end date.\n"
+                + "Please detect the caller and fix it";
     }
 
     public IntraDayDate getIntraDayEndDate() {
@@ -304,33 +321,27 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     private IDatesHandler getDatesHandler(Scenario scenario) {
-        return ignoreNullDates(createDatesHandler(scenario));
+        return noNullDates(createDatesHandler(scenario));
     }
 
-    private IDatesHandler ignoreNullDates(final IDatesHandler decorated) {
+    private IDatesHandler noNullDates(final IDatesHandler decorated) {
         return new IDatesHandler() {
 
             @Override
             public void resizeTo(IntraDayDate endDate) {
-                if (endDate == null) {
-                    return;
-                }
+                Validate.notNull(endDate);
                 decorated.resizeTo(endDate);
             }
 
             @Override
             public void moveTo(IntraDayDate newStartDate) {
-                if (newStartDate == null) {
-                    return;
-                }
+                Validate.notNull(newStartDate);
                 decorated.moveTo(newStartDate);
             }
 
             @Override
             public void moveEndTo(IntraDayDate newEnd) {
-                if (newEnd == null) {
-                    return;
-                }
+                Validate.notNull(newEnd);
                 decorated.moveEndTo(newEnd);
             }
         };

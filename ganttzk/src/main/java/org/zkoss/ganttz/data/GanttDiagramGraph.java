@@ -1039,6 +1039,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     .withConstraints(currentLength)
                     .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
                     .apply();
+            if (newEnd == null) {
+                return false;
+            }
             if (hasChanged(previousEndDate, newEnd)) {
                 adapter.setEndDateFor(task, newEnd);
             }
@@ -1059,13 +1062,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         private boolean hasChanged(GanttDate old, GanttDate newValue) {
-            if (old == newValue) {
-                return false;
-            }
-            return (old == null) != (newValue == null)
-                    || old.compareTo(newValue) != 0;
+            return old != newValue && old.compareTo(newValue) != 0;
         }
 
+        /**
+         * Calculates the new start date based on the present constraints. If
+         * there are no constraints this method will return the existent start
+         * date value.
+         */
         private GanttDate calculateStartDateFor(V task, Set<D> withDependencies) {
             List<Constraint<GanttDate>> dependencyConstraints = adapter
                     .getStartConstraintsGiven(withDependencies);
@@ -1081,6 +1085,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(dependencyConstraints)
                         .withConstraints(adapter.getStartConstraintsFor(task))
                         .withConstraints(globalStartConstraints).apply();
+            }
+            if (newStart == null) {
+                return adapter.getStartDate(task);
             }
             return newStart;
         }
