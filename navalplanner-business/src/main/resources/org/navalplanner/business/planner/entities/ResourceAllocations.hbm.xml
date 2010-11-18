@@ -314,6 +314,9 @@
               </type>
             </property>
         </joined-subclass>
+        <joined-subclass name="SigmoidFunction">
+            <key column="ASSIGNMENT_FUNCTION_ID" />
+        </joined-subclass>
     </class>
 
     <class name="DerivedAllocation">
