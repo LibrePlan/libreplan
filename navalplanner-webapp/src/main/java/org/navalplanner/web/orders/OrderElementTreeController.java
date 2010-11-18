@@ -153,7 +153,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void moveSelectedOrderElementUp() {
         if (tree.getSelectedCount() == 1) {
-            up(getSelectedNode());
+            Treeitem item =  tree.getSelectedItem();
+            up((OrderElement)item.getValue());
+            Treeitem brother = (Treeitem) item.getPreviousSibling();
+            if (brother != null) {
+                brother.setSelected(true);
+            }
         } else {
             showSelectAnElementMessageBox();
         }
@@ -161,7 +166,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public void moveSelectedOrderElementDown() {
         if (tree.getSelectedCount() == 1) {
-            down(getSelectedNode());
+            Treeitem item =  tree.getSelectedItem();
+            down((OrderElement)item.getValue());
+            Treeitem brother = (Treeitem) item.getNextSibling();
+            if (brother != null) {
+                brother.setSelected(true);
+            }
         } else {
             showSelectAnElementMessageBox();
         }
