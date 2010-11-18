@@ -44,6 +44,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -94,6 +95,12 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
 
+/**
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ *
+ */
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public static class AllocationInput {
@@ -1092,6 +1099,8 @@ class Row {
 
     private final IMessagesForUser messages;
 
+    private final String functionName;
+
     private TaskElement task;
 
     void listenTo(Collection<Row> rows) {
@@ -1219,7 +1228,7 @@ class Row {
 
         Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
         appendListener(assignmentFunctionsCombo);
-        assignmentFunctionsCombo.setValue("None");
+        assignmentFunctionsCombo.setValue(functionName);
 
         hboxAssigmentFunctionsCombobox.appendChild(assignmentFunctionsCombo);
         hboxAssigmentFunctionsCombobox
@@ -1283,7 +1292,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("None");
+            return ASSIGNMENT_FUNCTION_NAME.NONE.toString();
         }
 
         @Override
@@ -1337,7 +1346,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Stretches");
+            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
         }
     };
 
@@ -1360,7 +1369,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Interpolation");
+            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
         }
     };
 
@@ -1379,7 +1388,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Sigmoid");
+            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
         }
 
         @Override
@@ -1476,9 +1485,8 @@ class Row {
     }
 
     private Row(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction,
-            String name, int level,
- List<? extends ResourceAllocation<?>> allocations,
+            AdvancedAllocationController.Restriction restriction, String name,
+            int level, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
         this.messages = messages;
         this.restriction = restriction;
@@ -1488,6 +1496,23 @@ class Row {
         this.task = task;
         this.aggregate = new AggregateOfResourceAllocations(
                 new ArrayList<ResourceAllocation<?>>(allocations));
+        this.functionName = getAssignmentFunctionName(allocations);
+    }
+
+    private String getAssignmentFunctionName(
+            List<? extends ResourceAllocation<?>> allocations) {
+        AssignmentFunction function = getAssignmentFunction(allocations);
+        return (function != null) ? function.getName()
+                : ASSIGNMENT_FUNCTION_NAME.NONE.toString();
+    }
+
+    private AssignmentFunction getAssignmentFunction(
+            List<? extends ResourceAllocation<?>> allocations) {
+        if (allocations != null) {
+            ResourceAllocation<?> allocation = allocations.iterator().next();
+            return allocation.getAssignmentFunction();
+        }
+        return null;
     }
 
     private Integer getHoursForDetailItem(DetailItem item) {

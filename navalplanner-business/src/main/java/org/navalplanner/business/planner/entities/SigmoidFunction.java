@@ -31,6 +31,11 @@ public class SigmoidFunction extends AssignmentFunction {
     }
 
     @Override
+    public String getName() {
+        return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+    }
+
+    @Override
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
         final Task task = resourceAllocation.getTask();
         LocalDate start = LocalDate.fromDateFields(task.getStartDate());
