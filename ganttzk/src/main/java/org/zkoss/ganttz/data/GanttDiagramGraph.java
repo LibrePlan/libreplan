@@ -1027,7 +1027,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             return enforceEndDate(task, incoming);
         }
 
-        @SuppressWarnings("unchecked")
         private boolean enforceEndDate(V task, Set<D> incoming) {
             if (adapter.isFixed(task)) {
                 return false;
@@ -1115,7 +1114,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public boolean equals(Object obj) {
             if (Recalculation.class.isInstance(obj)) {
-                Recalculation other = (Recalculation) obj;
+                Recalculation other = Recalculation.class.cast(obj);
                 return new EqualsBuilder().append(parentRecalculation, other.parentRecalculation)
                                           .append(taskPoint, other.taskPoint)
                                           .isEquals();
