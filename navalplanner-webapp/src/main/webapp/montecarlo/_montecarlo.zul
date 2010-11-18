@@ -32,6 +32,8 @@
 
             <!--Lists of tasks in the critical path -->
             <grid id="gridCriticalPathTasks"
+                    mold="paging"
+                    pageSize="10"
                     fixedLayout="true">
 
                 <auxhead>
