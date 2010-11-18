@@ -214,6 +214,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 // FIXME: Refactorize to another listener
                 updateDeadline();
+                invalidate();
             }
 
         };
