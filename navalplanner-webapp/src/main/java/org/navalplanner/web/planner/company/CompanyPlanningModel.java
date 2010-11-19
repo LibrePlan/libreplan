@@ -331,6 +331,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         chartComponent.getTabs().getLastChild().addEventListener(Events.ON_SELECT, new EventListener() {
             public void onEvent(Event event) throws Exception {
                 createOnDemandEarnedValueTimePlot(chartComponent, planner);
+                event.getTarget().removeEventListener(Events.ON_SELECT, this);
             }
         });
     }
