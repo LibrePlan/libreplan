@@ -331,7 +331,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             List<ICommand<TaskElement>> additional) {
         currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
-        PlannerConfiguration<TaskElement> configuration = createConfiguration(orderReloaded);
+        PlannerConfiguration<TaskElement> configuration = createConfiguration(planner, orderReloaded);
         configuration.setExpandPlanningViewCharts(configurationDAO
                 .getConfiguration().isExpandOrderPlanningViewCharts());
 
@@ -1014,10 +1014,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
-            Order orderReloaded) {
+            Planner planner, Order orderReloaded) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.useScenario(currentScenario);
-        planningState = createPlanningStateFor(orderReloaded);
+        planningState = createPlanningStateFor(planner, orderReloaded);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
@@ -1028,7 +1028,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private PlanningState createPlanningStateFor(
-            Order orderReloaded) {
+            Planner planner, Order orderReloaded) {
         if (!orderReloaded.isSomeTaskElementScheduled()) {
             return PlanningState.createEmpty(currentScenario);
         }
@@ -1039,7 +1039,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         forceLoadDayAssignments(orderReloaded.getResources());
         switchAllocationsToScenario(currentScenario, taskElement);
         final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
-        PlanningState result = PlanningState.create(taskElement, orderReloaded
+        PlanningState result = PlanningState.create(planner, taskElement, orderReloaded
                 .getAssociatedTasks(), allResources, criterionDAO, resourceDAO,
                 scenarioInfo);
         forceLoadOfDependenciesCollections(result.getInitial());

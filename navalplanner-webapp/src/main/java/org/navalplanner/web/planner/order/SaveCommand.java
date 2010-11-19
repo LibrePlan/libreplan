@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.order;
 import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -46,6 +47,7 @@ import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.CriticalPathProgress;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -69,6 +71,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
 
@@ -186,8 +189,32 @@ public class SaveCommand implements ISaveCommand {
             // gantt as transiet
             dontPoseAsTransient(taskElement);
         }
+        saveRootTaskIfNecessary();
+    }
+
+    private void saveRootTaskIfNecessary() {
+        TaskGroup rootTask = state.getRootTask();
         if (!state.getTasksToSave().isEmpty()) {
-            updateRootTaskPosition();
+            updateRootTaskPosition(rootTask);
+        }
+        updateCriticalPathProgress(rootTask);
+        taskElementDAO.save(rootTask);
+    }
+
+    private void updateCriticalPathProgress(TaskGroup rootTask) {
+        List criticalPath = state.getPlanner().getCriticalPath();
+        BigDecimal byDuration = CriticalPathProgress.calculateByDuration(criticalPath);
+        System.out.println("### updateCriticalPathProgress: " + byDuration);
+    }
+
+    private void updateRootTaskPosition(TaskGroup rootTask) {
+        final Date min = minDate(state.getTasksToSave());
+        if (min != null) {
+            rootTask.setStartDate(min);
+        }
+        final Date max = maxDate(state.getTasksToSave());
+        if (max != null) {
+            rootTask.setEndDate(max);
         }
     }
 
@@ -449,19 +476,6 @@ public class SaveCommand implements ISaveCommand {
             }
             element.dontPoseAsTransientObjectAnymore();
         }
-    }
-
-    private void updateRootTaskPosition() {
-        TaskGroup rootTask = state.getRootTask();
-        final Date min = minDate(state.getTasksToSave());
-        if (min != null) {
-            rootTask.setStartDate(min);
-        }
-        final Date max = maxDate(state.getTasksToSave());
-        if (max != null) {
-            rootTask.setEndDate(max);
-        }
-        taskElementDAO.save(rootTask);
     }
 
     private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
