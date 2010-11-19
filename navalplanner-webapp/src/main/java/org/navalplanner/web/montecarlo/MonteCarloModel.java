@@ -52,9 +52,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zk.ui.Desktop;
-import org.zkoss.zk.ui.DesktopUnavailableException;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zul.Progressmeter;
 
 /**
@@ -515,9 +512,11 @@ public class MonteCarloModel implements IMonteCarloModel {
         }
 
         private void increaseProgressMeter() {
-            final int currentValue = progressmeter.getValue();
-            progressmeter.setValue(currentValue + 1);
-            progressmeter.invalidate();
+            if (progressmeter != null) {
+                final int currentValue = progressmeter.getValue();
+                progressmeter.setValue(currentValue + 1);
+                progressmeter.invalidate();
+            }
         }
 
         private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,
