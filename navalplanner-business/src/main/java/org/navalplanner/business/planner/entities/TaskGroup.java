@@ -20,6 +20,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +54,22 @@ public class TaskGroup extends TaskElement {
      */
     public TaskGroup() {
 
+    }
+
+    private CriticalPathProgress criticalPathProgress;
+
+    public BigDecimal getCriticalPathProgressByDuration() {
+        if (criticalPathProgress == null) {
+            return BigDecimal.ZERO;
+        }
+        return criticalPathProgress.getByDuration();
+    }
+
+    public BigDecimal getCriticalPathProgressByNumHours() {
+        if (criticalPathProgress == null) {
+            return BigDecimal.ZERO;
+        }
+        return criticalPathProgress.getByNumHours();
     }
 
     @SuppressWarnings("unused")
@@ -213,6 +230,14 @@ public class TaskGroup extends TaskElement {
             result.add(each.getIntraDayStartDate());
         }
         return result;
+    }
+
+    public void updateCriticalPathProgress(List<Task> criticalPath) {
+        Validate.isTrue(getParent() == null);
+        if (criticalPathProgress == null) {
+            criticalPathProgress = CriticalPathProgress.create(this);
+        }
+        criticalPathProgress.update(criticalPath);
     }
 
 }

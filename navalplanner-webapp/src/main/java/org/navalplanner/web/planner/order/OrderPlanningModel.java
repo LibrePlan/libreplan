@@ -395,8 +395,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         setupLoadChart(chartLoadTimeplot, planner, configuration, saveCommand);
         setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, configuration, saveCommand);
-        ProgressType progressType = configurationDAO.getConfiguration().getProgressType();
-        setupOverallProgress(chartComponent, progressType, planner, configuration, saveCommand);
+        setupOverallProgress(chartComponent, planner, configuration, saveCommand);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
     }
@@ -510,9 +509,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
-    private void setupOverallProgress(Tabbox chartComponent,
-            final ProgressType progressType, Planner planner, PlannerConfiguration<TaskElement> configuration,
-            ISaveCommand saveCommand) {
+    private void setupOverallProgress(Tabbox chartComponent, Planner planner, PlannerConfiguration<TaskElement> configuration,
+            final ISaveCommand saveCommand) {
+
+        saveCommand.addListener(new IAfterSaveListener() {
+            @Override
+            public void onAfterSave() {
+                // FIXME: Should create overallProgressContent if it's null
+                if (overallProgressContent != null) {
+                    overallProgressContent.update();
+                }
+            }
+        });
 
         chartComponent.addEventListener(Events.ON_SELECT, new EventListener() {
 
@@ -523,7 +531,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 if (isOverAllProgressSelected(selectedTab)) {
                     if (overallProgressContent == null) {
                         final Tabpanel tabpanel = getSelectedPanel(selectedTab);
-                        overallProgressContent = new OverAllProgressContent(tabpanel, progressType);
+                        overallProgressContent = new OverAllProgressContent(tabpanel);
                     }
                     overallProgressContent.update();
                 }
@@ -1553,7 +1561,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         private Label lbAdvancePercentage;
 
 
-        public OverAllProgressContent(Tabpanel tabpanel, ProgressType progressType) {
+        public OverAllProgressContent(Tabpanel tabpanel) {
             progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByDuration");
             lbCriticalPathByDuration = (Label) tabpanel.getFellowIfAny("lbCriticalPathByDuration");
             progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByNumHours");
