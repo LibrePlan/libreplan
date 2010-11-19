@@ -495,7 +495,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                 }
                 setIntraDayEndDate(endDate);
                 updateWorkableDays();
-                doReassignment(lastAllocationDirection);
+                doReassignment(getLastAllocationDirection());
             }
 
             private void updateWorkableDays() {
@@ -627,13 +627,16 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public Direction getLastAllocationDirection() {
+        if (lastAllocationDirection == null) {
+            return Direction.FORWARD;
+        }
         return lastAllocationDirection;
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourceDAO resourceDAO) {
-        reassign(scenario, lastAllocationDirection, new WithAnotherResources(
-                resourceDAO));
+        reassign(scenario, getLastAllocationDirection(),
+                new WithAnotherResources(resourceDAO));
     }
 
     private void reassign(Scenario onScenario, Direction direction,
