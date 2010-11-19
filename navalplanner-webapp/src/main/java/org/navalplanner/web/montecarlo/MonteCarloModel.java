@@ -39,14 +39,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.scenarios.IScenarioManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -79,16 +76,11 @@ import org.zkoss.zul.Progressmeter;
 public class MonteCarloModel implements IMonteCarloModel {
 
     @Autowired
-    private IOrderDAO orderDAO;
-
-    @Autowired
-    private IScenarioManager scenarioManager;
+    private ITaskElementDAO taskDAO;
 
     private String CRITICAL_PATH = _("Critical path");
 
     private String DEFAULT_CRITICAL_PATH = CRITICAL_PATH + " 1";
-
-//    private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
 
     private Map<String, List<MonteCarloTask>> criticalPaths = new HashMap<String, List<MonteCarloTask>>();
 
@@ -98,20 +90,11 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setCriticalPath(Order order,
-            List<TaskElement> tasksInCriticalPath) {
-
-        Order orderReloaded = getFromDB(order);
-
-        // Initializes tasks inside order (necessary to navigate its taskgroups)
-        useSchedulingDataForCurrentScenario(orderReloaded);
-        List<TaskElement> orderTasks = new ArrayList<TaskElement>();
-        orderTasks.addAll(orderReloaded.getAllChildrenAssociatedTaskElements());
-        initializeTasks(orderTasks);
+    public void setCriticalPath(List<TaskElement> tasksInCriticalPath) {
 
         tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
-        this.tasksInCriticalPath = retrieveFromOrderTasks(
-                tasksInCriticalPath, orderTasks);
+        initializeTasks(tasksInCriticalPath);
+        this.tasksInCriticalPath = tasksInCriticalPath;
         initializeOrderName(tasksInCriticalPath);
 
         int i = 1;
@@ -121,39 +104,6 @@ public class MonteCarloModel implements IMonteCarloModel {
             criticalPaths.put(CRITICAL_PATH + " " + i++,
                     toMonteCarloTaskList(path));
         }
-    }
-
-    private Order getFromDB(Order order) {
-        try {
-            return orderDAO.find(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private List<TaskElement> retrieveFromOrderTasks(List<TaskElement> tasks, List<TaskElement> orderTasks) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
-        for (TaskElement each: tasks) {
-            TaskElement task = retrieveTaskFromModel(each, orderTasks);
-            if (task != null) {
-                result.add(task);
-            }
-        }
-        return result;
-    }
-
-    private TaskElement retrieveTaskFromModel(TaskElement task, List<TaskElement> orderTasks) {
-        for (TaskElement each : orderTasks) {
-            if (isSameTask(each, task)) {
-                return (Task) each;
-            }
-        }
-        return null;
-    }
-
-    private void useSchedulingDataForCurrentScenario(Order order) {
-        orderDAO.reattach(order);
-        order.useSchedulingDataFor(scenarioManager.getCurrent());
     }
 
     private void initializeTasks(List<TaskElement> taskElements) {
@@ -166,6 +116,7 @@ public class MonteCarloModel implements IMonteCarloModel {
         if (taskElement == null) {
             return;
         }
+        taskDAO.reattach(taskElement);
         Hibernate.initialize(taskElement);
         initializeTaskElement(taskElement.getParent());
         initializeDependencies(taskElement);

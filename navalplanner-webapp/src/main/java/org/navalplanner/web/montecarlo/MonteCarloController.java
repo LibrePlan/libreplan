@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -212,8 +211,8 @@ public class MonteCarloController extends GenericForwardComposer {
         return monteCarloModel.getCriticalPath(selectedPath);
     }
 
-    public void setCriticalPath(Order order, List criticalPath) {
-        monteCarloModel.setCriticalPath(order, criticalPath);
+    public void setCriticalPath(List criticalPath) {
+        monteCarloModel.setCriticalPath(criticalPath);
         if (lbCriticalPaths != null) {
             feedCriticalPathsList();
             reloadGridCritialPathTasks();

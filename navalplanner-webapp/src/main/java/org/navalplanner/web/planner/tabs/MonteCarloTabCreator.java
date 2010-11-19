@@ -99,8 +99,8 @@ public class MonteCarloTabCreator {
 
             @Override
             protected void afterShowAction() {
-                monteCarloController.setCriticalPath(mode.getOrder(),
-                        orderPlanningController.getCriticalPath());
+                monteCarloController.setCriticalPath(orderPlanningController
+                        .getCriticalPath());
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
