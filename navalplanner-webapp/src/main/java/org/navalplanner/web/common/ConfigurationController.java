@@ -25,11 +25,13 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -45,6 +47,8 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
@@ -52,7 +56,6 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Listitem;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -63,7 +66,10 @@ import org.zkoss.zul.api.Window;
 public class ConfigurationController extends GenericForwardComposer {
 
     private Window configurationWindow;
+
     private BandboxSearch defaultCalendarBandboxSearch;
+
+    private Listbox lbTypeProgress;
 
     private IConfigurationModel configurationModel;
 
@@ -89,11 +95,43 @@ public class ConfigurationController extends GenericForwardComposer {
                                 .getValue());
                     }
                 });
-
+        initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
 
         createPanelEntityComponents();
 
+    }
+
+    private void initializeProgressTypeList() {
+        lbTypeProgress.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Listitem selectedItem = getSelectedItem((SelectEvent) event);
+                if (selectedItem != null) {
+                    ProgressType progressType = (ProgressType) selectedItem.getValue();
+                    configurationModel.setProgressType(progressType);
+                }
+            }
+
+            private Listitem getSelectedItem(SelectEvent event) {
+                final Set<Listitem> selectedItems = event.getSelectedItems();
+                return selectedItems.iterator().next();
+            }
+
+        });
+    }
+
+    public List<ProgressType> getProgressTypes() {
+        return configurationModel.getProgresTypes();
+    }
+
+    public ProgressType getSelectedProgressType() {
+        return configurationModel.getProgressType();
+    }
+
+    public void setSelectedProgressType(ProgressType progressType) {
+        configurationModel.setProgressType(progressType);
     }
 
     private void createPanelEntityComponents() {

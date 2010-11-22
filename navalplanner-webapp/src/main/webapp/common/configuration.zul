@@ -62,6 +62,14 @@
                                 selectedElement="@{configurationController.defaultCalendar}" />
                         </row>
                         <row>
+                            <label value="${i18n:_('Show progress')}" />
+                            <listbox
+                                id="lbTypeProgress"
+                                model="@{configurationController.progressTypes}"
+                                selectedItem="@{configurationController.selectedProgressType}"
+                                mold="select" />
+                        </row>
+                        <row>
                             <label value="${i18n:_('Generate code for')}" />
                             <grid>
                                 <columns>
@@ -160,11 +168,11 @@
                         </row>
                     </rows>
                 </grid>
-				<separator bar="false" height="20px" />
-				<panel border="normal" title="Entity code sequences">
-					<panelchildren id="panelEntitySequence">
-					</panelchildren>
-				</panel>
+                <separator bar="false" height="20px" />
+                <panel border="normal" title="Entity code sequences">
+                    <panelchildren id="panelEntitySequence">
+                    </panelchildren>
+                </panel>
 
             </tabpanel>
         </tabpanels>

@@ -25,6 +25,7 @@ import java.util.List;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 
 /**
  * Contract for {@link ConfigurationModel}.
@@ -122,4 +123,11 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForBaseCalendars();
 
     boolean checkFrefixFormat(EntitySequence sequence);
+
+    List<ProgressType> getProgresTypes();
+
+    void setProgressType(ProgressType progressType);
+
+    ProgressType getProgressType();
+
 }

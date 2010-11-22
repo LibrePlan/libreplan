@@ -33,6 +33,12 @@
         <property name="expandResourceLoadViewCharts" not-null="true" />
         <property name="monteCarloMethodTabVisible" not-null="true" />
 
+        <property name="progressType">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.common.entities.ProgressType</param>
+            </type>
+        </property>
+
     </class>
 
 </hibernate-mapping>

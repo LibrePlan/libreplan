@@ -38,6 +38,7 @@ import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
@@ -519,4 +520,20 @@ public class ConfigurationModel implements IConfigurationModel {
         return (sequence.checkConstraintWithoutLowBar() && sequence
                 .checkConstraintPrefixWithoutWhiteSpaces());
     }
+
+    @Override
+    public List<ProgressType> getProgresTypes() {
+        return ProgressType.getAll();
+    }
+
+    @Override
+    public void setProgressType(ProgressType progressType) {
+        configuration.setProgressType(progressType);
+    }
+
+    @Override
+    public ProgressType getProgressType() {
+        return configuration.getProgressType();
+    }
+
 }
