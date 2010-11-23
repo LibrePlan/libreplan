@@ -1342,7 +1342,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     public enum PointType {
         BOTH, END, NONE;
 
-        public boolean sendsModificationsThrough(DependencyType type) {
+        public <V> boolean sendsModificationsThrough(IAdapter<V, ?> adapter,
+                V source, DependencyType type) {
+            if (!adapter.isContainer(source)) {
+                return true;
+            }
             switch (this) {
             case NONE:
                 return false;
@@ -1403,8 +1407,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         public boolean sendsModificationsThrough(D dependency) {
             DependencyType type = adapter.getType(dependency);
-            return adapter.getSource(dependency).equals(task)
-                    && pointType.sendsModificationsThrough(type);
+            T source = adapter.getSource(dependency);
+            return source.equals(task)
+                    && pointType.sendsModificationsThrough(adapter, source,
+                            type);
         }
     }
 
