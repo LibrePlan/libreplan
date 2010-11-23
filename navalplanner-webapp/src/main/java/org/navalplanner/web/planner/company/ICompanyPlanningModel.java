@@ -23,6 +23,7 @@ package org.navalplanner.web.planner.company;
 import java.util.Collection;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -55,4 +56,7 @@ public interface ICompanyPlanningModel {
     LocalDate getFilterFinishDate();
 
     void goToCreateOtherOrderFromTemplate(OrderTemplate template);
+
+    ProgressType getProgressTypeFromConfiguration();
+
 }

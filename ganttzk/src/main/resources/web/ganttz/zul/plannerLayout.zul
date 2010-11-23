@@ -46,6 +46,12 @@ planner = self;
             model="${planner.zoomLevels}"
             onSelect="planner.setZoomLevel(self.selectedItem.value);" >
         </listbox>
+
+        <!-- Progress type -->
+        <label>${i18n:_('Progress')}:</label>
+        <listbox id="lbProgressTypes"
+            mold="select" />
+
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"
             tooltiptext="${i18n:_('Show/Hide Critical path')}" />

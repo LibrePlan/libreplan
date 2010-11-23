@@ -533,8 +533,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                         final Tabpanel tabpanel = getSelectedPanel(selectedTab);
                         overallProgressContent = new OverAllProgressContent(tabpanel);
                     }
-                    overallProgressContent.update();
+                    updateOverAllProgressContent();
                 }
+            }
+
+            private void updateOverAllProgressContent() {
+                transactionService
+                        .runOnTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                overallProgressContent.update();
+                                return null;
+                            }
+                        });
             }
 
             private boolean isOverAllProgressSelected(Tab selectedTab) {
@@ -1570,10 +1581,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             lbAdvancePercentage = (Label) tabpanel.getFellowIfAny("lbAdvancePercentage");
         }
 
+        @Transactional(readOnly=true)
         public void update() {
             TaskGroup rootTask = planningState.getRootTask();
 
-            setAdvancePercentage(rootTask.getAdvancePercentage());
+            setAdvancePercentage(rootTask.getRawAdvancePercentage());
             setCriticalPathByDuration(rootTask.getCriticalPathProgressByDuration());
             setCriticalPathByNumHours(rootTask.getCriticalPathProgressByNumHours());
         }

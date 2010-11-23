@@ -36,8 +36,8 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -500,6 +500,15 @@ public class TaskComponent extends Div implements AfterCompose {
                 widthAdvancePercentage));
     }
 
+    public void updateCompletion(String progressType) {
+        int startPixels = this.task.getBeginDate().toPixels(getMapper());
+
+        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+                this.task.getAdvanceEndDate(progressType)) + "px";
+        response(null, new AuInvoke(this, "resizeCompletion2Advance",
+                widthAdvancePercentage));
+    }
+
     private int pixelsFromStartUntil(int startPixels, GanttDate until) {
         int endPixels = until.toPixels(getMapper());
         assert endPixels >= startPixels;
@@ -508,6 +517,10 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public void updateTooltipText() {
         smartUpdate("taskTooltipText", task.updateTooltipText());
+    }
+
+    public void updateTooltipText(String progressType) {
+        smartUpdate("taskTooltipText", task.updateTooltipText(progressType));
     }
 
     private DependencyList getDependencyList() {

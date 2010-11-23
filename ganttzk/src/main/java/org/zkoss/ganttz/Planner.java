@@ -708,4 +708,8 @@ public class Planner extends HtmlMacroComponent  {
         return context.getCriticalPath();
     }
 
+    public void updateCompletion(String progressType) {
+        getTaskList().updateCompletion(progressType);
+    }
+
 }

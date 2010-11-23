@@ -246,4 +246,14 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
         return Collections.emptyList();
     }
 
+    @Override
+    public GanttDate getAdvanceEndDate(String progressType) {
+        return null;
+    }
+
+    @Override
+    public String updateTooltipText(String progressType) {
+        return "";
+    }
+
 }

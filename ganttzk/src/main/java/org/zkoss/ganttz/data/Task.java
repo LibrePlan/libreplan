@@ -289,12 +289,20 @@ public abstract class Task implements ITaskFundamentalProperties {
         return fundamentalProperties.getAdvanceEndDate();
     }
 
+    public GanttDate getAdvanceEndDate(String progressType) {
+        return fundamentalProperties.getAdvanceEndDate(progressType);
+    }
+
     public String getTooltipText() {
         return fundamentalProperties.getTooltipText();
     }
 
     public String updateTooltipText() {
         return fundamentalProperties.updateTooltipText();
+    }
+
+    public String updateTooltipText(String progressType) {
+        return fundamentalProperties.updateTooltipText(progressType);
     }
 
     public String getLabelsText() {

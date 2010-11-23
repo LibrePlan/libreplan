@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -47,10 +48,16 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -61,7 +68,7 @@ import org.zkoss.zul.Vbox;
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class CompanyPlanningController implements Composer{
+public class CompanyPlanningController implements Composer {
 
     @Autowired
     private ICompanyPlanningModel model;
@@ -91,6 +98,8 @@ public class CompanyPlanningController implements Composer{
                 .retrieve();
     }
 
+    private Listbox lbProgressTypes;
+
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         planner = (Planner) comp;
@@ -105,6 +114,8 @@ public class CompanyPlanningController implements Composer{
         }
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
+
+        initializeListboxProgressTypes();
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter
@@ -121,6 +132,49 @@ public class CompanyPlanningController implements Composer{
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
+    }
+
+    private void initializeListboxProgressTypes() {
+        if (lbProgressTypes == null) {
+            lbProgressTypes = (Listbox) planner.getFellow("lbProgressTypes");
+        }
+        lbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
+
+        // Select default configuration option
+        lbProgressTypes.renderAll();
+        Listitem item = findListitemValue(lbProgressTypes, getProgressTypeFromConfiguration());
+        if (item != null) {
+            lbProgressTypes.setSelectedItem(item);
+        }
+
+        // Update completion of tasks on selecting new progress type
+        lbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                ProgressType progressType = getSelectedProgressType();
+                planner.updateCompletion(progressType.toString());
+            }
+
+            private ProgressType getSelectedProgressType() {
+                return (ProgressType) lbProgressTypes.getSelectedItem().getValue();
+            }
+
+        });
+    }
+
+    private Listitem findListitemValue(Listbox listbox, ProgressType value) {
+        for (Object each : listbox.getChildren()) {
+            final Listitem item = (Listitem) each;
+            if (value.equals(item.getValue())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public ProgressType getProgressTypeFromConfiguration() {
+        return model.getProgressTypeFromConfiguration();
     }
 
     public void setConfigurationForPlanner() {

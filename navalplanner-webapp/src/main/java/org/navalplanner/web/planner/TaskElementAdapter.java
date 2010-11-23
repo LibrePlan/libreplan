@@ -53,6 +53,7 @@ import org.joda.time.Seconds;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -300,6 +301,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private class TaskElementWrapper implements ITaskFundamentalProperties {
 
         private final TaskElement taskElement;
+
         private final Scenario currentScenario;
 
         protected TaskElementWrapper(Scenario currentScenario,
@@ -450,33 +452,46 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public GanttDate getAdvanceEndDate() {
-            OrderElement orderElement = taskElement.getOrderElement();
+        public GanttDate getAdvanceEndDate(String progressType) {
+            return getAdvanceEndDate(ProgressType.asEnum(progressType));
+        }
 
-            BigDecimal advancePercentage;
-            Integer hours;
-            if (orderElement != null) {
-                advancePercentage = taskElement.getAdvancePercentage();
+        private GanttDate getAdvanceEndDate(ProgressType progressType) {
+            BigDecimal advancePercentage = BigDecimal.ZERO;
+            if (taskElement.getOrderElement() != null) {
+                advancePercentage = taskElement
+                        .getAdvancePercentage(progressType);
+            }
+            return getAdvanceEndDate(advancePercentage);
+        }
+
+        @Override
+        public GanttDate getAdvanceEndDate() {
+            BigDecimal advancePercentage = BigDecimal.ZERO;
+            if (taskElement.getOrderElement() != null) {
+                advancePercentage = taskElement
+                        .getAdvancePercentage();
+            }
+            return getAdvanceEndDate(advancePercentage);
+        }
+
+        private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
+            Integer hours = Integer.valueOf(0);
+            if (taskElement.getOrderElement() != null) {
                 hours = taskElement.getSumOfHoursAllocated();
-            } else {
-                advancePercentage = new BigDecimal(0);
-                hours = Integer.valueOf(0);
             }
 
-            Integer advanceHours = advancePercentage.multiply(
-                    new BigDecimal(hours)).intValue();
+            if (taskElement instanceof TaskGroup) {
+                return calculateLimitDate(advancePercentage);
+            }
 
-            GanttDate result;
-            if(taskElement instanceof TaskGroup) {
+            // Calculate date according to advanceHours or advancePercentage
+            final Integer advanceHours = advancePercentage.multiply(
+                    new BigDecimal(hours)).intValue();
+            GanttDate result = calculateLimitDate(advanceHours);
+            if (result == null) {
                 result = calculateLimitDate(advancePercentage);
             }
-            else {
-                result = calculateLimitDate(advanceHours);
-                if (result == null) {
-                    result = calculateLimitDate(advancePercentage);
-                }
-            }
-
             return result;
         }
 
@@ -524,14 +539,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 advanceLeft = advanceLeft.minus(calendar.getCapacityOn(each));
             }
             return toGantt(end);
-        }
-
-        @Override
-        public BigDecimal getAdvancePercentage() {
-            if (taskElement != null) {
-                return taskElement.getAdvancePercentage();
-            }
-            return new BigDecimal(0);
         }
 
         private GanttDate calculateLimitDate(Integer hours) {
@@ -633,8 +640,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
         }
 
-
-
         private Set<Label> getLabelsFromElementAndPredecesors(
                 OrderElement order) {
             if (order != null) {
@@ -718,13 +723,32 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             return buildTooltipText();
         }
 
+        @Override
+        public String updateTooltipText(String progressType) {
+            return buildTooltipText(ProgressType.asEnum(progressType));
+        }
+
+        @Override
+        public BigDecimal getAdvancePercentage() {
+            if (taskElement != null) {
+                return taskElement.getAdvancePercentage();
+            }
+            return new BigDecimal(0);
+        }
+
         private String buildTooltipText() {
+            return buildTooltipText(asPercentage(taskElement.getAdvancePercentage()));
+        }
+
+        private BigDecimal asPercentage(BigDecimal value) {
+            return value.multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.DOWN);
+        }
+
+        private String buildTooltipText(BigDecimal progressPercentage) {
             StringBuilder result = new StringBuilder();
             result.append(_("Name: {0}", getName()) + "<br/>");
-            result.append(_("Advance") + ": ").append(
-                    (getAdvancePercentage().multiply(new BigDecimal(100)))
-                            .setScale(2, RoundingMode.DOWN))
-                    .append("% , ");
+            result.append(_("Advance") + ": ")
+                    .append(progressPercentage).append("% , ");
 
             result.append(_("Hours invested") + ": ").append(
                     getHoursAdvancePercentage().multiply(new BigDecimal(100)))
@@ -736,6 +760,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         + ": " + labels + "</div>");
             }
             return result.toString();
+        }
+
+        private String buildTooltipText(ProgressType progressType) {
+            return buildTooltipText(asPercentage(taskElement.getAdvancePercentage(progressType)));
         }
 
         private String getOrderState() {

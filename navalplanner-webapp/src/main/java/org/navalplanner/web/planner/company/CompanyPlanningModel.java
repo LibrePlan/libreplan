@@ -42,6 +42,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -920,4 +921,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void goToCreateOtherOrderFromTemplate(OrderTemplate template) {
         tabs.goToCreateotherOrderFromTemplate(template);
     }
+
+    @Transactional(readOnly=true)
+    public ProgressType getProgressTypeFromConfiguration() {
+        return configurationDAO.getConfiguration().getProgressType();
+    }
+
 }

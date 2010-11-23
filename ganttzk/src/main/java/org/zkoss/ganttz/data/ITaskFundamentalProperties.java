@@ -98,4 +98,8 @@ public interface ITaskFundamentalProperties {
 
     public List<Constraint<GanttDate>> getCurrentLengthConstraint();
 
+    public GanttDate getAdvanceEndDate(String progressType);
+
+    String updateTooltipText(String progressType);
+
 }

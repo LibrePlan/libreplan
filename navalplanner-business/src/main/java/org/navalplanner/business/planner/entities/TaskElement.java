@@ -41,6 +41,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -599,6 +600,13 @@ public abstract class TaskElement extends BaseEntity {
     public BigDecimal getAdvancePercentage() {
         return (advancePercentage == null) ? BigDecimal.ZERO
                 : advancePercentage;
+    }
+
+    public BigDecimal getAdvancePercentage(ProgressType progressType) {
+        if (progressType.equals(ProgressType.NORMAL)) {
+            return advancePercentage;
+        }
+        return BigDecimal.ZERO;
     }
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {

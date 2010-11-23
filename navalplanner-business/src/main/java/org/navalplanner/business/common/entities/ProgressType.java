@@ -54,4 +54,13 @@ public enum ProgressType {
         return Arrays.asList(ProgressType.values());
     }
 
+    public static ProgressType asEnum(String value) {
+        for (ProgressType each: getAll()) {
+            if (each.getValue().equals(value)) {
+                return each;
+            }
+        }
+        return null;
+    }
+
 }

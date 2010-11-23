@@ -32,6 +32,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
@@ -48,6 +51,8 @@ public class TaskGroup extends TaskElement {
     }
 
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
+
+    private IConfigurationDAO configurationDAO;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -238,6 +243,39 @@ public class TaskGroup extends TaskElement {
             criticalPathProgress = CriticalPathProgress.create(this);
         }
         criticalPathProgress.update(criticalPath);
+    }
+
+    @Override
+    public BigDecimal getAdvancePercentage() {
+        return getAdvancePercentage(getConfigurationDAO().getConfiguration()
+                .getProgressType());
+    }
+
+    private IConfigurationDAO getConfigurationDAO() {
+        if (configurationDAO == null) {
+            configurationDAO = Registry.getConfigurationDAO();
+        }
+        return configurationDAO;
+    }
+
+    public BigDecimal getAdvancePercentage(ProgressType progressType) {
+        if (isTaskRoot(this)) {
+            if (progressType.equals(ProgressType.CRITICAL_PATH_DURATION)) {
+                return getCriticalPathProgressByDuration();
+            }
+            if (progressType.equals(ProgressType.CRITICAL_PATH_NUMHOURS)) {
+                return getCriticalPathProgressByNumHours();
+            }
+        }
+        return super.getAdvancePercentage();
+    }
+
+    private boolean isTaskRoot(TaskGroup taskGroup) {
+        return taskGroup.getParent() == null;
+    }
+
+    public BigDecimal getRawAdvancePercentage() {
+        return super.getAdvancePercentage();
     }
 
 }
