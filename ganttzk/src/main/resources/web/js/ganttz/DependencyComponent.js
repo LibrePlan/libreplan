@@ -128,66 +128,47 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
 
         // First segment not used
         var depstart = this._findImageElement('start');
-        //depstart.hide();
+        depstart.hide();
 
         // Second segment not used
         var depmid = this._findImageElement('mid');
         var depmidcss;
-        depmid.style.left = xorig + "px";
-        if (yend > yorig){
-            depmid.style.top = yorig + "px";
-            depmid.style.height = yend - yorig + "px";
-            //depmidcss = {top : yorig, height : yend - yorig};
-        }
-        else{
-            depmid.style.top = yend + "px" ;
-            depmid.style.height = yorig - yend + "px";
-            //depmidcss = {top : yend, height : (yorig - yend)};
-        }
+        
+        if (yend > yorig)
+            depmidcss = {top : yorig, height : yend - yorig};
+        else
+            depmidcss = {top : yend, height : (yorig - yend)};
 
-//        depmidcss.left = xorig;
-//        depmid.css(depmidcss);
+        depmidcss.left = xorig;
+        depmid.css(depmidcss);
 
         var depend = this._findImageElement('end');
-        depend.style.top = yend + "px";
-        depend.style.left = xorig + "px";
-        depend.style.width = (width) + "px";
-//      var dependcss = {top : yend, left : xorig};
+        var dependcss = {top : yend, left : xorig, width : width};
         if(width < 0) {
-            //dependcss.left = xend;
-            //dependcss.width = Math.abs(width);
-            depend.style.width = Math.abs(width) + "px";
-            depend.style.left = xend + "px";
+            dependcss.left = xend;
+            dependcss.width = Math.abs(width);
         }
-        //depend.css(dependcss);
+        depend.css(dependcss);
 
         var deparrow = this._findImageElement('arrow');
         var deparrowsrc, deparrowcss;
         if ( width == 0 ) {
-//            deparrowcss = {top : (yend - 10) , left : (xend - 5)};
-            deparrow.style.top = (yend - 10) + "px" ;
-            deparrow.style.left = (xend - 5) + "px";
+            deparrowcss = {top : (yend - 10) , left : (xend - 5)};
             deparrowsrc = this.$class.getImagesDir() + "arrow2.png";
             if ( yorig > yend ) {
-                deparrow.style.top = yend + "px";
-                //deparrowcss = {top : yend};
+                deparrowcss = {top : yend};
                 deparrowsrc = this.$class.getImagesDir() + "arrow4.png";
             }
         } else {
-            deparrow.style.top = (yend - 5) + "px";
-            deparrow.style.left = (xend - 10) + "px";
-            //deparrowcss = {top : (yend -5), left : (xend - 10)};
+            deparrowcss = {top : (yend -5), left : (xend - 10)};
             deparrowsrc = this.$class.getImagesDir() + "arrow.png";
             if (width < 0) {
-                deparrow.style.top = (yend - 5) + "px";
-                deparrow.style.left = xend + "px";
-                //deparrowcss = {top : (yend - 5), left : xend}
+                deparrowcss = {top : (yend - 5), left : xend}
                 deparrowsrc = this.$class.getImagesDir() + "arrow3.png";
             }
         }
-        deparrow.setAttribute('src', deparrowsrc);
-        //deparrow.attr('src', deparrowsrc);
-        //deparrow.css(deparrowcss);
+        deparrow.attr('src', deparrowsrc);
+        deparrow.css(deparrowcss);
     },
     findPos_ : function(element){
         var pos1 = jq('#listdependencies').offset();
@@ -195,7 +176,7 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
         return {left : (pos2.left - pos1.left), top : (pos2.top - pos1.top)};
     },
     _findImageElement : function(name) {
-        var img = jq('.' + name + '', this.$n())[0];
+        var img = jq('.' + name + '', this.$n());
         return img;
     },
     setupArrow_ : function(){
