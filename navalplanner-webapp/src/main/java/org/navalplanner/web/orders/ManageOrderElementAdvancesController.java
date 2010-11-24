@@ -296,6 +296,8 @@ public class ManageOrderElementAdvancesController extends
                 if (indexSelectedItem > editAdvances.getIndexOfItem(listItem)) {
                     selectAdvanceLine(indexSelectedItem - 1);
                 } else {
+                    prepareEditAdvanceMeasurements(getAdvanceAssignments().get(
+                            indexSelectedItem));
                     reloadAdvances();
                 }
             }
