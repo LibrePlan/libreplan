@@ -215,9 +215,12 @@ public class TemplateModel implements ITemplateModel {
 
         private final Scenario scenario;
 
-        private Adapter(Scenario scenario) {
+        private LocalDate deadline;
+
+        private Adapter(Scenario scenario, LocalDate deadline) {
             Validate.notNull(scenario);
             this.scenario = scenario;
+            this.deadline = deadline;
         }
 
         @Override
@@ -291,6 +294,11 @@ public class TemplateModel implements ITemplateModel {
         public List<Constraint<GanttDate>> getStartConstraintsFor(
                 TaskElement task) {
             return TaskElementAdapter.getStartConstraintsFor(task);
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getEndConstraintsFor(TaskElement task) {
+            return TaskElementAdapter.getEndConstraintsFor(task, deadline);
         }
 
         @Override
@@ -540,7 +548,8 @@ public class TemplateModel implements ITemplateModel {
 
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {
         copyAssignments(order, from, to);
-        installDependenciesEnforcer(order, new Adapter(to));
+        installDependenciesEnforcer(order,
+                new Adapter(to, LocalDate.fromDateFields(order.getDeadline())));
         doReassignations(order, to);
         doTheSaving(order);
     }

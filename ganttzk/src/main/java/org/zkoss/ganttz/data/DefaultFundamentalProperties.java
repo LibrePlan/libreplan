@@ -188,6 +188,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
     }
 
     @Override
+    public List<Constraint<GanttDate>> getEndConstraints() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public void moveTo(GanttDate date) {
         setBeginDate(date);
     }

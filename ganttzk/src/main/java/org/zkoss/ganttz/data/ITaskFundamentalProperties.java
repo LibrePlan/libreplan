@@ -76,7 +76,9 @@ public interface ITaskFundamentalProperties {
 
     public String getResourcesText();
 
-    List<Constraint<GanttDate>> getStartConstraints();
+    public List<Constraint<GanttDate>> getStartConstraints();
+
+    public List<Constraint<GanttDate>> getEndConstraints();
 
     public void moveTo(GanttDate date);
 

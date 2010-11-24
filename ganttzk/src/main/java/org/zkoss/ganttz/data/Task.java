@@ -118,6 +118,11 @@ public abstract class Task implements ITaskFundamentalProperties {
                 .getStartConstraints());
     }
 
+    public List<Constraint<GanttDate>> getEndConstraints() {
+        return violationNotificator.withListener(fundamentalProperties
+                .getEndConstraints());
+    }
+
     public abstract boolean isLeaf();
 
     public abstract boolean isContainer();

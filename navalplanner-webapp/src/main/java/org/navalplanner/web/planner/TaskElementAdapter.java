@@ -27,6 +27,7 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.equalTo;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.lessOrEqualThan;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -134,16 +135,29 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return Collections
                         .singletonList(biggerOrEqualThan(toGantt(startConstraint
                                 .getConstraintDate())));
-            case AS_LATE_AS_POSSIBLE:
-                return Collections.emptyList();
-            case FINISH_NOT_LATER_THAN:
-                return Collections.emptyList();
-            default:
-                throw new RuntimeException("can't handle " + constraintType);
             }
-        } else {
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
+    }
+
+    public static List<Constraint<GanttDate>> getEndConstraintsFor(
+            TaskElement taskElement, LocalDate deadline) {
+        if (taskElement instanceof ITaskLeafConstraint) {
+            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
+            TaskStartConstraint endConstraint = task.getStartConstraint();
+            StartConstraintType type = endConstraint.getStartConstraintType();
+            switch (type) {
+            case AS_LATE_AS_POSSIBLE:
+                if (deadline != null) {
+                    return Collections
+                            .singletonList(lessOrEqualThan(toGantt(deadline)));
+                }
+            case FINISH_NOT_LATER_THAN:
+                GanttDate date = toGantt(endConstraint.getConstraintDate());
+                return Collections.singletonList(lessOrEqualThan(date));
+            }
+        }
+        return Collections.emptyList();
     }
 
     @Autowired
@@ -166,10 +180,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private Scenario scenario;
 
+    private LocalDate deadline;
+
 
     @Override
     public void useScenario(Scenario scenario) {
         this.scenario = scenario;
+    }
+
+    @Override
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
     }
 
     public TaskElementAdapter() {
@@ -822,6 +843,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public List<Constraint<GanttDate>> getStartConstraints() {
             return getStartConstraintsFor(this.taskElement);
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getEndConstraints() {
+            return getEndConstraintsFor(this.taskElement, deadline);
         }
 
         @Override

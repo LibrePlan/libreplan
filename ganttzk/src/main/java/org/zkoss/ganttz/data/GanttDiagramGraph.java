@@ -105,6 +105,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         List<Constraint<GanttDate>> getStartConstraintsFor(V task);
 
+        List<Constraint<GanttDate>> getEndConstraintsFor(V task);
+
         V getSource(D dependency);
 
         V getDestination(D dependency);
@@ -219,6 +221,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public List<Constraint<GanttDate>> getStartConstraintsFor(Task task) {
             return task.getStartConstraints();
+        }
+
+        @Override
+        public List<Constraint<GanttDate>> getEndConstraintsFor(Task task) {
+            return task.getEndConstraints();
         }
 
         @Override

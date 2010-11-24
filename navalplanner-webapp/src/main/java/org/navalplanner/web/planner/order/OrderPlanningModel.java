@@ -47,7 +47,6 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
-import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -1037,6 +1036,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.useScenario(currentScenario);
         planningState = createPlanningStateFor(planner, orderReloaded);
+        taskElementAdapter
+                .setDeadline(orderReloaded.getDeadline() != null ? LocalDate
+                        .fromDateFields(orderReloaded.getDeadline()) : null);
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());

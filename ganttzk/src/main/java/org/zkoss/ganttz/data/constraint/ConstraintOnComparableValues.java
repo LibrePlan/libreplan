@@ -36,6 +36,11 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         return instantiate(ComparisonType.BIGGER_OR_EQUAL_THAN, value);
     }
 
+    public static <T extends Comparable<T>> Constraint<T> lessOrEqualThan(
+            T value) {
+        return instantiate(ComparisonType.LESS_OR_EQUAL_THAN, value);
+    }
+
     public static <T extends Comparable<T>> Constraint<T> equalTo(T value) {
         return instantiate(ComparisonType.EQUAL_TO, value);
     }
