@@ -40,8 +40,7 @@ import org.zkoss.zul.Label;
  */
 public class MonteCarloTabCreator {
 
-    /* Unnecesary */
-    private static String ORDER_LIMITING_RESOURCES_VIEW = _("MonteCarlo (order)");
+    private static String ORDER_LIMITING_RESOURCES_VIEW = _("MonteCarlo Method");
 
     public static ITab create(Mode mode,
             MonteCarloController monteCarloController,
@@ -125,7 +124,7 @@ public class MonteCarloTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("MonteCarlo method"),
+        return new CreatedOnDemandTab(_("MonteCarlo Method"),
                 "limiting-resources", componentCreator) {
             @Override
             protected void afterShowAction() {

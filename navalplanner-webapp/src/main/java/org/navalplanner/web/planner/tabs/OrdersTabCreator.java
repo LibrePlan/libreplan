@@ -21,6 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +41,8 @@ import org.zkoss.zul.Label;
  *
  */
 public class OrdersTabCreator {
+
+    private static final String PROJECT_DETAILS = _("Project Details");
 
     public static ITab create(Mode mode,
             OrderCRUDController orderCRUDController, Component breadcrumbs,
@@ -103,7 +106,7 @@ public class OrdersTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Scheduling")));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Projects")));
             }
@@ -122,13 +125,15 @@ public class OrdersTabCreator {
     }
 
     private ITab createOrderOrdersTab() {
-        return new CreatedOnDemandTab(_("Project Details"), "order-data",
+        return new CreatedOnDemandTab(PROJECT_DETAILS, "order-data",
                 ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Order Details")));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(PROJECT_DETAILS));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 if (mode.isOf(ModeType.ORDER)) {
                     orderCRUDController.showOrderElementFilter();
