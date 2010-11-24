@@ -178,14 +178,16 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void increaseScreenHeight() {
-        if (tabboxOrderElement != null) {
+        if ((tabboxOrderElement != null)
+                && (!tabboxOrderElement.getHeight().equals("680px"))) {
             tabboxOrderElement.setHeight("680px");
             tabboxOrderElement.invalidate();
         }
     }
 
     private void resetScreenHeight() {
-        if (tabboxOrderElement != null) {
+        if ((tabboxOrderElement != null)
+                && (!tabboxOrderElement.getHeight().equals("620px"))) {
             tabboxOrderElement.setHeight("620px");
             tabboxOrderElement.invalidate();
         }
@@ -587,21 +589,32 @@ public class ManageOrderElementAdvancesController extends
     private void appendRadioSpread(final Listitem listItem){
         final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
-        Radio reportGlobalAdvance = new Radio();
-        reportGlobalAdvance.setChecked(advanceAssignment
-                .getReportGlobalAdvance());
 
-        reportGlobalAdvance.addEventListener(Events.ON_CHECK,
-            new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                        resetScreenHeight();
+        final Radio reportGlobalAdvance = Util.bind(new Radio(),
+                new Util.Getter<Boolean>() {
+
+                    @Override
+                    public Boolean get() {
+                        return advanceAssignment.getReportGlobalAdvance();
+                    }
+                }, new Util.Setter<Boolean>() {
+
+                    @Override
+                    public void set(Boolean value) {
+                        advanceAssignment.setReportGlobalAdvance(value);
                         setReportGlobalAdvance(listItem);
-            }
-        });
+                    }
+                });
+
         Listcell listCell = new Listcell();
         listCell.appendChild(reportGlobalAdvance);
         listItem.appendChild(listCell);
+
+        if (((AdvanceAssignment) listItem.getValue()).getReportGlobalAdvance()) {
+            reportGlobalAdvance.getRadiogroup().setSelectedItem(
+                    reportGlobalAdvance);
+            reportGlobalAdvance.getRadiogroup().invalidate();
+        }
     }
 
     private void appendCalculatedCheckbox(final Listitem listItem){
@@ -846,26 +859,16 @@ public class ManageOrderElementAdvancesController extends
     private void setReportGlobalAdvance(final Listitem item){
         boolean spread = true;
         if (!radioSpreadIsConsolidated()) {
-            for (int i = 0; i < editAdvances.getChildren().size(); i++) {
-                if (editAdvances.getChildren().get(i) instanceof Listitem) {
-                    Listitem listItem = (Listitem) editAdvances.getChildren()
-                            .get(i);
-                    Listcell celdaSpread = (Listcell) listItem.getChildren()
-                            .get(5);
-                    Radio radioSpread = ((Radio) celdaSpread.getFirstChild());
-                    if (!radioSpread.isDisabled()) {
-                        radioSpread.setChecked(false);
-                        ((AdvanceAssignment) listItem.getValue())
-                                .setReportGlobalAdvance(false);
-                    }
-                }
+            for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+                advance.setReportGlobalAdvance(false);
             }
         } else {
             spread = false;
         }
-        Listcell celdaSpread = (Listcell) item.getChildren().get(5);
-        ((Radio) celdaSpread.getFirstChild()).setChecked(spread);
         ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
+        Util.reloadBindings(editAdvances);
+        resetScreenHeight();
+        setSelectedAdvanceLine();
     }
 
     private boolean radioSpreadIsConsolidated() {
