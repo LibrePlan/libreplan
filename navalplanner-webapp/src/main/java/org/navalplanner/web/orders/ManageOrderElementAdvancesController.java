@@ -966,16 +966,10 @@ public class ManageOrderElementAdvancesController extends
 
     private boolean validateReportGlobalAdvance(){
         boolean existItems = false;
-        for(int i=0; i< editAdvances.getChildren().size(); i++){
-            if(editAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
-                AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
-                        .getValue();
-                existItems = true;
-                if ((advanceAssignment != null)
-                        && (advanceAssignment.getReportGlobalAdvance())) {
+        for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+            existItems = true;
+            if (advance.getReportGlobalAdvance()) {
                     return true;
-                }
             }
         }
         return (!existItems);
