@@ -256,9 +256,9 @@ public class MultipleTabsPlannerController implements Composer,
 
         final State<Void> typeChanged = typeChangedState();
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
-                .create(mode,
-                transactionService, orderDAO, taskElementDAO, resourceDAO,
-                scenarioManager.getCurrent(), returnToPlanningTab()));
+                .create(mode, transactionService, orderDAO, taskElementDAO,
+                        resourceDAO, scenarioManager.getCurrent(),
+                        returnToPlanningTab(), breadcrumbs));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))

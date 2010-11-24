@@ -20,6 +20,8 @@
 package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,17 +52,19 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
+import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
-import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -197,27 +201,30 @@ public class AdvancedAllocationTabCreator {
 
     private final IResourceDAO resourceDAO;
     private final Scenario currentScenario;
+    private final Component breadcrumbs;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario,
-            IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
+            Component breadcrumbs) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack)
-                .build();
+                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack,
+                breadcrumbs).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
+            Component breadcrumbs) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
         Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
         Validate.notNull(currentScenario);
+        Validate.notNull(breadcrumbs);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
@@ -225,6 +232,7 @@ public class AdvancedAllocationTabCreator {
         this.taskElementDAO = taskElementDAO;
         this.resourceDAO = resourceDAO;
         this.currentScenario = currentScenario;
+        this.breadcrumbs = breadcrumbs;
     }
 
     private ITab build() {
@@ -249,6 +257,14 @@ public class AdvancedAllocationTabCreator {
 
             @Override
             protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(_("Advanced Allocation")));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
+
                 if (firstTime) {
                     firstTime = false;
                     return;
