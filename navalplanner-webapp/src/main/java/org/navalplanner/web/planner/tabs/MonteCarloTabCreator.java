@@ -27,7 +27,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.common.TemplateModel;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
@@ -103,7 +109,7 @@ public class MonteCarloTabCreator {
             protected void afterShowAction() {
                 List<TaskElement> criticalPath = orderPlanningController.getCriticalPath();
                 if (criticalPath == null) {
-                    criticalPath = TemplateModel.getCriticalPathFor(mode.getOrder());
+                    criticalPath = getCriticalPathFor(mode.getOrder());
                 }
                 monteCarloController.setCriticalPath(criticalPath);
 
@@ -117,6 +123,30 @@ public class MonteCarloTabCreator {
                 breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
             }
         };
+    }
+
+    public List<TaskElement> getCriticalPathFor(final Order order) {
+
+        // Reattach order
+        IAdHocTransactionService transactionService = Registry.getTransactionService();
+        return transactionService.runOnTransaction(new IOnTransaction<List<TaskElement>>() {
+            @Override
+            public List<TaskElement> execute() {
+                initializeOrder(order);
+                return order.getAllChildrenAssociatedTaskElements();
+            }
+        });
+    }
+
+    private void initializeOrder(Order order) {
+        IOrderDAO orderDAO = Registry.getOrderDAO();
+        orderDAO.reattach(order);
+        useSchedulingDataFor(order);
+    }
+
+    private void useSchedulingDataFor(Order order) {
+        IScenarioManager scenarioManager = Registry.getScenarioManager();
+        order.useSchedulingDataFor(scenarioManager.getCurrent());
     }
 
     private ITab createGlobalMonteCarloTab() {

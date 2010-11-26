@@ -190,6 +190,9 @@ public class Registry {
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
 
+    @Autowired
+    private IAdHocTransactionService transactionServiceDAO;
+
     private Registry() {
     }
 
@@ -345,5 +348,9 @@ public class Registry {
 
     public static IEntitySequenceDAO getEntitySequenceDAO() {
         return getInstance().entitySequenceDAO;
+    }
+
+    public static IAdHocTransactionService getTransactionService() {
+        return getInstance().transactionServiceDAO;
     }
 }

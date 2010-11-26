@@ -91,10 +91,6 @@ import org.zkoss.zk.ui.util.Clients;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TemplateModel implements ITemplateModel {
 
-    public static List<TaskElement> getCriticalPathFor(Order order) {
-        return Collections.emptyList();
-    }
-
     private static class DependencyWithVisibility implements
             IDependency<TaskElement> {
 
