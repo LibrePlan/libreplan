@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -122,8 +123,8 @@ public class OrderPlanningController implements Composer {
                 .retrieve();
     }
 
-    public List<org.navalplanner.business.planner.entities.Task> getCriticalPath() {
-        return planner.getCriticalPath();
+    public List<org.navalplanner.business.planner.entities.TaskElement> getCriticalPath() {
+        return planner != null ? planner.getCriticalPath() : null;
     }
 
     public void setOrder(Order order,

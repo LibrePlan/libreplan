@@ -24,8 +24,11 @@ import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BR
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.TemplateModel;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -98,8 +101,12 @@ public class MonteCarloTabCreator {
 
             @Override
             protected void afterShowAction() {
-                monteCarloController.setCriticalPath(orderPlanningController
-                        .getCriticalPath());
+                List<TaskElement> criticalPath = orderPlanningController.getCriticalPath();
+                if (criticalPath == null) {
+                    criticalPath = TemplateModel.getCriticalPathFor(mode.getOrder());
+                }
+                monteCarloController.setCriticalPath(criticalPath);
+
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
