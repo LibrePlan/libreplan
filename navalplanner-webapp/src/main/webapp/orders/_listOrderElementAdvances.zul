@@ -60,7 +60,8 @@
                     <listbox id="editAdvancesMeasurement" width="380px" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                             mold="paging" pageSize="5" sclass="advance-measurement">
+                             mold="paging" pageSize="5" sclass="advance-measurement"
+                             onPaging="manageOrderElementAdvancesController.onPagingMeasurement();">
                             <listhead>
                                 <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
                                 <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>

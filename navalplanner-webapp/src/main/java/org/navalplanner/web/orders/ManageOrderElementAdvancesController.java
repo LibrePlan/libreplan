@@ -1390,4 +1390,8 @@ public class ManageOrderElementAdvancesController extends
         }
     }
 
+    public void onPagingMeasurement() {
+        validateListAdvanceMeasurement();
+    }
+
 }
