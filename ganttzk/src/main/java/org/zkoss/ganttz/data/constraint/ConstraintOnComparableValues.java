@@ -45,7 +45,7 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         return instantiate(ComparisonType.EQUAL_TO, value);
     }
 
-    private static <T extends Comparable<T>> Constraint<T> instantiate(
+    public static <T extends Comparable<T>> Constraint<T> instantiate(
             ComparisonType type, T value) {
         if (value == null) {
             return Constraint.voidConstraint();
