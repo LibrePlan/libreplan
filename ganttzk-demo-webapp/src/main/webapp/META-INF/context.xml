@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
- <Context antiJARLocking="true" path="">
-    <ResourceLink name="${dataSource.jndiName}"
-        global="${dataSource.jndiName}"
-        type="javax.sql.DataSource">
-    </ResourceLink>
-</Context>

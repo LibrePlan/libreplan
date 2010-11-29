@@ -16,7 +16,6 @@
         <module>navalplanner-business</module>
         <module>ganttzk</module>
         <module>navalplanner-webapp</module>
-        <module>ganttzk-demo-webapp</module>
     </modules>
 
     <!--
