@@ -69,7 +69,7 @@
                 <!-- Quality form items list -->
                 <panel title="${i18n:_('Quality form items list')}" border="normal">
                     <panelchildren>
-                        <hbox valign="center">
+                        <hbox pack="center">
                             <button label="${i18n:_('New quality form item')}"
                             onClick="controller.createQualityFormItem()" />
                         </hbox>
