@@ -931,15 +931,15 @@ public class ManageOrderElementAdvancesController extends
                 if (advance != null) {
                     // Validate the value of the advance measurement
                     Decimalbox valueBox = getDecimalboxBy(listItem);
-                    valueBox.setValue(advance.getValue());
+                    validateMeasurementValue(valueBox, advance.getValue());
 
                     // Validate the date of the advance measurement
                     Datebox dateBox = getDateboxBy(listItem);
                     if (advance.getDate() == null) {
-                        dateBox.setValue(null);
+                        validateMeasurementDate(dateBox, null);
                     } else {
-                        dateBox.setValue(advance.getDate()
-                                .toDateTimeAtStartOfDay().toDate());
+                        validateMeasurementDate(dateBox, advance.getDate()
+                            .toDateTimeAtStartOfDay().toDate());
                     }
                 }
             }
@@ -1037,6 +1037,7 @@ public class ManageOrderElementAdvancesController extends
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
                         updatesValue(value);
+                        validateMeasurementValue(value, value.getValue());
                     } else {
                         showMessagesConsolidation(2);
                     }
@@ -1060,7 +1061,6 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
-            value.setConstraint(checkValidValue());
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
@@ -1092,6 +1092,7 @@ public class ManageOrderElementAdvancesController extends
                 public void onEvent(Event event) throws Exception {
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
+                        validateMeasurementDate(date, date.getValue());
                         setCurrentDate(listitem);
                     } else {
                         showMessagesConsolidation(2);
@@ -1131,36 +1132,6 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
-            date.setConstraint(checkValidDate());
-        }
-
-        private Constraint checkValidValue() {
-            Constraint newConstraint = new Constraint() {
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
-                    if ((advanceMeasurement != null)
-                            && (manageOrderElementAdvancesModel
-                                    .canRemoveOrChange(advanceMeasurement))) {
-                        advanceMeasurement.setValue((BigDecimal) value);
-                        if (((BigDecimal) value) == null) {
-                            Util.reloadBindings(comp);
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Value is not valid, the current value must be not empty"));
-                        } else {
-                            String errorMessage = validateValueAdvanceMeasurement(advanceMeasurement);
-                            if (errorMessage != null) {
-                                Util.reloadBindings(comp);
-                                throw new WrongValueException(comp,
-                                        errorMessage);
-                            }
-                        }
-                    }
-                }
-            };
-            return newConstraint;
         }
 
         private AdvanceMeasurement getAdvanceMeasurementByComponent(
@@ -1171,36 +1142,6 @@ public class ManageOrderElementAdvancesController extends
             } catch (Exception e) {
                 return null;
             }
-        }
-
-        private Constraint checkValidDate() {
-            Constraint newConstraint = new Constraint() {
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
-                    if ((manageOrderElementAdvancesModel
-                            .canRemoveOrChange(advanceMeasurement))) {
-                        if (((Date) value) == null) {
-                            advanceMeasurement.setDate(null);
-                            Util.reloadBindings(comp);
-                            throw new WrongValueException(
-                                    comp,
-                                    _("The date is not valid, the date must be not empty"));
-                        } else {
-                            String errorMessage = validateDateAdvanceMeasurement(
-                                    new LocalDate((Date) value),
-                                    advanceMeasurement);
-                            if (errorMessage != null) {
-                                Util.reloadBindings(comp);
-                                throw new WrongValueException(comp,
-                                        errorMessage);
-                            }
-                        }
-                    }
-                }
-            };
-            return newConstraint;
         }
 
         private void appendRemoveButton(final Listitem listItem) {
@@ -1336,14 +1277,14 @@ public class ManageOrderElementAdvancesController extends
 
     private String validateDateAdvanceMeasurement(LocalDate value,
             AdvanceMeasurement measurement) {
+        LocalDate oldDate = measurement.getDate();
+        measurement.setDate(value);
+
         if (!manageOrderElementAdvancesModel.isDistinctValidDate(value,
                 measurement)) {
             return _("The date is not valid, the date must be unique for this advanced assignment");
         }
         if (measurement != null) {
-            LocalDate oldDate = measurement.getDate();
-            measurement.setDate(value);
-
             if (manageOrderElementAdvancesModel
                     .hasConsolidatedAdvances(measurement)) {
                 measurement.setDate(oldDate);
@@ -1369,14 +1310,18 @@ public class ManageOrderElementAdvancesController extends
         int i = 0;
         int page = 0;
         changePage(page);
-        for (AdvanceMeasurement advance : this.getAdvanceMeasurements()) {
-            if (!validateAdvanceMeasurement(advance)) {
-                return true;
-            }
-            i++;
-            if (i == editAdvancesMeasurement.getPageSize()) {
-                i = 0;
-                changePage(++page);
+        for (Listitem item : (List<Listitem>) editAdvancesMeasurement
+                .getItems()) {
+            AdvanceMeasurement advance = (AdvanceMeasurement) item.getValue();
+            if (advance != null) {
+                if (!validateAdvanceMeasurement(advance)) {
+                    return true;
+                }
+                i++;
+                if (i == editAdvancesMeasurement.getPageSize()) {
+                    i = 0;
+                    changePage(++page);
+                }
             }
         }
         changePage(currentPage);
@@ -1394,4 +1339,55 @@ public class ManageOrderElementAdvancesController extends
         validateListAdvanceMeasurement();
     }
 
+    public void validateMeasurementDate(Component comp, Date value)
+            throws WrongValueException {
+        AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+        if ((manageOrderElementAdvancesModel
+                .canRemoveOrChange(advanceMeasurement))) {
+            if (value == null) {
+                advanceMeasurement.setDate(null);
+                ((Datebox) comp).setValue(value);
+                throw new WrongValueException(comp,
+                        _("The date is not valid, the date must be not empty"));
+            } else {
+                String errorMessage = validateDateAdvanceMeasurement(
+                        new LocalDate(value), advanceMeasurement);
+                ((Datebox) comp).setValue(advanceMeasurement.getDate()
+                        .toDateTimeAtStartOfDay().toDate());
+                if (errorMessage != null) {
+                    throw new WrongValueException(comp, errorMessage);
+                }
+            }
+        }
+    }
+
+    public void validateMeasurementValue(Component comp, Object value)
+            throws WrongValueException {
+        AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+        if ((advanceMeasurement != null)
+                && (manageOrderElementAdvancesModel
+                        .canRemoveOrChange(advanceMeasurement))) {
+            advanceMeasurement.setValue((BigDecimal) value);
+            ((Decimalbox) comp).setValue((BigDecimal) value);
+            if (((BigDecimal) value) == null) {
+                throw new WrongValueException(
+                        comp,
+                        _("Value is not valid, the current value must be not empty"));
+            } else {
+                String errorMessage = validateValueAdvanceMeasurement(advanceMeasurement);
+                if (errorMessage != null) {
+                    throw new WrongValueException(comp, errorMessage);
+                }
+            }
+        }
+    }
+
+    private AdvanceMeasurement getAdvanceMeasurementByComponent(Component comp) {
+        try {
+            Listitem item = (Listitem) comp.getParent().getParent();
+            return (AdvanceMeasurement) item.getValue();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
