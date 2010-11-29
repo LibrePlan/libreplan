@@ -28,7 +28,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -519,7 +518,7 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean isDistinctValidDate(Date value,
+    public boolean isDistinctValidDate(LocalDate value,
             AdvanceMeasurement newAdvanceMeasurement) {
         if (this.advanceAssignment == null) {
             return true;
