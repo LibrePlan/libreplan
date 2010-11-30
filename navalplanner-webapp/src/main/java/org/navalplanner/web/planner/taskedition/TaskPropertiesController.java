@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
@@ -41,6 +42,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.TaskEditFormComposer.TaskDTO;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -127,9 +129,12 @@ public class TaskPropertiesController extends GenericForwardComposer {
             }
         };
 
-        public static void appendItems(Combobox combo) {
+        public static void setItems(Combobox combo, Order order) {
+            combo.getChildren().clear();
             for (WebStartConstraintType type : WebStartConstraintType.values()) {
-                combo.appendChild(type.createCombo());
+                if (type != AS_LATE_AS_POSSIBLE || order.getDeadline() != null) {
+                    combo.appendChild(type.createCombo());
+                }
             }
         }
 
@@ -213,7 +218,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         this.editTaskController = editTaskController;
         this.currentContext = context;
         this.currentTaskElement = taskElement;
-
+        WebStartConstraintType.setItems(startConstraintTypes,
+                findOrderIn(context));
         originalState = getResourceAllocationType(currentTaskElement);
         setOldState(originalState);
 
@@ -238,6 +244,20 @@ public class TaskPropertiesController extends GenericForwardComposer {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         }
         updateComponentValuesForTask();
+    }
+
+    private Order findOrderIn(IContextWithPlannerTask<TaskElement> context) {
+        TaskElement topTask = context.getMapper().findAssociatedDomainObject(
+                findTopMostTask(context));
+        return topTask.getOrderElement().getOrder();
+    }
+
+    private org.zkoss.ganttz.data.Task findTopMostTask(
+            IContextWithPlannerTask<TaskElement> context) {
+        List<? extends TaskContainer> parents = context.getMapper().getParents(
+                context.getTask());
+        return parents.isEmpty() ? context.getTask() : parents.get(parents
+                .size() - 1);
     }
 
     private void setOldState(ResourceAllocationTypeEnum state) {
@@ -365,7 +385,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         tabpanel = (Tabpanel) comp;
         taskEditFormComposer.doAfterCompose(comp);
-        WebStartConstraintType.appendItems(startConstraintTypes);
         startConstraintTypes.addEventListener(Events.ON_SELECT,
                 new EventListener() {
 
