@@ -48,9 +48,11 @@ planner = self;
         </listbox>
 
         <!-- Progress type -->
-        <label>${i18n:_('Progress')}:</label>
-        <listbox id="lbProgressTypes"
-            mold="select" />
+        <hbox id="hboxProgressType" visible="false">
+            <label>${i18n:_('Progress')}:</label>
+            <listbox id="lbProgressTypes"
+                mold="select" />
+        </hbox>
 
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"

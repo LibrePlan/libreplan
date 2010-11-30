@@ -161,6 +161,7 @@ public class CompanyPlanningController implements Composer {
             }
 
         });
+        planner.getFellow("hboxProgressType").setVisible(true);
     }
 
     private Listitem findListitemValue(Listbox listbox, ProgressType value) {
