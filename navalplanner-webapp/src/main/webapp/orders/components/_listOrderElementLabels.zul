@@ -22,9 +22,9 @@
     assignedLabelsController = self.controller;
 ]]>
 </zscript>
-<vbox apply="${assignedLabelsController}" >
+<vbox apply="${assignedLabelsController}" width="100%" >
     <!-- Indirect labels -->
-    <vbox>
+    <vbox width="100%">
         <panel title="${i18n:_('Indirect labels')}" border="normal">
             <panelchildren>
                 <grid id="inheritedLabels" height="150px" fixedLayout="true"
@@ -45,7 +45,7 @@
     </vbox>
 
     <!-- Direct labels -->
-    <vbox>
+    <vbox width="100%">
         <panel title="${i18n:_('Direct labels')}" border="normal">
             <panelchildren>
                 <newdatasortablegrid id="directLabels" height="200px" fixedLayout="true"
