@@ -603,7 +603,7 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
-        if (progressType.equals(ProgressType.NORMAL)) {
+        if (progressType.equals(ProgressType.SPREAD_PROGRESS)) {
             return advancePercentage;
         }
         return BigDecimal.ZERO;

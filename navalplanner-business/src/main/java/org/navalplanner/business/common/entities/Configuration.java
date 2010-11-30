@@ -71,7 +71,7 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForCostCategory = true;
 
-    private ProgressType progressType = ProgressType.NORMAL;
+    private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;

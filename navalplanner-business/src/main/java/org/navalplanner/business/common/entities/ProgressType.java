@@ -32,7 +32,7 @@ import java.util.List;
 */
 public enum ProgressType {
 
-    NORMAL(_("Normal")),
+    SPREAD_PROGRESS(_("Spread progress")),
     CRITICAL_PATH_DURATION(_("Critical path by duration")),
     CRITICAL_PATH_NUMHOURS(_("Critical path by number of hours"));
 
