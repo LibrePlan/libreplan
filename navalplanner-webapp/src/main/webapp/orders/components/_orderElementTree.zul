@@ -23,7 +23,7 @@
 ]]>
 </zscript>
 
-<vbox>
+<vbox width="100%">
     <vbox>
         <hbox pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Order Element')}" caption="${i18n:_('Choosing Template')}" />

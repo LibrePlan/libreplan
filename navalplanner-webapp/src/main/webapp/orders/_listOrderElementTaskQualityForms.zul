@@ -19,9 +19,10 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedTaskQualityFormsToOrderElementController" >
+    apply="org.navalplanner.web.orders.AssignedTaskQualityFormsToOrderElementController"
+    width="100%" >
     <!-- Quality Forms-->
-    <vbox>
+    <vbox width="100%">
         <vbox id="messagesContainerTaskQualityForms"/>
         <panel title="${i18n:_('Task quality forms')}" border="normal">
             <panelchildren>

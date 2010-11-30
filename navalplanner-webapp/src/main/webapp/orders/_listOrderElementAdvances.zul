@@ -19,7 +19,8 @@
 -->
 
 <vbox id="${arg.id}"
-	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController">
+	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController"
+	width="100%">
     <panel title="${i18n:_('Advance assignments')}" border="normal">
         <panelchildren>
             <vbox id="messagesContainerAdvances" />
@@ -30,7 +31,7 @@
                     </button>
                 </hbox>
             </vbox>
-            <vbox>
+            <vbox width="100%">
             <listbox id="editAdvances" height="170px"
                      model="@{manageOrderElementAdvancesController.advanceAssignments}"
                      itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"

@@ -18,10 +18,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController">
+    apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController"
+    width="100%">
 
     <!-- Direct imputation -->
-    <vbox>
+    <vbox width="100%">
         <panel title="${i18n:_('Imputed hours calculation')}">
             <panelchildren>
                 <grid
@@ -78,7 +79,7 @@
     <separator spacing="5px" orient="horizontal" />
 
     <!-- Hours consumed -->
-    <vbox>
+    <vbox width="100%">
         <panel
             title="${i18n:_('Percentage of estimated budget hours / hours consumed')}">
             <panelchildren>

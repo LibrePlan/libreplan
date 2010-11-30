@@ -19,7 +19,8 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.users.OrderAuthorizationController" >
+    apply="org.navalplanner.web.users.OrderAuthorizationController"
+    width="100%" >
 
     <!-- Profiles -->
     <panel title="${i18n:_('Profiles authorization')}" border="normal">
