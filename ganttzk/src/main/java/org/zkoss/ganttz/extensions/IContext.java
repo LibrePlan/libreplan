@@ -138,4 +138,7 @@ public interface IContext<T> {
      */
     void showAdvances();
 
+    void showReportedHours();
+
+    void hideReportedHours();
 }

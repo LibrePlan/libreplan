@@ -148,6 +148,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingLabels = false;
 
+    private boolean isShowingReportedHours = false;
+
     private boolean isShowingResources = false;
 
     private boolean isExpandAll = false;
@@ -511,6 +513,14 @@ public class Planner extends HtmlMacroComponent  {
         }
     };
 
+    private IGraphChangeListener showReportedHoursOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showReportedHours();
+        }
+    };
+
     private boolean containersExpandedByDefault = false;
 
     private boolean shownAdvanceByDefault = false;
@@ -552,6 +562,28 @@ public class Planner extends HtmlMacroComponent  {
                 showAdvancesButton.setTooltiptext(_("Hide Advances"));
             }
             isShowingAdvances = !isShowingAdvances;
+        }
+    }
+
+    public void showReportedHours() {
+        Button showReportedHoursButton = (Button) getFellow("showReportedHours");
+        if (disabilityConfiguration.isReportedHoursEnabled()) {
+            if (isShowingReportedHours) {
+                context.hideReportedHours();
+                diagramGraph
+                        .removePostGraphChangeListener(showReportedHoursOnChange);
+                showReportedHoursButton.setSclass("planner-command");
+                showReportedHoursButton
+                        .setTooltiptext(_("Show reported hours"));
+            } else {
+                context.showReportedHours();
+                diagramGraph
+                        .addPostGraphChangeListener(showReportedHoursOnChange);
+                showReportedHoursButton.setSclass("planner-command clicked");
+                showReportedHoursButton
+                        .setTooltiptext(_("Hide reported hours"));
+            }
+            isShowingReportedHours = !isShowingReportedHours;
         }
     }
 

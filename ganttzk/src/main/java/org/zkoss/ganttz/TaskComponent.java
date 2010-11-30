@@ -161,6 +161,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private PropertyChangeListener showingAdvancePropertyListener;
 
+    private PropertyChangeListener showingReportedHoursPropertyListener;
+
     public static TaskComponent asTaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration,
             boolean isTopLevel) {
@@ -270,14 +272,36 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 @Override
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (isInPage()) {
-                        updateCompletionIfPossible();
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        try {
+                            updateCompletionAdvance();
+                        } catch (Exception e) {
+                            LOG.error("failure at updating completion", e);
+                        }
                     }
                 }
             };
         }
         this.task
                 .addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
+
+        if (showingReportedHoursPropertyListener == null) {
+            showingReportedHoursPropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        try {
+                            updateCompletionReportedHours();
+                        } catch (Exception e) {
+                            LOG.error("failure at updating completion", e);
+                        }
+                    }
+                }
+            };
+        }
+        this.task
+                .addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
 
         if (criticalPathPropertyListener == null) {
             criticalPathPropertyListener = new PropertyChangeListener() {
@@ -495,22 +519,29 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         try {
-            updateCompletion();
+            updateCompletionReportedHours();
+            updateCompletionAdvance();
         } catch (Exception e) {
             LOG.error("failure at updating completion", e);
         }
     }
 
-    private void updateCompletion() {
-        if (task.isShowingAdvances()) {
+    private void updateCompletionReportedHours() {
+        if (task.isShowingReportedHours()) {
             int startPixels = this.task.getBeginDate().toPixels(getMapper());
-
             String widthHoursAdvancePercentage = pixelsFromStartUntil(
                     startPixels,
                 this.task.getHoursAdvanceEndDate()) + "px";
             response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
+        } else {
+            response(null, new AuInvoke(this, "resizeCompletionAdvance", "0px"));
+        }
+    }
 
+    private void updateCompletionAdvance() {
+        if (task.isShowingAdvances()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
             String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
                 this.task.getAdvanceEndDate()) + "px";
             response(null, new AuInvoke(this, "resizeCompletion2Advance",

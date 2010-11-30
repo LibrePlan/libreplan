@@ -138,4 +138,13 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         context.showAdvances();
     }
 
+    @Override
+    public void hideReportedHours() {
+        context.hideReportedHours();
+    }
+
+    @Override
+    public void showReportedHours() {
+        context.showReportedHours();
+    }
 }

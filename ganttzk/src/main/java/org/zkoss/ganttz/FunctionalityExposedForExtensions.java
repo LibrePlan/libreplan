@@ -40,13 +40,13 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -445,6 +445,20 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public void hideAdvances() {
         for (Task task : diagramGraph.getTasks()) {
             task.setShowingAdvances(false);
+        }
+    }
+
+    @Override
+    public void showReportedHours() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingReportedHours(true);
+        }
+    }
+
+    @Override
+    public void hideReportedHours() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingReportedHours(false);
         }
     }
 

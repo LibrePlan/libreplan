@@ -68,6 +68,9 @@ public abstract class Task implements ITaskFundamentalProperties {
     private PropertyChangeSupport advancesProperty = new PropertyChangeSupport(
             this);
 
+    private PropertyChangeSupport reportedHoursProperty = new PropertyChangeSupport(
+            this);
+
     private final ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
@@ -75,6 +78,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     private boolean inCriticalPath = false;
 
     private boolean showingAdvances = false;
+
+    private boolean showingReportedHours = false;
 
     private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
             .create();
@@ -155,6 +160,17 @@ public abstract class Task implements ITaskFundamentalProperties {
         return showingAdvances;
     }
 
+    public void setShowingReportedHours(boolean showingReportedHours) {
+        boolean previousValue = this.showingReportedHours;
+        this.showingReportedHours = showingReportedHours;
+        reportedHoursProperty.firePropertyChange("showingReportedHours",
+                previousValue, this.showingReportedHours);
+    }
+
+    public boolean isShowingReportedHours() {
+        return showingReportedHours;
+    }
+
     public String getName() {
         return fundamentalProperties.getName();
     }
@@ -222,6 +238,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void addAdvancesPropertyChangeListener(
             PropertyChangeListener listener) {
         this.advancesProperty.addPropertyChangeListener(listener);
+    }
+
+    public void addReportedHoursPropertyChangeListener(
+            PropertyChangeListener listener) {
+        this.reportedHoursProperty.addPropertyChangeListener(listener);
     }
 
     public void addFundamentalPropertiesChangeListener(

@@ -136,4 +136,13 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         context.showAdvances();
     }
 
+    @Override
+    public void hideReportedHours() {
+        context.hideReportedHours();
+    }
+
+    @Override
+    public void showReportedHours() {
+        context.showReportedHours();
+    }
 }

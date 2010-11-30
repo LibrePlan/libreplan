@@ -135,6 +135,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean advancesEnabled = true;
 
+    private boolean reportedHoursEnabled = true;
+
     private boolean expandAllEnabled = true;
 
     private boolean flattenTreeEnabled = true;
@@ -309,6 +311,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isAdvancesEnabled() {
         return advancesEnabled;
+    }
+
+    public void setReportedHoursEnabled(boolean reportedHoursEnabled) {
+        this.reportedHoursEnabled = reportedHoursEnabled;
+    }
+
+    @Override
+    public boolean isReportedHoursEnabled() {
+        return reportedHoursEnabled;
     }
 
     public void setExpandAllEnabled(boolean expandAllEnabled) {

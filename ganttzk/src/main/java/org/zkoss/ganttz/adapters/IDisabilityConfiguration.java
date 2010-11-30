@@ -37,6 +37,8 @@ public interface IDisabilityConfiguration {
 
     public boolean isAdvancesEnabled();
 
+    public boolean isReportedHoursEnabled();
+
     public boolean isExpandAllEnabled();
 
     public boolean isFlattenTreeEnabled();
