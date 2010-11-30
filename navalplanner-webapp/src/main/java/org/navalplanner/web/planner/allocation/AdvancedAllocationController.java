@@ -1399,30 +1399,14 @@ class Row {
         @Override
         public void applyDefaultFunction(
                 ResourceAllocation<?> resourceAllocation) {
-            if (isChangeConfirmed()) {
-                resourceAllocation.setAssignmentFunction(SigmoidFunction
-                        .create());
-                reloadHours();
-            }
+            resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
+            reloadHours();
         }
 
         private void reloadHours() {
             reloadHoursSameRowForDetailItems();
             reloadAllHours();
             fireCellChanged();
-        }
-
-        private boolean isChangeConfirmed() {
-            try {
-                int status = Messagebox
-                        .show(_("You are going to change the assignment function. Are you sure?"),
-                                _("Confirm change"), Messagebox.YES
-                                        | Messagebox.NO, Messagebox.QUESTION);
-                return Messagebox.YES == status;
-            } catch (InterruptedException e) {
-
-            }
-            return false;
         }
 
     };

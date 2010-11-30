@@ -48,6 +48,8 @@ public class SigmoidFunction extends AssignmentFunction {
     private void apply(ResourceAllocation<?> resourceAllocation,
             LocalDate start, LocalDate end, int totalHours) {
 
+        System.out.println("### SigmoidFunction.apply: " + start + "; " + end + "; " + totalHours);
+
         final int daysDuration = Days.daysBetween(start, end).getDays();
         EffortDuration capacity;
 
