@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping default-access="field">
-  <class name="org.navalplanner.business.test.workingday.hibernate.EntityContainingResourcePerDay">
+  <class name="org.navalplanner.business.test.workingday.hibernate.EntityContainingResourcePerDay" table="entity_containing_resource_per_day">
   <id name="id">
       <generator class="hilo">
         <param name="max_lo">100</param>
       </generator>
     </id>
-    <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"></property>
+    <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
+      column="resources_per_day" />
   </class>
 
-  <class name="org.navalplanner.business.test.workingday.hibernate.EntityContainingEffortDuration">
+  <class name="org.navalplanner.business.test.workingday.hibernate.EntityContainingEffortDuration" table="entity_containing_effort_duration">
     <id name="id">
       <generator class="hilo">
         <param name="max_lo">100</param>

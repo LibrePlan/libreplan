@@ -4,7 +4,7 @@
     default-access="field">
 
     <!-- ResourceAllocation -->
-    <class name="ResourceAllocation">
+    <class name="ResourceAllocation" table="resource_allocation">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -12,68 +12,70 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType" />
+        <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
+            column="resources_per_day" />
 
         <property name="intendedTotalHours" column="intended_total_hours" />
 
-        <property name="originalTotalAssignment" access="field"/>
+        <property name="originalTotalAssignment" access="field"
+            column="original_total_assignment" />
 
         <!-- Indexed -->
-        <many-to-one class="Task" name="task" column="TASK" index="idx_resourceallocation_on_task"/>
+        <many-to-one class="Task" name="task" column="task" index="idx_resource_allocation_on_task"/>
 
         <!-- It is not included index, navigation from assigment function to
             ResourceAllocation not useful
          -->
         <many-to-one class="AssignmentFunction" name="assignmentFunction"
-            column="ASSIGNMENT_FUNCTION" not-null="false"
+            column="assignment_function" not-null="false"
             cascade="all" lazy="false" />
 
         <set name="derivedAllocations" cascade="all-delete-orphan" inverse="true">
-            <key column="RESOURCE_ALLOCATION_ID" />
+            <key column="resource_allocation_id" />
             <one-to-many class="DerivedAllocation"/>
         </set>
 
         <!-- Wrong mapping. A ResourceAllocation only has one limiting resource queue element associated -->
         <set name="limitingResourceQueueElements" cascade="all-delete-orphan" inverse="true">
-            <key column="RESOURCE_ALLOCATION_ID" />
+            <key column="resource_allocation_id" />
             <one-to-many class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"/>
         </set>
 
         <joined-subclass name="SpecificResourceAllocation" table="specific_resource_allocation">
-            <key column="RESOURCE_ALLOCATION_ID" />
+            <key column="resource_allocation_id" />
 
             <many-to-one name="resource"
                 class="org.navalplanner.business.resources.entities.Resource" />
 
             <set name="specificDayAssignmentsContainers" cascade="all-delete-orphan">
-                <key column="RESOURCE_ALLOCATION_ID" />
+                <key column="resource_allocation_id" />
                 <one-to-many class="SpecificDayAssignmentsContainer"/>
             </set>
         </joined-subclass>
 
         <joined-subclass name="GenericResourceAllocation" table="generic_resource_allocation">
-            <key column="RESOURCE_ALLOCATION_ID" />
+            <key column="resource_allocation_id" />
 
             <set name="criterions" table="all_criterions">
-                <key column="GENERIC_RESOURCE_ALLOCATION_ID"/>
+                <key column="generic_resource_allocation_id"/>
                 <many-to-many class="org.navalplanner.business.resources.entities.Criterion" column="criterion_id"/>
             </set>
 
-            <property name="resourceType">
+            <property name="resourceType" column="resource_type">
               <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
               </type>
             </property>
 
             <set name="genericDayAssignmentsContainers" cascade="all-delete-orphan">
-                <key column="RESOURCE_ALLOCATION_ID" />
-                <one-to-many class="GenericDayAssignmentsContainer"/>
+                <key column="resource_allocation_id" />
+                <one-to-many class="GenericDayAssignmentsContainer" />
             </set>
         </joined-subclass>
 
     </class>
 
-    <class name="SpecificDayAssignmentsContainer">
+    <class name="SpecificDayAssignmentsContainer" table="specific_day_assignments_container">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -85,30 +87,30 @@
              natural-id could be used for that but was discarded due to:
              https://forum.hibernate.org/viewtopic.php?p=2372348
         -->
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="resourceAllocation" column="resource_allocation_id"/>
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.navalplanner.business.workingday.IntraDayDate">
-            <property name="date" column="startDate"
+            <property name="date" column="start_date"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="effortDuration" column="durationStartInFirstDay"
+            <property name="effortDuration" column="duration_start_in_first_day"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
-            <property name="date" column="endDate"
+            <property name="date" column="end_date"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="effortDuration" column="durationInLastDay"
+            <property name="effortDuration" column="duration_in_last_day"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <set name="dayAssignments" cascade="all-delete-orphan">
-            <key column="SPECIFIC_CONTAINER_ID" />
+            <key column="specific_container_id" />
             <one-to-many class="SpecificDayAssignment"/>
         </set>
     </class>
 
-    <class name="GenericDayAssignmentsContainer">
+    <class name="GenericDayAssignmentsContainer" table="generic_day_assignments_container">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -120,30 +122,30 @@
              natural-id could be used for that but was discarded due to:
              https://forum.hibernate.org/viewtopic.php?p=2372348
         -->
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID"/>
+        <many-to-one name="resourceAllocation" column="resource_allocation_id"/>
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.navalplanner.business.workingday.IntraDayDate">
-            <property name="date" column="startDate"
+            <property name="date" column="start_date"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="effortDuration" column="durationStartInFirstDay"
+            <property name="effortDuration" column="duration_start_in_first_day"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.navalplanner.business.workingday.IntraDayDate">
-            <property name="date" column="endDate"
+            <property name="date" column="end_date"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="effortDuration" column="durationInLastDay"
+            <property name="effortDuration" column="duration_in_last_day"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <set name="dayAssignments" cascade="all-delete-orphan">
-            <key column="GENERIC_CONTAINER_ID" />
+            <key column="generic_container_id" />
             <one-to-many class="GenericDayAssignment"/>
         </set>
     </class>
 
-    <class name="DerivedDayAssignmentsContainer">
+    <class name="DerivedDayAssignmentsContainer" table="derived_day_assignments_container">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -155,10 +157,10 @@
              natural-id could be used for that but was discarded due to:
              https://forum.hibernate.org/viewtopic.php?p=2372348
         -->
-        <many-to-one name="resourceAllocation" column="DERIVED_ALLOCATION_ID"/>
+        <many-to-one name="resourceAllocation" column="derived_allocation_id"/>
         <many-to-one name="scenario" />
         <set name="dayAssignments" cascade="all-delete-orphan">
-            <key column="DERIVED_CONTAINER_ID" />
+            <key column="derived_container_id" />
             <one-to-many class="DerivedDayAssignment"/>
         </set>
     </class>
@@ -172,25 +174,25 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <many-to-one name="resourceAllocation" column="RESOURCE_ALLOCATION_ID" cascade="all" not-null="false" unique="true" />
+        <many-to-one name="resourceAllocation" column="resource_allocation_id" cascade="all" not-null="false" unique="true" />
 
         <!-- Indexed -->
-        <many-to-one name="limitingResourceQueue" column="LIMITING_RESOURCE_QUEUE_ID" index="idx_resourcequeueelement_on_resourcequeue"/>
+        <many-to-one name="limitingResourceQueue" column="limiting_resource_queue_id" index="idx_resource_queue_element_on_resource_queue"/>
 
-        <property name="earlierStartDateBecauseOfGantt" column="EARLIER_START_DATE_BECAUSE_OF_GANTT" />
+        <property name="earlierStartDateBecauseOfGantt" column="earlier_start_date_because_of_gantt" />
 
-        <property name="earliestEndDateBecauseOfGantt" column="EARLIEST_END_DATE_BECAUSE_OF_GANTT" />
+        <property name="earliestEndDateBecauseOfGantt" column="earliest_end_date_because_of_gantt" />
 
-        <property name="creationTimestamp" column="CREATION_TIMESTAMP" />
+        <property name="creationTimestamp" column="creation_timestamp" />
 
         <component name="startQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="START_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="hour" column="START_HOUR" />
+            <property name="date" column="start_date" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="hour" column="start_hour" />
         </component>
 
         <component name="endQueuePosition" class="org.navalplanner.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="END_DATE" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="hour" column="END_HOUR" />
+            <property name="date" column="end_date" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
+            <property name="hour" column="end_hour" />
         </component>
 
         <!--  Indexed the other side. Useful to browse the output dependencies of
@@ -211,7 +213,7 @@
 
     <!-- LimitingResourceQueueDependency -->
     <class name="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"
-     table="limiting_resource_queue_dependency">
+        table="limiting_resource_queue_dependency">
         <id name="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -229,7 +231,7 @@
             class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="origin_queue_element_id"
             not-null="false"
-            index="idx_queuedependency_on_originqueue">
+            index="idx_queue_dependency_on_origin_queue">
         </many-to-one>
 
         <!-- Indexed -->
@@ -237,7 +239,7 @@
             class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement"
             column="destiny_queue_element_id"
             not-null="false"
-            index="idx_queuedependency_on_destinyqueue"
+            index="idx_queue_dependency_on_destiny_queue"
             >
         </many-to-one>
 
@@ -254,7 +256,7 @@
                 <param name="max_lo">100</param>
             </generator>
         </id>
-        <discriminator column="DAY_ASSIGNMENT_TYPE" type="string"/>
+        <discriminator column="day_assignment_type" type="string"/>
 
         <version name="version" access="property" type="long" />
 
@@ -268,25 +270,25 @@
         <!-- Not indexed. It is not indexed because it is regarded that to navigate
         from a resource to all his DayAssigments is not useful -->
         <many-to-one name="resource" class="org.navalplanner.business.resources.entities.Resource"
-          column="RESOURCE_ID" not-null="true">
+          column="resource_id" not-null="true">
         </many-to-one>
 
         <!-- SpecificDayAssignment -->
-        <subclass name="SpecificDayAssignment" discriminator-value="SPECIFIC_DAY">
-            <many-to-one name="container" column="SPECIFIC_CONTAINER_ID" />
+        <subclass name="SpecificDayAssignment" discriminator-value="specific_day">
+            <many-to-one name="container" column="specific_container_id" />
         </subclass>
 
         <!-- GenericDayAssignment -->
-        <subclass name="GenericDayAssignment" discriminator-value="GENERIC_DAY">
-            <many-to-one name="container" column="GENERIC_CONTAINER_ID" />
+        <subclass name="GenericDayAssignment" discriminator-value="generic_day">
+            <many-to-one name="container" column="generic_container_id" />
         </subclass>
-        <subclass name="DerivedDayAssignment" discriminator-value="DERIVED_DAY">
-            <many-to-one name="container" column="DERIVED_CONTAINER_ID" />
+        <subclass name="DerivedDayAssignment" discriminator-value="derived_day">
+            <many-to-one name="container" column="derived_container_id" />
         </subclass>
     </class>
 
     <!-- AssignmentFunction -->
-    <class name="AssignmentFunction" table="ASSIGNMENT_FUNCTION">
+    <class name="AssignmentFunction" table="assignment_function">
         <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -294,18 +296,18 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <joined-subclass name="StretchesFunction">
-            <key column="ASSIGNMENT_FUNCTION_ID" />
+        <joined-subclass name="StretchesFunction" table="stretches_function">
+            <key column="assignment_function_id" />
 
             <list name="stretches">
-                <key column="ASSIGNMENT_FUNCTION_ID" />
-                <list-index column="STRETCH_POSITION" />
+                <key column="assignment_function_id" />
+                <list-index column="stretch_position" />
 
                 <composite-element class="Stretch">
                     <property name="date" not-null="true"
                         type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-                    <property name="lengthPercentage" not-null="true" />
-                    <property name="amountWorkPercentage" not-null="true" />
+                    <property name="lengthPercentage" not-null="true" column="length_percentage" />
+                    <property name="amountWorkPercentage" not-null="true" column="amount_work_percentage" />
                 </composite-element>
             </list>
             <property name="type">
@@ -314,24 +316,24 @@
               </type>
             </property>
         </joined-subclass>
-        <joined-subclass name="SigmoidFunction">
-            <key column="ASSIGNMENT_FUNCTION_ID" />
+        <joined-subclass name="SigmoidFunction" table="sigmoid_function">
+            <key column="assignment_function_id" />
         </joined-subclass>
     </class>
 
-    <class name="DerivedAllocation">
+    <class name="DerivedAllocation" table="derived_allocation">
         <id name="id" type="long" access="property" >
             <generator class="hilo">
                 <param name="max_lo">100</param>
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <many-to-one class="ResourceAllocation" column="RESOURCE_ALLOCATION_ID"
+        <many-to-one class="ResourceAllocation" column="resource_allocation_id"
                      name="derivedFrom" />
         <many-to-one class="org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit"
             name="configurationUnit" not-null="true"/>
         <set name="derivedDayAssignmentsContainers" cascade="all-delete-orphan">
-            <key column="DERIVED_ALLOCATION_ID" />
+            <key column="derived_allocation_id" />
             <one-to-many class="DerivedDayAssignmentsContainer"/>
         </set>
     </class>

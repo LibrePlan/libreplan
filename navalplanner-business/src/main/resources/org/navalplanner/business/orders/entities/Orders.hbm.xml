@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.navalplanner.business.orders.entities" default-access="field">
-    <class name="OrderElement" abstract="true">
+    <class name="OrderElement" table="order_element" abstract="true">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -13,39 +13,41 @@
             <property name="description" access="field" />
             <property name="code" access="field" unique="true" />
         </component>
-        <property name="initDate" access="field" />
+        <property name="initDate" access="field" column="init_date" />
         <property name="deadline" access="field" />
 
-        <property name="lastAdvanceMeausurementForSpreading" access="field" />
-        <property name="dirtyLastAdvanceMeasurementForSpreading" access="field" />
+        <property name="lastAdvanceMeausurementForSpreading" access="field"
+            column="last_advance_meausurement_for_spreading" />
+        <property name="dirtyLastAdvanceMeasurementForSpreading" access="field"
+            column="dirty_last_advance_measurement_for_spreading" />
 
         <!-- Indexed the other side -->
         <set name="directAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
-            <key column="DIRECT_ORDER_ELEMENT_ID" />
+            <key column="direct_order_element_id" />
             <one-to-many class="org.navalplanner.business.advance.entities.DirectAdvanceAssignment" />
         </set>
 
         <!-- Assess many-to-many bidireccional -->
-        <set name="labels" table="ORDER_ELEMENT_LABEL" access="field" cascade="save-update">
-            <key column="ORDER_ELEMENT_ID" not-null="true"/>
-            <many-to-many column="LABEL_ID" class="org.navalplanner.business.labels.entities.Label"/>
+        <set name="labels" table="order_element_label" access="field" cascade="save-update">
+            <key column="order_element_id" not-null="true"/>
+            <many-to-many column="label_id" class="org.navalplanner.business.labels.entities.Label"/>
         </set>
 
         <!-- Indexed the other side -->
         <set name="criterionRequirements" access="field" cascade="all,delete-orphan" inverse="true">
-            <key column="ORDER_ELEMENT_ID" not-null="false"></key>
+            <key column="order_element_id" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
 
         <!-- Indexed the other side -->
         <set name="materialAssignments" cascade="all-delete-orphan" inverse="true">
-            <key column="ORDER_ELEMENT_ID" not-null="true" />
+            <key column="order_element_id" not-null="true" />
             <one-to-many class="org.navalplanner.business.materials.entities.MaterialAssignment" />
         </set>
 
         <!--  Indexed the other side -->
         <set name="taskQualityForms" cascade="all-delete-orphan" inverse="true">
-            <key column="ORDER_ELEMENT_ID" not-null="true" />
+            <key column="order_element_id" not-null="true" />
             <one-to-many class="org.navalplanner.business.qualityforms.entities.TaskQualityForm" />
         </set>
 
@@ -55,61 +57,64 @@
             access="field"
             cascade="all"
             class="org.navalplanner.business.orders.entities.OrderLineGroup"
-            index="idx_orderelement_on_parent"/>
+            index="idx_order_element_on_parent"/>
 
         <many-to-one name="template"
             access="field"
             cascade="none"
             class="org.navalplanner.business.templates.entities.OrderElementTemplate"
-            index="idx_orderelement_on_template"/>
+            index="idx_order_element_on_template"/>
 
-        <property name="externalCode" access="field" />
+        <property name="externalCode" access="field" column="external_code" />
 
-        <map name="schedulingDatasForVersion" table="SCHEDULING_STATES_BY_ORDER_VERSION"
+        <map name="schedulingDatasForVersion" table="scheduling_states_by_order_version"
             cascade="all-delete-orphan">
-            <key column="ORDER_ELEMENT_ID"></key>
-            <map-key-many-to-many column="ORDER_VERSION_ID"
+            <key column="order_element_id"></key>
+            <map-key-many-to-many column="order_version_id"
                 class="org.navalplanner.business.scenarios.entities.OrderVersion" />
             <many-to-many class="SchedulingDataForVersion"
-                column="SCHEDULING_STATE_FOR_VERSION_ID" />
+                column="scheduling_state_for_version_id" />
         </map>
 
        <many-to-one name="sumChargedHours"
            class="SumChargedHours"
-           column="SUM_CHARGED_HOURS_ID"
+           column="sum_charged_hours_id"
            cascade="save-update, delete"
            unique="true"
            lazy="false" />
 
-        <joined-subclass name="OrderLineGroup">
-            <key column="ORDERELEMENTID"></key>
+        <joined-subclass name="OrderLineGroup"  table="order_line_group">
+            <key column="order_element_id"></key>
 
             <!-- Indexed the other side -->
             <list name="children" access="field" cascade="all">
                 <key column="parent" not-null="false"></key>
-                <index column="positionInContainer"></index>
+                <index column="position_in_container"></index>
                 <one-to-many class="OrderElement" />
             </list>
 
             <!-- Indexed the other side -->
             <set name="indirectAdvanceAssignments" access="field" cascade="all,delete-orphan" inverse="true">
-                <key column="INDIRECT_ORDER_ELEMENT_ID" />
+                <key column="indirect_order_element_id" />
                 <one-to-many class="org.navalplanner.business.advance.entities.IndirectAdvanceAssignment" />
             </set>
 
             <joined-subclass name="Order" table="order_table">
-                <key column="ORDERELEMENTID"></key>
+                <key column="order_element_id"></key>
 
-                <property name="responsible" access="field"></property>
-                <property name="dependenciesConstraintsHavePriority" access="field"></property>
-                <property name="codeAutogenerated" access="field"></property>
-                <property name="lastOrderElementSequenceCode" access="field"></property>
+                <property name="responsible" access="field" />
+                <property name="dependenciesConstraintsHavePriority"
+                    column="dependencies_constraints_have_priority" access="field" />
+                <property name="codeAutogenerated" column="code_autogenerated"
+                    access="field" />
+                <property name="lastOrderElementSequenceCode"
+                    column="last_order_element_sequence_code" access="field" />
 
-                <property name="workBudget" access="field" />
-                <property name="materialsBudget" access="field" />
-                <property name="totalHours" access="field" />
-                <property name="customerReference" access="field" />
-                <property name="externalCode" access="field" />
+                <property name="workBudget" column="work_budget" access="field" />
+                <property name="materialsBudget" column="materials_budget" access="field" />
+                <property name="totalHours" column="total_hours" access="field" />
+                <property name="customerReference" column="customer_reference" access="field" />
+                <property name="externalCode" column="external_code" access="field" />
 
                 <property name="state" access="field" >
                     <type name="org.hibernate.type.EnumType">
@@ -121,39 +126,40 @@
                 <many-to-one name="customer" access="field" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany"/>
 
                 <!-- Not indexed -->
-                <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
+                <many-to-one name="calendar" column="base_calendar_id" cascade="none"
                     class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
 
                 <set name="orderAuthorizations" cascade="all-delete-orphan" inverse="true" >
-                    <key column="ORDER_ID" />
+                    <key column="order_id" />
                     <one-to-many class="org.navalplanner.business.users.entities.OrderAuthorization" />
                 </set>
 
-                <map name="scenarios" table="SCENARIO_ORDERS" cascade="save-update">
-                    <key column="ORDER_ID" />
-                    <map-key-many-to-many column="SCENARIO_ID"
+                <map name="scenarios" table="scenario_orders" cascade="save-update">
+                    <key column="order_id" />
+                    <map-key-many-to-many column="scenario_id"
                         class="org.navalplanner.business.scenarios.entities.Scenario" />
-                    <many-to-many column="ORDER_VERSION_ID"
+                    <many-to-many column="order_version_id"
                         class="org.navalplanner.business.scenarios.entities.OrderVersion"/>
                 </map>
             </joined-subclass>
 
         </joined-subclass>
 
-        <joined-subclass name="OrderLine">
-            <key column="ORDERELEMENTID"></key>
+        <joined-subclass name="OrderLine"  table="order_line">
+            <key column="order_element_id"></key>
 
             <!-- Indexed the other side -->
             <set name="hoursGroups" access="field" cascade="all,delete-orphan" inverse="true">
-                <key column="PARENT_ORDER_LINE" not-null="false"></key>
+                <key column="parent_order_line" not-null="false"></key>
                 <one-to-many class="HoursGroup" />
             </set>
 
-            <property name="lastHoursGroupSequenceCode" access="field" />
+            <property name="lastHoursGroupSequenceCode"
+                column="last_hours_group_sequence_code" access="field" />
         </joined-subclass>
     </class>
 
-    <class name="HoursGroup">
+    <class name="HoursGroup" table="hours_group">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -163,52 +169,52 @@
 
         <property name="code" access="field" not-null="true" unique="true" />
 
-        <property name="resourceType" access="field" >
+        <property name="resourceType" access="field" column="resource_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.resources.entities.ResourceEnum</param>
                 <param name="type">12</param>
             </type>
         </property>
 
-        <property name="workingHours" access="field" not-null="true"/>
+        <property name="workingHours" column="working_hours" access="field" not-null="true"/>
         <property name="percentage" access="field" />
-        <property name="fixedPercentage" access="field" />
+        <property name="fixedPercentage" column="fixed_percentage" access="field" />
 
         <!-- Indexed the other side -->
         <set name="criterionRequirements" access="field" cascade="save-update,delete-orphan" inverse="true">
-            <key column="HOURS_GROUP_ID" not-null="false"></key>
+            <key column="hours_group_id" not-null="false"></key>
             <one-to-many class="org.navalplanner.business.requirements.entities.CriterionRequirement"/>
         </set>
 
         <!-- Indexed -->
-        <many-to-one name="parentOrderLine" column="PARENT_ORDER_LINE"
+        <many-to-one name="parentOrderLine" column="parent_order_line"
             class="org.navalplanner.business.orders.entities.OrderLine"
-            index="idx_hoursgroup_on_parentorderline"/>
+            index="idx_hours_group_on_parent_order_line"/>
 
         <!-- Indexed -->
-        <many-to-one name="orderLineTemplate" column="ORDER_LINE_TEMPLATE"
+        <many-to-one name="orderLineTemplate" column="order_line_template"
             class="org.navalplanner.business.templates.entities.OrderLineTemplate"
-            index="idx_hoursgroup_on_orderlinetemplate"/>
+            index="idx_hours_group_on_order_line_template"/>
 
     </class>
 
-    <class name="SchedulingDataForVersion">
+    <class name="SchedulingDataForVersion" table="scheduling_data_for_version">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <property name="schedulingStateType" access="field" >
+        <property name="schedulingStateType" access="field" column="scheduling_state_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.orders.entities.SchedulingState$Type</param>
             </type>
         </property>
-        <many-to-one name="orderElement" column="ORDER_ELEMENT_ID"></many-to-one>
+        <many-to-one name="orderElement" column="order_element_id"></many-to-one>
         <one-to-one name="taskSource" class="TaskSource" cascade="delete" access="field" property-ref="schedulingData" />
     </class>
 
-    <class name="TaskSource">
+    <class name="TaskSource" table="task_source">
         <id name="id" access="property" type="long">
 	        <generator class="foreign">
 	            <param name="property">task</param>
@@ -221,12 +227,12 @@
             constrained="true" cascade="delete" access="field" lazy="false"/>
 
         <set name="hoursGroups" table="task_source_hours_groups" cascade="none" inverse="false" access="field">
-            <key column="TASK_SOURCE_ID"></key>
-            <many-to-many class="HoursGroup" column="HOURS_GROUP_ID"/>
+            <key column="task_source_id"></key>
+            <many-to-many class="HoursGroup" column="hours_group_id"/>
         </set>
     </class>
 
-    <class name="SumChargedHours">
+    <class name="SumChargedHours" table="sum_charged_hours">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -234,8 +240,10 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="directChargedHours" access="field" />
-        <property name="indirectChargedHours" access="field" />
+        <property name="directChargedHours" access="field"
+            column="direct_charged_hours" />
+        <property name="indirectChargedHours" access="field"
+            column="indirect_charged_hours" />
     </class>
 
 </hibernate-mapping>

@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.navalplanner.business.advance.entities" default-access="field">
 
 <!-- AdvanceType -->
-<class name="AdvanceType" >
+<class name="AdvanceType" table="advance_type">
     <cache usage="nonstrict-read-write"/>
     <id name="id" type="long" access="property">
         <generator class="hilo">
@@ -12,18 +12,22 @@
     </id>
     <version name="version" access="property" type="long" />
 
-    <property name="unitName" access="field" unique="true"/>
-    <property name="defaultMaxValue" access="field" scale="4"/>
+    <property name="unitName" access="field" unique="true"
+        column="unit_name" />
+    <property name="defaultMaxValue" access="field" scale="4"
+        column="default_max_value" />
     <property name="updatable" access="field"/>
-    <property name="unitPrecision" access="field" scale="4"/>
+    <property name="unitPrecision" access="field" scale="4"
+        column="unit_precision" />
     <property name="active" access="field"/>
     <property name="percentage" access="field"/>
-    <property name="qualityForm" access="field"/>
+    <property name="qualityForm" access="field"
+        column="quality_form" />
 
 </class>
 
 <!-- AdvanceAssignment -->
-<class name="AdvanceAssignment">
+<class name="AdvanceAssignment" table="advance_assignment">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -32,28 +36,29 @@
 
     <version name="version" access="property" type="long" />
 
-    <property name="reportGlobalAdvance" access="field"/>
+    <property name="reportGlobalAdvance" access="field"
+        column="report_global_advance" />
 
     <!-- Not indexed -->
-    <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
+    <many-to-one name="advanceType" class="AdvanceType" column="advance_type_id"/>
 
-    <joined-subclass name="DirectAdvanceAssignment">
-        <key column="ADVANCE_ASSIGNMENT_ID"></key>
+    <joined-subclass name="DirectAdvanceAssignment" table="direct_advance_assignment">
+        <key column="advance_assignment_id"></key>
 
         <!-- Indexed -->
         <many-to-one name="orderElement"
             class="org.navalplanner.business.orders.entities.OrderElement"
-            column="DIRECT_ORDER_ELEMENT_ID"
-            index="idx_directadvanceassigment_on_orderelement"/>
+            column="direct_order_element_id"
+            index="idx_direct_advance_assigment_on_order_element"/>
 
-        <property name="maxValue" access="field" scale="2"/>
+        <property name="maxValue" access="field" scale="2" column="max_value" />
 
         <set name="advanceMeasurements"
              cascade="all,delete-orphan"
              inverse="true"
              access="field"
              sort="org.navalplanner.business.advance.entities.AdvanceMeasurementComparator">
-                <key column="ADVANCE_ASSIGNMENT_ID" />
+                <key column="advance_assignment_id" />
                 <one-to-many class="org.navalplanner.business.advance.entities.AdvanceMeasurement"></one-to-many>
         </set>
 
@@ -62,27 +67,27 @@
             cascade="none"
             inverse="true"
             access="field">
-                <key column="DIR_ADVANCE_ASSIGNMENT_ID" />
+                <key column="dir_advance_assignment_id" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation" />
         </set>
 
     </joined-subclass>
 
-    <joined-subclass name="IndirectAdvanceAssignment">
-        <key column="ADVANCE_ASSIGNMENT_ID"></key>
+    <joined-subclass name="IndirectAdvanceAssignment" table="indirect_advance_assignment">
+        <key column="advance_assignment_id"></key>
 
         <!-- Indexed -->
         <many-to-one name="orderElement"
             class="org.navalplanner.business.orders.entities.OrderElement"
-            column="INDIRECT_ORDER_ELEMENT_ID"
-            index="idx_indirectadvanceassigment_on_orderelement"/>
+            column="indirect_order_element_id"
+            index="idx_indirect_advance_assigment_on_order_element"/>
 
         <!-- Not indexed -->
         <set name="calculatedConsolidations"
             cascade="none"
             inverse="true"
             access="field">
-                <key column="IND_ADVANCE_ASSIGNMENT_ID" />
+                <key column="ind_advance_assignment_id" />
                 <one-to-many class="org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation" />
         </set>
 
@@ -91,7 +96,7 @@
 </class>
 
 <!-- AdvanceMeasurement -->
-<class name="AdvanceMeasurement">
+<class name="AdvanceMeasurement" table="advance_measurement">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -101,18 +106,20 @@
 
     <property name="date" access="field" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
     <property name="value" scale="2" access="field" />
-    <many-to-one name="advanceAssignment" class="AdvanceAssignment" column="ADVANCE_ASSIGNMENT_ID" access="field" />
-    <property name="communicationDate" access="field" />
+    <many-to-one name="advanceAssignment" class="AdvanceAssignment"
+        column="advance_assignment_id" access="field" />
+    <property name="communicationDate" access="field"
+        column="communication_date" />
 
     <!-- Not indexed -->
     <set name="nonCalculatedConsolidatedValues" access="field" cascade="none" inverse="true">
-        <key column="ADVANCE_MEASUREMENT_ID" />
+        <key column="advance_measurement_id" />
         <one-to-many class="org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue" />
     </set>
 
 </class>
 
-<class name="AdvanceAssignmentTemplate">
+<class name="AdvanceAssignmentTemplate" table="advance_assignment_template">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -122,16 +129,17 @@
     <version name="version" access="property" type="long" />
 
     <!-- Not indexed -->
-    <many-to-one name="advanceType" class="AdvanceType" column="ADVANCE_TYPE_ID"/>
+    <many-to-one name="advanceType" class="AdvanceType" column="advance_type_id" />
 
     <!-- Indexed -->
     <many-to-one name="template"
         class="org.navalplanner.business.templates.entities.OrderElementTemplate"
-        column="ORDER_ELEMENT_TEMPLATE_ID"
-        index="idx_advanceassigmenttemplate_on_template"/>
+        column="order_element_template_id"
+        index="idx_advance_assigment_template_on_template"/>
 
-    <property name="reportGlobalAdvance" access="field"/>
-    <property name="maxValue" access="field" scale="2"/>
+    <property name="reportGlobalAdvance" access="field"
+        column="report_global_advance" />
+    <property name="maxValue" access="field" scale="2" column="max_value" />
 
 </class>
 </hibernate-mapping>

@@ -8,7 +8,7 @@
         IMPORTANT: The default name for User's table ("User") is not valid
         for some databases (e.g. PostgreSQL).
     -->
-    <class name="User" table="NAVAL_USER">
+    <class name="User" table="user_table">
         <!--
             IMPORTANT: type="long" must be specified (otherwise,
             Hibernate infers type="integer".
@@ -19,14 +19,15 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <property name="loginName" not-null="true" unique="true"/>
+        <property name="loginName" not-null="true" unique="true"
+            column="login_name" />
         <property name="password" not-null="true"/>
         <property name="email"/>
         <property name="disabled"/>
 
         <!-- Index created in a database-object section -->
-        <set name="roles" table="USER_ROLES">
-            <key column="userId"/>
+        <set name="roles" table="roles_table">
+            <key column="user_id"/>
             <element>
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.navalplanner.business.users.entities.UserRole</param>
@@ -37,16 +38,16 @@
         </set>
 
         <!-- Index created in a database-object section -->
-        <set name="profiles" table="USER_PROFILES">
-            <key column="USER_ID"/>
-            <many-to-many column="PROFILE_ID"
+        <set name="profiles" table="user_profiles">
+            <key column="user_id"/>
+            <many-to-many column="profile_id"
                 class="org.navalplanner.business.users.entities.Profile"/>
         </set>
         <many-to-one name="lastConnectedScenario"
             class="org.navalplanner.business.scenarios.entities.Scenario" />
     </class>
 
-    <class name="Profile" table="NAVAL_PROFILE">
+    <class name="Profile" table="profile_table">
         <id name="id" access="property" type="long">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -54,11 +55,12 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="profileName" not-null="true" unique="true"/>
+        <property name="profileName" not-null="true" unique="true"
+            column="profile_name" />
 
         <!-- Index created in a database-object section -->
-        <set name="roles" table="PROFILE_ROLES">
-            <key column="profileId"/>
+        <set name="roles" table="profile_roles">
+            <key column="profile_id"/>
             <element>
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.navalplanner.business.users.entities.UserRole</param>
@@ -69,18 +71,18 @@
         </set>
     </class>
 
-    <class name="OrderAuthorization" table="ORDER_AUTHORIZATION">
+    <class name="OrderAuthorization" table="order_authorization">
         <id name="id" access="property" type="long">
             <generator class="hilo">
                 <param name="max_lo">100</param>
             </generator>
         </id>
 
-        <discriminator column="ORDER_AUTHORIZATION_SUBCLASS" type="string"/>
+        <discriminator column="order_authorization_subclass" type="string"/>
 
         <version name="version" access="property" type="long" />
 
-        <property name="authorizationType" not-null="true">
+        <property name="authorizationType" not-null="true" column="authorization_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.users.entities.OrderAuthorizationType</param>
                 <!-- 12 is java.sql.Types.VARCHAR -->
@@ -88,38 +90,38 @@
             </type>
         </property>
 
-        <many-to-one name="order" class="org.navalplanner.business.orders.entities.Order" column="ORDER_ID" />
+        <many-to-one name="order" class="org.navalplanner.business.orders.entities.Order" column="order_id" />
 
-        <subclass name="UserOrderAuthorization" discriminator-value="USER">
-            <many-to-one name="user" class="User" column="USER_ID" />
+        <subclass name="UserOrderAuthorization" discriminator-value="user">
+            <many-to-one name="user" class="User" column="user_id" />
         </subclass>
 
-        <subclass name="ProfileOrderAuthorization" discriminator-value="PROFILE">
-            <many-to-one name="profile" class="Profile" column="PROFILE_ID" />
+        <subclass name="ProfileOrderAuthorization" discriminator-value="profile">
+            <many-to-one name="profile" class="Profile" column="profile_id" />
         </subclass>
 
     </class>
 
     <!-- Index to boost the search of roles inside users -->
     <database-object>
-        <create>CREATE INDEX idx_User_on_UserRoles ON USER_ROLES (userId)</create>
-        <drop>DROP INDEX idx_User_on_UserRoles</drop>
+        <create>CREATE INDEX idx_user_on_user_roles ON user_roles (user_id)</create>
+        <drop>DROP INDEX idx_user_on_user_roles</drop>
         <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
         <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
     </database-object>
 
     <!-- Index to boost the search of roles inside profiles -->
     <database-object>
-        <create>CREATE INDEX idx_Profile_on_ProfileRoles ON PROFILE_ROLES (profileId)</create>
-        <drop>DROP INDEX idx_Profile_on_ProfileRoles</drop>
+        <create>CREATE INDEX idx_profile_on_profile_roles ON profile_roles (profile_id)</create>
+        <drop>DROP INDEX idx_profile_on_profile_roles</drop>
         <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
         <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
     </database-object>
 
     <!-- Index to boost the search of profiles inside users -->
     <database-object>
-        <create>CREATE INDEX idx_User_on_UserProfiles ON USER_PROFILES (USER_ID)</create>
-        <drop>DROP INDEX idx_User_on_UserProfiles</drop>
+        <create>CREATE INDEX idx_user_on_user_profiles ON user_profiles (user_id)</create>
+        <drop>DROP INDEX idx_user_on_user_profiles</drop>
         <dialect-scope name="org.hibernate.dialect.PostgreSQLDialect" />
         <dialect-scope name="org.hibernate.dialect.MySQLInnoDBDialect" />
     </database-object>

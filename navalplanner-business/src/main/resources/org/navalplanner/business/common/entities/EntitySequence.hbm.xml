@@ -4,7 +4,7 @@
     package="org.navalplanner.business.common.entities">
 
     <!-- EntitySequence -->
-    <class name="EntitySequence">
+    <class name="EntitySequence" table="entity_sequence">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -12,14 +12,14 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="entityName">
+        <property name="entityName" column="entity_name">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.common.entities.EntityNameEnum</param>
             </type>
         </property>
         <property name="prefix" />
-        <property name="lastValue" />
-        <property name="numberOfDigits" />
+        <property name="lastValue" column="last_value" />
+        <property name="numberOfDigits" column="number_of_digits" />
         <property name="active" />
 
         </class>

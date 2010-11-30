@@ -4,7 +4,7 @@
     package="org.navalplanner.business.common.entities">
 
     <!-- Configuration -->
-    <class name="Configuration">
+    <class name="Configuration" table="configuration">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -14,26 +14,41 @@
 
         <!-- Not indexed -->
         <many-to-one name="defaultCalendar" cascade="none"
-            column="CONFIGURATION_ID" />
+            column="configuration_id" />
 
-        <property name="companyCode" />
-        <property name="generateCodeForCostCategory" not-null="true" />
-        <property name="generateCodeForCalendarExceptionType" not-null="true" />
-        <property name="generateCodeForWorkReportType" not-null="true" />
-        <property name="generateCodeForCriterion" not-null="true" />
-        <property name="generateCodeForLabel" not-null="true" />
-        <property name="generateCodeForWorkReport" not-null="true" />
-        <property name="generateCodeForResources" not-null="true" />
-        <property name="generateCodeForTypesOfWorkHours" not-null="true" />
-        <property name="generateCodeForMaterialCategories" not-null="true" />
-        <property name="generateCodeForUnitTypes" not-null="true" />
-        <property name="generateCodeForBaseCalendars" not-null="true" />
-        <property name="expandCompanyPlanningViewCharts" not-null="true" />
-        <property name="expandOrderPlanningViewCharts" not-null="true" />
-        <property name="expandResourceLoadViewCharts" not-null="true" />
-        <property name="monteCarloMethodTabVisible" not-null="true" />
+        <property name="companyCode" column="company_code" />
+        <property name="generateCodeForCostCategory" not-null="true"
+            column="generate_code_for_cost_category" />
+        <property name="generateCodeForCalendarExceptionType" not-null="true"
+            column="generate_code_for_calendar_exception_type" />
+        <property name="generateCodeForWorkReportType" not-null="true"
+            column="generate_code_for_work_report_type" />
+        <property name="generateCodeForCriterion" not-null="true"
+            column="generate_code_for_criterion" />
+        <property name="generateCodeForLabel" not-null="true"
+            column="generate_code_for_label" />
+        <property name="generateCodeForWorkReport" not-null="true"
+            column="generate_code_for_work_report" />
+        <property name="generateCodeForResources" not-null="true"
+            column="generate_code_for_resources" />
+        <property name="generateCodeForTypesOfWorkHours" not-null="true"
+            column="generate_code_for_types_of_work_hours" />
+        <property name="generateCodeForMaterialCategories" not-null="true"
+            column="generate_code_for_material_categories" />
+        <property name="generateCodeForUnitTypes" not-null="true"
+            column="generate_code_for_unit_types" />
+        <property name="generateCodeForBaseCalendars" not-null="true"
+            column="generate_code_for_base_calendars" />
+        <property name="expandCompanyPlanningViewCharts" not-null="true"
+            column="expand_company_planning_view_charts" />
+        <property name="expandOrderPlanningViewCharts" not-null="true"
+            column="expand_order_planning_view_charts" />
+        <property name="expandResourceLoadViewCharts" not-null="true"
+            column="expand_resource_load_view_charts" />
+        <property name="monteCarloMethodTabVisible" not-null="true"
+            column="monte_carlo_method_tab_visible" />
 
-        <property name="progressType">
+        <property name="progressType" column="progress_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.common.entities.ProgressType</param>
             </type>
