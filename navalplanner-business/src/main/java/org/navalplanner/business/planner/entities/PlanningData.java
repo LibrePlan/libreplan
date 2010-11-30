@@ -29,38 +29,42 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Diego Pino García<dpino@igalia.com>
  *
+ *         This is an object, directly associated with a TaskGroup with no parent
+ *         (TaskRoot element), which is used to stored data about the whole
+ *         scheduling
+ *
  */
-public class CriticalPathProgress extends BaseEntity {
+public class PlanningData extends BaseEntity {
 
-    public static CriticalPathProgress create(TaskGroup rootTask) {
-        return new CriticalPathProgress(rootTask);
+    public static PlanningData create(TaskGroup rootTask) {
+        return new PlanningData(rootTask);
     }
 
     private TaskGroup rootTask;
 
-    private BigDecimal byDuration;
+    private BigDecimal progressByDuration;
 
-    private BigDecimal byNumHours;
+    private BigDecimal progressByNumHours;
 
-    protected CriticalPathProgress() {
+    protected PlanningData() {
 
     }
 
-    public BigDecimal getByDuration() {
-        return byDuration;
+    public BigDecimal getProgressByDuration() {
+        return progressByDuration;
     }
 
-    public BigDecimal getByNumHours() {
-        return byNumHours;
+    public BigDecimal getProgressByNumHours() {
+        return progressByNumHours;
     }
 
-    private CriticalPathProgress(TaskGroup rootTask) {
+    private PlanningData(TaskGroup rootTask) {
         this.rootTask = rootTask;
     }
 
     public void update(List<Task> criticalPath) {
-        byDuration = calculateByDuration(criticalPath);
-        byNumHours = calculateByNumHours(criticalPath);
+        progressByDuration = calculateByDuration(criticalPath);
+        progressByNumHours = calculateByNumHours(criticalPath);
     }
 
     private BigDecimal calculateByDuration(List<Task> criticalPath) {

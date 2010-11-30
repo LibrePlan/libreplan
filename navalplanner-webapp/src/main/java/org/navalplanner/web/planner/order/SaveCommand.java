@@ -47,7 +47,7 @@ import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.planner.entities.CriticalPathProgress;
+import org.navalplanner.business.planner.entities.PlanningData;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;

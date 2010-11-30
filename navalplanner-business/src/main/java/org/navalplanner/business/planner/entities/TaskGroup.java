@@ -50,9 +50,11 @@ public class TaskGroup extends TaskElement {
         return create(taskGroup, taskSource);
     }
 
+    private IConfigurationDAO configurationDAO;
+
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
 
-    private IConfigurationDAO configurationDAO;
+    private PlanningData planningData;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -61,20 +63,18 @@ public class TaskGroup extends TaskElement {
 
     }
 
-    private CriticalPathProgress criticalPathProgress;
-
     public BigDecimal getCriticalPathProgressByDuration() {
-        if (criticalPathProgress == null) {
+        if (planningData == null) {
             return BigDecimal.ZERO;
         }
-        return criticalPathProgress.getByDuration();
+        return planningData.getProgressByDuration();
     }
 
     public BigDecimal getCriticalPathProgressByNumHours() {
-        if (criticalPathProgress == null) {
+        if (planningData == null) {
             return BigDecimal.ZERO;
         }
-        return criticalPathProgress.getByNumHours();
+        return planningData.getProgressByNumHours();
     }
 
     @SuppressWarnings("unused")
@@ -239,10 +239,10 @@ public class TaskGroup extends TaskElement {
 
     public void updateCriticalPathProgress(List<Task> criticalPath) {
         Validate.isTrue(getParent() == null);
-        if (criticalPathProgress == null) {
-            criticalPathProgress = CriticalPathProgress.create(this);
+        if (planningData == null) {
+            planningData = PlanningData.create(this);
         }
-        criticalPathProgress.update(criticalPath);
+        planningData.update(criticalPath);
     }
 
     @Override

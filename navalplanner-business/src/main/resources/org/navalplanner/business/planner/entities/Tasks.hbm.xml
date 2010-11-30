@@ -96,7 +96,7 @@
         <joined-subclass name="TaskGroup">
             <key column="TASK_ELEMENT_ID"></key>
 
-            <one-to-one name="criticalPathProgress" class="CriticalPathProgress" cascade="all" />
+            <one-to-one name="planningData" class="PlanningData" cascade="all" />
 
             <!-- Indexed on the other side -->
             <list name="taskElements" cascade="all">
@@ -121,17 +121,17 @@
 
     </class>
 
-    <!-- CriticalPathProgress -->
-    <class name="CriticalPathProgress" table="CRITICAL_PATH_PROGRESS">
-        <id name="id" column="CRITICAL_PATH_PROGRESS_ID">
+    <!-- PlanningData -->
+    <class name="PlanningData" table="PLANNING_DATA">
+        <id name="id" column="PLANNING_DATA_ID">
             <generator class="foreign">
                 <param name="property">rootTask</param>
             </generator>
         </id>
         <one-to-one name="rootTask" class="TaskGroup" constrained="true"
             cascade="all" lazy="false" />
-        <property name="byDuration" column="BY_DURATION" />
-        <property name="byNumHours" column="BY_NUM_HOURS" />
+        <property name="progressByDuration" column="PROGRESS_BY_DURATION" />
+        <property name="progressByNumHours" column="PROGRESS_BY_NUM_HOURS" />
     </class>
 
     <class name="Dependency">
