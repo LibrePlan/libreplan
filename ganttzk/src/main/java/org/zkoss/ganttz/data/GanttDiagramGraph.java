@@ -1012,7 +1012,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         private boolean taskChangesPosition() {
             ChangeTracker tracker = trackTaskChanges();
             Constraint.initialValue(noRestrictions())
-                    .withConstraints(new ForwardForces())
+                    .withConstraints(new BackwardsForces(), new ForwardForces())
                     .apply();
             return tracker.taskHasChanged();
         }
@@ -1053,6 +1053,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         DatesBasedPositionRestrictions biggerThan(GanttDate start, GanttDate end) {
             return new DatesBasedPositionRestrictions(
                     ComparisonType.BIGGER_OR_EQUAL_THAN, start, end);
+        }
+
+        DatesBasedPositionRestrictions lessThan(GanttDate start, GanttDate end) {
+            return new DatesBasedPositionRestrictions(
+                    ComparisonType.LESS_OR_EQUAL_THAN_RIGHT_FLOATING, start,
+                    end);
         }
 
         class DatesBasedPositionRestrictions extends PositionRestrictions {
@@ -1266,6 +1272,28 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     }
                 }
                 return restrictions;
+            }
+
+        }
+
+        class BackwardsForces extends Forces {
+
+            @Override
+            PositionRestrictions enforceUsingPreviousRestrictions(
+                    PositionRestrictions restrictions) {
+                GanttDate result = Constraint.<GanttDate> initialValue(null)
+                        .withConstraints(restrictions.getEndConstraints())
+                        .withConstraints(adapter.getEndConstraintsFor(task))
+                        .apply();
+                if (result != null) {
+                    return moveToEnd(result);
+                }
+                return restrictions;
+            }
+
+            private PositionRestrictions moveToEnd(GanttDate newEnd) {
+                adapter.setEndDateFor(task, newEnd);
+                return lessThan(adapter.getStartDate(task), newEnd);
             }
 
         }
