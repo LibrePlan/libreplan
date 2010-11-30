@@ -38,6 +38,7 @@
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Main preferences')}" />
+            <tab label="${i18n:_('Entity sequences')}" />
         </tabs>
         <tabpanels>
             <tabpanel id="panelConfiguration">
@@ -168,12 +169,12 @@
                         </row>
                     </rows>
                 </grid>
-                <separator bar="false" height="20px" />
-                <panel border="normal" title="Entity code sequences">
-                    <panelchildren id="panelEntitySequence">
-                    </panelchildren>
-                </panel>
-
+			</tabpanel>
+			<tabpanel id="panelEntitySequences">
+				<panel border="normal" title="Entity code sequences">
+					<panelchildren id="panelEntitySequence">
+					</panelchildren>
+				</panel>
             </tabpanel>
         </tabpanels>
     </tabbox>

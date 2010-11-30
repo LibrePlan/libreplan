@@ -77,7 +77,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private Tabpanel panelConfiguration;
+    private Tabpanel panelEntitySequences;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -137,7 +137,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private void createPanelEntityComponents() {
         for (final EntityNameEnum entityName : EntityNameEnum.values()) {
             Component entitySequenceComponent = Executions.createComponents(
-                    "components/panelEntitySequence.zul", panelConfiguration
+                    "components/panelEntitySequence.zul", panelEntitySequences
                             .getFellow("panelEntitySequence"),
                     new HashMap<String, String>());
             initLabelInPanelSequence(entitySequenceComponent, entityName);
