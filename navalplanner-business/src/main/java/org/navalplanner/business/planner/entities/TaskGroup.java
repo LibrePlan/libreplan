@@ -245,10 +245,23 @@ public class TaskGroup extends TaskElement {
         planningData.update(criticalPath);
     }
 
-    @Override
-    public BigDecimal getAdvancePercentage() {
-        return getAdvancePercentage(getConfigurationDAO().getConfiguration()
-                .getProgressType());
+
+    /**
+     *  For root tasks, retrieves the advance percentage from configured progress type,
+     *  this is necessary as in the company view the advance progress shown in each task,
+     *  if not progress type selected, is the one set in the configuration
+     */
+   @Override
+   public BigDecimal getAdvancePercentage() {
+        if (isTaskRoot(this)) {
+            final ProgressType progressType = getProgressTypeFromConfiguration();
+            return getAdvancePercentage(progressType);
+        }
+        return super.getAdvancePercentage();
+    }
+
+    private ProgressType getProgressTypeFromConfiguration() {
+        return getConfigurationDAO().getConfiguration().getProgressType();
     }
 
     private IConfigurationDAO getConfigurationDAO() {
@@ -258,6 +271,11 @@ public class TaskGroup extends TaskElement {
         return configurationDAO;
     }
 
+    /**
+     * For a root task, retrieves the progress selected by the progressType
+     * If there's not progressType, return taskElement.advancePercentage
+     *
+     */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
         if (isTaskRoot(this)) {
             if (progressType.equals(ProgressType.CRITICAL_PATH_DURATION)) {
