@@ -193,6 +193,7 @@ public class CutyPrint {
                 plannerWidth,
  planner, parameters
                 .get("advances"),
+ parameters.get("reportedHours"),
                 parameters.get("labels"),
                 parameters.get("resources"),
                 expanded,
@@ -300,7 +301,8 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String advances, String labels, String resources,
+            Planner planner, String advances, String reportedHours,
+            String labels, String resources,
             boolean expanded,
             int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
@@ -323,9 +325,12 @@ public class CutyPrint {
                 includeCSSLines += " .task-labels { display: inline !important;} \n";
             }
             if ((advances != null) && (advances.equals("all"))) {
-                includeCSSLines += " .completion { display: inline !important;} \n";
                 includeCSSLines += " .completion2 { display: inline !important;} \n";
             }
+            if ((reportedHours != null) && (reportedHours.equals("all"))) {
+                includeCSSLines += " .completion { display: inline !important;} \n";
+            }
+
 
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";

@@ -235,6 +235,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             }
             result = container;
         }
+        result
+                .setShowingReportedHours(planner
+                        .areShownReportedHoursByDefault());
         result.setShowingAdvances(planner.areShownAdvancesByDefault());
         mapper.register(topInsertionPosition, result, data, parent);
         return result;
@@ -479,6 +482,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox resources = (Checkbox) parent.getFellow("print_resources");
         Checkbox labels = (Checkbox) parent.getFellow("print_labels");
         Checkbox advances = (Checkbox) parent.getFellow("print_advances");
+        Checkbox reportedHours = (Checkbox) parent
+                .getFellow("print_reported_hours");
 
         if (layout.getSelectedIndex() == 2) {
             parameters.put("extension", ".png");
@@ -491,6 +496,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         if (advances.isChecked() == true) {
             parameters.put("advances", "all");
+        }
+        if (reportedHours.isChecked() == true) {
+            parameters.put("reportedHours", "all");
         }
         if (resources.isChecked() == true) {
             parameters.put("resources", "all");

@@ -114,6 +114,15 @@ public class Planner extends HtmlMacroComponent  {
         return toLowercaseSet(values).contains("all");
     }
 
+    public static boolean guessShowReportedHoursByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("reportedHours");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
     private static Set<String> toLowercaseSet(String[] values) {
         Set<String> result = new HashSet<String>();
         for (String each : values) {
@@ -525,6 +534,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean shownAdvanceByDefault = false;
 
+    private boolean shownReportedHoursByDefault = false;
+
     private FilterAndParentExpandedPredicates predicate;
 
     private boolean visibleChart;
@@ -654,6 +665,15 @@ public class Planner extends HtmlMacroComponent  {
 
     public void setAreShownAdvancesByDefault(boolean shownAdvanceByDefault) {
         this.shownAdvanceByDefault = shownAdvanceByDefault;
+    }
+
+    public void setAreShownReportedHoursByDefault(
+            boolean shownReportedHoursByDefault) {
+        this.shownReportedHoursByDefault = shownReportedHoursByDefault;
+    }
+
+    public boolean areShownReportedHoursByDefault() {
+        return shownReportedHoursByDefault;
     }
 
     public void expandAll() {

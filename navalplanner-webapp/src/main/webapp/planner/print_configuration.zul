@@ -73,6 +73,8 @@
                         label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
                     <checkbox id="print_advances"
                         label="${i18n:_('Show all advances')}" checked="true"/>
+                    <checkbox id="print_reported_hours"
+                        label="${i18n:_('Show all reported hours')}" checked="true"/>
                 </vbox>
             </panelchildren>
         </panel>
