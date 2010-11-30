@@ -72,10 +72,10 @@ planner = self;
             tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
             sclass="planner-command" />
         <button id="showAdvances" onClick="planner.showAdvances();"
-            image="/common/img/ico_advance.png"
+            image="/common/img/ico_progress.png"
             tooltiptext="${i18n:_('Show/Hide Advances')}" />
         <button id="showReportedHours" onClick="planner.showReportedHours();"
-            image="/common/img/ico_add.png"
+            image="/common/img/ico_costs.png"
             tooltiptext="${i18n:_('Show/Hide reported hours')}" />
         <separator />
 
