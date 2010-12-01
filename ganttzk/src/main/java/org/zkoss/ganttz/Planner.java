@@ -786,6 +786,10 @@ public class Planner extends HtmlMacroComponent  {
         return isShowingResources;
     }
 
+    public boolean isShowingAdvances() {
+        return isShowingAdvances;
+    }
+
     public boolean isExpandAll() {
         return isExpandAll;
     }

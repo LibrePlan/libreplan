@@ -1585,7 +1585,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         public void update() {
             TaskGroup rootTask = planningState.getRootTask();
 
-            setAdvancePercentage(rootTask.getRawAdvancePercentage());
+            setAdvancePercentage(rootTask.getAdvancePercentage());
             setCriticalPathByDuration(rootTask.getCriticalPathProgressByDuration());
             setCriticalPathByNumHours(rootTask.getCriticalPathProgressByNumHours());
         }

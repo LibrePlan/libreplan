@@ -32,8 +32,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
-import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -49,8 +47,6 @@ public class TaskGroup extends TaskElement {
         TaskGroup taskGroup = new TaskGroup();
         return create(taskGroup, taskSource);
     }
-
-    private IConfigurationDAO configurationDAO;
 
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
 
@@ -245,32 +241,6 @@ public class TaskGroup extends TaskElement {
         planningData.update(criticalPath);
     }
 
-
-    /**
-     *  For root tasks, retrieves the advance percentage from configured progress type,
-     *  this is necessary as in the company view the advance progress shown in each task,
-     *  if not progress type selected, is the one set in the configuration
-     */
-   @Override
-   public BigDecimal getAdvancePercentage() {
-        if (isTaskRoot(this)) {
-            final ProgressType progressType = getProgressTypeFromConfiguration();
-            return getAdvancePercentage(progressType);
-        }
-        return super.getAdvancePercentage();
-    }
-
-    private ProgressType getProgressTypeFromConfiguration() {
-        return getConfigurationDAO().getConfiguration().getProgressType();
-    }
-
-    private IConfigurationDAO getConfigurationDAO() {
-        if (configurationDAO == null) {
-            configurationDAO = Registry.getConfigurationDAO();
-        }
-        return configurationDAO;
-    }
-
     /**
      * For a root task, retrieves the progress selected by the progressType
      * If there's not progressType, return taskElement.advancePercentage
@@ -290,10 +260,6 @@ public class TaskGroup extends TaskElement {
 
     private boolean isTaskRoot(TaskGroup taskGroup) {
         return taskGroup.getParent() == null;
-    }
-
-    public BigDecimal getRawAdvancePercentage() {
-        return super.getAdvancePercentage();
     }
 
 }

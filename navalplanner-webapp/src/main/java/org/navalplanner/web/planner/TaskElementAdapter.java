@@ -53,6 +53,8 @@ import org.joda.time.Seconds;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -154,6 +156,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private Scenario scenario;
 
@@ -468,11 +473,32 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public GanttDate getAdvanceEndDate() {
             BigDecimal advancePercentage = BigDecimal.ZERO;
+
             if (taskElement.getOrderElement() != null) {
-                advancePercentage = taskElement
-                        .getAdvancePercentage();
+                if (isTaskRoot(taskElement)) {
+                    ProgressType progressType = getProgressTypeFromConfiguration();
+                    advancePercentage = taskElement.getAdvancePercentage(progressType);
+
+                } else {
+                    advancePercentage = taskElement.getAdvancePercentage();
+                }
             }
             return getAdvanceEndDate(advancePercentage);
+        }
+
+        private boolean isTaskRoot(TaskElement taskElement) {
+            return taskElement instanceof TaskGroup && taskElement.getParent() == null;
+        }
+
+        private ProgressType getProgressTypeFromConfiguration() {
+            return transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<ProgressType>() {
+                        @Override
+                        public ProgressType execute() {
+                            return configurationDAO.getConfiguration()
+                                    .getProgressType();
+                        }
+                    });
         }
 
         private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {

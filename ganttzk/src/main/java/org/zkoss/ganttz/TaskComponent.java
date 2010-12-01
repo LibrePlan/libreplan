@@ -553,12 +553,17 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     public void updateCompletion(String progressType) {
-        int startPixels = this.task.getBeginDate().toPixels(getMapper());
+        if (task.isShowingAdvances()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
 
-        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
-                this.task.getAdvanceEndDate(progressType)) + "px";
-        response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                widthAdvancePercentage));
+            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+                    this.task.getAdvanceEndDate(progressType)) + "px";
+            response(null, new AuInvoke(this, "resizeCompletion2Advance",
+                    widthAdvancePercentage));
+        } else {
+            response(null,
+                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+        }
     }
 
     private int pixelsFromStartUntil(int startPixels, GanttDate until) {
