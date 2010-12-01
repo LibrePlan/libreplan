@@ -1142,7 +1142,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 this.task = taskPoint.task;
             }
 
-            private PositionRestrictions result;
+            protected PositionRestrictions result;
 
             protected PositionRestrictions applyConstraintTo(
                     PositionRestrictions restrictions) {
@@ -1153,6 +1153,35 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             public boolean isSatisfiedBy(PositionRestrictions value) {
                 return result.satisfies(value);
             }
+
+            public void checkSatisfiesResult(PositionRestrictions finalResult) {
+                super.checkSatisfiesResult(finalResult);
+                if (DatesBasedPositionRestrictions.class
+                        .isInstance(finalResult)) {
+                    checkConstraintsAgainst(DatesBasedPositionRestrictions.class
+                            .cast(finalResult));
+                }
+            }
+
+            private void checkConstraintsAgainst(
+                    DatesBasedPositionRestrictions finalResult) {
+                checkStartConstraints(finalResult.start);
+                checkEndConstraints(finalResult.end);
+            }
+
+            private void checkStartConstraints(GanttDate finalStart) {
+                Constraint
+                        .checkSatisfyResult(getStartConstraints(), finalStart);
+            }
+
+
+            private void checkEndConstraints(GanttDate finalEnd) {
+                Constraint.checkSatisfyResult(getEndConstraints(), finalEnd);
+            }
+
+            abstract List<Constraint<GanttDate>> getStartConstraints();
+
+            abstract List<Constraint<GanttDate>> getEndConstraints();
 
             abstract PositionRestrictions enforceUsingPreviousRestrictions(
                     PositionRestrictions restrictions);
@@ -1215,39 +1244,39 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
              */
             private GanttDate calculateStartDate(
                     PositionRestrictions originalRestrictions) {
-                final Set<D> withDependencies = graph.incomingEdgesOf(task);
-                List<Constraint<GanttDate>> dependencyConstraints = adapter
-                        .getStartConstraintsGiven(withDependencies);
-                GanttDate newStart;
-                if (dependenciesConstraintsHavePriority) {
-                    newStart = Constraint
+                GanttDate  newStart = Constraint
                             .<GanttDate> initialValue(null)
-                            .withConstraints(
-                                    originalRestrictions.getStartConstraints())
-                            .withConstraints(
-                                    adapter.getStartConstraintsFor(task))
-                            .withConstraints(dependencyConstraints)
-                            .withConstraints(globalStartConstraints).apply();
-
-                } else {
-                    newStart = Constraint
-                            .<GanttDate> initialValue(null)
-                            .withConstraints(
-                                    originalRestrictions.getStartConstraints())
-                            .withConstraints(dependencyConstraints)
-                            .withConstraints(
-                                    adapter.getStartConstraintsFor(task))
-                            .withConstraints(globalStartConstraints).apply();
-                }
+                            .withConstraints(originalRestrictions.getStartConstraints())
+                            .withConstraints(getStartConstraints())
+                        .applyWithoutFinalCheck();
                 if (newStart == null) {
                     return adapter.getStartDate(task);
                 }
                 return newStart;
             }
 
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
+                if (dependenciesConstraintsHavePriority) {
+                    result.addAll(adapter.getStartConstraintsFor(task));
+                    result.addAll(getDependenciesCosntraintsForStart());
+
+                } else {
+                    result.addAll(getDependenciesCosntraintsForStart());
+                    result.addAll(adapter.getStartConstraintsFor(task));
+                }
+                result.addAll(globalStartConstraints);
+                return result;
+            }
+
+            private List<Constraint<GanttDate>> getDependenciesCosntraintsForStart() {
+                final Set<D> withDependencies = graph.incomingEdgesOf(task);
+                return adapter.getStartConstraintsGiven(withDependencies);
+            }
+
             private PositionRestrictions enforceEndDate(
                     PositionRestrictions restrictions) {
-                Set<D> incoming = graph.incomingEdgesOf(task);
                 if (adapter.isFixed(task)) {
                     return restrictions;
                 }
@@ -1255,9 +1284,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 GanttDate newEnd = Constraint
                         .<GanttDate> initialValue(null)
                         .withConstraints(restrictions.getEndConstraints())
-                        .withConstraints(
-                                adapter.getEndConstraintsGivenIncoming(incoming))
-                        .apply();
+                        .withConstraints(getEndConstraints())
+                        .applyWithoutFinalCheck();
                 if (newEnd == null) {
                     return restrictions;
                 }
@@ -1274,6 +1302,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 return restrictions;
             }
 
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                Set<D> incoming = graph.incomingEdgesOf(task);
+                return adapter.getEndConstraintsGivenIncoming(incoming);
+            }
+
         }
 
         class BackwardsForces extends Forces {
@@ -1283,12 +1317,22 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     PositionRestrictions restrictions) {
                 GanttDate result = Constraint.<GanttDate> initialValue(null)
                         .withConstraints(restrictions.getEndConstraints())
-                        .withConstraints(adapter.getEndConstraintsFor(task))
-                        .apply();
+                        .withConstraints(getEndConstraints())
+                        .applyWithoutFinalCheck();
                 if (result != null) {
                     return moveToEnd(result);
                 }
                 return restrictions;
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return adapter.getEndConstraintsFor(task);
             }
 
             private PositionRestrictions moveToEnd(GanttDate newEnd) {
