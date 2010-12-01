@@ -23,7 +23,6 @@ package org.navalplanner.web.planner.order;
 import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.toQueueDependencyType;
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,7 +46,6 @@ import org.navalplanner.business.planner.daos.IConsolidationDAO;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
-import org.navalplanner.business.planner.entities.PlanningData;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
@@ -71,7 +69,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
 

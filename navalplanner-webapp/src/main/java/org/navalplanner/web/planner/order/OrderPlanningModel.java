@@ -136,8 +136,8 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -244,6 +244,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    @Autowired
+    private ITaskElementDAO taskElementDAO;
+
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     private ITaskElementAdapter taskElementAdapter;
@@ -321,7 +324,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(Planner planner, Order order,
+    public void setConfigurationToPlanner(final Planner planner, Order order,
             ViewSwitcher switcher,
             EditTaskController editTaskController,
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController,
@@ -347,7 +350,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.addGlobalCommand(buildReassigningCommand());
 
-        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
+        final IResourceAllocationCommand resourceAllocationCommand =
+            buildResourceAllocationCommand(editTaskController);
         configuration.addCommandOnTask(resourceAllocationCommand);
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
@@ -355,7 +359,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
-        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand =
+            buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
         configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
         configuration
                 .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
@@ -387,16 +393,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         // Create 'Overall progress' tab
         Hbox chartOverallProgressTimeplot = new Hbox();
-        chartTabpanels.appendChild(createOverallProgressTab(chartOverallProgressTimeplot));
+        Tabpanel overallProgressTab = createOverallProgressTab(chartOverallProgressTimeplot);
+        chartTabpanels.appendChild(overallProgressTab);
 
         // Append tab panels
         chartComponent.appendChild(chartTabpanels);
 
         setupLoadChart(chartLoadTimeplot, planner, configuration, saveCommand);
         setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, configuration, saveCommand);
-        setupOverallProgress(chartComponent, planner, configuration, saveCommand);
+        setupOverallProgress(saveCommand);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
+        overallProgressContent = new OverAllProgressContent(overallProgressTab);
+        overallProgressContent.refresh();
     }
 
     private Tabpanel createOverallProgressTab(
@@ -508,63 +517,20 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
-    private void setupOverallProgress(Tabbox chartComponent, Planner planner, PlannerConfiguration<TaskElement> configuration,
-            final ISaveCommand saveCommand) {
+    private void setupOverallProgress(final ISaveCommand saveCommand) {
 
+        // Refresh progress chart after saving
         saveCommand.addListener(new IAfterSaveListener() {
             @Override
             public void onAfterSave() {
-                // FIXME: Should create overallProgressContent if it's null
-                if (overallProgressContent != null) {
-                    overallProgressContent.update();
-                }
-            }
-        });
-
-        chartComponent.addEventListener(Events.ON_SELECT, new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                Tab selectedTab = getSelectedTab((SelectEvent) event);
-
-                if (isOverAllProgressSelected(selectedTab)) {
-                    if (overallProgressContent == null) {
-                        final Tabpanel tabpanel = getSelectedPanel(selectedTab);
-                        overallProgressContent = new OverAllProgressContent(tabpanel);
+                transactionService.runOnTransaction(new IOnTransaction<Void>() {
+                    @Override
+                    public Void execute() {
+                        overallProgressContent.refresh();
+                        return null;
                     }
-                    updateOverAllProgressContent();
-                }
+                });
             }
-
-            private void updateOverAllProgressContent() {
-                transactionService
-                        .runOnTransaction(new IOnTransaction<Void>() {
-                            @Override
-                            public Void execute() {
-                                overallProgressContent.update();
-                                return null;
-                            }
-                        });
-            }
-
-            private boolean isOverAllProgressSelected(Tab selectedTab) {
-                return selectedTab != null
-                    && selectedTab.getLabel().equals(_("Overall progress"));
-            }
-
-            private Tabpanel getSelectedPanel(Tab selectedTab) {
-                Tabbox tabbox = (Tabbox) selectedTab.getParent().getParent();
-                return tabbox.getSelectedPanel();
-            }
-
-            private Tab getSelectedTab(SelectEvent event) {
-                Set<Tab> tabs = event.getSelectedItems();
-                if (tabs != null) {
-                    return tabs.iterator().next();
-                }
-                return null;
-            }
-
         });
 
     }
@@ -1573,50 +1539,86 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private Label lbAdvancePercentage;
 
+        private Button btnRefresh;
+
 
         public OverAllProgressContent(Tabpanel tabpanel) {
-            progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByDuration");
-            lbCriticalPathByDuration = (Label) tabpanel.getFellowIfAny("lbCriticalPathByDuration");
-            progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellowIfAny("progressCriticalPathByNumHours");
-            lbCriticalPathByNumHours = (Label) tabpanel.getFellowIfAny("lbCriticalPathByNumHours");
-            progressAdvancePercentage = (Progressmeter) tabpanel.getFellowIfAny("progressAdvancePercentage");
-            lbAdvancePercentage = (Label) tabpanel.getFellowIfAny("lbAdvancePercentage");
+            progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellow("progressCriticalPathByDuration");
+            lbCriticalPathByDuration = (Label) tabpanel.getFellow("lbCriticalPathByDuration");
+            progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellow("progressCriticalPathByNumHours");
+            lbCriticalPathByNumHours = (Label) tabpanel.getFellow("lbCriticalPathByNumHours");
+            progressAdvancePercentage = (Progressmeter) tabpanel.getFellow("progressAdvancePercentage");
+            lbAdvancePercentage = (Label) tabpanel.getFellow("lbAdvancePercentage");
+            btnRefresh = (Button) tabpanel.getFellow("btnRefresh");
+            btnRefresh.addEventListener(Events.ON_CLICK, new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    transactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                        @Override
+                        public Void execute() {
+                            update();
+                            refresh();
+                            return null;
+                        }
+                    });
+                }
+            });
+        }
+
+        public void refresh() {
+            TaskGroup rootTask = planningState.getRootTask();
+
+            setAdvancePercentage(rootTask.getAdvancePercentage());
+            setCriticalPathByDuration(rootTask
+                    .getCriticalPathProgressByDuration());
+            setCriticalPathByNumHours(rootTask
+                    .getCriticalPathProgressByNumHours());
         }
 
         @Transactional(readOnly=true)
         public void update() {
             TaskGroup rootTask = planningState.getRootTask();
+            updateCriticalPathProgress(rootTask);
+        }
 
-            setAdvancePercentage(rootTask.getAdvancePercentage());
-            setCriticalPathByDuration(rootTask.getCriticalPathProgressByDuration());
-            setCriticalPathByNumHours(rootTask.getCriticalPathProgressByNumHours());
+        private void updateCriticalPathProgress(TaskGroup rootTask) {
+            if (rootTask != null && planningState.getPlanner() != null) {
+                taskElementDAO.save(rootTask);
+                List<Task> criticalPath = planningState.getPlanner().getCriticalPath();
+                rootTask.updateCriticalPathProgress(criticalPath);
+            }
         }
 
         private void setAdvancePercentage(BigDecimal value) {
-            if (value != null) {
-                value = value.multiply(BigDecimal.valueOf(100));
-                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                lbAdvancePercentage.setValue(value.toString() + " %");
-                progressAdvancePercentage.setValue(value.intValue());
+            if (value == null) {
+                value = BigDecimal.ZERO;
             }
+            value = value.multiply(BigDecimal.valueOf(100));
+            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+            lbAdvancePercentage.setValue(value.toString() + " %");
+            progressAdvancePercentage.setValue(value.intValue());
         }
 
         public void setCriticalPathByDuration(BigDecimal value) {
-            if (value != null) {
-                value = value.multiply(BigDecimal.valueOf(100));
-                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                lbCriticalPathByDuration.setValue(value.toString() + " %");
-                progressCriticalPathByDuration.setValue(value.intValue());
+            if (value == null) {
+                value = BigDecimal.ZERO;
             }
+            value = value.multiply(BigDecimal.valueOf(100));
+            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+            lbCriticalPathByDuration.setValue(value.toString() + " %");
+            progressCriticalPathByDuration.setValue(value.intValue());
         }
 
         public void setCriticalPathByNumHours(BigDecimal value) {
-            if (value != null) {
-                value = value.multiply(BigDecimal.valueOf(100));
-                value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-                lbCriticalPathByNumHours.setValue(value.toString() + " %");
-                progressCriticalPathByNumHours.setValue(value.intValue());
+            if (value == null) {
+                value = BigDecimal.ZERO;
             }
+            value = value.multiply(BigDecimal.valueOf(100));
+            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+            lbCriticalPathByNumHours.setValue(value.toString() + " %");
+            progressCriticalPathByNumHours.setValue(value.intValue());
         }
 
     }
