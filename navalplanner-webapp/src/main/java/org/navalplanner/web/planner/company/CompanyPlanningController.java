@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -116,6 +115,10 @@ public class CompanyPlanningController implements Composer {
                 .guessContainersExpandedByDefault(parameters));
 
         initializeListboxProgressTypes();
+
+        planner.setAreShownAdvancesByDefault(Planner
+                .guessShowAdvancesByDefault(parameters));
+
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter

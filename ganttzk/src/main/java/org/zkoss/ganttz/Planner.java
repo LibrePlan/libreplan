@@ -29,18 +29,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -50,9 +50,9 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
@@ -99,6 +99,15 @@ public class Planner extends HtmlMacroComponent  {
     public static boolean guessContainersExpandedByDefault(
             Map<String, String[]> queryURLParameters) {
         String[] values = queryURLParameters.get("expanded");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
+    public static boolean guessShowAdvancesByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("advances");
         if (values == null) {
             return false;
         }
@@ -504,6 +513,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean containersExpandedByDefault = false;
 
+    private boolean shownAdvanceByDefault = false;
+
     private FilterAndParentExpandedPredicates predicate;
 
     private boolean visibleChart;
@@ -603,6 +614,14 @@ public class Planner extends HtmlMacroComponent  {
     public void setAreContainersExpandedByDefault(
             boolean containersExpandedByDefault) {
         this.containersExpandedByDefault = containersExpandedByDefault;
+    }
+
+    public boolean areShownAdvancesByDefault() {
+        return shownAdvanceByDefault;
+    }
+
+    public void setAreShownAdvancesByDefault(boolean shownAdvanceByDefault) {
+        this.shownAdvanceByDefault = shownAdvanceByDefault;
     }
 
     public void expandAll() {

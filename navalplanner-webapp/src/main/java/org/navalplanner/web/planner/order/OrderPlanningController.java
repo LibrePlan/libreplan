@@ -169,6 +169,9 @@ public class OrderPlanningController implements Composer {
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
 
+        planner.setAreShownAdvancesByDefault(Planner
+                .guessShowAdvancesByDefault(parameters));
+
         orderElementFilter = (Vbox) planner.getFellow("orderElementFilter");
         // Configuration of the order filter
         org.zkoss.zk.ui.Component filterComponent = Executions

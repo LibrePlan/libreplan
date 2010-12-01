@@ -60,9 +60,11 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
     // Estimated maximum execution time (ms)
+
     private static final int CUTYCAPT_TIMEOUT = 100000;
 
     private static final int CAPTURE_DELAY = 10000;
+
 
     // Taskdetails left padding
     private static int TASKDETAILS_BASE_WIDTH = 310;
@@ -183,12 +185,14 @@ public class CutyPrint {
         captureString += " --min-width=" + plannerWidth;
 
         // Static width and time delay parameters (FIX)
+
         captureString += " --delay=" + CAPTURE_DELAY;
 
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
                 plannerWidth,
-                planner,
+ planner, parameters
+                .get("advances"),
                 parameters.get("labels"),
                 parameters.get("resources"),
                 expanded,
@@ -296,7 +300,8 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String labels, String resources, boolean expanded,
+            Planner planner, String advances, String labels, String resources,
+            boolean expanded,
             int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
         try {
@@ -317,6 +322,11 @@ public class CutyPrint {
             if ((labels != null) && (labels.equals("all"))) {
                 includeCSSLines += " .task-labels { display: inline !important;} \n";
             }
+            if ((advances != null) && (advances.equals("all"))) {
+                includeCSSLines += " .completion { display: inline !important;} \n";
+                includeCSSLines += " .completion2 { display: inline !important;} \n";
+            }
+
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
