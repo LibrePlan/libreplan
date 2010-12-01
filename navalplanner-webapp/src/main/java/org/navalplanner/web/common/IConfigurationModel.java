@@ -87,7 +87,10 @@ public interface IConfigurationModel {
             Boolean generateCodeForMaterialCategories);
 
     List<EntitySequence> getEntitySequences(EntityNameEnum entityName);
-    void addEntitySequence(EntityNameEnum entityName);
+
+    void addEntitySequence(EntityNameEnum entityName, String prefix,
+            Integer digits);
+
     void removeEntitySequence(EntitySequence entitySequence)
             throws IllegalArgumentException;
 

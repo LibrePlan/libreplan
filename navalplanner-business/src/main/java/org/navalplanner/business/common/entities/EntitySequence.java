@@ -49,6 +49,11 @@ public class EntitySequence extends BaseEntity {
         return create(new EntitySequence(prefix, entityName));
     }
 
+    public static EntitySequence create(String prefix,
+            EntityNameEnum entityName, Integer digits) {
+        return create(new EntitySequence(prefix, entityName, digits));
+    }
+
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -58,6 +63,13 @@ public class EntitySequence extends BaseEntity {
     public EntitySequence(String prefix, EntityNameEnum entityName) {
         this.prefix = prefix;
         this.entityName = entityName;
+    }
+
+    public EntitySequence(String prefix, EntityNameEnum entityName,
+            Integer digits) {
+        this.prefix = prefix;
+        this.entityName = entityName;
+        this.setNumberOfDigits(digits);
     }
 
     private String prefix;

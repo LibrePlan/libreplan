@@ -173,6 +173,33 @@
 			<tabpanel id="panelEntitySequences">
 				<panel border="normal" title="Entity code sequences">
 					<panelchildren id="panelEntitySequence">
+						<vbox>
+							<hbox valign="center">
+								<label value="${i18n:_('Select entity:')}"/>
+                                <combobox id="entityCombo" model="@{configurationController.entityNames}"
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}">
+                                    <comboitem self="@{each=entityName}" label="@{entityName.description}" value="@{entityName}"/>
+                                </combobox>
+
+                                <label value="${i18n:_('Prefix:')}"/>
+                                <textbox id="prefixBox" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                <label value="${i18n:_('Number of digits:')}"/>
+                                <intbox id="numDigitBox" value="5"
+									constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+								<button label="${i18n:_('add')}"
+								    onClick="configurationController.addNewEntitySequence()"/>
+							</hbox>
+                            <separator bar="false" height="4px" orient="vertical"/>
+						<grid id="entitySequencesGrid" fixedLayout="true" height="400px" rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
+							<columns sizable="true">
+								<column label="${i18n:_('Active')}" />
+								<column label="${i18n:_('Prefix')}" />
+								<column label="${i18n:_('Number of digits')}"/>
+								<column label="${i18n:_('Last value')}" />
+								<column label="${i18n:_('Operations')}" />
+                            </columns>
+                        </grid>
+					</vbox>
 					</panelchildren>
 				</panel>
             </tabpanel>

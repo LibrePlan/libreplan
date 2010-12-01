@@ -501,9 +501,11 @@ public class ConfigurationModel implements IConfigurationModel {
         return entitySequences.get(entityName);
     }
 
-    public void addEntitySequence(EntityNameEnum entityName) {
+    public void addEntitySequence(EntityNameEnum entityName, String prefix,
+            Integer digits) {
         List<EntitySequence> sequences = entitySequences.get(entityName);
-        EntitySequence entitySequence = EntitySequence.create("", entityName);
+        EntitySequence entitySequence = EntitySequence.create(prefix,
+                entityName, digits);
         if (sequences.isEmpty()) {
             entitySequence.setActive(true);
         }
