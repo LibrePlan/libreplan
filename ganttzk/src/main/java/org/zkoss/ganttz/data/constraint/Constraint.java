@@ -112,6 +112,10 @@ public abstract class Constraint<T> {
             return Constraint.apply(value, constraints);
         }
 
+        public T applyWithoutFinalCheck() {
+            return Constraint.apply(value, constraints, false);
+        }
+
     }
 
     public static <T> ConstraintBuilder<T> initialValue(T value) {
@@ -124,16 +128,26 @@ public abstract class Constraint<T> {
 
     public static <T> T apply(T initialValue,
             Collection<Constraint<T>> constraints) {
+        return apply(initialValue, constraints, true);
+    }
+
+    public static <T> T apply(T initialValue,
+            Collection<Constraint<T>> constraints, boolean doFinalCheck) {
         T result = initialValue;
         for (Constraint<T> each : constraints) {
             result = each.applyTo(result);
         }
-        for (Constraint<T> each : constraints) {
-            if (!each.isSatisfiedBy(result)) {
-                each.fireNotSatisfied(result);
-            }
+        if (doFinalCheck) {
+            checkSatisfyResult(constraints, result);
         }
         return result;
+    }
+
+    public static <T> void checkSatisfyResult(
+            Collection<? extends Constraint<T>> all, T result) {
+        for (Constraint<T> each : all) {
+            each.checkSatisfiesResult(result);
+        }
     }
 
     private static final Constraint<Object> VOID_CONSTRAINT = new Constraint<Object>() {
@@ -169,6 +183,12 @@ public abstract class Constraint<T> {
     protected abstract T applyConstraintTo(T value);
 
     public abstract boolean isSatisfiedBy(T value);
+
+    public void checkSatisfiesResult(T finalResult) {
+        if (!isSatisfiedBy(finalResult)) {
+            fireNotSatisfied(finalResult);
+        }
+    }
 
     private void fireNotSatisfied(final T value) {
         weakListeners
