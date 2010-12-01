@@ -65,11 +65,16 @@ public abstract class Task implements ITaskFundamentalProperties {
     private PropertyChangeSupport criticalPathProperty = new PropertyChangeSupport(
             this);
 
+    private PropertyChangeSupport advancesProperty = new PropertyChangeSupport(
+            this);
+
     private final ITaskFundamentalProperties fundamentalProperties;
 
     private boolean visible = true;
 
     private boolean inCriticalPath = false;
+
+    private boolean showingAdvances = false;
 
     private ConstraintViolationNotificator<GanttDate> violationNotificator = ConstraintViolationNotificator
             .create();
@@ -139,6 +144,17 @@ public abstract class Task implements ITaskFundamentalProperties {
                 previousValue, this.inCriticalPath);
     }
 
+    public void setShowingAdvances(boolean showingAdvances) {
+        boolean previousValue = this.showingAdvances;
+        this.showingAdvances = showingAdvances;
+        advancesProperty.firePropertyChange("showingAdvances", previousValue,
+                this.showingAdvances);
+    }
+
+    public boolean isShowingAdvances() {
+        return showingAdvances;
+    }
+
     public String getName() {
         return fundamentalProperties.getName();
     }
@@ -201,6 +217,11 @@ public abstract class Task implements ITaskFundamentalProperties {
     public void addCriticalPathPropertyChangeListener(
             PropertyChangeListener listener) {
         this.criticalPathProperty.addPropertyChangeListener(listener);
+    }
+
+    public void addAdvancesPropertyChangeListener(
+            PropertyChangeListener listener) {
+        this.advancesProperty.addPropertyChangeListener(listener);
     }
 
     public void addFundamentalPropertiesChangeListener(

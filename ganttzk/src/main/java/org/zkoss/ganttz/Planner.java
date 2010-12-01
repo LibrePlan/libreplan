@@ -135,6 +135,8 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingCriticalPath = false;
 
+    private boolean isShowingAdvances = false;
+
     private boolean isShowingLabels = false;
 
     private boolean isShowingResources = false;
@@ -492,6 +494,14 @@ public class Planner extends HtmlMacroComponent  {
         }
     };
 
+    private IGraphChangeListener showAdvanceOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showAdvances();
+        }
+    };
+
     private boolean containersExpandedByDefault = false;
 
     private FilterAndParentExpandedPredicates predicate;
@@ -513,6 +523,24 @@ public class Planner extends HtmlMacroComponent  {
                 showCriticalPathButton.setTooltiptext(_("Hide critical path"));
             }
             isShowingCriticalPath = !isShowingCriticalPath;
+        }
+    }
+
+    public void showAdvances() {
+        Button showAdvancesButton = (Button) getFellow("showAdvances");
+        if (disabilityConfiguration.isAdvancesEnabled()) {
+            if (isShowingAdvances) {
+                context.hideAdvances();
+                diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
+                showAdvancesButton.setSclass("planner-command");
+                showAdvancesButton.setTooltiptext(_("Show advances"));
+            } else {
+                context.showAdvances();
+                diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
+                showAdvancesButton.setSclass("planner-command clicked");
+                showAdvancesButton.setTooltiptext(_("Hide Advances"));
+            }
+            isShowingAdvances = !isShowingAdvances;
         }
     }
 

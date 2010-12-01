@@ -126,4 +126,14 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         return context.getCriticalPath();
     }
 
+    @Override
+    public void hideAdvances() {
+        context.hideAdvances();
+    }
+
+    @Override
+    public void showAdvances() {
+        context.showAdvances();
+    }
+
 }

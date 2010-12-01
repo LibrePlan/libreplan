@@ -71,6 +71,9 @@ planner = self;
             image="/common/img/ico_flatten.png"
             tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
             sclass="planner-command" />
+        <button id="showAdvances" onClick="planner.showAdvances();"
+            image="/common/img/ico_advance.png"
+            tooltiptext="${i18n:_('Show/Hide Advances')}" />
         <separator />
 
         <!--  Filtering -->

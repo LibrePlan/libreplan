@@ -35,6 +35,8 @@ public interface IDisabilityConfiguration {
 
     public boolean isCriticalPathEnabled();
 
+    public boolean isAdvancesEnabled();
+
     public boolean isExpandAllEnabled();
 
     public boolean isFlattenTreeEnabled();

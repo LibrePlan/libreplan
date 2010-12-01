@@ -128,4 +128,14 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
         return context.getCriticalPath();
     }
 
+    @Override
+    public void hideAdvances() {
+        context.hideAdvances();
+    }
+
+    @Override
+    public void showAdvances() {
+        context.showAdvances();
+    }
+
 }

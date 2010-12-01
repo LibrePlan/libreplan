@@ -159,6 +159,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private PropertyChangeListener criticalPathPropertyListener;
 
+    private PropertyChangeListener showingAdvancePropertyListener;
+
     public static TaskComponent asTaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration,
             boolean isTopLevel) {
@@ -263,6 +265,20 @@ public class TaskComponent extends Div implements AfterCompose {
         this.task
                 .addFundamentalPropertiesChangeListener(propertiesListener);
 
+        if (showingAdvancePropertyListener == null) {
+            showingAdvancePropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage()) {
+                        updateCompletionIfPossible();
+                    }
+                }
+            };
+        }
+        this.task
+                .addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
+
         if (criticalPathPropertyListener == null) {
             criticalPathPropertyListener = new PropertyChangeListener() {
 
@@ -292,7 +308,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
-
     private IConstraintViolationListener<GanttDate> taskViolationListener;
 
     public TaskRow getRow() {
@@ -487,17 +502,23 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateCompletion() {
-        int startPixels = this.task.getBeginDate().toPixels(getMapper());
+        if (task.isShowingAdvances()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
 
-        String widthHoursAdvancePercentage = pixelsFromStartUntil(startPixels,
+            String widthHoursAdvancePercentage = pixelsFromStartUntil(
+                    startPixels,
                 this.task.getHoursAdvanceEndDate()) + "px";
-        response(null, new AuInvoke(this, "resizeCompletionAdvance",
+            response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
 
-        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
                 this.task.getAdvanceEndDate()) + "px";
-        response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                widthAdvancePercentage));
+            response(null, new AuInvoke(this, "resizeCompletion2Advance",
+                    widthAdvancePercentage));
+        } else {
+            response(null,
+                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+        }
     }
 
     public void updateCompletion(String progressType) {

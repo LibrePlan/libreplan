@@ -133,6 +133,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean criticalPathEnabled = true;
 
+    private boolean advancesEnabled = true;
+
     private boolean expandAllEnabled = true;
 
     private boolean flattenTreeEnabled = true;
@@ -298,6 +300,15 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isCriticalPathEnabled() {
         return criticalPathEnabled;
+    }
+
+    public void setAdvancesEnabled(boolean advancesEnabled) {
+        this.advancesEnabled = advancesEnabled;
+    }
+
+    @Override
+    public boolean isAdvancesEnabled() {
+        return advancesEnabled;
     }
 
     public void setExpandAllEnabled(boolean expandAllEnabled) {

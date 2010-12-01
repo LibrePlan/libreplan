@@ -434,6 +434,20 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     @Override
+    public void showAdvances() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingAdvances(true);
+        }
+    }
+
+    @Override
+    public void hideAdvances() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingAdvances(false);
+        }
+    }
+
+    @Override
     public void reloadCharts() {
         configuration.reloadCharts();
     }

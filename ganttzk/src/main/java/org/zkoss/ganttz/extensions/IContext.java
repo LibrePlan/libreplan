@@ -124,8 +124,18 @@ public interface IContext<T> {
      */
     void hideCriticalPath();
 
+    /**
+     * Hides the advances in the planner.
+     */
+    void hideAdvances();
+
     public void reloadCharts();
 
     public GanttDiagramGraph getGanttDiagramGraph();
+
+    /**
+     * Shows the advances in the planner.
+     */
+    void showAdvances();
 
 }
