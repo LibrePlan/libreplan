@@ -58,6 +58,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -172,18 +173,22 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        if (ConstraintChecker.isValid(configurationWindow)) {
+        if (ConstraintChecker.isValid(configurationWindow)
+                && checkValidEntitySequenceRows()) {
             try {
                 configurationModel.confirm();
                 configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
                 reloadWindow();
+                initOpenedGroup();
+                reloadEntitySequences();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
             } catch (ConcurrentModificationException e) {
                 messages.showMessage(Level.ERROR, e.getMessage());
                 configurationModel.init();
                 reloadWindow();
+                reloadEntitySequences();
             }
         }
     }
@@ -192,6 +197,38 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.cancel();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
+        initOpenedGroup();
+        reloadEntitySequences();
+    }
+
+    private boolean checkValidEntitySequenceRows() {
+        Rows rows = entitySequencesGrid.getRows();
+        for (Row row : (List<Row>) rows.getChildren()) {
+            if (!(row instanceof Group)) {
+                EntitySequence seq = (EntitySequence) row.getValue();
+                if (seq != null) {
+                    Textbox prefixBox = (Textbox) row.getChildren().get(1);
+                    if (!seq.isAlreadyInUse()) {
+                        String errorMessage = this.validPrefix(seq, prefixBox
+                                .getValue());
+                        if (errorMessage != null) {
+                            throw new WrongValueException(prefixBox,
+                                    errorMessage);
+                        }
+                    }
+
+                    Intbox digitsBox = (Intbox) row.getChildren().get(2);
+                    try {
+                        if (!seq.isAlreadyInUse()) {
+                            seq.setNumberOfDigits(digitsBox.getValue());
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(digitsBox, e.getMessage());
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private void reloadWindow() {
@@ -546,18 +583,25 @@ public class ConfigurationController extends GenericForwardComposer {
                 Row row = (Row) comp.getParent();
                 EntitySequence sequence = (EntitySequence) row.getValue();
                 if (!sequence.isAlreadyInUse()) {
-                    String prefixValue = (String) value;
-                    sequence.setPrefix(prefixValue);
-                    if (!configurationModel.checkFrefixFormat(sequence)) {
-                        String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
-                        if (sequence.getEntityName().canContainLowBar()) {
-                            message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
-                        }
-                        throw new WrongValueException(comp, message);
+                    String errorMessage = validPrefix(sequence, (String) value);
+                    if (errorMessage != null) {
+                        throw new WrongValueException(comp, errorMessage);
                     }
                 }
             }
         };
+    }
+
+    private String validPrefix(EntitySequence sequence, String prefixValue) {
+        sequence.setPrefix(prefixValue);
+        if (!configurationModel.checkFrefixFormat(sequence)) {
+            String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
+            if (sequence.getEntityName().canContainLowBar()) {
+                message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
+            }
+            return message;
+        }
+        return null;
     }
 
     public Constraint checkConstraintNumberOfDigits(){
@@ -638,6 +682,11 @@ public class ConfigurationController extends GenericForwardComposer {
             if (entityCombo.getSelectedItem() == null) {
                 throw new WrongValueException(entityCombo,
                         _("Select entity, please"));
+            }
+
+            if (prefixBox.getValue() == null || prefixBox.getValue().isEmpty()) {
+                throw new WrongValueException(prefixBox,
+                        _("cannot be null or empty"));
             }
 
             try {

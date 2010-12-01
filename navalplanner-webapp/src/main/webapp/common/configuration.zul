@@ -176,16 +176,14 @@
 						<vbox>
 							<hbox valign="center">
 								<label value="${i18n:_('Select entity:')}"/>
-                                <combobox id="entityCombo" model="@{configurationController.entityNames}"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}">
+                                <combobox id="entityCombo" model="@{configurationController.entityNames}">
                                     <comboitem self="@{each=entityName}" label="@{entityName.description}" value="@{entityName}"/>
                                 </combobox>
 
                                 <label value="${i18n:_('Prefix:')}"/>
-                                <textbox id="prefixBox" constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                <textbox id="prefixBox"/>
                                 <label value="${i18n:_('Number of digits:')}"/>
-                                <intbox id="numDigitBox" value="5"
-									constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                <intbox id="numDigitBox" value="5"/>
 								<button label="${i18n:_('add')}"
 								    onClick="configurationController.addNewEntitySequence()"/>
 							</hbox>
