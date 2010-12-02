@@ -663,8 +663,13 @@ public class Planner extends HtmlMacroComponent  {
         return shownAdvanceByDefault;
     }
 
+    public boolean showAdvancesRightNow() {
+        return (areShownAdvancesByDefault() || isShowingAdvances);
+    }
+
     public void setAreShownAdvancesByDefault(boolean shownAdvanceByDefault) {
         this.shownAdvanceByDefault = shownAdvanceByDefault;
+        this.isShowingAdvances = shownAdvanceByDefault;
     }
 
     public void setAreShownReportedHoursByDefault(
@@ -674,6 +679,10 @@ public class Planner extends HtmlMacroComponent  {
 
     public boolean areShownReportedHoursByDefault() {
         return shownReportedHoursByDefault;
+    }
+
+    public boolean showReportedHoursRightNow() {
+        return (areShownReportedHoursByDefault() || isShowingReportedHours);
     }
 
     public void expandAll() {

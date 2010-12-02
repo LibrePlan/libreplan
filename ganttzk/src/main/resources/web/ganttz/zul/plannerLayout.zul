@@ -73,10 +73,12 @@ planner = self;
             sclass="planner-command" />
         <button id="showAdvances" onClick="planner.showAdvances();"
             image="/common/img/ico_progress.png"
-            tooltiptext="${i18n:_('Show/Hide Advances')}" />
+            tooltiptext="${i18n:_('Show/Hide Advances')}"
+            sclass="planner-command"/>
         <button id="showReportedHours" onClick="planner.showReportedHours();"
             image="/common/img/ico_costs.png"
-            tooltiptext="${i18n:_('Show/Hide reported hours')}" />
+            tooltiptext="${i18n:_('Show/Hide reported hours')}"
+            sclass="planner-command"/>
         <separator />
 
         <!--  Filtering -->

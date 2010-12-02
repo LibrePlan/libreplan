@@ -236,9 +236,8 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             result = container;
         }
         result
-                .setShowingReportedHours(planner
-                        .areShownReportedHoursByDefault());
-        result.setShowingAdvances(planner.areShownAdvancesByDefault());
+.setShowingReportedHours(planner.showReportedHoursRightNow());
+        result.setShowingAdvances(planner.showAdvancesRightNow());
         mapper.register(topInsertionPosition, result, data, parent);
         return result;
     }
