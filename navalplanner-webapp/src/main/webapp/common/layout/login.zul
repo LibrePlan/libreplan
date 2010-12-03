@@ -109,7 +109,8 @@
     <n:td height="10" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
   <n:tr>
-    <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span></n:td>
+    <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
+    <n:div class="navalplan-version">v1.0</n:div></n:td>
   </n:tr>
   <n:tr>
     <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_footer.gif" width="475" height="40" /></div></n:td>

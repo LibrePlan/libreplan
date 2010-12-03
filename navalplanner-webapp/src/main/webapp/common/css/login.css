@@ -95,3 +95,9 @@ a.ayuda:hover {
     color: #BBBBBB;
     font-size: 9px;
 }
+
+.navalplan-version {
+    float: right;
+    color: #009900;
+    font-size: 10px;
+}
