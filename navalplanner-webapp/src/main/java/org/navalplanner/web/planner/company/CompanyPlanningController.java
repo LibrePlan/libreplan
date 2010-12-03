@@ -53,10 +53,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Vbox;
 
@@ -98,7 +98,7 @@ public class CompanyPlanningController implements Composer {
                 .retrieve();
     }
 
-    private Listbox lbProgressTypes;
+    private Combobox cbProgressTypes;
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
@@ -141,20 +141,22 @@ public class CompanyPlanningController implements Composer {
     }
 
     private void initializeListboxProgressTypes() {
-        if (lbProgressTypes == null) {
-            lbProgressTypes = (Listbox) planner.getFellow("lbProgressTypes");
+        if (cbProgressTypes == null) {
+            cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
         }
-        lbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
+        cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
 
-        // Select default configuration option
-        lbProgressTypes.renderAll();
-        Listitem item = findListitemValue(lbProgressTypes, getProgressTypeFromConfiguration());
+        // FIXME: Select default configuration option
+        // cbProgressTypes.renderAll();
+        cbProgressTypes.invalidate();
+        Comboitem item = findListitemValue(cbProgressTypes,
+                getProgressTypeFromConfiguration());
         if (item != null) {
-            lbProgressTypes.setSelectedItem(item);
+            cbProgressTypes.setSelectedItem(item);
         }
 
         // Update completion of tasks on selecting new progress type
-        lbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
+        cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
@@ -162,16 +164,17 @@ public class CompanyPlanningController implements Composer {
             }
 
             private ProgressType getSelectedProgressType() {
-                return (ProgressType) lbProgressTypes.getSelectedItem().getValue();
+                return (ProgressType) cbProgressTypes.getSelectedItem().getValue();
             }
 
         });
-        planner.getFellow("hboxProgressType").setVisible(true);
+
+        cbProgressTypes.setVisible(true);
     }
 
-    private Listitem findListitemValue(Listbox listbox, ProgressType value) {
+    private Comboitem findListitemValue(Combobox listbox, ProgressType value) {
         for (Object each : listbox.getChildren()) {
-            final Listitem item = (Listitem) each;
+            final Comboitem item = (Comboitem) each;
             if (value.equals(item.getValue())) {
                 return item;
             }

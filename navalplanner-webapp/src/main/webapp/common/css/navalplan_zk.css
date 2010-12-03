@@ -1471,3 +1471,22 @@ display:none;
 .earned-parameter-column {
     white-space: nowrap;
 }
+
+.progress-types.z-combobox {
+    position: relative;
+    left: -3px;
+}
+
+.progress-types.z-combobox .z-combobox-inp {
+    width:0;
+    margin:0;
+    padding:0;
+    border:0;
+    border-right: solid 1px #86A4BE;
+    color: transparent;
+    background: transparent;
+}
+
+.progress-types.z-combobox-focus {
+    border:0;
+}

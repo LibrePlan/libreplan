@@ -48,11 +48,6 @@ planner = self;
         </listbox>
 
         <!-- Progress type -->
-        <hbox id="hboxProgressType" visible="false">
-            <label>${i18n:_('Progress')}:</label>
-            <listbox id="lbProgressTypes"
-                mold="select" />
-        </hbox>
 
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"
@@ -71,10 +66,15 @@ planner = self;
             image="/common/img/ico_flatten.png"
             tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
             sclass="planner-command" />
+
         <button id="showAdvances" onClick="planner.showAdvances();"
             image="/common/img/ico_progress.png"
             tooltiptext="${i18n:_('Show/Hide Advances')}"
-            sclass="planner-command"/>
+            sclass="planner-command" />
+
+        <combobox id="cbProgressTypes" width="1px" visible="false"
+            sclass="progress-types" />
+
         <button id="showReportedHours" onClick="planner.showReportedHours();"
             image="/common/img/ico_costs.png"
             tooltiptext="${i18n:_('Show/Hide reported hours')}"
