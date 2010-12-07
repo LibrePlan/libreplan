@@ -270,7 +270,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         cachedOnlyOneVisible = null;
 
         Map<String, Object> editWindowArgs = new HashMap<String, Object>();
-        editWindowArgs.put("top_id", editWindowArgs);
+        editWindowArgs.put("top_id", "editWindow");
         Component parent = listWindow.getParent();
         editWindow = (Window) Executions.createComponents(
                 "/orders/_edition.zul", parent, editWindowArgs);
