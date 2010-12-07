@@ -22,19 +22,16 @@
 ADVANCE_ALLOCATIONS = {};
 
 ADVANCE_ALLOCATIONS.listenToScroll = function() {
-	var scrollableArea_ = YAHOO.util.Selector.query('.advanced-assignment-area')[0];
-	var innerScrollableArea_ = YAHOO.util.Selector.query('.advanced-assignment-area .z-center-body')[0];
-    var taskdetails_ = YAHOO.util.Selector.query('.advancedassignmentdetails .z-grid-body')[0];
-    var timetrackergap_ = YAHOO.util.Selector.query('.timetrackergap')[0];
-    var timetracker_ = YAHOO.util.Selector.query('#timeTracker .z-vbox')[0];
+    var scrollableArea = jq('.advanced-assignment-area');
+    var innerScrollableArea = jq('.z-center-body', scrollableArea);
+    var taskDetails = jq('.advancedassignmentdetails .z-grid-body');
+    var timeTracker = ganttz.TimeTracker.getInstance();
 
-    var onScroll = function() {
-        taskdetails_.style["top"] = "-" + scrollableArea_.scrollTop + "px";
-        timetrackergap_.style["left"] = "-" + scrollableArea_.scrollLeft + "px";
-    };
-	scrollableArea_.onscroll = onScroll;
+    scrollableArea.bind('scroll', function() {
+      timeTracker.scrollLeft(scrollableArea.scrollLeft());
+      taskDetails.css({top : -scrollableArea.scrollTop()});
+    });
 
-	if (timetracker_ != undefined ) {
-		innerScrollableArea_.style["width"] = timetracker_.clientWidth + "px";
-	}
+    if (timeTracker != undefined ) innerScrollableArea.width(timeTracker.realWidth());
+
 };
