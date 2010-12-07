@@ -390,7 +390,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private static final int VERTICAL_MAX_ELEMENTS = 25;
 
     private IMessagesForUser messages;
-    private LayoutRegion insertionPointTimetracker;
+    private Component insertionPointTimetracker;
     private Div insertionPointLeftPanel;
     private LayoutRegion insertionPointRightPanel;
 
@@ -627,7 +627,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
         });
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
-                timeTracker, "timeTracker");
+                timeTracker, "timetrackerheader");
         timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);
