@@ -129,4 +129,8 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         getTimeTracker().setZoomLevel(zoomlevel);
     }
 
+    public String getWidgetClass(){
+        return getDefinition().getDefaultWidgetClass();
+    }
+
 }

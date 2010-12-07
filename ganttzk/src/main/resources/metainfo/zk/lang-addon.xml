@@ -170,7 +170,8 @@
 	<component>
 		<component-name>timetracker</component-name>
 		<component-class>org.zkoss.ganttz.timetracker.TimeTrackerComponent</component-class>
-		<macro-uri>~./ganttz/zul/timetracker/timetracker.zul</macro-uri>
+		<widget-class>ganttz.TimeTracker</widget-class>
+        <macro-uri>~./ganttz/zul/timetracker/timetracker.zul</macro-uri>
 	</component>
 
 	<component>
