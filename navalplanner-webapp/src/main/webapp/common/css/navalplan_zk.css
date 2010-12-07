@@ -1477,16 +1477,28 @@ display:none;
     left: -3px;
 }
 
+.progress-types {
+    margin-left:-10px;
+}
+
 .progress-types.z-combobox .z-combobox-inp {
-    width:0;
     margin:0;
     padding:0;
     border:0;
-    border-right: solid 1px #86A4BE;
     color: transparent;
     background: transparent;
+    border: 0;
+    border-width: 0;
+    outline: none;
+    text-indent: -200px;
 }
 
-.progress-types.z-combobox-focus {
-    border:0;
+.show-advances img  {
+    position:relative;
+    left: -8px;
+}
+
+.progress-types.z-combobox .z-combobox-img {
+    background-image: url(../img/small-combo-arrow.png);
+    border: 0;
 }
