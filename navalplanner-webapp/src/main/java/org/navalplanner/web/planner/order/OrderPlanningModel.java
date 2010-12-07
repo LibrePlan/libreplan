@@ -1583,8 +1583,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     .getCriticalPathProgressByNumHours());
         }
 
-        @Transactional(readOnly=true)
-        public void update() {
+        private void update() {
             TaskGroup rootTask = planningState.getRootTask();
             updateCriticalPathProgress(rootTask);
         }
