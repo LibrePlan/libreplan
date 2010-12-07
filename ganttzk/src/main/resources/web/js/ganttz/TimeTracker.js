@@ -7,10 +7,14 @@ ganttz.TimeTracker = zk.$extends(zk.Macro,{
     },
     bind_ : function (){
         this.$supers('bind_', arguments);
-        this._timetrackergap = jq('.timetrackergap');
+        this._timetrackerGap = jq('.timetrackergap');
+        this._timetrackerHeader = jq('#timetrackerheader .z-vbox');
+    },
+    realWidth : function(){
+        return this._timetrackerHeader.width();
     },
     scrollLeft : function(ammount){
-        this._timetrackergap.css({left : -ammount});
+        this._timetrackerGap.css({left : -ammount});
     }
 },{
     getInstance : function(){
