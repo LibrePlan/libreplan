@@ -21,9 +21,6 @@
 package org.navalplanner.web.common;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
-import static org.navalplanner.web.planner.TaskElementAdapter.toGantt;
-import static org.navalplanner.web.planner.TaskElementAdapter.toIntraDay;
-import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,8 +41,6 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -53,8 +48,6 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -67,10 +60,7 @@ import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
 import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
-import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
@@ -91,7 +81,7 @@ import org.zkoss.zk.ui.util.Clients;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TemplateModel implements ITemplateModel {
 
-    private static class DependencyWithVisibility implements
+    public static class DependencyWithVisibility implements
             IDependency<TaskElement> {
 
         public static DependencyWithVisibility createInvisible(
@@ -106,7 +96,7 @@ public class TemplateModel implements ITemplateModel {
         }
 
         public static List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Adapter adapter, Set<DependencyWithVisibility> withDependencies) {
+                TemplateModelAdapter adapter, Set<DependencyWithVisibility> withDependencies) {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
                 TaskElement source = each.getSource();
@@ -117,7 +107,7 @@ public class TemplateModel implements ITemplateModel {
         }
 
         public static List<Constraint<GanttDate>> getEndConstraintsGiven(
-                Adapter adapter,
+                TemplateModelAdapter adapter,
                 Set<DependencyWithVisibility> withDependencies) {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
@@ -182,172 +172,6 @@ public class TemplateModel implements ITemplateModel {
 
         public PointType getPointType() {
             return getType().getPointModified();
-        }
-
-    }
-
-    private static IDatesInterceptor asIntercerptor(
-            final IDependenciesEnforcerHook hook) {
-        return new IDatesInterceptor() {
-
-            @Override
-            public void setStartDate(IntraDayDate previousStart,
-                    IntraDayDate previousEnd, IntraDayDate newStart) {
-                hook.setStartDate(convert(previousStart.getDate()),
-                        convert(previousEnd.asExclusiveEnd()),
-                        convert(newStart.getDate()));
-            }
-
-            @Override
-            public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
-                hook.setNewEnd(convert(previousEnd.getDate()),
-                        convert(newEnd.asExclusiveEnd()));
-            }
-        };
-    }
-
-    private static GanttDate convert(LocalDate date) {
-        return GanttDate.createFrom(date);
-    }
-
-    public class Adapter implements
-            IAdapter<TaskElement, DependencyWithVisibility> {
-
-        private final Scenario scenario;
-
-        private LocalDate deadline;
-
-        private Adapter(Scenario scenario, LocalDate deadline) {
-            Validate.notNull(scenario);
-            this.scenario = scenario;
-            this.deadline = deadline;
-        }
-
-        @Override
-        public DependencyWithVisibility createInvisibleDependency(
-                TaskElement origin, TaskElement destination, DependencyType type) {
-            return DependencyWithVisibility.createInvisible(origin,
-                    destination, type);
-        }
-
-        @Override
-        public List<TaskElement> getChildren(TaskElement task) {
-            if (!task.isLeaf()) {
-                return task.getChildren();
-            } else {
-                return new ArrayList<TaskElement>();
-            }
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-                Set<DependencyWithVisibility> incoming) {
-            return DependencyWithVisibility.getEndConstraintsGiven(this,
-                    incoming);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getCurrentLenghtConstraintFor(
-                TaskElement task) {
-            if (isContainer(task)) {
-                return Collections.emptyList();
-            }
-            return Collections.singletonList(biggerOrEqualThan(this
-                    .getEndDateFor(task)));
-        }
-
-        @Override
-        public Class<DependencyWithVisibility> getDependencyType() {
-            return DependencyWithVisibility.class;
-        }
-
-        @Override
-        public TaskElement getDestination(DependencyWithVisibility dependency) {
-            return dependency.getDestination();
-        }
-
-        @Override
-        public TaskPoint<TaskElement, DependencyWithVisibility> getDestinationPoint(
-                DependencyWithVisibility dependency) {
-            return new TaskPoint<TaskElement, DependencyWithVisibility>(this,
-                    dependency.getDestination(), dependency.getPointType());
-        }
-
-        @Override
-        public GanttDate getEndDateFor(TaskElement task) {
-            return toGantt(task.getIntraDayEndDate());
-        }
-
-        @Override
-        public GanttDate getSmallestBeginDateFromChildrenFor(
-                TaskElement container) {
-            TaskGroup taskGroup = (TaskGroup) container;
-            return toGantt(taskGroup.getSmallestStartDateFromChildren());
-        }
-
-        @Override
-        public TaskElement getSource(DependencyWithVisibility dependency) {
-            return dependency.getSource();
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getStartConstraintsFor(
-                TaskElement task) {
-            return TaskElementAdapter.getStartConstraintsFor(task);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getEndConstraintsFor(TaskElement task) {
-            return TaskElementAdapter.getEndConstraintsFor(task, deadline);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Set<DependencyWithVisibility> withDependencies) {
-            return DependencyWithVisibility.getStartConstraintsGiven(this,
-                    withDependencies);
-        }
-
-        @Override
-        public GanttDate getStartDate(TaskElement task) {
-            return toGantt(task.getIntraDayStartDate());
-        }
-
-        @Override
-        public DependencyType getType(DependencyWithVisibility dependency) {
-            return dependency.getType();
-        }
-
-        @Override
-        public boolean isContainer(TaskElement task) {
-            return !task.isLeaf() && !task.isMilestone();
-        }
-
-        @Override
-        public boolean isVisible(DependencyWithVisibility dependency) {
-            return dependency.isVisible();
-        }
-
-        @Override
-        public void registerDependenciesEnforcerHookOn(TaskElement task,
-                IDependenciesEnforcerHookFactory<TaskElement> hookFactory) {
-            IDependenciesEnforcerHook enforcer = hookFactory.create(task);
-            task.setDatesInterceptor(asIntercerptor(enforcer));
-        }
-
-        @Override
-        public void setEndDateFor(TaskElement task, GanttDate newEnd) {
-            task.moveEndTo(scenario, toIntraDay(newEnd));
-        }
-
-        @Override
-        public void setStartDateFor(TaskElement task, GanttDate newStart) {
-            task.moveTo(scenario, toIntraDay(newStart));
-        }
-
-        @Override
-        public boolean isFixed(TaskElement task) {
-            return task.isLimitingAndHasDayAssignments();
         }
 
     }
@@ -549,7 +373,7 @@ public class TemplateModel implements ITemplateModel {
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {
         copyAssignments(order, from, to);
         installDependenciesEnforcer(order,
-                new Adapter(to, LocalDate.fromDateFields(order.getDeadline())));
+                TemplateModelAdapter.create(to, LocalDate.fromDateFields(order.getDeadline())));
         doReassignations(order, to);
         doTheSaving(order);
     }
@@ -560,7 +384,7 @@ public class TemplateModel implements ITemplateModel {
         }
     }
 
-    private void installDependenciesEnforcer(Order order, Adapter adapter) {
+    private void installDependenciesEnforcer(Order order, TemplateModelAdapter adapter) {
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(order, adapter);
         TaskSource taskSource = order.getTaskSource();
         graph.addTopLevel(taskSource.getTask());

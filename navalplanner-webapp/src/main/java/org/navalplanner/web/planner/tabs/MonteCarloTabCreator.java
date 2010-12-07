@@ -23,21 +23,36 @@ import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.scenarios.IScenarioManager;
-import org.navalplanner.web.common.TemplateModel;
+import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
+import org.navalplanner.web.common.TemplateModelAdapter;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
+import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -127,26 +142,93 @@ public class MonteCarloTabCreator {
 
     public List<TaskElement> getCriticalPathFor(final Order order) {
 
-        // Reattach order
         IAdHocTransactionService transactionService = Registry.getTransactionService();
+
         return transactionService.runOnTransaction(new IOnTransaction<List<TaskElement>>() {
             @Override
             public List<TaskElement> execute() {
                 initializeOrder(order);
-                return order.getAllChildrenAssociatedTaskElements();
+                return getCriticalPathFor(order);
             }
+
+            private void initializeOrder(Order order) {
+                IOrderDAO orderDAO = Registry.getOrderDAO();
+                orderDAO.reattach(order);
+                useSchedulingDataFor(order);
+                for (TaskElement each: order.getTaskElements()) {
+                    each.getName();
+                }
+                order.getTaskSource().getTask().getName();
+            }
+
+            private void useSchedulingDataFor(Order order) {
+                IScenarioManager scenarioManager = Registry.getScenarioManager();
+                order.useSchedulingDataFor(scenarioManager.getCurrent());
+            }
+
+            /**
+             * Calculate critical path tasks in order
+             *
+             * @param order
+             * @return
+             */
+            public List<TaskElement> getCriticalPathFor(Order order) {
+                CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
+                        .create();
+                IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
+                        .create(getCurrentScenario(), new LocalDate(order.getDeadline()));
+                GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
+                        order, adapter);
+                graph.addTasks(order.getAllChildrenAssociatedTaskElements());
+                addDependencies(graph, order);
+                return criticalPathCalculator.calculateCriticalPath(graph);
+            }
+
+            private Scenario getCurrentScenario() {
+                IScenarioManager scenarioManager = Registry.getScenarioManager();
+                return scenarioManager.getCurrent();
+            }
+
+            private void addDependencies(
+                    GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph,
+                    Order order) {
+                for (Dependency each : getAllDependencies(order)) {
+                    graph.addWithoutEnforcingConstraints(DependencyWithVisibility
+                            .existent(each));
+                }
+            }
+
+            private Set<Dependency> getAllDependencies(Order order) {
+                Set<Dependency> dependencies = new HashSet<Dependency>();
+                for (TaskElement each : getTaskElementsFrom(order)) {
+                    Set<Dependency> dependenciesWithThisOrigin = each
+                            .getDependenciesWithThisOrigin();
+                    dependencies.addAll(dependenciesWithThisOrigin);
+                }
+                return dependencies;
+            }
+
+            private List<TaskElement> getTaskElementsFrom(Order order) {
+                List<TaskElement> result = new ArrayList<TaskElement>();
+                for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
+                    result.add(each.getTask());
+                }
+                return result;
+            }
+
+            private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
+                    Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
+                List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
+                        .getStartConstraintsGiven(GanttDate.createFrom(order
+                                .getInitDate()));
+                List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
+                GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
+                        .create(adapter, startConstraints, endConstraints,
+                                order.getDependenciesConstraintsHavePriority());
+                return result;
+            }
+
         });
-    }
-
-    private void initializeOrder(Order order) {
-        IOrderDAO orderDAO = Registry.getOrderDAO();
-        orderDAO.reattach(order);
-        useSchedulingDataFor(order);
-    }
-
-    private void useSchedulingDataFor(Order order) {
-        IScenarioManager scenarioManager = Registry.getScenarioManager();
-        order.useSchedulingDataFor(scenarioManager.getCurrent());
     }
 
     private ITab createGlobalMonteCarloTab() {
