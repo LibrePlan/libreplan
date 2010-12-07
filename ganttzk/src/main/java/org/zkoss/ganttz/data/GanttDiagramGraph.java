@@ -1146,6 +1146,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             protected PositionRestrictions applyConstraintTo(
                     PositionRestrictions restrictions) {
+                if (adapter.isFixed(task)) {
+                    return restrictions;
+                }
                 result = enforceUsingPreviousRestrictions(restrictions);
                 return result;
             }
@@ -1215,9 +1218,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             private PositionRestrictions enforceStartDate(
                     PositionRestrictions originalRestrictions) {
-                if (adapter.isFixed(task)) {
-                    return originalRestrictions;
-                }
                 GanttDate newStart = calculateStartDate(originalRestrictions);
                 return enforceRestrictionsForStartIfNeeded(newStart);
             }
@@ -1272,9 +1272,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             private PositionRestrictions enforceEndDate(
                     PositionRestrictions restrictions) {
-                if (adapter.isFixed(task)) {
-                    return restrictions;
-                }
                 GanttDate newEnd = Constraint
                         .<GanttDate> initialValue(null)
                         .withConstraints(restrictions.getEndConstraints())
