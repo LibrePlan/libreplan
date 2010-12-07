@@ -96,6 +96,12 @@ public class Order extends OrderLineGroup {
 
     private CurrentVersionInfo currentVersionInfo;
 
+    public enum SchedulingMode {
+        FORWARD, BACKWARDS;
+    }
+
+    private SchedulingMode schedulingMode = SchedulingMode.FORWARD;
+
     public static class CurrentVersionInfo {
 
         private final OrderVersion orderVersion;
@@ -248,6 +254,20 @@ public class Order extends OrderLineGroup {
 
     public void setResponsible(String responsible) {
         this.responsible = responsible;
+    }
+
+    @NotNull
+    public SchedulingMode getSchedulingMode() {
+        return schedulingMode;
+    }
+
+    public boolean isScheduleBackwards() {
+        return getSchedulingMode() == SchedulingMode.BACKWARDS;
+    }
+
+    public void setSchedulingMode(SchedulingMode schedulingMode) {
+        Validate.notNull(schedulingMode);
+        this.schedulingMode = schedulingMode;
     }
 
     public boolean isDeadlineBeforeStart() {

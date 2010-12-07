@@ -15,7 +15,6 @@
         </component>
         <property name="initDate" access="field" column="init_date" />
         <property name="deadline" access="field" />
-
         <property name="lastAdvanceMeausurementForSpreading" access="field"
             column="last_advance_meausurement_for_spreading" />
         <property name="dirtyLastAdvanceMeasurementForSpreading" access="field"
@@ -119,6 +118,12 @@
                 <property name="state" access="field" >
                     <type name="org.hibernate.type.EnumType">
                         <param name="enumClass">org.navalplanner.business.orders.entities.OrderStatusEnum</param>
+                    </type>
+                </property>
+
+                <property name="schedulingMode" access="field" column="scheduling_mode">
+                    <type name="org.hibernate.type.EnumType">
+                        <param name="enumClass">org.navalplanner.business.orders.entities.Order$SchedulingMode</param>
                     </type>
                 </property>
 

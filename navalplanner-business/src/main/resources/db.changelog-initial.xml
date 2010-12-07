@@ -13,6 +13,7 @@
 
     </changeSet>
 
+
     <changeSet id="add-company-logo-url-configuration-setting" author="ltilve">
         <comment>Add new column with configuration setting</comment>
         <addColumn tableName="configuration">
@@ -20,6 +21,15 @@
         </addColumn>
 	<addDefaultValue tableName="configuration" columnName="company_logo_url"
         	defaultValue="" />
+    </changeSet>
+
+    <changeSet id="add scheduling mode" author="ogonzalez">
+        <comment>column for org.navalplanner.business.orders.entities.Order.schedulingMode</comment>
+        <addColumn tableName="order_table">
+            <column name="scheduling_mode" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="order_table" columnName="scheduling_mode"
+            defaultValue="0" />
     </changeSet>
 
 </databaseChangeLog>
