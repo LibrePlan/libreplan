@@ -223,6 +223,8 @@ public abstract class PlanningState {
         return new EmptyPlannigState(currentScenario);
     }
 
+    public abstract boolean isEmpty();
+
     public abstract Collection<? extends TaskElement> getTasksToSave();
 
     public abstract List<TaskElement> getInitial();
@@ -402,6 +404,11 @@ public abstract class PlanningState {
             return planner;
         }
 
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
     }
 
     private static class EmptyPlannigState extends PlanningState {
@@ -451,6 +458,11 @@ public abstract class PlanningState {
         @Override
         public Planner getPlanner() {
             return null;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
         }
 
     }

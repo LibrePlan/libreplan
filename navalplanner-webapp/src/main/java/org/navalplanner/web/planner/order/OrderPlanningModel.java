@@ -1554,6 +1554,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
+                    if (planningState.isEmpty()) {
+                        return;
+                    }
                     transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                         @Override
@@ -1568,6 +1571,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         public void refresh() {
+            if (planningState.isEmpty()) {
+                return;
+            }
             TaskGroup rootTask = planningState.getRootTask();
 
             setAdvancePercentage(rootTask.getAdvancePercentage());
@@ -1584,11 +1590,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            if (rootTask != null && planningState.getPlanner() != null) {
-                taskElementDAO.save(rootTask);
-                List<Task> criticalPath = planningState.getPlanner().getCriticalPath();
-                rootTask.updateCriticalPathProgress(criticalPath);
-            }
+            taskElementDAO.save(rootTask);
+            List<Task> criticalPath = planningState.getPlanner()
+                    .getCriticalPath();
+            rootTask.updateCriticalPathProgress(criticalPath);
         }
 
         private void setAdvancePercentage(BigDecimal value) {
