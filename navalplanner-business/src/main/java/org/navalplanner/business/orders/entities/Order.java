@@ -311,14 +311,22 @@ public class Order extends OrderLineGroup {
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "the order must have a init date")
-    private boolean checkConstraintOrderMustHaveStartDate() {
-        return getInitDate() != null;
+    private boolean ifSchedulingModeIsForwardOrderMustHaveStartDate() {
+        return getSchedulingMode() != SchedulingMode.FORWARD
+                || getInitDate() != null;
+    }
+
+    @SuppressWarnings("unused")
+    @AssertTrue(message = "the order must have a deadline")
+    private boolean ifSchedulingModeIsBackwardsOrderMustHaveDeadline() {
+        return getSchedulingMode() != SchedulingMode.BACKWARDS
+                || getDeadline() != null;
     }
 
     @SuppressWarnings("unused")
     @AssertTrue(message = "deadline must be after start date")
     private boolean checkConstraintDeadlineMustBeAfterStart() {
-        return !this.isDeadlineBeforeStart();
+        return getInitDate() == null || !this.isDeadlineBeforeStart();
     }
 
     @SuppressWarnings("unused")
