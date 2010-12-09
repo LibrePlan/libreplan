@@ -313,6 +313,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             for (Comboitem each : items) {
                 if (each.getValue().equals(currentMode)) {
                     schedulingMode.setSelectedItem(each);
+                    setConstraintsFor(currentMode);
                     return;
                 }
             }
@@ -327,8 +328,11 @@ public class OrderCRUDController extends GenericForwardComposer {
                                     .getSelectedItem().getValue();
                             if (chosen != null) {
                                 getOrder().setSchedulingMode(chosen);
+                                setConstraintsFor(chosen);
+                                changeFocusAccordingTo(chosen);
                             }
                         }
+
                     });
         }
 
@@ -339,6 +343,18 @@ public class OrderCRUDController extends GenericForwardComposer {
             result.setLabel(label);
             result.setDescription(description);
             return result;
+        }
+
+        private void setConstraintsFor(SchedulingMode mode) {
+            initDate.setConstraint(mode == SchedulingMode.FORWARD ? "no empty"
+                    : null);
+            deadline.setConstraint(mode == SchedulingMode.BACKWARDS ? "no empty"
+                    : null);
+        }
+
+        private void changeFocusAccordingTo(SchedulingMode chosen) {
+            initDate.setFocus(SchedulingMode.FORWARD == chosen);
+            deadline.setFocus(SchedulingMode.BACKWARDS == chosen);
         }
     }
 
