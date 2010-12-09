@@ -256,12 +256,6 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void addEditWindowIfNecessary() {
-        if (editWindow == null) {
-            addEditWindow();
-        }
-    }
-
-    private void addEditWindow() {
         if (editWindow != null) {
             return;
         }
@@ -855,7 +849,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void prepareEditWindow() {
-        addEditWindow();
+        addEditWindowIfNecessary();
         updateDisabilitiesOnInterface();
         initializeCustomerComponent();
         selectDefaultTab();
