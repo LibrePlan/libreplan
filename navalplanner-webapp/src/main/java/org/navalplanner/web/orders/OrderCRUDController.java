@@ -40,6 +40,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.templates.entities.OrderTemplate;
@@ -184,6 +185,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
+    private OrderDatesHandler orderDatesHandler;
+
     private Window editOrderElementWindow;
 
     private Window listWindow;
@@ -268,11 +271,75 @@ public class OrderCRUDController extends GenericForwardComposer {
         Component parent = listWindow.getParent();
         editWindow = (Window) Executions.createComponents(
                 "/orders/_edition.zul", parent, editWindowArgs);
+        orderDatesHandler = new OrderDatesHandler(editWindow);
 
         bindListOrderStatusSelectToOnStatusChange();
 
         Util.createBindingsFor(editWindow);
         Util.reloadBindings(editWindow);
+    }
+
+    private class OrderDatesHandler {
+
+        private final Combobox schedulingMode;
+
+        private final Datebox initDate;
+
+        private final Datebox deadline;
+
+        public OrderDatesHandler(Window editWindow) {
+            schedulingMode = Util.findComponentAt(editWindow, "schedulingMode");
+            initDate = Util.findComponentAt(editWindow, "initDate");
+            deadline = Util.findComponentAt(editWindow, "deadline");
+            initializeSchedulingModeCombobox();
+        }
+
+        private void initializeSchedulingModeCombobox() {
+            fillSchedulingModes();
+            listenToChangeOfMode();
+        }
+
+        private void fillSchedulingModes() {
+            schedulingMode.appendChild(createCombo(SchedulingMode.FORWARD,
+                    _("Forward"), _("Schedule from start to deadline")));
+            schedulingMode.appendChild(createCombo(SchedulingMode.BACKWARDS,
+                    _("Backwards"), _("Schedule from the deadline to start")));
+        }
+
+        void chooseCurrentSchedulingMode() {
+            @SuppressWarnings("unchecked")
+            List<Comboitem> items = schedulingMode.getItems();
+            SchedulingMode currentMode = getOrder().getSchedulingMode();
+            for (Comboitem each : items) {
+                if (each.getValue().equals(currentMode)) {
+                    schedulingMode.setSelectedItem(each);
+                    return;
+                }
+            }
+        }
+
+        private void listenToChangeOfMode() {
+            schedulingMode.addEventListener(Events.ON_SELECT,
+                    new EventListener() {
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            SchedulingMode chosen = (SchedulingMode) schedulingMode
+                                    .getSelectedItem().getValue();
+                            if (chosen != null) {
+                                getOrder().setSchedulingMode(chosen);
+                            }
+                        }
+                    });
+        }
+
+        private Comboitem createCombo(Object value, String label,
+                String description) {
+            Comboitem result = new Comboitem();
+            result.setValue(value);
+            result.setLabel(label);
+            result.setDescription(description);
+            return result;
+        }
     }
 
     private void bindListOrderStatusSelectToOnStatusChange() {
@@ -853,6 +920,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         updateDisabilitiesOnInterface();
         initializeCustomerComponent();
         selectDefaultTab();
+        orderDatesHandler.chooseCurrentSchedulingMode();
     }
 
     private void showEditWindow(String title) {

@@ -555,4 +555,10 @@ public class Util {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Component> T findComponentAt(Component container,
+            String idOfComponentToBeFound) {
+        return (T) container.getFellow(idOfComponentToBeFound);
+    }
+
 }

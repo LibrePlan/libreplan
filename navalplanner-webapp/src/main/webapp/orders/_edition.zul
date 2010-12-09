@@ -83,13 +83,17 @@
                                 width="250px" disabled="true"/>
                         </row>
                         <row>
+                            <label value="${i18n:_('Scheduling mode')}" />
+                            <combobox id="schedulingMode" />
+                        </row>
+                        <row>
                             <label value="${i18n:_('Starting date')}" />
-                            <datebox
+                            <datebox id="initDate"
                                 value="@{controller.order.initDate}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Deadline')}" />
-                            <datebox
+                            <datebox id="deadline"
                                 value="@{controller.order.deadline}" />
                         </row>
                         <row>
