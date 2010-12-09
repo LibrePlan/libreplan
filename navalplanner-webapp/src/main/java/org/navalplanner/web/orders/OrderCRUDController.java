@@ -175,7 +175,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showOrderElementFilter();
         showCreateButtons(false);
         orderModel.prepareCreationFrom(template);
-        addEditWindowIfNecessary();
+        prepareEditWindow();
         showEditWindow(_("Create order from Template"));
     }
 
