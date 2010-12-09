@@ -80,7 +80,7 @@
                 <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>true</hibernate.format_sql>
                 <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
-                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
             </properties>
         </profile>
 
@@ -94,7 +94,7 @@
                 <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>false</hibernate.format_sql>
                 <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
-                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
             </properties>
         </profile>
 

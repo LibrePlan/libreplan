@@ -105,7 +105,7 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <map name="effortPerDay">
+        <map name="effortPerDay" table="effort_per_day">
             <key column="base_calendar_id"/>
             <index column="day_id" type="integer" />
             <element column="effort"
