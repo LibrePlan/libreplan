@@ -133,10 +133,10 @@ public class OrderElementServiceTest {
         transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
             @Override
             public Void execute() {
+                configurationBootstrap.loadRequiredData();
                 materialCategoryBootstrap.loadRequiredData();
                 criterionsBootstrap.loadRequiredData();
                 unitTypeBootstrap.loadRequiredData();
-                configurationBootstrap.loadRequiredData();
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 scenariosBootstrap.loadRequiredData();
                 return null;
@@ -181,7 +181,7 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    public void invalidOrderWithoutAttributes() {
+    public void invalidOrderWithoutCode() {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
@@ -196,10 +196,34 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: code, infoComponent.code, infoComponent.name. Check
+
+        assertThat(constraintViolations.size(), equalTo(1));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void invalidOrderWithoutAttributes() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 1);
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: infoComponent.code, infoComponent.name. Check
         // constraints:
         // checkConstraintOrderMustHaveStartDate
-        assertThat(constraintViolations.size(), equalTo(4));
+
+        assertThat(constraintViolations.size(), equalTo(2));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
@@ -228,10 +252,11 @@ public class OrderElementServiceTest {
     }
 
     @Test
-    public void invalidOrderWithoutCodeAndInitDate() {
+    public void invalidOrderWithoutInitDate() {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.name = "Order name " + UUID.randomUUID().toString();
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -243,16 +268,17 @@ public class OrderElementServiceTest {
                 .get(0).constraintViolations;
         // Mandatory fields: code, infoComponentCode. Check constraints:
         // checkConstraintOrderMustHaveStartDate
-        assertThat(constraintViolations.size(), equalTo(3));
+        assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
 
     @Test
-    public void invalidOrderWithoutCodeAndName() {
+    public void invalidOrderWithoutName() {
         int previous = orderDAO.getOrders().size();
 
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -263,7 +289,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
         // Mandatory fields: code,infoComponent.code, infoComponent.name
-        assertThat(constraintViolations.size(), equalTo(3));
+        assertThat(constraintViolations.size(), equalTo(1));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
             assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("code"),
                     mustEnd("name")));
@@ -300,6 +326,32 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineDTO orderLineDTO = new OrderLineDTO();
+        orderLineDTO.code = "order-line-code " + UUID.randomUUID().toString();
+        orderDTO.children.add(orderLineDTO);
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: infoComponent.code, infoComponent.name.
+        assertThat(constraintViolations.size(), equalTo(1));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void orderWithOrderLineWithoutCode() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+
+        OrderLineDTO orderLineDTO = new OrderLineDTO();
         orderDTO.children.add(orderLineDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -310,7 +362,7 @@ public class OrderElementServiceTest {
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
         // Mandatory fields: code,infoComponent.code, infoComponent.name.
-        assertThat(constraintViolations.size(), equalTo(3));
+        assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
@@ -391,6 +443,34 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
+        orderLineGroupDTO.code = "order-code " + UUID.randomUUID().toString();
+        orderDTO.children.add(orderLineGroupDTO);
+
+        OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = orderElementService
+                .addOrders(orderListDTO).instanceConstraintViolationsList;
+        assertThat(instanceConstraintViolationsList.size(), equalTo(1));
+
+        List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
+                .get(0).constraintViolations;
+        // Mandatory fields: infoComponent.code, infoComponenet.name. Check
+        // constraints:
+        // checkConstraintAtLeastOneHoursGroupForEachOrderElement
+        assertThat(constraintViolations.size(), equalTo(2));
+
+        assertThat(orderDAO.getOrders().size(), equalTo(previous));
+    }
+
+    @Test
+    public void orderWithOrderLineGroupWithoutCode() {
+        int previous = orderDAO.getOrders().size();
+
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.name = "Order name " + UUID.randomUUID().toString();
+        orderDTO.code = "order-code " + UUID.randomUUID().toString();
+        orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
+
+        OrderLineGroupDTO orderLineGroupDTO = new OrderLineGroupDTO();
         orderDTO.children.add(orderLineGroupDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -403,7 +483,7 @@ public class OrderElementServiceTest {
         // Mandatory fields: code,infoComponent.code, infoComponenet.name. Check
         // constraints:
         // checkConstraintAtLeastOneHoursGroupForEachOrderElement
-        assertThat(constraintViolations.size(), equalTo(4));
+        assertThat(constraintViolations.size(), equalTo(1));
 
         assertThat(orderDAO.getOrders().size(), equalTo(previous));
     }
