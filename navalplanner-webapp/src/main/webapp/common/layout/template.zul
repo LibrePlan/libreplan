@@ -28,17 +28,18 @@
 
 
 <zk>
-<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
-
-<borderlayout height="100%" width="100%" >
-<north border="none">
-<n:div>
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
     templateCtrl = templateController;
 ]]>
 </zscript>
+
+<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
+
+<borderlayout height="100%" width="100%" >
+<north border="none">
+<n:div>
 
 <scripts />
 
