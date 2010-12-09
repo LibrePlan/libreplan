@@ -30,6 +30,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
@@ -144,7 +145,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         List<OrderCostsPerResourceDTO> filteredList = new ArrayList<OrderCostsPerResourceDTO>();
         for (OrderCostsPerResourceDTO each : list) {
 
-            Order order = each.getOrderElement().getOrder();
+            OrderElement order = Registry.getOrderElementDAO()
+                    .loadOrderAvoidingProxyFor(each
+                    .getOrderElement());
 
             // Apply filtering
             if (matchFilterCriterion(each.getOrderElement(), criterions)
