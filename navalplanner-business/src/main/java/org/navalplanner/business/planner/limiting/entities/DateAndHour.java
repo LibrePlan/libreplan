@@ -49,6 +49,12 @@ public class DateAndHour implements Comparable<DateAndHour> {
         this.hour = hour;
     }
 
+    public DateAndHour(DateAndHour dateAndHour) {
+        Validate.notNull(dateAndHour.getDate());
+        this.date = dateAndHour.getDate();
+        this.hour = dateAndHour.getHour();
+    }
+
     public LocalDate getDate() {
         return date;
     }
@@ -145,6 +151,10 @@ public class DateAndHour implements Comparable<DateAndHour> {
                 };
             }
         };
+    }
+
+    public void plusYears(int years) {
+        date = date.plusYears(years);
     }
 
 }

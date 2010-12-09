@@ -150,13 +150,22 @@ public class Gap implements Comparable<Gap> {
     public List<Integer> getHoursInGapUntilAllocatingAndGoingToTheEnd(
             BaseCalendar calendar,
             DateAndHour realStart, DateAndHour allocationEnd, int total) {
-        Validate.isTrue(getEndTime() == null || allocationEnd.compareTo(getEndTime()) <= 0);
+
+        Validate.isTrue(endTime == null || allocationEnd.compareTo(endTime) <= 0);
         Validate.isTrue(startTime == null
                 || realStart.compareTo(startTime) >= 0);
         Validate.isTrue(total >= 0);
         List<Integer> result = new ArrayList<Integer>();
+
+        // If endTime is null (last tasks) assume the end is in 10 years from now
+        DateAndHour endDate = getEndTime();
+        if (endDate == null) {
+            endDate = new DateAndHour(realStart);
+            endDate.plusYears(10);
+        }
+
         Iterator<PartialDay> daysUntilEnd = realStart.toIntraDayDate()
-                .daysUntil(getEndTime().toIntraDayDate()).iterator();
+                .daysUntil(endDate.toIntraDayDate()).iterator();
         while (daysUntilEnd.hasNext()) {
             PartialDay each = daysUntilEnd.next();
             int hoursAtDay = calendar.getCapacityOn(each).roundToHours();
