@@ -116,7 +116,8 @@
                         <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" column="constraint_date" />
+                <property name="constraintDate" column="constraint_date"
+                    type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             </component>
         </joined-subclass>
 

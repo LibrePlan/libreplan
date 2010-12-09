@@ -13,4 +13,22 @@
 
     </changeSet>
 
+    <changeSet id="the type of task_milestone constraintDate was wrong" author="ogonzalez">
+        <comment>
+        The type of constraint_date was wrong,it was causing the LocalDate to be
+        serialized instead of being used as a date.
+        Because the type date is not compatible, the column must be dropped and
+        added again with the correct type. In order to not leave the database in
+        an inconsistent state, the start_constraint_type is updated to zero
+        which maps to AS_SOON_AS_POSSIBLE.
+        </comment>
+        <dropColumn tableName="task_milestone" columnName="constraint_date"/>
+        <addColumn tableName="task_milestone">
+            <column name="constraint_date" type="date"></column>
+        </addColumn>
+        <update tableName="task_milestone">
+            <column name="start_constraint_type" value="0"/>
+        </update>
+    </changeSet>
+
 </databaseChangeLog>
