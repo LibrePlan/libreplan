@@ -126,7 +126,7 @@ public abstract class Resource extends IntegrationEntity {
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
 
-    private Boolean limitingResource = Boolean.FALSE;
+    private ResourceType resourceType = ResourceType.NON_LIMITING_RESOURCE;
 
     private LimitingResourceQueue limitingResourceQueue;
 
@@ -1143,11 +1143,15 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public Boolean isLimitingResource() {
-        return limitingResource;
+        return (resourceType == ResourceType.LIMITING_RESOURCE);
     }
 
-    public void setLimitingResource(Boolean limitingResource) {
-        this.limitingResource = limitingResource;
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
     public String getLimitingResourceAsString() {
