@@ -411,6 +411,16 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isMonteCarloMethodTabVisible();
     }
 
+    public void setEnableCriticalChainSupport(
+            Boolean enableCriticalChainSupport) {
+        configurationModel
+                .setEnableCriticalChainSupport(enableCriticalChainSupport);
+    }
+
+    public Boolean getEnableCriticalChainSupport() {
+        return configurationModel.getEnableCriticalChainSupport();
+    }
+
     public class EntitySequenceGroupRenderer implements RowRenderer {
         @Override
         public void render(Row row, Object data) throws Exception {

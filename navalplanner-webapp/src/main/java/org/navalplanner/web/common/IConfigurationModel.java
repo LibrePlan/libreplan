@@ -133,6 +133,10 @@ public interface IConfigurationModel {
 
     ProgressType getProgressType();
 
+    void setEnableCriticalChainSupport(Boolean enableCriticalChainSupport);
+
+    Boolean getEnableCriticalChainSupport();
+
     String getCompanyLogoURL();
 
     void setCompanyLogoURL(String companyLogoURL);

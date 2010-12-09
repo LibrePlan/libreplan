@@ -47,6 +47,8 @@
             column="expand_resource_load_view_charts" />
         <property name="monteCarloMethodTabVisible" not-null="true"
             column="monte_carlo_method_tab_visible" />
+        <property name="enableCriticalChainSupport" not-null="true"
+            column="enable_critical_chain_support" />
 
         <property name="progressType" column="progress_type">
             <type name="org.hibernate.type.EnumType">

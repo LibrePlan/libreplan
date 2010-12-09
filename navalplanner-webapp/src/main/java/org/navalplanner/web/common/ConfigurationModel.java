@@ -497,6 +497,22 @@ public class ConfigurationModel implements IConfigurationModel {
         return configuration.isExpandResourceLoadViewCharts();
     }
 
+    @Override
+    public void setEnableCriticalChainSupport(Boolean enableCriticalChainSupport) {
+        if (configuration != null) {
+            configuration
+                    .setEnableCriticalChainSupport(enableCriticalChainSupport);
+        }
+    }
+
+    @Override
+    public Boolean getEnableCriticalChainSupport() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getEnableCriticalChainSupport();
+    }
+
     public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
         return entitySequences.get(entityName);
     }

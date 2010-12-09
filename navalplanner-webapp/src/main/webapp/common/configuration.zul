@@ -169,7 +169,7 @@
 
                             <!-- Perspectives -->
                             <row>
-                                <label value="${i18n:_('Perspectives')}" />
+                                <label value="${i18n:_('Modules')}" />
                                 <grid>
                                     <columns>
                                         <column width="50%" />
@@ -180,6 +180,8 @@
                                             <checkbox
                                                 label="${i18n:_('MonteCarlo method')}"
                                                 checked="@{configurationController.monteCarloMethodTabVisible}" />
+                                            <checkbox label="${i18n:_('Critical chain support')}"
+                                                checked="@{configurationController.enableCriticalChainSupport}" />
                                         </row>
                                     </rows>
                                 </grid>

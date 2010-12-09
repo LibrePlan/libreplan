@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-new-column-enable_critical_chain_support" author="jaragunde">
+        <comment>Add new column enable_critical_chain_support with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="enable_critical_chain_support" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="enable_critical_chain_support"
+            defaultValue="FALSE" />
+    </changeSet>
+
+</databaseChangeLog>

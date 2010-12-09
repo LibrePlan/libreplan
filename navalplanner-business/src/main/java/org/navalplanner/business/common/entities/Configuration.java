@@ -71,6 +71,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForCostCategory = true;
 
+    private Boolean enableCriticalChainSupport = false;
+
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
     private String companyLogoURL;
@@ -232,6 +234,14 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForCostCategory() {
         return generateCodeForCostCategory;
+    }
+
+    public Boolean getEnableCriticalChainSupport() {
+        return enableCriticalChainSupport;
+    }
+
+    public void setEnableCriticalChainSupport(Boolean enableCriticalChainSupport) {
+        this.enableCriticalChainSupport = enableCriticalChainSupport;
     }
 
     public void setProgressType(ProgressType progressType) {
