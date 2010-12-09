@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ConcurrentModificationException;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,9 +32,9 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -118,7 +117,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Datebox filterFinishDate;
 
-    private Listbox filterLimitingResource;
+    private Listbox filterResourceType;
 
     private BandboxMultipleSearch bdFilters;
 
@@ -296,7 +295,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         handler.registerListener(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
-        setupFilterLimitingResourceListbox();
+        setupFilterResourceTypeListbox();
     }
 
     private void initFilterComponent() {
@@ -304,8 +303,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitingResource = (Listbox) listWindow
-            .getFellowIfAny("filterLimitingResource");
+        this.filterResourceType = (Listbox) listWindow
+            .getFellowIfAny("filterResourceType");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -620,18 +619,21 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             finishDate = LocalDate.fromDateFields(filterFinishDate.getValue());
         }
 
-        final Listitem item = filterLimitingResource.getSelectedItem();
-        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
-                .valueOf((LimitingResourceEnum) item.getValue()) : null;
-
+        final Listitem item = filterResourceType.getSelectedItem();
+        ResourceType resourceType = null;
+        if (item != null) {
+            if (!(item.getValue() == ALL_TYPES_OF_RESOURCE)) {
+                resourceType = (ResourceType) item.getValue();
+            }
+        }
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
                 && startDate == null && finishDate == null
-                && isLimitingResource == null) {
+                && resourceType == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate, isLimitingResource);
+                finishDate, resourceType);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -652,83 +654,39 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         listing.invalidate();
     }
 
-    public enum LimitingResourceEnum {
-        ALL(_("ALL")),
-        LIMITING_RESOURCE(_("LIMITING RESOURCE")),
-        NON_LIMITING_RESOURCE(_("NON LIMITING RESOURCE"));
+    private final String ALL_TYPES_OF_RESOURCE = _("ALL");
 
-        /**
-         * Forces to mark the string as needing translation
-         */
-        private static String _(String string) {
-            return string;
+    private void setupFilterResourceTypeListbox() {
+        Listitem item = new Listitem();
+        item.setParent(filterResourceType);
+        item.setValue(ALL_TYPES_OF_RESOURCE);
+        item.appendChild(new Listcell(ALL_TYPES_OF_RESOURCE));
+        filterResourceType.appendChild(item);
+        for(ResourceType resourceType :
+            ResourceType.getResourceTypeList()) {
+            item = new Listitem();
+            item.setParent(filterResourceType);
+            item.setValue(resourceType);
+            item.appendChild(new Listcell(resourceType.toString()));
+            filterResourceType.appendChild(item);
         }
-
-        private String option;
-
-        private LimitingResourceEnum(String option) {
-            this.option = option;
-        }
-
-        public String toString() {
-            return I18nHelper._(option);
-        }
-
-        public static LimitingResourceEnum valueOf(Boolean isLimitingResource) {
-            return (Boolean.TRUE.equals(isLimitingResource)) ? LIMITING_RESOURCE : NON_LIMITING_RESOURCE;
-        }
-
-        public static Boolean valueOf(LimitingResourceEnum option) {
-            if (LIMITING_RESOURCE.equals(option)) {
-                return true;
-            } else if (NON_LIMITING_RESOURCE.equals(option)) {
-                return false;
-            } else {
-                return null;
-            }
-        }
-
-        public static Set<LimitingResourceEnum> getLimitingResourceOptionList() {
-            return EnumSet.of(
-                    LimitingResourceEnum.LIMITING_RESOURCE,
-                    LimitingResourceEnum.NON_LIMITING_RESOURCE);
-        }
-
-        public static Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
-            return EnumSet.of(LimitingResourceEnum.ALL,
-                    LimitingResourceEnum.LIMITING_RESOURCE,
-                    LimitingResourceEnum.NON_LIMITING_RESOURCE);
-        }
-
+        filterResourceType.setSelectedIndex(0);
     }
 
-    private void setupFilterLimitingResourceListbox() {
-        for(LimitingResourceEnum resourceEnum :
-            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
-            Listitem item = new Listitem();
-            item.setParent(filterLimitingResource);
-            item.setValue(resourceEnum);
-            item.appendChild(new Listcell(resourceEnum.toString()));
-            filterLimitingResource.appendChild(item);
-        }
-        filterLimitingResource.setSelectedIndex(0);
+    public Set<ResourceType> getResourceTypeOptionList() {
+        return ResourceType.getResourceTypeList();
     }
 
-    public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
-        return LimitingResourceEnum.getLimitingResourceOptionList();
-    }
-
-    public Object getLimitingResource() {
+    public Object getResourceType() {
         final Worker worker = getWorker();
-        return (worker != null) ? LimitingResourceEnum.valueOf(worker
-                .isLimitingResource())
-                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
+        return (worker != null) ? worker.getResourceType()
+                : ResourceType.NON_LIMITING_RESOURCE;         // Default option
     }
 
-    public void setLimitingResource(LimitingResourceEnum option) {
+    public void setResourceType(ResourceType option) {
         Worker worker = getWorker();
         if (worker != null) {
-            worker.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            worker.setResourceType(option);
         }
     }
 

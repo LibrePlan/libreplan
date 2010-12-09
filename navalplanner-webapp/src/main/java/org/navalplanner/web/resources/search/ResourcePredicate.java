@@ -32,6 +32,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceFilterEnum;
@@ -52,16 +53,16 @@ public class ResourcePredicate implements IPredicate {
 
     private String[] personalFilters;
 
-    private Boolean isLimitingResource;
+    private ResourceType resourceType;
 
     public ResourcePredicate(List<FilterPair> filters, String personalFilters,
             LocalDate startDate,
             LocalDate finishDate,
-            Boolean isLimitingResource) {
+            ResourceType resourceType) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
-        this.isLimitingResource = isLimitingResource;
+        this.resourceType = resourceType;
         this.personalFilters = personalFilters.split(" ");
     }
 
@@ -76,14 +77,14 @@ public class ResourcePredicate implements IPredicate {
             return false;
         }
         if (acceptFilters(resource) && acceptPersonalFilters(resource)
-                && acceptFiltersDates(resource) && acceptFilterIsLimitingResource(resource)) {
+                && acceptFiltersDates(resource) && acceptFilterResourceType(resource)) {
             return true;
         }
         return false;
     }
 
-    private boolean acceptFilterIsLimitingResource(Resource resource) {
-        return (isLimitingResource != null) ? isLimitingResource.equals(resource.isLimitingResource()) : true;
+    private boolean acceptFilterResourceType(Resource resource) {
+        return (resourceType != null) ? resourceType.equals(resource.getResourceType()) : true;
     }
 
     private boolean acceptFilters(Resource resource) {
