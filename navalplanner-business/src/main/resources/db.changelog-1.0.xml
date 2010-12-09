@@ -63,4 +63,22 @@
         where day_id IN (5, 6) AND allowed_extra_effort IS NULL
         </sql>
     </changeSet>
+
+    <changeSet id="replace-column-limited_resource-with-resource_type" author="jaragunde">
+        <comment>Replace column limited_resource with resource_type in resource table</comment>
+        <addColumn tableName="resource">
+            <column name="resource_type" type="VARCHAR(64)"/>
+        </addColumn>
+        <update tableName="resource">
+            <column name="resource_type" value="NON_LIMITING_RESOURCE"/>
+            <where>limited_resource = false</where>
+        </update>
+        <update tableName="resource">
+            <column name="resource_type" value="LIMITING_RESOURCE"/>
+            <where>limited_resource = true</where>
+        </update>
+        <addNotNullConstraint tableName="resource" columnName="resource_type" />
+        <dropColumn tableName="resource" columnName="limited_resource"/>
+    </changeSet>
+
 </databaseChangeLog>
