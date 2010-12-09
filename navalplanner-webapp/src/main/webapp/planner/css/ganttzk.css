@@ -230,7 +230,7 @@
 
 .end,.start,.mid,.arrow {
     position: absolute;
-    padding: 4px;
+    /* padding: 4px; */
     cursor: crosshair;
     z-index:0;
 }
@@ -238,10 +238,18 @@
 #ganttpanel .end,
 #ganttpanel .start {
      height: 1px;
+     padding: 4px 0 2px 1px;
+     margin-left: 4px;
+     background-position: 0px 2px;
 }
 
 #ganttpanel .mid {
     width: 1px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-right: 4px;
+    padding-left: 0px;
+    background-position: 4px 0;
 }
 
 
@@ -261,6 +269,11 @@
 }
 #listlimitingdependencies .mid {
     height: 1px;
+}
+
+#listlimitingdependencies .arrow {
+    background-image: none;
+    padding:0px;
 }
 
 div.box.limiting-assigned {
@@ -1143,7 +1156,7 @@ height: 100%
     float:left;
     width:10px;
     height:22px;
-    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
 }
 
 
@@ -1256,4 +1269,61 @@ body .perspectives-column {
 
 div.z-grid-header .second_level_ tr {
     overflow: visible;
+}
+
+
+.start, .end {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-hor.png");
+        background-repeat:repeat-x;
+}
+
+.mid {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-ver.png");
+        background-repeat:repeat-y;
+}
+
+.arrow {
+    height: 10px;
+    width: 10px;
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-arrows.png");
+    background-repeat: no-repeat;
+    padding: 3px 4px 4px 4px;
+}
+
+
+.violated-dependency .start, .violated-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
+}
+.violated-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
+}
+.violated-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/dashed-red-arrows.png");
+}
+
+.resources-dependency .start, .resources-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-hor.png");
+}
+.resources-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-ver.png");
+}
+.resources-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-arrows.png");
+}
+
+
+.point-east {
+    background-position: 0 2px;
+}
+.point-south {
+    background-position: -18px 0;
+}
+.point-west {
+    background-position: -35px 2px;
+}
+.point-north {
+    background-position: -48px 0;
 }

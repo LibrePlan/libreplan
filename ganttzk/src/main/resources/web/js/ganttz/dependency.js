@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2011 Igalia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,7 +45,7 @@ zkPlanner.init = function(planner){
 }
 
 zkPlanner.findImageElement = function(arrow, name) {
-    var children = arrow.getElementsByTagName("img");
+    var children = arrow.getElementsByTagName("div");
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (child.getAttribute("class").indexOf(name) != -1) {
@@ -78,8 +79,8 @@ zkPlanner.setupArrow = function(arrowDiv){
     var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
             [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
     for ( var i = 0; i < image_data.length; i++) {
-        var img = document.createElement('img');
-        img.setAttribute("class", image_data[i][0]+" extra_padding");
+        var img = document.createElement('div');
+        img.setAttribute("class", image_data[i][0] );
         img.src = this.getImagesDir() + image_data[i][1];
         arrowDiv.appendChild(img);
     }
@@ -142,7 +143,8 @@ zkPlanner.drawArrowStartStart = function(arrow, orig, dest){
 	depend.style.width = width2 - zkTask.HALF_HEIGHT + "px";
 
     var deparrow = this.findImageElement(arrow, 'arrow');
-    deparrow.src = this.getImagesDir()+"arrow.png";
+//    deparrow.src = this.getImagesDir()+"arrow.png";
+    deparrow.setAttribute("class", "arrow point-east");
     deparrow.style.top = yend - zkTask.HALF_HEIGHT + "px";
     deparrow.style.left = xend - 15 + "px";
     }
@@ -192,7 +194,8 @@ zkPlanner.drawArrowEndEnd = function(arrow, orig, dest){
 	depend.style.width = width2 + "px";
 
     var deparrow = this.findImageElement(arrow, 'arrow');
-    deparrow.src = this.getImagesDir()+"arrow3.png";
+//    deparrow.src = this.getImagesDir()+"arrow3.png";
+    deparrow.setAttribute("class",  "arrow point-west");
     deparrow.style.top = yend - 5 + "px";
     deparrow.style.left = xend - 8 + "px";
     }
@@ -233,20 +236,19 @@ zkPlanner.drawArrowEndStart = function(arrow, orig, dest){
     }
     var deparrow = this.findImageElement(arrow, 'arrow');
     if ( width == 0 ) {
-        deparrow.src = this.getImagesDir()+"arrow2.png";
+        deparrow.setAttribute("class", "arrow point-south");
         deparrow.style.top = yend - 10 + "px";
         deparrow.style.left = xend - 5 + "px";
         if ( yorig > yend ) {
-            deparrow.src = this.getImagesDir()+"arrow4.png";
+            deparrow.setAttribute("class", "arrow point-north");
             deparrow.style.top = yend + "px";
         }
     } else {
         deparrow.style.top = yend - 5 + "px";
         deparrow.style.left = xend - 10 + "px";
-        deparrow.src = this.getImagesDir()+"arrow.png";
-
+        deparrow.setAttribute("class", "arrow point-east");
         if (width < 0) {
-            deparrow.src = this.getImagesDir() + "arrow3.png";
+            deparrow.setAttribute("class", "arrow point-west");
             deparrow.style.left = xend + "px";
             deparrow.style.top = yend - 5 + "px";
         }

@@ -110,7 +110,8 @@ zkTasklist.hideTooltip = function(elem) {
 	if (zkTasklist.tooltipTimeout) {
 		clearTimeout(zkTasklist.tooltipTimeout);
 	}
-	document.getElementById(elem).style["display"] = "none";
+	node = document.getElementById(elem);
+	if (elem != null) node.style["display"] = "none";
 }
 
 zkTasklist.timeplotcontainer_rescroll = function(elem) {

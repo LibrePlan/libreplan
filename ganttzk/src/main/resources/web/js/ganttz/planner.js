@@ -38,7 +38,7 @@ zkPlanner.init = function(planner){
 }
 
 zkPlanner.findImageElement = function(arrow, name) {
-    var children = arrow.getElementsByTagName("img");
+    var children = arrow.getElementsByTagName("div");
     for (var i = 0; i < children.length; i++) {
         var child = children[i];
         if (child.getAttribute("class").indexOf(name) != -1) {
@@ -69,12 +69,13 @@ function getContextPath(element){
 
 zkPlanner.setupArrow = function(arrowDiv){
 
-    var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
-            [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
-    for ( var i = 0; i < image_data.length; i++) {
-        var img = document.createElement('img');
-        img.setAttribute("class", image_data[i][0]+" extra_padding");
-        img.src = this.getImagesDir() + image_data[i][1];
+    /* var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
+            [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ]; */
+    var image_data2 = [ "start", "mid", "end", "arrow" ];
+    for ( var i = 0; i < image_data2.length; i++) {
+        var img = document.createElement('div');
+        img.setAttribute("class", image_data[i]+" extra_padding");
+        /* img.src = this.getImagesDir() + image_data[i][1]; */
         arrowDiv.appendChild(img);
     }
 }
