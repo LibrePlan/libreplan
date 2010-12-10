@@ -62,7 +62,7 @@ resourcesLoadPanel = self;
                     <borderlayout >
                         <north border="0" height="35px" flex="true" collapsible="true">
                             <vbox pack="top" align="center">
-                            <tree fixedLayout="true">
+                            <tree fixedLayout="true" hflex="true">
                                 <treecols>
                                     <treecol label="${i18n:_('Name')}" height="29px"/>
                                 </treecols>
