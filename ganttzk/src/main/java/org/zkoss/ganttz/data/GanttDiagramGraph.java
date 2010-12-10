@@ -246,11 +246,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     public static class GanttZKDiagramGraph extends
             GanttDiagramGraph<Task, Dependency> {
 
-        private GanttZKDiagramGraph(
+        private GanttZKDiagramGraph(boolean scheduleBackwards,
                 List<Constraint<GanttDate>> globalStartConstraints,
                 List<Constraint<GanttDate>> globalEndConstraints,
                 boolean dependenciesConstraintsHavePriority) {
-            super(GANTTZK_ADAPTER, globalStartConstraints,
+            super(scheduleBackwards, GANTTZK_ADAPTER, globalStartConstraints,
                     globalEndConstraints,
                     dependenciesConstraintsHavePriority);
         }
@@ -261,11 +261,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         public void execute();
     }
 
-    public static GanttZKDiagramGraph create(
+    public static GanttZKDiagramGraph create(boolean scheduleBackwards,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
-        return new GanttZKDiagramGraph(globalStartConstraints,
+        return new GanttZKDiagramGraph(scheduleBackwards,
+                globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
     }
 
@@ -280,6 +281,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     private final List<Constraint<GanttDate>> globalStartConstraints;
 
     private final List<Constraint<GanttDate>> globalEndConstraints;
+
+    private final boolean scheduleBackwards;
 
     private DependenciesEnforcer enforcer = new DependenciesEnforcer();
 
@@ -347,18 +350,22 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     public static <V, D extends IDependency<V>> GanttDiagramGraph<V, D> create(
+            boolean scheduleBackwards,
             IAdapter<V, D> adapter,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
-        return new GanttDiagramGraph<V, D>(adapter, globalStartConstraints,
+        return new GanttDiagramGraph<V, D>(scheduleBackwards, adapter,
+                globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
     }
 
-    protected GanttDiagramGraph(IAdapter<V, D> adapter,
+    protected GanttDiagramGraph(boolean scheduleBackwards,
+            IAdapter<V, D> adapter,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
+        this.scheduleBackwards = scheduleBackwards;
         this.adapter = adapter;
         this.globalStartConstraints = globalStartConstraints;
         this.globalEndConstraints = globalEndConstraints;

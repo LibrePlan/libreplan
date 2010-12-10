@@ -411,7 +411,8 @@ public class TemplateModel implements ITemplateModel {
                         .getInitDate()));
         List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                .create(adapter, startConstraints, endConstraints,
+                .create(order.isScheduleBackwards(), adapter, startConstraints,
+                        endConstraints,
                         order.getDependenciesConstraintsHavePriority());
         return result;
     }

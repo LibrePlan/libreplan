@@ -29,18 +29,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.Position;
-import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
+import org.zkoss.ganttz.data.Position;
+import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 import org.zkoss.ganttz.extensions.IContext;
@@ -50,9 +50,9 @@ import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
@@ -313,8 +313,11 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
 
-        this.diagramGraph = GanttDiagramGraph.create(configuration
-                .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
+        this.diagramGraph = GanttDiagramGraph.create(
+                configuration.isScheduleBackwards(),
+                configuration.getStartConstraints(),
+                configuration.getEndConstraints(),
+                configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
         addGraphChangeListenersFromConfiguration(configuration);

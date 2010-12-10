@@ -165,6 +165,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private final List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<IGraphChangeListener>();
 
+    private boolean scheduleBackwards = false;
+
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
         this.adapter = adapter;
@@ -458,6 +460,14 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isTreeEditable() {
         return treeEditable;
+    }
+
+    public boolean isScheduleBackwards() {
+        return scheduleBackwards;
+    }
+
+    public void setScheduleBackwards(boolean scheduleBackwards) {
+        this.scheduleBackwards = scheduleBackwards;
     }
 
 }

@@ -222,9 +222,10 @@ public class MonteCarloTabCreator {
                         .getStartConstraintsGiven(GanttDate.createFrom(order
                                 .getInitDate()));
                 List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
-                GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                        .create(adapter, startConstraints, endConstraints,
-                                order.getDependenciesConstraintsHavePriority());
+                GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph.create(
+                        order.isScheduleBackwards(), adapter,
+                        startConstraints, endConstraints,
+                        order.getDependenciesConstraintsHavePriority());
                 return result;
             }
 
