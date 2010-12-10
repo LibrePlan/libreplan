@@ -1009,6 +1009,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
         result.setNotBeforeThan(orderReloaded.getInitDate());
+        result.setNotAfterThan(orderReloaded.getDeadline());
         result.setDependenciesConstraintsHavePriority(orderReloaded
                 .getDependenciesConstraintsHavePriority());
         result.setScheduleBackwards(orderReloaded.isScheduleBackwards());

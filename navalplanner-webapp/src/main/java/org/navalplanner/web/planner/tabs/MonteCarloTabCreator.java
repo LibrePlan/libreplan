@@ -24,7 +24,6 @@ import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BR
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -218,10 +217,12 @@ public class MonteCarloTabCreator {
 
             private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
                     Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
+                GanttDate orderStart = GanttDate.createFrom(order.getInitDate());
                 List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                        .getStartConstraintsGiven(GanttDate.createFrom(order
-                                .getInitDate()));
-                List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
+                                .getStartConstraintsGiven(orderStart);
+                GanttDate deadline = GanttDate.createFrom(order.getDeadline());
+                List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
+                                .getEndConstraintsGiven(deadline);
                 GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph.create(
                         order.isScheduleBackwards(), adapter,
                         startConstraints, endConstraints,

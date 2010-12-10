@@ -21,6 +21,7 @@
 package org.zkoss.ganttz.adapters;
 
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.lessOrEqualThan;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,7 +128,9 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean editingDatesEnabled = true;
 
-    private Date notBeforeThan = null;
+    private GanttDate notBeforeThan = null;
+
+    private GanttDate notAfterThan = null;
 
     private boolean dependenciesConstraintsHavePriority = false;
 
@@ -209,7 +212,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public void setNotBeforeThan(Date notBeforeThan) {
-        this.notBeforeThan = new Date(notBeforeThan.getTime());
+        this.notBeforeThan = GanttDate.createFrom(notBeforeThan);
+    }
+
+    public void setNotAfterThan(Date notAfterThan) {
+        this.notAfterThan = GanttDate.createFrom(notAfterThan);
     }
 
     public void setGoingDownInLastArrowCommand(
@@ -271,22 +278,28 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.editingDatesEnabled = editingDatesEnabled;
     }
 
-    public List<Constraint<GanttDate>> getStartConstraints() {
-        return getStartConstraintsGiven(GanttDate
-                .createFrom(this.notBeforeThan));
-    }
-
     public static List<Constraint<GanttDate>> getStartConstraintsGiven(
             GanttDate notBeforeThan) {
         if (notBeforeThan != null) {
             return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
-        } else {
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
+    }
+
+    public List<Constraint<GanttDate>> getStartConstraints() {
+        return getStartConstraintsGiven(notBeforeThan);
+    }
+
+    public static List<Constraint<GanttDate>> getEndConstraintsGiven(
+            GanttDate notAfterThan) {
+        if (notAfterThan != null) {
+            return Collections.singletonList(lessOrEqualThan(notAfterThan));
+        }
+        return Collections.emptyList();
     }
 
     public List<Constraint<GanttDate>> getEndConstraints() {
-        return Collections.emptyList();
+        return getEndConstraintsGiven(notAfterThan);
     }
 
     public boolean isDependenciesConstraintsHavePriority() {

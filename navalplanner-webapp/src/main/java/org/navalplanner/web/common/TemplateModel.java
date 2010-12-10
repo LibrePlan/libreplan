@@ -23,7 +23,6 @@ package org.navalplanner.web.common;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -407,9 +406,9 @@ public class TemplateModel implements ITemplateModel {
     private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
             Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
         List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven(GanttDate.createFrom(order
-                        .getInitDate()));
-        List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
+                .getStartConstraintsGiven((GanttDate) GanttDate.createFrom(order.getInitDate()));
+        List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
+                .getEndConstraintsGiven((GanttDate) GanttDate.createFrom(order.getDeadline()));
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
                 .create(order.isScheduleBackwards(), adapter, startConstraints,
                         endConstraints,
