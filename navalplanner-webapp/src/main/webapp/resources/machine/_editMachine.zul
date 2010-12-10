@@ -62,13 +62,13 @@
                         </row>
                         <row>
                             <hbox>
-                                <label value="${i18n:_('Limited resource')}" />
+                                <label value="${i18n:_('Resource type')}" />
                                 <image height="15px" src="/common/img/axuda.gif" tooltip="limiting-resources-popup" />
                             </hbox>
                             <listbox mold="select" width="200px"
-                                model="@{controller.limitingResourceOptionList}"
-                                selectedItem="@{controller.limitingResource}"
-                                onSelect="controller.setLimitingResource(self.selectedItem.value);"
+                                model="@{controller.resourceTypeOptionList}"
+                                selectedItem="@{controller.resourceType}"
+                                onSelect="controller.setResourceType(self.selectedItem.value);"
                                 disabled="@{controller.isEditing}" />
                         </row>
                     </rows>

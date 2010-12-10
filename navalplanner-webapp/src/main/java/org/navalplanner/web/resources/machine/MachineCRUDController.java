@@ -36,6 +36,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Machine;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -50,7 +51,6 @@ import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentContro
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
 import org.navalplanner.web.resources.worker.CriterionsMachineController;
-import org.navalplanner.web.resources.worker.WorkerCRUDController.LimitingResourceEnum;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -104,7 +104,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private Datebox filterFinishDate;
 
-    private Listbox filterLimitingResource;
+    private Listbox filterResourceType;
 
     private Textbox txtfilter;
 
@@ -137,7 +137,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         setupResourcesCostCategoryAssignmentController(comp);
         showListWindow();
         initFilterComponent();
-        setupFilterLimitingResourceListbox();
+        setupFilterResourceTypeListbox();
     }
 
     private void showListWindow() {
@@ -149,8 +149,8 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getFellowIfAny("filterFinishDate");
         this.filterStartDate = (Datebox) listWindow
                 .getFellowIfAny("filterStartDate");
-        this.filterLimitingResource = (Listbox) listWindow
-                .getFellowIfAny("filterLimitingResource");
+        this.filterResourceType = (Listbox) listWindow
+                .getFellowIfAny("filterResourceType");
         this.bdFilters = (BandboxMultipleSearch) listWindow
                 .getFellowIfAny("bdFilters");
         this.txtfilter = (Textbox) listWindow.getFellowIfAny("txtfilter");
@@ -529,18 +529,21 @@ public class MachineCRUDController extends GenericForwardComposer {
                 .getValue());
         }
 
-        final Listitem item = filterLimitingResource.getSelectedItem();
-        Boolean isLimitingResource = (item != null) ? LimitingResourceEnum
-                .valueOf((LimitingResourceEnum) item.getValue()) : null;
-
+        final Listitem item = filterResourceType.getSelectedItem();
+        ResourceType resourceType = null;
+        if (item != null) {
+            if (!(item.getValue() == ALL_TYPES_OF_RESOURCE)) {
+                resourceType = (ResourceType) item.getValue();
+            }
+        }
         if (listFilters.isEmpty()
                 && (personalFilter == null || personalFilter.isEmpty())
                 && startDate == null && finishDate == null
-                && isLimitingResource == null) {
+                && resourceType == null) {
             return null;
         }
         return new ResourcePredicate(listFilters, personalFilter, startDate,
-                finishDate, isLimitingResource);
+                finishDate, resourceType);
     }
 
     private void filterByPredicate(ResourcePredicate predicate) {
@@ -561,33 +564,39 @@ public class MachineCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    private void setupFilterLimitingResourceListbox() {
-        for(LimitingResourceEnum resourceEnum :
-            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
-            Listitem item = new Listitem();
-            item.setParent(filterLimitingResource);
-            item.setValue(resourceEnum);
-            item.appendChild(new Listcell(resourceEnum.toString()));
-            filterLimitingResource.appendChild(item);
+    private final String ALL_TYPES_OF_RESOURCE = _("ALL");
+
+    private void setupFilterResourceTypeListbox() {
+        Listitem item = new Listitem();
+        item.setParent(filterResourceType);
+        item.setValue(ALL_TYPES_OF_RESOURCE);
+        item.appendChild(new Listcell(ALL_TYPES_OF_RESOURCE));
+        filterResourceType.appendChild(item);
+        for(ResourceType resourceType :
+            ResourceType.getResourceTypeList()) {
+            item = new Listitem();
+            item.setParent(filterResourceType);
+            item.setValue(resourceType);
+            item.appendChild(new Listcell(resourceType.toString()));
+            filterResourceType.appendChild(item);
         }
-        filterLimitingResource.setSelectedIndex(0);
+        filterResourceType.setSelectedIndex(0);
     }
 
-    public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
-        return LimitingResourceEnum.getLimitingResourceOptionList();
+    public Set<ResourceType> getResourceTypeOptionList() {
+        return ResourceType.getResourceTypeList();
     }
 
-    public Object getLimitingResource() {
+    public Object getResourceType() {
         final Machine machine = getMachine();
-        return (machine != null) ? LimitingResourceEnum.valueOf(machine
-                .isLimitingResource())
-                : LimitingResourceEnum.NON_LIMITING_RESOURCE;         // Default option
+        return (machine != null) ? machine.getResourceType()
+                : ResourceType.NON_LIMITING_RESOURCE;         // Default option
     }
 
-    public void setLimitingResource(LimitingResourceEnum option) {
-        Machine machine = getMachine();
+    public void setResourceType(ResourceType option) {
+        final Machine machine = getMachine();
         if (machine != null) {
-            machine.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            machine.setResourceType(option);
         }
     }
 
