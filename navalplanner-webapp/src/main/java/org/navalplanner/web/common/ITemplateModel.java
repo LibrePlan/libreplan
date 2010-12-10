@@ -33,6 +33,8 @@ public interface ITemplateModel {
 
     List<Scenario> getScenarios();
 
+    String getCompanyLogoURL();
+
     Scenario getScenarioByName(String name);
 
     public interface IOnFinished {

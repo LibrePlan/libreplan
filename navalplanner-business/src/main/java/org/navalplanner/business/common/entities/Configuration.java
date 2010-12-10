@@ -73,6 +73,8 @@ public class Configuration extends BaseEntity {
 
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
+    private String companyLogoURL;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -238,6 +240,17 @@ public class Configuration extends BaseEntity {
 
     public ProgressType getProgressType() {
         return progressType;
+    }
+
+    public void setCompanyLogoURL(String companyLogoURL) {
+        if (companyLogoURL != null) {
+            companyLogoURL = companyLogoURL.trim();
+        }
+        this.companyLogoURL = companyLogoURL;
+    }
+
+    public String getCompanyLogoURL() {
+        return companyLogoURL;
     }
 
 }

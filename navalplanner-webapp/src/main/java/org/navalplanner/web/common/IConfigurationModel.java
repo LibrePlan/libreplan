@@ -133,4 +133,8 @@ public interface IConfigurationModel {
 
     ProgressType getProgressType();
 
+    String getCompanyLogoURL();
+
+    void setCompanyLogoURL(String companyLogoURL);
+
 }

@@ -538,4 +538,14 @@ public class ConfigurationModel implements IConfigurationModel {
         return configuration.getProgressType();
     }
 
+    @Override
+    public String getCompanyLogoURL() {
+        return configuration.getCompanyLogoURL();
+    }
+
+    @Override
+    public void setCompanyLogoURL(String companyLogoURL) {
+        configuration.setCompanyLogoURL(companyLogoURL);
+    }
+
 }

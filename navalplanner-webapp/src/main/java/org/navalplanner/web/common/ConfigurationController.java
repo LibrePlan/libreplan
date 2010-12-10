@@ -248,6 +248,14 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCompanyCode(companyCode);
     }
 
+    public String getCompanyLogoURL() {
+        return configurationModel.getCompanyLogoURL();
+    }
+
+    public void setCompanyLogoURL(String companyLogoURL) {
+        configurationModel.setCompanyLogoURL(companyLogoURL);
+    }
+
     public Boolean getGenerateCodeForCriterion() {
         return configurationModel.getGenerateCodeForCriterion();
     }

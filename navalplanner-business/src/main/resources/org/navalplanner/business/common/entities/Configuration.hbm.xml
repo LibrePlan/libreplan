@@ -54,6 +54,8 @@
             </type>
         </property>
 
+        <property name="companyLogoURL" column="company_logo_url" />
+
     </class>
 
 </hibernate-mapping>

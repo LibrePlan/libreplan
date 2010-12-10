@@ -86,6 +86,13 @@ public class TemplateController extends GenericForwardComposer {
         return templateModel.getScenarios();
     }
 
+    public String getCompanyLogoURL() {
+        if (templateModel == null) {
+            return "";
+        }
+        return templateModel.getCompanyLogoURL();
+    }
+
     public void accept() {
         BandboxSearch scenarioBandboxSearch = (BandboxSearch) window
                 .getFellow("scenarioBandboxSearch");

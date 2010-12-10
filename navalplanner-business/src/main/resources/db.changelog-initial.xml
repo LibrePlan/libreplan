@@ -13,4 +13,13 @@
 
     </changeSet>
 
+    <changeSet id="add-company-logo-url-configuration-setting" author="ltilve">
+        <comment>Add new column with configuration setting</comment>
+        <addColumn tableName="configuration">
+            <column name="company_logo_url" type="varchar(255)" />
+        </addColumn>
+	<addDefaultValue tableName="configuration" columnName="company_logo_url"
+        	defaultValue="" />
+    </changeSet>
+
 </databaseChangeLog>

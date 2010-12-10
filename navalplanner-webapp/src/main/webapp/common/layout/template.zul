@@ -118,6 +118,9 @@
 <south border="none">
 <n:table width="100%">
   <n:tr class="footer">
+    <n:td height="40" align="left" valign="bottom">
+        <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
+    </n:td>
     <n:td height="40" align="right" valign="bottom">
         <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>
         <n:img width="253" height="40" src="${contextPath}/common/img/logos_footer_administracion.png"/>
