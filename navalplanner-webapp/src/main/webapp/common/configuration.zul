@@ -36,6 +36,7 @@
             <tabs>
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
+                <tab label="${i18n:_('Modules')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
@@ -166,26 +167,6 @@
                                     </rows>
                                 </grid>
                             </row>
-
-                            <!-- Perspectives -->
-                            <row>
-                                <label value="${i18n:_('Modules')}" />
-                                <grid>
-                                    <columns>
-                                        <column width="50%" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('MonteCarlo method')}"
-                                                checked="@{configurationController.monteCarloMethodTabVisible}" />
-                                            <checkbox label="${i18n:_('Critical chain support')}"
-                                                checked="@{configurationController.enableCriticalChainSupport}" />
-                                        </row>
-                                    </rows>
-                                </grid>
-                            </row>
                         </rows>
                     </grid>
                 </tabpanel>
@@ -230,6 +211,26 @@
                             </vbox>
                         </panelchildren>
                     </panel>
+                </tabpanel>
+                <tabpanel id="panelModules">
+                    <grid fixedLayout="true" id="modules">
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <checkbox label="${i18n:_('Monte Carlo method simulation')}"
+                                    checked="@{configurationController.monteCarloMethodTabVisible}" />
+                                <label value="${i18n:_('Scheduling length simulation using Monte Carlo method with likelihood task duration estimation as input.')}" />
+                            </row>
+                            <row>
+                                <checkbox label="${i18n:_('Critical chain support')}"
+                                    checked="@{configurationController.enableCriticalChainSupport}" />
+                                    <label value="${i18n:_('Support to create strategic resources and schedulings usign critical chain planning paradigm.')}" />
+                            </row>
+                        </rows>
+                    </grid>
                 </tabpanel>
             </tabpanels>
         </tabbox>
