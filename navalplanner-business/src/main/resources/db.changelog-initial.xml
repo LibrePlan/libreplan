@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="resize-precision-progress_by_duration-and-progress_by_num_hours-in-planning_data" author="dpino">
+    <changeSet id="resize-precision-in-planning_data" author="dpino">
         <comment>Resize precision for 'progress_by_duration' and 'progress_by_num_hours' fields</comment>
 
         <modifyDataType tableName="planning_data" columnName="progress_by_duration" newDataType="numeric(19,6)" />
