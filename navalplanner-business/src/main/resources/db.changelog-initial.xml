@@ -5,42 +5,12 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="1692f312d613aae690150e492137536003de7154" author="dpino">
-        <comment>Resize precision for 'progress_by_duration' and 'progress_by_duration' fields</comment>
+    <changeSet id="resize-precision-progress_by_duration-and-progress_by_num_hours-in-planning_data" author="dpino">
+        <comment>Resize precision for 'progress_by_duration' and 'progress_by_num_hours' fields</comment>
 
         <modifyDataType tableName="planning_data" columnName="progress_by_duration" newDataType="numeric(19,6)" />
         <modifyDataType tableName="planning_data" columnName="progress_by_num_hours" newDataType="numeric(19,6)" />
 
-    </changeSet>
-
-    <changeSet id="the type of task_milestone constraintDate was wrong" author="ogonzalez">
-        <comment>
-        The type of constraint_date was wrong,it was causing the LocalDate to be
-        serialized instead of being used as a date.
-        Because the type date is not compatible, the column must be dropped and
-        added again with the correct type. In order to not leave the database in
-        an inconsistent state, the start_constraint_type is updated to zero
-        which maps to AS_SOON_AS_POSSIBLE.
-        </comment>
-        <dropColumn tableName="task_milestone" columnName="constraint_date"/>
-        <addColumn tableName="task_milestone">
-            <column name="constraint_date" type="date"></column>
-        </addColumn>
-        <update tableName="task_milestone">
-            <column name="start_constraint_type" value="0"/>
-        </update>
-    </changeSet>
-
-    <changeSet id="changed-type-of-units-in-material-info-to-big-decimal" author="mrego">
-        <comment>MaterialInfo was using Double for units instead of BigDecimal</comment>
-        <dropColumn tableName="material_assigment" columnName="units"/>
-        <addColumn tableName="material_assigment">
-            <column name="units" type="DECIMAL(19,2)"></column>
-        </addColumn>
-        <dropColumn tableName="material_assigment_template" columnName="units"/>
-        <addColumn tableName="material_assigment_template">
-            <column name="units" type="DECIMAL(19,2)"></column>
-        </addColumn>
     </changeSet>
 
 </databaseChangeLog>
