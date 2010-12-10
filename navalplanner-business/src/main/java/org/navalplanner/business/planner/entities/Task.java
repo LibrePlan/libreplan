@@ -219,7 +219,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
-        return (resourceAllocation != null) ? resourceAllocation.isLimitingAndHasDayAssignments() : false;
+        return resourceAllocation != null
+                && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
