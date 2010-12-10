@@ -642,6 +642,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getTooltipText() {
+            if (taskElement.isMilestone()) {
+                return "";
+            }
             return transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
@@ -656,6 +659,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public String getLabelsText() {
+            if (taskElement.isMilestone()) {
+                return "";
+            }
             return transactionService
                     .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
