@@ -1156,7 +1156,7 @@ height: 100%
     float:left;
     width:10px;
     height:22px;
-    background-image: url("../../zkau/web/ganttz/img/deadline.png");
+    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
 }
 
 
@@ -1301,7 +1301,7 @@ div.z-grid-header .second_level_ tr {
     background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
 }
 .violated-dependency .arrow {
-    background-image: url("../../zkau/web/ganttz/img/dashed-red-arrows.png");
+    background-image: url("../../zkau/web/ganttz/img/solid-red-arrows.png");
 }
 
 .resources-dependency .start, .resources-dependency .end {

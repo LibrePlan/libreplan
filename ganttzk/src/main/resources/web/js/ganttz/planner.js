@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2011 Igalia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -69,13 +70,10 @@ function getContextPath(element){
 
 zkPlanner.setupArrow = function(arrowDiv){
 
-    /* var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
-            [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ]; */
     var image_data2 = [ "start", "mid", "end", "arrow" ];
     for ( var i = 0; i < image_data2.length; i++) {
         var img = document.createElement('div');
         img.setAttribute("class", image_data[i]+" extra_padding");
-        /* img.src = this.getImagesDir() + image_data[i][1]; */
         arrowDiv.appendChild(img);
     }
 }

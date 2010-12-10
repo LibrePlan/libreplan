@@ -268,6 +268,10 @@ zkDependency.destination = function(dependency) {
 	return document.getElementById(id);
 }
 
+zkDependency.setCSSClass = function(dependency,value) {
+	dependency.setAttribute("class", value);
+}
+
 zkDependency.draw = function(dependency) {
 	var orig = zkPlanner.findPos(this.origin(dependency));
 	var dest = zkPlanner.findPos(this.destination(dependency));

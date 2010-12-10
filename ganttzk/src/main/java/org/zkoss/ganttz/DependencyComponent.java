@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2011 Igalia S.L.
+ *
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -67,13 +69,16 @@ public class DependencyComponent extends XulElement implements AfterCompose {
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint,
                     GanttDate value) {
-                // TODO mark graphically dependency as violated
+                response("constraintViolated", new AuInvoke(
+                        DependencyComponent.this, "setCSSClass",
+                        "violated-dependency"));
             }
 
             @Override
             public void constraintSatisfied(Constraint<GanttDate> constraint,
                     GanttDate value) {
-                // TODO mark graphically dependency as not violated
+                response("constraintViolated", new AuInvoke(
+                        DependencyComponent.this, "setCSSClass", "dependency"));
             }
         };
         this.dependency.addConstraintViolationListener(violationListener);
