@@ -223,6 +223,10 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                 && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
+    private boolean isLimitingAndNotAssignedYet() {
+        return isLimiting() && !isLimitingAndHasDayAssignments();
+    }
+
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }
@@ -460,7 +464,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
                     return;
                 }
                 if (calculatedValue != CalculatedValue.END_DATE
-                        || getSatisfiedResourceAllocations().isEmpty()) {
+                        || getSatisfiedResourceAllocations().isEmpty()
+                        || isLimitingAndNotAssignedYet()) {
                     setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
                 }
                 setIntraDayStartDate(newStartDate);
