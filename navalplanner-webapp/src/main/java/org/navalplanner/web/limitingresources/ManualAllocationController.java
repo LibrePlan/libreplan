@@ -227,6 +227,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     private void setAssignableQueues(final LimitingResourceQueueElement element) {
         List<LimitingResourceQueue> queues = getLimitingResourceQueueModel().getAssignableQueues(element);
         listAssignableQueues.setModel(new SimpleListModel(queues));
+        listAssignableQueues.setItemRenderer(queueRenderer);
         listAssignableQueues.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
@@ -528,12 +529,14 @@ public class ManualAllocationController extends GenericForwardComposer {
         public void render(Listitem item, Object data) throws Exception {
             final LimitingResourceQueue queue = (LimitingResourceQueue) data;
             item.setValue(queue);
+//            item.setLabel("test1");
             item.appendChild(cell(queue));
         }
 
         private Listcell cell(LimitingResourceQueue queue) {
            Listcell result = new Listcell();
            result.setLabel(queue.getResource().getName());
+//           result.setLabel("test2");
            return result;
         }
 
