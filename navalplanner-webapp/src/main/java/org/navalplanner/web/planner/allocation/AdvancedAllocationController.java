@@ -873,7 +873,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 advancedAllocationVerticalPagination.appendChild(item);
                 verticalPaginationIndexes.add(new Integer(i));
             }
-            advancedAllocationVerticalPagination.setSelectedIndex(0);
+            if (!rowsCached.isEmpty()) {
+                advancedAllocationVerticalPagination.setSelectedIndex(0);
+            }
         }
     }
 
