@@ -95,11 +95,11 @@ public class MaterialAssignmentTemplate extends BaseEntity implements
         getMaterialInfo().setMaterial(material);
     }
 
-    public Double getUnits() {
+    public BigDecimal getUnits() {
         return getMaterialInfo().getUnits();
     }
 
-    public void setUnits(Double units) {
+    public void setUnits(BigDecimal units) {
         getMaterialInfo().setUnits(units);
     }
 

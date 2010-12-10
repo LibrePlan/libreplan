@@ -31,4 +31,16 @@
         </update>
     </changeSet>
 
+    <changeSet id="changed-type-of-units-in-material-info-to-big-decimal" author="mrego">
+        <comment>MaterialInfo was using Double for units instead of BigDecimal</comment>
+        <dropColumn tableName="material_assigment" columnName="units"/>
+        <addColumn tableName="material_assigment">
+            <column name="units" type="DECIMAL(19,2)"></column>
+        </addColumn>
+        <dropColumn tableName="material_assigment_template" columnName="units"/>
+        <addColumn tableName="material_assigment_template">
+            <column name="units" type="DECIMAL(19,2)"></column>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

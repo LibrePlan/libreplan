@@ -111,7 +111,7 @@ public class AssignedMaterialsToOrderElementModel extends
     }
 
     @Override
-    protected Double getUnits(MaterialAssignment assigment) {
+    protected BigDecimal getUnits(MaterialAssignment assigment) {
         return assigment.getUnits();
     }
 

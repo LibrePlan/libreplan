@@ -35,7 +35,7 @@
             <rows>
                 <row>
                     <label style="font-weight: bold" value="${i18n:_('Units')}:" width="150px" />
-                    <doublebox id="dbUnits" width="200px" />
+                    <decimalbox id="dbUnits" width="200px" />
                 </row>
             </rows>
         </grid>

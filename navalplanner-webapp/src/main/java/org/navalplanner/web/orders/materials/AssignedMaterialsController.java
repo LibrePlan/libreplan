@@ -42,7 +42,6 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -60,6 +59,7 @@ import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.api.Decimalbox;
 import org.zkoss.zul.api.Textbox;
 import org.zkoss.zul.impl.MessageboxDlg;
 
@@ -132,7 +132,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
 
     public abstract TreeModel getAllMaterialCategories();
 
-    public abstract double getTotalUnits();
+    public abstract BigDecimal getTotalUnits();
 
     public abstract BigDecimal getTotalPrice();
 
@@ -336,7 +336,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
             final MaterialCategory materialCategory = (MaterialCategory) node;
 
             Label lblName = new Label(materialCategory.getName());
-            Label lblUnits = new Label(new Double(getUnits(materialCategory)).toString());
+            Label lblUnits = new Label(getUnits(materialCategory).toString());
             Label lblPrice = new Label(getPrice(materialCategory).toString());
 
             Treerow tr = null;
@@ -365,7 +365,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
             cellPrice.setParent(tr);
         }
 
-        private double getUnits(MaterialCategory materialCategory) {
+        private BigDecimal getUnits(MaterialCategory materialCategory) {
             return getModel().getUnits(materialCategory);
         }
 
@@ -467,7 +467,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         dialogSplitAssignment = (MessageboxDlg) Executions
                 .createComponents("/orders/_splitMaterialAssignmentDlg.zul",
                         self, args);
-        Doublebox dbUnits = (Doublebox) dialogSplitAssignment.getFellowIfAny("dbUnits");
+        Decimalbox dbUnits = (Decimalbox) dialogSplitAssignment
+                .getFellowIfAny("dbUnits");
         dbUnits.setValue(getUnits(materialAssignment));
         try {
             dialogSplitAssignment.doModal();
@@ -491,14 +492,14 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
      * @param materialAssignment
      * @param units
      */
-    private void splitMaterialAssignment(A materialAssignment, double units) {
+    private void splitMaterialAssignment(A materialAssignment, BigDecimal units) {
         A newAssignment = copyFrom(materialAssignment);
-        double currentUnits = getUnits(materialAssignment);
-        if (units > currentUnits) {
+        BigDecimal currentUnits = getUnits(materialAssignment);
+        if (units.compareTo(currentUnits) > 0) {
             units = currentUnits;
-            currentUnits = 0;
+            currentUnits = BigDecimal.ZERO;
         } else {
-            currentUnits -= units;
+            currentUnits = currentUnits.subtract(units);
         }
         setUnits(newAssignment, units);
         setUnits(materialAssignment, currentUnits);
@@ -506,11 +507,11 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         reloadGridMaterials();
     }
 
-    protected abstract void setUnits(A assignment, double units);
+    protected abstract void setUnits(A assignment, BigDecimal units);
 
     protected abstract A copyFrom(A assignment);
 
-    protected abstract double getUnits(A assignment);
+    protected abstract BigDecimal getUnits(A assignment);
 
     private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 

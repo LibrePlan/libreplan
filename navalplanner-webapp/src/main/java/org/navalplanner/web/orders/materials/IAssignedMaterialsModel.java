@@ -51,7 +51,7 @@ public interface IAssignedMaterialsModel<T, A> {
 
     BigDecimal getPrice(MaterialCategory materialCategory);
 
-    double getUnits(MaterialCategory materialCategory);
+    BigDecimal getUnits(MaterialCategory materialCategory);
 
     void removeMaterialAssignment(A materialAssignment);
 

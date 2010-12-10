@@ -629,7 +629,7 @@ public class OrderElementServiceTest {
         materialAssignmentDTO.materialCode = "material-code "
                 + UUID.randomUUID().toString();
         materialAssignmentDTO.unitPrice = BigDecimal.TEN;
-        materialAssignmentDTO.units = 100.0;
+        materialAssignmentDTO.units = BigDecimal.valueOf(100.0);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -763,7 +763,7 @@ public class OrderElementServiceTest {
         orderDTO.initDate = DateConverter.toXMLGregorianCalendar(new Date());
 
         MaterialAssignmentDTO materialAssignmentDTO = new MaterialAssignmentDTO(
-                materialcode1, 100.0, BigDecimal.TEN, null);
+                materialcode1, BigDecimal.valueOf(100.0), BigDecimal.TEN, null);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
 
         OrderListDTO orderListDTO = createOrderListDTO(orderDTO);
@@ -778,10 +778,11 @@ public class OrderElementServiceTest {
         orderElementDAO.flush();
         sessionFactory.getCurrentSession().evict(orderElement);
 
-        orderDTO.materialAssignments.iterator().next().units = 150.0;
+        orderDTO.materialAssignments.iterator().next().units = BigDecimal
+                .valueOf(150.0);
 
         MaterialAssignmentDTO materialAssignmentDTO2 = new MaterialAssignmentDTO(
-                materialcode2, 200.0, BigDecimal.ONE, null);
+                materialcode2, BigDecimal.valueOf(200.0), BigDecimal.ONE, null);
         orderDTO.materialAssignments.add(materialAssignmentDTO);
         orderDTO.materialAssignments.add(materialAssignmentDTO2);
 
@@ -797,8 +798,9 @@ public class OrderElementServiceTest {
                 .getMaterialAssignments()) {
             assertThat(materialAssignment.getMaterial().getCode(), anyOf(
                     equalTo(materialcode1), equalTo(materialcode2)));
-            assertThat(materialAssignment.getUnits(), anyOf(equalTo(150.0),
-                    equalTo(200.0)));
+            assertThat(materialAssignment.getUnits(), anyOf(equalTo(BigDecimal
+                    .valueOf(150.0).setScale(2)), equalTo(BigDecimal.valueOf(
+                    200.0).setScale(2))));
             assertThat(materialAssignment.getUnitPrice(), anyOf(
                     equalTo(BigDecimal.TEN.setScale(2)), equalTo(BigDecimal.ONE
                             .setScale(2))));

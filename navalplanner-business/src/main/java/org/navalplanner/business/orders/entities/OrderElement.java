@@ -920,12 +920,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         materialAssignments.remove(materialAssignment);
     }
 
-    public double getTotalMaterialAssigmentUnits() {
-        double result = 0;
+    public BigDecimal getTotalMaterialAssigmentUnits() {
+        BigDecimal result = BigDecimal.ZERO;
 
         final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
         for (MaterialAssignment each: materialAssigments) {
-            result += each.getUnits();
+            result = result.add(each.getUnits());
         }
         return result;
     }

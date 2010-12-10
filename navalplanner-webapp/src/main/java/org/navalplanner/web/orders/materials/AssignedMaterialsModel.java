@@ -223,20 +223,21 @@ public abstract class AssignedMaterialsModel<T, A> implements
         }
     }
 
-    public double getUnits(MaterialCategory materialCategory) {
-        double result = 0;
+    @Override
+    public BigDecimal getUnits(MaterialCategory materialCategory) {
+        BigDecimal result = BigDecimal.ZERO;
         if (isInitialized()) {
             for (A each : getAssignments()) {
                 final Material material = getMaterial(each);
                 if (materialCategory.equals(material.getCategory())) {
-                    result += getUnits(each);
+                    result = result.add(getUnits(each));
                 }
             }
         }
         return result;
     }
 
-    protected abstract Double getUnits(A assigment);
+    protected abstract BigDecimal getUnits(A assigment);
 
     public BigDecimal getPrice(MaterialCategory category) {
         BigDecimal result = new BigDecimal(0);

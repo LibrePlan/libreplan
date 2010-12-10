@@ -91,19 +91,19 @@ public class TemplateMaterialsController extends
     }
 
     @Override
-    public double getTotalUnits() {
+    public BigDecimal getTotalUnits() {
         OrderElementTemplate template = assignedMaterialsToOrderElementTemplateModel
                 .getTemplate();
         if (template == null) {
-            return 0;
+            return BigDecimal.ZERO;
         }
         return template.getTotalMaterialAssigmentUnits();
     }
 
     @Override
-    protected double getUnits(MaterialAssignmentTemplate assignment) {
+    protected BigDecimal getUnits(MaterialAssignmentTemplate assignment) {
         if (assignment.getUnits() == null) {
-            return 0;
+            return BigDecimal.ZERO;
         }
         return assignment.getUnits();
     }
@@ -114,7 +114,8 @@ public class TemplateMaterialsController extends
     }
 
     @Override
-    protected void setUnits(MaterialAssignmentTemplate assignment, double units) {
+    protected void setUnits(MaterialAssignmentTemplate assignment,
+            BigDecimal units) {
         assignment.setUnits(units);
     }
 

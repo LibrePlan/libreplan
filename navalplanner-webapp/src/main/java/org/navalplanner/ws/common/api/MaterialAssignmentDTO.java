@@ -38,7 +38,7 @@ public class MaterialAssignmentDTO {
     public String materialCode;
 
     @XmlAttribute
-    public Double units;
+    public BigDecimal units;
 
     @XmlAttribute(name = "unit-price")
     public BigDecimal unitPrice;
@@ -49,7 +49,7 @@ public class MaterialAssignmentDTO {
     public MaterialAssignmentDTO() {
     }
 
-    public MaterialAssignmentDTO(String materialCode, Double units,
+    public MaterialAssignmentDTO(String materialCode, BigDecimal units,
             BigDecimal unitPrice, XMLGregorianCalendar estimatedAvailability) {
         this.materialCode = materialCode;
         this.units = units;
