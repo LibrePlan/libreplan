@@ -1075,8 +1075,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 this.end = end;
                 this.startConstraint = ConstraintOnComparableValues
                         .instantiate(comparisonType, start);
-                this.endConstraint = ConstraintOnComparableValues
-                        .biggerOrEqualThan(end);
+                this.endConstraint = ConstraintOnComparableValues.instantiate(
+                        comparisonType, end);
             }
 
             boolean satisfies(PositionRestrictions other) {
