@@ -64,6 +64,22 @@ public class TaskStartConstraint {
         this.startConstraintType = StartConstraintType.START_NOT_EARLIER_THAN;
     }
 
+    public void finishNotLaterThan(LocalDate date) {
+        Validate.notNull(date);
+        this.constraintDate = date;
+        this.startConstraintType = StartConstraintType.FINISH_NOT_LATER_THAN;
+    }
+
+    public void asLateAsPossible() {
+        this.startConstraintType = StartConstraintType.AS_LATE_AS_POSSIBLE;
+        this.constraintDate = null;
+    }
+
+    public void asSoonAsPossible() {
+        this.startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
+        this.constraintDate = null;
+    }
+
     public boolean isValid(StartConstraintType type, LocalDate value) {
         return type != null
                 && type.isAssociatedDateRequired() == (value != null);

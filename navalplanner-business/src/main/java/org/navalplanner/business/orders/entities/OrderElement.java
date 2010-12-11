@@ -30,8 +30,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -56,6 +56,7 @@ import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -822,20 +823,39 @@ public abstract class OrderElement extends IntegrationEntity implements
         return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
-    public void applyStartConstraintIfNeededTo(Task task) {
-        if (getInitDate() != null) {
-            applyStartConstraintTo(task);
-            return;
+    public void applyStartConstraintTo(Task task) {
+        boolean scheduleBackwards = getOrder().isScheduleBackwards();
+        OrderElement current = this;
+        while (current != null) {
+            boolean applied = current.applyConstraintBasedOnInitOrEndDate(task,
+                    scheduleBackwards);
+            if (applied) {
+                return;
+            }
+            current = current.getParent();
         }
-        OrderLineGroup parent = getParent();
-        if (parent != null) {
-            parent.applyStartConstraintIfNeededTo(task);
+        if (scheduleBackwards) {
+            task.getStartConstraint().asLateAsPossible();
+        } else {
+            task.getStartConstraint().asSoonAsPossible();
         }
     }
 
-    protected void applyStartConstraintTo(Task task) {
-        task.getStartConstraint().notEarlierThan(
-                LocalDate.fromDateFields(this.getInitDate()));
+    protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
+            boolean scheduleBackwards) {
+        TaskStartConstraint constraint = task.getStartConstraint();
+        if (getInitDate() != null
+                && (getDeadline() == null || !scheduleBackwards)) {
+            constraint.notEarlierThan(
+                    LocalDate.fromDateFields(this.getInitDate()));
+            return true;
+        }
+        if (getDeadline() != null) {
+            constraint.finishNotLaterThan(
+                    LocalDate.fromDateFields(this.getDeadline()));
+            return true;
+        }
+        return false;
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {

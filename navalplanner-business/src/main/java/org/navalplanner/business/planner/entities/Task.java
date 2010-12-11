@@ -66,7 +66,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
-        orderElement.applyStartConstraintIfNeededTo(task);
+        orderElement.applyStartConstraintTo(task);
         Task result = create(task, taskSource);
         result.initializeDates();
         return result;

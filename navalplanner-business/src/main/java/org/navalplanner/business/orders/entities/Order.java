@@ -354,8 +354,11 @@ public class Order extends OrderLineGroup {
     }
 
     @Override
-    protected void applyStartConstraintTo(Task task) {
-        // the initDate of order don't imply a start constraint at a task
+    protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
+            boolean scheduleBackwards) {
+        // the initDate or the deadline of a order doesn't imply a start
+        // constraint at a task
+        return false;
     }
 
     public boolean getDependenciesConstraintsHavePriority() {

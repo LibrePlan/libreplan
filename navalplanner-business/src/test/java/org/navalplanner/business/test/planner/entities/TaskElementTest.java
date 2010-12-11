@@ -222,8 +222,6 @@ public class TaskElementTest {
     public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
         OrderLine orderLine = OrderLine.create();
         addOrderTo(orderLine);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
         assertThat(task.getStartConstraint(),
@@ -238,6 +236,18 @@ public class TaskElementTest {
     }
 
     @Test
+    public void ifTheOrderLineHasDeadlineTheStartConstraintIsNotLaterThan() {
+        OrderLine orderLine = OrderLine.create();
+        addOrderTo(orderLine);
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getStartConstraint(),
+                isOfType(StartConstraintType.FINISH_NOT_LATER_THAN));
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
     public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
         LocalDate initDate = new LocalDate(2005, 10, 5);
@@ -246,8 +256,6 @@ public class TaskElementTest {
         group.setInitDate(asDate(initDate));
         OrderLine orderLine = OrderLine.create();
         group.add(orderLine);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
         assertThat(task.getStartConstraint(), allOf(
@@ -262,8 +270,6 @@ public class TaskElementTest {
         Order order = orderLine.getOrder();
         Date initDate = asDate(new LocalDate(2005, 10, 5));
         order.setInitDate(initDate);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
         assertThat(task.getStartConstraint(),
