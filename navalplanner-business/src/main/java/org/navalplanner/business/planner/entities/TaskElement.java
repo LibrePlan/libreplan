@@ -232,12 +232,12 @@ public abstract class TaskElement extends BaseEntity {
         return Collections.unmodifiableSet(dependenciesWithThisDestination);
     }
 
-    @NotNull
     public Date getStartDate() {
         return startDate != null ? startDate.getDate().toDateTimeAtStartOfDay()
                 .toDate() : null;
     }
 
+    @NotNull
     public IntraDayDate getIntraDayStartDate() {
         return startDate;
     }
@@ -304,6 +304,7 @@ public abstract class TaskElement extends BaseEntity {
                 + "Please detect the caller and fix it";
     }
 
+    @NotNull
     public IntraDayDate getIntraDayEndDate() {
         return endDate;
     }
