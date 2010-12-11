@@ -42,6 +42,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.entities.ProgressType;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
@@ -106,8 +107,12 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.taskSource = taskSource;
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
-        taskElement.setStartDate(taskElement.getOrderElement().getOrder()
-                .getInitDate());
+        Order order = taskElement.getOrderElement().getOrder();
+        if (order.isScheduleBackwards()) {
+            taskElement.setEndDate(order.getDeadline());
+        } else {
+            taskElement.setStartDate(order.getInitDate());
+        }
         return create(taskElement);
     }
 
@@ -144,13 +149,13 @@ public abstract class TaskElement extends BaseEntity {
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
-    public void initializeEndDateIfDoesntExist() {
-        if (getEndDate() == null) {
-            initializeEndDate();
+    public void initializeDatesIfNeeded() {
+        if (getIntraDayEndDate() == null || getIntraDayStartDate() == null) {
+            initializeDates();
         }
     }
 
-    protected abstract void initializeEndDate();
+    protected abstract void initializeDates();
 
     public void updateDeadlineFromOrderElement() {
         Date newDeadline = this.taskSource.getOrderElement().getDeadline();

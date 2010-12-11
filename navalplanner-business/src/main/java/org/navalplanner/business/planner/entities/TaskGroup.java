@@ -22,9 +22,7 @@ package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -83,10 +81,15 @@ public class TaskGroup extends TaskElement {
         Validate.notNull(task);
         task.setParent(this);
         addTaskElement(taskElements.size(), task);
-        Date newPossibleEndDate = task.getEndDate();
-        if (getEndDate() == null
-                || getEndDate().compareTo(newPossibleEndDate) < 0) {
-            setEndDate(newPossibleEndDate);
+        IntraDayDate newPossibleEndDate = task.getIntraDayEndDate();
+        if (getIntraDayEndDate() == null
+                || getIntraDayEndDate().compareTo(newPossibleEndDate) < 0) {
+            setIntraDayEndDate(newPossibleEndDate);
+        }
+        IntraDayDate newPossibleStart = task.getIntraDayStartDate();
+        if (getIntraDayStartDate() == null
+                || getIntraDayStartDate().compareTo(newPossibleStart) > 0) {
+            setIntraDayStartDate(newPossibleStart);
         }
     }
 
@@ -187,18 +190,9 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected void initializeEndDate() {
-        List<Date> endDates = getEndDates(getChildren());
-        setEndDate(Collections.max(endDates));
-    }
-
-    private List<Date> getEndDates(Collection<? extends TaskElement> children) {
-        List<Date> result = new ArrayList<Date>();
-        for (TaskElement each : children) {
-            Validate.notNull(each.getEndDate());
-            result.add(each.getEndDate());
-        }
-        return result;
+    protected void initializeDates() {
+        setIntraDayStartDate(getSmallestStartDateFromChildren());
+        setIntraDayEndDate(getBiggestEndDateFromChildren());
     }
 
     @Override
@@ -229,6 +223,18 @@ public class TaskGroup extends TaskElement {
         List<IntraDayDate> result = new ArrayList<IntraDayDate>();
         for (TaskElement each : getChildren()) {
             result.add(each.getIntraDayStartDate());
+        }
+        return result;
+    }
+
+    public IntraDayDate getBiggestEndDateFromChildren() {
+        return Collections.max(getChildrenEndDates());
+    }
+
+    private List<IntraDayDate> getChildrenEndDates() {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement each : getChildren()) {
+            result.add(each.getIntraDayEndDate());
         }
         return result;
     }

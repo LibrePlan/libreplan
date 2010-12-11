@@ -123,11 +123,11 @@ public class TaskSource extends BaseEntity {
             task.setStartDate(orderElement.getOrder().getInitDate());
         }
         if (task.getEndDate() == null) {
-            task.initializeEndDateIfDoesntExist();
+            task.initializeDatesIfNeeded();
         }
         if (task.getSatisfiedResourceAllocations().isEmpty()) {
             task.setEndDate(null);
-            task.initializeEndDateIfDoesntExist();
+            task.initializeDatesIfNeeded();
         }
         task.updateDeadlineFromOrderElement();
     }

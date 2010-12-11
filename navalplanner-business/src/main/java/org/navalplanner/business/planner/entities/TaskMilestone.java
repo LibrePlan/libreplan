@@ -139,7 +139,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected void initializeEndDate() {
+    protected void initializeDates() {
         // do nothing
     }
 

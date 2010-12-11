@@ -68,12 +68,12 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         OrderElement orderElement = taskSource.getOrderElement();
         orderElement.applyStartConstraintIfNeededTo(task);
         Task result = create(task, taskSource);
-        result.initializeEndDate();
+        result.initializeDates();
         return result;
     }
 
     @Override
-    protected void initializeEndDate() {
+    protected void initializeDates() {
         EffortDuration workHours = EffortDuration.hours(getWorkHours());
         EffortDuration effortStandardPerDay = EffortDuration.hours(8);
 
@@ -81,10 +81,18 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
 
         IntraDayDate start = getIntraDayStartDate();
-        IntraDayDate newEnd = IntraDayDate.create(
-                start.getDate().plusDays(daysElapsed), start
-                        .getEffortDuration().plus(remainder));
-        setIntraDayEndDate(newEnd);
+        if (start != null) {
+            IntraDayDate calculatedEnd = IntraDayDate.create(
+                    start.getDate().plusDays(daysElapsed), start
+                            .getEffortDuration().plus(remainder));
+            setIntraDayEndDate(calculatedEnd);
+        } else {
+            IntraDayDate end = getIntraDayEndDate();
+            IntraDayDate calculatedStart = IntraDayDate.startOfDay(end
+                    .getDate().minusDays(
+                            daysElapsed + (remainder.isZero() ? 0 : 1)));
+            setIntraDayStartDate(calculatedStart);
+        }
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
