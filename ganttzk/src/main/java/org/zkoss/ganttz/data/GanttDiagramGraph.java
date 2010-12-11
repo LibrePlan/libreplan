@@ -1058,14 +1058,15 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         }
 
         DatesBasedPositionRestrictions biggerThan(GanttDate start, GanttDate end) {
-            return new DatesBasedPositionRestrictions(
-                    ComparisonType.BIGGER_OR_EQUAL_THAN, start, end);
+            ComparisonType type = scheduleBackwards ? ComparisonType.BIGGER_OR_EQUAL_THAN_LEFT_FLOATING
+                    : ComparisonType.BIGGER_OR_EQUAL_THAN;
+            return new DatesBasedPositionRestrictions(type, start, end);
         }
 
         DatesBasedPositionRestrictions lessThan(GanttDate start, GanttDate end) {
-            return new DatesBasedPositionRestrictions(
-                    ComparisonType.LESS_OR_EQUAL_THAN_RIGHT_FLOATING, start,
-                    end);
+            ComparisonType type = scheduleBackwards ? ComparisonType.LESS_OR_EQUAL_THAN_RIGHT_FLOATING
+                    : ComparisonType.LESS_OR_EQUAL_THAN;
+            return new DatesBasedPositionRestrictions(type, start, end);
         }
 
         class DatesBasedPositionRestrictions extends PositionRestrictions {

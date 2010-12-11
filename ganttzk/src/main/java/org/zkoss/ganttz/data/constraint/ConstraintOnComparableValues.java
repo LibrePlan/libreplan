@@ -54,7 +54,7 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
     }
 
     public enum ComparisonType {
-        LESS_OR_EQUAL_THAN, LESS_OR_EQUAL_THAN_RIGHT_FLOATING, BIGGER_OR_EQUAL_THAN, EQUAL_TO;
+        LESS_OR_EQUAL_THAN, LESS_OR_EQUAL_THAN_RIGHT_FLOATING, BIGGER_OR_EQUAL_THAN, BIGGER_OR_EQUAL_THAN_LEFT_FLOATING, EQUAL_TO;
     }
 
     private final T comparisonValue;
@@ -76,6 +76,7 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         case LESS_OR_EQUAL_THAN:
             return min(comparisonValue, value);
         case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
+        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
             return comparisonValue;
         case BIGGER_OR_EQUAL_THAN:
             return max(comparisonValue, value);
@@ -101,6 +102,7 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
             return value.compareTo(comparisonValue) <= 0;
         case BIGGER_OR_EQUAL_THAN:
+        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
             return value.compareTo(comparisonValue) >= 0;
         case EQUAL_TO:
             return value.compareTo(comparisonValue) == 0;
