@@ -28,7 +28,7 @@ import org.joda.time.LocalDate;
 
 public interface ITaskLeafConstraint {
 
-    TaskStartConstraint getStartConstraint();
+    TaskPositionConstraint getPositionConstraint();
 
     void explicityMoved(LocalDate date);
 }

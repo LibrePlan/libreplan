@@ -58,10 +58,10 @@
                     <param name="enumClass">org.navalplanner.business.planner.entities.CalculatedValue</param>
                 </type>
             </property>
-            <component name="startConstraint">
-                <property name="startConstraintType" column="start_constraint_type">
+            <component name="positionConstraint">
+                <property name="constraintType" column="constraint_type">
                     <type name="org.hibernate.type.EnumType">
-                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                        <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
                 <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"
@@ -111,9 +111,9 @@
             <key column="task_element_id"></key>
 
             <component name="startConstraint">
-                <property name="startConstraintType" column="start_constraint_type">
+                <property name="constraintType" column="constraint_type">
                     <type name="org.hibernate.type.EnumType">
-                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                        <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
                 <property name="constraintDate" column="constraint_date"

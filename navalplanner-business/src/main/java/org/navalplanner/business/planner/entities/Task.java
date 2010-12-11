@@ -113,7 +113,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         }
     }
 
-    private TaskStartConstraint startConstraint = new TaskStartConstraint();
+    private TaskPositionConstraint positionConstraint = new TaskPositionConstraint();
 
     private SubcontractedTaskData subcontractedTaskData;
 
@@ -396,14 +396,14 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void explicityMoved(LocalDate date) {
-        getStartConstraint().explicityMovedTo(date);
+        getPositionConstraint().explicityMovedTo(date);
     }
 
-    public TaskStartConstraint getStartConstraint() {
-        if (startConstraint == null) {
-            startConstraint = new TaskStartConstraint();
+    public TaskPositionConstraint getPositionConstraint() {
+        if (positionConstraint == null) {
+            positionConstraint = new TaskPositionConstraint();
         }
-        return startConstraint;
+        return positionConstraint;
     }
 
     private static abstract class AllocationModificationStrategy {

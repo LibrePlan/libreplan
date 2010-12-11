@@ -25,22 +25,22 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 
 /**
- * Component class that encapsulates a {@link StartConstraintType} and its
+ * Component class that encapsulates a {@link PositionConstraintType} and its
  * associated constraint date <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class TaskStartConstraint {
+public class TaskPositionConstraint {
 
-    private StartConstraintType startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
+    private PositionConstraintType constraintType = PositionConstraintType.AS_SOON_AS_POSSIBLE;
 
     private LocalDate constraintDate = null;
 
-    public TaskStartConstraint() {
+    public TaskPositionConstraint() {
     }
 
-    public StartConstraintType getStartConstraintType() {
-        return startConstraintType != null ? startConstraintType
-                : StartConstraintType.AS_SOON_AS_POSSIBLE;
+    public PositionConstraintType getConstraintType() {
+        return constraintType != null ? constraintType
+                : PositionConstraintType.AS_SOON_AS_POSSIBLE;
     }
 
     public Date getConstraintDateAsDate() {
@@ -50,7 +50,7 @@ public class TaskStartConstraint {
 
     public void explicityMovedTo(LocalDate date) {
         Validate.notNull(date);
-        startConstraintType = startConstraintType.newTypeAfterMoved();
+        constraintType = constraintType.newTypeAfterMoved();
         constraintDate = date;
     }
 
@@ -61,33 +61,33 @@ public class TaskStartConstraint {
     public void notEarlierThan(LocalDate date) {
         Validate.notNull(date);
         this.constraintDate = date;
-        this.startConstraintType = StartConstraintType.START_NOT_EARLIER_THAN;
+        this.constraintType = PositionConstraintType.START_NOT_EARLIER_THAN;
     }
 
     public void finishNotLaterThan(LocalDate date) {
         Validate.notNull(date);
         this.constraintDate = date;
-        this.startConstraintType = StartConstraintType.FINISH_NOT_LATER_THAN;
+        this.constraintType = PositionConstraintType.FINISH_NOT_LATER_THAN;
     }
 
     public void asLateAsPossible() {
-        this.startConstraintType = StartConstraintType.AS_LATE_AS_POSSIBLE;
+        this.constraintType = PositionConstraintType.AS_LATE_AS_POSSIBLE;
         this.constraintDate = null;
     }
 
     public void asSoonAsPossible() {
-        this.startConstraintType = StartConstraintType.AS_SOON_AS_POSSIBLE;
+        this.constraintType = PositionConstraintType.AS_SOON_AS_POSSIBLE;
         this.constraintDate = null;
     }
 
-    public boolean isValid(StartConstraintType type, LocalDate value) {
+    public boolean isValid(PositionConstraintType type, LocalDate value) {
         return type != null
                 && type.isAssociatedDateRequired() == (value != null);
     }
 
-    public void update(StartConstraintType type, LocalDate value) {
+    public void update(PositionConstraintType type, LocalDate value) {
         Validate.isTrue(isValid(type, value));
-        this.startConstraintType = type;
+        this.constraintType = type;
         this.constraintDate = value;
     }
 

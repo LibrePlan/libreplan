@@ -23,45 +23,45 @@ package org.navalplanner.business.planner.entities;
  * Enum with all possible ways of calculating the start of a task <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public enum StartConstraintType {
+public enum PositionConstraintType {
     AS_SOON_AS_POSSIBLE(false) {
         @Override
-        public StartConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     },
     START_NOT_EARLIER_THAN(true) {
         @Override
-        public StartConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     },
     START_IN_FIXED_DATE(true) {
         @Override
-        public StartConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
     },
     AS_LATE_AS_POSSIBLE(false) {
         @Override
-        public StartConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved() {
             return FINISH_NOT_LATER_THAN;
         }
     },
     FINISH_NOT_LATER_THAN(true) {
         @Override
-        public StartConstraintType newTypeAfterMoved() {
+        public PositionConstraintType newTypeAfterMoved() {
             return FINISH_NOT_LATER_THAN;
         }
     };
 
     private boolean dateRequired;
 
-    private StartConstraintType(boolean dateRequired) {
+    private PositionConstraintType(boolean dateRequired) {
         this.dateRequired = dateRequired;
     }
 
-    public abstract StartConstraintType newTypeAfterMoved();
+    public abstract PositionConstraintType newTypeAfterMoved();
 
     public boolean isAssociatedDateRequired() {
         return dateRequired;

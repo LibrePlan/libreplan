@@ -70,11 +70,11 @@ import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -121,9 +121,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             TaskElement taskElement) {
         if (taskElement instanceof ITaskLeafConstraint) {
             ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
-            TaskStartConstraint startConstraint = task.getStartConstraint();
-            final StartConstraintType constraintType = startConstraint
-                    .getStartConstraintType();
+            TaskPositionConstraint startConstraint = task.getPositionConstraint();
+            final PositionConstraintType constraintType = startConstraint
+                    .getConstraintType();
             switch (constraintType) {
             case AS_SOON_AS_POSSIBLE:
                 return Collections.emptyList();
@@ -144,8 +144,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             TaskElement taskElement, LocalDate deadline) {
         if (taskElement instanceof ITaskLeafConstraint) {
             ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
-            TaskStartConstraint endConstraint = task.getStartConstraint();
-            StartConstraintType type = endConstraint.getStartConstraintType();
+            TaskPositionConstraint endConstraint = task.getPositionConstraint();
+            PositionConstraintType type = endConstraint.getConstraintType();
             switch (type) {
             case AS_LATE_AS_POSSIBLE:
                 if (deadline != null) {

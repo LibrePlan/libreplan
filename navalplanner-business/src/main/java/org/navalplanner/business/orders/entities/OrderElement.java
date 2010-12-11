@@ -56,7 +56,7 @@ import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -835,15 +835,15 @@ public abstract class OrderElement extends IntegrationEntity implements
             current = current.getParent();
         }
         if (scheduleBackwards) {
-            task.getStartConstraint().asLateAsPossible();
+            task.getPositionConstraint().asLateAsPossible();
         } else {
-            task.getStartConstraint().asSoonAsPossible();
+            task.getPositionConstraint().asSoonAsPossible();
         }
     }
 
     protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
             boolean scheduleBackwards) {
-        TaskStartConstraint constraint = task.getStartConstraint();
+        TaskPositionConstraint constraint = task.getPositionConstraint();
         if (getInitDate() != null
                 && (getDeadline() == null || !scheduleBackwards)) {
             constraint.notEarlierThan(

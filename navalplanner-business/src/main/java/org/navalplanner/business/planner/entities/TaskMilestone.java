@@ -49,7 +49,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
-    private TaskStartConstraint startConstraint = new TaskStartConstraint();
+    private TaskPositionConstraint startConstraint = new TaskPositionConstraint();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -164,12 +164,12 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void explicityMoved(LocalDate date) {
-        getStartConstraint().explicityMovedTo(date);
+        getPositionConstraint().explicityMovedTo(date);
     }
 
-    public TaskStartConstraint getStartConstraint() {
+    public TaskPositionConstraint getPositionConstraint() {
         if (startConstraint == null) {
-            startConstraint = new TaskStartConstraint();
+            startConstraint = new TaskPositionConstraint();
         }
         return startConstraint;
     }

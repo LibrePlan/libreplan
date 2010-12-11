@@ -30,10 +30,10 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
-import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.Util;
@@ -73,7 +73,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     // This is a workaround, because in business we don't have access to
     // I18nHelper
     private enum WebStartConstraintType {
-        AS_SOON_AS_POSSIBLE(StartConstraintType.AS_SOON_AS_POSSIBLE) {
+        AS_SOON_AS_POSSIBLE(PositionConstraintType.AS_SOON_AS_POSSIBLE) {
             @Override
             public String getDescription() {
                 return _("as soon as possible");
@@ -84,7 +84,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("AS_SOON_AS_POSSIBLE");
             }
         },
-        START_NOT_EARLIER_THAN(StartConstraintType.START_NOT_EARLIER_THAN) {
+        START_NOT_EARLIER_THAN(PositionConstraintType.START_NOT_EARLIER_THAN) {
             @Override
             public String getDescription() {
                 return _("start not earlier than");
@@ -95,7 +95,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("START_NOT_EARLIER_THAN");
             }
         },
-        START_IN_FIXED_DATE(StartConstraintType.START_IN_FIXED_DATE) {
+        START_IN_FIXED_DATE(PositionConstraintType.START_IN_FIXED_DATE) {
             @Override
             public String getDescription() {
                 return _("start in fixed date");
@@ -106,7 +106,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("START_IN_FIXED_DATE");
             }
         },
-        FINISH_NOT_LATER_THAN(StartConstraintType.FINISH_NOT_LATER_THAN) {
+        FINISH_NOT_LATER_THAN(PositionConstraintType.FINISH_NOT_LATER_THAN) {
             @Override
             public String getDescription() {
                 return _("finish not later than");
@@ -117,7 +117,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("FINISH_NOT_LATER_THAN");
             }
         },
-        AS_LATE_AS_POSSIBLE(StartConstraintType.AS_LATE_AS_POSSIBLE) {
+        AS_LATE_AS_POSSIBLE(PositionConstraintType.AS_LATE_AS_POSSIBLE) {
             @Override
             public String getDescription() {
                 return _("as late as possible");
@@ -138,9 +138,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
             }
         }
 
-        private final StartConstraintType type;
+        private final PositionConstraintType type;
 
-        private WebStartConstraintType(StartConstraintType type) {
+        private WebStartConstraintType(PositionConstraintType type) {
             this.type = type;
         }
 
@@ -157,13 +157,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
 
         public static boolean representsType(Comboitem item,
-                StartConstraintType type) {
+                PositionConstraintType type) {
             WebStartConstraintType webType = (WebStartConstraintType) item
                     .getValue();
             return webType.equivalentTo(type);
         }
 
-        private boolean equivalentTo(StartConstraintType type) {
+        private boolean equivalentTo(PositionConstraintType type) {
             return this.type == type;
         }
 
@@ -171,7 +171,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             return type.isAssociatedDateRequired();
         }
 
-        public StartConstraintType getType() {
+        public PositionConstraintType getType() {
             return type;
         }
     }
@@ -316,13 +316,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void showStartConstraintRow(ITaskLeafConstraint task) {
         startConstraint.setVisible(true);
-        StartConstraintType type = task.getStartConstraint()
-                .getStartConstraintType();
+        PositionConstraintType type = task.getPositionConstraint()
+                .getConstraintType();
         startConstraintTypes.setSelectedItemApi(findComboWithType(type));
         updateStartConstraint(type);
     }
 
-    private Comboitem findComboWithType(StartConstraintType type) {
+    private Comboitem findComboWithType(PositionConstraintType type) {
         for (Object component : startConstraintTypes.getChildren()) {
             if (component instanceof Comboitem) {
                 Comboitem item = (Comboitem) component;
@@ -339,9 +339,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
         updateStartConstraint(constraint.getType());
     }
 
-    private void updateStartConstraint(StartConstraintType type) {
-        TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
-                .getStartConstraint();
+    private void updateStartConstraint(PositionConstraintType type) {
+        TaskPositionConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
+                .getPositionConstraint();
         startConstraintDate.setVisible(type.isAssociatedDateRequired());
         if (taskStartConstraint.getConstraintDateAsDate() != null) {
             startConstraintDate.setValue(taskStartConstraint
@@ -350,8 +350,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     private boolean saveConstraintChanges() {
-        TaskStartConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint()
-                .getStartConstraint();
+        TaskPositionConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint()
+                .getPositionConstraint();
         WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
                 .getSelectedItemApi().getValue();
         LocalDate inputDate = type.isAssociatedDateRequired() ? LocalDate

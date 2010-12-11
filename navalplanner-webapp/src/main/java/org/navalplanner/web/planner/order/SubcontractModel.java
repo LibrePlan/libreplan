@@ -27,10 +27,10 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
-import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -116,10 +116,10 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     private void convertOnStartOnFixedDate(Task task) {
-        TaskStartConstraint taskConstraint = task.getStartConstraint();
-        if (taskConstraint.isValid(StartConstraintType.START_IN_FIXED_DATE,
+        TaskPositionConstraint taskConstraint = task.getPositionConstraint();
+        if (taskConstraint.isValid(PositionConstraintType.START_IN_FIXED_DATE,
                 task.getIntraDayStartDate().getDate())) {
-            taskConstraint.update(StartConstraintType.START_IN_FIXED_DATE, task
+            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE, task
                     .getIntraDayStartDate().getDate());
         }
     }
