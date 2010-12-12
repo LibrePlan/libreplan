@@ -27,7 +27,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
+import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.workingday.IntraDayDate;
@@ -445,7 +445,7 @@ public class EditTaskController extends GenericForwardComposer {
     }
 
     private boolean isTaskLeafConstraint() {
-        return (taskElement != null && taskElement instanceof ITaskLeafConstraint);
+        return (taskElement != null && taskElement instanceof ITaskPositionConstrained);
     }
 
     public void showNonPermitChangeResourceAllocationType() {

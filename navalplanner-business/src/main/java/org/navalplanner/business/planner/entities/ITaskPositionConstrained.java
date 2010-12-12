@@ -26,7 +26,7 @@ package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
 
-public interface ITaskLeafConstraint {
+public interface ITaskPositionConstrained {
 
     TaskPositionConstraint getPositionConstraint();
 

@@ -61,7 +61,7 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Task extends TaskElement implements ITaskLeafConstraint {
+public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();

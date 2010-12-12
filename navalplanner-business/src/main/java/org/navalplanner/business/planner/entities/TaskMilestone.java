@@ -37,7 +37,7 @@ import org.navalplanner.business.workingday.IntraDayDate;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
+public class TaskMilestone extends TaskElement implements ITaskPositionConstrained {
 
     public static TaskMilestone create(Date initialDate) {
         Validate.notNull(initialDate);

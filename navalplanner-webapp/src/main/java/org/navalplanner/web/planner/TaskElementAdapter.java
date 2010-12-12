@@ -66,7 +66,7 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
+import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -119,8 +119,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement) {
-        if (taskElement instanceof ITaskLeafConstraint) {
-            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
+        if (taskElement instanceof ITaskPositionConstrained) {
+            ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task.getPositionConstraint();
             final PositionConstraintType constraintType = startConstraint
                     .getConstraintType();
@@ -142,8 +142,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     public static List<Constraint<GanttDate>> getEndConstraintsFor(
             TaskElement taskElement, LocalDate deadline) {
-        if (taskElement instanceof ITaskLeafConstraint) {
-            ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
+        if (taskElement instanceof ITaskPositionConstrained) {
+            ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint endConstraint = task.getPositionConstraint();
             PositionConstraintType type = endConstraint.getConstraintType();
             switch (type) {
@@ -871,8 +871,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public void moveTo(GanttDate date) {
             setBeginDate(date);
-            if (taskElement instanceof ITaskLeafConstraint) {
-                ITaskLeafConstraint task = (ITaskLeafConstraint) taskElement;
+            if (taskElement instanceof ITaskPositionConstrained) {
+                ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
                 task.explicityMoved(toLocalDate(date));
             }
         }

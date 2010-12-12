@@ -29,7 +29,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
+import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -291,8 +291,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
             showResourceAllocationTypeRow(task);
         } else {
             hideDurationRow();
-            if (currentTaskElement instanceof ITaskLeafConstraint) {
-                showStartConstraintRow((ITaskLeafConstraint) currentTaskElement);
+            if (currentTaskElement instanceof ITaskPositionConstrained) {
+                showStartConstraintRow((ITaskPositionConstrained) currentTaskElement);
             } else {
                 hideStartConstraintRow();
             }
@@ -314,7 +314,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraint.setVisible(false);
     }
 
-    private void showStartConstraintRow(ITaskLeafConstraint task) {
+    private void showStartConstraintRow(ITaskPositionConstrained task) {
         startConstraint.setVisible(true);
         PositionConstraintType type = task.getPositionConstraint()
                 .getConstraintType();
@@ -367,8 +367,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
     }
 
-    private ITaskLeafConstraint currentTaskElementAsTaskLeafConstraint() {
-        return (ITaskLeafConstraint) currentTaskElement;
+    private ITaskPositionConstrained currentTaskElementAsTaskLeafConstraint() {
+        return (ITaskPositionConstrained) currentTaskElement;
     }
 
     private void hideDurationRow() {
@@ -445,7 +445,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public void accept() {
         boolean ok = true;
-        if (currentTaskElement instanceof ITaskLeafConstraint) {
+        if (currentTaskElement instanceof ITaskPositionConstrained) {
             ok = saveConstraintChanges();
         }
         if (ok) {
