@@ -868,12 +868,27 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
-        public void moveTo(GanttDate date) {
+        public void moveTo(GanttDate newStart) {
             if (taskElement instanceof ITaskPositionConstrained) {
-                setBeginDate(date);
                 ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
-                task.explicityMoved(toLocalDate(date));
+                if (task.getPositionConstraint().isConstraintAppliedToStart()) {
+                    setBeginDate(newStart);
+                    task.explicityMoved(toLocalDate(newStart));
+                } else {
+                    GanttDate newEnd = inferEndFrom(newStart);
+                    setEndDate(newEnd);
+                    task.explicityMoved(toLocalDate(newEnd));
+                }
             }
+        }
+
+        private GanttDate inferEndFrom(GanttDate newStart) {
+            if (taskElement instanceof Task) {
+                Task task = (Task) taskElement;
+                return toGantt(task
+                        .calculateEndKeepingLength(toIntraDay(newStart)));
+            }
+            return newStart;
         }
 
         @Override

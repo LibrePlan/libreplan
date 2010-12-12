@@ -80,7 +80,7 @@ public interface ITaskFundamentalProperties {
 
     public List<Constraint<GanttDate>> getEndConstraints();
 
-    public void moveTo(GanttDate date);
+    public void moveTo(GanttDate newStart);
 
     public boolean isSubcontracted();
 

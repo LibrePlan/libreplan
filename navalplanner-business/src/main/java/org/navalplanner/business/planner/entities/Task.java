@@ -542,7 +542,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
+    public IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
         return durationBetweenDates.fromStartToEnd(newStartDate);
     }

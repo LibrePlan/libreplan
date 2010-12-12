@@ -25,33 +25,63 @@ package org.navalplanner.business.planner.entities;
  */
 public enum PositionConstraintType {
     AS_SOON_AS_POSSIBLE(false) {
+
         @Override
         public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
+        }
+
+        @Override
+        public boolean appliesToTheStart() {
+            return true;
         }
     },
     START_NOT_EARLIER_THAN(true) {
+
         @Override
         public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
+        }
+
+        @Override
+        public boolean appliesToTheStart() {
+            return true;
         }
     },
     START_IN_FIXED_DATE(true) {
+
         @Override
         public PositionConstraintType newTypeAfterMoved() {
             return START_NOT_EARLIER_THAN;
         }
+
+        @Override
+        public boolean appliesToTheStart() {
+            return true;
+        }
     },
     AS_LATE_AS_POSSIBLE(false) {
+
         @Override
         public PositionConstraintType newTypeAfterMoved() {
             return FINISH_NOT_LATER_THAN;
         }
+
+        @Override
+        public boolean appliesToTheStart() {
+            return false;
+        }
     },
     FINISH_NOT_LATER_THAN(true) {
+
         @Override
         public PositionConstraintType newTypeAfterMoved() {
             return FINISH_NOT_LATER_THAN;
+        }
+
+        @Override
+        public boolean appliesToTheStart() {
+            return false;
         }
     };
 
@@ -67,4 +97,5 @@ public enum PositionConstraintType {
         return dateRequired;
     }
 
+    public abstract boolean appliesToTheStart();
 }

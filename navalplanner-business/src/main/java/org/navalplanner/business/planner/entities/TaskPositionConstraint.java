@@ -43,6 +43,14 @@ public class TaskPositionConstraint {
                 : PositionConstraintType.AS_SOON_AS_POSSIBLE;
     }
 
+    public boolean isConstraintAppliedToStart() {
+        return getConstraintType().appliesToTheStart();
+    }
+
+    public boolean isConstraintAppliedToEnd() {
+        return !isConstraintAppliedToStart();
+    }
+
     public Date getConstraintDateAsDate() {
         return constraintDate != null ? constraintDate.toDateTimeAtStartOfDay()
                 .toDate() : null;
