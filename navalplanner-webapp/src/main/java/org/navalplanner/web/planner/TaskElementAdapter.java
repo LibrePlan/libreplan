@@ -54,7 +54,6 @@ import org.joda.time.Seconds;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.labels.entities.Label;
@@ -67,10 +66,10 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -870,8 +869,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public void moveTo(GanttDate date) {
-            setBeginDate(date);
             if (taskElement instanceof ITaskPositionConstrained) {
+                setBeginDate(date);
                 ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
                 task.explicityMoved(toLocalDate(date));
             }
