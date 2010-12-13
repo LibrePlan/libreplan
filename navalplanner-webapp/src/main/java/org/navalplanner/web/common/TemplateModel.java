@@ -162,8 +162,7 @@ public class TemplateModel implements ITemplateModel {
             case END_END:
                 return DependencyType.END_END;
             case START_END:
-                throw new RuntimeException(Dependency.Type.START_END
-                        + " graphically it's not supported");
+                return DependencyType.START_END;
             default:
                 throw new RuntimeException("can't handle "
                         + domainDependencyType);

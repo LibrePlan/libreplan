@@ -41,6 +41,8 @@ public enum DependencyType {
 
     END_START(Point.END, Point.START),
 
+    START_END(Point.START, Point.END),
+
     START_START(Point.START, Point.START),
 
     END_END(Point.END, Point.END);

@@ -996,11 +996,12 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         switch (type) {
         case END_START:
             return DependencyType.END_START;
+        case START_END:
+            return DependencyType.START_END;
         case START_START:
             return DependencyType.START_START;
         case END_END:
             return DependencyType.END_END;
-        case START_END:
         default:
             throw new RuntimeException(_("{0} not supported yet", type));
         }
@@ -1010,6 +1011,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         switch (type) {
         case END_START:
             return Type.END_START;
+        case START_END:
+            return Type.START_END;
         case START_START:
             return Type.START_START;
         case END_END:
