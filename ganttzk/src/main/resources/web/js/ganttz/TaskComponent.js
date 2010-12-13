@@ -100,8 +100,8 @@ ganttz.TaskComponent = zk.$extends(zk.Widget, {
         this.$supers('bind_', arguments);
         this.domListen_(this.$n(), "onMouseover", '_showTooltip');
         this.domListen_(this.$n(), "onMouseout", '_hideTooltip');
-        if( jq(this.$n()).attr('movingtasksenabled') ) this._addDragDrop();
-        if( jq(this.$n()).attr('resizingtasksenabled')) this._addResize();
+        if( jq(this.$n()).attr('movingtasksenabled') == "true" ) this._addDragDrop();
+        if( jq(this.$n()).attr('resizingtasksenabled') == "true" ) this._addResize();
     },
     unbind_ : function(event){
         this.domUnlisten_(this.$n(), "onMouseout", '_hideTooltip');
