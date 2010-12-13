@@ -56,7 +56,9 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.ConstraintCalculator;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
@@ -94,25 +96,12 @@ public class TemplateModel implements ITemplateModel {
                     .getDestination(), toGraphicalType(each.getType()), true);
         }
 
-        public static List<Constraint<GanttDate>> getStartConstraintsGiven(
-                TemplateModelAdapter adapter, Set<DependencyWithVisibility> withDependencies) {
+        public static List<Constraint<GanttDate>> getConstraints(
+                ConstraintCalculator<TaskElement> calculator,
+                Set<DependencyWithVisibility> withDependencies, Point point) {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
-                TaskElement source = each.getSource();
-                DependencyType type = each.getType();
-                result.addAll(type.getStartConstraints(source, adapter));
-            }
-            return result;
-        }
-
-        public static List<Constraint<GanttDate>> getEndConstraintsGiven(
-                TemplateModelAdapter adapter,
-                Set<DependencyWithVisibility> withDependencies) {
-            List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
-            for (DependencyWithVisibility each : withDependencies) {
-                TaskElement source = each.getSource();
-                DependencyType type = each.getType();
-                result.addAll(type.getEndConstraints(source, adapter));
+                result.addAll(calculator.getConstraints(each, point));
             }
             return result;
         }

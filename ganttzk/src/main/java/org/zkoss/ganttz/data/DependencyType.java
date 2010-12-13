@@ -20,11 +20,7 @@
 
 package org.zkoss.ganttz.data;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
-
-import java.util.List;
 
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.constraint.Constraint;
@@ -36,15 +32,45 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public enum DependencyType {
 
-    VOID(Point.VOID, Point.VOID),
+    VOID(Point.VOID, Point.VOID) {
 
-    END_START(Point.END, Point.START),
+        @Override
+        public DependencyType inverse() {
+            return VOID;
+        }
+    },
 
-    START_END(Point.START, Point.END),
+    END_START(Point.END, Point.START) {
 
-    START_START(Point.START, Point.START),
+        @Override
+        public DependencyType inverse() {
+            return START_END;
+        }
+    },
 
-    END_END(Point.END, Point.END);
+    START_END(Point.START, Point.END) {
+
+        @Override
+        public DependencyType inverse() {
+            return END_START;
+        }
+    },
+
+    START_START(Point.START, Point.START) {
+
+        @Override
+        public DependencyType inverse() {
+            return START_START;
+        }
+    },
+
+    END_END(Point.END, Point.END) {
+
+        @Override
+        public DependencyType inverse() {
+            return END_END;
+        }
+    };
 
     public enum Point {
         VOID, START, END;
@@ -69,52 +95,17 @@ public enum DependencyType {
         return biggerOrEqualThan(adapter.getStartDate(source));
     }
 
-    public final List<Constraint<GanttDate>> getStartConstraints(Task source) {
-        return getStartConstraints(source, GanttDiagramGraph.taskAdapter());
-    }
-
-    public final <V> List<Constraint<GanttDate>> getStartConstraints(V source,
-            IAdapter<V, ?> adapter) {
-        if (getDestination() != Point.START) {
-            return emptyList();
-        }
-        return constraintsFromReferenceDate(getReferenceDate(source, adapter));
-    }
-
-    public final List<Constraint<GanttDate>> getEndConstraints(Task source) {
-        return getEndConstraints(source, GanttDiagramGraph.taskAdapter());
-    }
-
-    public final <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-            IAdapter<V, ?> adapter) {
-        if (getDestination() != Point.END) {
-            return emptyList();
-        }
-        return constraintsFromReferenceDate(getReferenceDate(source, adapter));
-    }
-
-    private <V> GanttDate getReferenceDate(V source, IAdapter<V, ?> adapter) {
-        if (getSource() == Point.START) {
-            return adapter.getStartDate(source);
-        } else {
-            return adapter.getEndDateFor(source);
-        }
-    }
-
-    private List<Constraint<GanttDate>> constraintsFromReferenceDate(
-            GanttDate referenceDate) {
-        return singletonList(biggerOrEqualThan(referenceDate));
-    }
-
     public Point[] getSourceAndDestination() {
         return new Point[] { getSource(), getDestination() };
     }
 
-    private final Point getSource() {
+    public Point getSource() {
         return this.source;
     }
 
-    private final Point getDestination() {
+    public Point getDestination() {
         return this.destination;
     }
+
+    public abstract DependencyType inverse();
 }

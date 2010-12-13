@@ -2,10 +2,8 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.planner.TaskElementAdapter.toGantt;
 import static org.navalplanner.web.planner.TaskElementAdapter.toIntraDay;
-import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +16,9 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
 import org.navalplanner.web.planner.TaskElementAdapter;
+import org.zkoss.ganttz.data.ConstraintCalculator;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
@@ -64,22 +64,6 @@ public class TemplateModelAdapter implements
     }
 
     @Override
-    public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-            Set<DependencyWithVisibility> incoming) {
-        return DependencyWithVisibility.getEndConstraintsGiven(this, incoming);
-    }
-
-    @Override
-    public List<Constraint<GanttDate>> getCurrentLenghtConstraintFor(
-            TaskElement task) {
-        if (isContainer(task)) {
-            return Collections.emptyList();
-        }
-        return Collections.singletonList(biggerOrEqualThan(this
-                .getEndDateFor(task)));
-    }
-
-    @Override
     public Class<DependencyWithVisibility> getDependencyType() {
         return DependencyWithVisibility.class;
     }
@@ -116,10 +100,11 @@ public class TemplateModelAdapter implements
     }
 
     @Override
-    public List<Constraint<GanttDate>> getStartConstraintsGiven(
-            Set<DependencyWithVisibility> withDependencies) {
-        return DependencyWithVisibility.getStartConstraintsGiven(this,
-                withDependencies);
+    public List<Constraint<GanttDate>> getConstraints(
+            ConstraintCalculator<TaskElement> calculator,
+            Set<DependencyWithVisibility> withDependencies, Point point) {
+        return DependencyWithVisibility.getConstraints(calculator,
+                withDependencies, point);
     }
 
     @Override
