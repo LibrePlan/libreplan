@@ -1089,6 +1089,11 @@ span.z-dottree-line {
 .perspective-active.advanced-allocation .z-button-cm {
     background-image: url(../img/ico_advanced-allocation.png);
 }
+.perspective.montecarlo-simulation .z-button-cm,
+.perspective-active.montecarlo-simulation .z-button-cm {
+    background-image: url(../img/ico_montecarlo-simulation.png);
+}
+
 
 .perspectives-column {
     display:none;

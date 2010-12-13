@@ -42,8 +42,8 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
 import org.navalplanner.web.common.TemplateModelAdapter;
+import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -244,7 +244,7 @@ public class MonteCarloTabCreator {
 
         };
         return new CreatedOnDemandTab(_("MonteCarlo Method"),
-                "limiting-resources", componentCreator) {
+                "montecarlo-simulation", componentCreator) {
             @Override
             protected void afterShowAction() {
                 // do nothing
