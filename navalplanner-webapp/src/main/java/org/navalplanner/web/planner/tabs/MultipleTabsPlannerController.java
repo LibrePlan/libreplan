@@ -262,9 +262,9 @@ public class MultipleTabsPlannerController implements Composer,
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
+            .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(tabWithNameReloading(resourceLoadTab, typeChanged))
             .add(tabWithNameReloading(limitingResourcesTab, typeChanged))
-            .add(tabWithNameReloading(ordersTab, typeChanged))
             .add(visibleOnlyAtOrderMode(advancedAllocationTab));
 
         if (isMontecarloVisible) {
