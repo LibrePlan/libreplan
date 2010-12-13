@@ -24,7 +24,6 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
-import java.util.Date;
 import java.util.List;
 
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
@@ -38,59 +37,13 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public enum DependencyType {
 
-    VOID(Point.VOID, Point.VOID) {
-        @Override
-        public Date calculateEndDestinyTask(Task originalTask, Date current) {
-            return current;
-        }
+    VOID(Point.VOID, Point.VOID),
 
-        @Override
-        public Date calculateStartDestinyTask(Task originalTask,
-                Date current) {
-            return current;
-        }
+    END_START(Point.END, Point.START),
 
-    },
-    END_START(Point.END, Point.START) {
-        @Override
-        public Date calculateEndDestinyTask(Task originalTask, Date current) {
-            return current;
-        }
+    START_START(Point.START, Point.START),
 
-        @Override
-        public Date calculateStartDestinyTask(Task originalTask,
-                Date current) {
-            return getBigger(originalTask.getEndDate().toDayRoundedDate(),
-                    current);
-        }
-    },
-    START_START(Point.START, Point.START) {
-
-        @Override
-        public Date calculateEndDestinyTask(Task originTask, Date current) {
-            return current;
-        }
-
-        @Override
-        public Date calculateStartDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getBeginDate().toDayRoundedDate(),
-                    current);
-        }
-    },
-    END_END(Point.END, Point.END) {
-
-        @Override
-        public Date calculateEndDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getEndDate().toDayRoundedDate(),
-                    current);
-        }
-
-        @Override
-        public Date calculateStartDestinyTask(Task originTask, Date current) {
-            return current;
-        }
-
-    };
+    END_END(Point.END, Point.END);
 
     private enum Point {
         VOID, START, END;
@@ -114,19 +67,6 @@ public enum DependencyType {
             IAdapter<V, ?> adapter, V source) {
         return biggerOrEqualThan(adapter.getStartDate(source));
     }
-
-    private static Date getBigger(Date date1, Date date2) {
-        if (date1.before(date2)) {
-            return date2;
-        }
-        return date1;
-    }
-
-    public abstract Date calculateEndDestinyTask(Task originTask,
-            Date current);
-
-    public abstract Date calculateStartDestinyTask(Task originTask,
-            Date current);
 
     public final List<Constraint<GanttDate>> getStartConstraints(Task source) {
         return getStartConstraints(source, GanttDiagramGraph.taskAdapter());
