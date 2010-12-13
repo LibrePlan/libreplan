@@ -52,6 +52,7 @@ import org.navalplanner.ws.labels.api.LabelDTO;
 import org.navalplanner.ws.labels.api.LabelTypeDTO;
 import org.navalplanner.ws.labels.api.LabelTypeListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,24 +148,47 @@ public class LabelServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importValidLabelType() {
-        int previous = labelTypeDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
 
         LabelTypeDTO labelTypeDTO = new LabelTypeDTO("label-type-name"
-                + UUID.randomUUID().toString(),
-                new ArrayList<LabelDTO>());
+                + UUID.randomUUID().toString(), new ArrayList<LabelDTO>());
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = labelService
                 .addLabelTypes(new LabelTypeListDTO(Arrays.asList(labelTypeDTO))).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
+        int current = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
+        assertThat(current, equalTo(previous + 1));
 
     }
 
     @Test
+    @NotTransactional
     public void importTwoValidLabelType() {
-        int previous = labelTypeDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
 
         String nameType1 = "label-type-" + UUID.randomUUID().toString();
         String nameType2 = "label-type-" + UUID.randomUUID().toString();
@@ -182,7 +206,14 @@ public class LabelServiceTest {
 
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        List<LabelType> labelTypes = labelTypeDAO.getAll();
+        List<LabelType> labelTypes = transactionService
+                .runOnTransaction(new IOnTransaction<List<LabelType>>() {
+                    @Override
+                    public List<LabelType> execute() {
+                        return labelTypeDAO.getAll();
+                    }
+                });
+
         assertThat(labelTypes.size(), equalTo(previous + 2));
 
         int cont = 0;
@@ -203,8 +234,16 @@ public class LabelServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importTwoLabelTypeWithRepeatedName() {
-        int previous = labelTypeDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
 
         String labelTypeName = "label-type-nameX";
         LabelTypeDTO labelTypeDTO1 = new LabelTypeDTO(labelTypeName,
@@ -219,13 +258,29 @@ public class LabelServiceTest {
         assertThat(instanceConstraintViolationsList.get(0).numItem,
                 equalTo(new Long(2)));
 
+        int current = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
         // Just the first label type was stored
-        assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
+        assertThat(current, equalTo(previous + 1));
     }
 
     @Test
+    @NotTransactional
     public void importValidLabelTypeWithTwoValidLabels() {
-        int previous = labelTypeDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
 
         LabelDTO labelDTO1 = new LabelDTO("label-name-1");
         LabelDTO labelDTO2 = new LabelDTO("label-name-2");
@@ -238,9 +293,19 @@ public class LabelServiceTest {
                 .addLabelTypes(new LabelTypeListDTO(Arrays.asList(labelTypeDTO))).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(0));
 
-        assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
+        List<LabelType> labelTypes = transactionService
+                .runOnTransaction(new IOnTransaction<List<LabelType>>() {
+                    @Override
+                    public List<LabelType> execute() {
+                        List<LabelType> labelTypes = labelTypeDAO.getAll();
+                        for (LabelType labelType : labelTypes) {
+                            labelType.getLabels().size();
+                        }
+                        return labelTypes;
+                    }
+                });
 
-        LabelType labelType = labelTypeDAO.getAll().get(previous);
+        LabelType labelType = labelTypes.get(previous);
         assertThat(labelType.getName(), equalTo(labelTypeDTO.name));
         assertThat(labelType.getLabels().size(), equalTo(2));
         for (Label label : labelType.getLabels()) {
@@ -250,8 +315,16 @@ public class LabelServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importLabelTypeWithNameAlreadyOnDatabase() {
-        int previous = labelTypeDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
 
         String name = transactionService
                 .runOnAnotherTransaction(new IOnTransaction<String>() {
@@ -262,7 +335,15 @@ public class LabelServiceTest {
                     }
 
                 });
-        assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
+        int current = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
+        assertThat(current, equalTo(previous + 1));
 
         LabelTypeDTO labelTypeDTO = new LabelTypeDTO(name,
                 new ArrayList<LabelDTO>());
@@ -271,7 +352,15 @@ public class LabelServiceTest {
                 .addLabelTypes(new LabelTypeListDTO(Arrays.asList(labelTypeDTO))).instanceConstraintViolationsList;
         assertThat(instanceConstraintViolationsList.size(), equalTo(1));
 
-        assertThat(labelTypeDAO.getAll().size(), equalTo(previous + 1));
+        current = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+
+                    @Override
+                    public Integer execute() {
+                        return labelTypeDAO.getAll().size();
+                    }
+                });
+        assertThat(current, equalTo(previous + 1));
     }
 
     @Test
