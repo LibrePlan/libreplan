@@ -137,4 +137,8 @@ public interface IConfigurationModel {
 
     void setCompanyLogoURL(String companyLogoURL);
 
+    Boolean isScenariosVisible();
+
+    void setScenariosVisible(Boolean scenariosVisible);
+
 }

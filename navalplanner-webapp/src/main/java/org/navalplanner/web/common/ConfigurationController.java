@@ -411,6 +411,14 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isMonteCarloMethodTabVisible();
     }
 
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        configurationModel.setScenariosVisible(scenariosVisible);
+    }
+
+    public Boolean isScenariosVisible() {
+        return configurationModel.isScenariosVisible();
+    }
+
     public class EntitySequenceGroupRenderer implements RowRenderer {
         @Override
         public void render(Row row, Object data) throws Exception {

@@ -56,6 +56,9 @@
 
         <property name="companyLogoURL" column="company_logo_url" />
 
+        <property name="scenariosVisible" not-null="true"
+            column="scenarios_visible" />
+
     </class>
 
 </hibernate-mapping>

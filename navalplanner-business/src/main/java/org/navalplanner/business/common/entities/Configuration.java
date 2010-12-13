@@ -75,6 +75,8 @@ public class Configuration extends BaseEntity {
 
     private String companyLogoURL;
 
+    private Boolean scenariosVisible;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -196,6 +198,14 @@ public class Configuration extends BaseEntity {
 
     public void setMonteCarloMethodTabVisible(Boolean monteCarloMethodTabVisible) {
         this.monteCarloMethodTabVisible = monteCarloMethodTabVisible;
+    }
+
+    public Boolean isScenariosVisible() {
+        return scenariosVisible;
+    }
+
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        this.scenariosVisible = scenariosVisible;
     }
 
     public void setGenerateCodeForBaseCalendars(

@@ -181,6 +181,11 @@
                                                 label="${i18n:_('MonteCarlo method')}"
                                                 checked="@{configurationController.monteCarloMethodTabVisible}" />
                                         </row>
+                                        <row>
+                                            <checkbox
+                                                label="${i18n:_('Enable scenarios module')}"
+                                                checked="@{configurationController.scenariosVisible}" />
+                                        </row>
                                     </rows>
                                 </grid>
                             </row>

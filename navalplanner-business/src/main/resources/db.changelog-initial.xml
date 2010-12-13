@@ -13,7 +13,6 @@
 
     </changeSet>
 
-
     <changeSet id="add-company-logo-url-configuration-setting" author="ltilve">
         <comment>Add new column with configuration setting</comment>
         <addColumn tableName="configuration">
@@ -39,6 +38,15 @@
         <renameColumn tableName="task_milestone"
             oldColumnName="start_constraint_type"
             newColumnName="constraint_type" columnDataType="INTEGER" />
+	</changeSet>
+
+    <changeSet id="add-scenarios-enabled-configuration-setting" author="ltilve">
+        <comment>Add new column with scenarios visibility flag</comment>
+        <addColumn tableName="configuration">
+            <column name="scenarios_visible" type="BOOLEAN" />
+        </addColumn>
+		<addDefaultValue tableName="configuration" columnName="scenarios_visible"
+            defaultValueBoolean="FALSE" />
     </changeSet>
 
 </databaseChangeLog>

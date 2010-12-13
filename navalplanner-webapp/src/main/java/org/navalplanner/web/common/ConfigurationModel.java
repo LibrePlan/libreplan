@@ -548,4 +548,14 @@ public class ConfigurationModel implements IConfigurationModel {
         configuration.setCompanyLogoURL(companyLogoURL);
     }
 
+    @Override
+    public Boolean isScenariosVisible() {
+        return configuration.isScenariosVisible();
+    }
+
+    @Override
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        configuration.setScenariosVisible(scenariosVisible);
+    }
+
 }
