@@ -27,7 +27,6 @@ import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.bigg
 import java.util.List;
 
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -47,7 +46,7 @@ public enum DependencyType {
 
     END_END(Point.END, Point.END);
 
-    private enum Point {
+    public enum Point {
         VOID, START, END;
     }
 
@@ -107,18 +106,8 @@ public enum DependencyType {
         return singletonList(biggerOrEqualThan(referenceDate));
     }
 
-    public final PointType getPointModified() {
-        Point destination = getDestination();
-        switch (destination) {
-        case VOID:
-            return PointType.NONE;
-        case START:
-            return PointType.BOTH;
-        case END:
-            return PointType.END;
-        default:
-            throw new RuntimeException("couldn't handle " + destination);
-        }
+    public Point[] getSourceAndDestination() {
+        return new Point[] { getSource(), getDestination() };
     }
 
     private final Point getSource() {

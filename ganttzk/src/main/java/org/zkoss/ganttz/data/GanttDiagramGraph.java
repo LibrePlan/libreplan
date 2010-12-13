@@ -23,6 +23,7 @@ package org.zkoss.ganttz.data;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -41,6 +42,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
 import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.ComparisonType;
@@ -119,8 +121,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         DependencyType getType(D dependency);
 
-        TaskPoint<V, D> getDestinationPoint(D dependency);
-
         boolean isVisible(D dependency);
 
         boolean isFixed(V task);
@@ -169,12 +169,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public DependencyType getType(Dependency dependency) {
             return dependency.getType();
-        }
-
-        @Override
-        public TaskPoint<Task, Dependency> getDestinationPoint(
-                Dependency dependency) {
-            return dependency.getDestinationPoint();
         }
 
         @Override
@@ -876,7 +870,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     List<Recalculation> getRecalculationsNeededFrom(V task) {
         List<Recalculation> result = new LinkedList<Recalculation>();
         Set<Recalculation> parentRecalculationsAlreadyDone = new HashSet<Recalculation>();
-        Recalculation first = recalculationFor(TaskPoint.both(adapter, task));
+        Recalculation first = recalculationFor(allPointsPotentiallyModified(task));
         first.couldHaveBeenModifiedBeforehand();
         Queue<Recalculation> pendingOfNavigate = new LinkedList<Recalculation>();
         result.addAll(getParentsRecalculations(parentRecalculationsAlreadyDone,
@@ -885,7 +879,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         pendingOfNavigate.offer(first);
         while (!pendingOfNavigate.isEmpty()) {
             Recalculation current = pendingOfNavigate.poll();
-            for (TaskPoint<V, D> each : getImmendiateReachableFrom(current.taskPoint)) {
+            for (TaskPoint each : current.taskPoint.getImmendiateReachable()) {
                 Recalculation recalculationToAdd = recalculationFor(each);
                 ListIterator<Recalculation> listIterator = result
                         .listIterator();
@@ -909,9 +903,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
     private List<Recalculation> getParentsRecalculations(
             Set<Recalculation> parentRecalculationsAlreadyDone,
-            TaskPoint<V, D> taskPoint) {
+            TaskPoint taskPoint) {
         List<Recalculation> result = new ArrayList<Recalculation>();
-        for (TaskPoint<V, D> eachParent : parentsRecalculationsNeededFor(taskPoint)) {
+        for (TaskPoint eachParent : parentsRecalculationsNeededFor(taskPoint)) {
             Recalculation parentRecalculation = parentRecalculation(eachParent.task);
             if (!parentRecalculationsAlreadyDone
                     .contains(parentRecalculation)) {
@@ -922,10 +916,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return result;
     }
 
-    private Set<TaskPoint<V, D>> parentsRecalculationsNeededFor(
-            TaskPoint<V, D> current) {
-        Set<TaskPoint<V, D>> result = new LinkedHashSet<TaskPoint<V, D>>();
-        if (current.pointType == PointType.BOTH) {
+    private Set<TaskPoint> parentsRecalculationsNeededFor(TaskPoint current) {
+        Set<TaskPoint> result = new LinkedHashSet<TaskPoint>();
+        if (current.areAllPointsPotentiallyModified()) {
             List<V> path = fromTaskToTop(current.task);
             if (path.size() > 1) {
                 path = path.subList(1, path.size());
@@ -936,10 +929,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return result;
     }
 
-    private Collection<? extends TaskPoint<V, D>> asBothPoints(List<V> parents) {
-        List<TaskPoint<V, D>> result = new ArrayList<TaskPoint<V, D>>();
+    private Collection<? extends TaskPoint> asBothPoints(List<V> parents) {
+        List<TaskPoint> result = new ArrayList<TaskPoint>();
         for (V each : parents) {
-            result.add(TaskPoint.both(adapter, each));
+            result.add(allPointsPotentiallyModified(each));
         }
         return result;
     }
@@ -955,10 +948,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     private Recalculation parentRecalculation(V task) {
-        return new Recalculation(TaskPoint.both(adapter, task), true);
+        return new Recalculation(allPointsPotentiallyModified(task), true);
     }
 
-    private Recalculation recalculationFor(TaskPoint<V, D> taskPoint) {
+    private Recalculation recalculationFor(TaskPoint taskPoint) {
         return new Recalculation(taskPoint, false);
     }
 
@@ -966,7 +959,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         private final boolean parentRecalculation;
 
-        private final TaskPoint<V, D> taskPoint;
+        private final TaskPoint taskPoint;
 
         private Set<Recalculation> recalculationsCouldAffectThis = new HashSet<Recalculation>();
 
@@ -976,7 +969,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         private boolean couldHaveBeenModifiedBeforehand = false;
 
-        Recalculation(TaskPoint<V, D> taskPoint, boolean isParentRecalculation) {
+        Recalculation(TaskPoint taskPoint, boolean isParentRecalculation) {
             Validate.notNull(taskPoint);
             this.taskPoint = taskPoint;
             this.parentRecalculation = isParentRecalculation;
@@ -1143,10 +1136,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             protected final V task;
 
-            protected final PointType pointType;
-
             public Forces() {
-                this.pointType = taskPoint.pointType;
                 this.task = taskPoint.task;
             }
 
@@ -1203,14 +1193,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             @Override
             PositionRestrictions enforceUsingPreviousRestrictions(
                     PositionRestrictions restrictions) {
-                switch (pointType) {
-                case BOTH:
+                if (taskPoint.areAllPointsPotentiallyModified()) {
                     return enforceStartAndEnd(restrictions);
-                case END:
+                } else if (taskPoint.somePointPotentiallyModified()) {
                     return enforceEndDate(restrictions);
-                default:
-                    return restrictions;
                 }
+                return restrictions;
             }
 
             private PositionRestrictions enforceStartAndEnd(
@@ -1289,7 +1277,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     return restrictions;
                 }
                 restrictions = enforceRestrictionsForEndIfNeeded(newEnd);
-                if (pointType == PointType.END) {
+                if (taskPoint.onlyModifies(Point.END)) {
                     // start constraints could be the ones "commanding" now
                     GanttDate newStart = calculateStartDate(restrictions);
                     if (newStart.compareTo(adapter.getStartDate(task)) > 0) {
@@ -1573,9 +1561,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     public boolean doesNotProvokeLoop(D dependency) {
-        Set<TaskPoint<V, D>> reachableFromDestination = getReachableFrom(adapter
-                .getDestinationPoint(dependency));
-        for (TaskPoint<V, D> each : reachableFromDestination) {
+        Set<TaskPoint> reachableFromDestination = destinationPoint(dependency)
+                .getReachable();
+        for (TaskPoint each : reachableFromDestination) {
             if (each.sendsModificationsThrough(dependency)) {
                 return false;
             }
@@ -1583,102 +1571,147 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return true;
     }
 
-    /**
-     * It indicates if the task is modified both the start and end, only the end
-     * property or none of the properties
-     * @author Óscar González Fernández <ogonzalez@igalia.com>
-     */
-    public enum PointType {
-        BOTH, END, NONE;
+    TaskPoint destinationPoint(D dependency) {
+        V source = getDependencyDestination(dependency);
+        return new TaskPoint(source,
+                potentiallyModifiedDestinationPoints(dependency.getType()));
+    }
 
-        public <V> boolean sendsModificationsThrough(IAdapter<V, ?> adapter,
-                V source, DependencyType type) {
-            if (!adapter.isContainer(source)) {
-                return true;
-            }
-            switch (this) {
-            case NONE:
-                return false;
-            case BOTH:
-                return true;
-            case END:
-                return type == DependencyType.END_END || type == DependencyType.END_START;
-            default:
-                throw new RuntimeException("unexpected value: " + this);
-            }
+    private Set<Point> potentiallyModifiedDestinationPoints(DependencyType type) {
+        Point destinationPoint = getDestinationPoint(type);
+        if (isDominatingPoint(destinationPoint)) {
+            return EnumSet.of(Point.START, Point.END);
+        } else {
+            return EnumSet.of(destinationPoint);
         }
     }
 
-    public static class TaskPoint<T, D extends IDependency<T>> {
+    /**
+     * The dominating point is the one that causes the other point to be
+     * modified; e.g. when doing forward scheduling the dominating point is the
+     * start.
+     */
+    private boolean isDominatingPoint(Point point) {
+        return isScheduleForward() && point == Point.START
+                || isScheduleBackwards() && point == Point.END;
+    }
 
-        public static <T, D extends IDependency<T>> TaskPoint<T, D> both(
-                IAdapter<T, D> adapter, T task) {
-            return new TaskPoint<T, D>(adapter, task, PointType.BOTH);
-        }
+    private Point getDestinationPoint(DependencyType type) {
+        return type.getSourceAndDestination()[isScheduleForward() ? 1 : 0];
+    }
 
-        public static <T, D extends IDependency<T>> TaskPoint<T, D> endOf(
-                IAdapter<T, D> adapter,
-                T task) {
-            return new TaskPoint<T, D>(adapter, task, PointType.END);
-        }
+    private V getDependencySource(D dependency) {
+        return isScheduleForward() ? adapter.getSource(dependency) : adapter
+                .getDestination(dependency);
+    }
 
-        final T task;
+    private V getDependencyDestination(D dependency) {
+        return isScheduleForward() ? adapter.getDestination(dependency)
+                : adapter.getSource(dependency);
+    }
 
-        final PointType pointType;
+    TaskPoint allPointsPotentiallyModified(V task) {
+        return new TaskPoint(task, EnumSet.of(Point.START, Point.END));
+    }
 
-        private final IAdapter<T, D> adapter;
+    private class TaskPoint {
 
-        public TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
-            this.adapter = adapter;
+        private final V task;
+
+        private final boolean isContainer;
+
+        private final Set<Point> pointsModified;
+
+        TaskPoint(V task, Set<Point> pointsModified) {
             this.task = task;
-            this.pointType = pointType;
+            this.pointsModified = Collections.unmodifiableSet(pointsModified);
+            this.isContainer = adapter.isContainer(task);
         }
+
 
         @Override
         public String toString() {
-            return String.format("%s(%s)", task, pointType);
+            return String.format("%s(%s)", task, pointsModified);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof TaskPoint<?, ?>) {
-                TaskPoint<?, ?> other = (TaskPoint<?, ?>) obj;
-                return new EqualsBuilder().append(task, other.task).append(
-                        pointType, other.pointType).isEquals();
+            if (TaskPoint.class.isInstance(obj)) {
+                TaskPoint other = TaskPoint.class.cast(obj);
+                return new EqualsBuilder().append(task, other.task)
+                        .append(pointsModified, other.pointsModified)
+                        .isEquals();
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder().append(task).append(pointType).toHashCode();
+            return new HashCodeBuilder().append(task).append(pointsModified)
+                    .toHashCode();
+        }
+
+        public boolean areAllPointsPotentiallyModified() {
+            return pointsModified.size() > 1;
+        }
+
+        public boolean somePointPotentiallyModified() {
+            return pointsModified.contains(Point.START)
+                    || pointsModified.contains(Point.END);
+        }
+
+        public boolean onlyModifies(Point point) {
+            return pointsModified.size() == 1 && pointsModified.contains(point);
+        }
+
+        Set<TaskPoint> getReachable() {
+            Set<TaskPoint> result = new HashSet<TaskPoint>();
+            Queue<TaskPoint> pending = new LinkedList<TaskPoint>();
+            result.add(this);
+            pending.offer(this);
+            while (!pending.isEmpty()) {
+                TaskPoint current = pending.poll();
+                Set<TaskPoint> immendiate = current.getImmendiateReachable();
+                for (TaskPoint each : immendiate) {
+                    if (!result.contains(each)) {
+                        result.add(each);
+                        pending.offer(each);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private Set<TaskPoint> getImmendiateReachable() {
+            Set<TaskPoint> result = new HashSet<TaskPoint>();
+            Set<D> candidates = immediateDependencies();
+            for (D each : candidates) {
+                if (this.sendsModificationsThrough(each)) {
+                    result.add(destinationPoint(each));
+                }
+            }
+            return result;
+        }
+
+        private Set<D> immediateDependencies() {
+            return isScheduleForward() ? graph.outgoingEdgesOf(this.task)
+                    : graph.incomingEdgesOf(this.task);
         }
 
         public boolean sendsModificationsThrough(D dependency) {
-            DependencyType type = adapter.getType(dependency);
-            T source = adapter.getSource(dependency);
-            return source.equals(task)
-                    && pointType.sendsModificationsThrough(adapter, source,
-                            type);
-        }
-    }
+            V source = getDependencySource(dependency);
+            Point dependencySourcePoint = getSourcePoint(adapter
+                    .getType(dependency));
 
-    private Set<TaskPoint<V, D>> getReachableFrom(TaskPoint<V, D> task) {
-        Set<TaskPoint<V, D>> result = new HashSet<TaskPoint<V, D>>();
-        Queue<TaskPoint<V, D>> pending = new LinkedList<TaskPoint<V, D>>();
-        result.add(task);
-        pending.offer(task);
-        while (!pending.isEmpty()) {
-            TaskPoint<V, D> current = pending.poll();
-            Set<TaskPoint<V, D>> immendiate = getImmendiateReachableFrom(current);
-            for (TaskPoint<V, D> each : immendiate) {
-                if (!result.contains(each)) {
-                    result.add(each);
-                    pending.offer(each);
-                }
-            }
+            return source.equals(task)
+                    && (!isContainer || pointsModified
+                            .contains(dependencySourcePoint));
         }
-        return result;
+
+        private Point getSourcePoint(DependencyType type) {
+            Point[] sourceAndDestination = type.getSourceAndDestination();
+            return sourceAndDestination[isScheduleForward() ? 0 : 1];
+        }
     }
 
 
@@ -1687,18 +1720,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         V result = task;
         while (fromChildToParent.containsKey(result)) {
             result = fromChildToParent.get(result);
-        }
-        return result;
-    }
-
-    private Set<TaskPoint<V, D>> getImmendiateReachableFrom(
-            TaskPoint<V, D> current) {
-        Set<TaskPoint<V, D>> result = new HashSet<TaskPoint<V, D>>();
-        Set<D> outgoingEdgesOf = graph.outgoingEdgesOf(current.task);
-        for (D each : outgoingEdgesOf) {
-            if (current.sendsModificationsThrough(each)) {
-                result.add(adapter.getDestinationPoint(each));
-            }
         }
         return result;
     }

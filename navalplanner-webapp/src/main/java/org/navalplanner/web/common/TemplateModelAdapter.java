@@ -12,8 +12,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -23,7 +23,6 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
-import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -88,13 +87,6 @@ public class TemplateModelAdapter implements
     @Override
     public TaskElement getDestination(DependencyWithVisibility dependency) {
         return dependency.getDestination();
-    }
-
-    @Override
-    public TaskPoint<TaskElement, DependencyWithVisibility> getDestinationPoint(
-            DependencyWithVisibility dependency) {
-        return new TaskPoint<TaskElement, DependencyWithVisibility>(this,
-                dependency.getDestination(), dependency.getPointType());
     }
 
     @Override
