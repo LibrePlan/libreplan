@@ -114,8 +114,11 @@
     <button onClick="controller.cancel();"
         label="${arg.cancel_button_label}" sclass="cancel-button global-action"/>
 
-    <popup id="limiting-resources-popup" width="700px" >
-        <iframe id="iframe" src="/help/${i18n:_('en')}/05-recursos.html#recursos-limitantes" width="100%" />
+    <zscript><![CDATA[
+        i18iframe = "/help/" + org.navalplanner.web.I18nHelper._("en") + "/05-recursos.html#recursos-limitantes";
+    ]]></zscript>
+    <popup id="limiting-resources-popup" width="700px" onOpen='iframe.setSrc(i18iframe)'>
+        <iframe id="iframe" width="100%" />
     </popup>
 
 </window>

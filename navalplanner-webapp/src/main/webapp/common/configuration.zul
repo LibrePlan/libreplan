@@ -67,7 +67,7 @@
                                     mold="select" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Company logo')}" />
+                                <label value="${i18n:_('Company logo URL')}" />
                                 <textbox id="companyLogoURL"
                                     value="@{configurationController.companyLogoURL}" width="300px"/>
                             </row>
