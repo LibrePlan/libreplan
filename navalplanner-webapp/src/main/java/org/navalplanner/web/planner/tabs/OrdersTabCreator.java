@@ -98,7 +98,8 @@ public class OrdersTabCreator {
     }
 
     private ITab createGlobalOrdersTab() {
-        return new CreatedOnDemandTab(_("Projects"), "orders", ordersTabCreator) {
+        return new CreatedOnDemandTab(_("Projects List"), "orders",
+                ordersTabCreator) {
             @Override
             protected void afterShowAction() {
                 orderCRUDController.goToList();

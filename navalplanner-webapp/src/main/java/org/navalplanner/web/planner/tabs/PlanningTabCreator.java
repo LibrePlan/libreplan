@@ -288,7 +288,7 @@ public class PlanningTabCreator {
             }
 
         };
-        return new CreatedOnDemandTab(_("Order Scheduling"),
+        return new CreatedOnDemandTab(_("Project Scheduling"),
                 "order-scheduling", componentCreator) {
             @Override
             protected void afterShowAction() {
