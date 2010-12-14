@@ -71,7 +71,7 @@ public class PlanningData extends BaseEntity {
         Integer totalDuration = new Integer(0), duration;
         BigDecimal totalProgress = BigDecimal.ZERO, progress;
 
-        for (Task each: criticalPath) {
+        for (Task each : criticalPath) {
             duration = each.getWorkableDays();
             progress = each.getAdvancePercentage();
             progress = progress.multiply(BigDecimal.valueOf(duration));

@@ -94,8 +94,8 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -1590,9 +1590,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
             taskElementDAO.save(rootTask);
-            List<Task> criticalPath = planningState.getPlanner()
-                    .getCriticalPath();
-            rootTask.updateCriticalPathProgress(criticalPath);
+            rootTask
+                    .updateCriticalPathProgress((List<TaskElement>) planningState
+                            .getPlanner().getCriticalPath());
         }
 
         private void setAdvancePercentage(BigDecimal value) {

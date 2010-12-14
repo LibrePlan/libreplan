@@ -233,12 +233,18 @@ public class TaskGroup extends TaskElement {
         return result;
     }
 
-    public void updateCriticalPathProgress(List<Task> criticalPath) {
+    public void updateCriticalPathProgress(List<TaskElement> criticalPath) {
         Validate.isTrue(getParent() == null);
         if (planningData == null) {
             planningData = PlanningData.create(this);
         }
-        planningData.update(criticalPath);
+        List<Task> criticalPathJustTasks = new ArrayList<Task>();
+        for (TaskElement taskElement : criticalPath) {
+            if (taskElement instanceof Task) {
+                criticalPathJustTasks.add((Task) taskElement);
+            }
+        }
+        planningData.update(criticalPathJustTasks);
     }
 
     /**

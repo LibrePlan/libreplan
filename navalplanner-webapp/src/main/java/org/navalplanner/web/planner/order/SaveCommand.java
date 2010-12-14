@@ -200,8 +200,8 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void updateCriticalPathProgress(TaskGroup rootTask) {
-        final List<Task> criticalPath = state.getPlanner().getCriticalPath();
-        rootTask.updateCriticalPathProgress(criticalPath);
+        rootTask.updateCriticalPathProgress((List<TaskElement>) state
+                .getPlanner().getCriticalPath());
     }
 
     private void updateRootTaskPosition(TaskGroup rootTask) {
