@@ -26,8 +26,12 @@ import java.util.ListIterator;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 
 /**
@@ -41,10 +45,13 @@ public class InsertionRequirements {
 
     private final DateAndHour earliestPossibleEnd;
 
+    private final DateAndHour latestPossibleEnd;
+
     public static InsertionRequirements forElement(
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingStart,
             List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
+
         return new InsertionRequirements(element, calculateEarliestPossibleStart(
                 element, dependenciesAffectingStart),
                 calculateEarliestPossibleEnd(element, dependenciesAffectingEnd));
@@ -87,13 +94,37 @@ public class InsertionRequirements {
     }
 
     private InsertionRequirements(LimitingResourceQueueElement element,
-            DateAndHour earliestPossibleStart, DateAndHour earliestPossibleEnd) {
+            DateAndHour earliestPossibleStart,
+            DateAndHour earliestPossibleEnd) {
         Validate.notNull(element);
         Validate.notNull(earliestPossibleStart);
         Validate.notNull(earliestPossibleEnd);
         this.element = element;
         this.earliestPossibleStart = earliestPossibleStart;
         this.earliestPossibleEnd = earliestPossibleEnd;
+        this.latestPossibleEnd = calculateLatestPlanningDate(element);
+    }
+
+    /**
+     * Returns the earliest date from all the outgoing tasks from element
+     *
+     * @param element
+     * @return
+     */
+    private DateAndHour calculateLatestPlanningDate(LimitingResourceQueueElement element) {
+        IntraDayDate result = null;
+        Task task = element.getTask();
+
+        for (Dependency each : task.getDependenciesWithThisOrigin()) {
+            if (each.getType().modifiesDestinationEnd()) {
+                TaskElement destination = each.getDestination();
+                result = (result == null) ? destination.getIntraDayStartDate()
+                        : IntraDayDate.min(result,
+                                destination.getIntraDayStartDate());
+            }
+        }
+        return (result != null) ? DateAndHour.from(result) : DateAndHour.from(new LocalDate(
+                element.getEarliestEndDateBecauseOfGantt()));
     }
 
     public boolean isPotentiallyValid(Gap gap) {

@@ -21,7 +21,6 @@
 package org.navalplanner.business.planner.limiting.entities;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -41,6 +40,10 @@ public class DateAndHour implements Comparable<DateAndHour> {
 
     public static DateAndHour from(LocalDate date) {
         return new DateAndHour(date, 0);
+    }
+
+    public static DateAndHour from(IntraDayDate date) {
+        return new DateAndHour(date.getDate(), date.getEffortDuration().getHours());
     }
 
     private LocalDate date;
