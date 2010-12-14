@@ -646,8 +646,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         element.getResourceAllocation().allocateLimitingDayAssignments(
                 dayAssignments);
 
-        DateAndHour endTime = LimitingResourceAllocator
-                .getLastElementTime(dayAssignments);
+        DateAndHour endTime = endFor(dayAssignments);
         // the assignments can be generated after the required start
         startTime = DateAndHour.Max(startTime, startFor(dayAssignments));
         if (sameDay(startTime, endTime)) {
@@ -659,6 +658,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         addLimitingResourceQueueElementIfNeeded(queue, element);
         markAsModified(element);
         return true;
+    }
+
+    private DateAndHour endFor(List<DayAssignment> dayAssignments) {
+        DayAssignment last = dayAssignments.get(dayAssignments.size() - 1);
+        return new DateAndHour(last.getDay(), 0);
     }
 
     private DateAndHour startFor(List<DayAssignment> dayAssignments) {
