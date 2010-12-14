@@ -837,10 +837,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         boolean enforceParentShrinkage(V container) {
             GanttDate oldBeginDate = adapter.getStartDate(container);
             GanttDate firstStart = getSmallestBeginDateFromChildrenFor(container);
+            GanttDate lastEnd = getBiggestEndDateFromChildrenFor(container);
             GanttDate previousEnd = adapter.getEndDateFor(container);
-            if (firstStart.after(oldBeginDate)) {
-                adapter.setStartDateFor(container, firstStart);
-                adapter.setEndDateFor(container, previousEnd);
+            if (firstStart.after(oldBeginDate) || previousEnd.after(lastEnd)) {
+                adapter.setStartDateFor(container,
+                        GanttDate.max(firstStart, oldBeginDate));
+                adapter.setEndDateFor(container,
+                        GanttDate.min(lastEnd, previousEnd));
                 return true;
             }
             return false;
@@ -848,15 +851,31 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     private GanttDate getSmallestBeginDateFromChildrenFor(V container) {
+        return Collections.min(getChildrenDates(container, Point.START));
+    }
+
+    private GanttDate getBiggestEndDateFromChildrenFor(V container) {
+        return Collections.max(getChildrenDates(container, Point.END));
+    }
+
+    private List<GanttDate> getChildrenDates(V container, Point point) {
         List<V> children = adapter.getChildren(container);
+        List<GanttDate> result = new ArrayList<GanttDate>();
         if (children.isEmpty()) {
-            return adapter.getStartDate(container);
+            result.add(getDateFor(container, point));
         }
-        List<GanttDate> dates = new ArrayList<GanttDate>();
         for (V each : children) {
-            dates.add(adapter.getStartDate(each));
+            result.add(getDateFor(each, point));
         }
-        return Collections.min(dates);
+        return result;
+    }
+
+    GanttDate getDateFor(V task, Point point) {
+        if (point.equals(Point.START)) {
+            return adapter.getStartDate(task);
+        } else {
+            return adapter.getEndDateFor(task);
+        }
     }
 
     List<Recalculation> getRecalculationsNeededFrom(V task) {
@@ -1327,16 +1346,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         getTaskDateFor(Point.END));
             }
 
-            private GanttDate getTaskDateFor(Point point) {
+            GanttDate getTaskDateFor(Point point) {
                 Validate.isTrue(isSupportedPoint(point));
-                switch (point) {
-                case START:
-                    return adapter.getStartDate(task);
-                case END:
-                    return adapter.getEndDateFor(task);
-                default:
-                    throw new RuntimeException("shouldn't happen");
-                }
+                return getDateFor(task, point);
             }
 
             protected abstract PositionRestrictions createRestrictionsFor(

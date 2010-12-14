@@ -19,6 +19,8 @@
  */
 package org.zkoss.ganttz.data;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
@@ -68,6 +70,14 @@ public abstract class GanttDate implements Comparable<GanttDate> {
             return null;
         }
         return new LocalDateBased(localDate);
+    }
+
+    public static GanttDate min(GanttDate... dates) {
+        return Collections.min(Arrays.asList(dates));
+    }
+
+    public static GanttDate max(GanttDate... dates) {
+        return Collections.max(Arrays.asList(dates));
     }
 
     @Override
