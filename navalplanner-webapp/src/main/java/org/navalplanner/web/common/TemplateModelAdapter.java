@@ -11,7 +11,6 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -76,12 +75,6 @@ public class TemplateModelAdapter implements
     @Override
     public GanttDate getEndDateFor(TaskElement task) {
         return toGantt(task.getIntraDayEndDate());
-    }
-
-    @Override
-    public GanttDate getSmallestBeginDateFromChildrenFor(TaskElement container) {
-        TaskGroup taskGroup = (TaskGroup) container;
-        return toGantt(taskGroup.getSmallestStartDateFromChildren());
     }
 
     @Override

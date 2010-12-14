@@ -99,8 +99,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         void setEndDateFor(V task, GanttDate newEnd);
 
-        GanttDate getSmallestBeginDateFromChildrenFor(V container);
-
         public List<Constraint<GanttDate>> getConstraints(
                 ConstraintCalculator<V> calculator, Set<D> withDependencies,
                 Point point);
@@ -211,12 +209,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         @Override
         public List<Constraint<GanttDate>> getEndConstraintsFor(Task task) {
             return task.getEndConstraints();
-        }
-
-        @Override
-        public GanttDate getSmallestBeginDateFromChildrenFor(Task container) {
-            return ((TaskContainer) container)
-                    .getSmallestBeginDateFromChildren();
         }
 
         @Override
@@ -844,8 +836,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         boolean enforceParentShrinkage(V container) {
             GanttDate oldBeginDate = adapter.getStartDate(container);
-            GanttDate firstStart = adapter
-                    .getSmallestBeginDateFromChildrenFor(container);
+            GanttDate firstStart = getSmallestBeginDateFromChildrenFor(container);
             GanttDate previousEnd = adapter.getEndDateFor(container);
             if (firstStart.after(oldBeginDate)) {
                 adapter.setStartDateFor(container, firstStart);
@@ -854,6 +845,18 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             }
             return false;
         }
+    }
+
+    private GanttDate getSmallestBeginDateFromChildrenFor(V container) {
+        List<V> children = adapter.getChildren(container);
+        if (children.isEmpty()) {
+            return adapter.getStartDate(container);
+        }
+        List<GanttDate> dates = new ArrayList<GanttDate>();
+        for (V each : children) {
+            dates.add(adapter.getStartDate(each));
+        }
+        return Collections.min(dates);
     }
 
     List<Recalculation> getRecalculationsNeededFrom(V task) {
