@@ -8,7 +8,7 @@ function(out){
             out.push('<div id="listtasks">');
                 for(var w = this.firstChild; w; w = w.nextSibling)
                     w.redraw(out);
-            out.push('</div');
+            out.push('</div>');
         out.push('</div>');
     out.push('</div>');
 }
