@@ -20,8 +20,12 @@
 
 package org.navalplanner.business.planner.limiting.entities;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
@@ -44,13 +48,11 @@ public class DateAndHour implements Comparable<DateAndHour> {
     private Integer hour;
 
     public DateAndHour(LocalDate date, Integer hour) {
-        Validate.notNull(date);
         this.date = date;
         this.hour = hour;
     }
 
     public DateAndHour(DateAndHour dateAndHour) {
-        Validate.notNull(dateAndHour.getDate());
         this.date = dateAndHour.getDate();
         this.hour = dateAndHour.getHour();
     }
@@ -92,14 +94,14 @@ public class DateAndHour implements Comparable<DateAndHour> {
         return IntraDayDate.create(date, EffortDuration.hours(hour));
     }
 
-    public static DateAndHour Max(DateAndHour arg0, DateAndHour arg1) {
-        if (arg0 == null) {
-            return arg1;
-        }
-        if (arg1 == null) {
-            return arg0;
-        }
-        return (arg0.compareTo(arg1) > 0) ? arg0 : arg1;
+    public static DateAndHour max(DateAndHour... dates) {
+        dates = (DateAndHour[]) ArrayUtils.removeElement(dates, null);
+        return dates.length > 0 ?  Collections.max(Arrays.asList(dates)) : null;
+    }
+
+    public static DateAndHour min(DateAndHour... dates) {
+        dates = (DateAndHour[]) ArrayUtils.removeElement(dates, null);
+        return dates.length > 0 ?  Collections.min(Arrays.asList(dates)) : null;
     }
 
     public boolean isBefore(DateAndHour dateAndHour) {

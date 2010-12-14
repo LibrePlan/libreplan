@@ -258,7 +258,7 @@ public class LimitingResourceAllocator {
         if (pos > 0) {
             LimitingResourceQueueElement previous = elements.get(pos - 1);
             return Gap.create(resource, DateAndHour
-                    .Max(previous.getEndTime(), startTimeBecauseOfGantt), next
+                    .max(previous.getEndTime(), startTimeBecauseOfGantt), next
                     .getStartTime());
         }
 
@@ -275,7 +275,7 @@ public class LimitingResourceAllocator {
 
         final DateAndHour queueEndTime = (lastElement != null) ? lastElement
                 .getEndTime() : null;
-        DateAndHour startTime = DateAndHour.Max(_startTime, queueEndTime);
+        DateAndHour startTime = DateAndHour.max(_startTime, queueEndTime);
         return Gap
                 .create(resource, startTime, null);
     }

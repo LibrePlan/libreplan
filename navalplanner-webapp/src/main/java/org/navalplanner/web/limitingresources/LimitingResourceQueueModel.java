@@ -514,9 +514,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             AllocationSpec previous = allocationsToBeDoneByElement.get(each
                     .getKey());
             if (previous != null) {
-                newStart = DateAndHour.Max(newStart, getStartFrom(previous,
+                newStart = DateAndHour.max(newStart, getStartFrom(previous,
                         each.getValue()));
-                newEnd = DateAndHour.Max(newEnd, getEndFrom(previous, each
+                newEnd = DateAndHour.max(newEnd, getEndFrom(previous, each
                         .getValue()));
             }
         }
@@ -537,7 +537,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             List<Edge> edges) {
         DateAndHour result = null;
         for (Edge each : edges) {
-            result = DateAndHour.Max(result,
+            result = DateAndHour.max(result,
                     calculateStart(previous, each.type));
         }
         return result;
@@ -556,7 +556,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     private DateAndHour getEndFrom(AllocationSpec previous, List<Edge> edges) {
         DateAndHour result = null;
         for (Edge each : edges) {
-            result = DateAndHour.Max(result, calculateEnd(previous, each.type));
+            result = DateAndHour.max(result, calculateEnd(previous, each.type));
         }
         return result;
     }
@@ -648,7 +648,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         DateAndHour endTime = endFor(dayAssignments);
         // the assignments can be generated after the required start
-        startTime = DateAndHour.Max(startTime, startFor(dayAssignments));
+        startTime = DateAndHour.max(startTime, startFor(dayAssignments));
         if (sameDay(startTime, endTime)) {
             endTime = new DateAndHour(endTime.getDate(), startTime.getHour() + endTime.getHour());
         }
