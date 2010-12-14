@@ -79,6 +79,12 @@ public class LimitingResourceAllocator {
         public void setCurrent(EffortDuration currentDuration) {
             this.currentDuration = currentDuration;
         }
+
+        @Override
+        public IntraDayDate limitNext(IntraDayDate nextDay) {
+            return nextDay;
+        }
+
     }
 
     private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay

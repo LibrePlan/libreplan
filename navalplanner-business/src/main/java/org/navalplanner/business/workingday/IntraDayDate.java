@@ -280,10 +280,11 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         }
 
         @Override
-        public final IntraDayDate limitNext(IntraDayDate nextDay) {
+        public IntraDayDate limitNext(IntraDayDate nextDay) {
             return min(nextDay, endExclusive);
         }
     }
+
     /**
      * Returns an on demand {@link Iterable} that gives all the days from
      * <code>this</code> to end
