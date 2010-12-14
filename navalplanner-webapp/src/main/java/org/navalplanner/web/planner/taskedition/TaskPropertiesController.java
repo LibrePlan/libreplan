@@ -249,7 +249,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     private Order findOrderIn(IContextWithPlannerTask<TaskElement> context) {
         TaskElement topTask = context.getMapper().findAssociatedDomainObject(
                 findTopMostTask(context));
-        return topTask.getOrderElement().getOrder();
+        return topTask.getParent().getOrderElement().getOrder();
     }
 
     private org.zkoss.ganttz.data.Task findTopMostTask(
