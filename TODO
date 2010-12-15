@@ -1,0 +1,92 @@
+TODO
+====
+
+Version 1.0 - 2011w1
+--------------------
+
+Dates
+~~~~~
+
+* *Feature freeze*: 2010w50
+* *Release date*: 2011w1
+
+Main features
+~~~~~~~~~~~~~
+
+* Multiproject management. It offers a global vision of the company managing
+  several projects sharing resources.
+* Group resource allocations: dynamic groups based on criteria.
+* Flexible calendars.
+* Configurable Gantt chart from Work Breakdown Structure (WBS).
+* Resource Breakdown Structure (RBS) chart.
+* Overload resource allocation control.
+* Earned Value Management (EVM).
+* Cost analysis based on work reports.
+* Integration with other *NavalPlan* instances and third-parties.
+* Other functionalities: materials, quality forms, project templates, planning
+  scenarios, multiple task progress measurement ...
+
+Latest features
+~~~~~~~~~~~~~~~
+
+* Backwards planning with new restrictions (AS_LATE_AS_POSSIBLE and
+  FINISH_NOT_LATER_THAN).
+* Two direction resource allocation schemes. Forwards and backwards strategies
+  supported depending on Gantt conditions.
+* Time unit inferior to hours in calendars. Minutes and seconds are allowed.
+* Limiting resources. Appropriative insertion algorithm with task scrolling.
+* Monte Carlo technique for project duration simulation. Duration probability
+  functions are calculated based on likelihood estimations.
+* Sigmoid advance resource allocation function approaching what happens in real
+  world.
+* Monitorization of project progress based on critical path progresses.
+* Human readable codes generation for data.
+* Configurable display of advances and cost in planning tasks.
+* Database migration support. Automatic management of database refactorings
+  keeping former data.
+
+
+Version 1.1 - 2011w14
+---------------------
+
+Dates
+~~~~~
+
+* *IRC coordination meeting*: 2011w2
+* *Feature freeze*: 2011w11
+* *Release date*: 2011w14
+
+Features
+~~~~~~~~
+
+* Improve printing support.
+* Possibility of using critical chain paradigm in project planning.
+* Resource levelling.
+* General allocation resource allocation improvements: reduction of
+  fragmentation in distributing allocation algorithm and heuristic to use same
+  resources over a period.
+* Performance improvements: resource load view and Gantt view.
+* Chromium browser completely supported.
+
+
+Future
+------
+
+* Disable complex features by default.
+* Quick start wizard.
+* Add export/import for different format files from other projects like
+  OpenProj, MicrosoftProject, ...
+* Provide examples for integration services that don't depend on Ruby (maybe
+  directly with Java).
+* Migrate to ZK 5.
+
+
+Wish List
+---------
+
+* Customization (e.g. recently opened projects in menu).
+* Database snapshot with example data.
+* Unit tests for integration services using truly HTTP requests and XML files.
+* Auto-deployable executable. Application is downloaded and installed with JNLP
+  (Java Web Start) and on starting launches an embedded servlet container in
+  which it is executed. It will include a pure Java database like HSQLDB too.
