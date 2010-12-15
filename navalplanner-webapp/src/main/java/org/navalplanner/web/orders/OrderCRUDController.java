@@ -223,6 +223,8 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private OrderElementTreeController orderElementTreeController;
 
+    private ProjectDetailsController projectDetailsController;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -1011,13 +1013,30 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         try {
-            showOrderElementFilter();
-            hideCreateButtons();
             orderModel.prepareForCreate();
-            prepareEditWindow();
-            showEditWindow(_("Create order"));
+            showCreationPopup();
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
+        }
+    }
+
+    public void editNewCreatedOrder() {
+        showOrderElementFilter();
+        hideCreateButtons();
+        prepareEditWindow();
+        showEditWindow(_("Create order"));
+    }
+
+    private void showCreationPopup() {
+        Window window = (Window) Executions.createComponents(
+                "/orders/_projectDetails.zul", null,
+                new HashMap<String, String>());
+        projectDetailsController = new ProjectDetailsController();
+        try {
+            projectDetailsController.doAfterCompose(window);
+            projectDetailsController.showWindow(this);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
