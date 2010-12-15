@@ -249,4 +249,16 @@ public class InsertionRequirements {
         return element;
     }
 
+    public boolean isAppropiativeAllocation(AllocationSpec allocation) {
+        Gap gap = allocation.getGap();
+        DateAndHour realStart = DateAndHour.max(earliestPossibleStart,
+                gap.getStartTime());
+        return latestPossibleEnd != null
+                && latestPossibleEnd.compareTo(realStart) < 0;
+    }
+
+    public DateAndHour getEarliestPossibleStart(AllocationSpec allocation) {
+        return earliestPossibleStart;
+    }
+
 }
