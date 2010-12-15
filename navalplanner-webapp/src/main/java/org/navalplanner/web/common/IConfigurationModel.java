@@ -141,4 +141,6 @@ public interface IConfigurationModel {
 
     void setCompanyLogoURL(String companyLogoURL);
 
+    Boolean isCriticalChainSupportCheckboxDisabled();
+
 }

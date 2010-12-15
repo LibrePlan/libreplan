@@ -226,6 +226,7 @@
                             </row>
                             <row>
                                 <checkbox label="${i18n:_('Critical chain support')}"
+                                    disabled="@{configurationController.criticalChainSupportCheckboxDisabled}"
                                     checked="@{configurationController.enableCriticalChainSupport}" />
                                     <label value="${i18n:_('Support to create strategic resources and schedulings usign critical chain planning paradigm.')}" />
                             </row>

@@ -41,6 +41,7 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -72,6 +73,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -562,6 +566,14 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setCompanyLogoURL(String companyLogoURL) {
         configuration.setCompanyLogoURL(companyLogoURL);
+    }
+
+    @Override
+    public Boolean isCriticalChainSupportCheckboxDisabled() {
+        // if there are any strategic resources in the system,
+        // critical chain support can't be disabled and because
+        // of that the checkbox will be disabled
+        return resourceDAO.existStrategicResources();
     }
 
 }

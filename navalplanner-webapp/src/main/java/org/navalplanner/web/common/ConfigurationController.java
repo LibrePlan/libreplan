@@ -720,4 +720,8 @@ public class ConfigurationController extends GenericForwardComposer {
     public EntityNameEnum[] getEntityNames() {
         return EntityNameEnum.values();
     }
+
+    public Boolean isCriticalChainSupportCheckboxDisabled() {
+        return configurationModel.isCriticalChainSupportCheckboxDisabled();
+    }
 }
