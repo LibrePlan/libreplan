@@ -70,6 +70,13 @@ public class LimitingDependencyComponent extends XulElement implements
                     Date value) {
                 // TODO mark graphically dependency as violated
             }
+
+            @Override
+            public void constraintSatisfied(Constraint<Date> constraint,
+                    Date value) {
+                // TODO mark graphically dependency as not violated
+
+            }
         };
         // this.dependency.addConstraintViolationListener(violationListener);
     }

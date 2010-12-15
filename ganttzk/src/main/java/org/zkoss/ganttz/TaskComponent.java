@@ -202,6 +202,12 @@ public class TaskComponent extends Div implements AfterCompose {
                     GanttDate value) {
                 // TODO mark graphically task as violated
             }
+
+            @Override
+            public void constraintSatisfied(Constraint<GanttDate> constraint,
+                    GanttDate value) {
+                // TODO mark graphically dependency as not violated
+            }
         };
         this.task.addConstraintViolationListener(taskViolationListener);
         reloadResourcesTextRequested = new IReloadResourcesTextRequested() {

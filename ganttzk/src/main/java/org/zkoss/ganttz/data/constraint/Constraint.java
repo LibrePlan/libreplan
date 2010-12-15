@@ -84,7 +84,10 @@ public abstract class Constraint<T> {
     }
 
     public interface IConstraintViolationListener<T> {
+
         public void constraintViolated(Constraint<T> constraint, T value);
+
+        public void constraintSatisfied(Constraint<T> constraint, T value);
     }
 
     public static class ConstraintBuilder<T> {
@@ -185,19 +188,21 @@ public abstract class Constraint<T> {
     public abstract boolean isSatisfiedBy(T value);
 
     public void checkSatisfiesResult(T finalResult) {
-        if (!isSatisfiedBy(finalResult)) {
-            fireNotSatisfied(finalResult);
-        }
+        fireSatisfaction(finalResult, isSatisfiedBy(finalResult));
     }
 
-    private void fireNotSatisfied(final T value) {
+    private void fireSatisfaction(final T value, final boolean satisfied) {
         weakListeners
                 .fireEvent(new IListenerNotification<IConstraintViolationListener<T>>() {
 
                     @Override
                     public void doNotify(
                             IConstraintViolationListener<T> listener) {
-                        listener.constraintViolated(Constraint.this, value);
+                        if (satisfied) {
+                            listener.constraintSatisfied(Constraint.this, value);
+                        } else {
+                            listener.constraintViolated(Constraint.this, value);
+                        }
                     }
         });
     }

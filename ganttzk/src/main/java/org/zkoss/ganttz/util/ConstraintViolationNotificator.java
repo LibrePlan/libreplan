@@ -42,7 +42,12 @@ public class ConstraintViolationNotificator<T> {
 
         @Override
         public void constraintViolated(Constraint<T> constraint, T value) {
-            fireConstraintViolated(constraint, value);
+            fireConstraint(constraint, value, false);
+        }
+
+        @Override
+        public void constraintSatisfied(Constraint<T> constraint, T value) {
+            fireConstraint(constraint, value, true);
         }
     };
 
@@ -58,15 +63,19 @@ public class ConstraintViolationNotificator<T> {
         return constraint;
     }
 
-    private void fireConstraintViolated(final Constraint<T> constraint,
-            final T value) {
+    private void fireConstraint(final Constraint<T> constraint, final T value,
+            final boolean satisfied) {
         constraintViolationListeners
                 .fireEvent(new IListenerNotification<IConstraintViolationListener<T>>() {
 
                     @Override
                     public void doNotify(
                             IConstraintViolationListener<T> listener) {
-                        listener.constraintViolated(constraint, value);
+                        if (satisfied) {
+                            listener.constraintSatisfied(constraint, value);
+                        } else {
+                            listener.constraintViolated(constraint, value);
+                        }
                     }
                 });
     }
