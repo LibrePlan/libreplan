@@ -48,11 +48,13 @@ public class SchedulingDataForVersion extends BaseEntity {
 
         private TaskSource taskSource;
 
-        private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
+        private SchedulingState.Type schedulingStateType;
 
         private final OrderVersion originOrderVersion;
 
         private boolean hasPendingChanges = false;
+
+        private final Type initialSchedulingStateType;
 
         private Data(OrderVersion orderVersion,
                 SchedulingDataForVersion version,
@@ -63,6 +65,7 @@ public class SchedulingDataForVersion extends BaseEntity {
             this.originVersion = version;
             this.taskSource = taskSource;
             this.schedulingStateType = schedulingStateType;
+            this.initialSchedulingStateType = schedulingStateType;
         }
 
         public TaskSource getTaskSource() {
@@ -85,7 +88,7 @@ public class SchedulingDataForVersion extends BaseEntity {
         }
 
         public void initializeType(Type type) {
-            if (getSchedulingStateType() != Type.NO_SCHEDULED) {
+            if (getSchedulingStateType() != initialSchedulingStateType) {
                 throw new IllegalStateException("already initialized");
             }
             this.setSchedulingStateType(type);
@@ -153,11 +156,17 @@ public class SchedulingDataForVersion extends BaseEntity {
         Validate.notNull(orderElement);
         SchedulingDataForVersion schedulingDataForVersion = new SchedulingDataForVersion();
         schedulingDataForVersion.orderElement = orderElement;
+        schedulingDataForVersion.schedulingStateType = defaultTypeFor(orderElement);
         return create(schedulingDataForVersion);
     }
 
+    private static Type defaultTypeFor(OrderElement orderElement) {
+        return orderElement.isLeaf() ? Type.SCHEDULING_POINT
+                : Type.NO_SCHEDULED;
+    }
+
     @NotNull
-    private SchedulingState.Type schedulingStateType = Type.NO_SCHEDULED;
+    private SchedulingState.Type schedulingStateType;
 
     @NotNull
     private OrderElement orderElement;
