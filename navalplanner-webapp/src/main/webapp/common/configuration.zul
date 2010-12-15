@@ -184,7 +184,8 @@
                                         <row>
                                             <checkbox
                                                 label="${i18n:_('Enable scenarios module')}"
-                                                checked="@{configurationController.scenariosVisible}" />
+                                                checked="@{configurationController.scenariosVisible}"
+                                                disabled = "@{configurationController.moreScenariosThanMasterCreated}" />
                                         </row>
                                     </rows>
                                 </grid>

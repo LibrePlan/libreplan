@@ -29,8 +29,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
@@ -49,7 +52,13 @@ import org.zkoss.zul.Vbox;
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private List<CustomMenuItem> firstLevel;
+
+
+    private IConfigurationModel configurationModel;
 
     public static class CustomMenuItem {
 
@@ -245,9 +254,11 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
+        if (isScenariosVisible()) {
         topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
                 subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
                 subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
+        }
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
@@ -457,5 +468,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         currentOne = button;
     }
 
+    public boolean isScenariosVisible() {
+        return Registry.getConfigurationDAO().getConfiguration()
+                .isScenariosVisible();
+    }
 
 }

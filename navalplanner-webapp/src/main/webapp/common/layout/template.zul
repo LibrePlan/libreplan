@@ -66,6 +66,7 @@
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
             <n:tr>
               <n:td class="usuario">
+              <div if="${templateCtrl.scenariosVisible}">
                 ${i18n:_('scenario')}:
                 <button onClick="templateCtrl.changeScenario();"
                     label="${templateCtrl.scenario.name}" />
@@ -89,6 +90,7 @@
                     <button onClick="templateCtrl.cancel();"
                         label="${i18n:_('Cancel')}" />
                 </window>
+              </div>
               </n:td>
               <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
               <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>

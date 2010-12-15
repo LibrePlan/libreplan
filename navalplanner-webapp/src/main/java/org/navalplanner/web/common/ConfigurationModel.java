@@ -41,6 +41,8 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -72,6 +74,9 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Autowired
     private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -556,6 +561,16 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setScenariosVisible(Boolean scenariosVisible) {
         configuration.setScenariosVisible(scenariosVisible);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean moreScenariosThanMasterCreated() {
+        List<Scenario> scenarios = scenarioDAO.getAll();
+        if (scenarios != null) {
+            return scenarios.size() > 1;
+        }
+        return false;
     }
 
 }

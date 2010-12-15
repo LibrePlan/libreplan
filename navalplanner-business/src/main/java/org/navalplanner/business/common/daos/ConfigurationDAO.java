@@ -26,6 +26,7 @@ import org.navalplanner.business.common.entities.Configuration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * DAO for {@link Configuration}.
@@ -38,6 +39,7 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
         implements IConfigurationDAO {
 
     @Override
+    @Transactional(readOnly = true)
     public Configuration getConfiguration() {
         List<Configuration> list = list(Configuration.class);
         if (list.isEmpty()) {

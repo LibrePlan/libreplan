@@ -718,4 +718,8 @@ public class ConfigurationController extends GenericForwardComposer {
     public EntityNameEnum[] getEntityNames() {
         return EntityNameEnum.values();
     }
+
+    public boolean moreScenariosThanMasterCreated() {
+        return configurationModel.moreScenariosThanMasterCreated();
+    }
 }

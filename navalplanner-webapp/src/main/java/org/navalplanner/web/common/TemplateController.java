@@ -65,9 +65,11 @@ public class TemplateController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        window = (Window) comp.getFellow("changeScenarioWindow");
-        windowMessages = new MessagesForUser(window
+        if (templateModel.isScenariosVisible()) {
+            window = (Window) comp.getFellow("changeScenarioWindow");
+            windowMessages = new MessagesForUser(window
                 .getFellow("messagesContainer"));
+        }
     }
 
     public Scenario getScenario() {
@@ -90,7 +92,7 @@ public class TemplateController extends GenericForwardComposer {
         if (templateModel == null) {
             return "";
         }
-        return templateModel.getCompanyLogoURL();
+        return templateModel.getCompanyLogoURL().trim();
     }
 
     public void accept() {
@@ -122,4 +124,7 @@ public class TemplateController extends GenericForwardComposer {
         window.setVisible(false);
     }
 
+    public Boolean getScenariosVisible() {
+        return (templateModel != null) && templateModel.isScenariosVisible();
+    }
 }

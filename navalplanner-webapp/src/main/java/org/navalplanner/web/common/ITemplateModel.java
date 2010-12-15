@@ -46,4 +46,6 @@ public interface ITemplateModel {
     void setScenario(String loginName, Scenario scenario,
             IOnFinished onFinish);
 
+    boolean isScenariosVisible();
+
 }

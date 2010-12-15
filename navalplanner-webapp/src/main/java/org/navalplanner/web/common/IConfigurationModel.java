@@ -141,4 +141,6 @@ public interface IConfigurationModel {
 
     void setScenariosVisible(Boolean scenariosVisible);
 
+    Boolean moreScenariosThanMasterCreated();
+
 }

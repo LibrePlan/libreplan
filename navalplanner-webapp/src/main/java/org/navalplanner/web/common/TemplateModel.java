@@ -439,4 +439,10 @@ public class TemplateModel implements ITemplateModel {
         return result;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isScenariosVisible() {
+        return configurationDAO.getConfiguration().isScenariosVisible();
+    }
+
 }
