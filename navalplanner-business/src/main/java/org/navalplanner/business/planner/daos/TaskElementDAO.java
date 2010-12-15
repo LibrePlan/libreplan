@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
@@ -100,7 +101,10 @@ public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long>
     }
 
     private void updateSumOfAllocatedHoursToParent(TaskGroup taskGroup, Integer differenceOfHours) {
-        if(taskGroup != null) {
+        if (taskGroup != null) {
+            if (!Hibernate.isInitialized(taskGroup)) {
+                reattach(taskGroup);
+            }
             taskGroup.addSumOfHoursAllocated(differenceOfHours);
             updateSumOfAllocatedHoursToParent(taskGroup.getParent(), differenceOfHours);
         }
