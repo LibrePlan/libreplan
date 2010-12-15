@@ -36,10 +36,10 @@
 
     <tabbox id="tabboxOrder">
         <tabs>
+            <tab id="tabOrderElements" label="${i18n:_('WBS (tasks)')}"
+                onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabGeneralData" label="${i18n:_('General data')}" selected="true"
                 onSelect = "controller.setupOrderDetails();"/>
-            <tab id="tabOrderElements" label="${i18n:_('Order elements')}"
-                onSelect = "controller.setupOrderElementTreeController();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Imputed hours')}"
                 onSelect = "controller.setupAssignedHoursToOrderElementController();"/>
             <tab id="tabAdvances" label="${i18n:_('Advances')}"
@@ -57,7 +57,10 @@
                 onSelect = "controller.setupOrderAuthorizationController();"/>
         </tabs>
         <tabpanels>
-            <tabpanel id="tabPanelGeneralData">
+            <tabpanel sclass="orderelements-tab">
+                <orderElementTree id="orderElementTree"/>
+            </tabpanel>
+            <tabpanel id="tabPanelGeneralData" fulfill="tabGeneralData.onSelect">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
@@ -160,9 +163,6 @@
                         </row>
                     </rows>
                 </grid>
-            </tabpanel>
-            <tabpanel sclass="orderelements-tab" fulfill="tabOrderElements.onSelect">
-                <orderElementTree id="orderElementTree"/>
             </tabpanel>
             <tabpanel>
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>

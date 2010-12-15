@@ -40,9 +40,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -271,9 +271,6 @@ public class OrderCRUDController extends GenericForwardComposer {
         Component parent = listWindow.getParent();
         editWindow = (Window) Executions.createComponents(
                 "/orders/_edition.zul", parent, editWindowArgs);
-        orderDatesHandler = new OrderDatesHandler(editWindow);
-
-        bindListOrderStatusSelectToOnStatusChange();
 
         Util.createBindingsFor(editWindow);
         Util.reloadBindings(editWindow);
@@ -369,7 +366,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         });
     }
 
-    public void setupOrderElementTreeController() throws Exception {
+    public void setupOrderElementTreeController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -381,8 +378,12 @@ public class OrderCRUDController extends GenericForwardComposer {
             if (editOrderElementWindow == null) {
                 initEditOrderElementWindow();
             }
-            orderElementController.doAfterCompose(self
-                    .getFellow("editOrderElement"));
+            try {
+                orderElementController.doAfterCompose(self
+                        .getFellow("editOrderElement"));
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
             // Prepare tree, attach edit window to tree
             orderElementTreeController = new OrderElementTreeController(
@@ -760,7 +761,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void selectDefaultTab() {
-        selectTab("tabGeneralData");
+        selectTab("tabOrderElements");
     }
 
     private void resetSelectedTab() {
@@ -934,9 +935,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private void prepareEditWindow() {
         addEditWindowIfNecessary();
         updateDisabilitiesOnInterface();
-        initializeCustomerComponent();
+        setupOrderElementTreeController();
         selectDefaultTab();
-        orderDatesHandler.chooseCurrentSchedulingMode();
     }
 
     private void showEditWindow(String title) {
@@ -962,7 +962,11 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void setupOrderDetails() {
         confirmLastTab();
         setCurrentTab();
+        orderDatesHandler = new OrderDatesHandler(editWindow);
+        bindListOrderStatusSelectToOnStatusChange();
+        initializeCustomerComponent();
         reloadDefaultTab();
+        orderDatesHandler.chooseCurrentSchedulingMode();
     }
 
     public void reloadDefaultTab() {
