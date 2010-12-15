@@ -35,6 +35,8 @@ import java.util.List;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -43,6 +45,7 @@ import org.navalplanner.ws.typeofworkhours.api.ITypeOfWorkHoursService;
 import org.navalplanner.ws.typeofworkhours.api.TypeOfWorkHoursDTO;
 import org.navalplanner.ws.typeofworkhours.api.TypeOfWorkHoursListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +70,9 @@ public class TypeOfWorkHoursServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Test
     public void testAddAndGetTypeOfWorkHours() {
@@ -98,36 +104,63 @@ public class TypeOfWorkHoursServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void testUpdateTypeOfWorkHours() throws InstanceNotFoundException {
 
         // First one it creates valid type of work hours
 
-        TypeOfWorkHoursDTO cc1 = new TypeOfWorkHoursDTO("newTypeOfWorkHours",
-                true, new BigDecimal(5));
+        final TypeOfWorkHoursDTO cc1 = new TypeOfWorkHoursDTO(
+                "newTypeOfWorkHours", true, new BigDecimal(5));
         TypeOfWorkHoursListDTO typeOfWorkHoursListDTO = createTypeOfWorkHoursListDTO(cc1);
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = typeOfWorkHoursService
                 .addTypeOfWorkHours(typeOfWorkHoursListDTO).instanceConstraintViolationsList;
-        typeOfWorkHoursDAO.flush();
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                typeOfWorkHoursDAO.flush();
+                return null;
+            }
+        });
 
         /* Test. */
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
-        assertTrue(typeOfWorkHoursDAO.existsByCode(cc1.code));
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                assertTrue(typeOfWorkHoursDAO.existsByCode(cc1.code));
+                return null;
+            }
+        });
 
-        TypeOfWorkHours typeOfWorkHours = null;
-        try {
-            typeOfWorkHours = typeOfWorkHoursDAO.findByCode(cc1.code);
-            assertTrue(typeOfWorkHours.getName().equalsIgnoreCase(
-                    "newTypeOfWorkHours"));
-            assertTrue(typeOfWorkHours.getEnabled());
-            assertTrue(typeOfWorkHours.getDefaultPrice().compareTo(
-                    new BigDecimal(5)) == 0);
-        } catch (InstanceNotFoundException e) {
-            assertTrue(false);
-        }
-        typeOfWorkHoursDAO.flush();
-        sessionFactory.getCurrentSession().evict(typeOfWorkHours);
+        final TypeOfWorkHours typeOfWorkHours = transactionService
+                .runOnTransaction(new IOnTransaction<TypeOfWorkHours>() {
+                    @Override
+                    public TypeOfWorkHours execute() {
+                        try {
+                            return typeOfWorkHoursDAO.findByCode(cc1.code);
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+
+        assertTrue(typeOfWorkHours.getName().equalsIgnoreCase(
+                "newTypeOfWorkHours"));
+        assertTrue(typeOfWorkHours.getEnabled());
+        assertTrue(typeOfWorkHours.getDefaultPrice().compareTo(
+                new BigDecimal(5)) == 0);
+
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                typeOfWorkHoursDAO.flush();
+                sessionFactory.getCurrentSession().evict(typeOfWorkHours);
+                return null;
+            }
+        });
+
         typeOfWorkHours.dontPoseAsTransientObjectAnymore();
 
         // Update the previous type of work hours
@@ -142,18 +175,30 @@ public class TypeOfWorkHoursServiceTest {
         /* Test. */
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
-        assertTrue(typeOfWorkHoursDAO.existsByCode(cc1.code));
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                assertTrue(typeOfWorkHoursDAO.existsByCode(cc1.code));
+                return null;
+            }
+        });
 
         // Check if the changes was updated
-        try {
-            typeOfWorkHours = typeOfWorkHoursDAO.findByCode(cc1.code);
-            assertTrue(typeOfWorkHours.getName().equalsIgnoreCase("updateCC1"));
-            assertFalse(typeOfWorkHours.getEnabled());
-            assertTrue(typeOfWorkHours.getDefaultPrice().compareTo(
-                    new BigDecimal(100)) == 0);
-        } catch (InstanceNotFoundException e) {
-            assertTrue(false);
-        }
+        TypeOfWorkHours typeOfWorkHours2 = transactionService
+                .runOnTransaction(new IOnTransaction<TypeOfWorkHours>() {
+                    @Override
+                    public TypeOfWorkHours execute() {
+                        try {
+                            return typeOfWorkHoursDAO.findByCode(cc1.code);
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        assertTrue(typeOfWorkHours2.getName().equalsIgnoreCase("updateCC1"));
+        assertFalse(typeOfWorkHours2.getEnabled());
+        assertTrue(typeOfWorkHours2.getDefaultPrice().compareTo(
+                new BigDecimal(100)) == 0);
     }
 
     private TypeOfWorkHoursListDTO createTypeOfWorkHoursListDTO(
