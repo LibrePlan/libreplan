@@ -98,7 +98,7 @@ public final class DetailItem {
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
             // Management of left border case for current line format
-            this.markDeadlineDay(Math.min((this.size - 6), offsetInPx));
+            this.markDeadlineDay(Math.min(this.size - 1, offsetInPx));
         }
     }
 

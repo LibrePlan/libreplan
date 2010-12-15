@@ -36,8 +36,8 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.TaskContainer;
+import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -65,6 +65,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private static final int HEIGHT_PER_TASK = 10;
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
+    private static final int HALF_DEADLINE_MARK = 3;
 
 
     private static Pattern pixelsSpecificationPattern = Pattern
@@ -498,8 +499,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateDeadline() {
         if (task.getDeadline() != null) {
-            String position = getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getDeadline()))
+            String position = (getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getDeadline())) - HALF_DEADLINE_MARK)
                     + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         } else {
