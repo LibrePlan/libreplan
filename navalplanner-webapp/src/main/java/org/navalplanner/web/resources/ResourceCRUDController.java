@@ -55,6 +55,8 @@ import org.zkoss.zul.api.Window;
  */
 public abstract class ResourceCRUDController extends GenericForwardComposer {
 
+    private IResourceModel resourceModel;
+
     protected Window listWindow;
 
     protected Window editWindow;
@@ -221,7 +223,11 @@ public abstract class ResourceCRUDController extends GenericForwardComposer {
      */
 
     public Set<ResourceType> getResourceTypeOptionList() {
-        return ResourceType.getResourceTypeList();
+        Set<ResourceType> set = ResourceType.getResourceTypeList();
+        if(!resourceModel.isCriticalChainSupportEnabled()) {
+            set.remove(ResourceType.STRATEGIC_RESOURCE);
+        }
+        return set;
     }
 
     public Object getResourceType() {
