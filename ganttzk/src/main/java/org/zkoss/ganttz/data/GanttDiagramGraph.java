@@ -1274,17 +1274,17 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
              */
             private GanttDate calculatePrimaryPointDate(
                     PositionRestrictions originalRestrictions) {
-                GanttDate newStart = Constraint
+                GanttDate newDate = Constraint
                         .<GanttDate> initialValue(null)
                         .withConstraints(
                                 getConstraintsFrom(originalRestrictions,
                                         getPrimaryPoint()))
                         .withConstraints(getConstraintsFor(getPrimaryPoint()))
                         .applyWithoutFinalCheck();
-                if (newStart == null) {
+                if (newDate == null) {
                     return getTaskDateFor(getPrimaryPoint());
                 }
-                return newStart;
+                return newDate;
             }
 
             private List<Constraint<GanttDate>> getConstraintsFor(Point point) {
