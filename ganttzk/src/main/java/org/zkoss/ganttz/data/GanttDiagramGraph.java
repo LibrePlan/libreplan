@@ -1388,8 +1388,21 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     result.addAll(getDependenciesConstraintsFor(getPrimaryPoint()));
                     result.addAll(getTaskConstraints(getPrimaryPoint()));
                 }
-                result.addAll(globalStartConstraints);
+                result.addAll(getGlobalConstraintsToApply(getPrimaryPoint()));
                 return result;
+            }
+
+            private Collection<Constraint<GanttDate>> getGlobalConstraintsToApply(
+                    Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    return globalStartConstraints;
+                case END:
+                    return globalEndConstraints;
+                default:
+                    throw new RuntimeException("shouldn't happen");
+                }
             }
 
             protected List<Constraint<GanttDate>> getConstraintsForSecondaryPoint() {
