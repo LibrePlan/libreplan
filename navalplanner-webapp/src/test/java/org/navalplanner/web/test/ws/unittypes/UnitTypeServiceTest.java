@@ -21,7 +21,6 @@
 package org.navalplanner.web.test.ws.unittypes;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -37,6 +36,8 @@ import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.materials.entities.UnitType;
@@ -45,7 +46,7 @@ import org.navalplanner.ws.unittypes.api.IUnitTypeService;
 import org.navalplanner.ws.unittypes.api.UnitTypeDTO;
 import org.navalplanner.ws.unittypes.api.UnitTypeListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.Rollback;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,16 +73,23 @@ public class UnitTypeServiceTest {
     private IUnitTypeDAO unitTypeDAO;
 
     @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
     private IDataBootstrap unitTypeBootstrap;
 
-    @Test
-    @Rollback(false)
-    public void loadRequiredaData() {
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    private void loadRequiredaData() {
+        configurationBootstrap.loadRequiredData();
         unitTypeBootstrap.loadRequiredData();
     }
 
     @Test
     public void testAddUnitTypeRepeatedMeasure() {
+        loadRequiredaData();
+
         /* Build material with same code (1 constraint violations). */
         UnitTypeDTO m1 = new UnitTypeDTO("CodeA", "measure1");
         UnitTypeDTO m2 = new UnitTypeDTO("CodeB", "measure1");
@@ -102,7 +110,16 @@ public class UnitTypeServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void testAddAndUpdateMaterialCategory() {
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                loadRequiredaData();
+                return null;
+            }
+        });
+
         /* Build unittype (0 constraint violations). */
         UnitTypeDTO m1 = new UnitTypeDTO("XXX", "measureX");
         UnitTypeDTO m2 = new UnitTypeDTO("YYY", "measureY");
@@ -119,17 +136,23 @@ public class UnitTypeServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            UnitType typeX = unitTypeDAO.findByCode("XXX");
-            assertTrue(typeX.getMeasure().equalsIgnoreCase("measureX"));
-            UnitType typeY = unitTypeDAO.findByCode("YYY");
-            assertTrue(typeY.getMeasure().equalsIgnoreCase("measureY"));
-            unitTypeDAO.flush();
-            sessionFactory.getCurrentSession().evict(typeX);
-            sessionFactory.getCurrentSession().evict(typeY);
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                try {
+                    UnitType typeX = unitTypeDAO.findByCode("XXX");
+                    assertTrue(typeX.getMeasure().equalsIgnoreCase("measureX"));
+                    UnitType typeY = unitTypeDAO.findByCode("YYY");
+                    assertTrue(typeY.getMeasure().equalsIgnoreCase("measureY"));
+                    unitTypeDAO.flush();
+                    sessionFactory.getCurrentSession().evict(typeX);
+                    sessionFactory.getCurrentSession().evict(typeY);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
 
         /* Update the measure unit type */
         m1 = new UnitTypeDTO("XXX", "update-measureX");
@@ -147,14 +170,22 @@ public class UnitTypeServiceTest {
         assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
 
-        try {
-            UnitType typeX = unitTypeDAO.findByCode("XXX");
-            assertTrue(typeX.getMeasure().equalsIgnoreCase("update-measureX"));
-            UnitType typeY = unitTypeDAO.findByCode("YYY");
-            assertTrue(typeY.getMeasure().equalsIgnoreCase("update-measureY"));
-        } catch (InstanceNotFoundException e) {
-            fail();
-        }
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                try {
+                    UnitType typeX = unitTypeDAO.findByCode("XXX");
+                    assertTrue(typeX.getMeasure().equalsIgnoreCase(
+                            "update-measureX"));
+                    UnitType typeY = unitTypeDAO.findByCode("YYY");
+                    assertTrue(typeY.getMeasure().equalsIgnoreCase(
+                            "update-measureY"));
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+                return null;
+            }
+        });
     }
 
     private UnitTypeListDTO createUnitTypeListDTO(UnitTypeDTO... unitTypeDTOs) {
