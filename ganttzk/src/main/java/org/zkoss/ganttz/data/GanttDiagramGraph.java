@@ -1241,7 +1241,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             @Override
             PositionRestrictions enforceUsingPreviousRestrictions(
                     PositionRestrictions restrictions) {
-                if (taskPoint.areAllPointsPotentiallyModified()) {
+                if (parentRecalculation) {
+                    // avoid interference from task containers shrinking
+                    return enforcePrimaryPoint(restrictions);
+                } else if (taskPoint.areAllPointsPotentiallyModified()) {
                     return enforceBoth(restrictions);
                 } else if (taskPoint.somePointPotentiallyModified()) {
                     return enforceSecondaryPoint(restrictions);
