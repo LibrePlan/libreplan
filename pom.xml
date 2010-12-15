@@ -5,7 +5,7 @@
     <groupId>org.navalplanner</groupId>
     <artifactId>navalplanner</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>0.9.0</version>
     <name>NavalPlan</name>
 
     <!--
@@ -471,13 +471,13 @@
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>ganttzk</artifactId>
-                <version>1.0.0</version>
+                <version>${project.version}</version>
             </dependency>
             <!-- NavalPlan Business -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>navalplanner-business</artifactId>
-                <version>1.0.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dbunit</groupId>

@@ -127,6 +127,15 @@
         class="org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler"
         factory-method="getInstance" />
 
+	<bean id="versionInformation"
+        class="org.navalplanner.business.common.VersionInformation"
+        factory-method="getInstance"
+        lazy-init="false">
+        <property name="projectVersion">
+			<value>${project.version}</value>
+        </property>
+    </bean>
+
     <bean id="scenarioManager"
         class="org.navalplanner.business.scenarios.OnlyMainScenarioAwareManager"
         scope="singleton"/>

@@ -21,6 +21,9 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/login.css"?>
 
+<?xel-method prefix="project" name="version" class="org.navalplanner.business.common.VersionInformation"
+    signature="java.lang.String getVersion()"?>
+
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript>
@@ -110,7 +113,7 @@
   </n:tr>
   <n:tr>
     <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
-    <n:div class="navalplan-version">v1.0</n:div></n:td>
+    <n:div style="float:right;color:green;font-size:10px;">v${project:version()}</n:div></n:td>
   </n:tr>
   <n:tr>
     <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_footer.gif" width="475" height="40" /></div></n:td>
