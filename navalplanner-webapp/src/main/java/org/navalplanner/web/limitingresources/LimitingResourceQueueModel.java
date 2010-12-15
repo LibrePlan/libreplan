@@ -439,6 +439,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     /**
      * Moves elements in order to satisfy dependencies
+     *
      * @param potentiallyAffectedByInsertion
      * @param elementInserted
      * @param allocationAlreadyDone
@@ -597,12 +598,39 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 AllocationSpec allocation = requirements
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
-                    applyAllocation(allocation);
+                    if (checkAllocationIsAppropriative()
+                            && requirements
+                                    .isAppropiativeAllocation(allocation)) {
+                        doAppropriativeAllocation(requirements, allocation);
+                    } else {
+                        applyAllocation(allocation);
+                    }
                     return allocation;
                 }
             }
         }
         return null;
+    }
+
+    private boolean checkAllocationIsAppropriative = true;
+
+    private void doAppropriativeAllocation(InsertionRequirements requirements,
+            AllocationSpec allocation) {
+        LimitingResourceQueueElement element = requirements.getElement();
+        LimitingResourceQueue queue = queuesState.getQueueFor(element.getResource());
+        DateAndHour allocationTime = requirements.getEarliestPossibleStart(allocation);
+
+        checkAllocationIsAppropriative(false);
+        appropriativeAllocation(element, queue, allocationTime);
+        checkAllocationIsAppropriative(true);
+    }
+
+    private void checkAllocationIsAppropriative(boolean value) {
+        checkAllocationIsAppropriative = value;
+    }
+
+    private boolean checkAllocationIsAppropriative() {
+        return checkAllocationIsAppropriative;
     }
 
     private List<GapOnQueue> getSubGaps(GapOnQueue each,
