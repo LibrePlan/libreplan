@@ -34,8 +34,11 @@
 
     <changeSet id="rename start_constraint_type in task and task milestone" author="ogonzalez">
         <comment>Caused by renaming org.navalplanner.business.planner.entities.TaskPositionConstraint.startConstraintType</comment>
-        <renameColumn tableName="task" oldColumnName="start_constraint_type" newColumnName="constraint_type"/>
-        <renameColumn tableName="task_milestone" oldColumnName="start_constraint_type" newColumnName="constraint_type"/>
+        <renameColumn tableName="task" oldColumnName="start_constraint_type"
+            newColumnName="constraint_type" columnDataType="INTEGER" />
+        <renameColumn tableName="task_milestone"
+            oldColumnName="start_constraint_type"
+            newColumnName="constraint_type" columnDataType="INTEGER" />
     </changeSet>
 
 </databaseChangeLog>
