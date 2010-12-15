@@ -470,8 +470,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 for (LimitingResourceQueueElement each : inserted) {
                     // FIXME visually wrong if an element jumps from a queue to
                     // another
-                    limitingResourcesPanel.refreshQueue(each
-                            .getLimitingResourceQueue());
+                    LimitingResourceQueue queue = each.getLimitingResourceQueue();
+                    // Remove all dependency components associated to element
+                    limitingResourcesPanel.removeDependencyComponentsFor(each);
+                    // Dependencies will be created again on refreshing queue
+                    limitingResourcesPanel.refreshQueue(queue);
                 }
             } else {
                 showErrorMessage(_("Cannot allocate selected element. There is not any queue " +

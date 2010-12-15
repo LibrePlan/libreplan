@@ -429,6 +429,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .getLimitingResourceQueueElement());
     }
 
+    public void removeDependencyComponentsFor(LimitingResourceQueueElement element) {
+        QueueTask queueTask = queueListComponent.getQueueTask(element);
+        dependencyList.removeDependencyComponents(queueTask);
+    }
+
     public void refreshQueue(LimitingResourceQueue queue) {
         queueListComponent.refreshQueue(queue);
     }

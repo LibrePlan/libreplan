@@ -142,6 +142,23 @@ public class QueueListComponent extends HtmlMacroComponent implements
         return result;
     }
 
+    /**
+     * Returns {@link QueueTask} associated to element
+     *
+     * @param element
+     * @return
+     */
+    public QueueTask getQueueTask(LimitingResourceQueueElement element) {
+        QueueComponent queue = fromQueueToComponent.get(element.getLimitingResourceQueue());
+        for (QueueTask each: queue.getQueueTasks()) {
+            LimitingResourceQueueElement target = each.getLimitingResourceQueueElement();
+            if (element.getId().equals(target.getId())) {
+                return each;
+            }
+        }
+        return null;
+    }
+
     public Map<LimitingResourceQueueElement, QueueTask> getLimitingResourceElementToQueueTaskMap() {
         Map<LimitingResourceQueueElement, QueueTask> result = new HashMap<LimitingResourceQueueElement, QueueTask>();
         for (QueueTask each : getQueueTasks()) {
