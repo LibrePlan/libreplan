@@ -135,4 +135,10 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      */
     List<HoursWorkedPerWorkerInAMonthDTO> getWorkingHoursPerWorker(Integer year, Integer month);
 
+    /**
+     * Checks if there exist any strategic resources in the database
+     * @return True if there is at least one strategic resource stored, false otherwise
+     */
+    Boolean existStrategicResources();
+
 }

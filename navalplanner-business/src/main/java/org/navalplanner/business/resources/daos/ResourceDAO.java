@@ -40,6 +40,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -304,6 +305,13 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
 
         List<HoursWorkedPerWorkerInAMonthDTO> result = toDTO(query.list());
         return result;
+    }
+
+    @Override
+    public Boolean existStrategicResources() {
+        List strategicResources = getSession().createCriteria(Resource.class).add(
+                Restrictions.eq("resourceType", ResourceType.STRATEGIC_RESOURCE)).list();
+        return !strategicResources.isEmpty();
     }
 
     private List<HoursWorkedPerWorkerInAMonthDTO> toDTO(List<Object> rows) {

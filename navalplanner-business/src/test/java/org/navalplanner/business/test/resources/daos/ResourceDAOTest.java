@@ -23,9 +23,11 @@ package org.navalplanner.business.test.resources.daos;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
@@ -51,6 +53,7 @@ import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -176,6 +179,16 @@ public class ResourceDAOTest {
                 .findSatisfyingAllCriterionsAtSomePoint(criterions);
         assertNotNull(result);
         assertThat(result.size(), not(equalTo(1)));
+    }
+
+    @Test
+    public void testExistStrategicResources() {
+        assertFalse(resourceDAO.existStrategicResources());
+
+        Resource resource = givenValidWorker();
+        resource.setResourceType(ResourceType.STRATEGIC_RESOURCE);
+        resourceDAO.save(resource);
+        assertTrue(resourceDAO.existStrategicResources());
     }
 
 }
