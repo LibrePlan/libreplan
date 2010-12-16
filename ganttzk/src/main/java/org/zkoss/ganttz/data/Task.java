@@ -309,7 +309,9 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void resizeTo(GanttDate newEnd) {
+        GanttDate previousEnd = getEndDate();
         fundamentalProperties.resizeTo(newEnd);
+        dependenciesEnforcerHook.setNewEnd(previousEnd, newEnd);
     }
 
     public void removed() {
