@@ -413,8 +413,10 @@ public class MultipleTabsPlannerController implements Composer,
     }
 
     public void goToCreateForm() {
-        getTabsRegistry().show(ordersTab);
-        orderCRUDController.goToCreateForm();
+        orderCRUDController.prepareForCreate();
+        orderCRUDController.getCreationPopup().showWindow(orderCRUDController,
+                this);
+
     }
 
     @Override

@@ -1013,11 +1013,15 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     public void goToCreateForm() {
         try {
-            orderModel.prepareForCreate();
-            showCreationPopup();
+            prepareForCreate();
+            getCreationPopup().showWindow(this, null);
         } catch (ConcurrentModificationException e) {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
+    }
+
+    public void prepareForCreate() {
+        orderModel.prepareForCreate();
     }
 
     public void editNewCreatedOrder() {
@@ -1027,17 +1031,11 @@ public class OrderCRUDController extends GenericForwardComposer {
         showEditWindow(_("Create order"));
     }
 
-    private void showCreationPopup() {
-        Window window = (Window) Executions.createComponents(
-                "/orders/_projectDetails.zul", null,
-                new HashMap<String, String>());
-        projectDetailsController = new ProjectDetailsController();
-        try {
-            projectDetailsController.doAfterCompose(window);
-            projectDetailsController.showWindow(this);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public ProjectDetailsController getCreationPopup() {
+        if (projectDetailsController == null) {
+            projectDetailsController = new ProjectDetailsController();
         }
+        return projectDetailsController;
     }
 
     private void hideCreateButtons() {
