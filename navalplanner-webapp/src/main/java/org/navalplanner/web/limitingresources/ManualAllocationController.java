@@ -22,10 +22,12 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -278,15 +280,23 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private void nonAppropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
-        getLimitingResourceQueueModel()
+        List<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
                 .nonAppropriativeAllocation(element, queue, time);
-        limitingResourcesPanel.appendQueueElementToQueue(element);
+        refreshQueues(inserted);
     }
 
     private void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
-        getLimitingResourceQueueModel().appropriativeAllocation(element, queue, time);
-        limitingResourcesPanel.refreshQueue(queue);
+        Set<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
+                .appropriativeAllocation(element, queue, time);
+        refreshQueues(inserted);
+    }
+
+    private void refreshQueues(Collection<LimitingResourceQueueElement> movedElements) {
+        for (LimitingResourceQueueElement each : movedElements) {
+            limitingResourcesPanel.removeDependencyComponentsFor(each);
+            limitingResourcesPanel.refreshQueue(each.getLimitingResourceQueue());
+        }
     }
 
     private DateAndHour getSelectedAllocationTime() {

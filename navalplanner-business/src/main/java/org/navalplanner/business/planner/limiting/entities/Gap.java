@@ -25,6 +25,7 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,16 @@ public class Gap implements Comparable<Gap> {
             return result;
         }
 
+        public static List<GapOnQueue> onQueue(
+                LimitingResourceQueue queue, DateAndHour startTime,
+                DateAndHour endTime) {
+
+            Gap gap = (endTime == null || endTime.compareTo(startTime) <= 0) ? Gap
+                    .untilEnd(queue.getResource(), startTime) : Gap.create(
+                    queue.getResource(), startTime, endTime);
+            return GapOnQueue.onQueue(queue, Collections.singleton(gap));
+        }
+
         private final LimitingResourceQueue originQueue;
 
         private final Gap gap;
@@ -93,7 +104,11 @@ public class Gap implements Comparable<Gap> {
 
     public static Gap untilEnd(LimitingResourceQueueElement current,
             DateAndHour startInclusive) {
-        return new Gap(current.getResource(), startInclusive, null);
+        return untilEnd(current.getResource(), startInclusive);
+    }
+
+    private static Gap untilEnd(Resource resource, DateAndHour startInclusive) {
+        return new Gap(resource, startInclusive, null);
     }
 
     private DateAndHour startTime;

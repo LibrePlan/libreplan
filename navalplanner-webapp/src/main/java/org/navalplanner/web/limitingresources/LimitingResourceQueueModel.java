@@ -415,6 +415,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     public List<LimitingResourceQueueElement> assignLimitingResourceQueueElement(
             LimitingResourceQueueElement externalQueueElement) {
+
         InsertionRequirements requirements = queuesState
                 .getRequirementsFor(externalQueueElement);
         AllocationSpec allocationDone = insertAtGap(requirements);
@@ -612,19 +613,46 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return Collections.singletonList(each);
     }
 
-    private void applyAllocation(AllocationSpec allocationStillNotDone) {
+    private void applyAllocation(final AllocationSpec allocationStillNotDone) {
+        applyAllocation(allocationStillNotDone, new IDayAssignmentBehaviour() {
+
+            @Override
+            public void allocateDayAssigments() {
+                ResourceAllocation<?> resourceAllocation = getResourceAllocation(allocationStillNotDone);
+                Resource resource = getResource(allocationStillNotDone);
+
+                List<DayAssignment> assignments = allocationStillNotDone.getAssignmentsFor(
+                        resourceAllocation, resource);
+                resourceAllocation.allocateLimitingDayAssignments(assignments);
+            }
+
+            private ResourceAllocation<?> getResourceAllocation(AllocationSpec allocation) {
+                return allocation.getElement().getResourceAllocation();
+            }
+
+            private Resource getResource(AllocationSpec allocation) {
+                return allocation.getQueue().getResource();
+            }
+
+        });
+    }
+
+    private void applyAllocation(AllocationSpec allocationStillNotDone,
+            IDayAssignmentBehaviour allocationBehaviour) {
+
+        // Do day allocation
+        allocationBehaviour.allocateDayAssigments();
+
         LimitingResourceQueueElement element = allocationStillNotDone
-                .getElement();
+            .getElement();
         LimitingResourceQueue queue = allocationStillNotDone.getQueue();
-        Resource resource = queue.getResource();
-        ResourceAllocation<?> resourceAllocation = element.getResourceAllocation();
-        List<DayAssignment> assignments = allocationStillNotDone
-                .getAssignmentsFor(resourceAllocation, resource);
-        resourceAllocation
-                .allocateLimitingDayAssignments(assignments);
+
+        // Update start and end time of task
         updateStartAndEndTimes(element, allocationStillNotDone
                 .getStartInclusive(), allocationStillNotDone
                         .getEndExclusive());
+
+        // Add to queue and mark as modified
         addLimitingResourceQueueElementIfNeeded(queue, element);
         markAsModified(element);
     }
@@ -635,43 +663,64 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                         .getEarliestEndDateBecauseOfGantt()));
     }
 
-    private boolean assignLimitingResourceQueueElementToQueueAt(
-            LimitingResourceQueueElement element, LimitingResourceQueue queue,
-            DateAndHour startTime, DateAndHour endsAfter) {
+    private List<LimitingResourceQueueElement> assignLimitingResourceQueueElementToQueueAt(
+            final LimitingResourceQueueElement element,
+            final LimitingResourceQueue queue, final DateAndHour startTime,
+            final DateAndHour endsAfter) {
 
-        // Allocate day assignments and adjust start and end times for element
-        List<DayAssignment> dayAssignments = LimitingResourceAllocator
-                .generateDayAssignments(element.getResourceAllocation(), queue
-                        .getResource(), startTime, endsAfter);
-        element.getResourceAllocation().allocateLimitingDayAssignments(
-                dayAssignments);
-
-        DateAndHour endTime = endFor(dayAssignments);
-        // the assignments can be generated after the required start
-        startTime = DateAndHour.max(startTime, startFor(dayAssignments));
-        if (sameDay(startTime, endTime)) {
-            endTime = new DateAndHour(endTime.getDate(), startTime.getHour() + endTime.getHour());
+        // Check if allocation is possible
+        InsertionRequirements requirements = queuesState
+                .getRequirementsFor(element);
+        List<GapOnQueue> gapOnQueue = GapOnQueue.onQueue(queue, startTime,
+                endsAfter);
+        AllocationSpec allocation = requirements.guessValidity(gapOnQueue
+                .iterator().next());
+        if (!allocation.isValid()) {
+            return Collections.emptyList();
         }
-        updateStartAndEndTimes(element, startTime, endTime);
 
-        // Add element to queue
-        addLimitingResourceQueueElementIfNeeded(queue, element);
-        markAsModified(element);
-        return true;
+        // Do allocation
+        applyAllocation(allocation, new IDayAssignmentBehaviour() {
+
+            @Override
+            public void allocateDayAssigments() {
+
+                List<DayAssignment> assignments = LimitingResourceAllocator
+                        .generateDayAssignments(
+                                element.getResourceAllocation(),
+                                queue.getResource(), startTime, endsAfter);
+                element.getResourceAllocation().allocateLimitingDayAssignments(
+                        assignments);
+            }
+
+        });
+
+        assert allocation.isValid();
+
+        // Move other tasks to respect dependency constraints
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        result.add(requirements.getElement());
+
+        List<LimitingResourceQueueElement> moved = shift(
+                queuesState.getPotentiallyAffectedByInsertion(element),
+                requirements.getElement(), allocation);
+
+        // Return all moved tasks (including the allocated one)
+        result.addAll(moved);
+        return result;
     }
 
-    private DateAndHour endFor(List<DayAssignment> dayAssignments) {
-        DayAssignment last = dayAssignments.get(dayAssignments.size() - 1);
-        return new DateAndHour(last.getDay(), 0);
-    }
+    /**
+     *
+     * Describes how day assignments are going to be generated for an allocation
+     *
+     * @author Diego Pino García<dpino@igalia.com>
+     *
+     */
+    private interface IDayAssignmentBehaviour {
 
-    private DateAndHour startFor(List<DayAssignment> dayAssignments) {
-        return new DateAndHour(dayAssignments
-                .get(0).getDay(), 0);
-    }
+        void allocateDayAssigments();
 
-    private boolean sameDay(DateAndHour startTime, DateAndHour endTime) {
-        return startTime.getDate().equals(endTime.getDate());
     }
 
     private void markAsModified(LimitingResourceQueueElement element) {
@@ -890,7 +939,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     @Override
-    public boolean nonAppropriativeAllocation(
+    public List<LimitingResourceQueueElement> nonAppropriativeAllocation(
             LimitingResourceQueueElement element,
             LimitingResourceQueue queue,
             DateAndHour startTime) {
@@ -918,8 +967,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
 
     @Override
-    public void appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
+    public Set<LimitingResourceQueueElement> appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
             DateAndHour allocationTime) {
+
+        Set<LimitingResourceQueueElement> result = new HashSet<LimitingResourceQueueElement>();
 
         LimitingResourceQueue queue = queuesState.getEquivalent(_queue);
         LimitingResourceQueueElement element = queuesState.getEquivalent(_element);
@@ -938,8 +989,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 final LocalDate startDate = gap.getStartTime().getDate();
 
                 if (startDate.equals(allocationTime.getDate())) {
-                    assignLimitingResourceQueueElementToQueueAt(element, queue,
-                            allocationTime, getEndsAfterBecauseOfGantt(element));
+                    result.addAll(assignLimitingResourceQueueElementToQueueAt(
+                            element, queue, allocationTime,
+                            getEndsAfterBecauseOfGantt(element)));
                     break;
                 } else {
                     LimitingResourceQueueElement elementAtTime = getFirstElementFrom(
@@ -954,10 +1006,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         for (LimitingResourceQueueElement each: unscheduledElements) {
             gap = LimitingResourceAllocator.getFirstValidGap(queue, each);
-            assignLimitingResourceQueueElementToQueueAt(each, queue, gap
-                    .getStartTime(), getEndsAfterBecauseOfGantt(element));
+            result.addAll(assignLimitingResourceQueueElementToQueueAt(each, queue, gap
+                    .getStartTime(), getEndsAfterBecauseOfGantt(element)));
         }
 
+        return result;
     }
 
     @SuppressWarnings("unchecked")
