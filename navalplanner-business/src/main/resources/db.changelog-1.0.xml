@@ -31,4 +31,11 @@
         <dropColumn tableName="resource" columnName="limited_resource"/>
     </changeSet>
 
+    <changeSet id="add-column-planned_with_critical_chain-in-planning_data-table" author="jaragunde">
+        <comment>Add column planned_with_critical_chain in planning_data table</comment>
+        <addColumn tableName="planning_data">
+            <column name="planned_with_critical_chain" type="BOOLEAN" defaultValue="FALSE" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

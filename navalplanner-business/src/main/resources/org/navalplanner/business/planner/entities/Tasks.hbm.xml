@@ -135,6 +135,7 @@
             cascade="all" lazy="false" />
         <property name="progressByDuration" column="progress_by_duration" scale="6" />
         <property name="progressByNumHours" column="progress_by_num_hours" scale="6" />
+        <property name="plannedWithCriticalChain" column="planned_with_critical_chain" />
     </class>
 
 

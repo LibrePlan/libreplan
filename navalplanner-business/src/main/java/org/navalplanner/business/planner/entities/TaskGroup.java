@@ -73,6 +73,19 @@ public class TaskGroup extends TaskElement {
         return planningData.getProgressByNumHours();
     }
 
+    public Boolean getPlannedWithCriticalChain() {
+        if (planningData == null) {
+            return false;
+        }
+        return planningData.getPlannedWithCriticalChain();
+    }
+
+    public void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain) {
+        if (planningData != null) {
+            planningData.setPlannedWithCriticalChain(plannedWithCriticalChain);
+        }
+    }
+
     @SuppressWarnings("unused")
     @AssertTrue(message = "order element associated to a task group must be not null")
     private boolean theOrderElementMustBeNotNull() {

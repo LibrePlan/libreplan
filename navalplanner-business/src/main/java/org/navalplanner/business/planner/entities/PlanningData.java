@@ -46,6 +46,8 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
+    private Boolean plannedWithCriticalChain;
+
     protected PlanningData() {
 
     }
@@ -56,6 +58,14 @@ public class PlanningData extends BaseEntity {
 
     public BigDecimal getProgressByNumHours() {
         return progressByNumHours;
+    }
+
+    public Boolean getPlannedWithCriticalChain() {
+        return plannedWithCriticalChain;
+    }
+
+    public void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain) {
+        this.plannedWithCriticalChain = plannedWithCriticalChain;
     }
 
     private PlanningData(TaskGroup rootTask) {
