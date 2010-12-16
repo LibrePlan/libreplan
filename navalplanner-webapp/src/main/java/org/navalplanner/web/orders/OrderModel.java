@@ -559,8 +559,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         try {
             int status = Messagebox
                     .show(
-                            _("Confirm creating a new order version for this scenario and derived. Are you sure?"),
-                            _("New order version"), Messagebox.OK
+                            _("Confirm creating a new project version for this scenario and derived. Are you sure?"),
+                            _("New project version"), Messagebox.OK
                                     | Messagebox.CANCEL, Messagebox.QUESTION);
             return (Messagebox.OK == status);
         } catch (InterruptedException e) {
@@ -631,7 +631,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
                     }
                 } catch (InstanceNotFoundException e) {
                     throw new ValidationException(_(""
-                            + "It not could remove the order element "
+                            + "It not could remove the task "
                             + orderElement.getName()));
                 }
             }

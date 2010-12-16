@@ -42,7 +42,7 @@ import org.zkoss.zul.Label;
 public class LimitingResourcesTabCreator {
 
     /* Unnecesary */
-    private static String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (order)");
+    private static String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (project)");
 
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,

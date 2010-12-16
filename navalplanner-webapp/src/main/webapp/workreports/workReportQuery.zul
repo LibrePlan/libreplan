@@ -41,7 +41,7 @@
           <label value="${i18n:_('Resource :')}"/>
           <autocomplete id="filterResource" buttonVisible="true"
                finder="ResourceFinder"/>
-          <label value="${i18n:_('order element :')}"/>
+          <label value="${i18n:_('task :')}"/>
           <bandboxSearch id="bandboxFilterOrderElement" widthBandbox="285px" widthListbox="700px"
               finder="OrderElementBandboxFinder" model="@{controller.orderElements}"/>
           <label value="${i18n:_('from')}"/>
@@ -67,7 +67,7 @@
                 <column id="date" label="${i18n:_('Date')}" width="200px" align="center"
                     sort="auto(date)" sortDirection="ascending"/>
                 <column label="${i18n:_('Resource')}" width="200px" align="center"/>
-                <column label="${i18n:_('Order Element Code')}" width="200px" align="center"/>
+                <column label="${i18n:_('Task Code')}" width="200px" align="center"/>
                 <column label="${i18n:_('Start hour')}" width="80px" align="center"/>
                 <column label="${i18n:_('Finish hour')}" width="80px" align="center"/>
                 <column label="${i18n:_('Hours')}" width="80px" align="center"/>
@@ -123,7 +123,7 @@
                                             selectedItem="@{controller.workReport.resource}"/>
                                 </row>
                                 <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                    <label value="${i18n:_('OrderElement Code')}:" />
+                                    <label value="${i18n:_('Task Code')}:" />
                                     <bandboxSearch id="bandboxSelectOrderElementInHead"
                                         finder="OrderElementBandboxFinder"
                                         model="@{controller.orderElements}"

@@ -121,7 +121,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
                 String orderElementName;
                 if (invalidValue.getBean() instanceof Order) {
-                    orderElementName = _("Order");
+                    orderElementName = _("Project");
                 } else {
                     orderElementName = ((OrderElement) invalidValue
                             .getBean()).getName();
@@ -179,7 +179,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showCreateButtons(false);
         orderModel.prepareCreationFrom(template);
         prepareEditWindow();
-        showEditWindow(_("Create order from Template"));
+        showEditWindow(_("Create project from Template"));
     }
 
     @Resource
@@ -647,7 +647,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             }
             else {
                 try {
-                    Messagebox.show(_("You don't have read access to this order"),
+                    Messagebox.show(_("You don't have read access to this project"),
                             _("Information"), Messagebox.OK, Messagebox.INFORMATION);
                     goToList();
                 } catch (InterruptedException e) {
@@ -719,7 +719,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             saveOrderAuthorizations();
 
             try {
-                Messagebox.show(_("Order saved"), _("Information"),
+                Messagebox.show(_("Project saved"), _("Information"),
                         Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -842,7 +842,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             try {
-                Messagebox.show(_("You don't have permissions to edit this order"),
+                Messagebox.show(_("You don't have permissions to edit this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -857,7 +857,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the order \"{0}\" because of any of its order elements are already in use in some work reports and the order just exists in the current scenario",
+                                    "You can not remove the project \"{0}\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario",
                                     order.getName()));
         } else {
             orderModel.remove(order);
@@ -875,7 +875,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 showCreateButtons(false);
             } else {
                 try {
-                    Messagebox.show(_("The order has no scheduled elements"),
+                    Messagebox.show(_("The project has no scheduled elements"),
                             _("Information"), Messagebox.OK, Messagebox.INFORMATION);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
@@ -884,7 +884,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
         else {
             try {
-                Messagebox.show(_("You don't have read access to this order"),
+                Messagebox.show(_("You don't have read access to this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -907,7 +907,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void initEdit(Order order) {
         if (!orderModel.userCanRead(order, SecurityUtils.getSessionUserLoginName())) {
             try {
-                Messagebox.show(_("Sorry, you do not have permissions to access this order"),
+                Messagebox.show(_("Sorry, you do not have permissions to access this project"),
                         _("Information"), Messagebox.OK, Messagebox.INFORMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -922,7 +922,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         prepareEditWindow();
-        showEditWindow(_("Edit order"));
+        showEditWindow(_("Edit project"));
     }
 
     private void resetTabControllers() {
@@ -1030,7 +1030,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
-        showEditWindow(_("Create order"));
+        showEditWindow(_("Create project"));
     }
 
     public ProjectDetailsController getCreationPopup() {

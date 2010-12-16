@@ -536,7 +536,7 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
         } else {
             final Criterion criterion = newRequirement.getCriterion();
             throw new IllegalStateException(_(
-                    " The {0} already exist into other order element",
+                    " The {0} already exist into other task",
                     criterion.getName()));
         }
     }

@@ -30,7 +30,7 @@
             <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Order')}" caption="${i18n:_('Choosing Template')}" />
 
             <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
-             tooltiptext="${i18n:_('Create new order')}" onClick="controller.goToCreateForm()"
+             tooltiptext="${i18n:_('Create New Project')}" onClick="controller.goToCreateForm()"
              visible="false" />
 
             <button id="createOrderFromTemplateButton" image="/common/img/ico_copy.png" sclass="planner-icon"
@@ -38,7 +38,7 @@
                 visible="false" />
 
             <button id="saveOrderAndContinueButton"  image="/common/img/ico_save.png" sclass="planner-icon"
-                tooltiptext="${i18n:_('Save Order')}" onClick="controller.saveAndContinue();" />
+                tooltiptext="${i18n:_('Save Project')}" onClick="controller.saveAndContinue();" />
 
             <hbox id="orderFilter" visible="false"/>
             <vbox id="orderElementFilter" />

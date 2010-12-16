@@ -301,7 +301,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                                 messages
                                         .showMessage(
                                                 Level.ERROR,
-                                                _("Another order element in the same branch is already reporting advance for this quality form"));
+                                                _("Another task in the same branch is already reporting advance for this quality form"));
                                 tmpCheckbox.setChecked(false);
                             }
                         }

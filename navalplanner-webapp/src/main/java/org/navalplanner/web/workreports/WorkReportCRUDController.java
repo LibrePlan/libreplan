@@ -307,7 +307,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         if (!getWorkReport()
                 .checkConstraintOrderElementMustBeNotNullIfIsSharedByLines()) {
             showInvalidMessage(bandboxSelectOrderElementInHead,
-                    _("Order Element code cannot be null"));
+                    _("Task code cannot be null"));
             return false;
         }
         return true;
@@ -360,7 +360,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 } else if (workReportLine.getOrderElement() == null) {
                     BandboxSearch bandboxOrder = getTextboxOrder(row);
                     if (bandboxOrder != null) {
-                        String message = _("The order element code cannot be null");
+                        String message = _("The task code cannot be null");
                         bandboxOrder.clear();
                         showInvalidMessage(bandboxOrder, message);
                     }
@@ -748,7 +748,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (!getWorkReport().getWorkReportType()
                     .getOrderElementIsSharedInLines()) {
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
-                columnCode.setLabel(_("Order Code"));
+                columnCode.setLabel(_("Project Code"));
                 columnCode.setSclass("order-code-column");
                 columns.appendChild(columnCode);
             }
@@ -1598,7 +1598,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 return workReportModel.findOrderElement(orderElement.getCode());
             } catch (InstanceNotFoundException e) {
                 throw new WrongValueException(bandboxFilterOrderElement,
-                        _("OrderElement not found"));
+                        _("Task not found"));
             }
         }
         return null;

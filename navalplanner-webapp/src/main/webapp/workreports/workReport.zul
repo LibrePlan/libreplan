@@ -165,7 +165,7 @@
                                             selectedItem="@{controller.workReport.resource}"/>
                                 </row>
                                 <row visible = "@{controller.workReport.workReportType.orderElementIsSharedInLines}">
-                                    <label value="${i18n:_('OrderElement Code')}:" />
+                                    <label value="${i18n:_('Task Code')}:" />
                                     <bandboxSearch id="bandboxSelectOrderElementInHead"
                                         finder="OrderElementBandboxFinder"
                                         model="@{controller.orderElements}"

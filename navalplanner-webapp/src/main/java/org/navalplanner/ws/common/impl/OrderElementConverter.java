@@ -554,7 +554,7 @@ public final class OrderElementConverter {
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
                 throw new ValidationException(_(
-                        "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                        "Task {0} : Task group is incompatible type with {1}"
                                 + orderElement.getCode(), orderElement
                                 .getClass().getName()));
             }
@@ -577,7 +577,7 @@ public final class OrderElementConverter {
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(_(
-                            "Order element {0} : Order is incompatible type with {1}"
+                            "Task {0} : Project is incompatible type with {1}"
                                     + orderElement.getCode(), orderElement
                                     .getClass().getName()));
 
@@ -610,7 +610,7 @@ public final class OrderElementConverter {
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
                     throw new ValidationException(_(
-                            "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                            "Task {0} : Task group is incompatible type with {1}"
                                     + orderElement.getCode(), orderElement
                                     .getClass().getName()));
                 }
@@ -623,7 +623,7 @@ public final class OrderElementConverter {
                 } else {
                     if (checkConstraintUniqueOrderCode(orderElementDTO)) {
                         throw new ValidationException(
-                                _("Order element {0} : Duplicate code in DB"
+                                _("Task {0} : Duplicate code in DB"
                                         + orderElementDTO.code));
                     }
                     if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
@@ -815,11 +815,11 @@ public final class OrderElementConverter {
                         .addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
-                        _("Duplicate value true report global Advance for order element "
+                        _("Duplicate value true report global Advance for task"
                                 + orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(
-                        _("Duplicate advance assignment for order element "
+                        _("Duplicate advance assignment for task "
                                 + orderElement.getCode()));
             }
         }

@@ -92,7 +92,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setOrderElement(null);
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
 
@@ -164,7 +164,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setOrderElement(null);
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
 
@@ -459,7 +459,7 @@ public final class WorkReportConverter {
                 workReport.setOrderElement(orderElement);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
     }
@@ -522,7 +522,7 @@ public final class WorkReportConverter {
             workReportLine.setOrderElement(orderElement);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("There is no order element with this code"));
+                    _("There is no task with this code"));
         }
 
         /* Step 3.4: Update the type of work hours. */

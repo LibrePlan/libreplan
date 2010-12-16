@@ -516,7 +516,7 @@ public class MaterialsController extends
         }
         else {
             messagesForUser.showMessage(Level.ERROR,
-                    _("Cannot delete that material because it is assigned to an order."));
+                    _("Cannot delete that material because it is assigned to a project."));
         }
     }
 

@@ -203,7 +203,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private void showSelectAnElementMessageBox() {
         try {
-            Messagebox.show(_("Choose an order element "
+            Messagebox.show(_("Choose a task "
                     + "to operate on it"));
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -252,8 +252,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         try {
             Messagebox
                     .show(
-                            _("Templates can only be created from already existent order elements.\n"
-                                    + "Newly order elements cannot be used."),
+                            _("Templates can only be created from already existent tasks.\n"
+                                    + "Newly tasks cannot be used."),
                             _("Operation cannot be done"), Messagebox.OK,
                             Messagebox.INFORMATION);
         } catch (InterruptedException e) {
@@ -265,7 +265,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             final String codeOrderElement) {
         try {
             Messagebox.show(_("the " + dateboxName
-                    + "datebox of the order element " + codeOrderElement
+                    + "datebox of the task " + codeOrderElement
                     + " could not be created.\n"),
                     _("Operation cannot be done"), Messagebox.OK,
                     Messagebox.INFORMATION);
@@ -1033,7 +1033,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the order element \"{0}\" because of this or any of its children are already in use in some work reports",
+                                    "You can not remove the task \"{0}\" because of this or any of its children are already in use in some work reports",
                                     element.getName()));
         } else {
             super.remove(element);

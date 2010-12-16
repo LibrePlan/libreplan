@@ -108,7 +108,7 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
         final Order order = getSelectedOrder();
         if (order == null) {
             throw new WrongValueException(bandboxSelectOrder,
-                    _("Please, select an order"));
+                    _("Please, select a project"));
         }
         super.showReport(jasperreport);
     }

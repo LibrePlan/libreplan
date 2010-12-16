@@ -38,7 +38,7 @@
             <tabpanel>
                 <hbox align="end">
                 <groupbox closable="false" height="170px">
-                    <caption label="${i18n:_('Order Element Information')}" />
+                    <caption label="${i18n:_('Task Information')}" />
                     <vbox align="center">
                         <grid id="orderElementHoursGrid">
                             <columns>

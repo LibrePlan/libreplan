@@ -162,7 +162,7 @@ public class TransferOrdersController extends GenericForwardComposer {
                                 transferOrdersModel.transfer(order);
                                 Util.reloadBindings(destinationScenarioOrders);
                                 messagesForUser.showMessage(Level.INFO,
-                                        _("Order {0} transfered", order
+                                        _("Project {0} transfered", order
                                                 .getName()));
                             } catch (ValidationException e) {
                                 messagesForUser.showInvalidValues(e);

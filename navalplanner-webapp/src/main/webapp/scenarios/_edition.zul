@@ -42,7 +42,7 @@
                     rows="5" width="300px" />
             </row>
             <row>
-                <label value="${i18n:_('Orders')}" />
+                <label value="${i18n:_('Projects')}" />
                 <listbox model="@{scenarioController.orders}">
                     <listhead>
                         <listheader label="${i18n:_('Code')}" />

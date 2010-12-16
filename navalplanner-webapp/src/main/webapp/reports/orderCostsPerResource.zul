@@ -72,7 +72,7 @@
          </panel>
 
         <!-- Select orders -->
-        <panel title="${i18n:_('Filter by orders')}"
+        <panel title="${i18n:_('Filter by projects')}"
             border="normal"
             style="overflow:auto">
             <panelchildren>

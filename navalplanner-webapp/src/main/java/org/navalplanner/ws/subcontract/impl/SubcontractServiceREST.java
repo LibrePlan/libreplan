@@ -151,7 +151,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         final OrderElementDTO orderElementDTO = subcontractedTask.orderElementDTO;
         if (orderElementDTO == null) {
             throw new ViolationError(subcontractedTask.subcontractedCode,
-                    "order element not specified");
+                    "task not specified");
         }
         try {
             adHocTransactionService
@@ -199,7 +199,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         String code = entitySequenceDAO.getNextEntityCode(EntityNameEnum.ORDER);
         if (code == null) {
             throw new ViolationError(subcontractedTaskDataDTO.orderElementDTO.code,
-                    "unable to generate the code for the new order, please try again later");
+                    "unable to generate the code for the new project, please try again later");
         }
 
         order.setCode(code);
@@ -236,7 +236,7 @@ public class SubcontractServiceREST implements ISubcontractService {
             order.generateOrderElementCodes(numberOfDigits);
         } catch (NonUniqueResultException e) {
             throw new ViolationError("",
-                    "There are several active order sequences");
+                    "There are several active project sequences");
         } catch (InstanceNotFoundException e) {
             throw new ViolationError("",
                     "It does not exist any activated code sequence.");
@@ -254,7 +254,7 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.useSchedulingDataFor(version);
         order.add(orderElement);
 
-        order.setName(_("Order from client"));
+        order.setName(_("Project from client"));
         order.setInitDate(orderElement.getInitDate());
         order.setDeadline(orderElement.getDeadline());
         order.setCalendar(getDefaultCalendar());

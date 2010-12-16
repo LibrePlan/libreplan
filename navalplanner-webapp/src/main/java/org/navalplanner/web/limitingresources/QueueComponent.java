@@ -203,7 +203,7 @@ public class QueueComponent extends XulElement implements
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Order: {0} ", order.getName()));
+        result.append(_("Project: {0} ", order.getName()));
         result.append(_("Task: {0} ", task.getName()));
         result.append(_("Completed: {0}% ", element.getAdvancePercentage().multiply(new BigDecimal(100))));
 

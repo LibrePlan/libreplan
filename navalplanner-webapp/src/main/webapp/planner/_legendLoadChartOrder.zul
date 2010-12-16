@@ -28,7 +28,7 @@
         <n:label>${i18n:_('External overload')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to current order')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to current project')}">
         <n:div class="overload-order"/>
         <n:label>${i18n:_('Overload')}</n:label>
     </hbox>
@@ -43,7 +43,7 @@
         <n:label>${i18n:_('External load')}</n:label>
     </hbox>
 
-    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to current order')}">
+    <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to current project')}">
         <n:div class="other" />
         <n:label>${i18n:_('Load')}</n:label>
     </hbox>

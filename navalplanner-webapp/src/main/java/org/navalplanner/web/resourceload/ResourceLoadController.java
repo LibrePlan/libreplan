@@ -484,7 +484,7 @@ public class ResourceLoadController implements Composer {
                     task);
              } else {
                 try {
-                    Messagebox.show(_("The order has no scheduled elements"),
+                    Messagebox.show(_("The project has no scheduled elements"),
                             _("Information"), Messagebox.OK,
                             Messagebox.INFORMATION);
                 } catch (InterruptedException e) {
@@ -494,7 +494,7 @@ public class ResourceLoadController implements Composer {
         } else {
             try {
                 Messagebox
-                        .show(_("You don't have read access to this order"),
+                        .show(_("You don't have read access to this project"),
                                 _("Information"), Messagebox.OK,
                                 Messagebox.INFORMATION);
             } catch (InterruptedException e) {

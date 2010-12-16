@@ -538,8 +538,8 @@ public class SaveCommand implements ISaveCommand {
     private boolean userAcceptsCreateANewOrderVersion() {
         try {
             int status = Messagebox
-                    .show(_("Confirm creating a new order version for this scenario and derived. Are you sure?"),
-                            _("New order version"), Messagebox.OK
+                    .show(_("Confirm creating a new project version for this scenario and derived. Are you sure?"),
+                            _("New project version"), Messagebox.OK
                                     | Messagebox.CANCEL, Messagebox.QUESTION);
             return (Messagebox.OK == status);
         } catch (InterruptedException e) {

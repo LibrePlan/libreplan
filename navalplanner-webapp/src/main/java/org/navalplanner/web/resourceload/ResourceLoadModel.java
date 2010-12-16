@@ -455,7 +455,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
-                "Other orders", "global-generic", allocations,
+                "Other projects", "global-generic", allocations,
                 getCurrentTimeLineRole(null)),
                 buildTimeLinesGroupForOrder(
                 criterion, byOrder));
@@ -624,7 +624,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                _("Other orders"), resourceAllocations, "resource", role),
+                _("Other projects"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }

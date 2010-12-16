@@ -42,11 +42,11 @@
         border="normal" >
 
         <!-- Select orders -->
-        <panel title="${i18n:_('Filter by orders')}"
+        <panel title="${i18n:_('Filter by projects')}"
             border="normal"
             style="overflow:auto">
             <panelchildren>
-                <label value="${i18n:_('OrderElement Code')}:" />
+                <label value="${i18n:_('Task Code')}:" />
                 <bandboxSearch id="bdOrder"
                     finder="OrderBandboxFinder"
                     model="@{controller.allOrders}"

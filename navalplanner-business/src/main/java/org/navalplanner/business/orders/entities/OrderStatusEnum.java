@@ -31,7 +31,7 @@ public enum OrderStatusEnum {
 
     OFFERED(_("OFFERED")), ACCEPTED(_("ACCEPTED")), STARTED(_("STARTED")), FINISHED(
             _("FINISHED")), CANCELLED(_("CANCELLED")), SUBCONTRACTED_PENDING_ORDER(
-            _("SUBCONTRACTED PENDING ORDER")), STORED(_("STORED"));
+            _("SUBCONTRACTED PENDING PROJECT")), STORED(_("STORED"));
 
     private String description;
 

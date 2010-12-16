@@ -417,7 +417,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
             repeatedHoursGroup = ((OrderLineGroup) order).findRepeatedHoursGroupCode();
             if (repeatedHoursGroup != null) {
                 throw new ValidationException(_(
-                        "Repeated Hours Group code {0} in Order {1}",
+                        "Repeated Hours Group code {0} in Project {1}",
                         repeatedHoursGroup.getCode(), repeatedHoursGroup
                                 .getParentOrderLine().getName()));
             }
@@ -427,7 +427,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
                 .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
         if (repeatedHoursGroup != null) {
             throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Order {1}",
+                    "Repeated Hours Group code {0} in Project {1}",
                     repeatedHoursGroup.getCode(), repeatedHoursGroup
                             .getParentOrderLine().getName()));
         }

@@ -153,7 +153,7 @@
                                                 checked="@{configurationController.expandCompanyPlanningViewCharts}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
-                                                label="${i18n:_('Order view')}"
+                                                label="${i18n:_('Project view')}"
                                                 checked="@{configurationController.expandOrderPlanningViewCharts}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>

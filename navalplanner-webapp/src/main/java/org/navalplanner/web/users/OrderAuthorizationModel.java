@@ -123,7 +123,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
                 replaceOrder(newOrder);
             }
         }catch (InstanceNotFoundException e) {
-            InvalidValue invalidValue = new InvalidValue(_("Order does not exist"),
+            InvalidValue invalidValue = new InvalidValue(_("Project does not exist"),
                     OrderAuthorization.class, "order", order, null);
             throw new ValidationException(invalidValue);
         }

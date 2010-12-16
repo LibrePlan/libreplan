@@ -115,7 +115,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
             if (orders.isEmpty()) {
                 Order order = Order.create();
-                order.setName(_("All orders"));
+                order.setName(_("All projects"));
                 workingHoursPerWorkerList.add(createEmptyDTO(order,
                         emptyWorker, wrl));
             } else {
@@ -172,7 +172,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     private WorkReportLine createEmptyWorkReportLine(Worker worker) {
         OrderLine leaf = OrderLine.create();
-        leaf.setCode(_("All order tasks"));
+        leaf.setCode(_("All project tasks"));
 
         TypeOfWorkHours w = TypeOfWorkHours.create();
         w.setDefaultPrice(new BigDecimal(0));

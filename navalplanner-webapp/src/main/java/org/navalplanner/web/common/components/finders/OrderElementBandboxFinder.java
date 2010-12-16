@@ -45,8 +45,8 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private final String headers[] = { _("Order"), _("Order code"),
-            _("Order element"), _("Order element code") };
+    private final String headers[] = { _("Project"), _("Project code"),
+            _("Task"), _("Task code") };
 
     @Override
     @Transactional(readOnly = true)

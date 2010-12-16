@@ -108,7 +108,7 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     protected final Column schedulingStateColumn = new Column(
             _("Scheduling state"),
             "scheduling_state",
-            _("Complete, Partially or Not Scheduled. (Drag and drop to move order elements)")) {
+            _("Complete, Partially or Not Scheduled. (Drag and drop to move tasks)")) {
 
         @Override
         public <T extends ITreeNode<T>> void doCell(
@@ -158,6 +158,6 @@ public abstract class TreeComponent extends HtmlMacroComponent {
     }
 
     public String getRemoveElementLabel() {
-        return _("Delete order element");
+        return _("Delete task");
     }
 }

@@ -116,7 +116,7 @@ public class OrderElementController extends GenericForwardComposer {
                 && (!StringUtils.isBlank(getOrderElement().getName()))) {
             name = ": " + getOrderElement().getName();
         }
-        return _("Edit order element {0}", name);
+        return _("Edit task {0}", name);
     }
 
     public void setupManageOrderElementAdvancesController()

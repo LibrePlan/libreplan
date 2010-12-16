@@ -102,13 +102,13 @@ public class TimeLineRequiredMaterialController extends
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a order"));
+            throw new WrongValueException(bdOrders, _("please, select a project"));
         }
         boolean result = timeLineRequiredMaterialModel
                 .addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
-                    _("This order has already been added."));
+                    _("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }

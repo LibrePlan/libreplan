@@ -33,6 +33,6 @@
     <textbox id="filterNameOrderElement" width="50px"
         onOK="treeController.onApplyFilter()" />
     <button image="/common/img/ico_filter.png" style="margin-top: -4px"
-        tooltiptext="${i18n:_('Apply filtering to order elements satisfying required criteria')}"
+        tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
         onClick="treeController.onApplyFilter()"/>
 </hbox>

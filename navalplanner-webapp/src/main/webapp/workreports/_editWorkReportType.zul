@@ -87,7 +87,7 @@
                             </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Order Element')}:" />
+                                <label value="${i18n:_('Task')}:" />
                                 <hbox>
                                     <listbox visible = "@{controller.editable}"
                                         id="listOrderElementPosition" mold="select"

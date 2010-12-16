@@ -130,7 +130,7 @@
                                     tooltiptext="Select/deselect all"/>
                             </hbox>
                         </newdatasortablecolumn>
-                        <newdatasortablecolumn label="${i18n:_('Order')}" sort="auto(lower(orderName))"/>
+                        <newdatasortablecolumn label="${i18n:_('Project')}" sort="auto(lower(orderName))"/>
                         <newdatasortablecolumn label="${i18n:_('Task')}" sort="auto(lower(taskName))"/>
                         <newdatasortablecolumn label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
                         <newdatasortablecolumn label="${i18n:_('Earlier starting date')}" sort="auto(date)"/>

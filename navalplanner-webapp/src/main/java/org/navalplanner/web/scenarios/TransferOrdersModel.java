@@ -157,7 +157,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                 .getOrderVersionFor(sourceScenario);
         if (sourceOrderVersion == null) {
             throw new RuntimeException(
-                    "OrderVersion must not be null for source scenario");
+                    "Project version must not be null for source scenario");
         }
 
         OrderVersion destinationOrderVersion = order
@@ -166,7 +166,7 @@ public class TransferOrdersModel implements ITransferOrdersModel {
                 && (sourceOrderVersion.getId().equals(destinationOrderVersion
                         .getId()))) {
             throw new ValidationException(
-                    _("Order version is the same in source and destination scenarios"));
+                    _("Project version is the same in source and destination scenarios"));
         }
 
         order.useSchedulingDataFor(sourceOrderVersion);

@@ -38,7 +38,7 @@
     class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent"
     macroURI="/templates/_assignedQualityForms.zul" ?>
 
-<window id="editTemplateWindow" title="${i18n:_('Edit order element')}"
+<window id="editTemplateWindow" title="${i18n:_('Edit task')}"
     width="950px" left="50px" top="50px"
     closable="true" onClose="self.visible = false; event.stopPropagation()"
     visible="false" >

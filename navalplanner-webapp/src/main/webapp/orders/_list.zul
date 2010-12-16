@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Orders list')}">
+<window id="${arg.top_id}" title="${i18n:_('Projects list')}">
     <grid id="listing" model="@{controller.orders}" mold="paging"
         pageSize="10" fixedLayout="true"
         rowRenderer= "@{controller.ordersRowRender}"

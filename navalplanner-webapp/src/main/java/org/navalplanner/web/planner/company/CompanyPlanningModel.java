@@ -226,7 +226,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 @Override
                 public String getName() {
-                    return _("Create new order");
+                    return _("Create new project");
                 }
 
                 @Override
@@ -247,7 +247,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 @Override
                 public String getName() {
-                    return _("Create new order from template");
+                    return _("Create new project from template");
                 }
 
                 @Override

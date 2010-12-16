@@ -650,7 +650,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two advances in the same order element"),
+                        _("Cannot spread two advances in the same task"),
                         this, OrderElement.class);
             }
         }
@@ -674,7 +674,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Order Element"),
+                        _("Duplicate Advance Assignment For Task"),
                         this,
                         OrderElement.class);
             }
@@ -701,7 +701,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Order Element"),
+                        _("Duplicate Advance Assignment For Task"),
                         this,
                         OrderElement.class);
             }
@@ -1305,7 +1305,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
             if (repeatedOrder != null) {
                 throw new ValidationException(_(
-                        "Repeated Order code {0} in Order {1}",
+                        "Repeated Project code {0} in Project {1}",
                         repeatedOrder.getCode(), repeatedOrder.getName()));
             }
         }
@@ -1315,7 +1315,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 .findRepeatedOrderCodeInDB(order);
         if (repeatedOrder != null) {
             throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
+                    "Repeated Project code {0} in Project {1}",
                     repeatedOrder.getCode(), repeatedOrder.getName()));
         }
     }

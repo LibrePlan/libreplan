@@ -306,7 +306,7 @@ public class PlanningTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PLANNIFICATION));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(_("Order Scheduling")));
+                breadcrumbs.appendChild(new Label(_("Project Scheduling")));
                 if (mode.isOf(ModeType.ORDER)) {
 
                     Label nameLabel = new Label(order.getName());

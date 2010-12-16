@@ -39,7 +39,7 @@
         rowRenderer="@{controller.reportAdvancesOrderRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Order code')}"/>
+            <column label="${i18n:_('Project code')}"/>
             <column label="${i18n:_('Customer reference code')}"/>
             <column label="${i18n:_('Name')}"/>
             <column label="${i18n:_('Date last advance reported')}"/>

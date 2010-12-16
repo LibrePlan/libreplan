@@ -133,7 +133,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
 
     public void showReport(ExtendedJasperreport jasperreport) {
         if (getSelectedOrder() == null) {
-            throw new WrongValueException(bdOrder, _("Please, select an order"));
+            throw new WrongValueException(bdOrder, _("Please, select a project"));
         }
         super.showReport(jasperreport);
     }
