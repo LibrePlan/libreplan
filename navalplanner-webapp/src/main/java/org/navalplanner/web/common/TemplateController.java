@@ -89,7 +89,7 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getCompanyLogoURL() {
-        if (templateModel == null) {
+        if (templateModel == null || templateModel.getCompanyLogoURL() == null) {
             return "";
         }
         return templateModel.getCompanyLogoURL().trim();

@@ -73,9 +73,9 @@ public class Configuration extends BaseEntity {
 
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
-    private String companyLogoURL;
+    private String companyLogoURL = "";
 
-    private Boolean scenariosVisible;
+    private Boolean scenariosVisible = false;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
