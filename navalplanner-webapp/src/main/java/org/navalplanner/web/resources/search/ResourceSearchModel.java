@@ -48,6 +48,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -130,7 +131,12 @@ public class ResourceSearchModel implements IResourceSearchModel {
 
         private Criteria buildCriteria(Session session) {
             Criteria result = session.createCriteria(klass);
-            result.add(eq("limitingResource", limiting));
+            if (limiting) {
+                result.add(eq("resourceType", ResourceType.LIMITING_RESOURCE));
+            }
+            else {
+                result.add(eq("resourceType", ResourceType.NON_LIMITING_RESOURCE));
+            }
             addQueryByName(result);
             addFindRelatedWithSomeOfTheCriterions(result);
             result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
