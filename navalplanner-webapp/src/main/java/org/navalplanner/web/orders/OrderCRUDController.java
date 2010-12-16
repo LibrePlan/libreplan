@@ -109,6 +109,8 @@ import org.zkoss.zul.api.Window;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderCRUDController extends GenericForwardComposer {
 
+    private static final String DEFAULT_TAB = "tabOrderElements";
+
     private final class LabelCreatorForInvalidValues implements
             IMessagesForUser.ICustomLabelCreator {
         @Override
@@ -763,7 +765,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void selectDefaultTab() {
-        selectTab("tabOrderElements");
+        selectTab(DEFAULT_TAB);
     }
 
     private void resetSelectedTab() {
@@ -967,11 +969,11 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderDatesHandler = new OrderDatesHandler(editWindow);
         bindListOrderStatusSelectToOnStatusChange();
         initializeCustomerComponent();
-        reloadDefaultTab();
+        reloadOrderDetailsTab();
         orderDatesHandler.chooseCurrentSchedulingMode();
     }
 
-    public void reloadDefaultTab() {
+    public void reloadOrderDetailsTab() {
         Tabpanel tabPanel = (Tabpanel) editWindow
                 .getFellow("tabPanelGeneralData");
         Util.createBindingsFor(tabPanel);
