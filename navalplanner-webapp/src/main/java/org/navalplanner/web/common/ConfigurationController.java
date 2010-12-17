@@ -60,6 +60,7 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
 
 
@@ -90,6 +91,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Textbox prefixBox;
 
+    private Checkbox scenariosVisible;
+
     private Map<EntityNameEnum, Boolean> mapOpenedGroups = new HashMap<EntityNameEnum, Boolean>();
 
     @Override
@@ -112,6 +115,12 @@ public class ConfigurationController extends GenericForwardComposer {
         messages = new MessagesForUser(messagesContainer);
         initOpenedGroup();
         reloadEntitySequences();
+        if (moreScenariosThanMasterCreated()) {
+            scenariosVisible.setChecked(true);
+            scenariosVisible.setDisabled(true);
+            scenariosVisible
+                    .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
+        }
     }
 
     private void initializeProgressTypeList() {
