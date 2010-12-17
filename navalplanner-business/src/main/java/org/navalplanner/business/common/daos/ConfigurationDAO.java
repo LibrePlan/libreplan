@@ -39,13 +39,18 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
         implements IConfigurationDAO {
 
     @Override
-    @Transactional(readOnly = true)
     public Configuration getConfiguration() {
         List<Configuration> list = list(Configuration.class);
         if (list.isEmpty()) {
             return null;
         }
         return list.get(0);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Configuration getConfigurationWithReadOnlyTransaction() {
+        return getConfiguration();
     }
 
 }

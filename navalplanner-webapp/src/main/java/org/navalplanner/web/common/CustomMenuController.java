@@ -469,7 +469,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
     }
 
     public boolean isScenariosVisible() {
-        return Registry.getConfigurationDAO().getConfiguration()
+        return Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction()
                 .isScenariosVisible();
     }
 
