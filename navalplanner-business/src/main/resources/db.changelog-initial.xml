@@ -29,7 +29,7 @@
             <column name="scheduling_mode" type="INTEGER" />
         </addColumn>
         <update tableName="order_table">
-            <column name="schedulingMode" value="0" />
+            <column name="scheduling_mode" value="0" />
         </update>
     </changeSet>
 
