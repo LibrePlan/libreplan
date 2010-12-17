@@ -18,8 +18,9 @@
         <addColumn tableName="configuration">
             <column name="company_logo_url" type="varchar(255)" />
         </addColumn>
-	<addDefaultValue tableName="configuration" columnName="company_logo_url"
-        	defaultValue="" />
+        <update tableName="configuration">
+            <column name="company_logo_url" value="" />
+        </update>
     </changeSet>
 
     <changeSet id="add scheduling mode" author="ogonzalez">
@@ -27,8 +28,9 @@
         <addColumn tableName="order_table">
             <column name="scheduling_mode" type="INTEGER" />
         </addColumn>
-        <addDefaultValue tableName="order_table" columnName="scheduling_mode"
-            defaultValue="0" />
+        <update tableName="order_table">
+            <column name="schedulingMode" value="0" />
+        </update>
     </changeSet>
 
     <changeSet id="rename start_constraint_type in task and task milestone" author="ogonzalez">
@@ -38,15 +40,16 @@
         <renameColumn tableName="task_milestone"
             oldColumnName="start_constraint_type"
             newColumnName="constraint_type" columnDataType="INTEGER" />
-	</changeSet>
+    </changeSet>
 
     <changeSet id="add-scenarios-enabled-configuration-setting" author="ltilve">
         <comment>Add new column with scenarios visibility flag</comment>
         <addColumn tableName="configuration">
             <column name="scenarios_visible" type="BOOLEAN" />
         </addColumn>
-		<addDefaultValue tableName="configuration" columnName="scenarios_visible"
-            defaultValueBoolean="FALSE" />
+        <update tableName="configuration">
+            <column name="scenarios_visible" valueBoolean="FALSE" />
+        </update>
     </changeSet>
 
 </databaseChangeLog>
