@@ -917,6 +917,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.initEdit(order);
         if (editWindow != null) {
             resetTabControllers();
+            setupOrderElementTreeController();
             selectDefaultTab();
             return;
         }
@@ -964,7 +965,9 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void setupOrderDetails() {
-        confirmLastTab();
+        if (!confirmLastTab()) {
+            return;
+        }
         setCurrentTab();
         orderDatesHandler = new OrderDatesHandler(editWindow);
         bindListOrderStatusSelectToOnStatusChange();
