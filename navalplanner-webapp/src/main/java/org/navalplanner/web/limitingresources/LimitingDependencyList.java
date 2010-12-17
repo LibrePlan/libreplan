@@ -27,7 +27,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.TaskComponent;
-import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
@@ -103,13 +102,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         return panel.getTimeTrackerComponent();
     }
 
-
-    // private boolean isInPage() {
-    // return getParent() != null && getGanttPanel() != null
-    // && getGanttPanel().getParent() != null;
-    // }
-
-
     public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {
         redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
     }
@@ -136,24 +128,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             List<LimitingDependencyComponent> dependencyComponents) {
         for (LimitingDependencyComponent dependencyComponent : dependencyComponents) {
             dependencyComponent.redrawDependency();
-        }
-    }
-
-    public void taskRemoved(QueueTask task) {
-        for (LimitingDependencyComponent dependencyComponent : LimitingDependencyList.this
-                .getLimitingDependencyComponents()) {
-            if (dependencyComponent.contains(task)) {
-                this.removeChild(dependencyComponent);
-            }
-        }
-    }
-
-    public void remove(Dependency dependency) {
-        for (LimitingDependencyComponent dependencyComponent : LimitingDependencyList.this
-                .getLimitingDependencyComponents()) {
-            if (dependencyComponent.hasSameSourceAndDestination(dependency)) {
-                this.removeChild(dependencyComponent);
-            }
         }
     }
 
