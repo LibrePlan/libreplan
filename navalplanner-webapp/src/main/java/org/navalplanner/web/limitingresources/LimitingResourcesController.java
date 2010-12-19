@@ -419,6 +419,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
         public void render(Row row, Object data) throws Exception {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
+            row.setValue(data);
+
             row.appendChild(automaticQueueing(element));
             row.appendChild(label(element.getOrderName()));
             row.appendChild(label(element.getTaskName()));
@@ -513,32 +515,16 @@ public class LimitingResourcesController extends GenericForwardComposer {
         private void assignLimitingResourceQueueElement(
                 LimitingResourceQueueElementDTO dto) {
 
-            LimitingResourceQueueElement element = dto.getOriginal();
             List<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
-                    .assignLimitingResourceQueueElement(element);
-            if (!inserted.isEmpty()) {
-                reloadUnassignedLimitingResourceQueueElements();
-                for (LimitingResourceQueueElement each : inserted) {
-                    // FIXME visually wrong if an element jumps from a queue to
-                    // another
-                    LimitingResourceQueue queue = each.getLimitingResourceQueue();
-                    // Remove all dependency components associated to element
-                    limitingResourcesPanel.removeDependenciesFor(each);
-                    // Dependencies will be created again on refreshing queue
-                    limitingResourcesPanel.refreshQueue(queue);
-                }
-            } else {
-                showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
-                        "that matches resource allocation criteria at any interval of time"));
-            }
-        }
+                    .assignLimitingResourceQueueElement(dto.getOriginal());
 
-        private void showErrorMessage(String error) {
-            try {
-                Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException e) {
-
+            if (inserted.isEmpty()) {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue "
+                        + "that matches resource allocation criteria at any interval of time"));
+                return;
             }
+            limitingResourcesPanel.refreshQueues((LimitingResourceQueue.queuesOf(inserted)));
+            reloadUnassignedLimitingResourceQueueElements();
         }
 
         private Checkbox automaticQueueing(
@@ -559,7 +545,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void unschedule(QueueTask task) {
-        limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
+        LimitingResourceQueueElement queueElement = task.getLimitingResourceQueueElement();
+        LimitingResourceQueue queue = queueElement.getLimitingResourceQueue();
+
+        limitingResourceQueueModel.unschedule(queueElement);
+        limitingResourcesPanel.refreshQueue(queue);
         reloadUnassignedLimitingResourceQueueElements();
     }
 
@@ -600,7 +590,48 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void assignAllSelectedElements() {
+        List<LimitingResourceQueueElement> elements = getAllSelectedQueueElements();
+        if (!elements.isEmpty()) {
+            Set<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
+                    .assignLimitingResourceQueueElements(elements);
+            clearSelectAllCheckbox();
 
+            if (inserted.isEmpty()) {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue "
+                        + "that matches resource allocation criteria at any interval of time"));
+                return;
+            }
+            limitingResourcesPanel.refreshQueues(LimitingResourceQueue.queuesOf(inserted));
+            reloadUnassignedLimitingResourceQueueElements();
+        }
+    }
+
+    private void clearSelectAllCheckbox() {
+        cbSelectAll.setChecked(false);
+    }
+
+    private List<LimitingResourceQueueElement> getAllSelectedQueueElements() {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        final Rows rows = gridUnassignedLimitingResourceQueueElements.getRows();
+        for (Object each : rows.getChildren()) {
+            final Row row = (Row) each;
+            Checkbox cbAutoQueueing = getAutoQueueing(row);
+            if (cbAutoQueueing.isChecked()) {
+                LimitingResourceQueueElementDTO dto = (LimitingResourceQueueElementDTO) row
+                        .getValue();
+                result.add((LimitingResourceQueueElement) dto.getOriginal());
+            }
+        }
+        return result;
+    }
+
+    private void showErrorMessage(String error) {
+        try {
+            Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
+        } catch (InterruptedException e) {
+
+        }
     }
 
 }

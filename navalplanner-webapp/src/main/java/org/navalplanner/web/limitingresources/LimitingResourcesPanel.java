@@ -384,7 +384,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         dependencyList.addDependenciesFor(element);
     }
 
-    public void refreshQueues(Set<LimitingResourceQueue> queues) {
+    public void refreshQueues(Collection<LimitingResourceQueue> queues) {
         for (LimitingResourceQueue each: queues) {
             refreshQueue(each);
         }
