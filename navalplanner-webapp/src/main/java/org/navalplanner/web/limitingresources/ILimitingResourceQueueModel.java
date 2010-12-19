@@ -133,8 +133,7 @@ public interface ILimitingResourceQueueModel {
             LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour allocationTime);
 
-    void unschedule(LimitingResourceQueueElement element);
-
+    LimitingResourceQueueElement unschedule(LimitingResourceQueueElement element);
 
     void removeUnassignedLimitingResourceQueueElement(
             LimitingResourceQueueElement element);

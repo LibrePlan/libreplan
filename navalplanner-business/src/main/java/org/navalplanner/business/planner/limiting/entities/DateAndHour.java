@@ -51,11 +51,13 @@ public class DateAndHour implements Comparable<DateAndHour> {
     private Integer hour;
 
     public DateAndHour(LocalDate date, Integer hour) {
+        Validate.notNull(date);
         this.date = date;
         this.hour = hour;
     }
 
     public DateAndHour(DateAndHour dateAndHour) {
+        Validate.notNull(date);
         this.date = dateAndHour.getDate();
         this.hour = dateAndHour.getHour();
     }

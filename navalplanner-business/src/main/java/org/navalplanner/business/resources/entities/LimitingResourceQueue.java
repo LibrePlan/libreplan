@@ -141,6 +141,19 @@ public class LimitingResourceQueue extends BaseEntity {
         return queueElements.subList(position + 1, queueElements.size());
     }
 
+    public List<LimitingResourceQueueElement> getElementsSince(DateAndHour time) {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        for (LimitingResourceQueueElement each: getLimitingResourceQueueElements()) {
+            if (each.getStartTime().isEquals(time)
+                    || each.getStartTime().isAfter(time)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+
     public void queueElementMoved(
             LimitingResourceQueueElement limitingResourceQueueElement) {
         invalidCachedGaps();

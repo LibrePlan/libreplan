@@ -41,6 +41,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
@@ -219,6 +220,15 @@ public class QueuesState {
         fillIncoming(element, dependenciesStart, dependenciesEnd);
         return InsertionRequirements.forElement(getEquivalent(element),
                 dependenciesStart, dependenciesEnd);
+    }
+
+    public InsertionRequirements getRequirementsFor(
+            LimitingResourceQueueElement element, DateAndHour startAt) {
+        List<LimitingResourceQueueDependency> dependenciesStart = new ArrayList<LimitingResourceQueueDependency>();
+        List<LimitingResourceQueueDependency> dependenciesEnd = new ArrayList<LimitingResourceQueueDependency>();
+        fillIncoming(element, dependenciesStart, dependenciesEnd);
+        return InsertionRequirements.forElement(getEquivalent(element),
+                dependenciesStart, dependenciesEnd, startAt);
     }
 
     private void fillIncoming(LimitingResourceQueueElement element,

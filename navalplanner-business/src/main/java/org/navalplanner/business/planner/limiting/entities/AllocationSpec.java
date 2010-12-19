@@ -51,6 +51,8 @@ public abstract class AllocationSpec {
 
     private final GapOnQueue originalGap;
 
+    private List<LimitingResourceQueueElement> unscheduled = new ArrayList<LimitingResourceQueueElement>();
+
     protected AllocationSpec(GapOnQueue originalGap) {
         Validate.notNull(originalGap);
         this.originalGap = originalGap;
@@ -77,6 +79,20 @@ public abstract class AllocationSpec {
     public LimitingResourceQueue getQueue() {
         return originalGap.getOriginQueue();
     }
+
+    public boolean isAppropriative() {
+        return !unscheduled.isEmpty();
+    }
+
+    public void setUnscheduledElements(
+            List<LimitingResourceQueueElement> queueElements) {
+        unscheduled.addAll(queueElements);
+    }
+
+    public List<LimitingResourceQueueElement> getUnscheduledElements() {
+        return unscheduled;
+    }
+
 }
 
 class InvalidAllocationAttempt extends AllocationSpec {

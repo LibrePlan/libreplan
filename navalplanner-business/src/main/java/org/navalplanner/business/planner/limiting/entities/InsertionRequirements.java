@@ -57,6 +57,28 @@ public class InsertionRequirements {
                 calculateEarliestPossibleEnd(element, dependenciesAffectingEnd));
     }
 
+    /**
+     * Specifies a minimum startTime, earliestStart should be lower than this value
+     *
+     * @param element
+     * @param dependenciesAffectingStart
+     * @param dependenciesAffectingEnd
+     * @param startAt
+     * @return
+     */
+    public static InsertionRequirements forElement(
+            LimitingResourceQueueElement element,
+            List<LimitingResourceQueueDependency> dependenciesAffectingStart,
+            List<LimitingResourceQueueDependency> dependenciesAffectingEnd,
+            DateAndHour startAt) {
+
+        DateAndHour earliesPossibleStart = calculateEarliestPossibleStart(
+                element, dependenciesAffectingStart);
+        return new InsertionRequirements(element, DateAndHour.max(
+                earliesPossibleStart, startAt), calculateEarliestPossibleEnd(
+                element, dependenciesAffectingEnd));
+    }
+
     private static DateAndHour calculateEarliestPossibleEnd(
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
