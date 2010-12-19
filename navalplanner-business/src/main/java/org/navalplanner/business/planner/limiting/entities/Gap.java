@@ -242,7 +242,11 @@ public class Gap implements Comparable<Gap> {
     }
 
     public String toString() {
-        String result = startTime.getDate() + " - " + startTime.getHour();
+        String result = "";
+
+        if (startTime != null) {
+            result = startTime.getDate() + " - " + startTime.getHour();
+        }
         if (endTime != null) {
             result += "; " + endTime.getDate() + " - " + endTime.getHour();
         }
