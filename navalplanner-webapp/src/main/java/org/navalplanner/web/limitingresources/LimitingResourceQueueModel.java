@@ -1097,4 +1097,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
+
+    @Override
+    public Set<LimitingResourceQueueElement> assignLimitingResourceQueueElements(
+            List<LimitingResourceQueueElement> queueElements) {
+        Set<LimitingResourceQueueElement> result = new HashSet<LimitingResourceQueueElement>();
+        for (LimitingResourceQueueElement each: queuesState.inTopologicalOrder(queueElements)) {
+            result.addAll(assignLimitingResourceQueueElement(each));
+        }
+        return result;
+    }
+
 }

@@ -561,4 +561,34 @@ public class QueuesState {
         elementsById.put(element.getId(), element);
     }
 
+    public List<LimitingResourceQueueElement> inTopologicalOrder(List<LimitingResourceQueueElement> queueElements) {
+        return toList(topologicalIterator(buildSubgraphFor(queueElements)));
+    }
+
+    /**
+     * Constructs a graph composed only by queueElements
+     *
+     * @param queueElements
+     * @return
+     */
+    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildSubgraphFor(
+            List<LimitingResourceQueueElement> queueElements) {
+        SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result = instantiateDirectedGraph();
+
+        // Iterate through elements and construct graph
+        for (LimitingResourceQueueElement each : queueElements) {
+            result.addVertex(each);
+            for (LimitingResourceQueueDependency dependency : each
+                    .getDependenciesAsOrigin()) {
+                LimitingResourceQueueElement destiny = dependency
+                        .getHasAsDestiny();
+                if (queueElements.contains(destiny)) {
+                    // Add source, destiny and edge between them
+                    addDependency(result, dependency);
+                }
+            }
+        }
+        return result;
+    }
+
 }

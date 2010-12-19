@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.limitingresources;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -143,5 +144,8 @@ public interface ILimitingResourceQueueModel {
     List<LimitingResourceQueueElement> replaceLimitingResourceQueueElement(
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement);
+
+    Set<LimitingResourceQueueElement> assignLimitingResourceQueueElements(
+            List<LimitingResourceQueueElement> elements);
 
 }
