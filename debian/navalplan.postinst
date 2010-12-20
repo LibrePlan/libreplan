@@ -27,6 +27,7 @@ then
 	#
 	saved_ifs=${IFS}
 	IFS=$'\n'
+	{ cat /etc/tomcat6/context.xml; echo; } |
 	while read -r line ; do
 		if [[ ${line} = *\</Context\>* ]] ; then
 			cat <<-EOF
@@ -41,8 +42,7 @@ then
 			EOF
 		fi
 		echo "${line}"
-	done < /etc/tomcat6/context.xml \
-	     > /etc/tomcat6/context.xml.new
+	done > /etc/tomcat6/context.xml.new
 	IFS=${saved_ifs}
 
 	mv /etc/tomcat6/context.xml.new \
