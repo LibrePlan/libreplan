@@ -36,8 +36,8 @@ import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Task;
-import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.lang.Objects;
@@ -405,7 +405,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
                 pixels));
         this.task.resizeTo(end.toLocalDate());
-        updateWidth();
+        updateProperties();
     }
 
     void doAddDependency(String destinyTaskId) {
