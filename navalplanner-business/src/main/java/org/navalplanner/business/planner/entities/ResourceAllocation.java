@@ -590,7 +590,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public IAllocateResourcesPerDay resourcesPerDayUntil(final LocalDate endExclusive) {
-            IntraDayDate startInclusive = getStartAfterConsolidated();
+            IntraDayDate startInclusive = getStartSpecifiedByTask();
             IntraDayDate end = IntraDayDate.startOfDay(endExclusive);
             return new AllocateResourcesPerDayOnInterval(startInclusive, end);
         }
@@ -598,9 +598,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
                 LocalDate start) {
-            IntraDayDate startInclusive = IntraDayDate
-                    .max(IntraDayDate.startOfDay(start),
-                            getStartAfterConsolidated());
+            IntraDayDate startInclusive = IntraDayDate.max(
+                    IntraDayDate.startOfDay(start), getStartSpecifiedByTask());
             IntraDayDate endDate = task.getIntraDayEndDate();
             return new AllocateResourcesPerDayOnInterval(startInclusive,
                     endDate);
@@ -668,7 +667,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocate(getStartAfterConsolidated(),
+                    allocate(getStartSpecifiedByTask(),
                             IntraDayDate.startOfDay(end), hours(hours));
                 }
             };
@@ -688,7 +687,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocate(IntraDayDate startInclusive,
                 IntraDayDate endExclusive, EffortDuration durationToAssign) {
-            IntraDayDate afterConsolidated = getStartAfterConsolidated();
+            IntraDayDate afterConsolidated = getStartSpecifiedByTask();
             List<T> assignmentsCreated = createAssignments(
                     IntraDayDate.max(afterConsolidated, startInclusive),
                     endExclusive, durationToAssign);
@@ -1426,8 +1425,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return start != null ? start.getDate() : null;
     }
 
-    public IntraDayDate getStartAfterConsolidated() {
-        IntraDayDate taskStart = getIntraDayStartDate();
+    private IntraDayDate getStartSpecifiedByTask() {
+        IntraDayDate taskStart = task.getIntraDayStartDate();
         IntraDayDate firstDayNotConsolidated = getTask()
                 .getFirstDayNotConsolidated();
         return IntraDayDate.max(taskStart, firstDayNotConsolidated);
