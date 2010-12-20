@@ -353,7 +353,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             IntraDayDate result = allocator
                     .untilAllocating(hours(hoursToAllocate));
             if (result == null) {
-                return task.getIntraDayEndDate();
+                // allocation could not be done
+                return direction == Direction.FORWARD ? task
+                        .getIntraDayEndDate() : task.getIntraDayStartDate();
             }
             return result;
         }
