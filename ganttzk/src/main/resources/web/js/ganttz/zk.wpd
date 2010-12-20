@@ -17,4 +17,5 @@
     <widget name="Planner"/>
     <widget name="DependencyComponent"/>
     <widget name="TimeTracker" />
+    <widget name="Milestone" />
 </package>

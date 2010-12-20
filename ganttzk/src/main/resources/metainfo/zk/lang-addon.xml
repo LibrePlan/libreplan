@@ -113,9 +113,11 @@
     <component>
         <component-name>milestone</component-name>
         <component-class>org.zkoss.ganttz.MilestoneComponent</component-class>
+        <widget-class>ganttz.Milestone</widget-class>
         <mold>
             <mold-name>default</mold-name>
-            <mold-uri>~./ganttz/milestone.dsp</mold-uri>
+            <!-- <mold-uri>~./ganttz/milestone.dsp</mold-uri> -->
+            <mold-uri>mold/milestone.js</mold-uri>
         </mold>
     </component>
 
