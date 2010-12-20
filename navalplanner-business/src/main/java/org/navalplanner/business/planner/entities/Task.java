@@ -520,28 +520,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         };
     }
 
-    protected abstract class DatesHandlerForAllocatable implements
-            IDatesHandler {
-
-        protected final Scenario scenario;
-
-        public DatesHandlerForAllocatable(Scenario scenario) {
-            Validate.notNull(scenario);
-            this.scenario = scenario;
-        }
-
-
-
-        protected abstract IntraDayDate calculateNewEndGiven(
-                IntraDayDate newStartDate);
-
-        protected abstract void moveAllocations();
-
-        // default implementation meant to be override
-        protected void updateWorkableDays() {
-        }
-    }
-
     public IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
         DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
         return durationBetweenDates.fromStartToEnd(newStartDate);
