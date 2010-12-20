@@ -133,7 +133,7 @@ ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
         // Second segment not used
         var depmid = this._findImageElement('mid');
         var depmidcss;
-        
+
         if (yend > yorig)
             depmidcss = {top : yorig, height : yend - yorig};
         else
@@ -266,9 +266,13 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
     },
     bind_ : function(){
         this.$supers('bind_', arguments);
+        /*We use document.documentElement as the DOM element to attach this listener
+         * because document.documentElement always gets the key events (in all browsers)*/
+        this.domListen_(document.documentElement,'onKeyup','_handleKeyUp');
         this._updateArrow();
     },
     unbind_ : function(){
+        this.domUnlisten_(document.documentElement,'onKeyup','_handleKeyUp');
         this.domUnlisten_(this._WGTganttpanel.$n(), 'onMousemove', '_updateArrow');
         this.domUnlisten_(this._WGTganttpanel.$n(), 'onClick', '_consolidateDependency');
         this.$supers('unbind_', arguments);
@@ -323,6 +327,13 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         var pos1 = YAHOO.util.Dom.getXY('listtasks');
         return {    left : this._WGTganttpanel.getXMouse() -  pos1[0],
                     top: this._WGTganttpanel.getYMouse() - pos1[1]};
+    },
+    _handleKeyUp: function(event){
+        if ( event.keyCode != 27 )
+            return;
+
+        event.stop();
+        ganttz.DependencyList.getInstance().removeChild(this);
     }
 })
 
