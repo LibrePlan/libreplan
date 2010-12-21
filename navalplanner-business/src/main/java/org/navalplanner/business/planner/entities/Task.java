@@ -231,10 +231,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
-    private boolean isLimitingAndNotAssignedYet() {
-        return isLimiting() && !isLimitingAndHasDayAssignments();
-    }
-
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
         addResourceAllocation(resourceAllocation, true);
     }
@@ -471,11 +467,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 if (previousStart.equals(newStartDate)) {
                     return;
                 }
-                if (calculatedValue != CalculatedValue.END_DATE
-                        || getSatisfiedResourceAllocations().isEmpty()
-                        || isLimitingAndNotAssignedYet()) {
-                    setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
-                }
+                setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
                 setIntraDayStartDate(newStartDate);
                 doReassignment(Direction.FORWARD);
             }
@@ -490,10 +482,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 if (getIntraDayEndDate().equals(newEnd)) {
                     return;
                 }
-                if (calculatedValue != CalculatedValue.END_DATE
-                        || getSatisfiedResourceAllocations().isEmpty()) {
-                    setIntraDayStartDate(calculateNewStartGivenEnd(newEnd));
-                }
+                setIntraDayStartDate(calculateNewStartGivenEnd(newEnd));
                 setIntraDayEndDate(newEnd);
                 doReassignment(Direction.BACKWARD);
             }
