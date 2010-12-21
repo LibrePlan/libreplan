@@ -76,6 +76,15 @@ public class LimitingResourceQueueElement extends BaseEntity {
 
     private Set<LimitingResourceQueueDependency> dependenciesAsDestiny = new HashSet<LimitingResourceQueueDependency>();
 
+    public static boolean isAfter(LimitingResourceQueueElement element, DateAndHour time) {
+        return element.getStartTime().isAfter(time);
+    }
+
+    public static boolean isInTheMiddle(LimitingResourceQueueElement element, DateAndHour time) {
+        return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
+                    && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
+    }
+
     public static LimitingResourceQueueElement create() {
         return create(new LimitingResourceQueueElement());
     }
