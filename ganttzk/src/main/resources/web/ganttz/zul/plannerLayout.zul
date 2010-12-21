@@ -82,6 +82,15 @@ planner = self;
             sclass="planner-command"/>
         <separator />
 
+        <!-- Critical chain -->
+        <popup id="criticalChainPopup">
+            <checkbox id="criticalChainCheckbox"
+                label="${i18n:_('Schedule with critical chain')}" />
+        </popup>
+        <button id="criticalChainButton"
+            image="/common/img/ico_refresh.png"
+            tooltiptext="${i18n:_('Critical chain')}" visible="false" />
+
         <!--  Filtering -->
         <vbox id="orderFilter"/>
         <vbox id="orderElementFilter"/>

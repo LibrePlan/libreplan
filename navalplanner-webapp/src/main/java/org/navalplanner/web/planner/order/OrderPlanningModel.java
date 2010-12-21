@@ -1518,6 +1518,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    @Override
+    public void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain) {
+        orderReloaded.getAssociatedTaskElement().
+                setPlannedWithCriticalChain(plannedWithCriticalChain);
+    }
+
+    @Override
+    public Boolean getPlannedWithCriticalChain() {
+        return orderReloaded.getAssociatedTaskElement()
+                .getPlannedWithCriticalChain();
+    }
+
     /**
      *
      * @author Diego Pino García<dpino@igalia.com>

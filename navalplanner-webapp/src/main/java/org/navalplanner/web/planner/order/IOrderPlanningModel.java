@@ -51,4 +51,8 @@ public interface IOrderPlanningModel {
 
     void forceLoadLabelsAndCriterionRequirements();
 
+    void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain);
+
+    Boolean getPlannedWithCriticalChain();
+
 }

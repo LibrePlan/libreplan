@@ -34,7 +34,10 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ViewSwitcher;
+import org.navalplanner.web.common.Util.Getter;
+import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
@@ -63,9 +66,15 @@ import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
@@ -113,6 +122,10 @@ public class OrderPlanningController implements Composer {
     private BandboxMultipleSearch bdFiltersOrderElement;
     private Textbox filterNameOrderElement;
 
+    private Button criticalChainButton;
+    private Popup criticalChainPopup;
+    private Checkbox criticalChainCheckbox;
+
     public OrderPlanningController() {
         getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
         ResourceAllocationController.registerNeededScripts();
@@ -136,6 +149,7 @@ public class OrderPlanningController implements Composer {
         if (planner != null) {
             ensureIsInPlanningOrderView();
             updateConfiguration();
+            setupCriticalChainOptions();
         }
     }
 
@@ -192,6 +206,37 @@ public class OrderPlanningController implements Composer {
                 .getFellow("filterNameOrderElement");
         filterComponent.setVisible(true);
         updateConfiguration();
+    }
+
+    private void setupCriticalChainOptions() {
+        criticalChainPopup = (Popup) planner.getFellow("criticalChainPopup");
+        criticalChainButton = (Button) planner.getFellow("criticalChainButton");
+        criticalChainButton.setVisible(true);
+
+        criticalChainButton.addEventListener(Events.ON_CLICK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                criticalChainPopup.open(criticalChainButton, "after_end");
+            }
+        });
+
+        criticalChainCheckbox = (Checkbox) planner.getFellow("criticalChainCheckbox");
+        Util.bind(criticalChainCheckbox,
+                new Getter<Boolean>() {
+
+                    @Override
+                    public Boolean get() {
+                        return model.getPlannedWithCriticalChain();
+                    }
+                },
+                new Setter<Boolean>() {
+
+                    @Override
+                    public void set(Boolean value) {
+                        model.setPlannedWithCriticalChain(value);
+                    }
+                });
+        //TODO: disable checkbox after having been saved as true
     }
 
     private void updateConfiguration() {
