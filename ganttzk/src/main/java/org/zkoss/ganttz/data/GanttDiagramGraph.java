@@ -1029,17 +1029,16 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         @SuppressWarnings("unchecked")
         private List<Constraint<PositionRestrictions>> getConstraintsToApply() {
-            List<Constraint<PositionRestrictions>> result = new ArrayList<Constraint<PositionRestrictions>>();
-            if (!scheduleBackwards) {
-                result.addAll(asList(new WeakBackwardsForces(),
-                        new DominatingForwardForces()));
+            Constraint<PositionRestrictions> weakForces = scheduleBackwards ? new WeakForwardForces()
+                    : new WeakBackwardsForces();
+            Constraint<PositionRestrictions> dominatingForces = scheduleBackwards ? new DominatingBackwardForces()
+                    : new DominatingForwardForces();
+            if (dependenciesConstraintsHavePriority) {
+                return asList(weakForces, dominatingForces);
             } else {
-                result.addAll(asList(new WeakForwardForces(),
-                        new DominatingBackwardForces()));
+                return asList(weakForces, dominatingForces, weakForces);
             }
-            return result;
         }
-
 
         abstract class PositionRestrictions {
 
