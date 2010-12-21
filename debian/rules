@@ -64,6 +64,10 @@ install:
 	$(call CMD,dh_testroot)
 	$(call CMD,dh_clean -k)
 	$(call CMD,dh_installdirs)
+	# Copy SQL installation file
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/install/)
+	$(call CMD,cp $(CURDIR)/scripts/database/install.sql \
+		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/install/pgsql)
 	# Commands to install arch-dependant stuff
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/var/lib/tomcat6/webapps/)
 	$(call CMD,cp $(CURDIR)/navalplanner-webapp/target/navalplanner-webapp.war \
