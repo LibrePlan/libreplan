@@ -69,12 +69,12 @@ then
 fi
 
 
-#if [ -x /etc/init.d/tomcat5.5 ] ; then
-#	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
-#		invoke-rc.d tomcat5.5 restart
-#	else
-#		/etc/init.d/tomcat5.5 restart
-#	fi
-#fi
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 restart
+	else
+		/etc/init.d/tomcat6 restart
+	fi
+fi
 
 #DEBHELPER#

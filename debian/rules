@@ -76,6 +76,9 @@ install:
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)
 	$(call CMD,cp $(CURDIR)/debian/51navalplan.policy \
 		$(CURDIR)/debian/tmp/etc/tomcat6/policy.d/)
+	# Link Java PostgreSQL library
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/tomcat6/lib)
+	$(call CMD,ln -s /usr/share/java/postgresql-jdbc3.jar $(CURDIR)/debian/tmp/usr/share/tomcat6/lib)
 	$(call CMD,dh_install)
 
 binary-indep: build install

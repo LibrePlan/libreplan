@@ -8,6 +8,6 @@ Package: navalplan
 Architecture: all
 Section: web
 Depends: cutycapt, postgresql-client, xvfb, dbconfig-common, ucf,
- tomcat6, openjdk-6-jre-headless | openjdk-6-jre, ${misc:Depends}
+ tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ${misc:Depends}
 Description: Web based planner thought for naval-related companies.
 
