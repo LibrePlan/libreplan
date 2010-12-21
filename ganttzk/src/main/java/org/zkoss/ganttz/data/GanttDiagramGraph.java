@@ -1561,7 +1561,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getStartConstraints())
                         .withConstraints(getStartConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null) {
+                if (result != null && !result.equals(getStartDate(task))) {
                     return enforceRestrictions(result);
                 }
                 return restrictions;
@@ -1583,7 +1583,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                         .withConstraints(restrictions.getEndConstraints())
                         .withConstraints(getEndConstraints())
                         .applyWithoutFinalCheck();
-                if (result != null) {
+                if (result != null && !result.equals(getEndDateFor(task))) {
                     return enforceRestrictions(result);
                 }
                 return restrictions;
