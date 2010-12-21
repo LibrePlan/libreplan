@@ -1,3 +1,12 @@
+navalplan (0.9.0) maverick; urgency=low
+
+  * Updated to upstream.
+  * Fixed issues with context.xml file.
+  * Added libpg-java dependency.
+  * Started to use SQL scripts to install database.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 21 Dec 2010 17:31:08 +0100
+
 navalplan (20100908) lucid; urgency=low
 
   * Updated to upstream.
