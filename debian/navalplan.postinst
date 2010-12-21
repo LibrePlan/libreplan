@@ -32,7 +32,7 @@ then
 		if [[ ${line} = *\</Context\>* ]] ; then
 			cat <<-EOF
 				<!-- begin:navalplan -->
-				<Resource name="jdbc/navalplanner-ds" auth="Container"
+				<Resource name="jdbc/navalplan-ds" auth="Container"
 					type="javax.sql.DataSource"
 					maxActive="100" maxIdle="30" maxWait="10000"
 					username="${dbc_dbuser}" password="${dbc_dbpass}"

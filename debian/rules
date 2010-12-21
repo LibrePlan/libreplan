@@ -8,7 +8,9 @@ MAKEFLAGS  += s
 JAVA_HOME  := /usr/lib/jvm/java-6-openjdk
 
 MAVEN_REPO := $(CURDIR)/debian/maven-repo
-MAVEN_OPTS := -Pprod,postgresql -Dmaven.test.skip=true -B \
+MAVEN_OPTS := -Pprod,postgresql,-liquibase-update \
+              -DdataSource.jndiName=jdbc/navalplan-ds \
+	      -Dmaven.test.skip=true -B \
               -s $(CURDIR)/debian/maven-settings.xml
 
 
@@ -71,7 +73,7 @@ install:
 	# Commands to install arch-dependant stuff
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/var/lib/tomcat6/webapps/)
 	$(call CMD,cp $(CURDIR)/navalplanner-webapp/target/navalplanner-webapp.war \
-		$(CURDIR)/debian/tmp/var/lib/tomcat6/webapps)
+		$(CURDIR)/debian/tmp/var/lib/tomcat6/webapps/navalplan.war)
 	# Install Policy file
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)
 	$(call CMD,cp $(CURDIR)/debian/51navalplan.policy \
