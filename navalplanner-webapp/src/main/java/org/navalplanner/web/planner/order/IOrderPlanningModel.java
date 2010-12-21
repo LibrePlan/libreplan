@@ -28,6 +28,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
+import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;
@@ -54,5 +55,7 @@ public interface IOrderPlanningModel {
     void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain);
 
     Boolean getPlannedWithCriticalChain();
+
+    void addAfterSaveListener(IAfterSaveListener listener);
 
 }

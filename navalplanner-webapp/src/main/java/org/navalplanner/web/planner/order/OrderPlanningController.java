@@ -46,6 +46,7 @@ import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
+import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -236,7 +237,23 @@ public class OrderPlanningController implements Composer {
                         model.setPlannedWithCriticalChain(value);
                     }
                 });
-        //TODO: disable checkbox after having been saved as true
+        //disable checkbox after having been saved as true
+        if(model.getPlannedWithCriticalChain()) {
+            //it's already saved as true, disable
+            criticalChainCheckbox.setDisabled(true);
+        }
+        else {
+            //set listener to disable it after saving it as true
+            model.addAfterSaveListener(
+                new IAfterSaveListener() {
+                    @Override
+                    public void onAfterSave() {
+                        if(model.getPlannedWithCriticalChain()) {
+                            criticalChainCheckbox.setDisabled(true);
+                        }
+                    }
+                });
+        }
     }
 
     private void updateConfiguration() {

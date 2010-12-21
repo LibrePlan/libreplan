@@ -278,6 +278,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
+    ISaveCommand saveCommand;
+
     private final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
 
@@ -344,7 +346,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configureInitialZoomLevelFor(planner, defaultZoomLevel);
 
         final boolean writingAllowed = isWritingAllowedOn(orderReloaded);
-        ISaveCommand saveCommand = setupSaveCommand(configuration,
+        saveCommand = setupSaveCommand(configuration,
                 writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
 
@@ -1528,6 +1530,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public Boolean getPlannedWithCriticalChain() {
         return orderReloaded.getAssociatedTaskElement()
                 .getPlannedWithCriticalChain();
+    }
+
+    @Override
+    public void addAfterSaveListener(IAfterSaveListener listener) {
+        saveCommand.addListener(listener);
     }
 
     /**
