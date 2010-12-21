@@ -1665,7 +1665,9 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     public void removeDependency(D dependency) {
         graph.removeEdge(dependency);
         V destination = adapter.getDestination(dependency);
+        V source = adapter.getSource(dependency);
         enforcer.enforceRestrictionsOn(destination);
+        enforcer.enforceRestrictionsOn(source);
     }
 
     public boolean canAddDependency(D dependency) {
