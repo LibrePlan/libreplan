@@ -20,6 +20,9 @@
 
 package org.navalplanner.web.limitingresources;
 
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isAfter;
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isInTheMiddle;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1123,15 +1126,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             }
         }
         return null;
-    }
-
-    private boolean isAfter(LimitingResourceQueueElement element, DateAndHour time) {
-        return element.getStartTime().isAfter(time);
-    }
-
-    private boolean isInTheMiddle(LimitingResourceQueueElement element, DateAndHour time) {
-        return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
-                    && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
     }
 
     @Override

@@ -20,6 +20,9 @@
 
 package org.navalplanner.business.resources.entities;
 
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isAfter;
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isInTheMiddle;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,8 +37,8 @@ import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-
 /**
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -145,14 +148,12 @@ public class LimitingResourceQueue extends BaseEntity {
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
 
         for (LimitingResourceQueueElement each: getLimitingResourceQueueElements()) {
-            if (each.getStartTime().isEquals(time)
-                    || each.getStartTime().isAfter(time)) {
+            if (isInTheMiddle(each, time) || isAfter(each, time)) {
                 result.add(each);
             }
         }
         return result;
     }
-
 
     public void queueElementMoved(
             LimitingResourceQueueElement limitingResourceQueueElement) {
