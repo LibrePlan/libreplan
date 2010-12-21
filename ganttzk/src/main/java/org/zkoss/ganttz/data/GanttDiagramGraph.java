@@ -1163,19 +1163,19 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 this.task = taskPoint.task;
             }
 
-            protected PositionRestrictions result;
+            private PositionRestrictions resultingRestrictions = new NoRestrictions();
 
             protected PositionRestrictions applyConstraintTo(
                     PositionRestrictions restrictions) {
                 if (adapter.isFixed(task)) {
                     return restrictions;
                 }
-                result = enforceUsingPreviousRestrictions(restrictions);
-                return result;
+                resultingRestrictions = enforceUsingPreviousRestrictions(restrictions);
+                return resultingRestrictions;
             }
 
             public boolean isSatisfiedBy(PositionRestrictions value) {
-                return result.satisfies(value);
+                return resultingRestrictions.satisfies(value);
             }
 
             public void checkSatisfiesResult(PositionRestrictions finalResult) {
