@@ -1596,12 +1596,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             @Override
             List<Constraint<GanttDate>> getEndConstraints() {
-                List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
-                result.addAll(adapter.getEndConstraintsFor(task));
-                if (scheduleBackwards) {
-                    result.addAll(globalEndConstraints);
-                }
-                return result;
+                return adapter.getEndConstraintsFor(task);
             }
 
             private PositionRestrictions enforceRestrictions(GanttDate newEnd) {
