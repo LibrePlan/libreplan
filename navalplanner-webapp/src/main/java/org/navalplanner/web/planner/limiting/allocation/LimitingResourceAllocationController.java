@@ -27,6 +27,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
@@ -93,8 +94,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        limitingNewAllocationSelector.setLimitingResourceFilter(true);
-        limitingNewAllocationSelectorCombo.setLimitingResourceFilter(true);
+        limitingNewAllocationSelector.setResourceTypeFilter(ResourceType.LIMITING_RESOURCE);
+        limitingNewAllocationSelectorCombo.setResourceTypeFilter(ResourceType.LIMITING_RESOURCE);
         limitingNewAllocationSelector.allowSelectMultipleResources(false);
     }
 

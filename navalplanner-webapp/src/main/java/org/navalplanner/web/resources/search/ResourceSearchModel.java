@@ -87,7 +87,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
 
         private List<Criterion> criteria = null;
 
-        private boolean limiting = false;
+        private ResourceType type = ResourceType.NON_LIMITING_RESOURCE;
 
         public Query(Class<T> klass) {
             this.klass = klass;
@@ -108,8 +108,8 @@ public class ResourceSearchModel implements IResourceSearchModel {
         }
 
         @Override
-        public IResourcesQuery<T> byLimiting(boolean limiting) {
-            this.limiting = limiting;
+        public IResourcesQuery<T> byResourceType(ResourceType type) {
+            this.type = type;
             return this;
         }
 
@@ -131,12 +131,7 @@ public class ResourceSearchModel implements IResourceSearchModel {
 
         private Criteria buildCriteria(Session session) {
             Criteria result = session.createCriteria(klass);
-            if (limiting) {
-                result.add(eq("resourceType", ResourceType.LIMITING_RESOURCE));
-            }
-            else {
-                result.add(eq("resourceType", ResourceType.NON_LIMITING_RESOURCE));
-            }
+            result.add(eq("resourceType", type));
             addQueryByName(result);
             addFindRelatedWithSomeOfTheCriterions(result);
             result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
@@ -228,9 +223,9 @@ public class ResourceSearchModel implements IResourceSearchModel {
             }
 
             @Override
-            public IResourcesQuery<Resource> byLimiting(boolean limiting) {
-                searchWorkers.byLimiting(limiting);
-                searchMachines.byLimiting(limiting);
+            public IResourcesQuery<Resource> byResourceType(ResourceType type) {
+                searchWorkers.byResourceType(type);
+                searchMachines.byResourceType(type);
                 return this;
             }
 

@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
@@ -156,8 +157,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         allResourcesPerDay = new Decimalbox();
         allResourcesPerDay.setWidth("80px");
-        newAllocationSelector.setLimitingResourceFilter(false);
-        newAllocationSelectorCombo.setLimitingResourceFilter(false);
+        newAllocationSelector.setResourceTypeFilter(ResourceType.NON_LIMITING_RESOURCE);
+        newAllocationSelectorCombo.setResourceTypeFilter(ResourceType.NON_LIMITING_RESOURCE);
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
         prepareCalculationTypesGrid();

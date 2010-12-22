@@ -30,6 +30,7 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 
 /**
@@ -60,13 +61,13 @@ public interface IResourceSearchModel {
         IResourcesQuery<T> byCriteria(Collection<? extends Criterion> criteria);
 
         /**
-         * Restrict resources to the ones having the provided limiting value. By
-         * default, if this method is not called, the resources are restricted
-         * to the ones not limiting.
-         * @param limiting
+         * Restrict resources to the ones having the provided type. By default
+         * if this method is not called, the resources are restricted to the
+         * type NON_LIMITING_RESOURCE.
+         * @param type
          * @return this same object in order to cascade calls
          */
-        IResourcesQuery<T> byLimiting(boolean limiting);
+        IResourcesQuery<T> byResourceType(ResourceType type);
 
         /**
          * Retrieve the list of resources that match the restrictions specified.

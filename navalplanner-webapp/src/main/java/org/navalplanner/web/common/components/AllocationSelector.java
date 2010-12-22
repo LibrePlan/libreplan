@@ -20,6 +20,7 @@
 
 package org.navalplanner.web.common.components;
 
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.AllocationSelectorController;
@@ -51,8 +52,8 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
         }
     }
 
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        getController().setLimitingResourceFilter(limitingResource);
+    public void setResourceTypeFilter(ResourceType type) {
+        getController().setResourceTypeFilter(type);
     }
 
 }
