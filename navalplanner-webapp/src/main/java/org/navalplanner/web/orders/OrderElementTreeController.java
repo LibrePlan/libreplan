@@ -970,7 +970,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .setTooltiptext(_("Not editable for containing more that an hours group."));
             } else {
                 boxHours.setReadonly(false);
-                tc.setTooltiptext(_(""));
+                tc.setTooltiptext("");
             }
         }
     }
