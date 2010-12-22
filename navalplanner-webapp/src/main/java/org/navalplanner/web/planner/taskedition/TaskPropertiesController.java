@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
 import org.navalplanner.business.planner.entities.StartConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskStartConstraint;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.I18nHelper;
@@ -399,8 +400,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                         editTaskController.showNonPermitChangeResourceAllocationType();
                     } else {
                         changeResourceAllocationType(oldState, newState);
-                        editTaskController.selectAssignmentTab(lbResourceAllocationType
-                                .getSelectedIndex() + 1);
+                        editTaskController.selectAssignmentTab(newState.getPosition());
                     }
                 }
                 if (oldState == null) {
@@ -454,10 +454,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
      *
      */
     public enum ResourceAllocationTypeEnum {
-        NON_LIMITING_RESOURCES(_("Non limiting resource assignation")),
-        LIMITING_RESOURCES(_("Limiting resource assignation")),
-        STRATEGIC_RESOURCES(_("Strategic resource assignation")),
-        SUBCONTRACT(_("Subcontract"));
+        NON_LIMITING_RESOURCES(_("Non limiting resource assignation"), 1),
+        LIMITING_RESOURCES(_("Limiting resource assignation"), 2),
+        STRATEGIC_RESOURCES(_("Strategic resource assignation"), 3),
+        SUBCONTRACT(_("Subcontract"), 4);
 
         /**
          * Forces to mark the string as needing translation
@@ -467,6 +467,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
 
         private String option;
+        private int position;
 
         private static final List<ResourceAllocationTypeEnum> nonMasterOptionList = new ArrayList<ResourceAllocationTypeEnum>() {
             {
@@ -476,12 +477,17 @@ public class TaskPropertiesController extends GenericForwardComposer {
             }
         };
 
-        private ResourceAllocationTypeEnum(String option) {
+        private ResourceAllocationTypeEnum(String option, int position) {
             this.option = option;
+            this.position = position;
         }
 
         public String toString() {
             return I18nHelper._(option);
+        }
+
+        public int getPosition() {
+            return position;
         }
 
         public static List<ResourceAllocationTypeEnum> getOptionList() {
@@ -512,11 +518,17 @@ public class TaskPropertiesController extends GenericForwardComposer {
     }
 
     public List<ResourceAllocationTypeEnum> getResourceAllocationTypeOptionList() {
+        List<ResourceAllocationTypeEnum> list = new ArrayList<ResourceAllocationTypeEnum>();
         if (scenarioManager.getCurrent().isMaster()) {
-            return ResourceAllocationTypeEnum.getOptionList();
+            list.addAll(ResourceAllocationTypeEnum.getOptionList());
         } else {
-            return ResourceAllocationTypeEnum.getOptionListForNonMasterBranch();
+            list.addAll(ResourceAllocationTypeEnum.getOptionListForNonMasterBranch());
         }
+        if (currentTaskElement != null && !((TaskGroup)currentTaskElement.getTopMost())
+                .getPlannedWithCriticalChain()) {
+            list.remove(ResourceAllocationTypeEnum.STRATEGIC_RESOURCES);
+        }
+        return list;
     }
 
     public ResourceAllocationTypeEnum getResourceAllocationType() {
