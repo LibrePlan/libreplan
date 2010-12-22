@@ -75,6 +75,12 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
+        public void applyAllocationFromEndUntil(LocalDate start) {
+            genericAllocation.forResources(getResources())
+                    .resourcesPerDayFromEndUntil(start).allocate(getGoal());
+        }
+
+        @Override
         public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
                 EffortDuration limit) {
             return genericAllocation.createAssignmentsAtDay(getResources(),
@@ -138,6 +144,12 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public void applyAllocationUntil(LocalDate endExclusive) {
             resourceAllocation.resourcesPerDayUntil(endExclusive).allocate(
+                    getGoal());
+        }
+
+        @Override
+        public void applyAllocationFromEndUntil(LocalDate start) {
+            resourceAllocation.resourcesPerDayFromEndUntil(start).allocate(
                     getGoal());
         }
 
@@ -237,6 +249,8 @@ public abstract class ResourcesPerDayModification extends
     public abstract void applyAllocationOnAllTaskLength();
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);
+
+    public abstract void applyAllocationFromEndUntil(LocalDate start);
 
     public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
             EffortDuration limit);

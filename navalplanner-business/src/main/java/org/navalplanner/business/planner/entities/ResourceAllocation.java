@@ -371,6 +371,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     allocations);
             allocator.allocateUntil(endExclusive);
         }
+
+        public void allocateFromEndUntil(LocalDate start) {
+            AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
+                    allocations);
+            allocator.allocateFromEndUntil(start);
+        }
     }
 
     public static HoursAllocationSpecified allocatingHours(
@@ -416,6 +422,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             for (HoursModification each : hoursModifications) {
                 each.allocateUntil(end);
             }
+        }
+
+        public void allocateFromEndUntil(LocalDate start) {
+            Validate.notNull(start);
+            Validate.isTrue(start.isBefore(task.getEndAsLocalDate()));
+            for (HoursModification each : hoursModifications) {
+                each.allocateFromEndUntil(start);
+            }
+
         }
 
     }

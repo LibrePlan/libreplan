@@ -54,6 +54,13 @@ public abstract class HoursModification extends AllocationModification {
                              .fromStartUntil(end)
                              .allocateHours(getHours());
         }
+
+        @Override
+        public void allocateFromEndUntil(LocalDate start) {
+            genericAllocation.forResources(getResources())
+                             .fromEndUntil(start)
+                             .allocateHours(getHours());
+        }
     }
 
     private static class OnSpecificAllocation extends HoursModification {
@@ -69,6 +76,12 @@ public abstract class HoursModification extends AllocationModification {
         @Override
         public void allocateUntil(LocalDate end) {
             specific.fromStartUntil(end)
+                    .allocateHours(getHours());
+        }
+
+        @Override
+        public void allocateFromEndUntil(LocalDate start) {
+            specific.fromEndUntil(start)
                     .allocateHours(getHours());
         }
     }
@@ -117,6 +130,8 @@ public abstract class HoursModification extends AllocationModification {
     }
 
     public abstract void allocateUntil(LocalDate end);
+
+    public abstract void allocateFromEndUntil(LocalDate start);
 
     public int getHours() {
         return hours;
