@@ -47,7 +47,7 @@
   <n:tr>
     <n:td width="180" valign="center">
         <n:a href="${contextPath}/">
-        <n:img src="${contextPath}/common/img/logo.png" /></n:a></n:td>
+        <n:img src="${contextPath}/common/img/${i18n:_('en')}/logo.png" /></n:a></n:td>
   <n:td valign="top">
   <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
