@@ -1,3 +1,10 @@
+navalplan (0.9.1) maverick; urgency=low
+
+  * Updated to upstream.
+  * Fixed problems with translations.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Thu, 23 Dec 2010 00:14:54 +0100
+
 navalplan (0.9.0) maverick; urgency=low
 
   * Updated to upstream.
