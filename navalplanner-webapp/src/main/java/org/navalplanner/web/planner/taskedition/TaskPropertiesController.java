@@ -229,17 +229,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintDate.setDisabled(disabled);
         lbResourceAllocationType.setDisabled(disabled);
 
-        lbResourceAllocationType.addEventListener(Events.ON_SELECT,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-
-                        editTaskController
-                                .selectAssignmentTab(lbResourceAllocationType
-                                        .getSelectedIndex() + 1);
-                    }
-                });
-
         if (context != null) {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         }
@@ -404,14 +393,15 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
                 final ResourceAllocationTypeEnum oldState = getOldState();
                 ResourceAllocationTypeEnum newState = getSelectedValue(new ArrayList(se.getSelectedItems()));
-                        if (thereIsTransition(newState)) {
-                            if (isConsolidatedTask()) {
-                                restoreOldState();
-                                editTaskController
-                                        .showNonPermitChangeResourceAllocationType();
-                            } else {
-                                changeResourceAllocationType(oldState, newState);
-                            }
+                if (thereIsTransition(newState)) {
+                    if (isConsolidatedTask()) {
+                        restoreOldState();
+                        editTaskController.showNonPermitChangeResourceAllocationType();
+                    } else {
+                        changeResourceAllocationType(oldState, newState);
+                        editTaskController.selectAssignmentTab(lbResourceAllocationType
+                                .getSelectedIndex() + 1);
+                    }
                 }
                 if (oldState == null) {
                     setOldState(newState);
