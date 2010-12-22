@@ -81,9 +81,10 @@ public class TaskGroup extends TaskElement {
     }
 
     public void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain) {
-        if (planningData != null) {
-            planningData.setPlannedWithCriticalChain(plannedWithCriticalChain);
+        if (planningData == null) {
+            planningData = PlanningData.create(this);
         }
+        planningData.setPlannedWithCriticalChain(plannedWithCriticalChain);
     }
 
     @SuppressWarnings("unused")
