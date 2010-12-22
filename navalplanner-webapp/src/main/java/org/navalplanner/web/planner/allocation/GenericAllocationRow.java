@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.resources.search.IResourceSearchModel;
 
@@ -78,11 +79,15 @@ public class GenericAllocationRow extends AllocationRow {
         result.setNonConsolidatedResourcesPerDay(resourceAllocation
                 .getNonConsolidatedResourcePerDay());
 
+        ResourceType type = resourceAllocation.isLimiting() ?
+                ResourceType.LIMITING_RESOURCE :
+                ResourceType.NON_LIMITING_RESOURCE;
+
         result.criterions = resourceAllocation.getCriterions();
         result.resources = new ArrayList<Resource>(searchModel
                 .searchBy(resourceAllocation.getResourceType())
                 .byCriteria(resourceAllocation.getCriterions())
-                .byLimiting(resourceAllocation.isLimiting()).execute());
+                .byResourceType(type).execute());
         result.setName(Criterion
                 .getCaptionForCriterionsFrom(resourceAllocation));
         return result;

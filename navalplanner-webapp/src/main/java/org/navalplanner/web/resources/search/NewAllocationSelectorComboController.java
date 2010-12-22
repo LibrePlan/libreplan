@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceAllocationFilterEnum;
@@ -41,8 +42,6 @@ public class NewAllocationSelectorComboController extends
         AllocationSelectorController {
 
     private BandboxMultipleSearch bdLimitingAllocationSelector;
-
-    private boolean limitingResource = false;
 
     public NewAllocationSelectorComboController() {
 
@@ -60,7 +59,7 @@ public class NewAllocationSelectorComboController extends
      */
     private List<? extends Resource> searchResources(List<Criterion> criterions) {
         return query(inferType(criterions)).byCriteria(criterions)
-                .byLimiting(limitingResource).execute();
+                .byResourceType(type).execute();
     }
 
     private static ResourceEnum inferType(List<Criterion> criterions) {
@@ -138,17 +137,17 @@ public class NewAllocationSelectorComboController extends
     }
 
     @Override
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        this.limitingResource = limitingResource;
+    public void setResourceTypeFilter(ResourceType type) {
+        super.setResourceTypeFilter(type);
         setResourceFinder();
 
     }
 
     private void setResourceFinder() {
-        if (limitingResource) {
+        if (type == ResourceType.LIMITING_RESOURCE) {
             bdLimitingAllocationSelector
                     .setFinder("limitingResourceAllocationMultipleFiltersFinder");
-        } else {
+        } else if (type == ResourceType.NON_LIMITING_RESOURCE) {
             bdLimitingAllocationSelector
                     .setFinder("nonLimitingResourceAllocationMultipleFiltersFinder");
         }

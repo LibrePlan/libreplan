@@ -157,7 +157,7 @@ public class NewAllocationSelectorController extends
     }
 
     private List<? extends Resource> getAllResources() {
-        return query().byLimiting(limitingResource).execute();
+        return query().byResourceType(type).execute();
     }
 
     private IResourcesQuery<?> query() {
@@ -189,7 +189,7 @@ public class NewAllocationSelectorController extends
         List<Criterion> criteria = getSelectedCriterions();
         List<Resource> selectedWorkers = getSelectedWorkers();
         refreshListBoxResources(query().byCriteria(criteria)
-                .byLimiting(limitingResource).execute());
+                .byResourceType(type).execute());
         listBoxResources.renderAll(); // force render so list items has the
                                       // value property so the resources can be
                                       // selected
@@ -262,7 +262,7 @@ public class NewAllocationSelectorController extends
     private void searchResources(String name, List<Criterion> criterions) {
         final List<? extends Resource> resources = query().byName(name)
                 .byCriteria(criterions)
-                .byLimiting(limitingResource)
+                .byResourceType(type)
                 .execute();
         refreshListBoxResources(resources);
     }
