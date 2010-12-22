@@ -23,6 +23,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -364,10 +365,15 @@ public class TemplateModel implements ITemplateModel {
 
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {
         copyAssignments(order, from, to);
-        installDependenciesEnforcer(order,
-                TemplateModelAdapter.create(to, LocalDate.fromDateFields(order.getDeadline())));
+        installDependenciesEnforcer(order, TemplateModelAdapter.create(to,
+                asLocalDate(order.getInitDate()),
+                asLocalDate(order.getDeadline())));
         doReassignations(order, to);
         doTheSaving(order);
+    }
+
+    private LocalDate asLocalDate(Date date) {
+        return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
     private void copyAssignments(Order order, Scenario from, Scenario to) {

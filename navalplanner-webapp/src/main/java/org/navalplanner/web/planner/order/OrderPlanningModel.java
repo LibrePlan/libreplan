@@ -94,8 +94,8 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -1003,8 +1003,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         taskElementAdapter.useScenario(currentScenario);
         planningState = createPlanningStateFor(planner, orderReloaded);
         taskElementAdapter
-                .setDeadline(orderReloaded.getDeadline() != null ? LocalDate
-                        .fromDateFields(orderReloaded.getDeadline()) : null);
+                .setInitDate(asLocalDate(orderReloaded.getInitDate()));
+        taskElementAdapter
+                .setDeadline(asLocalDate(orderReloaded.getDeadline()));
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
@@ -1014,6 +1015,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .getDependenciesConstraintsHavePriority());
         result.setScheduleBackwards(orderReloaded.isScheduleBackwards());
         return result;
+    }
+
+    private LocalDate asLocalDate(Date date) {
+        return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
     private PlanningState createPlanningStateFor(

@@ -34,15 +34,20 @@ public class TemplateModelAdapter implements
 
     private final Scenario scenario;
 
-    private LocalDate deadline;
+    private final LocalDate orderInitDate;
 
-    public static TemplateModelAdapter create(Scenario scenario, LocalDate deadline) {
-        return new TemplateModelAdapter(scenario, deadline);
+    private final LocalDate deadline;
+
+    public static TemplateModelAdapter create(Scenario scenario,
+            LocalDate initDate, LocalDate deadline) {
+        return new TemplateModelAdapter(scenario, initDate, deadline);
     }
 
-    private TemplateModelAdapter(Scenario scenario, LocalDate deadline) {
+    private TemplateModelAdapter(Scenario scenario, LocalDate orderInitDate,
+            LocalDate deadline) {
         Validate.notNull(scenario);
         this.scenario = scenario;
+        this.orderInitDate = orderInitDate;
         this.deadline = deadline;
     }
 
@@ -84,7 +89,7 @@ public class TemplateModelAdapter implements
 
     @Override
     public List<Constraint<GanttDate>> getStartConstraintsFor(TaskElement task) {
-        return TaskElementAdapter.getStartConstraintsFor(task);
+        return TaskElementAdapter.getStartConstraintsFor(task, orderInitDate);
     }
 
     @Override

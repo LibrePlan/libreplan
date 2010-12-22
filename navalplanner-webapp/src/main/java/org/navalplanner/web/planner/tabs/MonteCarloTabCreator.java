@@ -24,6 +24,7 @@ import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BR
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,8 +42,8 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.common.TemplateModelAdapter;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
+import org.navalplanner.web.common.TemplateModelAdapter;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -175,12 +176,19 @@ public class MonteCarloTabCreator {
                 CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
                         .create();
                 IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
-                        .create(getCurrentScenario(), new LocalDate(order.getDeadline()));
+                                .create(getCurrentScenario(),
+                                        asLocalDate(order.getInitDate()),
+                                        asLocalDate(order.getDeadline()));
                 GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                         order, adapter);
                 graph.addTasks(order.getAllChildrenAssociatedTaskElements());
                 addDependencies(graph, order);
                 return criticalPathCalculator.calculateCriticalPath(graph);
+            }
+
+            private LocalDate asLocalDate(Date date) {
+                return date != null ? LocalDate.fromDateFields(date)
+                        : null;
             }
 
             private Scenario getCurrentScenario() {

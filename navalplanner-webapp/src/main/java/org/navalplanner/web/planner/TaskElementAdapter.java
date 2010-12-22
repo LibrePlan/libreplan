@@ -39,8 +39,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -63,17 +63,17 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
-import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -89,10 +89,10 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.GanttDate.Cases;
 import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -117,7 +117,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     }
 
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
-            TaskElement taskElement) {
+            TaskElement taskElement, LocalDate orderInitDate) {
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
             TaskPositionConstraint startConstraint = task.getPositionConstraint();
@@ -125,6 +125,10 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                     .getConstraintType();
             switch (constraintType) {
             case AS_SOON_AS_POSSIBLE:
+                if (orderInitDate != null) {
+                    return Collections
+                            .singletonList(biggerOrEqualThan(toGantt(orderInitDate)));
+                }
                 return Collections.emptyList();
             case START_IN_FIXED_DATE:
                 return Collections
@@ -179,12 +183,19 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     private Scenario scenario;
 
+    private LocalDate initDate;
+
     private LocalDate deadline;
 
 
     @Override
     public void useScenario(Scenario scenario) {
         this.scenario = scenario;
+    }
+
+    @Override
+    public void setInitDate(LocalDate initDate) {
+        this.initDate = initDate;
     }
 
     @Override
@@ -862,7 +873,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
         @Override
         public List<Constraint<GanttDate>> getStartConstraints() {
-            return getStartConstraintsFor(this.taskElement);
+            return getStartConstraintsFor(this.taskElement, initDate);
         }
 
         @Override

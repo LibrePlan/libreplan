@@ -33,6 +33,8 @@ public interface ITaskElementAdapter extends IAdapterToTaskFundamentalProperties
 
     void useScenario(Scenario scenario);
 
+    void setInitDate(LocalDate initDate);
+
     void setDeadline(LocalDate deadline);
 
     void setPreventCalculateResourcesText(boolean preventCalculateResourcesText);
