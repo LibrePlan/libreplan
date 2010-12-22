@@ -831,9 +831,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public Integer getWorkableDaysUntil(LocalDate end) {
+        return getWorkableDaysFrom(getStartAsLocalDate(), end);
+    }
+
+    public Integer getWorkableDaysFrom(LocalDate startInclusive,
+            LocalDate endExclusive) {
         int result = 0;
-        LocalDate start = getStartAsLocalDate();
-        for (LocalDate current = start; current.compareTo(end) < 0; current = current
+        for (LocalDate current = startInclusive; current
+                .compareTo(endExclusive) < 0; current = current
                 .plusDays(1)) {
             if (isWorkable(current)) {
                 result++;
@@ -843,8 +848,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public LocalDate calculateEndGivenWorkableDays(int workableDays) {
-        LocalDate result = getIntraDayStartDate().getDate();
-        return calculateEndGivenWorkableDays(result, workableDays);
+        return calculateEndGivenWorkableDays(getIntraDayStartDate().getDate(),
+                workableDays);
+    }
+
+    public LocalDate calculateStartGivenWorkableDays(int workableDays) {
+        return calculateStartGivenWorkableDays(getEndAsLocalDate(),
+                workableDays);
     }
 
     private LocalDate calculateEndGivenWorkableDays(LocalDate start,

@@ -33,6 +33,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -230,7 +231,7 @@ public class AllocationRowsHandler {
                 calculateNumberOfHoursAllocation();
                 break;
             case END_DATE:
-                calculateEndDateAllocation();
+                calculateEndDateOrStartDateAllocation();
                 break;
             case RESOURCES_PER_DAY:
                 calculateResourcesPerDayAllocation();
@@ -249,14 +250,24 @@ public class AllocationRowsHandler {
     private void calculateNumberOfHoursAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
-        ResourceAllocation.allocating(allocations).allocateUntil(
-                formBinder.getAllocationEnd());
+        if (isForwardsAllocation()) {
+            ResourceAllocation.allocating(allocations).allocateUntil(
+                    formBinder.getAllocationEnd());
+        } else {
+            ResourceAllocation.allocating(allocations).allocateFromEndUntil(
+                    formBinder.getAllocationStart());
+        }
     }
 
-    private void calculateEndDateAllocation() {
+    private boolean isForwardsAllocation() {
+        return Direction.FORWARD.equals(task.getLastAllocationDirection());
+    }
+
+    private void calculateEndDateOrStartDateAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
         ResourceAllocation.allocating(allocations).untilAllocating(
+                task.getLastAllocationDirection(),
                 formBinder.getAssignedHours(), notFullfiledReceiver());
     }
 
@@ -279,8 +290,13 @@ public class AllocationRowsHandler {
     private void calculateResourcesPerDayAllocation() {
         List<HoursModification> hours = AllocationRow
                 .createHoursModificationsAndAssociate(task, currentRows);
-        ResourceAllocation.allocatingHours(hours).allocateUntil(
-                formBinder.getAllocationEnd());
+        if (isForwardsAllocation()) {
+            ResourceAllocation.allocatingHours(hours).allocateUntil(
+                    formBinder.getAllocationEnd());
+        } else {
+            ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(
+                    formBinder.getAllocationStart());
+        }
     }
 
     private Integer getWorkableDaysIfApplyable() {

@@ -37,6 +37,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -299,6 +300,11 @@ public class FormBinder {
                 taskPropertiesController);
     }
 
+    private boolean isForwardAllocated() {
+        Direction direction = getTask().getLastAllocationDirection();
+        return Direction.FORWARD.equals(direction);
+    }
+
     class WorkableDaysAndDatesBinder {
 
         private Intbox taskWorkableDays;
@@ -308,7 +314,7 @@ public class FormBinder {
         private Label labelTaskEnd;
 
         WorkableDaysAndDatesBinder(final Intbox taskWorkableDays,
-                Label labelTaskStart, final Label labelTaskEnd,
+                final Label labelTaskStart, final Label labelTaskEnd,
                 final TaskPropertiesController taskPropertiesController) {
             this.taskWorkableDays = taskWorkableDays;
             this.labelTaskStart = labelTaskStart;
@@ -321,10 +327,19 @@ public class FormBinder {
                         public void onEvent(Event event) throws Exception {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
-                            LocalDate newEndDate = task
-                                    .calculateEndGivenWorkableDays(workableDays);
-                            taskPropertiesController.updateTaskEndDate(newEndDate);
-                            showValueOfDateOn(labelTaskEnd, newEndDate);
+                            if (isForwardAllocated()) {
+                                LocalDate newEndDate = task
+                                        .calculateEndGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskEndDate(newEndDate);
+                                showValueOfDateOn(labelTaskEnd, newEndDate);
+                            } else {
+                                LocalDate newStart = task
+                                        .calculateStartGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskStartDate(newStart);
+                                showValueOfDateOn(labelTaskStart, newStart);
+                            }
                         }
                     });
             applyDisabledRules();
@@ -363,7 +378,7 @@ public class FormBinder {
         }
 
         private void clearDateAndDurationFields() {
-            labelTaskEnd.setValue("");
+            (isForwardAllocated() ? labelTaskEnd : labelTaskStart).setValue("");
             taskWorkableDays.setConstraint((Constraint) null);
             lastSpecifiedWorkableDays = taskWorkableDays.getValue();
             taskWorkableDays.setValue(null);
@@ -388,9 +403,12 @@ public class FormBinder {
                     || aggregate.isEmpty()) {
                 return;
             }
+            LocalDate start = aggregate.getStart().getDate();
             LocalDate end = aggregate.getEnd().asExclusiveEnd();
+            showValueOfDateOn(labelTaskStart, start);
             showValueOfDateOn(labelTaskEnd, end);
-            taskWorkableDays.setValue(getTask().getWorkableDaysUntil(end));
+            taskWorkableDays
+                    .setValue(getTask().getWorkableDaysFrom(start, end));
         }
 
         private void showValueOfDateOn(final Label label, LocalDate date) {
@@ -408,6 +426,11 @@ public class FormBinder {
 
     public LocalDate getAllocationEnd() {
         return getTask().calculateEndGivenWorkableDays(
+                workableDaysAndDatesBinder.getValue());
+    }
+
+    public LocalDate getAllocationStart() {
+        return getTask().calculateStartGivenWorkableDays(
                 workableDaysAndDatesBinder.getValue());
     }
 
