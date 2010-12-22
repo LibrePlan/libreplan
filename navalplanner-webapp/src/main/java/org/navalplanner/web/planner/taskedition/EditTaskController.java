@@ -87,6 +87,7 @@ public class EditTaskController extends GenericForwardComposer {
     private Tab taskPropertiesTab;
     private Tab resourceAllocationTab;
     private Tab limitingResourceAllocationTab;
+    private Tab strategicResourceAllocationTab;
     private Tab subcontractTab;
 
     private Tabpanel taskPropertiesTabpanel;
@@ -182,6 +183,7 @@ public class EditTaskController extends GenericForwardComposer {
         subcontractTab.setVisible(false);
         resourceAllocationTab.setVisible(false);
         limitingResourceAllocationTab.setVisible(false);
+        strategicResourceAllocationTab.setVisible(false);
 
         if (ResourceAllocationTypeEnum.SUBCONTRACT
                 .equals(resourceAllocationType)) {
@@ -196,6 +198,10 @@ public class EditTaskController extends GenericForwardComposer {
             limitingResourceAllocationController.init(asTask(taskElement),
                     planningState, messagesForUser);
             showLimitingResourcesTab();
+        } else if (ResourceAllocationTypeEnum.STRATEGIC_RESOURCES
+                .equals(resourceAllocationType)) {
+            //TODO: actually initialize a controller for that tab
+            showStrategicResourcesTab();
         }
 
     }
@@ -212,6 +218,10 @@ public class EditTaskController extends GenericForwardComposer {
     private void showLimitingResourcesTab() {
         limitingResourceAllocationController.clear();
         limitingResourceAllocationTab.setVisible(true);
+    }
+
+    private void showStrategicResourcesTab() {
+        strategicResourceAllocationTab.setVisible(true);
     }
 
     public void showEditFormTaskProperties(

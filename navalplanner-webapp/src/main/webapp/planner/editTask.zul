@@ -30,6 +30,10 @@
     macroURI="/planner/_tabPanelLimitingResourceAllocation.zul"
     inline="true" ?>
 
+<?component name="tabPanelStrategicResourceAllocation"
+    macroURI="/planner/_tabPanelStrategicResourceAllocation.zul"
+    inline="true" ?>
+
 <?component name="tabPanelSubcontract"
     macroURI="/planner/_tabPanelSubcontract.zul"
     inline="true" ?>
@@ -65,12 +69,14 @@
                 <tab id="taskPropertiesTab" label="${i18n:_('Task properties')}" />
                 <tab id="resourceAllocationTab" label="${i18n:_('Non limiting resource allocation')}" />
                 <tab id="limitingResourceAllocationTab" label="${i18n:_('Limiting resource allocation')}" />
+                <tab id="strategicResourceAllocationTab" label="${i18n:_('Strategic resource allocation')}" />
                 <tab id="subcontractTab" label="${i18n:_('Subcontract')}" />
             </tabs>
             <tabpanels>
                 <tabPanelTaskProperties id="taskPropertiesTabpanel" />
                 <tabPanelNonLimitingResourceAllocation id="resourceAllocationTabpanel" />
                 <tabPanelLimitingResourceAllocation id="limitingResourceAllocationTabpanel" />
+                <tabPanelStrategicResourceAllocation id="strategicResourceAllocationTabpanel" />
                 <tabPanelSubcontract id="subcontractTabpanel" />
             </tabpanels>
         </tabbox>

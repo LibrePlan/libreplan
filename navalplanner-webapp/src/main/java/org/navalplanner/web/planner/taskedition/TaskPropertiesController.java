@@ -466,6 +466,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     public enum ResourceAllocationTypeEnum {
         NON_LIMITING_RESOURCES(_("Non limiting resource assignation")),
         LIMITING_RESOURCES(_("Limiting resource assignation")),
+        STRATEGIC_RESOURCES(_("Strategic resource assignation")),
         SUBCONTRACT(_("Subcontract"));
 
         /**
@@ -480,6 +481,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         private static final List<ResourceAllocationTypeEnum> nonMasterOptionList = new ArrayList<ResourceAllocationTypeEnum>() {
             {
                 add(NON_LIMITING_RESOURCES);
+                add(STRATEGIC_RESOURCES);
                 add(SUBCONTRACT);
             }
         };
@@ -509,6 +511,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return NON_LIMITING_RESOURCES;
             } else if (LIMITING_RESOURCES.toString().equals(label)) {
                 return LIMITING_RESOURCES;
+            } else if (STRATEGIC_RESOURCES.toString().equals(label)) {
+                return STRATEGIC_RESOURCES;
             } else if (SUBCONTRACT.toString().equals(label)) {
                 return SUBCONTRACT;
             }
@@ -579,6 +583,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
             fromNonLimitingResource(to);
         } else if (from.equals(ResourceAllocationTypeEnum.LIMITING_RESOURCES)) {
             fromLimitingResource(to);
+        } else if (from.equals(ResourceAllocationTypeEnum.STRATEGIC_RESOURCES)) {
+            fromStrategicResource(to);
         } else if (from.equals(ResourceAllocationTypeEnum.SUBCONTRACT)) {
             fromSubcontract(to);
         }
@@ -646,6 +652,18 @@ public class TaskPropertiesController extends GenericForwardComposer {
             } catch (InterruptedException e) {
 
             }
+        }
+        setStateTo(newState);
+    }
+
+    /**
+     * Change state from StrategicResource assignation type to a new state
+     *
+     * @param newState
+     */
+    private void fromStrategicResource(ResourceAllocationTypeEnum newState) {
+        if (!isTask(currentTaskElement)) {
+            return;
         }
         setStateTo(newState);
     }
