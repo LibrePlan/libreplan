@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
@@ -87,8 +88,6 @@ public class AllocationResult {
 
     private final List<Task.ModifiedAllocation> modified;
 
-    private final IntraDayDate end;
-
     /**
      * The number of workable days with wich the allocation has been done. Can
      * be <code>null</code>
@@ -107,7 +106,6 @@ public class AllocationResult {
         this.newWorkableDays = newWorkableDays;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
-        this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
         this.newAllocations = newAllocations;
         this.modified = modified;
     }
@@ -133,9 +131,8 @@ public class AllocationResult {
         if (aggregate.isEmpty()) {
             return;
         }
-        final IntraDayDate start = task.getIntraDayStartDate();
-        final IntraDayDate end = aggregate.getEnd();
-        task.mergeAllocation(scenario, start, end, newWorkableDays,
+        task.mergeAllocation(scenario, getIntraDayStart(), getIntraDayEnd(),
+                newWorkableDays,
                 getCalculatedValue(), getNew(), modified,
                 getNotModified(originals(modified)));
     }
@@ -199,12 +196,24 @@ public class AllocationResult {
         return task.getStartAsLocalDate();
     }
 
+    private boolean isForwardsScheduled() {
+        return Direction.FORWARD.equals(task.getLastAllocationDirection());
+    }
+
     public IntraDayDate getIntraDayStart() {
-        return task.getIntraDayStartDate();
+        if (isForwardsScheduled() || aggregate.isEmpty()) {
+            return task.getIntraDayStartDate();
+        } else {
+            return aggregate.getStart();
+        }
     }
 
     public IntraDayDate getIntraDayEnd() {
-        return end;
+        if (!isForwardsScheduled() || aggregate.isEmpty()) {
+            return task.getIntraDayEndDate();
+        } else {
+            return aggregate.getEnd();
+        }
     }
 
 }
