@@ -46,6 +46,13 @@ public class DateAndHour implements Comparable<DateAndHour> {
         return new DateAndHour(date.getDate(), date.getEffortDuration().getHours());
     }
 
+    public static DateAndHour TEN_YEARS_FROM(DateAndHour dateAndHour) {
+        LocalDate date = dateAndHour.getDate() != null ? dateAndHour.getDate() : new LocalDate();
+        DateAndHour result = new DateAndHour(date, dateAndHour.getHour());
+        result.plusYears(10);
+        return result;
+    }
+
     private LocalDate date;
 
     private Integer hour;

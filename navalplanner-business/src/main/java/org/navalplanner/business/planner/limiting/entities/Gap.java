@@ -175,8 +175,7 @@ public class Gap implements Comparable<Gap> {
         // If endTime is null (last tasks) assume the end is in 10 years from now
         DateAndHour endDate = getEndTime();
         if (endDate == null) {
-            endDate = new DateAndHour(realStart);
-            endDate.plusYears(10);
+            endDate = DateAndHour.TEN_YEARS_FROM(realStart);
         }
 
         Iterator<PartialDay> daysUntilEnd = realStart.toIntraDayDate()
