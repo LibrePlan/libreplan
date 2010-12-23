@@ -218,7 +218,7 @@ sub to_relative_path()
 {
     my($filename) = @_;
 
-    if ($filename =~ /(.*?)\/(ganttzk|navalplanner-webapp|navalplanner-business)\/(.*)/) {
+    if ($filename =~ /(.*)\/(ganttzk|navalplanner-webapp|navalplanner-business)\/(.*)/) {
         return "./$2/$3";
     }
     return $filename;
@@ -283,7 +283,7 @@ sub parse_hibernate_validations()
             $msgid = "\"$1\"";
             # Line ends with a )
             if ($line =~ /\)\s*$/) {
-                &addEntry($msgid, $filename.":".($i+1));
+                &addEntry($msgid, &to_relative_path($filename).":".($i+1));
                 next;
             }
             $open = 1;
@@ -295,7 +295,7 @@ sub parse_hibernate_validations()
             # Line ends with a )
             if ($line =~ /\)\s*$/) {
                 $open = 0;
-                &addEntry($msgid, $filename.":".($i+1));
+                &addEntry($msgid, &to_relative_path($filename).":".($i+1));
                 next;
             }
         }

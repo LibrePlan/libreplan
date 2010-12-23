@@ -1,9 +1,12 @@
-# Spanish translations for PACKAGE package
-# Traducciones al español para el paquete PACKAGE.
-# Copyright (C) 2009 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# Igalia <dpino@igalia.com>, 2009.
-# Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2010.
+# Spanish translations for NavalPlan package
+# Traducciones al español para el paquete NavalPlan.
+# Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+#                         Desenvolvemento Tecnolóxico de Galicia
+# Copyright (C) 2010 Igalia, S.L.
+# This file is distributed under the same license as the NavalPlan package.
+# Diego Pino García <dpino@igalia.com>, 2009.
+# Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009, 2010.
+# Manuel Rego Casasnovas <mrego@igalia.com>, 2010.
 #
 msgid ""
 msgstr ""
@@ -11,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-12-22 21:30+0100\n"
 "PO-Revision-Date: 2010-12-22 22:21+0100\n"
-"Last-Translator: Jacobo Aragunde Pérez <jaragunde@igalia.com>\n"
+"Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
