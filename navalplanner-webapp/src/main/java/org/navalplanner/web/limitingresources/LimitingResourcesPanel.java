@@ -382,7 +382,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         limitingResourcesController.unschedule(task);
         removeQueueTask(task);
         dependencyList.removeDependenciesFor(queueElement);
-        queueListComponent.removeQueueElementFrom(queueElement, queue);
+        queueListComponent.removeQueueElementFrom(queue, queueElement);
     }
 
     private void removeQueueTask(QueueTask task) {
@@ -400,7 +400,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .getLimitingResourceQueueElement());
     }
 
-    public void removeDependencyComponentsFor(LimitingResourceQueueElement element) {
+    public void removeDependenciesFor(LimitingResourceQueueElement element) {
         dependencyList.removeDependenciesFor(element);
     }
 

@@ -294,7 +294,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private void refreshQueues(Collection<LimitingResourceQueueElement> movedElements) {
         for (LimitingResourceQueueElement each : movedElements) {
-            limitingResourcesPanel.removeDependencyComponentsFor(each);
+            limitingResourcesPanel.removeDependenciesFor(each);
             limitingResourcesPanel.refreshQueue(each.getLimitingResourceQueue());
         }
     }

@@ -478,7 +478,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                     // another
                     LimitingResourceQueue queue = each.getLimitingResourceQueue();
                     // Remove all dependency components associated to element
-                    limitingResourcesPanel.removeDependencyComponentsFor(each);
+                    limitingResourcesPanel.removeDependenciesFor(each);
                     // Dependencies will be created again on refreshing queue
                     limitingResourcesPanel.refreshQueue(queue);
                 }
