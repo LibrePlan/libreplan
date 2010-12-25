@@ -21,22 +21,26 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
+import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
-import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class LimitingDependencyList extends XulElement implements AfterCompose {
 
@@ -46,35 +50,78 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private final LimitingResourcesPanel panel;
 
+    private Map<LimitingResourceQueueDependency, LimitingDependencyComponent> dependencies = new HashMap<LimitingResourceQueueDependency, LimitingDependencyComponent>();
+
     public LimitingDependencyList(LimitingResourcesPanel panel) {
         this.panel = panel;
     }
 
-    @SuppressWarnings("unchecked")
-    private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
-        return ComponentsFinder.findComponentsOfType(
-                LimitingDependencyComponent.class, getChildren());
-    }
-
-    public void addDependencyComponent(
-            final LimitingDependencyComponent dependencyComponent) {
-        dependencyComponent.redrawDependency();
-        dependencyComponent.setParent(this);
-    }
-
-    public void removeDependencyComponents(QueueTask queueTask) {
-        for (LimitingDependencyComponent dependency : getLimitingDependencyComponents()) {
-            if (dependency.getSource().equals(queueTask)
-                    || dependency.getDestination().equals(queueTask)) {
-                removeChild(dependency);
+    /**
+     * Inserts a new dependency and creates a dependency component between task
+     * components only if both are shown in the planner
+     *
+     * @param dependency
+     */
+    public void addDependency(LimitingResourceQueueDependency dependency) {
+        if (!dependencies.keySet().contains(dependency)) {
+            LimitingDependencyComponent dependencyComponent = createDependencyComponent(dependency);
+            if (dependencyComponent != null) {
+                addDependencyComponent(dependencyComponent);
+                dependencies.put(dependency, dependencyComponent);
             }
         }
     }
 
-    public void setDependencyComponents(
-            List<LimitingDependencyComponent> dependencyComponents) {
-        for (LimitingDependencyComponent dependencyComponent : dependencyComponents) {
-            addDependencyComponent(dependencyComponent);
+    /**
+     * Creates a new dependency component out of a dependency
+     *
+     * Returns null if at least one of the edges of the dependency is not yet in the planner
+     *
+     * @param dependency
+     * @return
+     */
+    private LimitingDependencyComponent createDependencyComponent(
+            LimitingResourceQueueDependency dependency) {
+
+        Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = panel.getQueueTaskMap();
+
+        QueueTask origin = queueElementsMap.get(dependency.getHasAsOrigin());
+        QueueTask destination = queueElementsMap.get(dependency
+                .getHasAsDestiny());
+
+        return (origin != null && destination != null) ? new LimitingDependencyComponent(
+                origin, destination)
+                : null;
+    }
+
+    private void addDependencyComponent(
+            LimitingDependencyComponent dependencyComponent) {
+        dependencyComponent.redrawDependency();
+        dependencyComponent.setParent(this);
+    }
+
+    public void removeDependenciesFor(LimitingResourceQueue queue) {
+        for (LimitingResourceQueueElement each: queue.getLimitingResourceQueueElements()) {
+            removeDependenciesFor(each);
+        }
+    }
+
+    public void removeDependenciesFor(LimitingResourceQueueElement queueElement) {
+        for (LimitingResourceQueueDependency dependency : queueElement
+                .getDependenciesAsOrigin()) {
+            removeDependency(dependency);
+        }
+        for (LimitingResourceQueueDependency dependency : queueElement
+                .getDependenciesAsDestiny()) {
+            removeDependency(dependency);
+        }
+    }
+
+    private void removeDependency(LimitingResourceQueueDependency dependency) {
+        LimitingDependencyComponent comp = dependencies.get(dependency);
+        if (comp != null) {
+            removeChild(comp);
+            dependencies.remove(dependency);
         }
     }
 
@@ -94,6 +141,11 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         redrawDependencies();
     }
 
+    @SuppressWarnings("unchecked")
+    private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
+        return new ArrayList<LimitingDependencyComponent>(dependencies.values());
+    }
+
     private TimeTracker getTimeTracker() {
         return getTimeTrackerComponent().getTimeTracker();
     }
@@ -102,33 +154,19 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         return panel.getTimeTrackerComponent();
     }
 
-    public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {
-        redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
-    }
-
-    private List<LimitingDependencyComponent> getDependencyComponentsConnectedTo(
-            TaskComponent taskComponent) {
-        ArrayList<LimitingDependencyComponent> result = new ArrayList<LimitingDependencyComponent>();
-        List<LimitingDependencyComponent> dependencies = getLimitingDependencyComponents();
-        for (LimitingDependencyComponent dependencyComponent : dependencies) {
-            if (dependencyComponent.getSource().equals(taskComponent)
-                    || dependencyComponent.getDestination().equals(
-                            taskComponent)) {
-                result.add(dependencyComponent);
-            }
-        }
-        return result;
-    }
-
-    public void redrawDependencies() {
+    private void redrawDependencies() {
         redrawDependencyComponents(getLimitingDependencyComponents());
     }
 
-    public void redrawDependencyComponents(
+    private void redrawDependencyComponents(
             List<LimitingDependencyComponent> dependencyComponents) {
         for (LimitingDependencyComponent dependencyComponent : dependencyComponents) {
             dependencyComponent.redrawDependency();
         }
+    }
+
+    public void clear() {
+        dependencies.clear();
     }
 
 }
