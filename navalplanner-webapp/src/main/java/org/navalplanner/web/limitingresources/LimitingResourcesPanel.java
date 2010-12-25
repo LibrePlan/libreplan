@@ -161,8 +161,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         dependencyList.addDependenciesFor(element);
     }
 
-    public void removeQueueElementFromQueue(LimitingResourceQueueElement element) {
-        queueListComponent.removeQueueElement(element);
+    public void removeQueueElementFrom(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
+        queueListComponent.removeQueueElementFrom(queue, element);
+        dependencyList.removeDependenciesFor(element);
     }
 
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {

@@ -220,8 +220,15 @@ public class TaskPropertiesController extends GenericForwardComposer {
         this.editTaskController = editTaskController;
         this.currentContext = context;
         this.currentTaskElement = taskElement;
-        WebStartConstraintType.setItems(startConstraintTypes,
-                findOrderIn(context));
+
+        Order order = null;
+        if (context != null) {
+            order = findOrderIn(context);
+        } else {
+            order = taskElement.getOrderElement().getOrder();
+        }
+
+        WebStartConstraintType.setItems(startConstraintTypes, order);
         originalState = getResourceAllocationType(currentTaskElement);
         setOldState(originalState);
 

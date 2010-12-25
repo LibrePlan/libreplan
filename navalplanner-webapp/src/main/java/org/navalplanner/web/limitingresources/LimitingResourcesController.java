@@ -314,22 +314,25 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void editResourceAllocation(
             LimitingResourceQueueElement oldElement) {
+
         try {
             Task task = oldElement.getTask();
 
             EditTaskController editTaskController = getEditController(editTaskWindow);
             editTaskController.showEditFormResourceAllocationFromLimitingResources(task);
 
-            Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
-            Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
-
             // New resource allocation or resource allocation modified ?
             if (editTaskController.getStatus() == Messagebox.OK) {
+
                 // Update resource allocation for element
                 LimitingResourceQueueElement newElement = task.getResourceAllocation().getLimitingResourceQueueElement();
 
                 newElement.setEarlierStartDateBecauseOfGantt(oldElement.getEarlierStartDateBecauseOfGantt());
                 newElement.setResourceAllocation(task.getResourceAllocation());
+
+
+                Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
+                Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
 
                 // Update dependencies
                 for (LimitingResourceQueueDependency each: outgoingDependencies) {
@@ -341,15 +344,18 @@ public class LimitingResourcesController extends GenericForwardComposer {
                     newElement.add(each);
                 }
 
+                LimitingResourceQueue queue = oldElement.getLimitingResourceQueue();
                 limitingResourceQueueModel.replaceLimitingResourceQueueElement(oldElement, newElement);
                 if (newElement.getLimitingResourceQueue() != null) {
-                    limitingResourcesPanel.removeQueueElementFromQueue(oldElement);
+                    limitingResourcesPanel.removeQueueElementFrom(queue, oldElement);
                     limitingResourcesPanel.appendQueueElementToQueue(newElement);
+
+                    limitingResourcesPanel.refreshQueue(queue);
+                    limitingResourcesPanel.refreshQueue(newElement.getLimitingResourceQueue());
                 }
                 Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
             }
         } catch (SuspendNotAllowedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
