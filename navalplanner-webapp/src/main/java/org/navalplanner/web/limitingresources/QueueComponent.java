@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -40,7 +39,6 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -448,15 +446,7 @@ public class QueueComponent extends XulElement implements
     }
 
     private void addDependenciesInPanel(LimitingResourceQueueElement element) {
-        final LimitingResourcesPanel panel = getLimitingResourcesPanel();
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsDestiny()) {
-            panel.addDependencyComponent(each);
-        }
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsOrigin()) {
-            panel.addDependencyComponent(each);
-        }
+        getLimitingResourcesPanel().addDependenciesFor(element);
     }
 
     public String getResourceName() {

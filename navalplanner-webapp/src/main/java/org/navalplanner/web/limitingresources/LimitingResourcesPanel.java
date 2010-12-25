@@ -158,6 +158,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
         queueListComponent.appendQueueElement(element);
+        dependencyList.addDependenciesFor(element);
     }
 
     public void removeQueueElementFromQueue(LimitingResourceQueueElement element) {
@@ -345,17 +346,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .getLimitingResourceElementToQueueTaskMap().keySet();
 
         for (LimitingResourceQueueElement each : queueElements) {
-            for (LimitingResourceQueueDependency dependency : each
-                    .getDependenciesAsOrigin()) {
-                addDependencyComponent(dependency);
-            }
+            dependencyList.addDependenciesFor(each);
         }
         return dependencyList;
-    }
-
-    public void addDependencyComponent(
-            LimitingResourceQueueDependency dependency) {
-        dependencyList.addDependency(dependency);
     }
 
     public Map<LimitingResourceQueueElement, QueueTask> getQueueTaskMap() {
@@ -408,6 +401,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     public void removeDependencyComponentsFor(LimitingResourceQueueElement element) {
         dependencyList.removeDependenciesFor(element);
+    }
+
+    public void addDependenciesFor(LimitingResourceQueueElement element) {
+        dependencyList.addDependenciesFor(element);
     }
 
     public void refreshQueue(LimitingResourceQueue queue) {

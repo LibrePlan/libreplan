@@ -56,13 +56,22 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         this.panel = panel;
     }
 
+    public void addDependenciesFor(LimitingResourceQueueElement queueElement) {
+        for (LimitingResourceQueueDependency origin: queueElement.getDependenciesAsOrigin()) {
+            addDependency(origin);
+        }
+        for (LimitingResourceQueueDependency destiny: queueElement.getDependenciesAsDestiny()) {
+            addDependency(destiny);
+        }
+    }
+
     /**
      * Inserts a new dependency and creates a dependency component between task
      * components only if both are shown in the planner
      *
      * @param dependency
      */
-    public void addDependency(LimitingResourceQueueDependency dependency) {
+    private void addDependency(LimitingResourceQueueDependency dependency) {
         if (!dependencies.keySet().contains(dependency)) {
             LimitingDependencyComponent dependencyComponent = createDependencyComponent(dependency);
             if (dependencyComponent != null) {
