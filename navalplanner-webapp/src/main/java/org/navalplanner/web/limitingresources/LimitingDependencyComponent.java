@@ -21,6 +21,7 @@
 package org.navalplanner.web.limitingresources;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zul.impl.XulElement;
