@@ -25,7 +25,10 @@ import static org.navalplanner.web.I18nHelper._;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,7 +44,6 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -325,39 +327,69 @@ public class LimitingResourcesController extends GenericForwardComposer {
             if (editTaskController.getStatus() == Messagebox.OK) {
 
                 // Update resource allocation for element
-                LimitingResourceQueueElement newElement = task.getResourceAllocation().getLimitingResourceQueueElement();
+                LimitingResourceQueueElement newElement = copyFrom(oldElement,
+                        getQueueElementFrom(task));
 
-                newElement.setEarlierStartDateBecauseOfGantt(oldElement.getEarlierStartDateBecauseOfGantt());
-                newElement.setResourceAllocation(task.getResourceAllocation());
+                // Replace old limiting resource with new one
+                LimitingResourceQueue oldQueue = oldElement.getLimitingResourceQueue();
+                List<LimitingResourceQueueElement> modified = limitingResourceQueueModel
+                        .replaceLimitingResourceQueueElement(oldElement,
+                                newElement);
 
-
-                Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
-                Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
-
-                // Update dependencies
-                for (LimitingResourceQueueDependency each: outgoingDependencies) {
-                    each.setOrigin(newElement);
-                    newElement.add(each);
+                // Refresh modified queues
+                Set<LimitingResourceQueue> toRefreshQueues = new HashSet<LimitingResourceQueue>();
+                toRefreshQueues.addAll(getQueuesOf(modified));
+                if (oldQueue != null) {
+                    toRefreshQueues.add(oldQueue);
                 }
-                for (LimitingResourceQueueDependency each: incomingDependencies) {
-                    each.setDestiny(newElement);
-                    newElement.add(each);
-                }
-
-                LimitingResourceQueue queue = oldElement.getLimitingResourceQueue();
-                limitingResourceQueueModel.replaceLimitingResourceQueueElement(oldElement, newElement);
-                if (newElement.getLimitingResourceQueue() != null) {
-                    limitingResourcesPanel.removeQueueElementFrom(queue, oldElement);
-                    limitingResourcesPanel.appendQueueElementToQueue(newElement);
-
-                    limitingResourcesPanel.refreshQueue(queue);
-                    limitingResourcesPanel.refreshQueue(newElement.getLimitingResourceQueue());
-                }
-                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+                limitingResourcesPanel.refreshQueues(toRefreshQueues);
             }
         } catch (SuspendNotAllowedException e) {
             e.printStackTrace();
         }
+    }
+
+    private LimitingResourceQueueElement getQueueElementFrom(Task task) {
+        return task.getResourceAllocation().getLimitingResourceQueueElement();
+    }
+
+    /**
+     * Copies earliestStartDateBecauseOfGantt and dependencies from source to dest
+     *
+     * @param source
+     * @param dest
+     * @return
+     */
+    private LimitingResourceQueueElement copyFrom(
+            LimitingResourceQueueElement source,
+            LimitingResourceQueueElement dest) {
+
+        dest.setEarlierStartDateBecauseOfGantt(source
+                .getEarlierStartDateBecauseOfGantt());
+
+        for (LimitingResourceQueueDependency each : source
+                .getDependenciesAsOrigin()) {
+            each.setOrigin(dest);
+            dest.add(each);
+        }
+        for (LimitingResourceQueueDependency each : source
+                .getDependenciesAsDestiny()) {
+            each.setDestiny(dest);
+            dest.add(each);
+        }
+
+        return dest;
+    }
+
+    private Set<LimitingResourceQueue> getQueuesOf(
+            List<LimitingResourceQueueElement> modified) {
+
+        Set<LimitingResourceQueue> result = new HashSet<LimitingResourceQueue>();
+
+        for (LimitingResourceQueueElement each: modified) {
+            result.add(each.getLimitingResourceQueue());
+        }
+        return result;
     }
 
     private EditTaskController getEditController(Window window) {

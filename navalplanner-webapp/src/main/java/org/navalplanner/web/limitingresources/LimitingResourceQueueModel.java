@@ -1045,9 +1045,11 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     @Transactional(readOnly=true)
-    public void replaceLimitingResourceQueueElement(
+    public List<LimitingResourceQueueElement> replaceLimitingResourceQueueElement(
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement) {
+
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
 
         boolean needToReassign = oldElement.hasDayAssignments();
 
@@ -1057,7 +1059,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         queuesState.replaceLimitingResourceQueueElement(oldElement, newElement);
 
         if (needToReassign) {
-            assignLimitingResourceQueueElement(newElement);
+            result.addAll(assignLimitingResourceQueueElement(newElement));
         }
         HashSet<LimitingResourceQueueDependency> dependencies = new HashSet<LimitingResourceQueueDependency>();
         dependencies.addAll(newElement.getDependenciesAsOrigin());
@@ -1065,6 +1067,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         toBeSavedDependencies.put(newElement, dependencies);
 
         markAsModified(newElement);
+
+        return result;
     }
 
 }
