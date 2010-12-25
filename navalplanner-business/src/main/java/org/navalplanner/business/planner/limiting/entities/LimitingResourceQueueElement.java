@@ -324,4 +324,8 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return resourceAllocation.getTask();
     }
 
+    public String toString() {
+        return getTask().getName() + "; " + getLimitingResourceQueue();
+    }
+
 }

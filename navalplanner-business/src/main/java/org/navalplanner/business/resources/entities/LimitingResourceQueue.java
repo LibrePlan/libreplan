@@ -151,4 +151,8 @@ public class LimitingResourceQueue extends BaseEntity {
         limitingResourceQueueElements.add(element);
     }
 
+    public String toString() {
+        return getResource() != null ? getResource().getName() : "";
+    }
+
 }
