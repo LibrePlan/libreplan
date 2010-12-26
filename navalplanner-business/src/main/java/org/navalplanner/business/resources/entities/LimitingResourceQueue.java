@@ -147,8 +147,10 @@ public class LimitingResourceQueue extends BaseEntity {
      */
     public void reloadLimitingResourceQueueElement(
             LimitingResourceQueueElement element) {
-        limitingResourceQueueElements.remove(element);
-        limitingResourceQueueElements.add(element);
+        if (limitingResourceQueueElements.contains(element)) {
+            limitingResourceQueueElements.remove(element);
+            limitingResourceQueueElements.add(element);
+        }
     }
 
     public String toString() {
