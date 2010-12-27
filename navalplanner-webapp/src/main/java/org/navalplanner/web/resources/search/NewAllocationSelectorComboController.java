@@ -150,6 +150,9 @@ public class NewAllocationSelectorComboController extends
         } else if (type == ResourceType.NON_LIMITING_RESOURCE) {
             bdLimitingAllocationSelector
                     .setFinder("nonLimitingResourceAllocationMultipleFiltersFinder");
+        } else if (type == ResourceType.STRATEGIC_RESOURCE) {
+            bdLimitingAllocationSelector
+            .setFinder("strategicResourceAllocationMultipleFiltersFinder");
         }
     }
 }

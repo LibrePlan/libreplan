@@ -1,8 +1,7 @@
 /*
  * This file is part of NavalPlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010 Igalia S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,14 +27,13 @@ import org.navalplanner.business.resources.entities.ResourceType;
  * Implements all the methods needed to search the criterion and resources to
  * allocate to the tasks which are not limiting. Provides multiples searches to
  * allocate several {@link Criterion} or an especific {@link Resource}.
- * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
-public class NonLimitingResourceAllocationMultipleFiltersFinder extends
+public class StrategicResourceAllocationMultipleFiltersFinder extends
         ResourceAllocationMultipleFiltersFinder {
 
-    protected NonLimitingResourceAllocationMultipleFiltersFinder() {
-        super(ResourceType.NON_LIMITING_RESOURCE);
+    protected StrategicResourceAllocationMultipleFiltersFinder() {
+        super(ResourceType.STRATEGIC_RESOURCE);
     }
 
 }

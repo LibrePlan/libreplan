@@ -30,6 +30,7 @@ import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapsh
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -37,13 +38,14 @@ import org.springframework.beans.factory.annotation.Autowired;
  * allocate to the tasks. Provides multiples searches to allocate several
  * {@link Criterion} or an especific {@link Resource}.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 public class ResourceAllocationMultipleFiltersFinder extends
         MultipleFiltersFinder {
 
     private IFilterEnum mode = FilterEnumNone.None;
 
-    private boolean isLimitingResourceAllocation = false;
+    private ResourceType resourceType = ResourceType.NON_LIMITING_RESOURCE;
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
@@ -53,8 +55,8 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     protected ResourceAllocationMultipleFiltersFinder(
-            boolean isLimitingResourceAllocation) {
-        this.isLimitingResourceAllocation = isLimitingResourceAllocation;
+            ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
     public void reset() {
@@ -83,8 +85,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
                     && i < mapResources.get(className).size(); i++) {
                 Resource resource = mapResources.get(className).get(i);
 
-                if (isLimitingResourceAllocation != resource
-                        .isLimitingResource()) {
+                if (resourceType != resource.getResourceType()) {
                     continue;
                 }
 
@@ -176,8 +177,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         for (Class<?> className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
 
-                if (isLimitingResourceAllocation != resource
-                        .isLimitingResource()) {
+                if (resourceType != resource.getResourceType()) {
                     continue;
                 }
 
@@ -292,7 +292,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return super.updateDeletedFilters(filterValues, value);
     }
 
-    public void setLimintingResourceAllocation(boolean val) {
-        isLimitingResourceAllocation = val;
+    public void setResourceType(ResourceType type) {
+        this.resourceType = type;
     }
 }

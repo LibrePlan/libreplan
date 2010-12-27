@@ -22,18 +22,20 @@ package org.navalplanner.web.common.components.finders;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 
 /**
  * Implements all the methods needed to search the criterion and resources to
  * allocate to the tasks which are limiting. Provides multiples searches to
  * allocate several {@link Criterion} or an especific {@link Resource}.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Jacobo Aragunde Pérez <jaragunde@igalia.com>
  */
 public class LimitingResourceAllocationMultipleFiltersFinder extends
         ResourceAllocationMultipleFiltersFinder {
 
     protected LimitingResourceAllocationMultipleFiltersFinder() {
-        super(true);
+        super(ResourceType.LIMITING_RESOURCE);
     }
 
 }
