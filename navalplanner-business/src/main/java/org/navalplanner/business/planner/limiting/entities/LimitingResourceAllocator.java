@@ -199,10 +199,10 @@ public class LimitingResourceAllocator {
                 return 0;
             }
 
-            for (pos = 0; pos < elements.size(); pos++) {
+            for (pos = 1; pos < elements.size(); pos++) {
                 final LimitingResourceQueueElement each = elements.get(pos);
                 final DateAndHour startTime = each.getStartTime();
-                if (until.isAfter(startTime) || until.isEquals(startTime)) {
+                if (until.isBefore(startTime) || until.isEquals(startTime)) {
                     return pos;
                 }
             }
