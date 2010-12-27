@@ -184,9 +184,15 @@ public class Gap implements Comparable<Gap> {
         while (daysUntilEnd.hasNext()) {
             PartialDay each = daysUntilEnd.next();
             int hoursAtDay = calendar.getCapacityOn(each).roundToHours();
-                int hours = Math.min(hoursAtDay, total);
+            int hours = Math.min(hoursAtDay, total);
             total -= hours;
-            result.add(hours);
+
+            // Don't add hours when total and hours are zero (it'd be like
+            // adding an extra 0 hour day when total is completed)
+            if (total != 0 || hours != 0) {
+                result.add(hours);
+            }
+
             if (total == 0
                     && DateAndHour.from(each.getDate())
                             .compareTo(allocationEnd) >= 0) {
