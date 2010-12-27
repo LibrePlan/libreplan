@@ -1,6 +1,6 @@
 zk.$package("ganttz");
 
-ganttz.DependencyComponentBase = zk.$extends(zk.Widget,{
+ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
     $define : {
         idTaskOrig : null,
         idTaskEnd : null,
