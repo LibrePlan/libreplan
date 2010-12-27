@@ -734,11 +734,13 @@ public class FormBinder {
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
+        this.workerSearchTab.setDisabled(recommendedAllocation);
     }
 
     public void setNewAllocationSelectorCombo(
             NewAllocationSelectorCombo newAllocationSelectorCombo) {
         this.newAllocationSelectorCombo = newAllocationSelectorCombo;
+        this.newAllocationSelectorCombo.setDisabled(recommendedAllocation);
     }
 
     private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {
