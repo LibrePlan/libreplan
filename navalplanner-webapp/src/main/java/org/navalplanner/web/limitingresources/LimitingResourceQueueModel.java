@@ -433,10 +433,33 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                         .getPotentiallyAffectedByInsertion(externalQueueElement),
                 requirements.getElement(), allocation);
         result.addAll(moved);
+        result.addAll(scheduleUnscheduledElementsIfNeeded(allocation));
 
-        // Return all moved tasks (including the allocated one)
+        return result;
+    }
+
+    private Collection<? extends LimitingResourceQueueElement> scheduleUnscheduledElementsIfNeeded(
+            AllocationSpec allocation) {
+
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
         if (allocation.isAppropriative()) {
-            result.addAll(scheduleElements(allocation.getUnscheduledElements()));
+            checkAllocationIsAppropriative(false);
+
+            // Assign all unscheduled elements
+            List<LimitingResourceQueueElement> unscheduled = allocation.getUnscheduledElements();
+            for (LimitingResourceQueueElement each: unscheduled) {
+                result.addAll(assignLimitingResourceQueueElement(each));
+            }
+
+            // Only for those originally unscheduled elements, unschedule and
+            // schedule them again to force dependencies are satisfied
+            for (LimitingResourceQueueElement each: unscheduled) {
+                unschedule(each);
+                assignLimitingResourceQueueElement(each);
+            }
+
+            checkAllocationIsAppropriative(true);
         }
         return result;
     }
@@ -780,24 +803,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 queuesState.getPotentiallyAffectedByInsertion(element),
                 requirements.getElement(), allocation);
         result.addAll(moved);
+        result.addAll(scheduleUnscheduledElementsIfNeeded(allocation));
 
-        // Return all moved tasks (including the allocated one)
-        if (allocation.isAppropriative()) {
-            result.addAll(scheduleElements(allocation.getUnscheduledElements()));
-        }
-        return result;
-    }
-
-    private List<LimitingResourceQueueElement> scheduleElements(
-            List<LimitingResourceQueueElement> unscheduled) {
-
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
-
-        checkAllocationIsAppropriative(false);
-        for (LimitingResourceQueueElement each: unscheduled) {
-            result.addAll(assignLimitingResourceQueueElement(each));
-        }
-        checkAllocationIsAppropriative(true);
         return result;
     }
 
