@@ -1005,9 +1005,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         } while (gap != null);
 
         for (LimitingResourceQueueElement each: unscheduledElements) {
-            gap = LimitingResourceAllocator.getFirstValidGap(queue, each);
-            result.addAll(assignLimitingResourceQueueElementToQueueAt(each, queue, gap
-                    .getStartTime(), getEndsAfterBecauseOfGantt(element)));
+            assignLimitingResourceQueueElement(each);
         }
 
         return result;
