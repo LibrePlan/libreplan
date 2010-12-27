@@ -414,22 +414,28 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkex</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.5</version>
             </dependency>
             <!-- JGraphT -->
             <dependency>
