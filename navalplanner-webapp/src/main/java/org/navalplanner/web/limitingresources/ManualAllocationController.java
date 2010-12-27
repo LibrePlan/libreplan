@@ -282,20 +282,19 @@ public class ManualAllocationController extends GenericForwardComposer {
         Validate.notNull(time);
         List<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
                 .nonAppropriativeAllocation(element, queue, time);
-        refreshQueues(inserted);
+        refreshQueues(LimitingResourceQueue.queuesOf(inserted));
     }
 
     private void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
         Set<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
                 .appropriativeAllocation(element, queue, time);
-        refreshQueues(inserted);
+        refreshQueues(LimitingResourceQueue.queuesOf(inserted));
     }
 
-    private void refreshQueues(Collection<LimitingResourceQueueElement> movedElements) {
-        for (LimitingResourceQueueElement each : movedElements) {
-            limitingResourcesPanel.removeDependenciesFor(each);
-            limitingResourcesPanel.refreshQueue(each.getLimitingResourceQueue());
+    private void refreshQueues(Collection<LimitingResourceQueue> queues) {
+        for (LimitingResourceQueue each : queues) {
+            limitingResourcesPanel.refreshQueue(each);
         }
     }
 
