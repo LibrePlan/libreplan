@@ -823,7 +823,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
-    public void applyStartConstraintTo(Task task) {
+    public void applyInitialPositionConstraintTo(Task task) {
         boolean scheduleBackwards = getOrder().isScheduleBackwards();
         OrderElement current = this;
         while (current != null) {

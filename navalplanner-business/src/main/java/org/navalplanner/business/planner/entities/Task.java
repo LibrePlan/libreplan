@@ -66,7 +66,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
-        orderElement.applyStartConstraintTo(task);
+        orderElement.applyInitialPositionConstraintTo(task);
         Task result = create(task, taskSource);
         result.initializeDates();
         return result;
