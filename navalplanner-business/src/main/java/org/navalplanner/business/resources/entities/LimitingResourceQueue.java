@@ -33,6 +33,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
@@ -158,25 +159,6 @@ public class LimitingResourceQueue extends BaseEntity {
     public void queueElementMoved(
             LimitingResourceQueueElement limitingResourceQueueElement) {
         invalidCachedGaps();
-    }
-
-    /**
-     * limitingResourceQueueElements is a SortedSet of
-     * {@link LimitingResourceQueueElement} ordered by startDate
-     *
-     * When an element if shifted visually in a list of queue elements, it might
-     * be necessary to rearrange the SortedSet so the new element occupies its
-     * real position. Instead of rearranging the SortedSet again, the element is
-     * removed from the set and inserted again. Insert operation guarantees that
-     * an element is inserted at the right position
-     *
-     */
-    public void reloadLimitingResourceQueueElement(
-            LimitingResourceQueueElement element) {
-        if (limitingResourceQueueElements.contains(element)) {
-            limitingResourceQueueElements.remove(element);
-            limitingResourceQueueElements.add(element);
-        }
     }
 
     public String toString() {
