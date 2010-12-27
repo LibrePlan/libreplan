@@ -488,16 +488,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             applyAllocation(each);
 
             LimitingResourceQueueElement element = each.getElement();
-            reloadElementInQueue(element);
             result.add(element);
         }
 
         return result;
-    }
-
-    private void reloadElementInQueue(LimitingResourceQueueElement element) {
-        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
-        queue.reloadLimitingResourceQueueElement(element);
     }
 
     private List<AllocationSpec> getAllocationsToBeDone(
