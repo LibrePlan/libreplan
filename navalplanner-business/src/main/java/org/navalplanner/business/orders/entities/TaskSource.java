@@ -104,8 +104,21 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
+            updatePositionRestrictions();
             taskSourceDAO.saveWithoutValidating(taskSource);
             return taskSource.getTask();
+        }
+
+        private void updatePositionRestrictions() {
+            if (hasSomeAllocationDone()) {
+                return;
+            }
+            taskSource.getOrderElement().updatePositionConstraintOf(
+                    (Task) taskSource.getTask());
+        }
+
+        private boolean hasSomeAllocationDone() {
+            return !taskSource.getTask().getAllResourceAllocations().isEmpty();
         }
 
     }
