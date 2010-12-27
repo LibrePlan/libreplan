@@ -338,7 +338,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
                 // Refresh modified queues
                 Set<LimitingResourceQueue> toRefreshQueues = new HashSet<LimitingResourceQueue>();
-                toRefreshQueues.addAll(getQueuesOf(modified));
+                toRefreshQueues.addAll(LimitingResourceQueue.queuesOf(modified));
                 if (oldQueue != null) {
                     toRefreshQueues.add(oldQueue);
                 }
@@ -379,17 +379,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
         }
 
         return dest;
-    }
-
-    private Set<LimitingResourceQueue> getQueuesOf(
-            List<LimitingResourceQueueElement> modified) {
-
-        Set<LimitingResourceQueue> result = new HashSet<LimitingResourceQueue>();
-
-        for (LimitingResourceQueueElement each: modified) {
-            result.add(each.getLimitingResourceQueue());
-        }
-        return result;
     }
 
     private EditTaskController getEditController(Window window) {
