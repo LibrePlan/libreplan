@@ -1522,14 +1522,20 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     @Override
     public void setPlannedWithCriticalChain(Boolean plannedWithCriticalChain) {
-        orderReloaded.getAssociatedTaskElement().
-                setPlannedWithCriticalChain(plannedWithCriticalChain);
+        TaskGroup taskGroup = orderReloaded.getAssociatedTaskElement();
+        if (taskGroup != null) {
+            taskGroup.setPlannedWithCriticalChain(plannedWithCriticalChain);
+        }
     }
 
     @Override
     public Boolean getPlannedWithCriticalChain() {
-        return orderReloaded.getAssociatedTaskElement()
-                .getPlannedWithCriticalChain();
+        TaskGroup taskGroup = orderReloaded.getAssociatedTaskElement();
+        if (taskGroup == null) {
+            return false;
+        }
+        return taskGroup.getPlannedWithCriticalChain();
+
     }
 
     @Override
