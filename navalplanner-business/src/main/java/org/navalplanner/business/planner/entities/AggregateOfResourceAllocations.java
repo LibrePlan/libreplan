@@ -48,6 +48,11 @@ public class AggregateOfResourceAllocations {
                 ResourceAllocation.getSatisfied(allocations));
     }
 
+    public static AggregateOfResourceAllocations createFromAll(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        return new AggregateOfResourceAllocations(allocations);
+    }
+
     private Set<ResourceAllocation<?>> resourceAllocations;
 
     private AggregateOfResourceAllocations(
@@ -62,6 +67,14 @@ public class AggregateOfResourceAllocations {
         int sum = 0;
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             sum += resourceAllocation.getAssignedHours();
+        }
+        return sum;
+    }
+
+    public int getIntendedHours() {
+        int sum = 0;
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            sum += resourceAllocation.getIntendedHours();
         }
         return sum;
     }

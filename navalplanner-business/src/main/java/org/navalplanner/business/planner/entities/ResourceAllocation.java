@@ -547,6 +547,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private void updateOriginalTotalAssigment() {
+        if (!isSatisfied()) {
+            return;
+        }
         if ((task.getConsolidation() == null)
                 || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
             originalTotalAssignment = getNonConsolidatedHours();
@@ -1031,6 +1034,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return DayAssignment.sum(getAssignments()).roundToHours();
     }
 
+    protected int getIntendedHours() {
+        if (isUnsatisfied()) {
+            return originalTotalAssignment;
+        }
+        return getAssignedHours();
+    }
+
     @OnCopy(Strategy.IGNORE)
     private DayAssignmentsState assignmentsState;
 
@@ -1390,6 +1400,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return calculateResourcesPerDayFromAssignments(getNonConsolidatedAssignments());
     }
 
+    /**
+     * Calculates the intended resources per day for this allocation. If the
+     * allocation is not satisfied cannot be calculated on the current
+     * assignment values and must be retrieved from the value in the field.
+     */
+    protected ResourcesPerDay getIntendedResourcesPerDay() {
+        if (isUnsatisfied()) {
+            return getResourcesPerDay();
+        }
+        return getNonConsolidatedResourcePerDay();
+    }
+
     public ResourcesPerDay getConsolidatedResourcePerDay() {
         return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
     }
@@ -1548,8 +1570,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         switchToScenario(scenario);
         mergeAssignments(modifications);
-        updateOriginalTotalAssigment();
-        updateResourcesPerDay();
+        if (modifications.isSatisfied()) {
+            updateOriginalTotalAssigment();
+            updateResourcesPerDay();
+        }
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }

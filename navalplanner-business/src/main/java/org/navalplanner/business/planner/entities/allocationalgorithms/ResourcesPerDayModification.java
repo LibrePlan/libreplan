@@ -215,9 +215,7 @@ public abstract class ResourcesPerDayModification extends
             Collection<? extends ResourceAllocation<?>> allocations) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
-            Validate.isTrue(resourceAllocation.hasAssignments());
-            ResourcesPerDay perDay = resourceAllocation
-                    .getResourcesPerDay();
+            ResourcesPerDay perDay = resourceAllocation.getResourcesPerDay();
             Validate.notNull(perDay);
             result.add(resourceAllocation.asResourcesPerDayModification());
         }

@@ -100,7 +100,6 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
 
     @Valid
-    @SuppressWarnings("unused")
     private Set<ResourceAllocation<?>> getResourceAlloations() {
         return new HashSet<ResourceAllocation<?>>(resourceAllocations);
     }
@@ -155,6 +154,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     public int getAssignedHours() {
         return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations)
                 .getTotalHours();
+    }
+
+    private int getTotalIntendedHours() {
+        return AggregateOfResourceAllocations
+                .createFromAll(resourceAllocations).getIntendedHours();
     }
 
     public int getTotalHours() {
@@ -627,7 +631,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             return;
         }
         List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                getSatisfiedResourceAllocations());
+                getResourceAlloations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
         if (toBeModified.isEmpty()) {
@@ -653,7 +657,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             break;
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(direction, getAssignedHours());
+                    .untilAllocating(direction, getTotalIntendedHours());
             if (direction == Direction.FORWARD) {
                 setIntraDayEndDate(date);
             } else {
