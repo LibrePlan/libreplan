@@ -61,7 +61,7 @@ public class AllocationResult {
         List<ResourceAllocation<?>> all = new ArrayList<ResourceAllocation<?>>();
         all.addAll(newAllocations);
         all.addAll(ModifiedAllocation.modified(modified));
-        return new AggregateOfResourceAllocations(all);
+        return AggregateOfResourceAllocations.createFromSatisfied(all);
     }
 
     public static AllocationResult createCurrent(Scenario scenario, Task task) {
@@ -69,8 +69,9 @@ public class AllocationResult {
                 .getSatisfiedResourceAllocations();
         List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation.copy(
                 scenario, resourceAllocations);
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                ModifiedAllocation.modified(modifiedAllocations));
+        AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations
+                .createFromSatisfied(ModifiedAllocation
+                        .modified(modifiedAllocations));
         return new AllocationResult(task, task.getSpecifiedWorkableDays(),
                 task.getCalculatedValue(), aggregate,
                 Collections.<ResourceAllocation<?>> emptyList(),

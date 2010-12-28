@@ -42,14 +42,20 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class AggregateOfResourceAllocations {
 
+    public static AggregateOfResourceAllocations createFromSatisfied(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        return new AggregateOfResourceAllocations(
+                ResourceAllocation.getSatisfied(allocations));
+    }
+
     private Set<ResourceAllocation<?>> resourceAllocations;
 
-    public AggregateOfResourceAllocations(
+    private AggregateOfResourceAllocations(
             Collection<? extends ResourceAllocation<?>> allocations) {
         Validate.notNull(allocations);
         Validate.noNullElements(allocations);
         this.resourceAllocations = new HashSet<ResourceAllocation<?>>(
-                ResourceAllocation.getSatisfied(allocations));
+                allocations);
     }
 
     public int getTotalHours() {

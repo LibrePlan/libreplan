@@ -153,7 +153,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public int getAssignedHours() {
-        return new AggregateOfResourceAllocations(resourceAllocations)
+        return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations)
                 .getTotalHours();
     }
 

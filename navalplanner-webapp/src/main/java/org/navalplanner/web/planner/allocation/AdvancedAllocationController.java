@@ -1480,8 +1480,8 @@ class Row {
         this.level = level;
         this.isLimiting = limiting;
         this.task = task;
-        this.aggregate = new AggregateOfResourceAllocations(
-                new ArrayList<ResourceAllocation<?>>(allocations));
+        this.aggregate = AggregateOfResourceAllocations
+                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(allocations));
         this.functionName = getAssignmentFunctionName(allocations);
     }
 

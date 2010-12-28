@@ -45,14 +45,14 @@ public class AggregateOfResourceAllocationsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void doesntAcceptNullResourceAllocations() {
-        new AggregateOfResourceAllocations(null);
+        AggregateOfResourceAllocations.createFromSatisfied(null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void noNullElements() {
         List<ResourceAllocation<?>> list = new ArrayList<ResourceAllocation<?>>();
         list.add(null);
-        new AggregateOfResourceAllocations(list);
+        AggregateOfResourceAllocations.createFromSatisfied(list);
     }
 
     @Test
@@ -71,8 +71,7 @@ public class AggregateOfResourceAllocationsTest {
     public void unsatisfiedAllocationsAreIgnored() {
         List<ResourceAllocation<?>> allocationsList = Collections
                 .<ResourceAllocation<?>> singletonList(givenUnsatisfiedResourceAllocation());
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                allocationsList);
+        AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations.createFromSatisfied(allocationsList);
         assertTrue(aggregate.isEmpty());
     }
 
@@ -106,7 +105,7 @@ public class AggregateOfResourceAllocationsTest {
             replay(resourceAllocation);
             list.add(resourceAllocation);
         }
-        aggregate = new AggregateOfResourceAllocations(list);
+        aggregate = AggregateOfResourceAllocations.createFromSatisfied(list);
     }
 
     private ResourceAllocation<?> givenUnsatisfiedResourceAllocation() {
@@ -128,7 +127,7 @@ public class AggregateOfResourceAllocationsTest {
             replay(resourceAllocation);
             list.add(resourceAllocation);
         }
-        aggregate = new AggregateOfResourceAllocations(list);
+        aggregate = AggregateOfResourceAllocations.createFromSatisfied(list);
     }
 
 }

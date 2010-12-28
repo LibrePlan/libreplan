@@ -78,6 +78,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
             Collection<T> resourceAllocations) {
+        Validate.notNull(resourceAllocations);
+        Validate.noNullElements(resourceAllocations);
         List<T> result = new ArrayList<T>();
         for (T each : resourceAllocations) {
             if (each.isSatisfied()) {
