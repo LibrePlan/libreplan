@@ -175,17 +175,7 @@ public class TaskList extends XulElement implements AfterCompose {
     }
 
     private void addContextMenu(final TaskComponent taskComponent) {
-        taskComponent.addEventListener("onRightClick", new EventListener() {
-
-            @Override
-            public void onEvent(Event event) throws Exception {
-                try {
-                    getContextMenuFor(taskComponent).open(taskComponent);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        taskComponent.setContext(getContextMenuFor(taskComponent));
     }
 
     @Override
