@@ -752,7 +752,9 @@ public class FormBinder {
     private BigDecimal sumResourcesPerDayFromInputs() {
         BigDecimal sum = BigDecimal.ZERO;
         for (AllocationRow each : rows) {
-            sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
+            if (each.getResourcesPerDayInput().isValid()) {
+                sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
+            }
         }
         return sum;
     }
