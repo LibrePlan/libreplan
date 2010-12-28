@@ -31,4 +31,10 @@
         <disable-event-thread>false</disable-event-thread>
     </system-config>
 
+
+    <library-property>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>trendy</value>
+    </library-property>
+
 </zk>
