@@ -106,6 +106,15 @@ public class ResourceLoadComponent extends XulElement {
 
     private void addContextMenu(final List<Div> divs, final Div div,
             final LoadTimeLine loadLine) {
+        /*
+         * This EventListener could be replaced with
+         * div.setContext(getContextMenuFor(divs, div, loadLine)) but
+         * on this case this is not valid as we'll got an exception.
+         * As this component (ResourceLoadComponent) hasn't be added to
+         * a page yet, its getPage() method will return null and a
+         * non-null page is required by MenuBuilder or a NullPointerException
+         * will be raised.
+         * */
         div.addEventListener("onRightClick", new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
