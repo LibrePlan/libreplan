@@ -424,7 +424,8 @@ public class ManualAllocationController extends GenericForwardComposer {
      */
     public void highlightDaysInGap(String uuid, Gap gap) {
         final LocalDate start = gap.getStartTime().getDate();
-        final LocalDate end = getEndAllocationDate(gap);
+        final LocalDate end = gap.getEndTime() != null ? gap.getEndTime()
+                .getDate() : null;
 
         final String jsCall = "highlightDaysInInterval('"
                 + uuid + "', '"
@@ -445,11 +446,6 @@ public class ManualAllocationController extends GenericForwardComposer {
                 + jsonInterval(formatDate(start), null) + "', '"
                 + jsonHighlightColor() + "');";
         Clients.evalJavaScript(jsCall);
-    }
-
-    private LocalDate getEndAllocationDate(Gap gap) {
-        final DateAndHour endTime = endAllocationDates.get(gap);
-        return endTime != null ? endTime.getDate() : null;
     }
 
     public String formatDate(LocalDate date) {

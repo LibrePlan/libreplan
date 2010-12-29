@@ -66,12 +66,19 @@ function numberOfMonth(month) {
 
 function dateAtBeginningOfMonthSplitByComma(monthAndYear) {
     var arr = monthAndYear.split(",");
-    return new Date(arr[1].trim(), numberOfMonth(arr[0].trim()), 1);
+    var monthAndDay = arr[0].split(" ");
+
+    return toDate$3(arr[1], monthAndDay[0], monthAndDay[1]);
 }
 
 function dateAtBeginningOfMonthSplitByHyphen(monthAndYear) {
     var arr = monthAndYear.split("-");
-    return new Date(arr[2].trim(), numberOfMonth(arr[1].trim()), arr[0].trim());
+    return toDate$3(arr[2], arr[1], arr[0]);
+}
+
+function toDate$3(year, Month, day) {
+    var month = numberOfMonth(Month);
+    return new Date(year, month, day);
 }
 
 /**
@@ -196,19 +203,18 @@ function highlightDaysInInterval(calendarUuid, intervalJSON, colorStyleJSON) {
         return;
     }
 
-    var currentDate;
-
-    var title = document.getElementById(calendarUuid + "!title"); // month and year: Jan, 1
-    if (title != null) {
-        currentDate = dateAtBeginningOfMonthSplitByComma(title.innerHTML);
-    } else {
-        var dateinput = document.getElementById(calendarUuid + "!real");
-        currentDate = dateAtBeginningOfMonthSplitByHyphen(dateinput.value);
+    var dateinput = document.getElementById(calendarUuid + "!real");
+    if (dateinput === undefined) {
+        return;
     }
 
-    var interval = eval("(" + intervalJSON + ")");
+    var _date = dateinput.value;
+    var currentDate = (_date.indexOf(",") != -1) ?
+        dateAtBeginningOfMonthSplitByComma(_date) :
+        dateAtBeginningOfMonthSplitByHyphen(_date);
 
     if (currentDate != null) {
+        var interval = eval("(" + intervalJSON + ")");
         var nodes = calendar.getElementsByTagName("td");
         var days = daysToHighlightInInterval(interval, currentDate);
         var colorStyle = (colorStyleJSON != undefined) ? eval("(" + colorStyleJSON + ")") : DEFAULT_COLOR_STYLE;
