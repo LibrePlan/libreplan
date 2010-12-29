@@ -408,6 +408,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private static abstract class AllocationModificationStrategy {
 
+        protected final IResourceDAO resourceDAO;
+
+        public AllocationModificationStrategy(IResourceDAO resourceDAO) {
+            Validate.notNull(resourceDAO);
+            this.resourceDAO = resourceDAO;
+        }
+
         public abstract List<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations);
 
@@ -419,26 +426,30 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private static class WithTheSameHoursAndResourcesPerDay extends
             AllocationModificationStrategy {
 
+        public WithTheSameHoursAndResourcesPerDay(IResourceDAO resourceDAO) {
+            super(resourceDAO);
+        }
+
         @Override
         public List<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.fromExistent(allocations);
+            return HoursModification.fromExistent(allocations, resourceDAO);
         }
 
         @Override
         public List<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.fromExistent(allocations);
+            return ResourcesPerDayModification.fromExistent(allocations,
+                    resourceDAO);
         }
 
     }
 
     private static class WithAnotherResources extends
             AllocationModificationStrategy {
-        private final IResourceDAO resourceDAO;
 
-        WithAnotherResources(IResourceDAO resourceDAO) {
-            this.resourceDAO = resourceDAO;
+        public WithAnotherResources(IResourceDAO resourceDAO) {
+            super(resourceDAO);
         }
 
         @Override
@@ -479,7 +490,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             private void doReassignment(Direction direction) {
                 reassign(scenario, direction,
-                        new WithTheSameHoursAndResourcesPerDay());
+                        new WithTheSameHoursAndResourcesPerDay(resourceDAO));
             }
 
             @Override

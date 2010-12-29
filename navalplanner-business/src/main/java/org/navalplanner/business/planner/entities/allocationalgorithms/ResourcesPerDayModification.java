@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -59,7 +58,6 @@ public abstract class ResourcesPerDayModification extends
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
             super(resourceAllocation, resourcesPerDay, resources);
-            Validate.isTrue(!resources.isEmpty());
             this.genericAllocation = resourceAllocation;
         }
 
@@ -196,7 +194,8 @@ public abstract class ResourcesPerDayModification extends
 
     public static List<ResourcesPerDayModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
-        List<ResourcesPerDayModification> result = fromExistent(allocations);
+        List<ResourcesPerDayModification> result = fromExistent(allocations,
+                resourceDAO);
         for (ResourcesPerDayModification each : result) {
             each.withNewResources(resourceDAO);
         }
@@ -212,12 +211,13 @@ public abstract class ResourcesPerDayModification extends
     }
 
     public static List<ResourcesPerDayModification> fromExistent(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            Collection<? extends ResourceAllocation<?>> allocations,
+            IResourceDAO resourcesDAO) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asResourcesPerDayModification());
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourcesDAO);
     }
 
     protected static ICalendar calendarFor(Resource associatedResource) {

@@ -99,17 +99,18 @@ public abstract class HoursModification extends AllocationModification {
     }
 
     public static List<HoursModification> fromExistent(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            Collection<? extends ResourceAllocation<?>> allocations,
+            IResourceDAO resourceDAO) {
         List<HoursModification> result = new ArrayList<HoursModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asHoursModification());
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
     }
 
     public static List<HoursModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
-        List<HoursModification> result = fromExistent(allocations);
+        List<HoursModification> result = fromExistent(allocations, resourceDAO);
         for (HoursModification each : result) {
             each.withNewResources(resourceDAO);
         }
