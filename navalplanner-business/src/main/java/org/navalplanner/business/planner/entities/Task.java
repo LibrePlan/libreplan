@@ -627,7 +627,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
      * The allocation direction in which the allocation must be done
      */
     public Direction getAllocationDirection() {
-        if (lastAllocationDirection == null) {
+        if (lastAllocationDirection == null || hasConsolidations()) {
             return Direction.FORWARD;
         }
         return lastAllocationDirection;
