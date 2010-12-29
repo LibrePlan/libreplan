@@ -72,6 +72,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -394,7 +395,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.moveTo(currentScenario,
+                            getDatesHandler(taskElement).moveTo(
                                     toIntraDay(beginDate));
                             return null;
                         }
@@ -413,7 +414,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         @Override
                         public Void execute() {
                             stepsBeforePossibleReallocation();
-                            taskElement.moveEndTo(currentScenario,
+                            getDatesHandler(taskElement).moveEndTo(
                                     toIntraDay(endDate));
                             return null;
                         }
@@ -428,11 +429,15 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         public Void execute() {
                             stepsBeforePossibleReallocation();
                             updateTaskPositionConstraint(endDate);
-                            taskElement.resizeTo(currentScenario,
+                            getDatesHandler(taskElement).resizeTo(
                                     toIntraDay(endDate));
                             return null;
                         }
                     });
+        }
+
+        IDatesHandler getDatesHandler(TaskElement taskElement) {
+            return taskElement.getDatesHandler(currentScenario);
         }
 
         private void updateTaskPositionConstraint(GanttDate endDate) {

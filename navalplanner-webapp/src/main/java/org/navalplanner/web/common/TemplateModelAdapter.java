@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
@@ -134,12 +135,16 @@ public class TemplateModelAdapter implements
 
     @Override
     public void setEndDateFor(TaskElement task, GanttDate newEnd) {
-        task.moveEndTo(scenario, toIntraDay(newEnd));
+        getDatesHandler(task).moveEndTo(toIntraDay(newEnd));
     }
 
     @Override
     public void setStartDateFor(TaskElement task, GanttDate newStart) {
-        task.moveTo(scenario, toIntraDay(newStart));
+        getDatesHandler(task).moveTo(toIntraDay(newStart));
+    }
+
+    private IDatesHandler getDatesHandler(TaskElement taskElement) {
+        return taskElement.getDatesHandler(scenario);
     }
 
     @Override

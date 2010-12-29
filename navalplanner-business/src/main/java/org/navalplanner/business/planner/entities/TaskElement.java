@@ -271,16 +271,6 @@ public abstract class TaskElement extends BaseEntity {
                 getIntraDayStartDate());
     }
 
-    /**
-     * Sets the startDate to newStartDate. It can update the endDate
-     *
-     * @param scenario
-     * @param newStartDate
-     */
-    public void moveTo(Scenario scenario, IntraDayDate newStartDate) {
-        getDatesHandler(scenario).moveTo(newStartDate);
-    }
-
     @NotNull
     public Date getEndDate() {
         return endDate != null ? endDate.toDateTimeAtStartOfDay().toDate()
@@ -314,20 +304,7 @@ public abstract class TaskElement extends BaseEntity {
         return endDate;
     }
 
-    public void resizeTo(Scenario scenario, Date endDate) {
-        resizeTo(scenario,
-                IntraDayDate.startOfDay(LocalDate.fromDateFields(endDate)));
-    }
-
-    public void resizeTo(Scenario scenario, IntraDayDate endDate) {
-        getDatesHandler(scenario).resizeTo(endDate);
-    }
-
-    public void moveEndTo(Scenario scenario, IntraDayDate intraDay) {
-        getDatesHandler(scenario).moveEndTo(intraDay);
-    }
-
-    private IDatesHandler getDatesHandler(Scenario scenario) {
+    public IDatesHandler getDatesHandler(Scenario scenario) {
         return noNullDates(createDatesHandler(scenario));
     }
 
@@ -358,6 +335,12 @@ public abstract class TaskElement extends BaseEntity {
 
     public interface IDatesHandler {
 
+        /**
+         * Sets the startDate to newStartDate. It can update the endDate
+         *
+         * @param scenario
+         * @param newStartDate
+         */
         void moveTo(IntraDayDate newStartDate);
 
         void moveEndTo(IntraDayDate newEnd);
