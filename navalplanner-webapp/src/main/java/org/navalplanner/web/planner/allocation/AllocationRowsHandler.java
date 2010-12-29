@@ -259,7 +259,7 @@ public class AllocationRowsHandler {
         }
     }
 
-    private boolean isForwardsAllocation() {
+    public boolean isForwardsAllocation() {
         return Direction.FORWARD.equals(task.getLastAllocationDirection());
     }
 

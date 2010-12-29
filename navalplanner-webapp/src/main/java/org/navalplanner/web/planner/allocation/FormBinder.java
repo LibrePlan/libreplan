@@ -36,7 +36,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -293,11 +292,6 @@ public class FormBinder {
                 taskPropertiesController);
     }
 
-    private boolean isForwardAllocated() {
-        Direction direction = getTask().getLastAllocationDirection();
-        return Direction.FORWARD.equals(direction);
-    }
-
     class WorkableDaysAndDatesBinder {
 
         private Intbox taskWorkableDays;
@@ -320,7 +314,7 @@ public class FormBinder {
                         public void onEvent(Event event) throws Exception {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
-                            if (isForwardAllocated()) {
+                            if (allocationRowsHandler.isForwardsAllocation()) {
                                 LocalDate newEndDate = task
                                         .calculateEndGivenWorkableDays(workableDays);
                                 taskPropertiesController
@@ -371,7 +365,8 @@ public class FormBinder {
         }
 
         private void clearDateAndDurationFields() {
-            (isForwardAllocated() ? labelTaskEnd : labelTaskStart).setValue("");
+            (allocationRowsHandler.isForwardsAllocation() ? labelTaskEnd
+                    : labelTaskStart).setValue("");
             taskWorkableDays.setConstraint((Constraint) null);
             lastSpecifiedWorkableDays = taskWorkableDays.getValue();
             taskWorkableDays.setValue(null);
