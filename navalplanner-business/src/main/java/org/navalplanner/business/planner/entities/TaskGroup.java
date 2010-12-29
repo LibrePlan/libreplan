@@ -32,6 +32,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 
@@ -133,7 +134,7 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected IDatesHandler createDatesHandler(Scenario scenario) {
+    protected IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO) {
         return new IDatesHandler() {
 
             @Override

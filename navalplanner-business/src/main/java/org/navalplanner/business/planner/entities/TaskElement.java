@@ -46,6 +46,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
@@ -304,8 +305,9 @@ public abstract class TaskElement extends BaseEntity {
         return endDate;
     }
 
-    public IDatesHandler getDatesHandler(Scenario scenario) {
-        return noNullDates(createDatesHandler(scenario));
+    public IDatesHandler getDatesHandler(Scenario scenario,
+            IResourceDAO resourceDAO) {
+        return noNullDates(createDatesHandler(scenario, resourceDAO));
     }
 
     private IDatesHandler noNullDates(final IDatesHandler decorated) {
@@ -331,7 +333,7 @@ public abstract class TaskElement extends BaseEntity {
         };
     }
 
-    protected abstract IDatesHandler createDatesHandler(Scenario scenario);
+    protected abstract IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO);
 
     public interface IDatesHandler {
 

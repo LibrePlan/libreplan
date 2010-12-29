@@ -30,6 +30,7 @@ import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 
@@ -117,7 +118,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
     }
 
     @Override
-    protected IDatesHandler createDatesHandler(Scenario scenario) {
+    protected IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO) {
         return new IDatesHandler() {
 
             @Override

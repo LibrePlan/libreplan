@@ -250,8 +250,9 @@ public class MultipleTabsPlannerController implements Composer,
 
         final boolean isMontecarloVisible = isMonteCarloVisible();
         if (isMontecarloVisible) {
-            monteCarloTab = MonteCarloTabCreator.create(mode, monteCarloController,
-                    orderPlanningController, breadcrumbs);
+            monteCarloTab = MonteCarloTabCreator.create(mode,
+                    monteCarloController, orderPlanningController, breadcrumbs,
+                    resourceDAO);
         }
 
         final State<Void> typeChanged = typeChangedState();

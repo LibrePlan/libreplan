@@ -76,6 +76,7 @@ import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -178,6 +179,9 @@ public class TaskElementAdapter implements ITaskElementAdapter {
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IResourceDAO resourceDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -437,7 +441,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         IDatesHandler getDatesHandler(TaskElement taskElement) {
-            return taskElement.getDatesHandler(currentScenario);
+            return taskElement.getDatesHandler(currentScenario, resourceDAO);
         }
 
         private void updateTaskPositionConstraint(GanttDate endDate) {

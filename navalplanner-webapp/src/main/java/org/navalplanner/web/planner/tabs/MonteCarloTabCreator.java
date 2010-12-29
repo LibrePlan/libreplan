@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -40,6 +41,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -69,10 +71,10 @@ public class MonteCarloTabCreator {
     public static ITab create(Mode mode,
             MonteCarloController monteCarloController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs) {
+            Component breadcrumbs, IResourceDAO resourceDAO) {
 
         return new MonteCarloTabCreator(mode, monteCarloController,
-                orderPlanningController, breadcrumbs).build();
+                orderPlanningController, breadcrumbs, resourceDAO).build();
     }
 
     private final Mode mode;
@@ -83,14 +85,18 @@ public class MonteCarloTabCreator {
 
     private final Component breadcrumbs;
 
+    private final IResourceDAO resourceDAO;
+
     private MonteCarloTabCreator(Mode mode,
             MonteCarloController MonteCarloController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs) {
+            Component breadcrumbs, IResourceDAO resourceDAO) {
+        Validate.notNull(resourceDAO);
         this.mode = mode;
         this.monteCarloController = MonteCarloController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
+        this.resourceDAO = resourceDAO;
     }
 
     private ITab build() {
@@ -144,7 +150,9 @@ public class MonteCarloTabCreator {
 
         IAdHocTransactionService transactionService = Registry.getTransactionService();
 
-        return transactionService.runOnTransaction(new IOnTransaction<List<TaskElement>>() {
+        return transactionService
+                .runOnTransaction(new IOnTransaction<List<TaskElement>>() {
+
             @Override
             public List<TaskElement> execute() {
                 initializeOrder(order);
@@ -178,7 +186,8 @@ public class MonteCarloTabCreator {
                 IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
                                 .create(getCurrentScenario(),
                                         asLocalDate(order.getInitDate()),
-                                        asLocalDate(order.getDeadline()));
+                                        asLocalDate(order.getDeadline()),
+                                        resourceDAO);
                 GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                         order, adapter);
                 graph.addTasks(order.getAllChildrenAssociatedTaskElements());

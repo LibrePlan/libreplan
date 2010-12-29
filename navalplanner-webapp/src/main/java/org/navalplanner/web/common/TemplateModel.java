@@ -367,7 +367,7 @@ public class TemplateModel implements ITemplateModel {
         copyAssignments(order, from, to);
         installDependenciesEnforcer(order, TemplateModelAdapter.create(to,
                 asLocalDate(order.getInitDate()),
-                asLocalDate(order.getDeadline())));
+                asLocalDate(order.getDeadline()), resourceDAO));
         doReassignations(order, to);
         doTheSaving(order);
     }

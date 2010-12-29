@@ -12,6 +12,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -39,17 +40,22 @@ public class TemplateModelAdapter implements
 
     private final LocalDate deadline;
 
+    private final IResourceDAO resourceDAO;
+
     public static TemplateModelAdapter create(Scenario scenario,
-            LocalDate initDate, LocalDate deadline) {
-        return new TemplateModelAdapter(scenario, initDate, deadline);
+            LocalDate initDate, LocalDate deadline, IResourceDAO resourceDAO) {
+        return new TemplateModelAdapter(scenario, initDate, deadline,
+                resourceDAO);
     }
 
     private TemplateModelAdapter(Scenario scenario, LocalDate orderInitDate,
-            LocalDate deadline) {
+            LocalDate deadline, IResourceDAO resourceDAO) {
         Validate.notNull(scenario);
+        Validate.notNull(resourceDAO);
         this.scenario = scenario;
         this.orderInitDate = orderInitDate;
         this.deadline = deadline;
+        this.resourceDAO = resourceDAO;
     }
 
     @Override
@@ -144,7 +150,7 @@ public class TemplateModelAdapter implements
     }
 
     private IDatesHandler getDatesHandler(TaskElement taskElement) {
-        return taskElement.getDatesHandler(scenario);
+        return taskElement.getDatesHandler(scenario, resourceDAO);
     }
 
     @Override

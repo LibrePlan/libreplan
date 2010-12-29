@@ -462,7 +462,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     @Override
-    protected IDatesHandler createDatesHandler(final Scenario scenario) {
+    protected IDatesHandler createDatesHandler(final Scenario scenario,
+            final IResourceDAO resourceDAO) {
         return new IDatesHandler() {
 
             @Override
