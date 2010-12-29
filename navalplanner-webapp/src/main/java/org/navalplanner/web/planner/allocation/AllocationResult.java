@@ -198,7 +198,7 @@ public class AllocationResult {
     }
 
     private boolean isForwardsScheduled() {
-        return Direction.FORWARD.equals(task.getLastAllocationDirection());
+        return Direction.FORWARD.equals(task.getAllocationDirection());
     }
 
     public IntraDayDate getIntraDayStart() {

@@ -894,7 +894,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
             if (taskElement instanceof Task) {
                 Task task = (Task) taskElement;
-                if (task.getLastAllocationDirection() == Direction.FORWARD) {
+                if (task.getAllocationDirection() == Direction.FORWARD) {
                     return Collections
                             .singletonList(biggerOrEqualThan(getEndDate()));
                 }

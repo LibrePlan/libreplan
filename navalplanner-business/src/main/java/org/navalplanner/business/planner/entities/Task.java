@@ -514,7 +514,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 }
                 setIntraDayEndDate(endDate);
                 updateWorkableDays();
-                doReassignment(getLastAllocationDirection());
+                doReassignment(getAllocationDirection());
             }
 
             private void updateWorkableDays() {
@@ -623,7 +623,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public Direction getLastAllocationDirection() {
+    /**
+     * The allocation direction in which the allocation must be done
+     */
+    public Direction getAllocationDirection() {
         if (lastAllocationDirection == null) {
             return Direction.FORWARD;
         }
@@ -632,7 +635,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourceDAO resourceDAO) {
-        reassign(scenario, getLastAllocationDirection(),
+        reassign(scenario, getAllocationDirection(),
                 new WithAnotherResources(resourceDAO));
     }
 

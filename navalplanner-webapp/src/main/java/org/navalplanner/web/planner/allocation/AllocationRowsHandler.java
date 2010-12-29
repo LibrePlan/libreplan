@@ -260,14 +260,14 @@ public class AllocationRowsHandler {
     }
 
     public boolean isForwardsAllocation() {
-        return Direction.FORWARD.equals(task.getLastAllocationDirection());
+        return Direction.FORWARD.equals(task.getAllocationDirection());
     }
 
     private void calculateEndDateOrStartDateAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
         ResourceAllocation.allocating(allocations).untilAllocating(
-                task.getLastAllocationDirection(),
+                task.getAllocationDirection(),
                 formBinder.getAssignedHours(), notFullfiledReceiver());
     }
 
