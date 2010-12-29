@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -113,8 +112,6 @@ public class FormBinder {
     private final IResourceAllocationModel resourceAllocationModel;
 
     private List<AllocationRow> rows = Collections.emptyList();
-
-    private Date taskStartDate;
 
     private WorkableDaysAndDatesBinder workableDaysAndDatesBinder;
 
@@ -286,10 +283,6 @@ public class FormBinder {
 
     private void onChangeEnableApply(InputElement inputElement) {
         inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
-    }
-
-    public void setStartDate(Date startDate) {
-        this.taskStartDate = startDate;
     }
 
     public void setWorkableDays(Intbox duration,
