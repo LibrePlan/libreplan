@@ -56,7 +56,7 @@ initConstraints : function() {
 });
 
 
-ganttz.TaskComponent = zk.$extends(zk.Widget, {
+ganttz.TaskComponent = zk.$extends(zul.Widget, {
     $define :{
         resourcesText    : null,
         labelsText    : null,
