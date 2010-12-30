@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -66,6 +67,7 @@ import org.navalplanner.business.planner.limiting.entities.AllocationSpec;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueueWithQueueElement;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
@@ -683,11 +685,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         LimitingResourceQueueElement element = requirements.getElement();
         LimitingResourceQueue queue = queuesState.getQueueFor(element
                 .getResource());
-        DateAndHour earliestPossibleStart = requirements
-                .getEarliestPossibleStart(allocation);
 
-        List<LimitingResourceQueueElement> unscheduled = unscheduleElementsSince(
-                queue, earliestPossibleStart);
+        List<LimitingResourceQueueElement> unscheduled = unscheduleElementsFor(
+                queue, requirements);
         allocation.setUnscheduledElements(queuesState.inTopologicalOrder(unscheduled));
 
         return allocation;
@@ -1071,13 +1071,16 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         LimitingResourceQueue queue = queuesState.getEquivalent(_queue);
         LimitingResourceQueueElement element = queuesState.getEquivalent(_element);
 
+        InsertionRequirements requirements = queuesState
+                .getRequirementsFor(element, allocationTime);
+
         if (element.getLimitingResourceQueue() != null) {
             unschedule(element);
         }
 
         // Unschedule elements in queue since allocationTime
         List<LimitingResourceQueueElement> toSchedule = new ArrayList<LimitingResourceQueueElement>(
-                unscheduleElementsSince(queue, allocationTime));
+                unscheduleElementsFor(queue, requirements));
 
         result.addAll(assignLimitingResourceQueueElementToQueueAt(element,
                 queue, allocationTime, getEndsAfterBecauseOfGantt(element)));
@@ -1089,15 +1092,52 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return result;
     }
 
-    private List<LimitingResourceQueueElement> unscheduleElementsSince(
-            LimitingResourceQueue queue, DateAndHour allocationTime) {
+    /**
+     * Creates room enough in a queue to fit requirements
+     *
+     * Starts unscheduling elements in queue since
+     * requirements.earliestPossibleStart() When there's room enough for
+     * allocating requirements, the method stop unscheduling more elements
+     *
+     * Returns the list of elements that were unscheduled in the process
+     *
+     * @param queue
+     * @param requirements
+     * @return
+     */
+    private List<LimitingResourceQueueElement> unscheduleElementsFor(
+            LimitingResourceQueue queue, InsertionRequirements requirements) {
 
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
 
-        for (LimitingResourceQueueElement each: queue.getElementsSince(allocationTime)) {
-            result.add(unschedule(each));
-        }
+        DateAndHour allocationTime = requirements.getEarliestPossibleStart();
+        List<GapOnQueueWithQueueElement> gapsWithQueueElements = queuesState
+                .getGapsWithQueueElementsOnQueueSince(queue, allocationTime);
+        unscheduleElementsFor(gapsWithQueueElements, requirements, result);
         return result;
+    }
+
+    private void unscheduleElementsFor(List<GapOnQueueWithQueueElement> gaps,
+            InsertionRequirements requirements,
+            List<LimitingResourceQueueElement> result) {
+
+        if (gaps.isEmpty()) {
+            return;
+        }
+        GapOnQueueWithQueueElement first = gaps.get(0);
+        GapOnQueue gapOnQueue = first.getGapOnQueue();
+        if (gapOnQueue != null) {
+            AllocationSpec allocation = requirements.guessValidity(gapOnQueue);
+            if (allocation.isValid()) {
+                return;
+            }
+        }
+        result.add(unschedule(first.getQueueElement()));
+        if (gaps.size() > 1) {
+            gaps.set(1, GapOnQueueWithQueueElement.coalesce(first, gaps.get(1)));
+        }
+        gaps.remove(0);
+        unscheduleElementsFor(gaps, requirements, result);
     }
 
 
