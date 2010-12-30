@@ -43,6 +43,8 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueueWithQueueElement;
+import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
@@ -598,6 +600,46 @@ public class QueuesState {
                 }
             }
         }
+        return result;
+    }
+
+    /**
+     * Returns a list of gaps plus its right-adjacent queueElement starting from
+     * allocationTime
+     *
+     * If there's already an element at allocationTime in the queue, the gap is
+     * null and the element is the element at that position
+     *
+     * @param queue
+     * @param allocationTime
+     * @return
+     */
+    public List<GapOnQueueWithQueueElement> getGapsWithQueueElementsOnQueueSince(
+            LimitingResourceQueue queue, DateAndHour allocationTime) {
+        return gapsWithQueueElementsFor(queue, allocationTime);
+    }
+
+    private List<GapOnQueueWithQueueElement> gapsWithQueueElementsFor(
+            LimitingResourceQueue queue, DateAndHour allocationTime) {
+
+        List<GapOnQueueWithQueueElement> result = new ArrayList<GapOnQueueWithQueueElement>();
+
+        DateAndHour previousEnd = null;
+        for (LimitingResourceQueueElement each : queue
+                .getLimitingResourceQueueElements()) {
+            DateAndHour startTime = each.getStartTime();
+            if (!startTime.isBefore(allocationTime)) {
+                if (previousEnd == null || startTime.isAfter(previousEnd)) {
+                    Gap gap = Gap.create(queue.getResource(), previousEnd,
+                            startTime);
+                    result.add(GapOnQueueWithQueueElement.create(
+                            gap.onQueue(queue), each));
+                }
+            }
+            previousEnd = each.getEndTime();
+        }
+        Gap gap = Gap.create(queue.getResource(), previousEnd, null);
+        result.add(GapOnQueueWithQueueElement.create(gap.onQueue(queue), null));
         return result;
     }
 

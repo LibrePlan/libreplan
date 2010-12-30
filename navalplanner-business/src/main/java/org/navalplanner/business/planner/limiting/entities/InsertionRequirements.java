@@ -279,7 +279,7 @@ public class InsertionRequirements {
                 && latestPossibleEnd.compareTo(realStart) < 0;
     }
 
-    public DateAndHour getEarliestPossibleStart(AllocationSpec allocation) {
+    public DateAndHour getEarliestPossibleStart() {
         return earliestPossibleStart;
     }
 

@@ -100,6 +100,69 @@ public class Gap implements Comparable<Gap> {
                             criteria));
         }
 
+        public String toString() {
+            return "queue: " + originQueue + "; gap: " + gap;
+        }
+
+    }
+
+    /**
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Stores a {@link GapOnQueue} plus its adjacent
+     *         {@link LimitingResourceQueueElement}
+     */
+    public static class GapOnQueueWithQueueElement {
+
+        private final LimitingResourceQueueElement queueElement;
+
+        private final GapOnQueue gapOnQueue;
+
+        public static GapOnQueueWithQueueElement create(GapOnQueue gapOnQueue,
+                LimitingResourceQueueElement queueElement) {
+            return new GapOnQueueWithQueueElement(gapOnQueue, queueElement);
+        }
+
+        GapOnQueueWithQueueElement(GapOnQueue gapOnQueue, LimitingResourceQueueElement queueElement) {
+            this.gapOnQueue = gapOnQueue;
+            this.queueElement = queueElement;
+        }
+
+        public LimitingResourceQueueElement getQueueElement() {
+            return queueElement;
+        }
+
+        public GapOnQueue getGapOnQueue() {
+            return gapOnQueue;
+        }
+
+        /**
+         * Joins first.gap + second.gap and keeps second.queueElement as
+         * {@link LimitingResourceQueueElement}
+         *
+         * @param first
+         * @param second
+         * @return
+         */
+        public static GapOnQueueWithQueueElement coalesce(
+                GapOnQueueWithQueueElement first,
+                GapOnQueueWithQueueElement second) {
+
+            LimitingResourceQueue queue = first.getGapOnQueue()
+                    .getOriginQueue();
+            DateAndHour startTime = first.getGapOnQueue().getGap()
+                    .getStartTime();
+            DateAndHour endTime = second.getGapOnQueue().getGap().getEndTime();
+            Gap coalescedGap = Gap.create(queue.getResource(), startTime,
+                    endTime);
+
+            return create(coalescedGap.onQueue(queue), second.getQueueElement());
+        }
+
+        public String toString() {
+            return "gapOnQueue: " + gapOnQueue + "; queueElement: " + queueElement;
+        }
+
     }
 
     public static Gap untilEnd(LimitingResourceQueueElement current,
