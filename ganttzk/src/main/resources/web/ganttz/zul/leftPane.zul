@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
-    <n:div id="listdetails_container">
-    </n:div>
+<zk>
+    <div id="listdetails_container">
+    </div>
 </zk>
