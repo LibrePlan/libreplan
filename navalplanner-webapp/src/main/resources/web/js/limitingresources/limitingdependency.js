@@ -119,42 +119,33 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 
 
 zkLimitingDependency.draw = function(dependency) {
-	var posOrig = this.origin(dependency);
-	var posDest = this.destination(dependency);
-    if ( ( posOrig  != null )  && ( posDest!= null ) ) {
-        var orig = zkLimitingDependencies.findPos(posOrig);
-        var dest = zkLimitingDependencies.findPos(posDest);
+        var posOrig = this.origin(dependency);
+        var posDest = this.destination(dependency);
+        if ( (posOrig != null) && (posDest != null) ) {
+                var orig = zkLimitingDependencies.findPos(posOrig);
+                var dest = zkLimitingDependencies.findPos(posDest);
 
-		var verticalSeparation = 15;
-		switch(dependency.getAttribute('type'))
-	    {
-		case zkLimitingDependencies.constants.START_START:
-			verticalSeparation = 20;
-			orig[0] = orig[0] - zkLimitingDependencies.CORNER;
-			dest[0] = dest[0] - zkLimitingDependencies.CORNER;
-			break;
-		case zkLimitingDependencies.constants.END_END:
-			verticalSeparation = 25;
-			break;
-		case zkLimitingDependencies.constants.END_START:
-		default:
-			verticalSeparation = 15;
-	    }
-		zkLimitingDependencies.newdraw(dependency,  orig, dest, verticalSeparation);
-	}
+                var verticalSeparation = 15;
+                switch (dependency.getAttribute('type')) {
+                        case zkLimitingDependencies.constants.START_START:
+                                verticalSeparation = 20;
+                                orig[0] = orig[0] - zkLimitingDependencies.CORNER;
+                                dest[0] = dest[0] - zkLimitingDependencies.CORNER;
+                                break;
+                        case zkLimitingDependencies.constants.END_END:
+                                verticalSeparation = 25;
+                }
+                zkLimitingDependencies.newdraw(dependency, orig, dest, verticalSeparation);
+        }
 }
 
 zkLimitingDependency.init = function(dependency) {
-	zkLimitingDependencies.setupArrow(dependency);
+        zkLimitingDependencies.setupArrow(dependency);
 	var parent = dependency.parentNode;
 	if (parent.id !== "listlimitingdependencies") {
 		document.getElementById("listlimitingdependencies").appendChild(dependency);
 	}
 	YAHOO.util.Event.onDOMReady(function() {
-		var origin = zkLimitingDependency.origin(dependency);
-		var destination = zkLimitingDependency.destination(dependency);
 		zkLimitingDependency.draw(dependency);
-		zkLimitingDependency.addRelatedDependency(origin, dependency);
-		zkLimitingDependency.addRelatedDependency(destination, dependency);
 	});
 }
