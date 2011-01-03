@@ -120,7 +120,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     }
 
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("orderName", getSelectedOrder().getName());
 

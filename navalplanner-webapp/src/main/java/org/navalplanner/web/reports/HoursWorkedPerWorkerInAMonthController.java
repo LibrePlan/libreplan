@@ -93,7 +93,7 @@ public class HoursWorkedPerWorkerInAMonthController extends NavalplannerReportCo
 
     @Override
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("year", getSelectedYear());
         result.put("month", monthAsLiteral(getSelectedMonth()));

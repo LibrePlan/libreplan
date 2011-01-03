@@ -20,11 +20,15 @@
 
 package org.navalplanner.web.reports;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Hbox;
@@ -51,6 +55,14 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
 
     protected Toolbarbutton URIlink;
 
+    private static Set<String> supportedLanguages = new HashSet<String>() {{
+        add("es");
+        add("en");
+        add("gl");
+    }};
+
+    private final String DEFAULT_LANG = "en";
+
     public void showReport(ExtendedJasperreport jasperreport) {
         final String type = outputFormat.getOutputFormat();
 
@@ -70,9 +82,21 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
         }
     }
 
-    protected abstract JRDataSource getDataSource();
+    protected Map<String, Object> getParameters() {
+        Map<String, Object> parameters = new HashMap<String, Object>();
+        parameters.put("logo", String.format("/logos/%s/logo.png", getLanguage()));
+        return parameters;
+    }
 
-    protected abstract Map<String, Object> getParameters();
+    private String getLanguage() {
+        String lang = Locales.getCurrent().getLanguage();
+        if (!supportedLanguages.contains(lang)) {
+            lang = DEFAULT_LANG;
+        }
+        return lang;
+    }
+
+    protected abstract JRDataSource getDataSource();
 
     protected abstract String getReportName();
 }

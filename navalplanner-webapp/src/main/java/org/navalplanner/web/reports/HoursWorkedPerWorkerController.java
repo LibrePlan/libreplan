@@ -124,7 +124,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
     @Override
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());

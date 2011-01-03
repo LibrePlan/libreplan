@@ -7,6 +7,7 @@
 	<parameter name="startingDate" class="java.util.Date"/>
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="showNote" class="java.lang.Boolean"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
 	<field name="clockStart" class="java.util.Date"/>
@@ -199,7 +200,7 @@
 			</textField>
 			<image scaleImage="RetainShape">
 				<reportElement x="318" y="0" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="0" y="80" width="114" height="15">

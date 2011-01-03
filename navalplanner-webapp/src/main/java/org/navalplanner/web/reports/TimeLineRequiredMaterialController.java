@@ -179,7 +179,8 @@ public class TimeLineRequiredMaterialController extends
 
     @Override
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
+
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
         result.put("status", getSelectedStatusName());

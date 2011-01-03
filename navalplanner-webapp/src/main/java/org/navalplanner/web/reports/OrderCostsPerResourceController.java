@@ -50,7 +50,9 @@ import org.zkoss.zul.Toolbarbutton;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class OrderCostsPerResourceController extends GenericForwardComposer {
+public class OrderCostsPerResourceController extends NavalplannerReportController {
+
+    private static final String REPORT_NAME = "orderCostsPerResourceReport";
 
     private IOrderCostsPerResourceModel orderCostsPerResourceModel;
 
@@ -60,11 +62,11 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
 
     private Datebox endingDate;
 
-    private ComboboxOutputFormat outputFormat;
-
-    private Hbox URItext;
-
-    private Toolbarbutton URIlink;
+//    private ComboboxOutputFormat outputFormat;
+//
+//    private Hbox URItext;
+//
+//    private Toolbarbutton URIlink;
 
     private static final String HTML = "html";
 
@@ -87,32 +89,33 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
         orderCostsPerResourceModel.init();
     }
 
-    public void showReport(ExtendedJasperreport report) {
-        final String type = outputFormat.getOutputFormat();
+//    public void showReport(ExtendedJasperreport report) {
+//        final String type = outputFormat.getOutputFormat();
+//
+//        orderCostsPerResourceReport = new OrderCostsPerResourceReport(report);
+//        orderCostsPerResourceReport.setDatasource(getDataSource());
+//        orderCostsPerResourceReport.setParameters(getParameters());
+//
+//        String URI = orderCostsPerResourceReport.show(type);
+//        if (type.equals(HTML)) {
+//            URItext.setStyle("display: none");
+//            Executions.getCurrent().sendRedirect(URI, "_blank");
+//        } else {
+//            URItext.setStyle("display: inline");
+//            URIlink.setHref(URI);
+//        }
+//
+//    }
 
-        orderCostsPerResourceReport = new OrderCostsPerResourceReport(report);
-        orderCostsPerResourceReport.setDatasource(getDataSource());
-        orderCostsPerResourceReport.setParameters(getParameters());
-
-        String URI = orderCostsPerResourceReport.show(type);
-        if (type.equals(HTML)) {
-            URItext.setStyle("display: none");
-            Executions.getCurrent().sendRedirect(URI, "_blank");
-        } else {
-            URItext.setStyle("display: inline");
-            URIlink.setHref(URI);
-        }
-
-    }
-
-    private JRDataSource getDataSource() {
+    protected JRDataSource getDataSource() {
         return orderCostsPerResourceModel.getOrderReport(getSelectedOrders(),
                 getStartingDate(), getEndingDate(), getSelectedLabels(),
                 getSelectedCriterions());
     }
 
-    private Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> getParameters() {
+        Map<String, Object> result = super.getParameters();
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
@@ -243,6 +246,11 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
     public void onRemoveCriterion(Criterion criterion) {
         orderCostsPerResourceModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    @Override
+    protected String getReportName() {
+        return REPORT_NAME;
     }
 
 }

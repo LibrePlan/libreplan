@@ -6,6 +6,7 @@
 	<style name="Detail" isDefault="false" fontName="Arial" fontSize="12"/>
 	<parameter name="orderName" class="java.lang.String"/>
 	<parameter name="taskStatus" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<field name="orderCode" class="java.lang.String"/>
 	<field name="orderName" class="java.lang.String"/>
 	<field name="estimatedStartingDate" class="java.util.Date"/>
@@ -423,7 +424,7 @@
 			</textField>
 			<image scaleImage="RealHeight">
 				<reportElement x="318" y="0" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="1" y="79" width="68" height="15"/>

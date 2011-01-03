@@ -7,6 +7,7 @@
 	<parameter name="showNote" class="java.lang.Boolean"/>
 	<parameter name="year" class="java.lang.String"/>
 	<parameter name="month" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="numHours" class="java.lang.Long"/>
 	<variable name="sumNumHours" class="java.lang.Long" calculation="Sum">
@@ -30,7 +31,7 @@
 			</textField>
 			<image scaleImage="RetainShape">
 				<reportElement x="318" y="0" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="0" y="80" width="48" height="15">

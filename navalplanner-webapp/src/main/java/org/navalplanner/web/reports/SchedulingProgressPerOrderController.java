@@ -145,7 +145,7 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
     }
 
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("referenceDate", getReferenceDate());
         result.put("startingDate", getStartingDate());

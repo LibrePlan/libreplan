@@ -96,7 +96,7 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
     }
 
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("orderName", getSelectedOrder().getName());
         result.put("referenceDate", getDeadlineDate());

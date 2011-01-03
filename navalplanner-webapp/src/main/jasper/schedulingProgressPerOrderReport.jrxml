@@ -10,6 +10,7 @@
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="advanceType" class="java.lang.String"/>
 	<parameter name="showFootnote" class="java.lang.Boolean"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<field name="orderName" class="java.lang.String"/>
 	<field name="estimatedHours" class="java.lang.Integer"/>
 	<field name="totalPlannedHours" class="java.lang.Integer"/>
@@ -46,7 +47,7 @@
 		<band height="176" splitType="Stretch">
 			<image scaleImage="RealHeight">
 				<reportElement x="316" y="3" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement style="Title" x="0" y="13" width="263" height="33"/>
