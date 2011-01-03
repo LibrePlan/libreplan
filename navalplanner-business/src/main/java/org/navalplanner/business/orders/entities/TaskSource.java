@@ -111,17 +111,18 @@ public class TaskSource extends BaseEntity {
         }
 
         private void updatePositionRestrictions() {
-            if (hasSomeAllocationDone()) {
+            if (hasSomeAllocationDone(taskSource.getTask())) {
                 return;
             }
             taskSource.getOrderElement().updatePositionConstraintOf(
                     (Task) taskSource.getTask());
         }
 
-        private boolean hasSomeAllocationDone() {
-            return !taskSource.getTask().getAllResourceAllocations().isEmpty();
-        }
 
+    }
+
+    private static boolean hasSomeAllocationDone(TaskElement taskElement) {
+        return !taskElement.getAllResourceAllocations().isEmpty();
     }
 
     /**
@@ -140,7 +141,7 @@ public class TaskSource extends BaseEntity {
         if (task.getEndDate() == null) {
             task.initializeDatesIfNeeded();
         }
-        if (task.getSatisfiedResourceAllocations().isEmpty()) {
+        if (!hasSomeAllocationDone(task)) {
             task.setEndDate(null);
             task.initializeDatesIfNeeded();
         }
