@@ -505,6 +505,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         Order.checkConstraintOrderUniqueCode(order);
         HoursGroup.checkConstraintHoursGroupUniqueCode(order);
 
+        reattachCalendar();
         reattachCriterions();
         reattachTasksForTasksSources();
 
@@ -592,6 +593,14 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         for (TaskSource each : order.getTaskSourcesFromBottomToTop()) {
             taskSourceDAO.reattach(each);
         }
+    }
+
+    private void reattachCalendar() {
+        if (order.getCalendar() == null) {
+            return;
+        }
+        BaseCalendar calendar = order.getCalendar();
+        baseCalendarDAO.reattachUnmodifiedEntity(calendar);
     }
 
     private void reattachAllTaskSources() {

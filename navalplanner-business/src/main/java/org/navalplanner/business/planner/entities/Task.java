@@ -75,23 +75,14 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     @Override
     protected void initializeDates() {
         EffortDuration workHours = EffortDuration.hours(getWorkHours());
-        EffortDuration effortStandardPerDay = EffortDuration.hours(8);
-
-        int daysElapsed = workHours.divideBy(effortStandardPerDay);
-        EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
+        DurationBetweenDates duration = fromFixedDuration(workHours);
 
         IntraDayDate start = getIntraDayStartDate();
         if (start != null) {
-            IntraDayDate calculatedEnd = IntraDayDate.create(
-                    start.getDate().plusDays(daysElapsed), start
-                            .getEffortDuration().plus(remainder));
-            setIntraDayEndDate(calculatedEnd);
+            setIntraDayEndDate(duration.fromStartToEnd(start));
         } else {
             IntraDayDate end = getIntraDayEndDate();
-            IntraDayDate calculatedStart = IntraDayDate.startOfDay(end
-                    .getDate().minusDays(
-                            daysElapsed + (remainder.isZero() ? 0 : 1)));
-            setIntraDayStartDate(calculatedStart);
+            setIntraDayStartDate(duration.fromEndToStart(end));
         }
     }
 
@@ -571,6 +562,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private ICalendar getNullSafeCalendar() {
         return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
                 .getDefaultWorkingDay();
+    }
+
+    private DurationBetweenDates fromFixedDuration(EffortDuration duration) {
+        return new DurationBetweenDates(0, duration);
     }
 
     private class DurationBetweenDates {
