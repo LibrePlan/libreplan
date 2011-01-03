@@ -50,13 +50,9 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
 
     private IOrderCostsPerResourceModel orderCostsPerResourceModel;
 
-    private OrderCostsPerResourceReport orderCostsPerResourceReport;
-
     private Datebox startingDate;
 
     private Datebox endingDate;
-
-    private static final String HTML = "html";
 
     private Listbox lbOrders;
 
