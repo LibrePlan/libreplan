@@ -2014,6 +2014,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     @Override
+    public List<Constraint<GanttDate>> getEndConstraintsFor(V task) {
+        return adapter.getEndConstraintsFor(task);
+    }
+
+    @Override
     public GanttDate getStartDate(V task) {
         return adapter.getStartDate(task);
     }

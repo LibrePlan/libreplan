@@ -2786,7 +2786,7 @@ public class CriticalPathCalculatorTest {
     @Test
     public void oneTaskWithTwoDependantTasksLastOneWithEqualConstraint2() {
         givenOneTaskWithTwoDependantTasksLastOneWithEqualConstraint(2, 5, 3,
-                START.plusDays(3));
+                START.plusDays(4));
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
                 .calculateCriticalPath(diagramGraphExample);
 

@@ -263,7 +263,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
-                Constraint<GanttDate> constraint = getDateConstraint(task);
+                Constraint<GanttDate> constraint = getDateStartConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -302,13 +302,26 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         node.setEarliestStart(earliestStart);
     }
 
-    private Constraint<GanttDate> getDateConstraint(T task) {
+    private Constraint<GanttDate> getDateStartConstraint(T task) {
         if (task == null) {
             return null;
         }
 
         List<Constraint<GanttDate>> constraints = graph
                 .getStartConstraintsFor(task);
+        if (constraints == null) {
+            return null;
+        }
+        return Constraint.coalesce(constraints);
+    }
+
+    private Constraint<GanttDate> getDateEndConstraint(T task) {
+        if (task == null) {
+            return null;
+        }
+
+        List<Constraint<GanttDate>> constraints = graph
+                .getEndConstraintsFor(task);
         if (constraints == null) {
             return null;
         }
@@ -338,7 +351,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
-                Constraint<GanttDate> constraint = getDateConstraint(task);
+                Constraint<GanttDate> constraint = getDateEndConstraint(task);
 
                 switch (dependencyType) {
                 case START_START:
