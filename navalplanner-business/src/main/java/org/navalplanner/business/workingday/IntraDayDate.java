@@ -371,4 +371,20 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return IntraDayDate.startOfDay(getDate().minusDays(1));
     }
 
+    /**
+     * @return the next day or the same day if this {@link IntraDayDate} has no
+     *         duration.
+     */
+    public LocalDate roundUp() {
+        return asExclusiveEnd();
+    }
+
+    /**
+     * @return A date resulting of striping this {@link IntraDayDate} of its
+     *         duration
+     */
+    public LocalDate roundDown() {
+        return date;
+    }
+
 }
