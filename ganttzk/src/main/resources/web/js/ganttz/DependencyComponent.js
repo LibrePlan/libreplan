@@ -22,15 +22,16 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
                 break;
             case this.$class.END_START:
             default:
-                this._drawArrowEND_START(coordOrig, coordDest);
+                this._drawArrowEndStart(coordOrig, coordDest);
         }
     },
-    _drawArrowSTART_START : function(coordOrig, coordDest){
+    _drawArrowStartStart : function(coordOrig, coordDest){
         var yorig = coordOrig.top -
                     ganttz.TaskComponent.CORNER_WIDTH/2 +
                     this.$class.HALF_DEPENDENCY_PADDING;
+        var xorig = coordOrig.left - this.$class.HALF_DEPENDENCY_PADDING;
         var xend = coordDest.left + this.$class.HALF_DEPENDENCY_PADDING;
-        var yend = coordDest.left - this.$class.HALF_DEPENDENCY_PADDING;
+        var yend = coordDest.top - this.$class.HALF_DEPENDENCY_PADDING;
         if (yend < yorig) yorig = coordOrig.top + this.$class.DEPENDENCY_PADDING;
 
         var width1 = ganttz.TaskComponent.CORNER_WIDTH;
@@ -46,7 +47,7 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         var depstart = this._findImageElement('start');
         depstart.css({    top : yorig,
                         left : (xorig - width1),
-                        width : width ,
+                        width : width1 ,
                         display : 'inline'})
 
         // Second segment
@@ -70,15 +71,15 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         var deparrow = this._findImageElement('arrow');
         deparrow.css({top : (yend - ganttz.TaskComponent.HALF_HEIGHT),left : xend - 15});
     },
-    _drawArrowEND_END : function(coordOrig, coordDest){
+    _drawArrowEndEnd : function(coordOrig, coordDest){
         var xorig = coordOrig.left - this.$class.DEPENDENCY_PADDING;
         var yorig = coordOrig.top - ganttz.TaskComponent.CORNER_WIDTH/2 + this.$class.HALF_DEPENDENCY_PADDING;
         var xend = coordDest.left + this.$class.HALF_DEPENDENCY_PADDING;
         var yend = coordDest.top - this.$class.DEPENDENCY_PADDING;
 
-        width1 = Math.abs(xend - xorig) + ganttz.TaskComponent.CORNER_WIDTH;
-        width2 = ganttz.TaskComponent.CORNER_WIDTH;
-        height = Math.abs(yend - yorig);
+        var width1 = Math.abs(xend - xorig) + ganttz.TaskComponent.CORNER_WIDTH;
+        var width2 = ganttz.TaskComponent.CORNER_WIDTH;
+        var height = Math.abs(yend - yorig);
 
         if (xorig > xend) {
             width2 = width1;
@@ -99,7 +100,7 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         var depmid = this._findImageElement('mid');
         var depmidcss = {left : (xorig + width1), height : height};
         if (yend > yorig) {
-          depmidcsstop = yorig;
+          depmidcss.top = yorig;
         } else {
           depmidcss.top = yend;
           depmidcss.height = height + 10;
@@ -117,7 +118,7 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         deparrow.attr('src', this.$class.getImagesDir() + "arrow3.png");
         deparrow.css({top : yend - 5, left : xend - 8});
     },
-    _drawArrowEND_START : function(coordOrig, coordDest){
+    _drawArrowEndStart : function(coordOrig, coordDest){
         var xorig = coordOrig.left - this.$class.DEPENDENCY_PADDING;
         var yorig = coordOrig.top - this.$class.HALF_DEPENDENCY_PADDING;
         var xend = coordDest.left - this.$class.DEPENDENCY_PADDING;
