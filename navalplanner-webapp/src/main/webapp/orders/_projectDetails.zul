@@ -17,6 +17,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
 <window id="projectCreationWindow" title="${i18n:_('Create project')}" width="650px">
     <grid id="gridProjectDetails">
                     <columns>
