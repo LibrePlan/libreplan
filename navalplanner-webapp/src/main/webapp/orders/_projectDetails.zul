@@ -65,9 +65,9 @@
                     </rows>
     </grid>
     <hbox>
-            <button label="${i18n:_('Accept')}"
-                onClick="projectController.accept();" />
-            <button label="${i18n:_('Cancel')}"
-                onClick="projectController.cancel();" />
+            <button label="${i18n:_('Accept')}" onClick="projectController.accept();"
+                sclass="save-button global-action" />
+            <button label="${i18n:_('Cancel')}" onClick="projectController.cancel();"
+                sclass="cancel-button global-action" />
     </hbox>
 </window>
