@@ -20,6 +20,7 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -132,8 +133,9 @@ public class TaskSource extends BaseEntity {
     private static void updateTaskWithOrderElement(TaskElement task,
             OrderElement orderElement) {
         task.setName(orderElement.getName());
-        if (task.getStartDate() == null) {
-            task.setStartDate(orderElement.getOrder().getInitDate());
+        Date orderInitDate = orderElement.getOrder().getInitDate();
+        if (task.getStartDate() == null && orderInitDate != null) {
+            task.setStartDate(orderInitDate);
         }
         if (task.getEndDate() == null) {
             task.initializeDatesIfNeeded();
