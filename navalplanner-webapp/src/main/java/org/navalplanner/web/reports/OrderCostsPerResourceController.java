@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,17 +33,12 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Toolbarbutton;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
@@ -61,12 +55,6 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
     private Datebox startingDate;
 
     private Datebox endingDate;
-
-//    private ComboboxOutputFormat outputFormat;
-//
-//    private Hbox URItext;
-//
-//    private Toolbarbutton URIlink;
 
     private static final String HTML = "html";
 
@@ -88,24 +76,6 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
         comp.setVariable("controller", this, true);
         orderCostsPerResourceModel.init();
     }
-
-//    public void showReport(ExtendedJasperreport report) {
-//        final String type = outputFormat.getOutputFormat();
-//
-//        orderCostsPerResourceReport = new OrderCostsPerResourceReport(report);
-//        orderCostsPerResourceReport.setDatasource(getDataSource());
-//        orderCostsPerResourceReport.setParameters(getParameters());
-//
-//        String URI = orderCostsPerResourceReport.show(type);
-//        if (type.equals(HTML)) {
-//            URItext.setStyle("display: none");
-//            Executions.getCurrent().sendRedirect(URI, "_blank");
-//        } else {
-//            URItext.setStyle("display: inline");
-//            URIlink.setHref(URI);
-//        }
-//
-//    }
 
     protected JRDataSource getDataSource() {
         return orderCostsPerResourceModel.getOrderReport(getSelectedOrders(),
