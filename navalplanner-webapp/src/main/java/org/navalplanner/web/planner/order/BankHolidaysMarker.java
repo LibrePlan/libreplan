@@ -19,9 +19,9 @@
  */
 package org.navalplanner.web.planner.order;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
@@ -35,9 +35,9 @@ public final class BankHolidaysMarker implements
 
     private final ICalendar calendar;
 
-    public BankHolidaysMarker() {
-        this.calendar = Registry.getConfigurationDAO().getConfiguration()
-                .getDefaultCalendar();
+    public BankHolidaysMarker(ICalendar calendar) {
+        Validate.notNull(calendar);
+        this.calendar = calendar;
     }
 
     public BankHolidaysMarker(BaseCalendar calendar) {

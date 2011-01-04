@@ -25,8 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +32,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -83,6 +85,12 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Autowired
     private ILimitingResourceQueueModel limitingResourceQueueModel;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
     private org.zkoss.zk.ui.Component parent;
@@ -117,27 +125,39 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     private void reload() {
-        // FIXME: Temporary fix, it seems the page was already rendered, so
-        // clear it all as it's going to be rendered again
-        parent.getChildren().clear();
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
-        limitingResourceQueueModel.initGlobalView();
+            @Override
+            public Void execute() {
+                reloadInTransaction();
+                return null;
+            }
 
-        // Initialize interval
-        timeTracker = buildTimeTracker();
-        limitingResourcesPanel = buildLimitingResourcesPanel();
+            private void reloadInTransaction() {
+                // FIXME: Temporary fix, it seems the page was already rendered,
+                // so
+                // clear it all as it's going to be rendered again
+                parent.getChildren().clear();
 
-        this.parent.appendChild(limitingResourcesPanel);
-        limitingResourcesPanel.afterCompose();
+                limitingResourceQueueModel.initGlobalView();
 
-        cbSelectAll = (Checkbox) limitingResourcesPanel
-                .getFellowIfAny("cbSelectAll");
+                // Initialize interval
+                timeTracker = buildTimeTracker();
+                limitingResourcesPanel = buildLimitingResourcesPanel();
 
-        initGridUnassignedLimitingResourceQueueElements();
-        initManualAllocationWindow();
-        initEditTaskWindow();
+                parent.appendChild(limitingResourcesPanel);
+                limitingResourcesPanel.afterCompose();
 
-        addCommands(limitingResourcesPanel);
+                cbSelectAll = (Checkbox) limitingResourcesPanel
+                        .getFellowIfAny("cbSelectAll");
+
+                initGridUnassignedLimitingResourceQueueElements();
+                initManualAllocationWindow();
+                initEditTaskWindow();
+
+                addCommands(limitingResourcesPanel);
+            }
+        });
     }
 
     private void initGridUnassignedLimitingResourceQueueElements() {
@@ -184,7 +204,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
                 .getViewInterval(), ZoomLevel.DETAIL_THREE,
                 SeveralModificators.create(),
-                SeveralModificators.create(new BankHolidaysMarker()), parent);
+                SeveralModificators.create(new BankHolidaysMarker(getDefaultCalendar())),parent);
+    }
+
+    private BaseCalendar getDefaultCalendar() {
+        return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
     private LimitingResourcesPanel buildLimitingResourcesPanel() {

@@ -39,6 +39,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -287,7 +288,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         OrderPlanningModel.configureInitialZoomLevelFor(planner,
                 defaultZoomLevel);
 
-        configuration.setSecondLevelModificators(new BankHolidaysMarker());
+        configuration.setSecondLevelModificators(new BankHolidaysMarker(
+                getDefaultCalendar()));
         planner.setConfiguration(configuration);
 
         if(expandPlanningViewChart) {
@@ -313,6 +315,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     }
                 });
         }
+    }
+
+    private BaseCalendar getDefaultCalendar() {
+        return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
     private void setupChartAndItsContent(Planner planner,
