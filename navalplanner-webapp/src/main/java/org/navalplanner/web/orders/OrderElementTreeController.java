@@ -260,18 +260,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
-    private void notifyDateboxCantBeCreated(final String dateboxName,
-            final String codeOrderElement) {
-        try {
-            Messagebox.show(_("the " + dateboxName
-                    + "datebox of the task " + codeOrderElement
-                    + " could not be created.\n"),
-                    _("Operation cannot be done"), Messagebox.OK,
-                    Messagebox.INFORMATION);
-        } catch (InterruptedException e) {
-        }
-    }
-
     protected void filterByPredicateIfAny() {
         if (predicate != null) {
             filterByPredicate();
@@ -719,9 +707,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 dinamicDatebox.setDisabled(true);
             }
-            addDateCell(dinamicDatebox, _("init"), currentOrderElement);
-            navigationHandler.register(dinamicDatebox
-                    .getDateTextBox());
+            addDateCell(dinamicDatebox, _("init"));
+            navigationHandler.register(dinamicDatebox.getDateTextBox());
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -742,7 +729,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 dinamicDatebox.setDisabled(true);
             }
-            addDateCell(dinamicDatebox, _("end"), currentOrderElement);
+            addDateCell(dinamicDatebox, _("end"));
             navigationHandler.register(dinamicDatebox
                     .getDateTextBox());
         }
@@ -759,17 +746,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             navigationHandler.register(intboxHours);
         }
 
-        private void addDateCell(final DynamicDatebox dinamicDatebox,
-                final String dateboxName,
-                final OrderElement currentOrderElement) {
+        private void addDateCell(final DynamicDatebox dinamicDatebox, final String dateboxName) {
 
             Component cell = Executions.getCurrent().createComponents(
                     "/common/components/dynamicDatebox.zul", null, null);
             try {
                 dinamicDatebox.doAfterCompose(cell);
             } catch (Exception e) {
-                notifyDateboxCantBeCreated(dateboxName, currentOrderElement
-                        .getCode());
+                throw new RuntimeException(e);
             }
             registerFocusEvent(dinamicDatebox.getDateTextBox());
             addCell(cell);
