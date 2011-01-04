@@ -420,183 +420,201 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public class OrderElementTreeitemRenderer extends Renderer {
 
-        private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
+        private class KeyboardNavigationHandler {
 
-        public OrderElementTreeitemRenderer() {
-        }
+            void registerKeyboardListener(final InputElement inputElement) {
+                inputElement.setCtrlKeys("#up#down");
+                inputElement.addEventListener("onCtrlKey", new EventListener() {
+                    private Treerow treerow = getCurrentTreeRow();
 
-        private void registerKeyboardListener(final InputElement inputElement) {
-            inputElement.setCtrlKeys("#up#down");
-            inputElement.addEventListener("onCtrlKey", new EventListener() {
-                private Treerow treerow = getCurrentTreeRow();
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Navigation navigation = Navigation.getIntentFrom((KeyEvent)event);
-                    moveFocusTo(inputElement, navigation, treerow);
-                }
-            });
-        }
-
-        private void moveFocusTo(InputElement inputElement, Navigation navigation, Treerow treerow) {
-            List<InputElement> boxes = getBoxes(treerow);
-            int position = boxes.indexOf(inputElement);
-
-            switch (navigation) {
-            case UP:
-                focusGoUp(treerow, position);
-                break;
-            case DOWN:
-                focusGoDown(treerow, position);
-                break;
-            case LEFT:
-                if (position == 0) {
-                    focusGoUp(treerow, boxes.size() - 1);
-                } else {
-                    if(boxes.get(position - 1).isDisabled()) {
-                        moveFocusTo(boxes.get(position - 1), Navigation.LEFT, treerow);
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Navigation navigation = Navigation
+                                .getIntentFrom((KeyEvent) event);
+                        moveFocusTo(inputElement, navigation, treerow);
                     }
-                    else {
-                        boxes.get(position - 1).focus();
-                    }
-                }
-                break;
-            case RIGHT:
-                if (position == boxes.size() - 1) {
-                    focusGoDown(treerow, 0);
-                } else {
-                    if(boxes.get(position + 1).isDisabled()) {
-                        moveFocusTo(boxes.get(position + 1), Navigation.RIGHT, treerow);
-                    }
-                    else {
-                        boxes.get(position + 1).focus();
-                    }
-                }
-                break;
+                });
             }
-        }
 
-        private void focusGoUp(Treerow treerow, int position) {
-            Treeitem parent = (Treeitem) treerow.getParent();
-            List treeItems = parent.getParent().getChildren();
-            int myPosition = parent.indexOf();
+            private void moveFocusTo(InputElement inputElement,
+                    Navigation navigation, Treerow treerow) {
+                List<InputElement> boxes = getBoxes(treerow);
+                int position = boxes.indexOf(inputElement);
 
-            if(myPosition > 0) {
-                // the current node is not the first brother
-                Treechildren treechildren =
-                    ((Treeitem)treeItems.get(myPosition - 1)).getTreechildren();
-                if(treechildren == null || treechildren.getChildren().size() == 0) {
-                    //the previous brother doesn't have children,
-                    //or it has children but they are unloaded
-                    Treerow upTreerow =
-                        ((Treeitem)treeItems.get(myPosition - 1)).getTreerow();
-
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
-                }
-                else {
-                    //we have to move to the last child of the previous brother
-                    Treerow upTreerow = findLastTreerow((Treeitem)treeItems.get(myPosition - 1));
-
-                    while(!upTreerow.isVisible()) {
-                        upTreerow = (Treerow)
-                            ((Treeitem)upTreerow.getParent().getParent().getParent()).getTreerow();
+                switch (navigation) {
+                case UP:
+                    focusGoUp(treerow, position);
+                    break;
+                case DOWN:
+                    focusGoDown(treerow, position);
+                    break;
+                case LEFT:
+                    if (position == 0) {
+                        focusGoUp(treerow, boxes.size() - 1);
+                    } else {
+                        if (boxes.get(position - 1).isDisabled()) {
+                            moveFocusTo(boxes.get(position - 1),
+                                    Navigation.LEFT, treerow);
+                        } else {
+                            boxes.get(position - 1).focus();
+                        }
                     }
-
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    break;
+                case RIGHT:
+                    if (position == boxes.size() - 1) {
+                        focusGoDown(treerow, 0);
+                    } else {
+                        if (boxes.get(position + 1).isDisabled()) {
+                            moveFocusTo(boxes.get(position + 1),
+                                    Navigation.RIGHT, treerow);
+                        } else {
+                            boxes.get(position + 1).focus();
+                        }
+                    }
+                    break;
                 }
             }
-            else {
-                // the node is the first brother
-                if(parent.getParent().getParent() instanceof Treeitem) {
-                    // the node has a parent, so we move up to it
-                    Treerow upTreerow = ((Treeitem)parent.getParent().getParent()).getTreerow();
 
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
-                }
-            }
-        }
-
-        private Treerow findLastTreerow(Treeitem item) {
-            if(item.getTreechildren() == null) {
-                return item.getTreerow();
-            }
-            List children = item.getTreechildren().getChildren();
-            Treeitem lastchild = (Treeitem) children.get(children.size()-1);
-
-            return findLastTreerow(lastchild);
-        }
-
-        private void focusGoDown(Treerow treerow, int position) {
-            Treeitem parent = (Treeitem) treerow.getParent();
-            focusGoDown(parent, position, false);
-        }
-
-        private void focusGoDown(Treeitem parent, int position, boolean skipChildren) {
-            if(parent.getTreechildren() == null || skipChildren) {
-                // Moving from a node to its brother
+            private void focusGoUp(Treerow treerow, int position) {
+                Treeitem parent = (Treeitem) treerow.getParent();
                 List treeItems = parent.getParent().getChildren();
                 int myPosition = parent.indexOf();
 
-                if(myPosition < treeItems.size() - 1) {
-                    // the current node is not the last one
-                    Treerow downTreerow =
-                        ((Treeitem)treeItems.get(myPosition + 1)).getTreerow();
+                if (myPosition > 0) {
+                    // the current node is not the first brother
+                    Treechildren treechildren = ((Treeitem) treeItems
+                            .get(myPosition - 1)).getTreechildren();
+                    if (treechildren == null
+                            || treechildren.getChildren().size() == 0) {
+                        // the previous brother doesn't have children,
+                        // or it has children but they are unloaded
+                        Treerow upTreerow = ((Treeitem) treeItems
+                                .get(myPosition - 1)).getTreerow();
 
-                    focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    }
+                    else {
+                        // we have to move to the last child of the previous
+                        // brother
+                        Treerow upTreerow = findLastTreerow((Treeitem) treeItems
+                                .get(myPosition - 1));
+
+                        while (!upTreerow.isVisible()) {
+                            upTreerow = (Treerow) ((Treeitem) upTreerow
+                                    .getParent().getParent().getParent())
+                                    .getTreerow();
+                        }
+
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    }
                 }
                 else {
-                    // the node is the last brother
-                    if(parent.getParent().getParent() instanceof Treeitem) {
-                        focusGoDown((Treeitem)parent.getParent().getParent(), position, true);
+                    // the node is the first brother
+                    if (parent.getParent().getParent() instanceof Treeitem) {
+                        // the node has a parent, so we move up to it
+                        Treerow upTreerow = ((Treeitem) parent.getParent()
+                                .getParent()).getTreerow();
+
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
                     }
                 }
             }
-            else {
-                // Moving from a parent node to its children
-                Treechildren treechildren = parent.getTreechildren();
 
-                if(treechildren.getChildren().size() == 0) {
-                    //the children are unloaded yet
-                    focusGoDown(parent, position, true);
-                    return;
+            private Treerow findLastTreerow(Treeitem item) {
+                if (item.getTreechildren() == null) {
+                    return item.getTreerow();
                 }
-                Treerow downTreerow =
-                        ((Treeitem)treechildren.getChildren().get(0)).getTreerow();
+                List children = item.getTreechildren().getChildren();
+                Treeitem lastchild = (Treeitem) children
+                        .get(children.size() - 1);
 
-                if(!downTreerow.isVisible()) {
-                    //children are loaded but not visible
-                    focusGoDown(parent, position, true);
-                    return;
-                }
-
-                focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                return findLastTreerow(lastchild);
             }
+
+            private void focusGoDown(Treerow treerow, int position) {
+                Treeitem parent = (Treeitem) treerow.getParent();
+                focusGoDown(parent, position, false);
+            }
+
+            private void focusGoDown(Treeitem parent, int position,
+                    boolean skipChildren) {
+                if (parent.getTreechildren() == null || skipChildren) {
+                    // Moving from a node to its brother
+                    List treeItems = parent.getParent().getChildren();
+                    int myPosition = parent.indexOf();
+
+                    if (myPosition < treeItems.size() - 1) {
+                        // the current node is not the last one
+                        Treerow downTreerow = ((Treeitem) treeItems
+                                .get(myPosition + 1)).getTreerow();
+
+                        focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                    } else {
+                        // the node is the last brother
+                        if (parent.getParent().getParent() instanceof Treeitem) {
+                            focusGoDown((Treeitem) parent.getParent()
+                                    .getParent(), position, true);
+                        }
+                    }
+                } else {
+                    // Moving from a parent node to its children
+                    Treechildren treechildren = parent.getTreechildren();
+
+                    if (treechildren.getChildren().size() == 0) {
+                        // the children are unloaded yet
+                        focusGoDown(parent, position, true);
+                        return;
+                    }
+                    Treerow downTreerow = ((Treeitem) treechildren
+                            .getChildren().get(0)).getTreerow();
+
+                    if (!downTreerow.isVisible()) {
+                        // children are loaded but not visible
+                        focusGoDown(parent, position, true);
+                        return;
+                    }
+
+                    focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                }
+            }
+
+            private void focusCorrectBox(Treerow treerow, int position,
+                    Navigation whereIfDisabled) {
+                List<InputElement> boxes = getBoxes(treerow);
+
+                if (boxes.get(position).isDisabled()) {
+                    moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
+                }
+                else {
+                    boxes.get(position).focus();
+                }
+            }
+
+            private List<InputElement> getBoxes(Treerow row) {
+                InputElement codeBox = (InputElement) ((Treecell) row
+                        .getChildren().get(1)).getChildren().get(0);
+                InputElement nameBox = (InputElement) ((Treecell) row
+                        .getChildren().get(2)).getChildren().get(0);
+                InputElement hoursBox = (InputElement) ((Treecell) row
+                        .getChildren().get(3)).getChildren().get(0);
+                InputElement initDateBox = (InputElement) ((Hbox) ((Treecell) row
+                        .getChildren().get(4)).getChildren().get(0))
+                        .getChildren().get(0);
+                InputElement endDateBox = (InputElement) ((Hbox) ((Treecell) row
+                        .getChildren().get(5)).getChildren().get(0))
+                        .getChildren().get(0);
+
+                return Arrays.asList(codeBox, nameBox, hoursBox, initDateBox,
+                        endDateBox);
+            }
+
         }
 
-        private void focusCorrectBox(Treerow treerow, int position, Navigation whereIfDisabled) {
-            List<InputElement> boxes = getBoxes(treerow);
+        private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
 
-            if(boxes.get(position).isDisabled()) {
-                moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
-            }
-            else {
-                boxes.get(position).focus();
-            }
-        }
+        private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 
-        private List<InputElement> getBoxes(Treerow row) {
-            InputElement codeBox = (InputElement)
-                ((Treecell)row.getChildren().get(1)).getChildren().get(0);
-            InputElement nameBox = (InputElement)
-                ((Treecell)row.getChildren().get(2)).getChildren().get(0);
-            InputElement hoursBox = (InputElement)
-                ((Treecell)row.getChildren().get(3)).getChildren().get(0);
-            InputElement initDateBox = (InputElement)
-                ((Hbox)((Treecell)row.getChildren().get(4)).getChildren().get(0)).getChildren().get(0);
-            InputElement endDateBox = (InputElement)
-                ((Hbox)((Treecell)row.getChildren().get(5)).getChildren().get(0)).getChildren().get(0);
-
-            return Arrays.asList(codeBox, nameBox, hoursBox, initDateBox, endDateBox);
+        public OrderElementTreeitemRenderer() {
         }
 
         @Override
@@ -626,7 +644,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 textBox.setDisabled(true);
             }
             addCell(cssClass, textBox);
-            registerKeyboardListener(textBox);
+            navigationHandler.registerKeyboardListener(textBox);
         }
 
         @Override
@@ -675,7 +693,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
-            registerKeyboardListener(textBoxCode);
+            navigationHandler.registerKeyboardListener(textBoxCode);
             orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
@@ -699,7 +717,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("init"), currentOrderElement);
-            registerKeyboardListener(dinamicDatebox.getDateTextBox());
+            navigationHandler.registerKeyboardListener(dinamicDatebox
+                    .getDateTextBox());
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -721,7 +740,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"), currentOrderElement);
-            registerKeyboardListener(dinamicDatebox.getDateTextBox());
+            navigationHandler.registerKeyboardListener(dinamicDatebox
+                    .getDateTextBox());
         }
 
         void addHoursCell(final OrderElement currentOrderElement) {
@@ -733,7 +753,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             Treecell cellHours = addCell(intboxHours);
             setReadOnlyHoursCell(currentOrderElement, intboxHours, cellHours);
-            registerKeyboardListener(intboxHours);
+            navigationHandler.registerKeyboardListener(intboxHours);
         }
 
         private void addDateCell(final DynamicDatebox dinamicDatebox,
