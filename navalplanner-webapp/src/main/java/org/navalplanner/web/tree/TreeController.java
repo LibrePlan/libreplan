@@ -21,9 +21,13 @@ package org.navalplanner.web.tree;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -39,22 +43,29 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.Getter;
+import org.navalplanner.web.common.Util.Setter;
+import org.navalplanner.web.orders.DynamicDatebox;
 import org.navalplanner.web.orders.SchedulingStateToggler;
 import org.navalplanner.web.tree.TreeComponent.Column;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.RendererCtrl;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
+import org.zkoss.zul.Treechildren;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
@@ -310,8 +321,209 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         return (children.get(children.size() - 1).equals(element));
     }
 
+    private enum Navigation {
+        LEFT, UP, RIGHT, DOWN;
+        public static Navigation getIntentFrom(KeyEvent keyEvent) {
+            return values()[keyEvent.getKeyCode() - 37];
+        }
+    }
+
     public abstract class Renderer implements TreeitemRenderer,
             RendererCtrl {
+
+        private class KeyboardNavigationHandler {
+
+            private Map<Treerow, List<InputElement>> navigableElementsByRow = new HashMap<Treerow, List<InputElement>>();
+
+            void register(final InputElement inputElement) {
+                inputElement.setCtrlKeys("#up#down");
+                registerNavigableElement(inputElement);
+                inputElement.addEventListener("onCtrlKey", new EventListener() {
+                    private Treerow treerow = getCurrentTreeRow();
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Navigation navigation = Navigation
+                                .getIntentFrom((KeyEvent) event);
+                        moveFocusTo(inputElement, navigation, treerow);
+                    }
+                });
+            }
+
+            private void registerNavigableElement(InputElement inputElement) {
+                Treerow treeRow = getCurrentTreeRow();
+                if (!navigableElementsByRow.containsKey(treeRow)) {
+                    navigableElementsByRow.put(treeRow,
+                            new ArrayList<InputElement>());
+                }
+                navigableElementsByRow.get(treeRow).add(inputElement);
+            }
+
+            private void moveFocusTo(InputElement inputElement,
+                    Navigation navigation, Treerow treerow) {
+                List<InputElement> boxes = getNavigableElements(treerow);
+                int position = boxes.indexOf(inputElement);
+
+                switch (navigation) {
+                case UP:
+                    focusGoUp(treerow, position);
+                    break;
+                case DOWN:
+                    focusGoDown(treerow, position);
+                    break;
+                case LEFT:
+                    if (position == 0) {
+                        focusGoUp(treerow, boxes.size() - 1);
+                    } else {
+                        if (boxes.get(position - 1).isDisabled()) {
+                            moveFocusTo(boxes.get(position - 1),
+                                    Navigation.LEFT, treerow);
+                        } else {
+                            boxes.get(position - 1).focus();
+                        }
+                    }
+                    break;
+                case RIGHT:
+                    if (position == boxes.size() - 1) {
+                        focusGoDown(treerow, 0);
+                    } else {
+                        if (boxes.get(position + 1).isDisabled()) {
+                            moveFocusTo(boxes.get(position + 1),
+                                    Navigation.RIGHT, treerow);
+                        } else {
+                            boxes.get(position + 1).focus();
+                        }
+                    }
+                    break;
+                }
+            }
+
+            private void focusGoUp(Treerow treerow, int position) {
+                Treeitem parent = (Treeitem) treerow.getParent();
+                @SuppressWarnings("unchecked")
+                List<Treeitem> treeItems = parent.getParent().getChildren();
+                int myPosition = parent.indexOf();
+
+                if (myPosition > 0) {
+                    // the current node is not the first brother
+                    Treechildren treechildren = treeItems.get(myPosition - 1)
+                            .getTreechildren();
+                    if (treechildren == null
+                            || treechildren.getChildren().size() == 0) {
+                        // the previous brother doesn't have children,
+                        // or it has children but they are unloaded
+                        Treerow upTreerow = treeItems.get(myPosition - 1)
+                                .getTreerow();
+
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    } else {
+                        // we have to move to the last child of the previous
+                        // brother
+                        Treerow upTreerow = findLastTreerow(treeItems
+                                .get(myPosition - 1));
+
+                        while (!upTreerow.isVisible()) {
+                            upTreerow = ((Treeitem) upTreerow.getParent()
+                                    .getParent().getParent()).getTreerow();
+                        }
+
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    }
+                } else {
+                    // the node is the first brother
+                    if (parent.getParent().getParent() instanceof Treeitem) {
+                        // the node has a parent, so we move up to it
+                        Treerow upTreerow = ((Treeitem) parent.getParent()
+                                .getParent()).getTreerow();
+
+                        focusCorrectBox(upTreerow, position, Navigation.LEFT);
+                    }
+                }
+            }
+
+            private Treerow findLastTreerow(Treeitem item) {
+                if (item.getTreechildren() == null) {
+                    return item.getTreerow();
+                }
+                @SuppressWarnings("unchecked")
+                List<Treeitem> children = item.getTreechildren().getChildren();
+                Treeitem lastchild = children.get(children.size() - 1);
+
+                return findLastTreerow(lastchild);
+            }
+
+            private void focusGoDown(Treerow treerow, int position) {
+                Treeitem parent = (Treeitem) treerow.getParent();
+                focusGoDown(parent, position, false);
+            }
+
+            private void focusGoDown(Treeitem parent, int position,
+                    boolean skipChildren) {
+                if (parent.getTreechildren() == null || skipChildren) {
+                    // Moving from a node to its brother
+                    @SuppressWarnings("unchecked")
+                    List<Treeitem> treeItems = parent.getParent().getChildren();
+                    int myPosition = parent.indexOf();
+
+                    if (myPosition < treeItems.size() - 1) {
+                        // the current node is not the last one
+                        Treerow downTreerow = treeItems.get(myPosition + 1)
+                                .getTreerow();
+
+                        focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                    } else {
+                        // the node is the last brother
+                        if (parent.getParent().getParent() instanceof Treeitem) {
+                            focusGoDown((Treeitem) parent.getParent()
+                                    .getParent(), position, true);
+                        }
+                    }
+                } else {
+                    // Moving from a parent node to its children
+                    Treechildren treechildren = parent.getTreechildren();
+
+                    if (treechildren.getChildren().size() == 0) {
+                        // the children are unloaded yet
+                        focusGoDown(parent, position, true);
+                        return;
+                    }
+                    Treerow downTreerow = ((Treeitem) treechildren
+                            .getChildren().get(0)).getTreerow();
+
+                    if (!downTreerow.isVisible()) {
+                        // children are loaded but not visible
+                        focusGoDown(parent, position, true);
+                        return;
+                    }
+
+                    focusCorrectBox(downTreerow, position, Navigation.RIGHT);
+                }
+            }
+
+            private void focusCorrectBox(Treerow treerow, int position,
+                    Navigation whereIfDisabled) {
+                List<InputElement> boxes = getNavigableElements(treerow);
+
+                if (boxes.get(position).isDisabled()) {
+                    moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
+                } else {
+                    boxes.get(position).focus();
+                }
+            }
+
+            private List<InputElement> getNavigableElements(Treerow row) {
+                if (!navigableElementsByRow.containsKey(row)) {
+                    return Collections.emptyList();
+                }
+                return Collections.unmodifiableList(navigableElementsByRow
+                        .get(row));
+            }
+
+        }
+
+        private Map<T, Intbox> hoursIntBoxByElement = new HashMap<T, Intbox>();
+
+        private KeyboardNavigationHandler navigationHandler = new KeyboardNavigationHandler();
 
         private Treerow currentTreeRow;
 
@@ -336,6 +548,20 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             });
         }
 
+        protected void addDateCell(final DynamicDatebox dinamicDatebox,
+                final String dateboxName) {
+
+            Component cell = Executions.getCurrent().createComponents(
+                    "/common/components/dynamicDatebox.zul", null, null);
+            try {
+                dinamicDatebox.doAfterCompose(cell);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            addCell(cell);
+            registerListeners(dinamicDatebox.getDateTextBox());
+        }
+
         protected Treecell addCell(Component... components) {
             return addCell(null, components);
         }
@@ -347,12 +573,17 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             }
             for (Component component : components) {
                 cell.appendChild(component);
-                if(component instanceof InputElement) {
-                    registerFocusEvent((InputElement) component);
+                if (component instanceof InputElement) {
+                    registerListeners((InputElement) component);
                 }
             }
             currentTreeRow.appendChild(cell);
             return cell;
+        }
+
+        private void registerListeners(InputElement associatedInput) {
+            registerFocusEvent(associatedInput);
+            navigationHandler.register(associatedInput);
         }
 
         @Override
@@ -477,6 +708,87 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected abstract void addCodeCell(final T element);
 
         protected abstract void addDescriptionCell(final T element);
+
+        public void addHoursCell(final T currentElement) {
+            Intbox intboxHours = buildHoursIntboxFor(currentElement);
+            hoursIntBoxByElement.put(currentElement, intboxHours);
+            if (readOnly) {
+                intboxHours.setDisabled(true);
+            }
+            Treecell cellHours = addCell(intboxHours);
+            setReadOnlyHoursCell(currentElement, intboxHours, cellHours);
+        }
+
+        private void setReadOnlyHoursCell(T element,
+                Intbox boxHours, Treecell tc) {
+            if (!readOnly && isLine(element)) {
+                if (getHoursGroupHandler().hasMoreThanOneHoursGroup(element)) {
+                    boxHours.setReadonly(true);
+                    tc.setTooltiptext(_("Not editable for containing more that an hours group."));
+                } else {
+                    boxHours.setReadonly(false);
+                    tc.setTooltiptext("");
+                }
+            }
+        }
+
+        private Intbox buildHoursIntboxFor(final T element) {
+            Intbox result = new Intbox();
+            if (isLine(element)) {
+                Util.bind(result, getHoursGetterFor(element),
+                        getHoursSetterFor(element));
+                result.setConstraint(getHoursConstraintFor(element));
+            } else {
+                // If it's a container hours cell is not editable
+                Util.bind(result, getHoursGetterFor(element));
+            }
+            return result;
+        }
+
+        private Getter<Integer> getHoursGetterFor(final T element) {
+            return new Util.Getter<Integer>() {
+                @Override
+                public Integer get() {
+                    return getHoursGroupHandler().getWorkHoursFor(element);
+                }
+            };
+        }
+
+        private Setter<Integer> getHoursSetterFor(final T element) {
+            return new Util.Setter<Integer>() {
+                @Override
+                public void set(Integer value) {
+                    getHoursGroupHandler().setWorkHours(element, value);
+                    List<T> parentNodes = getModel().getParents(element);
+                    // Remove the last element because it's an
+                    // Order node, not an OrderElement
+                    parentNodes.remove(parentNodes.size() - 1);
+                    for (T node : parentNodes) {
+                        Intbox intbox = hoursIntBoxByElement.get(node);
+                        intbox.setValue(getHoursGroupHandler().getWorkHoursFor(node));
+                    }
+                }
+            };
+        }
+
+        private Constraint getHoursConstraintFor(final T line) {
+            return new Constraint() {
+                @Override
+                public void validate(Component comp, Object value)
+                        throws WrongValueException {
+                    if (!getHoursGroupHandler().isTotalHoursValid(line, ((Integer) value))) {
+                        throw new WrongValueException(
+                                comp,
+                                _("Value is not valid, taking into account the current list of HoursGroup"));
+                    }
+                }
+
+            };
+        }
+
+        private boolean isLine(T element) {
+            return element.getChildren().isEmpty();
+        }
 
         protected abstract void addOperationsCell(final Treeitem item,
                 final T currentElement);
@@ -623,6 +935,19 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     public void setColumns(List<Column> columns) {
         this.columns = columns;
     }
+
+    public interface IHoursGroupHandler<T> {
+
+        boolean hasMoreThanOneHoursGroup(T element);
+
+        boolean isTotalHoursValid(T line, Integer value);
+
+        Integer getWorkHoursFor(T element);
+
+        void setWorkHours(T element, Integer value);
+    }
+
+    protected abstract IHoursGroupHandler<T> getHoursGroupHandler();
 
     /**
      * Disable control buttons (new, up, down, indent, unindent, delete)

@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.templates.entities.OrderLineTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
@@ -223,6 +224,36 @@ public class TemplatesTreeController extends
     @Override
     protected void refreshHoursBox(OrderElementTemplate node) {
         // we do nothing, since there isn't an hours box in this tree
+    }
+
+    @Override
+    protected IHoursGroupHandler<OrderElementTemplate> getHoursGroupHandler() {
+        return new IHoursGroupHandler<OrderElementTemplate>() {
+
+            @Override
+            public boolean hasMoreThanOneHoursGroup(OrderElementTemplate element) {
+                return element.getHoursGroups().size() > 1;
+            }
+
+            @Override
+            public boolean isTotalHoursValid(OrderElementTemplate line,
+                    Integer value) {
+                return ((OrderLineTemplate) line).isTotalHoursValid(value);
+            }
+
+            @Override
+            public Integer getWorkHoursFor(OrderElementTemplate element) {
+                return element.getWorkHours();
+            }
+
+            @Override
+            public void setWorkHours(OrderElementTemplate element, Integer value) {
+                if (element instanceof OrderLineTemplate) {
+                    OrderLineTemplate line = (OrderLineTemplate) element;
+                    line.setWorkHours(value);
+                }
+            }
+        };
     }
 
 }

@@ -89,6 +89,15 @@ public class TemplatesTreeComponent extends TreeComponent {
             }
 
         });
+        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addHoursCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(
                 _("Deadline (days since beggining project)"),
                 "estimated_end") {
