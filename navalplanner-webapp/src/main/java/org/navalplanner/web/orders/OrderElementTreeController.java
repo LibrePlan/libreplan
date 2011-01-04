@@ -488,30 +488,31 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             private void focusGoUp(Treerow treerow, int position) {
                 Treeitem parent = (Treeitem) treerow.getParent();
-                List treeItems = parent.getParent().getChildren();
+                @SuppressWarnings("unchecked")
+                List<Treeitem> treeItems = parent.getParent().getChildren();
                 int myPosition = parent.indexOf();
 
                 if (myPosition > 0) {
                     // the current node is not the first brother
-                    Treechildren treechildren = ((Treeitem) treeItems
-                            .get(myPosition - 1)).getTreechildren();
+                    Treechildren treechildren = treeItems.get(myPosition - 1)
+                            .getTreechildren();
                     if (treechildren == null
                             || treechildren.getChildren().size() == 0) {
                         // the previous brother doesn't have children,
                         // or it has children but they are unloaded
-                        Treerow upTreerow = ((Treeitem) treeItems
-                                .get(myPosition - 1)).getTreerow();
+                        Treerow upTreerow = treeItems.get(myPosition - 1)
+                                .getTreerow();
 
                         focusCorrectBox(upTreerow, position, Navigation.LEFT);
                     }
                     else {
                         // we have to move to the last child of the previous
                         // brother
-                        Treerow upTreerow = findLastTreerow((Treeitem) treeItems
+                        Treerow upTreerow = findLastTreerow(treeItems
                                 .get(myPosition - 1));
 
                         while (!upTreerow.isVisible()) {
-                            upTreerow = (Treerow) ((Treeitem) upTreerow
+                            upTreerow = ((Treeitem) upTreerow
                                     .getParent().getParent().getParent())
                                     .getTreerow();
                         }
@@ -535,9 +536,9 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 if (item.getTreechildren() == null) {
                     return item.getTreerow();
                 }
-                List children = item.getTreechildren().getChildren();
-                Treeitem lastchild = (Treeitem) children
-                        .get(children.size() - 1);
+                @SuppressWarnings("unchecked")
+                List<Treeitem> children = item.getTreechildren().getChildren();
+                Treeitem lastchild = children.get(children.size() - 1);
 
                 return findLastTreerow(lastchild);
             }
@@ -551,13 +552,14 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     boolean skipChildren) {
                 if (parent.getTreechildren() == null || skipChildren) {
                     // Moving from a node to its brother
-                    List treeItems = parent.getParent().getChildren();
+                    @SuppressWarnings("unchecked")
+                    List<Treeitem> treeItems = parent.getParent().getChildren();
                     int myPosition = parent.indexOf();
 
                     if (myPosition < treeItems.size() - 1) {
                         // the current node is not the last one
-                        Treerow downTreerow = ((Treeitem) treeItems
-                                .get(myPosition + 1)).getTreerow();
+                        Treerow downTreerow = treeItems.get(myPosition + 1)
+                                .getTreerow();
 
                         focusCorrectBox(downTreerow, position, Navigation.RIGHT);
                     } else {
