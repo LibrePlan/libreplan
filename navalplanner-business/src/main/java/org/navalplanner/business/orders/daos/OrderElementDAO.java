@@ -342,7 +342,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
         BigDecimal average = new BigDecimal(0);
         if (sum.compareTo(new BigDecimal(0)) > 0) {
-            average = sum.divide(divisor);
+            average = sum.divide(divisor, RoundingMode.HALF_UP);
         }
         return average;
     }
