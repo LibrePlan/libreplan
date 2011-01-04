@@ -94,8 +94,8 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -568,10 +568,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             PlannerConfiguration<TaskElement> configuration) {
         if (orderReloaded.getDeadline() != null) {
             configuration.setSecondLevelModificators(SeveralModificators
-                    .create(new BankHolidaysMarker(),
+                            .create(new BankHolidaysMarker(orderReloaded
+                                    .getCalendar()),
                             createDeadlineShower(orderReloaded.getDeadline())));
         } else {
-            configuration.setSecondLevelModificators(new BankHolidaysMarker());
+            configuration.setSecondLevelModificators(new BankHolidaysMarker(
+                    orderReloaded.getCalendar()));
         }
     }
 

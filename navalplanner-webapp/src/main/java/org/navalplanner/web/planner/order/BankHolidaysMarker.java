@@ -19,6 +19,8 @@
  */
 package org.navalplanner.web.planner.order;
 
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.Registry;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -28,10 +30,25 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
  */
 public final class BankHolidaysMarker implements
         IDetailItemModificator {
+
+    BaseCalendar calendar;
+
+    public BankHolidaysMarker() {
+        this.calendar = Registry.getConfigurationDAO().getConfiguration()
+                .getDefaultCalendar();
+    }
+
+    public BankHolidaysMarker(BaseCalendar calendar) {
+        this.calendar = calendar;
+    }
+
     @Override
     public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
-        if (z == ZoomLevel.DETAIL_FIVE) {
-            item.markBankHoliday();
+        if (z == ZoomLevel.DETAIL_FIVE && calendar != null) {
+            if (calendar.getWorkableTimeAt(item.getStartDate().toLocalDate())
+                    .isZero()) {
+                item.markBankHoliday();
+            }
         }
         return item;
     }
