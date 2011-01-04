@@ -55,6 +55,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -62,10 +64,14 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -632,4 +638,46 @@ public class MachineCRUDController extends GenericForwardComposer {
                     Level.INFO, _("This machine was already removed by other user"));
         }
     }
+
+    public RowRenderer getMachinesRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final Machine machine = (Machine) data;
+                row.setValue(machine);
+
+                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                goToEditForm(machine);
+                            }
+                        });
+
+                row.appendChild(new Label(machine.getName()));
+                row.appendChild(new Label(machine.getDescription()));
+                row.appendChild(new Label(machine.getCode()));
+                row.appendChild(new Label((Boolean.TRUE.equals(machine
+                        .isLimitingResource())) ? _("yes") : _("no")));
+
+                Hbox hbox = new Hbox();
+                hbox.appendChild(Util.createEditButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(machine);
+                    }
+                }));
+                hbox.appendChild(Util.createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmRemove(machine);
+                    }
+                }));
+                row.appendChild(hbox);
+            }
+
+        };
+    }
+
 }

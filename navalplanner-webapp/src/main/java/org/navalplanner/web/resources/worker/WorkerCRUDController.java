@@ -35,7 +35,6 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
-import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -54,6 +53,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -61,10 +62,14 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -671,7 +676,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
 
         public String toString() {
-            return I18nHelper._(option);
+            return _(option);
         }
 
         public static LimitingResourceEnum valueOf(Boolean isLimitingResource) {
@@ -773,4 +778,47 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     Level.INFO, _("This worker was already removed by other user"));
         }
     }
+
+    public RowRenderer getWorkersRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final Worker worker = (Worker) data;
+                row.setValue(worker);
+
+                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                goToEditForm(worker);
+                            }
+                        });
+
+                row.appendChild(new Label(worker.getSurname()));
+                row.appendChild(new Label(worker.getFirstName()));
+                row.appendChild(new Label(worker.getNif()));
+                row.appendChild(new Label(worker.getCode()));
+                row.appendChild(new Label((Boolean.TRUE.equals(worker
+                        .isLimitingResource())) ? _("yes") : _("no")));
+
+                Hbox hbox = new Hbox();
+                hbox.appendChild(Util.createEditButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(worker);
+                    }
+                }));
+                hbox.appendChild(Util.createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmRemove(worker);
+                    }
+                }));
+                row.appendChild(hbox);
+            }
+
+        };
+    }
+
 }

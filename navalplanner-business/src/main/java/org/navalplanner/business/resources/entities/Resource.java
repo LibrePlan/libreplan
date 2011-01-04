@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
@@ -1148,10 +1147,6 @@ public abstract class Resource extends IntegrationEntity {
 
     public void setLimitingResource(Boolean limitingResource) {
         this.limitingResource = limitingResource;
-    }
-
-    public String getLimitingResourceAsString() {
-        return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
     }
 
     public LimitingResourceQueue getLimitingResourceQueue() {
