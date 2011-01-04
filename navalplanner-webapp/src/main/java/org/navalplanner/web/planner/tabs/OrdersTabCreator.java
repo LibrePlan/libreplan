@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ import org.zkoss.zul.Label;
  */
 public class OrdersTabCreator {
 
-    private static final String PROJECT_DETAILS = _("Project Details");
+    private final String PROJECT_DETAILS = _("Project Details");
 
     public static ITab create(Mode mode,
             OrderCRUDController orderCRUDController, Component breadcrumbs,
@@ -107,7 +107,7 @@ public class OrdersTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Projects")));
             }
@@ -132,7 +132,7 @@ public class OrdersTabCreator {
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(PROJECT_DETAILS));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));

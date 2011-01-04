@@ -81,8 +81,8 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private Listbox listZoomLevels;
 
-    private static final String filterResources = _("by resources");
-    private static final String filterCriteria = _("by criteria");
+    private final String FILTER_RESOURCES = _("by resources");
+    private final String FILTER_CRITERIA = _("by criteria");
     private String feedBackMessage;
     private Boolean filterbyResources;
 
@@ -125,12 +125,12 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public ListModel getFilters() {
-        String[] filters = new String[] { filterResources, filterCriteria };
+        String[] filters = new String[] { FILTER_RESOURCES, FILTER_CRITERIA };
         return new SimpleListModel(filters);
     }
 
     public void setFilter(String filterby) {
-        if (filterby.equals(filterResources)) {
+        if (filterby.equals(FILTER_RESOURCES)) {
             this.filterbyResources = true;
             this.feedBackMessage = _("showing resources");
         } else {

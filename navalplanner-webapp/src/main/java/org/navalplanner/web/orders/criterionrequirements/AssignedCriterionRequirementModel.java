@@ -269,7 +269,7 @@ public abstract class AssignedCriterionRequirementModel<T, M> implements
             HoursGroupWrapper hoursGroupWrapper) {
         if ((getModel() != null) && (getElement() != null)) {
             CriterionRequirementWrapper exceptionWrapper = new CriterionRequirementWrapper(
-                    CriterionRequirementWrapper.INDIRECT);
+                    CriterionRequirementWrapper.getIndirectTypeLabel());
             exceptionWrapper.setNewException(true);
             hoursGroupWrapper.addExceptionRequirementWrappers(exceptionWrapper);
             return exceptionWrapper;

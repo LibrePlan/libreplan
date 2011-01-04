@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -108,7 +108,7 @@ public class ResourcesLoadTabCreator {
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Resources Load")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
@@ -149,7 +149,7 @@ public class ResourcesLoadTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Resource Usage")));
             }

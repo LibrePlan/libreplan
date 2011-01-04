@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,8 +44,8 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
 import org.navalplanner.web.common.TemplateModelAdapter;
+import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -66,7 +66,7 @@ import org.zkoss.zul.Label;
  */
 public class MonteCarloTabCreator {
 
-    private static String ORDER_LIMITING_RESOURCES_VIEW = _("MonteCarlo Method");
+    private String ORDER_LIMITING_RESOURCES_VIEW = _("MonteCarlo Method");
 
     public static ITab create(Mode mode,
             MonteCarloController monteCarloController,
@@ -136,7 +136,7 @@ public class MonteCarloTabCreator {
 
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs
                         .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));

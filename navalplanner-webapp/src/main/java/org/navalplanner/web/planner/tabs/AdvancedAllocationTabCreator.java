@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -191,7 +191,7 @@ public class AdvancedAllocationTabCreator {
         }
     }
 
-    private static final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
+    private final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
     private final Mode mode;
     private final IAdHocTransactionService adHocTransactionService;
     private final IOrderDAO orderDAO;
@@ -259,7 +259,7 @@ public class AdvancedAllocationTabCreator {
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(_("Advanced Allocation")));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));

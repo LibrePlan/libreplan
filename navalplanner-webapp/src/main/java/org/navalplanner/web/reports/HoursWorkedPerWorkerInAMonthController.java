@@ -22,7 +22,6 @@ package org.navalplanner.web.reports;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -39,7 +38,7 @@ public class HoursWorkedPerWorkerInAMonthController extends NavalplannerReportCo
 
     private static final String REPORT_NAME = "hoursWorkedPerWorkerInAMonthReport";
 
-    private static final String months[] = { _("January"), _("February"),
+    private final String MONTHS[] = { _("January"), _("February"),
         _("March"), _("April"), _("May"), _("June"), _("July"),
         _("August"), _("September"), _("October"), _("November"),
         _("December") };
@@ -103,7 +102,7 @@ public class HoursWorkedPerWorkerInAMonthController extends NavalplannerReportCo
 
     private String monthAsLiteral(String monthNumber) {
         Integer number = Integer.parseInt(monthNumber);
-        return months[number-1];
+        return MONTHS[number-1];
     }
 
 }
