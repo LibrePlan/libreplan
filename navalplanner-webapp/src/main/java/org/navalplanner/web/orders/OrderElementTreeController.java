@@ -423,7 +423,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             private Map<Treerow, List<InputElement>> navigableElementsByRow = new HashMap<Treerow, List<InputElement>>();
 
-            void registerKeyboardListener(final InputElement inputElement) {
+            void register(final InputElement inputElement) {
                 inputElement.setCtrlKeys("#up#down");
                 registerNavigableElement(inputElement);
                 inputElement.addEventListener("onCtrlKey", new EventListener() {
@@ -645,7 +645,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 textBox.setDisabled(true);
             }
             addCell(cssClass, textBox);
-            navigationHandler.registerKeyboardListener(textBox);
+            navigationHandler.register(textBox);
         }
 
         @Override
@@ -694,7 +694,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
-            navigationHandler.registerKeyboardListener(textBoxCode);
+            navigationHandler.register(textBoxCode);
             orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
@@ -718,7 +718,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("init"), currentOrderElement);
-            navigationHandler.registerKeyboardListener(dinamicDatebox
+            navigationHandler.register(dinamicDatebox
                     .getDateTextBox());
         }
 
@@ -741,7 +741,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 dinamicDatebox.setDisabled(true);
             }
             addDateCell(dinamicDatebox, _("end"), currentOrderElement);
-            navigationHandler.registerKeyboardListener(dinamicDatebox
+            navigationHandler.register(dinamicDatebox
                     .getDateTextBox());
         }
 
@@ -754,7 +754,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             Treecell cellHours = addCell(intboxHours);
             setReadOnlyHoursCell(currentOrderElement, intboxHours, cellHours);
-            navigationHandler.registerKeyboardListener(intboxHours);
+            navigationHandler.register(intboxHours);
         }
 
         private void addDateCell(final DynamicDatebox dinamicDatebox,
