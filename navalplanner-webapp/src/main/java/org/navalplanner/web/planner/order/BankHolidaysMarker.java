@@ -20,7 +20,9 @@
 package org.navalplanner.web.planner.order;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -31,7 +33,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 public final class BankHolidaysMarker implements
         IDetailItemModificator {
 
-    BaseCalendar calendar;
+    private final ICalendar calendar;
 
     public BankHolidaysMarker() {
         this.calendar = Registry.getConfigurationDAO().getConfiguration()
@@ -45,8 +47,9 @@ public final class BankHolidaysMarker implements
     @Override
     public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
         if (z == ZoomLevel.DETAIL_FIVE && calendar != null) {
-            if (calendar.getWorkableTimeAt(item.getStartDate().toLocalDate())
-                    .isZero()) {
+            PartialDay day = PartialDay.wholeDay(item.getStartDate()
+                    .toLocalDate());
+            if (calendar.getCapacityOn(day).isZero()) {
                 item.markBankHoliday();
             }
         }
