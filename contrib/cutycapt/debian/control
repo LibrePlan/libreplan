@@ -2,7 +2,7 @@ Source: cutycapt
 Section: web
 Priority: extra
 Maintainer: Adrian Perez <aperez@igalia.com>
-Build-Depends: debhelper (>= 7), libqt4-dev
+Build-Depends: debhelper (>= 7), libqt4-dev, libqtwebkit-dev
 
 Package: cutycapt
 Architecture: any
