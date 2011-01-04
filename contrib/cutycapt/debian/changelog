@@ -1,6 +1,9 @@
 cutycapt (20110104.1) lenny squeeze intrepid karmic lucid maverick; urgency=low
 
   * Fixed debian/rules thanks to a patch by Adrian Perez <aperez@igalia.com>.
+  * Fixed several things in debian/control thanks to Alberto García
+    <agarcia@igalia.com> comments.
+  * Added debian/copyright file.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  Mon, 04 Jan 2011 12:43:00 +0100
 
