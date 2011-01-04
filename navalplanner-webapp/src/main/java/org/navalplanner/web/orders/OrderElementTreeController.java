@@ -23,8 +23,8 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -65,7 +65,6 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
@@ -422,8 +421,11 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         private class KeyboardNavigationHandler {
 
+            private Map<Treerow, List<InputElement>> navigableElementsByRow = new HashMap<Treerow, List<InputElement>>();
+
             void registerKeyboardListener(final InputElement inputElement) {
                 inputElement.setCtrlKeys("#up#down");
+                registerNavigableElement(inputElement);
                 inputElement.addEventListener("onCtrlKey", new EventListener() {
                     private Treerow treerow = getCurrentTreeRow();
 
@@ -436,9 +438,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 });
             }
 
+            private void registerNavigableElement(InputElement inputElement) {
+                Treerow treeRow = getCurrentTreeRow();
+                if (!navigableElementsByRow.containsKey(treeRow)) {
+                    navigableElementsByRow.put(treeRow,
+                            new ArrayList<InputElement>());
+                }
+                navigableElementsByRow.get(treeRow).add(inputElement);
+            }
+
             private void moveFocusTo(InputElement inputElement,
                     Navigation navigation, Treerow treerow) {
-                List<InputElement> boxes = getBoxes(treerow);
+                List<InputElement> boxes = getNavigableElements(treerow);
                 int position = boxes.indexOf(inputElement);
 
                 switch (navigation) {
@@ -580,7 +591,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
             private void focusCorrectBox(Treerow treerow, int position,
                     Navigation whereIfDisabled) {
-                List<InputElement> boxes = getBoxes(treerow);
+                List<InputElement> boxes = getNavigableElements(treerow);
 
                 if (boxes.get(position).isDisabled()) {
                     moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
@@ -590,22 +601,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 }
             }
 
-            private List<InputElement> getBoxes(Treerow row) {
-                InputElement codeBox = (InputElement) ((Treecell) row
-                        .getChildren().get(1)).getChildren().get(0);
-                InputElement nameBox = (InputElement) ((Treecell) row
-                        .getChildren().get(2)).getChildren().get(0);
-                InputElement hoursBox = (InputElement) ((Treecell) row
-                        .getChildren().get(3)).getChildren().get(0);
-                InputElement initDateBox = (InputElement) ((Hbox) ((Treecell) row
-                        .getChildren().get(4)).getChildren().get(0))
-                        .getChildren().get(0);
-                InputElement endDateBox = (InputElement) ((Hbox) ((Treecell) row
-                        .getChildren().get(5)).getChildren().get(0))
-                        .getChildren().get(0);
-
-                return Arrays.asList(codeBox, nameBox, hoursBox, initDateBox,
-                        endDateBox);
+            private List<InputElement> getNavigableElements(Treerow row) {
+                if (!navigableElementsByRow.containsKey(row)) {
+                    return Collections.emptyList();
+                }
+                return Collections.unmodifiableList(navigableElementsByRow
+                        .get(row));
             }
 
         }
