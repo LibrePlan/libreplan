@@ -21,6 +21,7 @@
 package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -342,7 +343,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     private BigDecimal average(BigDecimal divisor, BigDecimal sum) {
         BigDecimal average = new BigDecimal(0);
         if (sum.compareTo(new BigDecimal(0)) > 0) {
-            average = sum.divide(divisor, RoundingMode.HALF_UP);
+            average = sum.divide(divisor, new MathContext(2,
+                    RoundingMode.HALF_UP));
         }
         return average;
     }

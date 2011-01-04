@@ -1,6 +1,8 @@
 package org.navalplanner.web.montecarlo;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
@@ -175,9 +177,12 @@ public class MonteCarloTask {
         return BigDecimal.ZERO;
     }
 
+    private static final MathContext mathContext = new MathContext(2,
+            RoundingMode.HALF_UP);
+
     public BigDecimal getPessimisticDurationPercentageUpperLimit() {
         return BigDecimal.valueOf(pessimisticDurationPercentage).divide(
-                BigDecimal.valueOf(100));
+                BigDecimal.valueOf(100), mathContext);
     }
 
     public BigDecimal getNormalDurationPercentageLowerLimit() {
@@ -187,7 +192,7 @@ public class MonteCarloTask {
     public BigDecimal getNormalDurationPercentageUpperLimit() {
         BigDecimal result = BigDecimal.valueOf(pessimisticDurationPercentage
                 + normalDurationPercentage);
-        return result.divide(BigDecimal.valueOf(100));
+        return result.divide(BigDecimal.valueOf(100), mathContext);
     }
 
     public BigDecimal getOptimisticDurationPercentageLowerLimit() {
