@@ -1,3 +1,9 @@
+navalplan (0.9.2-2) maverick; urgency=low
+
+  * Added postgresql-client dependency needed because of dbconfig.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 05 Jan 2011 16:12:00 +0100
+
 navalplan (0.9.2-1) maverick; urgency=low
 
   * Updated to upstream.

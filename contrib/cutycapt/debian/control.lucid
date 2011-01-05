@@ -1,0 +1,16 @@
+Source: cutycapt
+Section: web
+Priority: optional
+Maintainer: Adrian Perez <aperez@igalia.com>
+Build-Depends: debhelper (>= 7.0.50), libqt4-dev
+Standards-Version: 3.8.4
+Homepage: http://cutycapt.sourceforge.net/
+
+Package: cutycapt
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Captures web pages to files in different formats.
+ CutyCapt is a small cross-platform command-line utility to capture
+ WebKit's rendering of a web page into a variety of vector and bitmap
+ formats, including SVG, PDF, PS, PNG, JPEG, TIFF, GIF, and BMP. See
+ IECapt for a similar tool based on Internet Explorer.
