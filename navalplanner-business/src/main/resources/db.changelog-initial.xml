@@ -52,7 +52,7 @@
         </update>
     </changeSet>
 
-    <changeSet id="change-types-of-start-and-finish-date-for-criterion-satisfaction" author="ogonzalez">
+    <changeSet id="change-types-start-finish-date-criterion-satisfaction" author="ogonzalez">
         <comment>Change types of start and finish date to date for criterion satisfaction table</comment>
         <modifyDataType tableName="criterion_satisfaction" columnName="start_date" newDataType="DATE"/>
         <modifyDataType tableName="criterion_satisfaction" columnName="finish_date" newDataType="DATE"/>
