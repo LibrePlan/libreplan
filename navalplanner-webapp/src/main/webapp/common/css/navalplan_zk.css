@@ -1209,6 +1209,10 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 	padding: 10px;
 }
 
+.resourcesload .z-west-body .z-tree-header ,
+.limitingresources .z-west-body .z-tree-header {
+    width: 100% !important;
+}
 
 .z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
     -moz-background-clip:border;

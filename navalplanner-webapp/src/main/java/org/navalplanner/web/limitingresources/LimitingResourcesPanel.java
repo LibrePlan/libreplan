@@ -31,14 +31,13 @@ import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -543,8 +542,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     itemEnd = itemEnd.plus(intervalIncrease());
                 }
             }
-            horizontalPagination.setDisabled(horizontalPagination.getItems()
-                    .size() < 2);
+            if (horizontalPagination.getItems().size() < 2) {
+                horizontalPagination.setDisabled(true);
+                horizontalPagination.setSelectedIndex(0);
+            }
         }
 
         public void goToHorizontalPage(int interval) {
