@@ -2,18 +2,18 @@
 # Traducciones al español para el paquete NavalPlan.
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
-# Copyright (C) 2010 Igalia, S.L.
+# Copyright (C) 2010-2011 Igalia, S.L.
 # This file is distributed under the same license as the NavalPlan package.
 # Diego Pino García <dpino@igalia.com>, 2009.
 # Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009, 2010.
-# Manuel Rego Casasnovas <mrego@igalia.com>, 2010.
+# Manuel Rego Casasnovas <mrego@igalia.com>, 2010, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-12-22 21:30+0100\n"
-"PO-Revision-Date: 2010-12-22 22:21+0100\n"
+"POT-Creation-Date: 2011-01-05 11:51+0100\n"
+"PO-Revision-Date: 2011-01-05 12:15+0100\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -42,16 +42,20 @@ msgstr "Inicio"
 msgid "Show reported hours"
 msgstr "Mostrar horas reportadas"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:75
+msgid "Show/Hide Progress"
+msgstr "Mostrar/ocultar progreso"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:85
 msgid "by criteria"
 msgstr "por criterios"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:81
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:82
 msgid "Show/Hide reported hours"
 msgstr "Mostrar/ocultar horas reportardas"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:45
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -79,7 +83,7 @@ msgstr "por recursos"
 msgid "Criterion"
 msgstr "Criterio"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:40
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
 msgid "Print"
 msgstr "Imprimir"
 
@@ -94,10 +98,6 @@ msgstr "Ver planificación"
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:422
 msgid "filtering by name"
 msgstr "filtrando por nombre"
-
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:74
-msgid "Show/Hide Advances"
-msgstr "Mostrar/ocultar avances"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:29
 msgid "End"
@@ -115,7 +115,7 @@ msgstr "Trimestre"
 msgid "None"
 msgstr "Ninguno"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:68
 msgid "Flatten/Unflatten tree"
 msgstr "Aplanar/expandir árbol"
 
@@ -136,11 +136,15 @@ msgstr "Filtro por nombres"
 msgid "Name"
 msgstr "Nombre"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:571
+msgid "Show progress"
+msgstr "Mostrar progreso"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
 msgid "Expand/Collapse all"
 msgstr "Expandir/plegar todo"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:33
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:34
 msgid "Create Project"
 msgstr "Crear proyecto"
 
@@ -152,21 +156,13 @@ msgstr "mostrando criterios"
 msgid "Year"
 msgstr "Año"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:571
-msgid "Show advances"
-msgstr "Mostrar avances"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:57
 msgid "Month"
 msgstr "Mes"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:60
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
 msgid "Show/Hide resources"
 msgstr "Mostrar/ocultar recursos"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:576
-msgid "Hide Advances"
-msgstr "Ocultar avances"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:220
 msgid "Set End-Start"
@@ -188,7 +184,7 @@ msgstr "Ocultar horas reportadas"
 msgid "Day"
 msgstr "Día"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:54
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:55
 msgid "Show/Hide Critical path"
 msgstr "Mostrar/ocultar camino crítico"
 
@@ -196,7 +192,7 @@ msgstr "Mostrar/ocultar camino crítico"
 msgid "showing resources"
 msgstr "mostrando recursos"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:57
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
 msgid "Show/Hide labels"
 msgstr "Mostrar/ocultar etiquetas"
 
@@ -205,7 +201,7 @@ msgid "Hour"
 msgstr "Hora"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:110
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:111
 msgid "Graphics"
 msgstr "Gráficas"
 
@@ -229,10 +225,14 @@ msgstr "Mostrar todos los elementos"
 msgid "All"
 msgstr "Todos"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
 msgid "Refresh"
 msgstr "Actualizar"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:553
 msgid "Show critical path"
 msgstr "Mostrar camino crítico"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:576
+msgid "Hide progress"
+msgstr "Ocultar progreso"
