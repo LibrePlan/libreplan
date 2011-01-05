@@ -536,9 +536,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     public String infoMessages() {
         if (getAdvances().size() > 0) {
-            return _("It is not allowed to consolidate advances.");
+            return _("It is not allowed to consolidate progress.");
         }
-        return _("There are not any assigned advance to current task");
+        return _("There are not any assigned progress to current task");
     }
 
     public void setConsolidationDTOs(

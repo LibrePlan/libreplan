@@ -750,7 +750,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("cannot include an Advance of the same Advance type twice"));
+                            _("cannot include a progress of the same progress type twice"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser
                     .showMessage(
@@ -760,7 +760,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _("incorrect initialization of the advance assignment controller."));
+                            _("incorrect initialization of the progress assignment controller."));
         }
     }
 

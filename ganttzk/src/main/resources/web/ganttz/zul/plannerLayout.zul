@@ -72,7 +72,7 @@ planner = self;
             <button id="showAdvances" onClick="planner.showAdvances();"
                 image="/common/img/ico_progress.png"
                 style="width:46px"
-                tooltiptext="${i18n:_('Show/Hide Advances')}"
+                tooltiptext="${i18n:_('Show/Hide Progress')}"
                 sclass="planner-command" />
             <combobox id="cbProgressTypes" width="1px" visible="false" sclass="progress-types"/>
         </hbox>

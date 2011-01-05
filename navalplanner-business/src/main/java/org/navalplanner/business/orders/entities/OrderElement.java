@@ -650,7 +650,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two advances in the same task"),
+                        _("Cannot spread two progress in the same task"),
                         this, OrderElement.class);
             }
         }
@@ -674,7 +674,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Task"),
+                        _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
             }
@@ -701,7 +701,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Task"),
+                        _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
             }

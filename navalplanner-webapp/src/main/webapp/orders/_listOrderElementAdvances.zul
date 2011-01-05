@@ -20,12 +20,12 @@
 
 <vbox id="${arg.id}"
 	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController" width="100%">
-    <panel title="${i18n:_('Advance assignments')}" border="normal">
+    <panel title="${i18n:_('Progress assignments')}" border="normal">
         <panelchildren>
             <vbox id="messagesContainerAdvances" />
             <vbox align="left" width="100%">
                 <hbox>
-                    <button label="${i18n:_('Add new advance assignment')}"
+                    <button label="${i18n:_('Add new progress assignment')}"
                         onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
                     </button>
                 </hbox>
@@ -38,7 +38,7 @@
                      onSelect="manageOrderElementAdvancesController.selectAdvanceLine(self.selectedItem);"
                      pageSize="4">
                     <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Advance unit type" />
+                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Progress unit type" />
                          <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="80px" align="center"/>
                          <listheader label="${i18n:_('Current value')}" width="80px" align="center"/>
                          <listheader label="${i18n:_('Percentage')}" width="80px" align="center"/>
@@ -70,7 +70,7 @@
                             </listhead>
                     </listbox>
                 </vbox>
-                <chart id="chart" title="${i18n:_('Advance Progress')}"
+                <chart id="chart" title="${i18n:_('Progress Evolution')}"
                     type="time_series" threeD="false"
                     model="@{manageOrderElementAdvancesController.chartData}"
                     xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"

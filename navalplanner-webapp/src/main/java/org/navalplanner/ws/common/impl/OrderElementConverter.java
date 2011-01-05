@@ -815,11 +815,11 @@ public final class OrderElementConverter {
                         .addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
-                        _("Duplicate value true report global Advance for task"
+                        _("Duplicate value true report global progress for task"
                                 + orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(
-                        _("Duplicate advance assignment for task "
+                        _("Duplicate progress assignment for task "
                                 + orderElement.getCode()));
             }
         }

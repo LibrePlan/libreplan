@@ -839,7 +839,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     public String gettooltipText(Order order) {
         orderDAO.reattachUnmodifiedEntity(order);
         StringBuilder result = new StringBuilder();
-        result.append(_("Advance") + ": ").append(getEstimatedAdvance(order)).append("% , ");
+        result.append(_("Progress") + ": ").append(getEstimatedAdvance(order)).append("% , ");
         result.append(_("Hours invested") + ": ").append(
                 getHoursAdvancePercentage(order)).append("% \n");
 

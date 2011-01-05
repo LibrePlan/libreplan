@@ -132,7 +132,7 @@ public class ManageOrderElementAdvancesController extends
             manageOrderElementAdvancesModel.confirmSave();
             return true;
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser.showMessage(Level.ERROR, _("cannot include an Advance of the same Advance type twice"));
+            messagesForUser.showMessage(Level.ERROR, _("cannot include a progress of the same progress type twice"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
                     Level.ERROR, _("spread values are not valid, at least one value should be true"));
@@ -321,10 +321,10 @@ public class ManageOrderElementAdvancesController extends
         String infoAdvanceAssignment = manageOrderElementAdvancesModel
                 .getInfoAdvanceAssignment();
         if (infoAdvanceAssignment.isEmpty()) {
-            return _("Advance measurements");
+            return _("Progress measurements");
         }
 
-        return _("Advance measurements: ") + infoAdvanceAssignment;
+        return _("Progress measurements: ") + infoAdvanceAssignment;
     }
 
     public boolean isReadOnlyAdvanceMeasurements() {
@@ -683,11 +683,11 @@ public class ManageOrderElementAdvancesController extends
                 && (advance.getAdvanceType().isQualityForm())) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
-                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+                    .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
-                    .setTooltiptext(_("Calculated advances can not be modified"));
+                    .setTooltiptext(_("Calculated progress can not be modified"));
         }
 
         hbox.appendChild(addMeasurementButton);
@@ -710,11 +710,11 @@ public class ManageOrderElementAdvancesController extends
                 && (advance.getAdvanceType().isQualityForm())) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+                    .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Calculated advances can not be removed"));
+                    .setTooltiptext(_("Calculated progress can not be removed"));
         }
 
         hbox.appendChild(removeButton);
@@ -1156,11 +1156,11 @@ public class ManageOrderElementAdvancesController extends
                     && (advance.getAdvanceType().isQualityForm())) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Advances measurements that are reported by quality forms can not be removed"));
+                        .setTooltiptext(_("Progress measurements that are reported by quality forms can not be removed"));
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Calculated advances measurement can not be removed"));
+                        .setTooltiptext(_("Calculated progress measurement can not be removed"));
             }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
@@ -1194,7 +1194,7 @@ public class ManageOrderElementAdvancesController extends
     private Button createAddMeasurementButton() {
         Button addButton = new Button();
         addButton.setLabel(_("Add measure"));
-        addButton.setTooltiptext(_("Add new advance measurement"));
+        addButton.setTooltiptext(_("Add new progress measurement"));
         return addButton;
     }
 
@@ -1203,7 +1203,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageNotAddMoreAdvances() {
-        String message = _("All advance types have already been assigned.");
+        String message = _("All progress types have already been assigned.");
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
     }
@@ -1217,7 +1217,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageDeleteSpread() {
-        String message = _("This advance can not be removed, because it is spread. It is necessary to select another advance as spread.");
+        String message = _("This progress can not be removed, because it is spread. It is necessary to select another progress as spread.");
         showErrorMessage(message);
     }
 
@@ -1225,13 +1225,13 @@ public class ManageOrderElementAdvancesController extends
         String message = "";
         switch (opcion) {
         case 1:
-            message = _("This advance can not be changed or removed, because it has got consolidated advances. It is needed to remove the consolidation on all its advances.");
+            message = _("This progress can not be changed or removed, because it has got consolidated progress. It is needed to remove the consolidation on all its progress.");
             break;
         case 2:
-            message = _("This advance measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
+            message = _("This progress measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
             break;
         case 3:
-            message = _("This advance measurement can not be in current date, because it is consolidated. it is necessary to select other date.");
+            message = _("This progress measurement can not be in current date, because it is consolidated. it is necessary to select other date.");
             break;
         }
         if (!StringUtils.isBlank(message)) {
@@ -1240,7 +1240,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessagesConsolidation(LocalDate date) {
-        String message = _("This advance measurement can not be in "
+        String message = _("This progress measurement can not be in "
                 + date
                 + ", because it is consolidated. it is necessary to select other date.");
         showErrorMessage(message);
@@ -1270,7 +1270,7 @@ public class ManageOrderElementAdvancesController extends
                     + manageOrderElementAdvancesModel.getUnitPrecision());
         }
         if (manageOrderElementAdvancesModel.lessThanPreviousMeasurements()) {
-            return _("Value is not valid, the value must be greater than the value of the previous advances.");
+            return _("Value is not valid, the value must be greater than the value of the previous progress.");
         }
         return null;
     }
@@ -1282,7 +1282,7 @@ public class ManageOrderElementAdvancesController extends
 
         if (!manageOrderElementAdvancesModel.isDistinctValidDate(value,
                 measurement)) {
-            return _("The date is not valid, the date must be unique for this advanced assignment");
+            return _("The date is not valid, the date must be unique for this progress assignment");
         }
         if (measurement != null) {
             if (manageOrderElementAdvancesModel
@@ -1292,7 +1292,7 @@ public class ManageOrderElementAdvancesController extends
                 manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
                 if (manageOrderElementAdvancesModel
                         .lessThanPreviousMeasurements()) {
-                    return _("Value is not valid, the value must be greater than the value of the previous advances.");
+                    return _("Value is not valid, the value must be greater than the value of the previous progress.");
                 }
             }
         }

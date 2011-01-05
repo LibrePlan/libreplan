@@ -896,7 +896,7 @@ public class OrderLineGroup extends OrderElement implements
         for (AdvanceAssignment advanceAssignment : advanceAssignments) {
             if (advanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two advances in the same task"),
+                        _("Cannot spread two progress in the same task"),
                         this, OrderElement.class);
             }
         }

@@ -568,12 +568,12 @@ public class Planner extends HtmlMacroComponent  {
                 context.hideAdvances();
                 diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command");
-                showAdvancesButton.setTooltiptext(_("Show advances"));
+                showAdvancesButton.setTooltiptext(_("Show progress"));
             } else {
                 context.showAdvances();
                 diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
                 showAdvancesButton.setSclass("planner-command clicked");
-                showAdvancesButton.setTooltiptext(_("Hide Advances"));
+                showAdvancesButton.setTooltiptext(_("Hide progress"));
             }
             isShowingAdvances = !isShowingAdvances;
         }

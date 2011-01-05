@@ -838,7 +838,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         private String buildTooltipText(BigDecimal progressPercentage) {
             StringBuilder result = new StringBuilder();
             result.append(_("Name: {0}", getName()) + "<br/>");
-            result.append(_("Advance") + ": ")
+            result.append(_("Progress") + ": ")
                     .append(progressPercentage).append("% , ");
 
             result.append(_("Hours invested") + ": ").append(

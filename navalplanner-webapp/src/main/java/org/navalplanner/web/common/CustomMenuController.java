@@ -251,7 +251,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
+                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", "")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
         if (isScenariosVisible()) {
@@ -271,7 +271,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Quality Forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
                 subItem(_("Cost Categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
                 subItem(_("Data Types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
-                    subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
+                    subItem(_("Progress"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
                     subItem(_("Criteria"),"/resources/criterions/criterions.zul","02-criterios.html#id1"),
                     subItem(_("Exception Days"),"/excetiondays/exceptionDays.zul",""),
                     subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),

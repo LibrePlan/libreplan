@@ -45,7 +45,7 @@
 
 <tabbox height="620px" id="tabboxOrderElement">
     <tabs>
-        <tab label="${i18n:_('Advances')}" />
+        <tab label="${i18n:_('Progress')}" />
         <tab label="${i18n:_('Labels')}" />
         <tab label="${i18n:_('Criterion requirement')}" />
         <tab label="${i18n:_('Materials')}" />

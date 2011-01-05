@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${i18n:_('Advance Types List')}">
+<window id="${arg.top_id}" title="${i18n:_('Progress Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
         pageSize="10" fixedLayout="true"
         rowRenderer="@{controller.advanceTypeRenderer}" >

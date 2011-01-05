@@ -59,7 +59,7 @@
                     <tab label="${i18n:_('Template Tree')}"
                         disabled="@{templatesForOrdersController.templateTreeDisabled}"
                         onSelect="templatesForOrdersController.openTemplateTree()" />
-                    <tab label="${i18n:_('Advances')}" />
+                    <tab label="${i18n:_('Progress')}" />
                     <tab label="${i18n:_('Labels')}" />
                     <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
                     <tab label="${i18n:_('Materials')}" />

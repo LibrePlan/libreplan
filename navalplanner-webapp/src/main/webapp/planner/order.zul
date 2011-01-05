@@ -65,19 +65,19 @@
 
     <window id="advanceWindow"
         apply="${advanceController}"
-        title="${i18n:_('Advance consolidation')}" width="700px"
+        title="${i18n:_('Progress consolidation')}" width="700px"
         closable="true" visible="false">
 
         <vbox>
 
-            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
                     style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
                 <panelchildren>
                     <label value="@{advanceController.infoMessages}" />
                 </panelchildren>
             </panel>
 
-            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
                     style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
                 <panelchildren>
                     <vbox>

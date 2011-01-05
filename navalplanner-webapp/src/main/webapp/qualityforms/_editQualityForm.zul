@@ -59,7 +59,7 @@
                                     selectedItem="@{controller.qualityForm.qualityFormType}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('Report advance')}" />
+                                <label value="${i18n:_('Report progress')}" />
                                 <checkbox checked="@{controller.qualityForm.reportAdvance}" />
                             </row>
                         </rows>

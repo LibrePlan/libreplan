@@ -42,7 +42,7 @@
                 onSelect = "controller.setupOrderDetails();"/>
             <tab id="tabAssignedHours" label="${i18n:_('Imputed hours')}"
                 onSelect = "controller.setupAssignedHoursToOrderElementController();"/>
-            <tab id="tabAdvances" label="${i18n:_('Advances')}"
+            <tab id="tabAdvances" label="${i18n:_('Progress')}"
                 onSelect = "controller.setupManageOrderElementAdvancesController();"/>
             <tab id="tabLabels" label="${i18n:_('Label')}"
                 onSelect = "controller.setupAssignedLabelsToOrderElementController();"/>

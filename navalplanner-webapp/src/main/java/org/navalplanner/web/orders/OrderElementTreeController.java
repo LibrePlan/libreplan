@@ -647,7 +647,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
         // To calculate other unit advances implement
         // getOtherAdvancesPercentage()
-        tooltipText.append(" " + _("Advance") + ":" + elem.getAdvancePercentage());
+        tooltipText.append(" " + _("Progress") + ":" + elem.getAdvancePercentage());
         tooltipText.append(".");
 
         // tooltipText.append(elem.getAdvancePercentage());
