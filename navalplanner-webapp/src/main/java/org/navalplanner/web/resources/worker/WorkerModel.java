@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -437,7 +437,8 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         }
 
         private CriterionSatisfaction createSatisfactionFor(Criterion criterion) {
-            return CriterionSatisfaction.create(new Date(), criterion, resource);
+            return CriterionSatisfaction.create(new LocalDate(), criterion,
+                    resource);
         }
 
         @Override

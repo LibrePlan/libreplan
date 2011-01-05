@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,6 +37,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -240,13 +240,13 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     }
 
     @Override
-    public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+    public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
         return !resource.query().from(this).enforcedInAll(
                 Interval.range(start, end)).result().isEmpty();
     }
 
     @Override
-    public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+    public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
         return !resource.query().from(this).enforcedInAll(
                 Interval.point(atThisDate)).result().isEmpty();
     }

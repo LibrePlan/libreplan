@@ -152,10 +152,9 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
             if ((each.getWorker().getId().equals(worker.getId()))
                     && (each.getId() != assignment.getId())) {
                 if (each.getFinishDate() != null) {
-                    range = Interval.range(each.getStartDate(), each
-                            .getFinishDate());
+                    range = Interval.range(each.getStart(), each.getFinish());
                 } else {
-                    range = Interval.from(each.getStartDate());
+                    range = Interval.from(each.getStart());
                 }
                 if ((range == null) || (interval.overlapsWith(range))) {
                     assigned = true;
@@ -191,10 +190,9 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
         for (MachineWorkerAssignment each : workerAssignments) {
             if (each.getStartDate() != null) {
                 if (each.getFinishDate() != null) {
-                    range = Interval.range(each.getStartDate(), each
-                            .getFinishDate());
+                    range = Interval.range(each.getStart(), each.getFinish());
                 } else {
-                    range = Interval.from(each.getStartDate());
+                    range = Interval.from(each.getStart());
                 }
                 if (((range == null)
                         && existsWorkerAssignmentWithSameWorker(each) || (existsWorkerAssignmentWithSameWorker(

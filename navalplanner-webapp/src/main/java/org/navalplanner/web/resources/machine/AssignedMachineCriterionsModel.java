@@ -23,7 +23,6 @@ package org.navalplanner.web.resources.machine;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -390,11 +389,9 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
                 .getCriterionSatisfaction();
         Criterion newCriterion = satisfactionDTO.getCriterionWithItsType()
                 .getCriterion();
-        Date newStartDate = satisfactionDTO.getStartDate();
-        Date newEndDate = satisfactionDTO.getEndDate();
         satisfaction.setCriterion(newCriterion);
-        satisfaction.setStartDate(newStartDate);
-        satisfaction.setEndDate(newEndDate);
+        satisfaction.setStartDate(satisfactionDTO.getStart());
+        satisfaction.setEndDate(satisfactionDTO.getEnd());
     }
 
     @Override
@@ -442,9 +439,9 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
                 if (satisfactionDTO.isIsDeleted()) {
                     satisfaction.setIsDeleted(true);
                 } else {
-                    satisfaction.setStartDate(satisfactionDTO.getStartDate());
+                    satisfaction.setStartDate(satisfactionDTO.getStart());
                     if (satisfactionDTO.getEndDate() != null) {
-                        satisfaction.finish(satisfactionDTO.getEndDate());
+                        satisfaction.finish(satisfactionDTO.getEnd());
                     }
                 }
             }

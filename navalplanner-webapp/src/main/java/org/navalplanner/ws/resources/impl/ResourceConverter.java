@@ -167,8 +167,8 @@ public class ResourceConverter {
                 StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
                 StringUtils.trim(criterionSatisfactionDTO.criterionName),
                 resource,
-                DateConverter.toDate(criterionSatisfactionDTO.startDate),
-                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+                DateConverter.toLocalDate(criterionSatisfactionDTO.startDate),
+                DateConverter.toLocalDate(criterionSatisfactionDTO.endDate));
 
         } catch (InstanceNotFoundException e) {
 
@@ -340,8 +340,8 @@ public class ResourceConverter {
             criterionSatisfaction.updateUnvalidated(
                 StringUtils.trim(criterionSatisfactionDTO.criterionTypeName),
                 StringUtils.trim(criterionSatisfactionDTO.criterionName),
-                DateConverter.toDate(criterionSatisfactionDTO.startDate),
-                DateConverter.toDate(criterionSatisfactionDTO.endDate));
+                DateConverter.toLocalDate(criterionSatisfactionDTO.startDate),
+                DateConverter.toLocalDate(criterionSatisfactionDTO.endDate));
 
         } catch (InstanceNotFoundException e) {
 

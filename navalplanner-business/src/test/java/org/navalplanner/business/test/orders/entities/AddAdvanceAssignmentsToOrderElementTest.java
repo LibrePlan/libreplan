@@ -114,7 +114,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
                 .setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(orderVersion);
         order.setDescription("description");
-        order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
+        order.setInitDate(CriterionSatisfactionDAOTest.year(2000)
+                .toDateTimeAtStartOfDay().toDate());
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code");

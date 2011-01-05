@@ -38,7 +38,6 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -143,8 +142,9 @@ public class GenericResourceAllocationTest {
     }
 
     private void setupIsSatisfiedByAll(Criterion criterion) {
-        expect(criterion.isSatisfiedBy(isA(Resource.class), isA(Date.class)))
-                .andReturn(true).anyTimes();
+        expect(
+                criterion.isSatisfiedBy(isA(Resource.class),
+                        isA(LocalDate.class))).andReturn(true).anyTimes();
     }
 
     private void givenWorkersWithoutLoadAndWithoutCalendar() {
@@ -199,7 +199,7 @@ public class GenericResourceAllocationTest {
 
     private org.navalplanner.business.resources.entities.Interval fromVeryEarlyTime() {
         return org.navalplanner.business.resources.entities.Interval
-                .from(new Date(0));
+                .from(new LocalDate(0, 1, 1));
     }
 
     private void givenCalendarsForResources(int capacity1, int capacity2,

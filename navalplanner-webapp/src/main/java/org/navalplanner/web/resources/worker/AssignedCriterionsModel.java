@@ -369,9 +369,9 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
                 if (satisfactionDTO.isIsDeleted()) {
                     satisfaction.setIsDeleted(true);
                 } else {
-                    satisfaction.setStartDate(satisfactionDTO.getStartDate());
+                    satisfaction.setStartDate(satisfactionDTO.getStart());
                     if (satisfactionDTO.getEndDate() != null) {
-                        satisfaction.finish(satisfactionDTO.getEndDate());
+                        satisfaction.finish(satisfactionDTO.getEnd());
                     }
                 }
             }

@@ -20,7 +20,6 @@
 package org.navalplanner.business.planner.entities;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -81,14 +80,14 @@ public class AvailabilityCalculator {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         LocalDate previousEnd = null;
         for (CriterionSatisfaction each : satisfactions) {
-            LocalDate startDate = asLocal(each.getStartDate());
+            LocalDate startDate = each.getStartDate();
             assert startDate != null : "satisfactions start date is not null";
             if (previousEnd == null) {
                 result.invalidUntil(startDate);
             } else {
                 result.invalidAt(previousEnd, startDate);
             }
-            previousEnd = asLocal(each.getEndDate());
+            previousEnd = each.getEndDate();
             if (previousEnd == null) {
                 break;
             }
@@ -97,10 +96,6 @@ public class AvailabilityCalculator {
             result.invalidFrom(previousEnd);
         }
         return result;
-    }
-
-    private static LocalDate asLocal(Date date) {
-        return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
 }
