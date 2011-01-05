@@ -4292,7 +4292,7 @@ msgid "ALL"
 msgstr "TODOS"
 
 #: navalplanner-webapp/src/main/webapp/planner/print_configuration.zul:75
-msgid "Show all prgoress"
+msgid "Show all progress"
 msgstr "Mostrar todo el progreso"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/resources/entities/CriterionSatisfaction.java:220
