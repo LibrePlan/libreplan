@@ -194,4 +194,8 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         return getTimeTracker().getMapper().getPixelsPerDay().doubleValue();
     }
 
+    public boolean getWeekLevel() {
+        return timeTracker.getDetailLevel() == ZoomLevel.DETAIL_FOUR;
+    }
+
 }

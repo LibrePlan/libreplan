@@ -29,9 +29,15 @@
                 </n:th>
             </n:tr>
             <n:tr id="watermark">
-                <n:td class="timetracker_column${(each.even and (top.zoomLevel != 'DETAIL_FOUR'))?'_even':''}${(each.bankHoliday?' bankHoliday':'')}${(each.currentPeriod?' timetracker_column_today':' ')}${(each.deadlinePeriod?' timetracker_column_deadline':'')}"
+                <n:td if="${!(top.weekLevel)}" class="timetracker_column${(each.even)?'_even':''}${(each.bankHoliday?' bankHoliday':'')}${(each.currentPeriod?' timetracker_column_today':' ')}${(each.deadlinePeriod?' timetracker_column_deadline':'')}"
                     forEach="${top.detailsSecondLevel}"
                     style="background-position: ${each.backgroundOffset}; width: ${each.size}px;">
+                    <n:div if="${each.currentPeriod and each.deadlinePeriod}" class="today_deadline" style="background-position: ${each.currentDayOffset}px" />
+                </n:td>
+                <n:td if="${top.weekLevel}" class="week-level timetracker_column ${(each.deadlinePeriod?' timetracker_column_deadline':'')}"
+                    forEach="${top.detailsSecondLevel}"
+                    style="background-position: ${each.bankHolidayWeek}; width: ${each.size}px;">
+                    <n:div if="${each.currentPeriod}" class="timetracker_column_today" style="background-position: ${each.currentDayOffset}px; width:auto;height:100%" />
                     <n:div if="${each.currentPeriod and each.deadlinePeriod}" class="today_deadline" style="background-position: ${each.currentDayOffset}px" />
                 </n:td>
             </n:tr>

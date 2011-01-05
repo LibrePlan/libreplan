@@ -426,6 +426,17 @@ div.box.limiting-unassigned {
     height: 650px;
 }
 
+
+#watermark .week-level.timetracker_column_even {
+    background-color: #FFFFFF !important;
+}
+
+#watermark .week-level {
+    background-image: url("../../zkau/web/ganttz/img/bank-holiday-shade.png"), url("../../zkau/web/ganttz/img/bank-holiday-shade.png"), url("../../zkau/web/ganttz/img/bank-holiday-shade.png"),url("../../zkau/web/ganttz/img/bank-holiday-shade.png"),url("../../zkau/web/ganttz/img/bank-holiday-shade.png"),url("../../zkau/web/ganttz/img/bank-holiday-shade.png"),url("../../zkau/web/ganttz/img/bank-holiday-shade.png");
+    background-repeat: repeat-y, repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y;
+    background-position: -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0;
+}
+
 .limitingresources #watermark .bankHoliday {
     height: 650px;
 }

@@ -37,6 +37,16 @@ public final class DetailItem {
     private boolean even;
     private boolean bankHoliday;
 
+    private String bankHolidayWeek;
+
+    public String getBankHolidayWeek() {
+        return bankHolidayWeek;
+    }
+
+    public void setBankHolidayWeek(String bankHolidayWeek) {
+        this.bankHolidayWeek = bankHolidayWeek;
+    }
+
     private boolean currentPeriod;
     private int currentDayOffset;
 
@@ -173,6 +183,10 @@ public final class DetailItem {
             offset = getDeadlineOffset() + "px";
         }
         return offset;
+    }
+
+    public void markBankHolidayWeek(String result) {
+        setBankHolidayWeek(result);
     }
 
     public void markBankHoliday() {
