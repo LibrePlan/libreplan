@@ -3406,7 +3406,7 @@ msgid " {0}s"
 msgstr " {0}s"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/resources/entities/Worker.java:133
-msgid "worker's NIF not specified"
+msgid "Worker ID cannot be empty"
 msgstr "NIF do traballador non especificado"
 
 #: navalplanner-webapp/src/main/webapp/planner/main.zul:60
@@ -4881,8 +4881,8 @@ msgid "The code cannot be empty."
 msgstr "O código non pode estar baleiro"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/externalcompanies/entities/ExternalCompany.java:163
-msgid "company NIF has to be unique. It is already used"
-msgstr "o NIF da empresa debe ser único. Xa está a ser usado"
+msgid "Company ID already used. It has to be be unique"
+msgstr "NIF da empresa xa está sendo usado. Debe ser único"
 
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:34
 msgid "Human hours per machine working hour within configuration unit"
@@ -5384,9 +5384,12 @@ msgstr "Imborrable"
 #: navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:71
 #: navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:36
 #: navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:28
-#: navalplanner-webapp/src/main/webapp/externalcompanies/_listExternalCompanies.zul:26
-#: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:45
-msgid "NIF"
+msgid "ID"
+msgstr "NIF"
+
+#: navalplanner-webapp/src/main/webapp/externalcompanies/_listExternalCompanies.zul:52
+#: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:106
+msgid "Company ID"
 msgstr "NIF"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/reassign/ReassignCommand.java:168

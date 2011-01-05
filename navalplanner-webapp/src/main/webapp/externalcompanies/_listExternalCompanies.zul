@@ -23,7 +23,7 @@
         pageSize="10">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" />
-            <newdatasortablecolumn label="${i18n:_('NIF')}" />
+            <newdatasortablecolumn label="${i18n:_('Company ID')}" />
             <newdatasortablecolumn label="${i18n:_('Client')}" />
             <newdatasortablecolumn label="${i18n:_('Subcontractor')}" />
             <newdatasortablecolumn label="${i18n:_('Integrated user')}" />

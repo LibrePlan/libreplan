@@ -68,7 +68,7 @@
                                 value="@{controller.worker.surname}" constraint="no empty" width="500px"/>
                         </row>
                         <row visible="@{controller.isRealWorker}">
-                            <label value="${i18n:_('NIF')}" />
+                            <label value="${i18n:_('ID')}" />
                             <textbox value="@{controller.worker.nif}" constraint="no empty"/>
                         </row>
                         <row visible="@{controller.isRealWorker}">

@@ -42,7 +42,7 @@
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                             </row>
                             <row>
-                                <label value="${i18n:_('NIF')}:" />
+                                <label value="${i18n:_('Company ID')}:" />
                                 <textbox id="nif"
                                     value="@{controller.company.nif}"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"/>

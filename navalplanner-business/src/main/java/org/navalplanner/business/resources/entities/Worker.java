@@ -130,7 +130,7 @@ public class Worker extends Resource implements Comparable {
         return getSurname() + ", " + getFirstName();
     }
 
-    @NotEmpty(message="worker's NIF not specified")
+    @NotEmpty(message="Worker ID cannot be empty")
     public String getNif() {
         return nif;
     }
