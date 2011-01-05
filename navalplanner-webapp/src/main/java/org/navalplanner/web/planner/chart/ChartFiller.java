@@ -578,31 +578,18 @@ public abstract class ChartFiller implements IChartFiller {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
         String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator);
+                graphicSpecificationCreator, false);
         return uri;
     }
 
     private Plotinfo createPlotInfoFrom(String dataSourceUri) {
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(adaptCallbackForTimePlot(dataSourceUri));
+        pds.setDataSourceUri(dataSourceUri);
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
         plotinfo.setPlotDataSource(pds);
         return plotinfo;
-    }
-
-    /*
-     * Get rid of the initial-slash of the callback uri:
-     *
-     * before: /callback/<callbackid>
-     * after: callback/<callbackid>
-     *
-     *This is needed because how the Javascript component of Timeplot handles
-     *the application webpath
-     * */
-    private String adaptCallbackForTimePlot(String uri){
-        return ! uri.equals("") ? uri.substring(1) : uri;
     }
 
     protected void appendPlotinfo(Timeplot chart, Plotinfo plotinfo,
