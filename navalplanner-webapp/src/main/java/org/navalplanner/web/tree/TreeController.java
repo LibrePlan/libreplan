@@ -86,7 +86,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     private final Class<T> type;
 
-    public abstract TreeitemRenderer getRenderer();
+    public abstract Renderer getRenderer();
 
     protected TreeController(Class<T> type) {
         this.type = type;
@@ -203,7 +203,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 T node = getSelectedNode();
                 getModel().addElementAt(node, name.getValue(),
                         hours.getValue());
-                refreshHoursBox(node);
+                getRenderer().refreshHoursValueForThisNodeAndParents(node);
             } else {
                 getModel().addElement(name.getValue(), hours.getValue());
             }
@@ -216,8 +216,6 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         hours.setValue(0);
         name.focus();
     }
-
-    protected abstract void refreshHoursBox(T node);
 
     protected abstract void filterByPredicateIfAny();
 
@@ -769,6 +767,29 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     }
                 }
             };
+        }
+
+        public void updateHoursFor(T element) {
+            if (!readOnly && isLine(element)) {
+                Intbox boxHours = (Intbox) hoursIntBoxByElement.get(element);
+                Treecell tc = (Treecell) boxHours.getParent();
+                setReadOnlyHoursCell(element, boxHours, tc);
+                boxHours.invalidate();
+                refreshHoursValueForThisNodeAndParents(element);
+            }
+        }
+
+        public void refreshHoursValueForThisNodeAndParents(T node) {
+            List<T> parentNodes = getModel().getParents(node);
+            for (T parent : parentNodes) {
+                Intbox intbox = hoursIntBoxByElement.get(parent);
+                // For the Order node there is no associated intbox
+                if (intbox != null) {
+                    Integer currentHours = getHoursGroupHandler()
+                            .getWorkHoursFor(parent);
+                    intbox.setValue(currentHours);
+                }
+            }
         }
 
         private Constraint getHoursConstraintFor(final T line) {

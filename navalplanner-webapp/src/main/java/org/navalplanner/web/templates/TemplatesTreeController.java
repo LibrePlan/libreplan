@@ -37,7 +37,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.TreeitemRenderer;
 
 /**
  * Controller for template element tree <br />
@@ -189,7 +188,7 @@ public class TemplatesTreeController extends
     }
 
     @Override
-    public TreeitemRenderer getRenderer() {
+    public TemplatesTreeRenderer getRenderer() {
         return new TemplatesTreeRenderer();
     }
 
@@ -220,11 +219,6 @@ public class TemplatesTreeController extends
         // There are no CriterionRequirement or advances in templates
             return tooltipText.toString();
         }
-
-    @Override
-    protected void refreshHoursBox(OrderElementTemplate node) {
-        // we do nothing, since there isn't an hours box in this tree
-    }
 
     @Override
     protected IHoursGroupHandler<OrderElementTemplate> getHoursGroupHandler() {

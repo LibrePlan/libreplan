@@ -61,7 +61,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -396,8 +395,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public class OrderElementTreeitemRenderer extends Renderer {
 
-        private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
-
         public OrderElementTreeitemRenderer() {
         }
 
@@ -442,7 +439,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
-            updateOrderElementHours(currentOrderElement);
+            updateHoursFor(currentOrderElement);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {
@@ -660,31 +657,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
-        updateOrderElementHours(currentOrderElement);
-    }
-
-    private void updateOrderElementHours(OrderElement orderElement) {
-        if ((!readOnly) && (orderElement instanceof OrderLine)) {
-            Intbox boxHours = (Intbox) getRenderer().hoursIntBoxByOrderElement
-                .get(orderElement);
-            boxHours.setValue(orderElement.getWorkHours());
-            Treecell tc = (Treecell) boxHours.getParent();
-            setReadOnlyHoursCell(orderElement, boxHours, tc);
-            boxHours.invalidate();
-        }
-    }
-
-    private void setReadOnlyHoursCell(OrderElement orderElement,
-            Intbox boxHours, Treecell tc) {
-        if ((!readOnly) && (orderElement instanceof OrderLine)) {
-            if (orderElement.getHoursGroups().size() > 1) {
-                boxHours.setReadonly(true);
-                tc.setTooltiptext(_("Not editable for containing more that an hours group."));
-            } else {
-                boxHours.setReadonly(false);
-                tc.setTooltiptext("");
-            }
-        }
+        getRenderer().updateHoursFor(currentOrderElement);
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
@@ -750,18 +723,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         } else {
             super.remove(element);
             orderElementCodeTextboxes.remove(element);
-        }
-    }
-
-    @Override
-    protected void refreshHoursBox(OrderElement node) {
-        List<OrderElement> parentNodes = getModel().getParents(node);
-        // Remove the last element because it's an
-        // Order node, not an OrderElement
-        parentNodes.remove(parentNodes.size() - 1);
-        for (OrderElement parent : parentNodes) {
-            getRenderer().hoursIntBoxByOrderElement.get(parent)
-                    .setValue(parent.getWorkHours());
         }
     }
 
