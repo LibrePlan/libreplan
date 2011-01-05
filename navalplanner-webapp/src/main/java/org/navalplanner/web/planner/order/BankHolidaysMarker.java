@@ -23,6 +23,7 @@ import org.apache.commons.lang.Validate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -33,14 +34,21 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 public final class BankHolidaysMarker implements
         IDetailItemModificator {
 
-    private final ICalendar calendar;
-
-    public BankHolidaysMarker(ICalendar calendar) {
-        Validate.notNull(calendar);
-        this.calendar = calendar;
+    public static BankHolidaysMarker create(BaseCalendar calendar) {
+        BaseCalendarModel.forceLoadBaseCalendar(calendar);
+        return new BankHolidaysMarker(calendar);
     }
 
-    public BankHolidaysMarker(BaseCalendar calendar) {
+    private final ICalendar calendar;
+
+    /**
+     * <strong>Important: </strong>Make sure that the provided calendar has all
+     * its associated data loaded.
+     *
+     * @param calendar
+     */
+    public BankHolidaysMarker(ICalendar calendar) {
+        Validate.notNull(calendar);
         this.calendar = calendar;
     }
 

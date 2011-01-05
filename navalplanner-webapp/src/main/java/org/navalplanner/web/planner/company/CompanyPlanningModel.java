@@ -288,8 +288,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         OrderPlanningModel.configureInitialZoomLevelFor(planner,
                 defaultZoomLevel);
 
-        configuration.setSecondLevelModificators(new BankHolidaysMarker(
-                getDefaultCalendar()));
+        configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
 
         if(expandPlanningViewChart) {

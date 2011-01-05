@@ -568,12 +568,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             PlannerConfiguration<TaskElement> configuration) {
         if (orderReloaded.getDeadline() != null) {
             configuration.setSecondLevelModificators(SeveralModificators
-                            .create(new BankHolidaysMarker(orderReloaded
+                            .create(BankHolidaysMarker.create(orderReloaded
                                     .getCalendar()),
                             createDeadlineShower(orderReloaded.getDeadline())));
         } else {
-            configuration.setSecondLevelModificators(new BankHolidaysMarker(
-                    orderReloaded.getCalendar()));
+            configuration.setSecondLevelModificators(BankHolidaysMarker.create(orderReloaded.getCalendar()));
         }
     }
 

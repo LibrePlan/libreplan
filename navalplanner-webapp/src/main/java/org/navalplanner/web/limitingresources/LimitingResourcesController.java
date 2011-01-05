@@ -204,7 +204,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
                 .getViewInterval(), ZoomLevel.DETAIL_THREE,
                 SeveralModificators.create(),
-                SeveralModificators.create(new BankHolidaysMarker(getDefaultCalendar())),parent);
+                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),parent);
     }
 
     private BaseCalendar getDefaultCalendar() {

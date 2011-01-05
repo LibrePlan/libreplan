@@ -268,7 +268,7 @@ public class ResourceLoadController implements Composer {
     private BankHolidaysMarker createBankHolidaysMarker() {
         BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
                 .getDefaultCalendar();
-        return new BankHolidaysMarker(defaultCalendar);
+        return BankHolidaysMarker.create(defaultCalendar);
     }
 
     private void buildResourcesLoadPanel() {
