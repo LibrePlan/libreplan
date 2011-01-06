@@ -82,7 +82,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected Tree tree;
 
-    protected TreeViewStateSnapshot snapshotOfOpenedNodes;
+    protected TreeViewStateSnapshot viewStateSnapshot;
 
     private final Class<T> type;
 
@@ -99,7 +99,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected void indent(T element) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
         filterByPredicateIfAny();
     }
@@ -117,20 +117,20 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected void unindent(T element) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
         filterByPredicateIfAny();
     }
 
     public void up() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         if (tree.getSelectedCount() == 1) {
             up(getSelectedNode());
         }
     }
 
     public void up(T element) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().up(element);
         filterByPredicateIfAny();
     }
@@ -142,7 +142,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void down(T element) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().down(element);
         filterByPredicateIfAny();
     }
@@ -156,7 +156,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             return;
         }
 
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
 
         Treerow from = (Treerow) dragged;
         T fromNode = type.cast(((Treeitem) from.getParent()).getValue());
@@ -173,7 +173,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void addElement() {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         try {
             if (tree.getSelectedCount() == 1) {
                 getModel().addElementAt(getSelectedNode());
@@ -189,7 +189,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     public void addElement(Component cmp) {
-        snapshotOfOpenedNodes = TreeViewStateSnapshot.snapshotOpened(tree);
+        viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         Textbox name = (Textbox) cmp.getFellow("newOrderElementName");
         Intbox hours = (Intbox) cmp.getFellow("newOrderElementHours");
 
@@ -222,15 +222,19 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     protected static class TreeViewStateSnapshot {
         private final Set<Object> all;
         private final Set<Object> dataOpen;
+        private final Object selected;
 
-        private TreeViewStateSnapshot(Set<Object> dataOpen, Set<Object> all) {
+        private TreeViewStateSnapshot(Set<Object> dataOpen, Set<Object> all,
+                Object selected) {
             this.dataOpen = dataOpen;
             this.all = all;
+            this.selected = selected;
         }
 
-        public static TreeViewStateSnapshot snapshotOpened(Tree tree) {
+        public static TreeViewStateSnapshot takeSnapshot(Tree tree) {
             Set<Object> dataOpen = new HashSet<Object>();
             Set<Object> all = new HashSet<Object>();
+            Object selected = null;
             if (tree != null && tree.getTreechildrenApi() != null) {
                 final Iterator<Treeitem> itemsIterator = tree
                         .getTreechildrenApi().getItems().iterator();
@@ -240,19 +244,23 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     if (treeitem.isOpen()) {
                         dataOpen.add(value);
                     }
+                    if (treeitem.isSelected()) {
+                        selected = value;
+                    }
                     all.add(value);
                 }
             }
-            return new TreeViewStateSnapshot(dataOpen, all);
+            return new TreeViewStateSnapshot(dataOpen, all, selected);
         }
 
         private static Object getAssociatedValue(Treeitem treeitem) {
             return treeitem.getValue();
         }
 
-        public void openIfRequired(Treeitem item) {
+        public void restorePreviousViewState(Treeitem item) {
             Object value = getAssociatedValue(item);
             item.setOpen(isNewlyCreated(value) || wasOpened(value));
+            item.setSelected(value == selected);
         }
 
         private boolean wasOpened(Object value) {
@@ -296,7 +304,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
 
     protected TreeViewStateSnapshot getSnapshotOfOpenedNodes() {
-        return snapshotOfOpenedNodes;
+        return viewStateSnapshot;
     }
 
     private void resetControlButtons() {
@@ -613,8 +621,8 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         private void applySnapshot(final Treeitem item) {
-            if (snapshotOfOpenedNodes != null) {
-                snapshotOfOpenedNodes.openIfRequired(item);
+            if (viewStateSnapshot != null) {
+                viewStateSnapshot.restorePreviousViewState(item);
             }
         }
 
