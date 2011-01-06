@@ -389,8 +389,7 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         Node<T> parentNode = find(parent);
         int[] changed = parentNode.down(find(node));
         if (changed.length != 0) {
-            fireEvent(parent, changed[0], changed[1],
-                    TreeDataEvent.CONTENTS_CHANGED);
+            fireRecreationOfInterval(parentNode, changed[0], changed[1]);
         }
     }
 
@@ -399,9 +398,16 @@ public class MutableTreeModel<T> extends AbstractTreeModel {
         Node<T> parentNode = find(parent);
         int[] changed = parentNode.up(find(node));
         if (changed.length != 0) {
-            fireEvent(parent, changed[0], changed[1],
-                    TreeDataEvent.CONTENTS_CHANGED);
+            fireRecreationOfInterval(parentNode, changed[0], changed[1]);
         }
+    }
+
+    private void fireRecreationOfInterval(Node<T> parentNode, int start,
+            int endInclusive) {
+        fireEvent(parentNode.value, start, endInclusive,
+                TreeDataEvent.INTERVAL_REMOVED);
+        fireEvent(parentNode.value, start, endInclusive,
+                TreeDataEvent.INTERVAL_ADDED);
     }
 
     public boolean isEmpty() {
