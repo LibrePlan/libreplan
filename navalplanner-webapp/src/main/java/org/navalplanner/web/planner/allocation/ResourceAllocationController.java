@@ -42,6 +42,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
+import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
@@ -91,9 +92,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private IResourceAllocationModel resourceAllocationModel;
 
-    private Grid orderElementHoursGrid;
-
     private ResourceAllocationRenderer resourceAllocationRenderer = new ResourceAllocationRenderer();
+
+    private TaskInformation taskInformation;
 
     private Grid allocationsGrid;
 
@@ -106,8 +107,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Grid calculationTypesGrid;
 
     private Radiogroup calculationTypeSelector;
-
-    private Button btnRecommendedAllocation;
 
     private Checkbox extendedViewCheckbox;
 
@@ -244,16 +243,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setWorkerSearchTab(workerSearchTab);
             formBinder
                     .setNewAllocationSelectorCombo(newAllocationSelectorCombo);
-            formBinder.setRecommendedAllocation(btnRecommendedAllocation);
+
+            initializeTaskInformationComponent();
 
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                     .from(formBinder.getCalculatedValue());
             calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
 
             tbResourceAllocation.setSelected(true);
-            orderElementHoursGrid.setModel(new ListModelList(
-                    resourceAllocationModel.getHoursAggregatedByCriterions()));
-            orderElementHoursGrid.setRowRenderer(createOrderElementHoursRenderer());
+
             newAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             newAllocationSelectorCombo
                     .setAllocationsAdder(resourceAllocationModel);
@@ -261,6 +259,20 @@ public class ResourceAllocationController extends GenericForwardComposer {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
         }
+    }
+
+    private void initializeTaskInformationComponent() {
+        taskInformation.initializeGridTaskRows(resourceAllocationModel
+                .getHoursAggregatedByCriterions());
+        taskInformation.onRecomendAllocation(formBinder
+                .getRecommendedAllocationListener());
+        taskInformation.onCalculateTotalHours(new ITotalHoursCalculationListener() {
+
+            @Override
+            public Integer getTotalHours() {
+                return resourceAllocationModel.getOrderHours();
+            }
+        });
     }
 
     private Label lbTaskStart;
@@ -306,22 +318,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
         public abstract Component cell(HoursRendererColumn column,
                 AggregatedHoursGroup data);
-    }
-
-    private static final ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup> hoursCellRenderer = new ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup>() {
-
-        @Override
-        public Component cellFor(
-                HoursRendererColumn column,
-                AggregatedHoursGroup data) {
-            return column.cell(column, data);
-        }
-    };
-
-    private RowRenderer createOrderElementHoursRenderer() {
-        return OnColumnsRowRenderer
-                .create(
-                        hoursCellRenderer, Arrays.asList(HoursRendererColumn.values()));
     }
 
     /**
@@ -575,10 +571,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
                 .valueOf(enumName);
         formBinder
                 .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
-    }
-
-    public Integer getOrderHours() {
-        return resourceAllocationModel.getOrderHours();
     }
 
     public List<? extends Object> getResourceAllocations() {

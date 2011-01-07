@@ -20,26 +20,23 @@
 
 package org.navalplanner.web.planner.limiting.allocation;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController.HoursRendererColumn;
+import org.navalplanner.web.planner.allocation.TaskInformation;
+import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
-import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -47,7 +44,6 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
@@ -76,11 +72,9 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     private Tab tabLimitingWorkerSearch;
 
-    private Grid gridLimitingOrderElementHours;
+    private TaskInformation limitingTaskInformation;
 
     private Grid gridLimitingAllocations;
-
-    private Label totalEstimatedHours;
 
     private boolean disableHours = true;
 
@@ -125,33 +119,28 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             limitingNewAllocationSelector.setAllocationsAdder(resourceAllocationModel);
             limitingNewAllocationSelectorCombo
                     .setAllocationsAdder(resourceAllocationModel);
-            gridLimitingOrderElementHours.setModel(new ListModelList(
-                    resourceAllocationModel.getHoursAggregatedByCriteria()));
-            gridLimitingOrderElementHours.setRowRenderer(createOrderElementHoursRenderer());
+
+            initializeTaskInformationComponent();
+
             Util.reloadBindings(gridLimitingAllocations);
-            Util.reloadBindings(totalEstimatedHours);
         } catch (Exception e) {
             LOG.error(e.getStackTrace());
         }
     }
 
-    private static final ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup> hoursCellRenderer =
-        new ICellForDetailItemRenderer<HoursRendererColumn, AggregatedHoursGroup>() {
+    private void initializeTaskInformationComponent() {
+        limitingTaskInformation.initializeGridTaskRows(resourceAllocationModel
+                .getHoursAggregatedByCriteria());
+        limitingTaskInformation.hideRecomendedAllocationButton();
+        limitingTaskInformation
+                .onCalculateTotalHours(new ITotalHoursCalculationListener() {
 
-        @Override
-        public Component cellFor(HoursRendererColumn column,
-                AggregatedHoursGroup data) {
-            return column.cell(column, data);
-        }
-    };
-
-    private RowRenderer createOrderElementHoursRenderer() {
-        return OnColumnsRowRenderer.create(hoursCellRenderer, Arrays
-                .asList(HoursRendererColumn.values()));
-    }
-
-    public Integer getOrderHours() {
-        return resourceAllocationModel.getOrderHours();
+                    @Override
+                    public Integer getTotalHours() {
+                        return resourceAllocationModel.getOrderHours();
+                    }
+                });
+        limitingTaskInformation.refreshTotalHours();
     }
 
     public List<LimitingAllocationRow> getResourceAllocationRows() {

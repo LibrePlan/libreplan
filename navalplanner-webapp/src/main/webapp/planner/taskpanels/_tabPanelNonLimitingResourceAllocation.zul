@@ -25,8 +25,12 @@
     macroURI="/resources/search/allocation_selector_combo.zul" ?>
 
 <?component name="newAllocationSelector"
- class="org.navalplanner.web.common.components.NewAllocationSelector"
+    class="org.navalplanner.web.common.components.NewAllocationSelector"
     macroURI="/resources/search/allocation_selector.zul" ?>
+
+<?component name="taskInformation"
+    class="org.navalplanner.web.planner.allocation.TaskInformation"
+    macroURI="_taskInformation.zul" ?>
 
 <tabpanel id="resourceAllocationTabpanel">
  <tabbox mold="accordion">
@@ -37,36 +41,9 @@
         <tabpanels>
             <tabpanel>
                 <hbox align="end">
-                <groupbox closable="false" height="170px">
-                    <caption label="${i18n:_('Task Information')}" />
-                    <vbox align="center">
-                        <grid id="orderElementHoursGrid">
-                            <columns>
-                                  <column width="200px" label="${i18n:_('Criteria')}" align="center"/>
-                                <column width="150px" label="${i18n:_('Type')}" align="center"/>
-                                <column width="100px" label="${i18n:_('Hours')}" align="center"/>
-                            </columns>
-                        </grid>
-                        <grid>
-                              <columns>
-                                  <column width="200px" align="center"/>
-                                <column width="150px" align="center"/>
-                                <column width="100px" align="center"/>
-                            </columns>
-                            <rows>
-                                <row>
-                                    <label  />
-                                    <label value="${i18n:_('Total Estimated hours')}:" />
-                                    <label value="@{allocationController.orderHours}"/>
-                                </row>
-                            </rows>
-                        </grid>
-                    </vbox>
 
-                    <vbox align="bottom">
-                        <button id="btnRecommendedAllocation" label="${i18n:_('Recommended Allocation')}" />
-                    </vbox>
-                </groupbox>
+                <!-- Task Information -->
+                <taskInformation id="taskInformation" />
 
                 <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
                     <caption label="${i18n:_('Allocation configuration')}" />

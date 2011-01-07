@@ -650,9 +650,8 @@ public class FormBinder {
         }
     }
 
-    public void setRecommendedAllocation(Button recommendedAllocation) {
-        this.btnRecommendedAllocation = recommendedAllocation;
-        btnRecommendedAllocation.addEventListener(Events.ON_CLICK, new EventListener() {
+    public EventListener getRecommendedAllocationListener() {
+        return new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
                 recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
@@ -662,7 +661,7 @@ public class FormBinder {
                      deactivatingRecommendedAllocation();
                  }
             }
-        });
+        };
     }
 
     private void activatingRecommendedAllocation() {

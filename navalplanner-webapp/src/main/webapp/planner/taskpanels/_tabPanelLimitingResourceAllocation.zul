@@ -29,6 +29,10 @@
     class="org.navalplanner.web.common.components.NewAllocationSelector"
     macroURI="/resources/search/allocation_selector.zul" ?>
 
+<?component name="taskInformation"
+    class="org.navalplanner.web.planner.allocation.TaskInformation"
+    macroURI="_taskInformation.zul" ?>
+
 <tabpanel id="${arg.id}">
  <tabbox mold="accordion">
         <tabs>
@@ -37,33 +41,9 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <!-- Order element information -->
-                <panel title="${i18n:_('Task Information')}:" border="normal">
-                    <panelchildren>
 
-                    <grid id="gridLimitingOrderElementHours">
-                        <columns>
-                              <column label="${i18n:_('Criteria')}" width="200px" align="center"/>
-                              <column label="${i18n:_('Type')}" width="200px" align="center"/>
-                              <column label="${i18n:_('Hours')}" align="center"/>
-                        </columns>
-                    </grid>
-                    <grid>
-                          <columns>
-                              <column width="200px" align="center"/>
-                              <column width="200px" align="center"/>
-                              <column align="center"/>
-                          </columns>
-                          <rows>
-                            <row>
-                                <label />
-                                <label value="${i18n:_('Total Estimated hours')}:" />
-                                <label id="totalEstimatedHours" value="@{limitingAllocationController.orderHours}" />
-                            </row>
-                          </rows>
-                    </grid>
-    </panelchildren>
-</panel>
+                <!-- Order element information -->
+                <taskInformation id="limitingTaskInformation" />
 
 <!-- Allocations -->
     <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
