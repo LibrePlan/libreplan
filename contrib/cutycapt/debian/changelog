@@ -1,3 +1,9 @@
+cutycapt (20110107-1) lenny squeeze intrepid karmic lucid maverick; urgency=low
+
+  * Updated to NavalPlan package naming.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 07 Jan 2011 10:35:17 +0100
+
 cutycapt (20110104.1) lenny squeeze intrepid karmic lucid maverick; urgency=low
 
   * Fixed debian/rules thanks to a patch by Adrian Perez <aperez@igalia.com>.
