@@ -1,3 +1,11 @@
+navalplan (1.0.0-1) maverick; urgency=low
+
+  * Updated to upstream. Released version 1.0.
+  * Added upgrade script needed to upgrade to version 1.0.
+  * Added debian/rules specific for debian squeeze.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 07 Jan 2011 16:45:00 +0100
+
 navalplan (0.9.2-3) maverick; urgency=low
 
   * Added missing postgresql dependency.
