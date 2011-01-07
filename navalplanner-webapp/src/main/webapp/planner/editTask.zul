@@ -19,19 +19,19 @@
 -->
 
 <?component name="tabPanelTaskProperties"
-    macroURI="/planner/_tabPanelTaskProperties.zul"
+    macroURI="/planner/taskpanels/_tabPanelTaskProperties.zul"
     inline="true" ?>
 
 <?component name="tabPanelNonLimitingResourceAllocation"
-    macroURI="/planner/_tabPanelNonLimitingResourceAllocation.zul"
+    macroURI="/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul"
     inline="true" ?>
 
 <?component name="tabPanelLimitingResourceAllocation"
-    macroURI="/planner/_tabPanelLimitingResourceAllocation.zul"
+    macroURI="/planner/taskpanels/_tabPanelLimitingResourceAllocation.zul"
     inline="true" ?>
 
 <?component name="tabPanelSubcontract"
-    macroURI="/planner/_tabPanelSubcontract.zul"
+    macroURI="/planner/taskpanels/_tabPanelSubcontract.zul"
     inline="true" ?>
 
 <zk>
