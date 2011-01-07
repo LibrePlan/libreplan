@@ -542,9 +542,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     itemEnd = itemEnd.plus(intervalIncrease());
                 }
             }
+            horizontalPagination.setSelectedIndex(0);
             if (horizontalPagination.getItems().size() < 2) {
                 horizontalPagination.setDisabled(true);
-                horizontalPagination.setSelectedIndex(0);
             }
         }
 
