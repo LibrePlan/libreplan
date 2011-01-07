@@ -2259,10 +2259,6 @@ msgstr "Las dependencias tienen prioridad"
 msgid "Budget At Completion"
 msgstr "Total coste planificado"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/ExternalCompanyBandboxFinder.java:52
-msgid "Nif"
-msgstr "Nif"
-
 #: navalplanner-webapp/src/main/webapp/orders/components/_listOrderElementLabels.zul:76
 msgid "Assign Label"
 msgstr "Asignar etiqueta"
@@ -2727,8 +2723,8 @@ msgstr "Propiedades de la tarea"
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/workreports/impl/WorkReportConverter.java:179
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/workreports/impl/WorkReportConverter.java:449
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/workreports/impl/WorkReportConverter.java:514
-msgid "There is no resource with this nif"
-msgstr "No hay otro recurso con este nif"
+msgid "There is no resource with this ID"
+msgstr "No hay otro recurso con este NIF"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/CostCategoryCRUDController.java:172
 msgid "Cost category saved"
@@ -5403,6 +5399,7 @@ msgstr "Imborrable"
 #: navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:71
 #: navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:36
 #: navalplanner-webapp/src/main/webapp/resources/criterions/_workers.zul:28
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/ExternalCompanyBandboxFinder.java:52
 msgid "ID"
 msgstr "NIF"
 

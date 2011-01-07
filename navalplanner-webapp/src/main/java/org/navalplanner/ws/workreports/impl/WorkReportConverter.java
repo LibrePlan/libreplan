@@ -104,7 +104,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -176,7 +176,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -446,7 +446,7 @@ public final class WorkReportConverter {
                 workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -511,7 +511,7 @@ public final class WorkReportConverter {
             workReportLine.setResource(resource);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("There is no resource with this nif"));
+                    _("There is no resource with this ID"));
         }
 
         /* Step 3.3: Update the order element. */
