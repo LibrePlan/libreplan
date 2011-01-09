@@ -20,7 +20,11 @@
 
 package org.navalplanner.business.resources.entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -217,6 +221,17 @@ public class CriterionType extends IntegrationEntity implements
 
     @Valid
     public Set<Criterion> getCriterions() {
+        return criterions;
+    }
+
+    public List<Criterion> getSortCriterions() {
+        List<Criterion> criterions = new ArrayList<Criterion>(getCriterions());
+        Collections.sort(criterions, new Comparator<Criterion>() {
+            @Override
+            public int compare(Criterion o1, Criterion o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         return criterions;
     }
 

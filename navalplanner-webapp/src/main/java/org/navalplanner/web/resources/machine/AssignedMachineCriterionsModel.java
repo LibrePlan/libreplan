@@ -212,7 +212,7 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
         List<CriterionType> listTypes = getCriterionTypes();
         for (CriterionType criterionType : listTypes) {
-            Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+            List<Criterion> listCriterion = getDirectCriterions(criterionType);
             getCriterionWithItsType(criterionType, listCriterion);
         }
         return criterionsWithItsTypes;
@@ -224,7 +224,7 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
         List<CriterionType> listTypes = getCriterionWorkersTypes();
         for (CriterionType criterionType : listTypes) {
-            Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+            List<Criterion> listCriterion = getDirectCriterions(criterionType);
             getCriterionWithItsType(criterionType, listCriterion);
         }
         return criterionsWithItsTypes;
@@ -244,7 +244,7 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
     }
 
     private void getCriterionWithItsType(CriterionType type,
-            Set<Criterion> children) {
+            List<Criterion> children) {
         for (Criterion criterion : children) {
             // Create the criterion with its criterionType and its Hierarchy
             // label
@@ -253,14 +253,14 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
 
             // Add to the list
             criterionsWithItsTypes.add(criterionAndType);
-            getCriterionWithItsType(type, criterion.getChildren());
+            getCriterionWithItsType(type, criterion.getSortedChildren());
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(
+    private static List<Criterion> getDirectCriterions(
             CriterionType criterionType) {
-        Set<Criterion> criterions = new HashSet<Criterion>();
-        for (Criterion criterion : criterionType.getCriterions()) {
+        List<Criterion> criterions = new ArrayList<Criterion>();
+        for (Criterion criterion : criterionType.getSortCriterions()) {
             if (criterion.getParent() == null) {
                 criterions.add(criterion);
             }

@@ -182,7 +182,7 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
         List<CriterionType> listTypes = getCriterionTypes();
         for (CriterionType criterionType : listTypes) {
             if (criterionType.isEnabled()) {
-                Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+                List<Criterion> listCriterion = getDirectCriterions(criterionType);
                 getCriterionWithItsType(criterionType, listCriterion);
             }
         }
@@ -201,7 +201,7 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
     }
 
     private void getCriterionWithItsType(CriterionType type,
-            Set<Criterion> children) {
+            List<Criterion> children) {
         for (Criterion criterion : children) {
             if (criterion.isActive()) {
                 // Create the criterion with its criterionType and its Hierarchy
@@ -210,15 +210,15 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
                         type, criterion);
                 // Add to the list
                 criterionsWithItsTypes.add(criterionAndType);
-                getCriterionWithItsType(type, criterion.getChildren());
+                getCriterionWithItsType(type, criterion.getSortedChildren());
             }
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(
+    private static List<Criterion> getDirectCriterions(
             CriterionType criterionType) {
-        Set<Criterion> criterions = new HashSet<Criterion>();
-        for (Criterion criterion : criterionType.getCriterions()) {
+        List<Criterion> criterions = new ArrayList<Criterion>();
+        for (Criterion criterion : criterionType.getSortCriterions()) {
             if (criterion.getParent() == null) {
                 criterions.add(criterion);
             }

@@ -298,6 +298,18 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         return children;
     }
 
+    @Valid
+    public List<Criterion> getSortedChildren() {
+        List<Criterion> children = new ArrayList<Criterion>(getChildren());
+        Collections.sort(children, new Comparator<Criterion>() {
+            @Override
+            public int compare(Criterion o1, Criterion o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return children;
+    }
+
     public void setChildren(Set<Criterion> children) {
         this.children = children;
     }
