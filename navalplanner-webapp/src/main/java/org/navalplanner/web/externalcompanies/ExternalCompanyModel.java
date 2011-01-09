@@ -115,4 +115,20 @@ public class ExternalCompanyModel implements IExternalCompanyModel {
         externalCompany.setCompanyUser(companyUser);
     }
 
+    @Override
+    @Transactional
+    public boolean deleteCompany(ExternalCompany company) {
+        try {
+            externalCompanyDAO.remove(company.getId());
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isAlreadyInUse(ExternalCompany company) {
+        return externalCompanyDAO.isAlreadyInUse(company);
+    }
 }

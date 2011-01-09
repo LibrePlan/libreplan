@@ -22,8 +22,10 @@ package org.navalplanner.web.externalcompanies;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.users.entities.User;
@@ -36,18 +38,23 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
  * Controller for CRUD actions over a {@link User}
- *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @SuppressWarnings("serial")
 public class ExternalCompanyCRUDController extends GenericForwardComposer
         implements IExternalCompanyCRUDController {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(ExternalCompanyCRUDController.class);
 
     private IExternalCompanyModel externalCompanyModel;
 
@@ -75,7 +82,8 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         getVisibility().showOnly(listWindow);
         appURI = (Textbox) createWindow.getFellow("appURI");
         ourCompanyLogin = (Textbox) createWindow.getFellow("ourCompanyLogin");
-        ourCompanyPassword = (Textbox) createWindow.getFellow("ourCompanyPassword");
+        ourCompanyPassword = (Textbox) createWindow
+                .getFellow("ourCompanyPassword");
     }
 
     @Override
@@ -83,7 +91,8 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         externalCompanyModel.initCreate();
         createWindow.setTitle(_("Create Company"));
         getVisibility().showOnly(createWindow);
-        setInteractionFieldsActivation(getCompany().getInteractsWithApplications());
+        setInteractionFieldsActivation(getCompany()
+                .getInteractsWithApplications());
         clearAutocompleteUser();
         Util.reloadBindings(createWindow);
     }
@@ -95,6 +104,10 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         }
     }
 
+    public void goToEditForm(ExternalCompanyDTO dto) {
+        goToEditForm(dto.getCompany());
+    }
+
     @Override
     public void goToEditForm(ExternalCompany company) {
         externalCompanyModel.initEdit(company);
@@ -103,6 +116,41 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         setInteractionFieldsActivation(company.getInteractsWithApplications());
         clearAutocompleteUser();
         Util.reloadBindings(createWindow);
+    }
+
+    public void confirmRemove(ExternalCompanyDTO dto) {
+        try {
+            int status = Messagebox.show(_(
+                    "Confirm deleting {0}. Are you sure?", dto.getCompany()
+                            .getName()), _("Delete"), Messagebox.OK
+                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                goToDelete(dto);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+            LOG.error(_("Error on showing removing element: ", dto.getCompany()
+                    .getId()), e);
+        }
+    }
+
+    private void goToDelete(ExternalCompanyDTO dto) {
+        ExternalCompany company = dto.getCompany();
+        boolean alreadyInUse = externalCompanyModel.isAlreadyInUse(company);
+        if (alreadyInUse) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _(
+                                    "You can not remove the company \"{0}\" because is already in use in some project or in some subcontrated task.",
+                                    company.getName()));
+        } else {
+            externalCompanyModel.deleteCompany(dto.getCompany());
+            Util.reloadBindings(self);
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}", company
+                    .getName()));
+        }
+
     }
 
     @Override
@@ -128,13 +176,12 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     }
 
     public boolean save() {
-        if(!ConstraintChecker.isValid(createWindow)) {
+        if (!ConstraintChecker.isValid(createWindow)) {
             return false;
         }
         try {
             externalCompanyModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Company saved"));
+            messagesForUser.showMessage(Level.INFO, _("Company saved"));
             return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
@@ -146,6 +193,14 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         return externalCompanyModel.getCompanies();
     }
 
+    public List<ExternalCompanyDTO> getCompaniesDTO() {
+        List<ExternalCompanyDTO> result = new ArrayList<ExternalCompanyDTO>();
+        for (ExternalCompany company : getCompanies()) {
+            result.add(new ExternalCompanyDTO(company));
+        }
+        return result;
+    }
+
     public ExternalCompany getCompany() {
         return externalCompanyModel.getCompany();
     }
@@ -153,17 +208,15 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     public void setCompanyUser(Comboitem selectedItem) {
         if (selectedItem != null) {
             externalCompanyModel.setCompanyUser((User) selectedItem.getValue());
-        }
-        else {
+        } else {
             externalCompanyModel.setCompanyUser(null);
         }
     }
 
     public void setInteractionFieldsActivation(boolean active) {
-        if(active) {
+        if (active) {
             enableInteractionFields();
-        }
-        else {
+        } else {
             disableInteractionFields();
         }
     }
@@ -173,8 +226,10 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         ourCompanyLogin.setDisabled(false);
         ourCompanyPassword.setDisabled(false);
         appURI.setConstraint("no empty:" + _("cannot be null or empty"));
-        ourCompanyLogin.setConstraint("no empty:" + _("cannot be null or empty"));
-        ourCompanyPassword.setConstraint("no empty:" + _("cannot be null or empty"));
+        ourCompanyLogin.setConstraint("no empty:"
+                + _("cannot be null or empty"));
+        ourCompanyPassword.setConstraint("no empty:"
+                + _("cannot be null or empty"));
     }
 
     private void disableInteractionFields() {
@@ -188,7 +243,19 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
 
     private OnlyOneVisible getVisibility() {
         return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow)
-                : visibility;
+                listWindow) : visibility;
+    }
+
+    public void sortByDefaultByName() {
+        Column column = (Column) listWindow.getFellowIfAny("columnName");
+        if (column != null) {
+            if (column.getSortDirection().equals("ascending")) {
+                column.sort(false, false);
+                column.setSortDirection("ascending");
+            } else if (column.getSortDirection().equals("descending")) {
+                column.sort(true, false);
+                column.setSortDirection("descending");
+            }
+        }
     }
 }
