@@ -26,7 +26,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.zkoss.zul.Progressmeter;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -35,7 +35,7 @@ import org.zkoss.zul.Progressmeter;
 public interface IMonteCarloModel {
 
     Map<LocalDate, BigDecimal> calculateMonteCarlo(List<MonteCarloTask> tasks,
-            int times, Progressmeter progressMonteCarloCalculation);
+            int times, IDesktopUpdatesEmitter<Integer> iterationProgress);
 
     void setCriticalPath(List<TaskElement> criticalPath);
 

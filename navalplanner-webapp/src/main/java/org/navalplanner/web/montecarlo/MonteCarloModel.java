@@ -49,7 +49,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zul.Progressmeter;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -388,9 +388,10 @@ public class MonteCarloModel implements IMonteCarloModel {
     @Override
     public Map<LocalDate, BigDecimal> calculateMonteCarlo(
             List<MonteCarloTask> _tasks, int iterations,
-            Progressmeter progressMonteCarloCalculation) {
+            IDesktopUpdatesEmitter<Integer> iterationProgress) {
 
-        MonteCarloCalculation monteCarloCalculation = new MonteCarloCalculation(copyOf(_tasks), iterations, progressMonteCarloCalculation);
+        MonteCarloCalculation monteCarloCalculation = new MonteCarloCalculation(
+                copyOf(_tasks), iterations, iterationProgress);
         Map<LocalDate, BigDecimal> monteCarloValues = monteCarloCalculation.doCalculation();
 
         // Convert number of times to probability
@@ -432,15 +433,16 @@ public class MonteCarloModel implements IMonteCarloModel {
 
         private int iterations;
 
-        private Progressmeter progressmeter;
+        private IDesktopUpdatesEmitter<Integer> iterationProgress;
 
         public MonteCarloCalculation(List<MonteCarloTask> tasks,
-                int iterations, Progressmeter progressmeter) {
+                int iterations,
+                IDesktopUpdatesEmitter<Integer> iterationProgress) {
             adjustDurationDays(tasks);
             initializeEstimationRanges(tasks);
             this.tasks = tasks;
             this.iterations = iterations;
-            this.progressmeter = progressmeter;
+            this.iterationProgress = iterationProgress;
         }
 
         public Map<LocalDate, BigDecimal> doCalculation() {
@@ -455,19 +457,15 @@ public class MonteCarloModel implements IMonteCarloModel {
                 times = times != null ? times.add(BigDecimal.ONE) : BigDecimal.ONE;
                 result.put(endDate, times);
                 if (i % ONE_PERCENT == 0) {
-                    increaseProgressMeter();
+                    increaseProgressMeter((i * 100) / iterations);
                 }
             }
 
             return result;
         }
 
-        private void increaseProgressMeter() {
-            if (progressmeter != null) {
-                final int currentValue = progressmeter.getValue();
-                progressmeter.setValue(currentValue + 1);
-                progressmeter.invalidate();
-            }
+        private void increaseProgressMeter(int completedPercent) {
+            iterationProgress.doUpdate(completedPercent);
         }
 
         private LocalDate calculateEndDateFor(List<MonteCarloTask> tasks,

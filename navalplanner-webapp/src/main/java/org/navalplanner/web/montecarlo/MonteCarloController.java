@@ -33,8 +33,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
+import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -109,12 +112,41 @@ public class MonteCarloController extends GenericForwardComposer {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                int iterations = getIterations();
-                validateRowsPercentages();
-                Map<LocalDate, BigDecimal> monteCarloData = monteCarloModel
-                        .calculateMonteCarlo(getSelectedCriticalPath(),
-                                iterations, progressMonteCarloCalculation);
-                showMonteCarloGraph(monteCarloData);
+                IBackGroundOperation<IDesktopUpdate> operation = new IBackGroundOperation<IDesktopUpdate>() {
+
+                     @Override
+                    public void doOperation(
+                            IDesktopUpdatesEmitter<IDesktopUpdate> desktopUpdateEmitter) {
+                        executeMontecarlo(desktopUpdateEmitter);
+                     }
+                };
+                LongOperationFeedback.progressive(self.getDesktop(), operation);
+            }
+
+            private void executeMontecarlo(
+                    IDesktopUpdatesEmitter<IDesktopUpdate> updatesEmitter) {
+                try {
+                    updatesEmitter.doUpdate(disableButton(true));
+                    int iterations = getIterations();
+                    validateRowsPercentages();
+                    final Map<LocalDate, BigDecimal> monteCarloData = monteCarloModel
+                            .calculateMonteCarlo(getSelectedCriticalPath(),
+                                    iterations,
+                                    percentageCompletedNotifier(updatesEmitter));
+                    updatesEmitter.doUpdate(showCalculatedData(monteCarloData));
+                } finally {
+                    updatesEmitter.doUpdate(disableButton(false));
+                }
+            }
+
+            private IDesktopUpdate disableButton(final boolean disable) {
+                return new IDesktopUpdate() {
+
+                    @Override
+                    public void doUpdate() {
+                        btnRunMonteCarlo.setDisabled(disable);
+                    }
+                };
             }
 
             private int getIterations() {
@@ -156,16 +188,47 @@ public class MonteCarloController extends GenericForwardComposer {
                 }
             }
 
+            private IDesktopUpdatesEmitter<Integer> percentageCompletedNotifier(
+                    final IDesktopUpdatesEmitter<IDesktopUpdate> updatesEmitter) {
+                return new IDesktopUpdatesEmitter<Integer>() {
+
+                    @Override
+                    public void doUpdate(final Integer percentage) {
+                        updatesEmitter
+                                .doUpdate(showCompletedPercentage(percentage));
+                    }
+
+                    private IDesktopUpdate showCompletedPercentage(
+                            final Integer value) {
+                        return new IDesktopUpdate() {
+                            @Override
+                            public void doUpdate() {
+                                progressMonteCarloCalculation.setValue(value);
+                            }
+                        };
+                    }
+                };
+            }
+
+            private IDesktopUpdate showCalculatedData(
+                    final Map<LocalDate, BigDecimal> monteCarloData) {
+                return new IDesktopUpdate() {
+
+                    @Override
+                    public void doUpdate() {
+                        showMonteCarloGraph(monteCarloData);
+                    }
+                };
+            }
+
             private void showMonteCarloGraph(Map<LocalDate, BigDecimal> data) {
                 monteCarloChartWindow = createMonteCarloGraphWindow(data);
                 try {
-                    monteCarloChartWindow.doModal();
-                    progressMonteCarloCalculation.setValue(0);
-                } catch (SuspendNotAllowedException e) {
-                    e.printStackTrace();
+                    monteCarloChartWindow.setMode("modal");
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
+                progressMonteCarloCalculation.setValue(0);
             }
 
             private Window createMonteCarloGraphWindow(
