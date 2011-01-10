@@ -49,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Tests for {@link BaseCalendarModel}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -142,7 +143,7 @@ public class BaseCalendarModelTest {
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendars().get(
                 previous);
         baseCalendarModel.initRemove(baseCalendar);
-        baseCalendarModel.confirmRemove();
+        baseCalendarModel.confirmRemove(baseCalendar);
         assertThat(baseCalendarModel.getBaseCalendars().size(),
                 equalTo(previous));
     }
