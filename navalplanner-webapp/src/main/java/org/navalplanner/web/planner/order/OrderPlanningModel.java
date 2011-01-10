@@ -1210,13 +1210,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             // Stacked area: load - otherLoad - max - overload - otherOverload
-            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotOrderOverload, valueGeometry,
                     timeGeometry);
             appendPlotinfo(chart, plotOtherOverload, valueGeometry,
                     timeGeometry);
+            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
+
+
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");
