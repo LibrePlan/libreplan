@@ -19,7 +19,8 @@
 -->
 
 <?component name="criterionsTree" inline="true" macroURI="_criterionsTree.zul"?>
-<window id="${arg.top_id}" title="${arg.title}">
+
+<window id="${arg.id}" title="${arg.title}">
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Edit')}" width="850"></tab>
@@ -49,8 +50,9 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Hierarchy')}" />
-                            <checkbox checked="@{controller.criterionType.allowHierarchy}"
-                                onCheck="controller.confirmDisabledHierarchy(self);" />
+                            <checkbox id="cbHierarchy"
+                                    checked="@{controller.criterionType.allowHierarchy}"
+                                    onCheck="controller.confirmDisabledHierarchy()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Enabled')}" />

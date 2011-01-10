@@ -66,8 +66,6 @@ public interface ICriterionsModel extends IIntegrationEntityModel {
 
     public void prepareForEdit(CriterionType criterionType);
 
-    public void prepareForRemove(CriterionType criterionType);
-
     /**
      * Reloads {@link CriterionType} from DB and all its criterions
      * This method should be call after saveAndContinue() from controller to
@@ -75,7 +73,7 @@ public interface ICriterionsModel extends IIntegrationEntityModel {
      */
     void reloadCriterionType();
 
-    public void remove(CriterionType criterionType);
+    public void confirmRemove(CriterionType criterionType);
 
     void saveCriterionType() throws ValidationException;
 
@@ -83,7 +81,7 @@ public interface ICriterionsModel extends IIntegrationEntityModel {
 
     boolean isDeletable(Criterion criterion);
 
-    boolean isDeletable(CriterionType criterionType);
+    boolean canRemove(CriterionType criterionType);
 
     void addForRemoval(Criterion criterion);
 }
