@@ -108,6 +108,12 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         return (getModel() != null) ? getModel().asTree() : null;
     }
 
+    public void bindModelIfNeeded() {
+        if (tree.getModel() != getTreeModel()) {
+            tree.setModel(getTreeModel());
+        }
+    }
+
     protected abstract EntitiesTree<T> getModel();
 
     public void unindent() {
