@@ -59,6 +59,7 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * Model for UI operations related to {@link BaseCalendar}.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -384,12 +385,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isParent() {
-        if (getBaseCalendar() == null) {
+    public boolean isParent(BaseCalendar calendar) {
+        if (calendar == null) {
             return false;
         }
-
-        return !baseCalendarDAO.findByParent(getBaseCalendar()).isEmpty();
+        return !baseCalendarDAO.findByParent(calendar).isEmpty();
     }
 
     @Override
@@ -515,9 +515,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
 
     @Override
     @Transactional
-    public void confirmRemove() {
+    public void confirmRemove(BaseCalendar calendar) {
         try {
-            baseCalendarDAO.remove(getBaseCalendar().getId());
+            baseCalendarDAO.remove(calendar.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
         }
