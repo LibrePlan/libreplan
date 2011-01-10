@@ -138,7 +138,8 @@ public class MonteCarloController extends GenericForwardComposer {
                 Rows rows = gridCriticalPathTasks.getRows();
                 for (Object each : rows.getChildren()) {
                     Row row = (Row) each;
-                    List<Component> children = row.getChildren();
+                    List<org.zkoss.zk.ui.Component> children = row
+                            .getChildren();
 
                     Integer sum = 0;
                     intbox = (Intbox) children.get(3);
