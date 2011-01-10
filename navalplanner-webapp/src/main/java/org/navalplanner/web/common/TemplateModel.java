@@ -286,8 +286,7 @@ public class TemplateModel implements ITemplateModel {
             }
 
         };
-        LongOperationFeedback.progressive(desktop, LongOperationFeedback
-                .withAsyncUpates(reassignations));
+        LongOperationFeedback.progressive(desktop, reassignations);
     }
 
     private IDesktopUpdate notifySuccess(
