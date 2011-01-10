@@ -96,11 +96,8 @@ public class ReassignCommand implements IReassignCommand {
                     public void result(final ReassignConfiguration configuration) {
                         final List<WithAssociatedEntity> reassignations = getReassignations(
                                 context, configuration);
-                        IBackGroundOperation<IDesktopUpdate> reassignationsOperation = LongOperationFeedback
-                                .withAsyncUpates(reassignations(context,
-                                        reassignations));
                         LongOperationFeedback.progressive(getDesktop(context),
-                                reassignationsOperation);
+                                reassignations(context, reassignations));
                     }
                 });
     }
