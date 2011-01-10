@@ -48,16 +48,19 @@ import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for criterions. <br />
+ *
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <ogonzalez@igalia.com>
  */
-@Component("criterionsModel_V2")
+
+@Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/resources/criterions/criterions-V2.zul")
+@OnConcurrentModification(goToPage = "/resources/criterions/criterions.zul")
 public class CriterionsModel extends IntegrationEntityModel implements ICriterionsModel {
 
     private static final Log log = LogFactory.getLog(CriterionsModel.class);
@@ -137,14 +140,6 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
     }
 
     @Override
-    @Transactional
-    public void prepareForRemove(CriterionType criterionType) {
-        this.criterionType = criterionType;
-        criterionTypeDAO.reattach(criterionType);
-        criterionType.getCriterions().size();
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public void prepareForEdit(CriterionType criterionType) {
         Validate.notNull(criterionType);
@@ -155,7 +150,7 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
 
     @Override
     @Transactional
-    public void remove(CriterionType criterionType) {
+    public void confirmRemove(CriterionType criterionType) {
         try {
             criterionTypeDAO.remove(criterionType.getId());
         } catch (InstanceNotFoundException e) {
@@ -271,13 +266,19 @@ public class CriterionsModel extends IntegrationEntityModel implements ICriterio
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isDeletable(CriterionType criterionType) {
+    public boolean canRemove(CriterionType criterionType) {
+        reattachCriterions(criterionType);
         for (Criterion each : criterionType.getCriterions()) {
             if (numberOfRelatedEntities(each) != 0) {
                 return false;
             }
         }
         return true;
+    }
+
+    private void reattachCriterions(CriterionType criterionType) {
+        criterionTypeDAO.reattach(criterionType);
+        criterionType.getCriterions().size();
     }
 
     public EntityNameEnum getEntityName() {

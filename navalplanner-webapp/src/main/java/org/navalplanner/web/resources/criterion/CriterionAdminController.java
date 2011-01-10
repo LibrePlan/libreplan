@@ -38,6 +38,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -45,6 +46,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
@@ -53,10 +55,11 @@ import org.zkoss.zul.Window;
  */
 public class CriterionAdminController extends GenericForwardComposer {
 
-    private static final Log log = LogFactory
+    private static final Log LOG = LogFactory
             .getLog(CriterionAdminController.class);
 
-    private ICriterionsModel criterionsModel_V2;
+    @Autowired
+    private ICriterionsModel criterionsModel;
 
     private Component messagesContainer;
 
@@ -64,110 +67,95 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private Window listing;
 
-    private Checkbox checkboxHierarchy;
+    private Window editWindow;
 
-    private Window confirmRemove;
-
-    private boolean confirmingRemove = false;
-
-    private Window confirmDisabledHierarchy;
-
-    private boolean confirmingDisabledHierarchy = false;
-
-    private Component editComponent;
-
-    private Component createComponent;
+    private Checkbox cbHierarchy;
 
     private OnlyOneVisible onlyOneVisible;
 
-    private Component workersComponent;
-
     private CriterionTreeController editionTree;
 
-    public CriterionAdminController() {
-
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        onlyOneVisible = new OnlyOneVisible(listing, editWindow, editWindow);
+        onlyOneVisible.showOnly(listing);
+        comp.setVariable("controller", this, false);
+        messagesForUser = new MessagesForUser(messagesContainer);
+        cbHierarchy = (Checkbox) editWindow.getFellow("cbHierarchy");
+        setupResourceCombobox((Combobox) editWindow.getFellowIfAny("resourceCombobox"));
     }
 
     public void goToCreateForm() {
-        try{
-            criterionsModel_V2.prepareForCreate();
-            setupCriterionTreeController(createComponent);
-            onlyOneVisible.showOnly(createComponent);
-            setResourceComboboxValue((Combobox) createComponent.getFellowIfAny("resourceCombobox"));
-            Util.reloadBindings(createComponent);
-        }catch(Exception e){
-            messagesForUser.showMessage(
-                    Level.ERROR, _("Error setting up creation form."));
-            log.error(_("Error setting up creation form for Criterion Type"), e );
+        try {
+            criterionsModel.prepareForCreate();
+            setupCriterionTreeController(editWindow);
+            showEditWindow(_("Create Criterion type"));
+        } catch (Exception e) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Error setting up creation form."));
+            LOG.error(_("Error setting up creation form for Criterion Type"), e);
         }
     }
 
+    private void showEditWindow(String title) {
+        editWindow.setTitle(title);
+        onlyOneVisible.showOnly(editWindow);
+        setResourceComboboxValue((Combobox) editWindow.getFellowIfAny("resourceCombobox"));
+        Util.reloadBindings(editWindow);
+    }
+
     public void goToEditForm(CriterionType criterionType) {
-        try{
-            criterionsModel_V2.prepareForEdit(criterionType);
-            setupCriterionTreeController(editComponent);
-            onlyOneVisible.showOnly(editComponent);
-            setResourceComboboxValue((Combobox) editComponent.getFellowIfAny("resourceCombobox"));
-            Util.reloadBindings(editComponent);
-        }catch(Exception e){
-            messagesForUser.showMessage(
-                    Level.ERROR, _("Error setting up edition form."));
-            log.error(_("Error setting up edition form for Criterion Type with id: {0}",
-                    criterionType.getId()), e );
+        try {
+            criterionsModel.prepareForEdit(criterionType);
+            setupCriterionTreeController(editWindow);
+            showEditWindow(_("Edit Criterion type"));
+        } catch (Exception e) {
+            messagesForUser.showMessage(Level.ERROR,
+                    _("Error setting up edition form."));
+            LOG.error(
+                    _("Error setting up edition form for Criterion Type with id: {0}",
+                            criterionType.getId()), e);
         }
     }
 
     public void confirmRemove(CriterionType criterionType) {
-        criterionsModel_V2.prepareForRemove(criterionType);
-        if (criterionsModel_V2.isDeletable(criterionType)) {
-            showConfirmingWindow();
-        } else {
+        if (!criterionsModel.canRemove(criterionType)) {
             messagesForUser
                     .showMessage(
                             Level.WARNING,
                             _("This criterion type cannot be deleted because it has assignments to projects or resources"));
+            return;
         }
+        showConfirmRemoveWindow(criterionType);
     }
 
-    public void cancelRemove() {
-        confirmingRemove = false;
-        confirmRemove.setVisible(false);
-        Util.reloadBindings(confirmRemove);
-    }
-
-    public boolean isConfirmingRemove() {
-        return confirmingRemove;
-    }
-
-    private void hideConfirmingWindow() {
-        confirmingRemove = false;
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private void showConfirmingWindow() {
-        confirmingRemove = true;
+    private void showConfirmRemoveWindow(CriterionType criterionType) {
         try {
-            Util.reloadBindings(confirmRemove);
-            confirmRemove.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            int status = Messagebox.show(
+                    _("Confirm deleting {0}. Are you sure?",
+                            criterionType.getName()), _("Delete"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                remove(criterionType);
+            }
+
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
     public void remove(CriterionType criterionType) {
-        criterionsModel_V2.remove(criterionType);
-        hideConfirmingWindow();
+        criterionsModel.confirmRemove(criterionType);
         Util.reloadBindings(listing);
         messagesForUser.showMessage(
             Level.INFO, _("Removed {0}", criterionType.getName()));
     }
 
-    public void confirmDisabledHierarchy(Checkbox checkbox) {
-        checkboxHierarchy = checkbox;
-        if(!checkboxHierarchy.isChecked()){
+    public void confirmDisabledHierarchy() {
+        if (!cbHierarchy.isChecked()){
             showConfirmingHierarchyWindow();
         }
-        editionTree.reloadTree();
     }
 
     public boolean allowRemove(CriterionType criterionType){
@@ -185,38 +173,30 @@ public class CriterionAdminController extends GenericForwardComposer {
         return true;
     }
 
-    public void cancelDisEnabledHierarchy() {
-        confirmingDisabledHierarchy = false;
-        confirmDisabledHierarchy.setVisible(false);
-        checkboxHierarchy.setChecked(true);
-        Util.reloadBindings(confirmDisabledHierarchy);
-    }
-
-    public boolean isConfirmingDisEnabledHierarchy() {
-        return confirmingDisabledHierarchy;
-    }
-
-    private void hideConfirmingHierarchtWindow() {
-        confirmingDisabledHierarchy = false;
-        Util.reloadBindings(confirmDisabledHierarchy);
-    }
-
     private void showConfirmingHierarchyWindow() {
-        this.confirmingDisabledHierarchy = true;
         try {
-            Util.reloadBindings(this.confirmDisabledHierarchy);
-            confirmDisabledHierarchy.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            int status = Messagebox
+                    .show(_("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
+                            "Question", Messagebox.OK | Messagebox.CANCEL,
+                            Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                disableHierarchy();
+                editionTree.reloadTree();
+            } else {
+                cbHierarchy.setChecked(true);
+            }
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
-    public void okDisEnabledHierarchy() {
+    public void disableHierarchy() {
         editionTree.disabledHierarchy();
-        hideConfirmingHierarchtWindow();
+        messagesForUser.showMessage(
+                Level.INFO,
+                _("Tree {0} sucessfully flattened", criterionsModel
+                        .getCriterionType().getName()));
         Util.reloadBindings(listing);
-        messagesForUser.showMessage(Level.INFO, _("Fattened Tree {0}",
-                criterionsModel_V2.getCriterionType().getName()));
     }
 
     public void changeEnabled(Checkbox checkbox) {
@@ -244,7 +224,7 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private void save() throws ValidationException {
         try {
-            criterionsModel_V2.saveCriterionType();
+            criterionsModel.saveCriterionType();
             messagesForUser.showMessage(Level.INFO,
                     _("CriterionType and its criteria saved"));
         } catch (ValidationException e) {
@@ -271,46 +251,30 @@ public class CriterionAdminController extends GenericForwardComposer {
     }
 
     private void reloadCriterionType() {
-        Tree tree = (Tree) getCurrentWindow().getFellowIfAny("tree");
-        criterionsModel_V2.reloadCriterionType();
+        Tree tree = (Tree) editWindow.getFellowIfAny("tree");
+        criterionsModel.reloadCriterionType();
         Util.reloadBindings(tree);
     }
 
-    private Component getCurrentWindow() {
-        return (editComponent.isVisible()) ? editComponent : createComponent;
-    }
-
     public List<CriterionType> getCriterionTypes() {
-        List<CriterionType> types = criterionsModel_V2.getTypes();
+        List<CriterionType> types = criterionsModel.getTypes();
         return types;
     }
 
     public ICriterionType<?> getCriterionType() {
-        return criterionsModel_V2.getCriterionType();
+        return criterionsModel.getCriterionType();
     }
 
     public ICriterionTreeModel getCriterionTreeModel() {
-        return criterionsModel_V2.getCriterionTreeModel();
+        return criterionsModel.getCriterionTreeModel();
     }
 
     public Criterion getCriterion() {
-        return criterionsModel_V2.getCriterion();
-    }
-
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        onlyOneVisible = new OnlyOneVisible(listing, editComponent,
-                createComponent, workersComponent);
-        onlyOneVisible.showOnly(listing);
-        comp.setVariable("controller", this, false);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        setupResourceCombobox((Combobox) createComponent.getFellowIfAny("resourceCombobox"));
-        setupResourceCombobox((Combobox) editComponent.getFellowIfAny("resourceCombobox"));
+        return criterionsModel.getCriterion();
     }
 
     private void setupResourceCombobox(Combobox combo) {
-        for(ResourceEnum resource : ResourceEnum.values()) {
+        for (ResourceEnum resource : ResourceEnum.values()) {
             Comboitem item = combo.appendItem(_(resource.getDisplayName()));
             item.setValue(resource);
         }
@@ -318,7 +282,7 @@ public class CriterionAdminController extends GenericForwardComposer {
 
     private void setResourceComboboxValue(Combobox combo) {
         CriterionType criterionType = (CriterionType) getCriterionType();
-        for(Object object : combo.getItems()) {
+        for (Object object : combo.getItems()) {
             Comboitem item = (Comboitem) object;
             if(criterionType != null &&
                     item.getValue().equals(criterionType.getResource())) {
@@ -333,13 +297,12 @@ public class CriterionAdminController extends GenericForwardComposer {
         }
     }
 
-    private void setupCriterionTreeController(Component comp)throws Exception {
-        editionTree = new CriterionTreeController(criterionsModel_V2);
-        editionTree.setCriterionCodeEditionDisabled(
-((CriterionType) criterionsModel_V2
+    private void setupCriterionTreeController(Component comp) throws Exception {
+        editionTree = new CriterionTreeController(criterionsModel);
+        editionTree
+                .setCriterionCodeEditionDisabled(((CriterionType) criterionsModel
                         .getCriterionType()).isCodeAutogenerated());
-        editionTree.doAfterCompose(comp.getFellow(
-                "criterionsTree"));
+        editionTree.doAfterCompose(comp.getFellow("criterionsTree"));
     }
 
     public void onCheckGenerateCode(Event e) {
@@ -347,14 +310,15 @@ public class CriterionAdminController extends GenericForwardComposer {
         if (ce.isChecked()) {
             try {
                 // we have to auto-generate the code for new objects
-                criterionsModel_V2.setCodeAutogenerated(ce.isChecked());
+                criterionsModel.setCodeAutogenerated(ce.isChecked());
             } catch (ConcurrentModificationException err) {
                 messagesForUser.showMessage(Level.ERROR, err.getMessage());
             }
-            Util.reloadBindings(createComponent);
+            Util.reloadBindings(editWindow);
         }
         //disable code field in criterion tree controller
         editionTree.setCriterionCodeEditionDisabled(ce.isChecked());
         editionTree.reloadTree();
     }
+
 }
