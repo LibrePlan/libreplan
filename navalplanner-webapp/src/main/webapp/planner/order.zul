@@ -49,18 +49,31 @@
 
     <editTaskWindow id="editTaskWindow" editController="${editController}" />
 
+    <!-- Progress assignment window -->
     <window id="advanceAssignmentPlanningWindow"
-        apply="${advanceAssignmentController}"
-        title="${advanceAssignmentController.title}" width="950px"
-        visible="false">
-         <vbox id="messagesAdvanceAssignmentContainer" />
-         <listOrderElementAdvances id="orderElementAdvances"/>
+            apply="${advanceAssignmentController}"
+            title="${advanceAssignmentController.title}"
+            width="950px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
+
+        <vbox id="messagesAdvanceAssignmentContainer" />
+
+        <listOrderElementAdvances id="orderElementAdvances"/>
+
+        <separator />
+
+        <!-- Control buttons -->
         <hbox>
             <button label="${i18n:_('Accept')}"
-                onClick="advanceAssignmentController.accept();" />
+                    sclass="save-button global-action"
+                    onClick="advanceAssignmentController.accept();" />
             <button label="${i18n:_('Cancel')}"
-                onClick="advanceAssignmentController.cancel();" />
+                    sclass="cancel-button global-action"
+                    onClick="advanceAssignmentController.cancel();" />
         </hbox>
+
     </window>
 
     <window id="advanceWindow"
