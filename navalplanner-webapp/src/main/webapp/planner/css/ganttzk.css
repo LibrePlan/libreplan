@@ -780,6 +780,7 @@ div.limitingresourcesleftpane  {
 
 .timetrackergap {
     position: relative;
+    left : 0px;
 }
 
 .timetrackergap {
