@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.montecarlo.MonteCarloGraphController.IOnClose;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -228,7 +229,6 @@ public class MonteCarloController extends GenericForwardComposer {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                progressMonteCarloCalculation.setValue(0);
             }
 
             private Window createMonteCarloGraphWindow(
@@ -243,7 +243,14 @@ public class MonteCarloController extends GenericForwardComposer {
 
                 final String orderName = monteCarloModel.getOrderName();
                 final boolean groupByWeeks = cbGroupByWeeks.isChecked();
-                controller.generateMonteCarloGraph(orderName, data, groupByWeeks);
+                controller.generateMonteCarloGraph(orderName, data,
+                        groupByWeeks, new IOnClose() {
+
+                            @Override
+                            public void montecarloGraphClosed() {
+                                progressMonteCarloCalculation.setValue(0);
+                            }
+                        });
 
                 return result;
             }

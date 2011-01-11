@@ -55,7 +55,17 @@ public class MonteCarloGraphController extends GenericForwardComposer {
         self.setVariable("monteCarloGraphController", this, true);
     }
 
-    public void generateMonteCarloGraph(String orderName, Map<LocalDate, BigDecimal> data, boolean byWeek) {
+    public interface IOnClose {
+
+        public void montecarloGraphClosed();
+    }
+
+    private IOnClose onClose = null;
+
+    public void generateMonteCarloGraph(String orderName,
+            Map<LocalDate, BigDecimal> data, boolean byWeek, IOnClose onClose) {
+        this.onClose = onClose;
+
         CategoryModel xymodel;
 
         initializeMonteCarloValues(data);
@@ -180,6 +190,9 @@ public class MonteCarloGraphController extends GenericForwardComposer {
 
     public void cancel() {
         self.setVisible(false);
+        if (onClose != null) {
+            onClose.montecarloGraphClosed();
+        }
     }
 
 }
