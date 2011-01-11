@@ -141,25 +141,35 @@
 
     </window>
 
+    <!-- Calendar allocation -->
     <window id="calendarAllocationWindow"
-        apply="${calendarController}"
-        title="${i18n:_('Calendar allocation')}" width="600px"
-        closable="true" visible="false">
+            apply="${calendarController}"
+            title="${i18n:_('Calendar allocation')}"
+            width="600px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
 
         <vbox>
 
-            <label value="${i18n:_('Select the calendar')}" />
+            <panel title="${i18n:_('Calendar')}"
+                    border="normal" style="overflow:auto" >
+                <panelchildren>
+                    <combobox id="calendarCombo">
+                        <comboitem self="@{each='baseCalendar'}" value="@{baseCalendar}"
+                                label="@{baseCalendar.name}" />
+                    </combobox>
+                </panelchildren>
+            </panel>
 
-            <combobox id="calendarCombo">
-                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
-                    label="@{baseCalnedar.name}" />
-            </combobox>
-
+            <!-- Control buttons -->
             <hbox>
-                <button label="${i18n:_('Assign')}" sclass="save-button global-action"
-                    onClick="calendarController.assign(calendarCombo.selectedItem);" />
-                <button label="${i18n:_('Cancel')}" sclass="cancel-button global-action"
-                    onClick="calendarController.cancel();" />
+                <button label="${i18n:_('Accept')}"
+                        sclass="save-button global-action"
+                        onClick="calendarController.assign(calendarCombo.selectedItem);" />
+                <button label="${i18n:_('Cancel')}"
+                        sclass="cancel-button global-action"
+                        onClick="calendarController.cancel();" />
             </hbox>
 
         </vbox>
