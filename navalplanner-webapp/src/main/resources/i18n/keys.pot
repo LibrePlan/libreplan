@@ -1200,7 +1200,7 @@ msgid "Select date:"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_listExternalCompanies.zul:29
-msgid "Integrated user"
+msgid "Associated user"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:561
@@ -4553,6 +4553,10 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:46
 msgid "Load due to current project"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/externalcompanies/ExternalCompanyCRUDController.java:145
+msgid "You can not remove the company \"{0}\" because is already in use in some project or in some subcontrated task."
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:1273
