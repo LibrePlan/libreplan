@@ -76,10 +76,14 @@
 
     </window>
 
+    <!-- Progress consolitation -->
     <window id="advanceWindow"
-        apply="${advanceController}"
-        title="${i18n:_('Progress consolidation')}" width="700px"
-        closable="true" visible="false">
+            apply="${advanceController}"
+            title="${i18n:_('Progress consolidation')}"
+            width="700px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
 
         <vbox>
 
@@ -123,11 +127,14 @@
                 </panelchildren>
             </panel>
 
+            <!-- Control buttons -->
             <hbox>
                 <button label="${i18n:_('Accept')}"
-                    onClick="advanceController.accept();" />
+                        sclass="save-button global-action"
+                        onClick="advanceController.accept();" />
                 <button label="${i18n:_('Cancel')}"
-                    onClick="advanceController.cancel();" />
+                        sclass="cancel-button global-action"
+                        onClick="advanceController.cancel();" />
             </hbox>
 
         </vbox>
