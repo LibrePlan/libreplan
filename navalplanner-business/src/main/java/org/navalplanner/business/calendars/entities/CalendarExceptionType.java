@@ -134,8 +134,22 @@ public class CalendarExceptionType extends IntegrationEntity {
         return capacity.getStandardEffort();
     }
 
-    public String getDurationStr() {
-        EnumMap<Granularity, Integer> values = getDuration().decompose();
+    public String getStandardEffortStr() {
+        return asString(getCapacity().getStandardEffort());
+    }
+
+    public String getExtraEffortStr() {
+        if (getCapacity().getAllowedExtraEffort() == null) {
+            return _("unlimited");
+        }
+        return asString(getCapacity().getAllowedExtraEffort());
+    }
+
+    private String asString(EffortDuration duration) {
+        if (duration == null) {
+            return "";
+        }
+        EnumMap<Granularity, Integer> values = duration.decompose();
         Integer hours = values.get(Granularity.HOURS);
         Integer minutes = values.get(Granularity.MINUTES);
         Integer seconds = values.get(Granularity.SECONDS);
