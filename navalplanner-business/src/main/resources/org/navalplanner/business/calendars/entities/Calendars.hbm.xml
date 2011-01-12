@@ -65,8 +65,12 @@
 
         <property name="date" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <property name="duration" access="field"
-            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        <component name="capacity" class="org.navalplanner.business.calendars.entities.Capacity">
+            <property name="standardEffort" column="standard_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+            <property name="allowedExtraEffort" column="allowed_extra_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+        </component>
         <!-- Not indexed -->
         <many-to-one name="type" cascade="none"
             column="calendar_exception_id" />

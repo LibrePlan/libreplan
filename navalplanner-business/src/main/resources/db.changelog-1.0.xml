@@ -32,4 +32,18 @@
         <dropColumn tableName="calendar_exception_type" columnName="not_assignable"/>
     </changeSet>
 
+    <changeSet id="use-capacity-for-exceptions" author="ogonzalez">
+        <comment>Convert from duration to capacity property for calendar exceptions</comment>
+        <addColumn tableName="calendar_exception">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="calendar_exception" oldColumnName="duration"
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
+        <sql>
+        update calendar_exception SET allowed_extra_effort =
+            (select allowed_extra_effort from calendar_exception_type
+                where calendar_exception_type.id = calendar_exception.calendar_exception_id)
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
