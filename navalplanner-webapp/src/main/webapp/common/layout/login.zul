@@ -114,7 +114,7 @@
     <n:td height="10" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
   <n:tr>
-    <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
+    <n:td><n:span class="supported-browsers" id="supported-browsers-box">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
     <n:div style="float:right;color:green;font-size:10px;">v${project:version()}</n:div></n:td>
   </n:tr>
   <n:tr>
@@ -126,4 +126,22 @@
     <n:td background="${contextPath}/common/img/flechitas.gif"></n:td>
   </n:tr>
 </n:table>
+
+<n:script language="javascript">
+<![CDATA[
+function checkbrowser() {
+
+    if ( (navigator.appName =="Microsoft Internet Explorer") || (navigator.appName =="Opera") ) {
+        document.getElementById("supported-browsers-box").setAttribute("class", "supported-browsers not-supported");
+        alertString = "${i18n:_('The browser you are using')}";
+        alertString += " ("+navigator.appName+") ";
+        alertString += "${i18n:_('is not supported for his use with NavalPlan.')}";
+        alertString += "${i18n:_('Please use some of the compatible browsers: Chrome, Firefox, Safari or Epiphany.')}";
+        window.alert(alertString);
+    }
+}
+
+document.onload = checkbrowser();
+]]>
+</n:script>
 </div>
