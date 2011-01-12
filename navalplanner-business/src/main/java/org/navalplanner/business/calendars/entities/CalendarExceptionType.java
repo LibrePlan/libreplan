@@ -26,7 +26,9 @@ import java.util.EnumMap;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
@@ -45,11 +47,7 @@ public class CalendarExceptionType extends IntegrationEntity {
 
     private String color;
 
-    // Beware. Not Assignable was intended to mean not over assignable. This
-    // name is kept in order to not break legacy data
-    private Boolean notAssignable = Boolean.TRUE;
-
-    private EffortDuration duration = EffortDuration.zero();
+    private Capacity capacity = Capacity.zero();
 
     public static CalendarExceptionType create() {
         return create(new CalendarExceptionType());
@@ -82,10 +80,12 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public CalendarExceptionType(String name, String color,
-            Boolean notAssignable) {
+            Boolean notOverAssignable) {
         this.name = name;
         this.color = color;
-        this.notAssignable = notAssignable;
+        this.capacity = Capacity.zero();
+        this.capacity = this.capacity.overAssignable(!BooleanUtils
+                .isTrue(notOverAssignable));
     }
 
     public String getName() {
@@ -104,15 +104,26 @@ public class CalendarExceptionType extends IntegrationEntity {
         this.color = color;
     }
 
+    @NotNull
+    public Capacity getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Capacity capacity) {
+        Validate.notNull(capacity);
+        this.capacity = capacity;
+    }
+
     /**
      * @return If more hours can be assigned on this day.
      */
     public boolean isOverAssignable() {
-        return BooleanUtils.isFalse(notAssignable);
+        return capacity.isOverAssignable();
     }
 
     public void setOverAssignable(Boolean overAssignable) {
-        this.notAssignable = !overAssignable;
+        this.capacity = capacity.overAssignable(BooleanUtils
+                .isTrue(overAssignable));
     }
 
     public String getOverAssignableStr() {
@@ -120,11 +131,11 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public EffortDuration getDuration() {
-        return duration;
+        return capacity.getStandardEffort();
     }
 
     public String getDurationStr() {
-        EnumMap<Granularity, Integer> values = duration.decompose();
+        EnumMap<Granularity, Integer> values = getDuration().decompose();
         Integer hours = values.get(Granularity.HOURS);
         Integer minutes = values.get(Granularity.MINUTES);
         Integer seconds = values.get(Granularity.SECONDS);
@@ -132,7 +143,7 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public void setDuration(EffortDuration duration) {
-        this.duration = duration;
+        this.capacity = this.capacity.withNormalDuration(duration);
     }
 
     @Override

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-new-column-enable_critical_chain_support" author="jaragunde">
+        <comment>Add new column enable_critical_chain_support with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="enable_critical_chain_support" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="enable_critical_chain_support"
+            defaultValue="FALSE" />
+    </changeSet>
+
+    <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
+        <comment>Convert from duration + notAssignable (not over assignable) to capacity property</comment>
+        <addColumn tableName="calendar_exception_type">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="calendar_exception_type" oldColumnName="duration"
+                      newColumnName="standard_effort"/>
+        <update tableName="calendar_exception_type">
+            <column name="allowed_extra_effort" valueNumeric="0" />
+            <where>not_assignable</where>
+        </update>
+        <dropColumn tableName="calendar_exception_type" columnName="not_assignable"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -89,9 +89,13 @@
 
         <property name="name" unique="true" />
         <property name="color" />
-        <property name="notAssignable" column="not_assignable" />
 
-        <property name="duration" type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        <component name="capacity" class="org.navalplanner.business.calendars.entities.Capacity">
+            <property name="standardEffort" column="standard_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+            <property name="allowedExtraEffort" column="allowed_extra_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+        </component>
     </class>
 
     <!-- CalendarData -->
