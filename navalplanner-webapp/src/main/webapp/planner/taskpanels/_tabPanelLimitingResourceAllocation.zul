@@ -45,31 +45,35 @@
                 <!-- Order element information -->
                 <taskInformation id="limitingTaskInformation" />
 
-<!-- Allocations -->
-    <panel style="margin-top: 5px" sclass="assignedresources" closable="false" title="${i18n:_('Allocations')}">
-                    <panelchildren>
+                <!-- Allocations -->
+                <groupbox style="margin-top: 5px" sclass="assignedresources" closable="false">
+
+                    <caption label="${i18n:_('Allocations')}" />
 
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
+
                     <hbox>
-                    <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
-                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
-                    <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
+                        <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
+                        <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
                     </hbox>
+
                     <separator spacing="10px"/>
+
                     <grid id="gridLimitingAllocations"
-                        model="@{limitingAllocationController.resourceAllocationRows}"
-                        rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
-                        style="margin-bottom: 5px">
+                            model="@{limitingAllocationController.resourceAllocationRows}"
+                            rowRenderer="@{limitingAllocationController.gridLimitingAllocationRenderer}"
+                            style="margin-bottom: 5px">
                         <columns>
-                            <column label="${i18n:_('Assignation type')}"/>
-                            <column label="${i18n:_('Assignation')}" />
-                            <column label="${i18n:_('Hours')}" />
-                            <column label="${i18n:_('Priority')}" />
+                            <column label="${i18n:_('Assignation type')}" align="center"/>
+                            <column label="${i18n:_('Assignation')}" align="center"/>
+                            <column label="${i18n:_('Hours')}" align="center"/>
+                            <column label="${i18n:_('Priority')}" align="center"/>
                         </columns>
                     </grid>
-                </panelchildren>
-      </panel>
+
+                </groupbox>
 
             </tabpanel>
 
