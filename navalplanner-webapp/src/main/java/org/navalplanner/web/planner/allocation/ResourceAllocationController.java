@@ -68,7 +68,6 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
@@ -96,6 +95,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private TaskInformation taskInformation;
 
+    private AllocationConfiguration allocationConfiguration;
+
     private Grid allocationsGrid;
 
     private FormBinder formBinder;
@@ -104,13 +105,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Intbox assignedHoursComponent;
 
-    private Grid calculationTypesGrid;
-
-    private Radiogroup calculationTypeSelector;
-
     private Checkbox extendedViewCheckbox;
-
-    private Intbox taskWorkableDays;
 
     private Decimalbox allResourcesPerDay;
 
@@ -159,7 +154,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         newAllocationSelectorCombo.setLimitingResourceFilter(false);
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
-        prepareCalculationTypesGrid();
     }
 
     private void initAllocationLabels() {
@@ -174,30 +168,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private void makeReadyInputsForCalculationTypes() {
         assignedHoursComponent = new Intbox();
         assignedHoursComponent.setWidth("80px");
-    }
-
-    private void prepareCalculationTypesGrid() {
-        calculationTypesGrid.setModel(new ListModelList(Arrays
-                .asList(CalculationTypeRadio.values())));
-        calculationTypesGrid.setRowRenderer(OnColumnsRowRenderer.create(
-                calculationTypesRenderer(), Arrays.asList(0)));
-    }
-
-    private ICellForDetailItemRenderer<Integer, CalculationTypeRadio> calculationTypesRenderer() {
-        return new ICellForDetailItemRenderer<Integer, CalculationTypeRadio>() {
-
-            @Override
-            public Component cellFor(Integer column, CalculationTypeRadio data) {
-                return data.createRadio(getCalculationTypeRadio());
-            }
-        };
-    }
-
-    private CalculationTypeRadio getCalculationTypeRadio() {
-        if (formBinder != null) {
-            return CalculationTypeRadio.from(formBinder.getCalculatedValue());
-        }
-        return null;
     }
 
     public ResourceAllocationController getController() {
@@ -234,8 +204,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             TaskPropertiesController taskPropertiesController = editTaskController
                     .getTaskPropertiesController();
-            formBinder.setWorkableDays(taskWorkableDays,
-                    taskPropertiesController, lbTaskStart, lbTaskEnd);
+            formBinder.setWorkableDays(getTaskWorkableDays(),
+                    taskPropertiesController, getTaskStart(), getTaskEnd());
 
             formBinder.setApplyButton(applyButton);
             formBinder.setAllocationsGrid(allocationsGrid);
@@ -245,10 +215,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     .setNewAllocationSelectorCombo(newAllocationSelectorCombo);
 
             initializeTaskInformationComponent();
+            initializeAllocationConfigurationComponent();
 
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
                     .from(formBinder.getCalculatedValue());
-            calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+            calculationTypeRadio.doTheSelectionOn(getCalculationTypeSelector());
 
             tbResourceAllocation.setSelected(true);
 
@@ -259,6 +230,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
         }
+    }
+
+    private Intbox getTaskWorkableDays() {
+        return allocationConfiguration.getTaskWorkableDays();
+    }
+
+    private Label getTaskStart() {
+        return allocationConfiguration.getTaskStart();
+    }
+
+    private Label getTaskEnd() {
+        return allocationConfiguration.getTaskEnd();
+    }
+
+    private Radiogroup getCalculationTypeSelector() {
+        return allocationConfiguration.getCalculationTypeSelector();
     }
 
     private void initializeTaskInformationComponent() {
@@ -275,9 +262,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
         });
     }
 
-    private Label lbTaskStart;
-
-    private Label lbTaskEnd;
+    private void initializeAllocationConfigurationComponent() {
+        allocationConfiguration.setFormBinder(formBinder);
+    }
 
     public enum HoursRendererColumn {
 
@@ -396,7 +383,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component input(
                     ResourceAllocationController resourceAllocationController) {
-                return resourceAllocationController.taskWorkableDays;
+                return resourceAllocationController.getTaskWorkableDays();
             }
         },
         NUMBER_OF_HOURS(CalculatedValue.NUMBER_OF_HOURS) {
@@ -492,6 +479,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         public CalculatedValue getCalculatedValue() {
             return calculatedValue;
         }
+
     }
 
     public enum DerivedAllocationColumn implements IConvertibleToColumn {
@@ -566,12 +554,12 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return Arrays.asList(CalculationTypeRadio.values());
     }
 
-    public void setCalculationTypeSelected(String enumName) {
-        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
-                .valueOf(enumName);
-        formBinder
-                .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
-    }
+//    public void setCalculationTypeSelected(String enumName) {
+//        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
+//                .valueOf(enumName);
+//        formBinder
+//                .setCalculatedValue(calculationTypeRadio.getCalculatedValue());
+//    }
 
     public List<? extends Object> getResourceAllocations() {
         return formBinder != null ? plusAggregatingRow(formBinder

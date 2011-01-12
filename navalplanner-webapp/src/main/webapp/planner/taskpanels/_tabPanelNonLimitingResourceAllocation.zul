@@ -32,6 +32,10 @@
     class="org.navalplanner.web.planner.allocation.TaskInformation"
     macroURI="_taskInformation.zul" ?>
 
+<?component name="allocationConfiguration"
+    class="org.navalplanner.web.planner.allocation.AllocationConfiguration"
+    macroURI="_allocationConfiguration.zul" ?>
+
 <tabpanel id="resourceAllocationTabpanel">
  <tabbox mold="accordion">
         <tabs>
@@ -42,40 +46,11 @@
             <tabpanel>
                 <hbox align="end">
 
-                <!-- Task Information -->
-                <taskInformation id="taskInformation" />
+                    <!-- Task Information -->
+                    <taskInformation id="taskInformation" />
 
-                <groupbox sclass="assignedresources" closable="false" width="340px" height="170px" >
-                    <caption label="${i18n:_('Allocation configuration')}" />
-
-                    <hbox>
-                        <!-- Planned Task Start -->
-                        <label style="font-weight: bold" value="${i18n:_('Planned start :')}" />
-                        <label id="lbTaskStart" />
-
-                        <!-- Planned Task End -->
-                        <label style="font-weight: bold" value="${i18n:_('Planned end :')}" />
-                        <label id="lbTaskEnd" />
-
-                    </hbox>
-                        <!-- Planned Workable Days -->
-                        <label style="font-weight: bold" value="${i18n:_('Planned workable days :')}" />
-                        <intbox id="taskWorkableDays" width="90px" />
-                    <hbox>
-
-                    </hbox>
-
-                    <separator orient="horizontal" spacing="10px"/>
-
-                    <radiogroup id="calculationTypeSelector"
-                        onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
-                        <grid id="calculationTypesGrid">
-                            <columns>
-                              <column />
-                            </columns>
-                        </grid>
-                    </radiogroup>
-                </groupbox>
+                    <!-- Allocation Configuration -->
+                    <allocationConfiguration id="allocationConfiguration" />
 
                 </hbox>
 
@@ -120,7 +95,7 @@
                         </columns>
                     </grid>
                 </groupbox>
-        </tabpanel>
+            </tabpanel>
 
             <!-- Worker search -->
             <tabpanel>
