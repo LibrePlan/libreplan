@@ -36,7 +36,6 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -45,6 +44,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
+import org.zkoss.zul.api.Checkbox;
 
 /**
  * Utilities class. <br />
@@ -414,7 +414,7 @@ public class Util {
      *            The {@link Setter} interface that will implement a set method.
      * @return The {@link Checkbox} bound
      */
-    public static Checkbox bind(final Checkbox checkBox,
+    public static <C extends Checkbox> C bind(final C checkBox,
             final Getter<Boolean> getter, final Setter<Boolean> setter) {
         checkBox.setChecked(getter.get());
         checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
