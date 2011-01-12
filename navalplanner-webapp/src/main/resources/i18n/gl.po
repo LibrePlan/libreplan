@@ -1229,8 +1229,8 @@ msgid "Select date:"
 msgstr "Seleccione data:"
 
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_listExternalCompanies.zul:29
-msgid "Integrated user"
-msgstr "Usuario integrado"
+msgid "Associated user"
+msgstr "Usuario asociado"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:561
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:1015
@@ -4640,6 +4640,10 @@ msgstr "NavalPlan: Máquinas"
 #: navalplanner-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:46
 msgid "Load due to current project"
 msgstr "Carga debido ao proxecto actual"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/externalcompanies/ExternalCompanyCRUDController.java:145
+msgid "You can not remove the company \"{0}\" because is already in use in some project or in some subcontrated task."
+msgstr "Non pode eliminar a empresa \"{0}\" porque está sendo utilizada nalgún proxecto ou nalgunha tarefa subcontrada."
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AdvancedAllocationController.java:1273
 msgid "You are going to change the assignment function. Are you sure?"
