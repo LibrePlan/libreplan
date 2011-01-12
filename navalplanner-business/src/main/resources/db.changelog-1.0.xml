@@ -8,10 +8,12 @@
     <changeSet id="add-new-column-enable_critical_chain_support" author="jaragunde">
         <comment>Add new column enable_critical_chain_support with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
-            <column name="enable_critical_chain_support" type="BOOLEAN" />
+            <column name="enable_critical_chain_support" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="enable_critical_chain_support"
-            defaultValue="FALSE" />
+            defaultValueBoolean="FALSE" />
     </changeSet>
 
     <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
@@ -20,7 +22,7 @@
             <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
         </addColumn>
         <renameColumn tableName="calendar_exception_type" oldColumnName="duration"
-                      newColumnName="standard_effort"/>
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
         <update tableName="calendar_exception_type">
             <column name="allowed_extra_effort" valueNumeric="0" />
             <where>not_assignable</where>
