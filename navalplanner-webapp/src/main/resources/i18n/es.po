@@ -188,7 +188,7 @@ msgstr "Método de Montecarlo"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:291
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:309
 msgid "Project Scheduling"
-msgstr "Planificación de projectos"
+msgstr "Planificación de proyectos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/HoursWorkedPerWorkerInAMonthController.java:41
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:72
@@ -525,7 +525,7 @@ msgstr "Horas imputadas"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:292
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:41
 msgid "Project Costs Per Resource"
-msgstr "Costes de projecto por recurso"
+msgstr "Costes de proyecto por recurso"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/CostCategoryCRUDController.java:449
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/ResourcesCostCategoryAssignmentController.java:140
