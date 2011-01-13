@@ -61,8 +61,9 @@ import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
 
 /**
- * Controller for searching for {@link Resource}
  * @author Diego Pino Garcia <dpino@igalia.com>
+ *
+ *         Controller for searching for {@link Resource}
  */
 public class NewAllocationSelectorController extends
         AllocationSelectorController {
@@ -88,16 +89,13 @@ public class NewAllocationSelectorController extends
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        initController();
+        comp.setVariable("selectorController", this, true);
+        initializeComponents();
     }
 
-    /**
-     * Initializes ZUL components
-     */
-    private void initController() {
-        doInitialSelection();
-        // Add event listener onSelect to criterionsTree widget
+    private void initializeComponents() {
+
+        // Initialize criteria tree
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
 
@@ -106,15 +104,13 @@ public class NewAllocationSelectorController extends
                 @Override
                 public void onEvent(Event event) throws Exception {
                     searchResources("", getSelectedCriterions());
+                    showSelectedAllocations();
                 }
             });
         }
-
-        // Initialize components
         criterionsTree.setTreeitemRenderer(criterionRenderer);
-        listBoxResources.setItemRenderer(getListitemRenderer());
 
-        refreshListBoxResources();
+        // Initialize found resources box
         listBoxResources.addEventListener(Events.ON_SELECT,
                 new EventListener() {
 
@@ -123,8 +119,12 @@ public class NewAllocationSelectorController extends
                 if (isGenericType()) {
                     returnToSpecificDueToResourceSelection();
                 }
+                showSelectedAllocations();
             }
         });
+        listBoxResources.setItemRenderer(getListitemRenderer());
+
+        // Initialize radio group of selector types
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
@@ -136,6 +136,24 @@ public class NewAllocationSelectorController extends
                         showSelectedAllocations();
                     }
                 });
+        doInitialSelection();
+    }
+
+    private void showSelectedAllocations() {
+        allocationSelectedItems.setValue(buildSelectedAllocationsString());
+    }
+
+    private String buildSelectedAllocationsString() {
+        if (currentAllocationType == AllocationType.SPECIFIC) {
+            List<String> result = new ArrayList<String>();
+            for (Resource each : getSelectedResourcesOnListbox()) {
+                result.add(each.getShortDescription());
+            }
+            return StringUtils.join(result, ",");
+        } else {
+            List<Criterion> criteria = getSelectedCriterions();
+            return currentAllocationType.asCaption(criteria);
+        }
     }
 
     private List<? extends Resource> getAllResources() {
@@ -156,6 +174,14 @@ public class NewAllocationSelectorController extends
         currentAllocationType = type;
         Util.reloadBindings(criterionsTree);
         refreshListBoxResources();
+    }
+
+    private void refreshListBoxResources() {
+        refreshListBoxResources(getAllResources());
+    }
+
+    private void refreshListBoxResources(List<? extends Resource> resources) {
+        listBoxResources.setModel(new SimpleListModel(resources));
     }
 
     private void returnToSpecificDueToResourceSelection() {
@@ -261,10 +287,6 @@ public class NewAllocationSelectorController extends
         return result;
     }
 
-    private void refreshListBoxResources(List<? extends Resource> resources) {
-        listBoxResources.setModel(new SimpleListModel(resources));
-    }
-
     public ResourceListRenderer getListitemRenderer() {
         return resourceListRenderer;
     }
@@ -279,10 +301,6 @@ public class NewAllocationSelectorController extends
         clearSelection(listBoxResources);
         clearSelection(criterionsTree);
         doInitialSelection();
-    }
-
-    private void refreshListBoxResources() {
-        refreshListBoxResources(getAllResources());
     }
 
     public List<Resource> getSelectedWorkers() {
@@ -475,22 +493,8 @@ public class NewAllocationSelectorController extends
         listBoxResources.setMultiple(multiple);
     }
 
-    public void showSelectedAllocations() {
-        allocationSelectedItems.setValue(buildSelectedAllocationsString());
-    }
-
-    private String buildSelectedAllocationsString() {
-
-        if (currentAllocationType == AllocationType.SPECIFIC) {
-            List<String> result = new ArrayList<String>();
-            for (Resource each : getSelectedResourcesOnListbox()) {
-                result.add(each.getShortDescription());
-            }
-            return StringUtils.join(result, ",");
-        } else {
-            List<Criterion> criterions = getSelectedCriterions();
-            return currentAllocationType.asCaption(criterions);
-        }
+    public boolean isAllowSelectMultipleResources() {
+        return listBoxResources.isMultiple();
     }
 
 }
