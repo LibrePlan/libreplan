@@ -370,6 +370,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+
             }
         };
     }
@@ -482,18 +483,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             setInterval(timeTracker.getRealInterval());
         }
 
-        public void paginationDown() {
-            paginatorFilter.goToHorizontalPage(horizontalPagination
-                    .getSelectedIndex() - 1);
-            reloadComponent();
-        }
-
-        public void paginationUp() {
-            paginatorFilter.goToHorizontalPage(horizontalPagination
-                    .getSelectedIndex() + 1);
-            reloadComponent();
-        }
-
         @Override
         public Collection<DetailItem> selectsFirstLevel(
                 Collection<DetailItem> firstLevelDetails) {
@@ -552,8 +541,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         public void goToHorizontalPage(int interval) {
             paginatorStart = intervalStart;
-            // paginatorStart = new
-            // DateTime(timeTracker.getRealInterval().getStart());
             paginatorStart = timeTracker.getDetailsFirstLevel().iterator()
                     .next().getStartDate();
 
@@ -571,12 +558,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         private void updatePaginationButtons() {
             paginationDownButton.setDisabled(isFirstPage());
             paginationUpButton.setDisabled(isLastPage());
-        }
-
-        public void previous() {
-            paginatorStart = paginatorStart.minus(intervalIncrease());
-            paginatorEnd = paginatorEnd.minus(intervalIncrease());
-            updatePaginationButtons();
         }
 
         public boolean isFirstPage() {
