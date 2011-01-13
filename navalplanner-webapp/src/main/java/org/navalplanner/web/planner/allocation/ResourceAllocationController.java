@@ -152,6 +152,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allResourcesPerDay.setWidth("80px");
         newAllocationSelector.setLimitingResourceFilter(false);
         newAllocationSelectorCombo.setLimitingResourceFilter(false);
+        newAllocationSelector.allowSelectMultipleResources(true);
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
     }
