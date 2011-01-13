@@ -36,8 +36,8 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -430,6 +430,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         dependencyList.clear();
         queueListComponent.invalidate();
         queueListComponent.afterCompose();
+        queueListComponent.refreshQueues();
         rebuildDependencies();
     }
 
@@ -543,9 +544,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 }
             }
             horizontalPagination.setSelectedIndex(0);
-            if (horizontalPagination.getItems().size() < 2) {
-                horizontalPagination.setDisabled(true);
-            }
+
+            // Disable pagination if there's only one page
+            int size = horizontalPagination.getItems().size();
+            horizontalPagination.setDisabled(size == 1);
         }
 
         public void goToHorizontalPage(int interval) {
