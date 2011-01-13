@@ -14,7 +14,8 @@
             defaultValueBoolean="FALSE" />
         <addNotNullConstraint tableName="configuration"
 	    columnName="enable_critical_chain_support"
-            defaultNullValue="FALSE" />
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
     </changeSet>
 
     <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
