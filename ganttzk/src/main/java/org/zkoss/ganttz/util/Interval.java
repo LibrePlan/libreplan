@@ -79,7 +79,6 @@ public class Interval {
     }
 
     public Fraction getProportion(DateTime date) {
-        Validate.isTrue(!date.isAfter(endExclusive.toDateTimeAtStartOfDay()));
         Days fromStartToDate = Days.daysBetween(startInclusive,
                 date.toLocalDate());
         Fraction fraction = Fraction.getFraction(fromStartToDate.getDays(),

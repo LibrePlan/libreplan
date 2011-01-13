@@ -62,15 +62,17 @@
                     onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
-            <separator/>
-            <label>${i18n:_('Pagination')}:</label>
-            <button tooltiptext="${i18n:_('Page down')}" image="/common/img/ico_left.png" id="paginationDownButton"
-            onClick="limitingResourcesPanel.paginationDown();" disabled="true" />
-            <listbox mold="select" rows="1" visible="true" id="horizontalPagination"
-            onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
-            <button tooltiptext="${i18n:_('Page up')}" image="/common/img/ico_right.png" id="paginationUpButton"
-            onClick="limitingResourcesPanel.paginationUp();" />
+                <separator/>
 
+                <label>${i18n:_('Pagination')}:</label>
+                <button id="paginationDownButton" tooltiptext="${i18n:_('Page down')}" disabled="true"
+                        image="/common/img/ico_left.png"
+                        onClick="limitingResourcesPanel.paginationDown();" />
+                <listbox id="horizontalPagination" mold="select" rows="1" visible="true"
+                        onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+                <button id="paginationUpButton" tooltiptext="${i18n:_('Page up')}"
+                        image="/common/img/ico_right.png"
+                        onClick="limitingResourcesPanel.paginationUp();" />
 
             </hbox>
         </north>
