@@ -8,12 +8,13 @@
     <changeSet id="add-new-column-enable_critical_chain_support" author="jaragunde">
         <comment>Add new column enable_critical_chain_support with default value FALSE to configuration table</comment>
         <addColumn tableName="configuration">
-            <column name="enable_critical_chain_support" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
+            <column name="enable_critical_chain_support" type="BOOLEAN" />
         </addColumn>
         <addDefaultValue tableName="configuration" columnName="enable_critical_chain_support"
             defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+	    columnName="enable_critical_chain_support"
+            defaultNullValue="FALSE" />
     </changeSet>
 
     <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
