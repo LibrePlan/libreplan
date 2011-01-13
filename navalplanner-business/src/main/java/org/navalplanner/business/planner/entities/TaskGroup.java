@@ -216,6 +216,11 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
+    public void fitStartAndEndDatesToChildren() {
+        setIntraDayStartDate(getSmallestStartDateFromChildren());
+        setIntraDayEndDate(getBiggestEndDateFromChildren());
+    }
+
     public IntraDayDate getSmallestStartDateFromChildren() {
         return Collections.min(getChildrenStartDates());
     }
