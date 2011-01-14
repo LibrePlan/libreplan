@@ -21,8 +21,8 @@
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.DetailsOrderElementController">
     <!-- Details data -->
-    <grid id="details" fixedLayout="true">
-        <columns>
+    <grid id="details" sizedByContent="true">
+        <columns >
             <column width="200px" />
             <column />
         </columns>
