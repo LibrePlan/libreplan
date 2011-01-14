@@ -1,6 +1,43 @@
 NEWS
 ====
 
+Version 1.0.1 (14 Jan 2011)
+---------------------------
+
+Bugfixing release due to a missing dependency on Debian packages that make
+reports do not work on 1.0.0. Apart from fixing the Debian package other fixes
+done during last week are also included in this release.
+
+Changes
+~~~~~~~
+
+* Updated TODO file with decisions from roadmap meeting.
+* [Bug #803] Remove unused code
+* [Bug #803] Change Zoom level in LimitingResources launches Validation
+  exception
+* [Bug #804] Fix bug
+* [Bug #788] changes the structure and labels in resource load view.
+* [Bug #808] Fix bug when a resource field in Resource search is selected for
+  the first time, set 'Current selection' as name of that resource
+* [Bug #785] fixes translations in company list.
+* Added dependency with ttf-freefont on debian/control.
+* [Bug #801] Fixed typo in Spanish translation.
+* [Bug #785] Add improvements in companies list.
+* [Bug #784] Sort results of add criterion combo in resource edition
+* Reset the progressmeter to zero when the MonteCarlo chart is closed
+* [Bug #800] Fix closable button in 'Calendar allocation' window
+* [Bug #800] Fix closable button in 'Progress consolidation' window
+* [Bug #800] Add closable button to 'Progress assignment' window
+* [Bug #800] Add closable button to 'Project details' window
+* [Bug #782] Fix bug
+* Fix asyncNotifications
+* Fix the type parameter
+* [Bug #779] Fix bug
+* Avoid LazyInitializationException accessing template's labels
+* [Bug #798] Refactor 'Remove Criterion' window, change it for a MessageBox
+  window
+* [Bug #795] Refactor calendar remove dialog box and change it to a MessageBox
+
 
 Version 1.0.0 (07 Jan 2011)
 ---------------------------
