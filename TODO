@@ -14,35 +14,92 @@ Dates
 Features
 ~~~~~~~~
 
-* Limiting resources. Appropriative insertion algorithm with task scrolling.
-* Improve printing support.
-* Possibility of using critical chain paradigm in project planning.
+* Printing support improvement.
+* Help improvement.
+* Chromium browser complete support.
+* Limiting resources. New appropriative insertion algorithm.
 * Resource levelling.
-* General allocation resource allocation improvements: reduction of
-  fragmentation in distributing allocation algorithm and heuristic to use same
-  resources over a period.
-* Performance improvements: resource load view and Gantt view.
-* Chromium browser completely supported.
+* Over allocation control.
+* Heuristics in general allocations.
+* Allocation functions (steps, S-curve) in simple allocation pop-up and some
+  usability improvements.
+* Support of intraday operations. Possibility to establish not integer number of
+  hours in allocations, task work (hours, minutes, seconds).
+* Advance allocation fix.
+
+Small tasks
+~~~~~~~~~~~
+
+* Dependency violation mark in Gantt chart.
+* Default login auto-completion configuration.
+* Entity Identification improvement in reports (e.g. inclusion of both task and
+  project names in *Work report lines report*)
+
+
+Version 1.2 - 2011w27
+---------------------
+
+Dates
+~~~~~
+
+* *IRC coordination meeting*: 2011w15
+* *Feature freeze*: 2011w24
+* *Release date*: 2011w27
+
+Features
+~~~~~~~~
+
+* Resource load view performance improvement.
+* Gantt window performance improvement.
+* Dependency type ``START-TO-FINISH``.
+* Dependencies with lag.
+* Periodic allocation schemes.
+* Earned value improvements.
+* Critical chain project management critical chain paradigm in project planning.
+* Interface to resolve allocation conflicts.
+* Add export/import operations for different format files from other projects
+  like OpenProj, MicrosoftProject, ...
+* Documentation attachment.
 
 
 Future
 ------
 
-* Disable complex features by default.
+* Monte Carlo simulation improvements.
+* Increase support of intraday operations in allocations regarding planning
+  dates.
+* New features in Gantt window.
+* Complex features disabled by default.
 * Quick start wizard.
-* Add export/import for different format files from other projects like
-  OpenProj, MicrosoftProject, ...
-* Provide examples for integration services that don't depend on Ruby (maybe
-  directly with Java).
-* Migrate to ZK 5.
+* Integration services scripts that don't depend on Ruby (maybe directly with
+  Java).
+* ZK 5 migration.
+* Permission enhancements.
+* *Exit without saving* detection.
+* Historic information management.
+* Templates with planning information.
+* Cash-flow analysis.
+* New outsourcing capabilities.
+* Scenario system enhancements.
+* Resource load charts improvements.
+* Visualization of task states in Gantt.
+* More reports.
+* Calendars with intraday timetable.
+* Machine system fixes.
 
 
 Wish List
 ---------
 
 * Customization (e.g. recently opened projects in menu).
+* Application theming. Possibility to customize the styles.
 * Database snapshot with example data.
 * Unit tests for integration services using truly HTTP requests and XML files.
 * Auto-deployable executable. Application is downloaded and installed with JNLP
   (Java Web Start) and on starting launches an embedded servlet container in
   which it is executed. It will include a pure Java database like HSQLDB too.
+* Notification system.
+* Explorer and Opera support.
+* Experimental rendering with canvas for Gantt and resource load.
+* Interruptible tasks.
+* Configurable reports.
