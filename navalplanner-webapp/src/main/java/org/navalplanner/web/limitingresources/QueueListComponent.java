@@ -106,12 +106,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
         queueComponent.removeQueueElement(element);
     }
 
-    public void refreshQueues() {
-        for (QueueComponent each: fromQueueToComponent.values()) {
-            each.invalidate();
-        }
-    }
-
     public void refreshQueue(LimitingResourceQueue queue) {
         QueueComponent queueComponent = fromQueueToComponent.get(queue);
         queueComponent.setLimitingResourceQueue(queue);
@@ -123,9 +117,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-
-                invalidate();
-                afterCompose();
                 response(null, new AuInvoke(QueueListComponent.this,
                         "adjustTimeTrackerSize"));
                 response(null, new AuInvoke(QueueListComponent.this,
