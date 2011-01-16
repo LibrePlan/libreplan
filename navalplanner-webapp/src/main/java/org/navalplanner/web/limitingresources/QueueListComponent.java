@@ -76,7 +76,7 @@ public class QueueListComponent extends HtmlMacroComponent implements
 
     private void insertAsComponent(LimitingResourceQueue queue) {
         QueueComponent component = QueueComponent.create(this, timeTracker, queue);
-        this.appendChild(component);
+        appendChild(component);
         fromQueueToComponent.put(queue, component);
     }
 
@@ -130,8 +130,6 @@ public class QueueListComponent extends HtmlMacroComponent implements
         for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }
-        response(null, new AuInvoke(QueueListComponent.this,
-                "adjustResourceLoadRows"));
     }
 
     public List<QueueTask> getQueueTasks() {

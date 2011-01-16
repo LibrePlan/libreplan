@@ -32,9 +32,8 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
@@ -69,15 +68,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
     private LimitingResourcesController limitingResourcesController;
 
+    private TimeTracker timeTracker;
+
     private TimeTrackerComponent timeTrackerComponent;
+
+    private TimeTrackerComponent timeTrackerHeader;
 
     private LimitingResourcesLeftPane leftPane;
 
     private QueueListComponent queueListComponent;
 
     private MutableTreeModel<LimitingResourceQueue> treeModel;
-
-    private TimeTracker timeTracker;
 
     private Listbox listZoomLevels;
 
@@ -86,6 +87,11 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Button paginationUpButton;
 
     private Listbox horizontalPagination;
+
+    private LimitingDependencyList dependencyList = new LimitingDependencyList(
+            this);
+
+    private PaginatorFilter paginatorFilter;
 
     private Component insertionPointLeftPanel;
     private Component insertionPointRightPanel;
@@ -102,18 +108,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .getSelectedIndex() + 1));
         goToSelectedHorizontalPage();
     }
-
-    @Autowired
-    IResourceDAO resourcesDAO;
-
-    private LimitingDependencyList dependencyList = new LimitingDependencyList(
-            this);
-
-    private PaginatorFilter paginatorFilter;
-
-    private TimeTrackerComponent timeTrackerHeader;
-
-    private IZoomLevelChangedListener zoomChangedListener;
 
     /**
      * Returns the closest upper {@link LimitingResourcesPanel} instance going
@@ -148,7 +142,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         treeModel = createModelForTree();
 
-        timeTrackerComponent = timeTrackerForLimitingResourcesPanel(timeTracker);
         queueListComponent = new QueueListComponent(this, timeTracker,
                 treeModel);
 
@@ -235,50 +228,52 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return toolbar;
     }
 
-    private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(
-            TimeTracker timeTracker) {
-        return new TimeTrackerComponent(timeTracker) {
-            @Override
-            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-                response("", new AuInvoke(queueListComponent,
-                        "adjustScrollHorizontalPosition", pixelsDisplacement
-                                + ""));
-            }
-        };
-    }
-
     @Override
     public void afterCompose() {
 
         super.afterCompose();
-        paginatorFilter = new PaginatorFilter();
 
         initializeBindings();
+        initializeTimetracker();
 
         listZoomLevels
                 .setSelectedIndex(timeTracker.getDetailLevel().ordinal() - 2);
-
-        // Pagination stuff
-        paginationUpButton.setDisabled(paginatorFilter.isLastPage());
-
-        paginatorFilter.setInterval(timeTracker.getRealInterval());
-        timeTracker.setFilter(paginatorFilter);
 
         // Insert leftPane component with limitingresources list
         insertionPointLeftPanel.appendChild(leftPane);
         leftPane.afterCompose();
 
-        insertionPointRightPanel.appendChild(timeTrackerComponent);
+        // Initialize queues
         insertionPointRightPanel.appendChild(queueListComponent);
         queueListComponent.afterCompose();
 
-        dependencyList = generateDependencyComponentsList();
-        if (dependencyList != null) {
-            dependencyList.afterCompose();
-            insertionPointRightPanel.appendChild(dependencyList);
-        }
+        // Initialize dependencies
+        rebuildDependencies();
 
-        zoomChangedListener = new IZoomLevelChangedListener() {
+        initializePagination();
+    }
+
+    /**
+     * Apparently it's necessary to append {@link DependencyList} to
+     * insertionPointRightPanel again every time the list of dependencies is
+     * regenerated. Otherwise tasks overflow if they don't fit in current page
+     *
+     */
+    private void rebuildDependencies() {
+        dependencyList.clear();
+        for (LimitingResourceQueueElement each : getLimitingResourceQueueElements()) {
+            dependencyList.addDependenciesFor(each);
+        }
+        insertionPointRightPanel.appendChild(dependencyList);
+    }
+
+    private Set<LimitingResourceQueueElement> getLimitingResourceQueueElements() {
+        return queueListComponent.getLimitingResourceElementToQueueTaskMap()
+                .keySet();
+    }
+
+    private void initializeTimetracker() {
+        timeTracker.addZoomListener(new IZoomLevelChangedListener() {
             @Override
             public void zoomLevelChanged(ZoomLevel newDetailLevel) {
                 reloadTimetracker();
@@ -293,23 +288,44 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 paginatorFilter.goToHorizontalPage(0);
             }
 
-        };
-        this.timeTracker.addZoomListener(zoomChangedListener);
-
-        // Insert timetracker headers
+        });
         timeTrackerHeader = createTimeTrackerHeader();
+        timeTrackerComponent = createTimeTrackerComponent();
         insertionPointTimetracker.appendChild(timeTrackerHeader);
+        insertionPointRightPanel.appendChild(timeTrackerComponent);
         timeTrackerHeader.afterCompose();
         timeTrackerComponent.afterCompose();
-
-        paginatorFilter.populateHorizontalListbox();
     }
 
-    private void rebuildDependencies() {
-        dependencyList.clear();
-        insertionPointRightPanel.appendChild(dependencyList);
-        dependencyList = generateDependencyComponentsList();
-        dependencyList.afterCompose();
+    @SuppressWarnings("serial")
+    private TimeTrackerComponent createTimeTrackerHeader() {
+        return new TimeTrackerComponent(timeTracker) {
+
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+
+            }
+        };
+    }
+
+    @SuppressWarnings("serial")
+    private TimeTrackerComponent createTimeTrackerComponent() {
+        return new TimeTrackerComponent(timeTracker) {
+            @Override
+            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+                response("", new AuInvoke(queueListComponent,
+                        "adjustScrollHorizontalPosition", pixelsDisplacement
+                                + ""));
+            }
+        };
+    }
+
+    private void initializePagination() {
+        paginatorFilter = new PaginatorFilter();
+        paginationUpButton.setDisabled(paginatorFilter.isLastPage());
+        paginatorFilter.setInterval(timeTracker.getRealInterval());
+        timeTracker.setFilter(paginatorFilter);
+        paginatorFilter.populateHorizontalListbox();
     }
 
     private void initializeBindings() {
@@ -325,16 +341,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         insertionPointTimetracker = getFellow("insertionPointTimetracker");
     }
 
-    private LimitingDependencyList generateDependencyComponentsList() {
-        Set<LimitingResourceQueueElement> queueElements = queueListComponent
-                .getLimitingResourceElementToQueueTaskMap().keySet();
-
-        for (LimitingResourceQueueElement each : queueElements) {
-            dependencyList.addDependenciesFor(each);
-        }
-        return dependencyList;
-    }
-
     public Map<LimitingResourceQueueElement, QueueTask> getQueueTaskMap() {
         return queueListComponent.getLimitingResourceElementToQueueTaskMap();
     }
@@ -343,20 +349,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
-    }
-
-    public TimeTrackerComponent getTimeTrackerComponent() {
-        return timeTrackerComponent;
-    }
-
-    private TimeTrackerComponent createTimeTrackerHeader() {
-        return new TimeTrackerComponent(timeTracker) {
-
-            @Override
-            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
-
-            }
-        };
     }
 
     public void unschedule(QueueTask task) {

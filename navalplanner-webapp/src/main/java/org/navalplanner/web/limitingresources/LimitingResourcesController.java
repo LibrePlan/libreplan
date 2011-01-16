@@ -565,7 +565,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public boolean moveTask(LimitingResourceQueueElement element) {
         showManualAllocationWindow(element);
-        limitingResourcesPanel.reloadComponent();
         return getManualAllocationWindowStatus() == Messagebox.OK;
     }
 
