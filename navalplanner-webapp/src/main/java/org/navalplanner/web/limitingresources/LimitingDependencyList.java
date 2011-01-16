@@ -20,9 +20,7 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -31,22 +29,15 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
-import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
-import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class LimitingDependencyList extends XulElement implements AfterCompose {
+public class LimitingDependencyList extends XulElement {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
-
-    private transient IZoomLevelChangedListener listener;
 
     private final LimitingResourcesPanel panel;
 
@@ -105,7 +96,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private void addDependencyComponent(
             LimitingDependencyComponent dependencyComponent) {
-        dependencyComponent.redrawDependency();
         dependencyComponent.setParent(this);
     }
 
@@ -131,46 +121,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         if (comp != null) {
             removeChild(comp);
             dependencies.remove(dependency);
-        }
-    }
-
-    @Override
-    public void afterCompose() {
-        if (listener == null) {
-            listener = new IZoomLevelChangedListener() {
-                @Override
-                public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
-                        dependencyComponent.zoomChanged();
-                    }
-                }
-            };
-            getTimeTracker().addZoomListener(listener);
-        }
-        redrawDependencies();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
-        return new ArrayList<LimitingDependencyComponent>(dependencies.values());
-    }
-
-    private TimeTracker getTimeTracker() {
-        return getTimeTrackerComponent().getTimeTracker();
-    }
-
-    private TimeTrackerComponent getTimeTrackerComponent() {
-        return panel.getTimeTrackerComponent();
-    }
-
-    private void redrawDependencies() {
-        redrawDependencyComponents(getLimitingDependencyComponents());
-    }
-
-    private void redrawDependencyComponents(
-            List<LimitingDependencyComponent> dependencyComponents) {
-        for (LimitingDependencyComponent dependencyComponent : dependencyComponents) {
-            dependencyComponent.redrawDependency();
         }
     }
 
