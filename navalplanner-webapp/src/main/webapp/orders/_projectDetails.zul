@@ -47,11 +47,13 @@
             <row>
                 <label value="${i18n:_('Starting date')}" />
                 <datebox id="initDate"
-                    value="@{projectController.order.initDate}" />
+                    value="@{projectController.order.initDate}"
+                    constraint = "@{projectController.checkConstraintStartDate}" />
             </row>
             <row>
                 <label value="${i18n:_('Deadline')}" />
-                <datebox id="deadline" value="@{projectController.order.deadline}" />
+                <datebox id="deadline" value="@{projectController.order.deadline}"
+                    constraint = "@{projectController.checkConstraintFinishDate}"/>
             </row>
             <row>
                 <label value="${i18n:_('Customer')}" />
