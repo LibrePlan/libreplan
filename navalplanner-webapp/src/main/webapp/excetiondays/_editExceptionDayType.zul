@@ -65,7 +65,7 @@
                             <hbox>
                                 <effortDurationPicker id="extraEffort" />
                                 <checkbox id="overAssignable"
-                                    label="${i18n:_('Over Assignable')}"/>
+                                    label="${i18n:_('Infinitely Over Assignable')}"/>
                             </hbox>
                         </row>
                     </rows>
