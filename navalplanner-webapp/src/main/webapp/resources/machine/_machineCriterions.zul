@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<vbox id="criterionsContainer">
+<vbox id="criterionsContainer" width="100%">
 <vbox id="messagesContainer"/>
 <panel title="${i18n:_('Assigned criteria')}" border="normal">
     <panelchildren>
