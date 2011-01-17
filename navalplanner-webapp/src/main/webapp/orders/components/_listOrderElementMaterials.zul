@@ -25,7 +25,7 @@
     assignedMaterialsController = materialAssignmentComponent.controller;
 ]]>
 </zscript>
-<vbox apply="${assignedMaterialsController}">
+<vbox apply="${assignedMaterialsController}" width="100%">
 
 
     <tabbox mold="accordion">
@@ -65,7 +65,7 @@
 
             <tabpanel>
                 <!-- Material search -->
-                <hbox>
+                <hbox hflex="min">
                     <!-- Categories  -->
                     <vbox>
                         <panel title="${i18n:_('Categories')}" border="normal">
@@ -82,7 +82,7 @@
                         </panel>
                     </vbox>
 
-                    <vbox>
+                    <vbox hflex="min">
 
                         <!-- Found materials -->
                         <panel title="${i18n:_('Materials')}" border="normal">
@@ -101,7 +101,7 @@
 
                                 <listbox id="lbFoundMaterials"
                                     multiple="true"
-                                    fixedLayout="true"
+                                    sizedByContent="true"
                                     model="@{assignedMaterialsController.matchingMaterials}">
                                     <listhead sizable="true">
                                         <listheader label="${i18n:_('Code')}" />
