@@ -36,13 +36,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -851,7 +852,8 @@ public abstract class BaseCalendarEditionController extends
 
             appendDayListcell(item, calendarException);
             appendExceptionTypeListcell(item, calendarException);
-            appendDurationListcell(item, calendarException);
+            appendStandardEffortListcell(item, calendarException.getCapacity());
+            appendExtraEffortListcell(item, calendarException.getCapacity());
             appendCodeListcell(item, calendarException);
             appendOperationsListcell(item, calendarException);
 
@@ -894,11 +896,17 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(listcell);
         }
 
-        private void appendDurationListcell(Listitem item,
-                CalendarException calendarException) {
+        private void appendStandardEffortListcell(Listitem item,
+                Capacity capacity) {
             Listcell listcell = new Listcell();
-            listcell.appendChild(new Label(asString(calendarException
-                    .getDuration())));
+            listcell.appendChild(new Label(
+                    _(capacity.getStandardEffortString())));
+            item.appendChild(listcell);
+        }
+
+        private void appendExtraEffortListcell(Listitem item, Capacity capacity) {
+            Listcell listcell = new Listcell();
+            listcell.appendChild(new Label(_(capacity.getExtraEffortString())));
             item.appendChild(listcell);
         }
 
