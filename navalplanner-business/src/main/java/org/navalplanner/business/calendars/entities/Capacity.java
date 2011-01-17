@@ -19,10 +19,15 @@
 package org.navalplanner.business.calendars.entities;
 
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
+import java.util.EnumMap;
+
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
 /**
  * This class is intended as a Hibernate component. It's formed by two
@@ -90,6 +95,28 @@ public class Capacity {
                     allowedExtraEffort == null ? EffortDuration.zero()
                             : allowedExtraEffort);
         }
+    }
+
+    public String getStandardEffortString() {
+        return asString(getStandardEffort());
+    }
+
+    public String getExtraEffortString() {
+        if (getAllowedExtraEffort() == null) {
+            return _("unlimited");
+        }
+        return asString(getAllowedExtraEffort());
+    }
+
+    private static String asString(EffortDuration duration) {
+        if (duration == null) {
+            return "";
+        }
+        EnumMap<Granularity, Integer> values = duration.decompose();
+        Integer hours = values.get(Granularity.HOURS);
+        Integer minutes = values.get(Granularity.MINUTES);
+        Integer seconds = values.get(Granularity.SECONDS);
+        return hours + ":" + minutes + ":" + seconds;
     }
 
     @Override

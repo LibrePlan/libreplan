@@ -38,8 +38,8 @@
                 <label value="@{exceptionDayType.name}" />
                 <label value="@{exceptionDayType.color}" />
                 <label value="@{exceptionDayType.overAssignableStr}" />
-                <label value="@{exceptionDayType.standardEffortStr}" />
-                <label value="@{exceptionDayType.extraEffortStr}" />
+                <label value="@{exceptionDayType.capacity.standardEffortString}" />
+                <label value="@{exceptionDayType.capacity.extraEffortString}" />
 
                 <!-- Operation -->
                 <hbox>

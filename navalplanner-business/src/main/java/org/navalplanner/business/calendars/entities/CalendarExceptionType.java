@@ -134,17 +134,6 @@ public class CalendarExceptionType extends IntegrationEntity {
         return capacity.getStandardEffort();
     }
 
-    public String getStandardEffortStr() {
-        return asString(getCapacity().getStandardEffort());
-    }
-
-    public String getExtraEffortStr() {
-        if (getCapacity().getAllowedExtraEffort() == null) {
-            return _("unlimited");
-        }
-        return asString(getCapacity().getAllowedExtraEffort());
-    }
-
     private String asString(EffortDuration duration) {
         if (duration == null) {
             return "";
