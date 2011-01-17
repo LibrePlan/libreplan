@@ -33,13 +33,14 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
@@ -280,17 +281,15 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration) {
-        for (LocalDate date = new LocalDate(startDate); date
-                .compareTo(new LocalDate(endDate)) <= 0; date = date
+    public void createException(CalendarExceptionType type,
+            LocalDate startDate, LocalDate endDate, Capacity capacity) {
+        for (LocalDate date = startDate; date.compareTo(endDate) <= 0; date = date
                 .plusDays(1)) {
             if (getTypeOfDay(date).equals(DayType.OWN_EXCEPTION)) {
-                getBaseCalendar().updateExceptionDay(date, duration, type);
+                getBaseCalendar().updateExceptionDay(date, capacity, type);
             } else {
                 CalendarException day = CalendarException.create("", date,
-                        duration,
-                        type);
+                        capacity, type);
                 getBaseCalendar().addExceptionDay(day);
             }
         }
@@ -591,8 +590,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration) {
+    public void updateException(CalendarExceptionType type,
+            LocalDate startDate, LocalDate endDate, Capacity capacity) {
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
@@ -600,12 +599,12 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                 if (type == null) {
                     getBaseCalendar().removeExceptionDay(date);
                 } else {
-                    getBaseCalendar().updateExceptionDay(date, duration, type);
+                    getBaseCalendar().updateExceptionDay(date, capacity, type);
                 }
             } else {
                 if (type != null) {
                     CalendarException day = CalendarException.create(date,
-                            duration, type);
+                            capacity, type);
                     getBaseCalendar().addExceptionDay(day);
                 }
             }

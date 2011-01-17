@@ -47,15 +47,24 @@ public class CalendarException extends IntegrationEntity {
     }
 
     public static CalendarException create(LocalDate date,
-            EffortDuration duration,
-            CalendarExceptionType type) {
+            EffortDuration duration, CalendarExceptionType type) {
         return create(new CalendarException(date, from(duration, type), type));
+    }
+
+    public static CalendarException create(LocalDate date, Capacity capacity,
+            CalendarExceptionType type) {
+        return create(new CalendarException(date, capacity, type));
     }
 
     public static CalendarException create(String code, LocalDate date,
             EffortDuration duration, CalendarExceptionType type) {
         return create(new CalendarException(date, from(duration, type), type),
                 code);
+    }
+
+    public static CalendarException create(String code, LocalDate date,
+            Capacity capacity, CalendarExceptionType type) {
+        return create(new CalendarException(date, capacity, type), code);
     }
 
     private static Capacity from(EffortDuration duration,

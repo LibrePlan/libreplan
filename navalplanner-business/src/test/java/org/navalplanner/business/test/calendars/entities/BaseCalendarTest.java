@@ -39,6 +39,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.workingday.EffortDuration;
 
 /**
@@ -382,9 +383,10 @@ public class BaseCalendarTest {
 
         calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
 
+        CalendarExceptionType type = createCalendarExceptionType();
         calendar.updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1),
-                hours(8),
-                createCalendarExceptionType());
+                Capacity.create(hours(8)).extraEffort(
+                        type.getCapacity().getAllowedExtraEffort()), type);
 
         assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE
                 .plusYears(1))), equalTo(hours(8)));

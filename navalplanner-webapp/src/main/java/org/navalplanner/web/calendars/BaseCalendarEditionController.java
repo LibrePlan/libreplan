@@ -572,7 +572,9 @@ public abstract class BaseCalendarEditionController extends
         }
 
         EffortDuration duration = exceptionDurationPicker.getValue();
-        baseCalendarModel.createException(type, startDate, endDate, duration);
+        baseCalendarModel.createException(type,
+                LocalDate.fromDateFields(startDate),
+                LocalDate.fromDateFields(endDate), Capacity.create(duration));
         reloadDayInformation();
     }
 
@@ -1033,7 +1035,9 @@ public abstract class BaseCalendarEditionController extends
         }
 
         EffortDuration duration = exceptionDurationPicker.getValue();
-        baseCalendarModel.updateException(type, startDate, endDate, duration);
+        baseCalendarModel.updateException(type,
+                LocalDate.fromDateFields(startDate),
+                LocalDate.fromDateFields(endDate), Capacity.create(duration));
         reloadDayInformation();
     }
 

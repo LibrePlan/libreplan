@@ -42,8 +42,8 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -255,15 +255,15 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         exceptions.remove(day);
     }
 
-    public void updateExceptionDay(Date date, EffortDuration duration,
+    public void updateExceptionDay(Date date, Capacity capacity,
             CalendarExceptionType type) throws IllegalArgumentException {
-        updateExceptionDay(new LocalDate(date), duration, type);
+        updateExceptionDay(new LocalDate(date), capacity, type);
     }
 
-    public void updateExceptionDay(LocalDate date, EffortDuration duration,
+    public void updateExceptionDay(LocalDate date, Capacity capacity,
             CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
-        CalendarException day = CalendarException.create(date, duration, type);
+        CalendarException day = CalendarException.create(date, capacity, type);
         addExceptionDay(day);
     }
 

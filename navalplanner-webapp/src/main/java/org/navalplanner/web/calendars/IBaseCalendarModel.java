@@ -32,6 +32,7 @@ import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.IIntegrationEntityModel;
@@ -112,8 +113,8 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     EffortDuration getWorkableTime();
 
-    void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration);
+    void createException(CalendarExceptionType type, LocalDate startDate,
+            LocalDate endDate, Capacity capacity);
 
     Boolean isDefault(Days day);
 
@@ -163,8 +164,8 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     CalendarExceptionType getCalendarExceptionType(LocalDate date);
 
-    void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration);
+    void updateException(CalendarExceptionType type, LocalDate startDate,
+            LocalDate endDate, Capacity capacity);
 
     void removeCalendarData(CalendarData calendarData);
 
