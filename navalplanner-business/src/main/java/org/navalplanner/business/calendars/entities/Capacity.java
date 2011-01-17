@@ -78,7 +78,7 @@ public class Capacity {
         return new Capacity(standardEffort, extraEffort);
     }
 
-    public Capacity withNormalDuration(EffortDuration standardEffort) {
+    public Capacity withStandardEffort(EffortDuration standardEffort) {
         return new Capacity(standardEffort, allowedExtraEffort);
     }
 

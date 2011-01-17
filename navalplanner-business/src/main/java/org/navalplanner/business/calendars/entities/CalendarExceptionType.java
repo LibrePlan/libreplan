@@ -157,7 +157,7 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public void setDuration(EffortDuration duration) {
-        this.capacity = this.capacity.withNormalDuration(duration);
+        this.capacity = this.capacity.withStandardEffort(duration);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class CalendarException extends IntegrationEntity {
 
     private static Capacity from(EffortDuration duration,
             CalendarExceptionType type) {
-        return type.getCapacity().withNormalDuration(duration);
+        return type.getCapacity().withStandardEffort(duration);
     }
 
     private static EffortDuration fromHours(Integer hours) {
@@ -74,7 +74,7 @@ public class CalendarException extends IntegrationEntity {
         }
 
         if (hours != null) {
-            this.capacity.withNormalDuration(fromHours(hours));
+            this.capacity.withStandardEffort(fromHours(hours));
         }
 
         if (type != null) {

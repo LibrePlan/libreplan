@@ -63,7 +63,7 @@ public class CapacityPicker {
 
             @Override
             public void set(EffortDuration value) {
-                updateCapacity(currentCapacity.withNormalDuration(value));
+                updateCapacity(currentCapacity.withStandardEffort(value));
             }
         });
         extraEffortPicker.bind(new Getter<EffortDuration>() {
