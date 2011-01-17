@@ -72,7 +72,7 @@
                 <column label="${i18n:_('Finish hour')}" width="80px" align="center"/>
                 <column label="${i18n:_('Hours')}" width="80px" align="center"/>
                 <column label="${i18n:_('Hours type')}" width="150px" align="center"/>
-                <column label="${i18n:_('Work Report')}" width="80px" align="center"/>
+                <column label="${i18n:_('Work Report')}" width="100%" align="center"/>
                 </columns>
                 <rows>
                 <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
@@ -100,7 +100,7 @@
                 </tabs>
                 <tabpanels>
                     <tabpanel>
-                        <vbox>
+                        <vbox width="100%">
 
                     <panel title="${i18n:_('Heading Fields')}" border="normal"
                             style="overflow:auto">
