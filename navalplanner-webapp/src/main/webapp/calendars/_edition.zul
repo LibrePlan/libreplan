@@ -48,7 +48,7 @@
             </rows>
         </grid>
 
-    <hbox>
+    <hbox width="100%" pack="stretch">
 
         <vbox id="dayInformation">
 
@@ -70,7 +70,7 @@
 
         </vbox>
 
-        <tabbox>
+        <tabbox width="100%">
             <tabs>
                 <tab label="${i18n:_('Exceptions')}" id="exceptionsTab" />
                 <tab label="${i18n:_('Work week')}" id="workWeekTab" />
@@ -115,7 +115,8 @@
                     <listbox id="exceptionsList"
                         model="@{calendarController.editionController.calendarExceptions}"
                         itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
-                        rows="4">
+                        rows="4"
+                        width="400px">
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
                             <listheader label="${i18n:_('Exception Type')}" />
@@ -145,7 +146,8 @@
 
                     <listbox id="hoursPerDay"
                         model="@{calendarController.editionController.getHoursPerDay}"
-                        itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
+                        itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}"
+                        sizedByContent="true">
                         <listhead>
                             <listheader label="${i18n:_('Day of week')}" />
                             <listheader label="${i18n:_('Workable Time')}" />
@@ -155,7 +157,8 @@
 
                     <listbox id="historyInformation"
                         model="@{calendarController.editionController.historyVersions}"
-                        itemRenderer="@{calendarController.editionController.historyVersionsRenderer}">
+                        itemRenderer="@{calendarController.editionController.historyVersionsRenderer}"
+                        sizedByContent="true">
                         <listhead>
                             <listheader label="${i18n:_('Name')}" />
                             <listheader label="${i18n:_('Parent')}" />
@@ -200,7 +203,7 @@
 
             <tabpanel>
 
-            <vbox>
+            <vbox width="100%">
                 <listbox id="calendarAvailabilities"
                     model="@{calendarController.editionController.getCalendarAvailabilities}"
                     itemRenderer="@{calendarController.editionController.calendarAvailabilityRenderer}">
