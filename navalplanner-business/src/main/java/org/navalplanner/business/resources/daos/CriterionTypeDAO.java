@@ -190,6 +190,12 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
         return list(CriterionType.class);
     }
 
+    @Override
+    public List<CriterionType> getSortedCriterionTypes() {
+        return getSession().createCriteria(CriterionType.class).addOrder(
+                Order.asc("name")).list();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<CriterionType> getCriterionTypesByResources(

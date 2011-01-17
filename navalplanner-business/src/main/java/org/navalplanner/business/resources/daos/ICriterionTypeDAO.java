@@ -62,6 +62,8 @@ public interface ICriterionTypeDAO
     List<CriterionType> getCriterionTypesByResources(
             Collection<ResourceEnum> resources);
 
+    List<CriterionType> getSortedCriterionTypes();
+
     /**
      * Checks if exists the equivalent {@link CriterionType} on the DB for a
      * {@link CriterionType} created from a {@link PredefinedCriterionTypes}

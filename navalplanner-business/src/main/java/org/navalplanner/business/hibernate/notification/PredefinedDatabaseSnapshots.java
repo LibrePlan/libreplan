@@ -29,7 +29,6 @@ import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
@@ -244,10 +243,12 @@ public class PredefinedDatabaseSnapshots {
             public Map<CriterionType, List<Criterion>> call() throws Exception {
                 Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
                 for (CriterionType criterionType : criterionTypeDAO
-                        .getCriterionTypes()) {
-                    List<Criterion> criterions = new ArrayList<Criterion>(
-                            criterionDAO.findByType(criterionType));
-                    result.put(criterionType, criterions);
+                        .getSortedCriterionTypes()) {
+                    if (criterionType.isEnabled()) {
+                        List<Criterion> criterions = criterionType
+                                .getSortCriterions();
+                        result.put(criterionType, criterions);
+                    }
                 }
                 return result;
             }
@@ -318,16 +319,20 @@ public class PredefinedDatabaseSnapshots {
             @Override
             public Map<Class<?>, List<Resource>> call() throws Exception {
                 Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
-                result.put(Worker.class,
-                        new ArrayList<Resource>(resourceDAO.getRealWorkers()));
-                result.put(Machine.class,
-                        new ArrayList<Resource>(resourceDAO.getMachines()));
-                result.put(VirtualWorker.class, new ArrayList<Resource>(
-                        resourceDAO.getVirtualWorkers()));
+                result.put(Worker.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getRealWorkers())));
+                result.put(Machine.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getMachines())));
+                result.put(VirtualWorker.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getVirtualWorkers())));
                 return result;
             }
         };
     }
+
 
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
