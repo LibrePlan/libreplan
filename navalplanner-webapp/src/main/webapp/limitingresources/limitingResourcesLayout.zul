@@ -88,7 +88,7 @@
                             <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
-                                    <treecol label="Name" height="29px"/>
+                                    <treecol label="${i18n:_('Name')}" height="29px"/>
                                 </treecols>
                             </tree>
 
