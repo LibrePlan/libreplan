@@ -113,11 +113,15 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <map name="effortPerDay" table="effort_per_day">
+        <map name="capacityPerDay" table="capacity_per_day">
             <key column="base_calendar_id"/>
             <index column="day_id" type="integer" />
-            <element column="effort"
-                type="org.navalplanner.business.workingday.hibernate.EffortDurationType" />
+            <composite-element class="org.navalplanner.business.calendars.entities.Capacity">
+                <property name="standardEffort" column="standard_effort"
+                    type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+                <property name="allowedExtraEffort" column="allowed_extra_effort"
+                    type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+            </composite-element>
         </map>
 
         <!-- Not indexed -->

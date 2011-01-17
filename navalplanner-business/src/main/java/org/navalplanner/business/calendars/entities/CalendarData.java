@@ -71,7 +71,7 @@ public class CalendarData extends IntegrationEntity {
         }
     }
 
-    private Map<Integer, EffortDuration> effortPerDay;
+    private Map<Integer, Capacity> capacityPerDay;
 
     private LocalDate expiringDate;
 
@@ -85,32 +85,47 @@ public class CalendarData extends IntegrationEntity {
      * Constructor for hibernate. Do not use!
      */
     public CalendarData() {
-        effortPerDay = new HashMap<Integer, EffortDuration>();
+        capacityPerDay = new HashMap<Integer, Capacity>();
         for (Days each : Days.values()) {
             setDurationAt(each, null);
         }
     }
 
     public Map<Integer, Integer> getHoursPerDay() {
-        return asHours(effortPerDay);
+        return asHours(capacityPerDay);
     }
 
-    private Map<Integer, Integer> asHours(Map<Integer, EffortDuration> efforts) {
+    private Map<Integer, Integer> asHours(Map<Integer, Capacity> capacities) {
         Map<Integer, Integer> result = new HashMap<Integer, Integer>();
-        for (Entry<Integer, EffortDuration> each : efforts.entrySet()) {
-            EffortDuration value = each.getValue();
+        for (Entry<Integer, Capacity> each : capacities.entrySet()) {
+            EffortDuration value = toDuration(each.getValue());
             result.put(each.getKey(), value == null ? null : value.getHours());
         }
         return result;
     }
 
+    private static EffortDuration toDuration(Capacity capacity) {
+        if (capacity == null) {
+            return null;
+        }
+        return capacity.getStandardEffort();
+    }
+
+    private Capacity toCapacity(EffortDuration duration) {
+        if (duration == null) {
+            return null;
+        }
+        return Capacity.create(duration).overAssignable(true);
+    }
+
     public EffortDuration getDurationAt(Days day) {
-        return effortPerDay.get(day.ordinal());
+        return toDuration(capacityPerDay.get(day.ordinal()));
     }
 
     public void setDurationAt(Days day, EffortDuration duration) {
-        effortPerDay.put(day.ordinal(), duration);
+        capacityPerDay.put(day.ordinal(), toCapacity(duration));
     }
+
 
     public boolean isDefault(Days day) {
         return getDurationAt(day) == null;
@@ -137,8 +152,8 @@ public class CalendarData extends IntegrationEntity {
 
     public CalendarData copy() {
         CalendarData copy = create();
-        copy.effortPerDay = new HashMap<Integer, EffortDuration>(
-                this.effortPerDay);
+        copy.capacityPerDay = new HashMap<Integer, Capacity>(
+                this.capacityPerDay);
         copy.expiringDate = this.expiringDate;
         copy.parent = this.parent;
 

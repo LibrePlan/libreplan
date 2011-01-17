@@ -46,4 +46,14 @@
         </sql>
     </changeSet>
 
+    <changeSet id="use-capacity-for-capacity-per-day-for-calendar-data" author="ogonzalez">
+        <comment>Convert from duration to capacity in effort per day for CalendarData</comment>
+        <renameTable newTableName="capacity_per_day" oldTableName="effort_per_day" />
+        <addColumn tableName="capacity_per_day">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="capacity_per_day" oldColumnName="effort"
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
+    </changeSet>
+
 </databaseChangeLog>
