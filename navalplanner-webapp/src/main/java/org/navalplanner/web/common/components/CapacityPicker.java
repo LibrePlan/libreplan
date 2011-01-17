@@ -35,24 +35,41 @@ public class CapacityPicker {
 
     public static CapacityPicker workWith(Checkbox checkbox,
             EffortDurationPicker standardEffortPicker,
-            EffortDurationPicker extraHoursPicker,
-            final Getter<Capacity> getter,
+            EffortDurationPicker extraHoursPicker, Getter<Capacity> getter,
             Setter<Capacity> setter) {
         return new CapacityPicker(checkbox, standardEffortPicker,
                 extraHoursPicker, getter.get(), setter);
+    }
+
+    public static CapacityPicker workWith(Checkbox checkbox,
+            EffortDurationPicker standardEffortPicker,
+            EffortDurationPicker extraHoursPicker,
+            final Capacity initialCapacity) {
+        return new CapacityPicker(checkbox, standardEffortPicker,
+                extraHoursPicker, initialCapacity, null);
     }
 
     private Capacity currentCapacity;
 
     private final Setter<Capacity> setter;
 
-    private CapacityPicker(Checkbox checkbox,
+    private final Checkbox overAssignableWithoutLimitCheckbox;
+
+    private final EffortDurationPicker standardEffortPicker;
+
+    private final EffortDurationPicker extraEffortPicker;
+
+    private CapacityPicker(Checkbox overAssignableWithoutLimitCheckbox,
             EffortDurationPicker standardEffortPicker,
             final EffortDurationPicker extraEffortPicker,
             Capacity initialCapacity,
             Setter<Capacity> setter) {
+        this.overAssignableWithoutLimitCheckbox = overAssignableWithoutLimitCheckbox;
+        this.standardEffortPicker = standardEffortPicker;
+        this.extraEffortPicker = extraEffortPicker;
         this.currentCapacity = initialCapacity;
         this.setter = setter;
+
         standardEffortPicker.bind(new Getter<EffortDuration>() {
 
             @Override
@@ -82,7 +99,7 @@ public class CapacityPicker {
                 updateCapacity(currentCapacity.extraEffort(value));
             }
         });
-        Util.bind(checkbox, new Getter<Boolean>() {
+        Util.bind(overAssignableWithoutLimitCheckbox, new Getter<Boolean>() {
 
             @Override
             public Boolean get() {
@@ -108,7 +125,22 @@ public class CapacityPicker {
 
     private void updateCapacity(Capacity newCapacity) {
         this.currentCapacity = newCapacity;
-        this.setter.set(currentCapacity);
+        if (this.setter != null) {
+            this.setter.set(currentCapacity);
+        }
+    }
+
+    public Capacity getValue() {
+        return currentCapacity;
+    }
+
+    public void setValue(Capacity capacity) {
+        overAssignableWithoutLimitCheckbox.setChecked(capacity
+                .isOverAssignable());
+        standardEffortPicker.setValue(capacity.getStandardEffort());
+        extraEffortPicker.setValue(capacity.getAllowedExtraEffort());
+        currentCapacity = capacity;
+        updateExtraEffortDisability(extraEffortPicker);
     }
 
 }
