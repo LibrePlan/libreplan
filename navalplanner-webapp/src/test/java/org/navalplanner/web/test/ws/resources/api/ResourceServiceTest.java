@@ -193,7 +193,7 @@ public class ResourceServiceTest {
         saveResource(w1);
 
         /*
-         * Create a worker DTO with the same first name, surname, and nif as
+         * Create a worker DTO with the same first name, surname, and ID as
          * the previous one.
          */
         WorkerDTO w2 = new WorkerDTO(w1.getFirstName(), w1.getSurname(),
