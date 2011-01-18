@@ -231,6 +231,7 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
                     return callable.call();
                 } catch (Exception e) {
                     error = e;
+                    LOG.error("error executing snapshot " + name);
                     throw e;
                 } finally {
                     long timeExecuting = System.currentTimeMillis() - start;

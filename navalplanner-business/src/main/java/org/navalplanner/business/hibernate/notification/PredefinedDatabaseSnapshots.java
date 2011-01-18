@@ -21,10 +21,12 @@ package org.navalplanner.business.hibernate.notification;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
@@ -92,9 +94,9 @@ public class PredefinedDatabaseSnapshots {
     @Autowired
     private ISnapshotRefresherService snapshotRefresherService;
 
-    private IAutoUpdatedSnapshot<Map<CriterionType, List<Criterion>>> criterionsMap;
+    private IAutoUpdatedSnapshot<SortedMap<CriterionType, List<Criterion>>> criterionsMap;
 
-    public Map<CriterionType, List<Criterion>> snapshotCriterionsMap() {
+    public SortedMap<CriterionType, List<Criterion>> snapshotCriterionsMap() {
         return criterionsMap.getValue();
     }
 
@@ -237,11 +239,13 @@ public class PredefinedDatabaseSnapshots {
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private Callable<Map<CriterionType, List<Criterion>>> calculateCriterionsMap() {
-        return new Callable<Map<CriterionType, List<Criterion>>>() {
+    private Callable<SortedMap<CriterionType, List<Criterion>>> calculateCriterionsMap() {
+        return new Callable<SortedMap<CriterionType, List<Criterion>>>() {
             @Override
-            public Map<CriterionType, List<Criterion>> call() throws Exception {
-                Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
+            public SortedMap<CriterionType, List<Criterion>> call()
+                    throws Exception {
+                SortedMap<CriterionType, List<Criterion>> result = new TreeMap<CriterionType, List<Criterion>>(
+                        getComparatorByName());
                 for (CriterionType criterionType : criterionTypeDAO
                         .getSortedCriterionTypes()) {
                     if (criterionType.isEnabled()) {
@@ -251,6 +255,15 @@ public class PredefinedDatabaseSnapshots {
                     }
                 }
                 return result;
+            }
+        };
+    }
+
+    private Comparator<CriterionType> getComparatorByName(){
+        return new Comparator<CriterionType>() {
+            @Override
+            public int compare(CriterionType arg0, CriterionType arg1) {
+                return (arg0.getName().compareTo(arg1.getName()));
             }
         };
     }

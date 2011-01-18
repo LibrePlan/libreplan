@@ -23,6 +23,7 @@ package org.navalplanner.web.common.components.finders;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
@@ -78,7 +79,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
+        SortedMap<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -95,7 +96,7 @@ public class OrderElementsMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private Map<CriterionType, List<Criterion>> getMapCriterions() {
+    private SortedMap<CriterionType, List<Criterion>> getMapCriterions() {
         return databaseSnapshots.snapshotCriterionsMap();
     }
 
