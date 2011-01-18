@@ -405,6 +405,7 @@ public abstract class BaseCalendarEditionController extends
             BaseCalendar parent = baseCalendarModel.getParent();
             Combobox parentCalendars = (Combobox) window
                     .getFellow("parentCalendars");
+            @SuppressWarnings("unchecked")
             List<Comboitem> items = parentCalendars.getItems();
             for (Comboitem item : items) {
                 BaseCalendar baseCalendar = (BaseCalendar) item.getValue();
@@ -422,6 +423,7 @@ public abstract class BaseCalendarEditionController extends
         CalendarExceptionType type = baseCalendarModel
                 .getCalendarExceptionType(new LocalDate(selectedDay));
         Combobox exceptionTypes = (Combobox) window.getFellow("exceptionTypes");
+        @SuppressWarnings("unchecked")
         List<Comboitem> items = exceptionTypes.getItems();
         for (Comboitem item : items) {
             CalendarExceptionType value = (CalendarExceptionType) item
