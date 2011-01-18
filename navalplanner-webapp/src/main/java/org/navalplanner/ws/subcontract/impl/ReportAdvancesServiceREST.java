@@ -97,7 +97,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
         if (StringUtils
                 .isEmpty(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif)) {
-            return getErrorMessage("", "external company nif not specified");
+            return getErrorMessage("", "external company ID not specified");
         }
 
         ExternalCompany externalCompany;

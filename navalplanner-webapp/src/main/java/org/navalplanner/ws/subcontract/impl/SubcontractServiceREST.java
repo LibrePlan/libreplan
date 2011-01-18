@@ -133,7 +133,7 @@ public class SubcontractServiceREST implements ISubcontractService {
 
         if (StringUtils.isEmpty(subcontractedTask.externalCompanyNif)) {
             throw new ViolationError(subcontractedTask.subcontractedCode,
-                    "external company nif not specified");
+                    "external company ID not specified");
         }
 
         final ExternalCompany externalCompany = adHocTransactionService

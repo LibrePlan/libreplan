@@ -147,7 +147,7 @@ public class Worker extends Resource implements Comparable {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Worker with the same nif previously existed")
+    @AssertTrue(message = "Worker ID already used. It has to be be unique")
     public boolean checkConstraintUniqueNif() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
