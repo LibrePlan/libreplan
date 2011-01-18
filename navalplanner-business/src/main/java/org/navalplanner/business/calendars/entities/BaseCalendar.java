@@ -33,7 +33,6 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
@@ -273,32 +272,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         if (exceptionDay != null) {
             return exceptionDay.getDuration();
         }
+        return getDurationAt(date, getDayFrom(date));
+    }
 
-        switch (date.getDayOfWeek()) {
-        case DateTimeConstants.MONDAY:
-            return getDurationAt(date, Days.MONDAY);
-
-        case DateTimeConstants.TUESDAY:
-            return getDurationAt(date, Days.TUESDAY);
-
-        case DateTimeConstants.WEDNESDAY:
-            return getDurationAt(date, Days.WEDNESDAY);
-
-        case DateTimeConstants.THURSDAY:
-            return getDurationAt(date, Days.THURSDAY);
-
-        case DateTimeConstants.FRIDAY:
-            return getDurationAt(date, Days.FRIDAY);
-
-        case DateTimeConstants.SATURDAY:
-            return getDurationAt(date, Days.SATURDAY);
-
-        case DateTimeConstants.SUNDAY:
-            return getDurationAt(date, Days.SUNDAY);
-
-        default:
-            throw new RuntimeException("Day of week out of range!");
-        }
+    private Days getDayFrom(LocalDate date) {
+        return Days.values()[date.getDayOfWeek() - 1];
     }
 
     private boolean isOverAssignable(LocalDate localDate) {
