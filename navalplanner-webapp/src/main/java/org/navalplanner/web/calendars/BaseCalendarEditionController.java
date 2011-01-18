@@ -895,21 +895,6 @@ public abstract class BaseCalendarEditionController extends
 
         }
 
-        private void addEventListener(final Listitem item) {
-            item.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    if (!item.isSelected()) {
-                        Listitem item = (Listitem) event.getTarget();
-                        CalendarException calendarException = (CalendarException) item
-                            .getValue();
-                        setSelectedDay(calendarException.getDate());
-                        reloadDayInformation();
-                    }
-                }
-            });
-        }
-
         private void markAsSelected(Listitem item,
                 CalendarException calendarException) {
             LocalDate selectedDay = baseCalendarModel.getSelectedDay();
