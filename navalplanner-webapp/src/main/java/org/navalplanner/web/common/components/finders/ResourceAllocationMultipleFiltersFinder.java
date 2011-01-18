@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
@@ -99,7 +100,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
+        SortedMap<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -116,7 +117,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return getListMatching();
     }
 
-    private Map<CriterionType, List<Criterion>> getCriterionsMap() {
+    private SortedMap<CriterionType, List<Criterion>> getCriterionsMap() {
         return this.databaseSnapshots.snapshotCriterionsMap();
     }
 

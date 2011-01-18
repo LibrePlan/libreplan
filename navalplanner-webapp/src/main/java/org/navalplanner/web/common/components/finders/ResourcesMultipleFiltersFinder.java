@@ -23,6 +23,7 @@ package org.navalplanner.web.common.components.finders;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.costcategories.entities.CostCategory;
@@ -56,7 +57,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> criterionsMap = getCriterionsMap();
+        SortedMap<CriterionType, List<Criterion>> criterionsMap = getCriterionsMap();
         Iterator<CriterionType> iteratorCriterionType = criterionsMap.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -70,7 +71,7 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private Map<CriterionType, List<Criterion>> getCriterionsMap() {
+    private SortedMap<CriterionType, List<Criterion>> getCriterionsMap() {
         return databaseSnapshots.snapshotCriterionsMap();
     }
 
