@@ -111,8 +111,8 @@ public class CalendarData extends IntegrationEntity {
         return capacity.getStandardEffort();
     }
 
-    public EffortDuration getDurationAt(Days day) {
-        return toDuration(capacityPerDay.get(day.ordinal()));
+    public Capacity getCapacityOn(Days day) {
+        return capacityPerDay.get(day.ordinal());
     }
 
     public void setCapacityAt(Days day, Capacity capacity) {
@@ -121,7 +121,7 @@ public class CalendarData extends IntegrationEntity {
 
 
     public boolean isDefault(Days day) {
-        return getDurationAt(day) == null;
+        return getCapacityOn(day) == null;
     }
 
     public void setDefault(Days day) {
@@ -175,7 +175,7 @@ public class CalendarData extends IntegrationEntity {
     }
 
     boolean isEmptyFor(Days day) {
-        return !isDefault(day) && getDurationAt(day).isZero() || isDefault(day)
+        return !isDefault(day) && getCapacityOn(day).isZero() || isDefault(day)
                 && hasParent() && getParent().onlyGivesZeroHours(day);
     }
 

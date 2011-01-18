@@ -42,7 +42,6 @@ import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.NotTransactional;
@@ -80,40 +79,41 @@ public class BaseCalendarModelTest {
         baseCalendarModel.initCreate();
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendar();
         baseCalendar.setName("Test");
-        setHours(baseCalendar, 8);
+        Capacity capacity = Capacity.create(hours(8));
+        setCapacity(baseCalendar, capacity);
         baseCalendarModel.confirmSave();
-        assertThat(baseCalendarModel.getBaseCalendars().size(),
-                equalTo(previous + 1));
-        assertThat(baseCalendarModel.getBaseCalendars().get(previous).getId(),
-                equalTo(baseCalendar.getId()));
-        assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                .getDurationAt(new LocalDate(), Days.MONDAY), equalTo(hours(8)));
+        List<BaseCalendar> currentCalendars = baseCalendarModel
+                .getBaseCalendars();
+        assertThat(currentCalendars.size(), equalTo(previous + 1));
+
+        BaseCalendar createdCalendar = currentCalendars.get(previous);
+        assertThat(createdCalendar.getId(), equalTo(baseCalendar.getId()));
+        assertThat(createdCalendar.getCapacityConsideringCalendarDatasOn(
+                new LocalDate(), Days.MONDAY), equalTo(capacity));
     }
 
-    private void setHours(BaseCalendar baseCalendar, Integer hours) {
-        EffortDuration hoursDuration = EffortDuration.hours(hours);
+    private void setCapacity(BaseCalendar baseCalendar, Capacity capacity) {
         for (Days each : Days.values()) {
-            baseCalendar.setCapacityAt(each, Capacity.create(hoursDuration)
-                    .overAssignableWithoutLimit(true));
+            baseCalendar.setCapacityAt(each, capacity);
         }
     }
 
     @Test
     @NotTransactional
     public void testEditAndSave() throws ValidationException {
+        final Capacity capacity = Capacity.create(hours(4));
         doEditsSaveAndThenAsserts(new IOnExistentCalendar() {
 
             @Override
             public void onExistentCalendar(BaseCalendar calendar) {
-                setHours(calendar, 4);
+                setCapacity(calendar, capacity);
             }
         }, new IOnExistentCalendar() {
 
             @Override
             public void onExistentCalendar(BaseCalendar calendar) {
-                assertThat(
-                        calendar.getDurationAt(new LocalDate(), Days.MONDAY),
-                        equalTo(hours(4)));
+                assertThat(calendar.getCapacityConsideringCalendarDatasOn(
+                        new LocalDate(), Days.MONDAY), equalTo(capacity));
             }
         });
     }
@@ -158,20 +158,21 @@ public class BaseCalendarModelTest {
 
     @Test
     public void testEditAndNewVersion() {
+        final Capacity capacity = Capacity.create(hours(4));
         final LocalDate date = new LocalDate().plusWeeks(1);
         doEditsSaveAndThenAsserts(new IOnExistentCalendar() {
 
             @Override
             public void onExistentCalendar(BaseCalendar calendar) {
                 baseCalendarModel.createNewVersion(date);
-                setHours(baseCalendarModel.getBaseCalendar(), 4);
+                setCapacity(baseCalendarModel.getBaseCalendar(), capacity);
             }
         }, new IOnExistentCalendar() {
 
             @Override
             public void onExistentCalendar(BaseCalendar calendar) {
-                assertThat(calendar.getDurationAt(date, Days.MONDAY),
-                        equalTo(hours(4)));
+                assertThat(calendar.getCapacityConsideringCalendarDatasOn(date,
+                        Days.MONDAY), equalTo(capacity));
                 assertThat(calendar.getCalendarDataVersions().size(),
                         equalTo(2));
             }
@@ -182,7 +183,8 @@ public class BaseCalendarModelTest {
         baseCalendarModel.initCreate();
         baseCalendarModel.getBaseCalendar().setName(
                 "Test" + UUID.randomUUID().toString());
-        setHours(baseCalendarModel.getBaseCalendar(), 8);
+        setCapacity(baseCalendarModel.getBaseCalendar(),
+                Capacity.create(hours(8)));
         baseCalendarModel.confirmSave();
         return baseCalendarModel.getBaseCalendar();
     }
@@ -206,7 +208,8 @@ public class BaseCalendarModelTest {
 
         baseCalendarModel.initCreate();
         baseCalendarModel.getBaseCalendar().setName("Test");
-        setHours(baseCalendarModel.getBaseCalendar(), 8);
+        setCapacity(baseCalendarModel.getBaseCalendar(),
+                Capacity.create(hours(8)));
         BaseCalendar parent = baseCalendarModel.getBaseCalendar();
         baseCalendarModel.createNewVersion(new LocalDate().plusMonths(1));
         BaseCalendar parentNewVersion = baseCalendarModel.getBaseCalendar();

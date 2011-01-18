@@ -43,6 +43,7 @@ import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -216,10 +217,12 @@ public class BaseCalendarServiceTest {
         assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
 
         CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
-        assertEquals(EffortDuration.hours(4),
-                data.getDurationAt(CalendarData.Days.FRIDAY));
-        assertEquals(EffortDuration.hours(4),
-                data.getDurationAt(CalendarData.Days.TUESDAY));
+        assertEquals(Capacity.create(EffortDuration.hours(4))
+                .overAssignableWithoutLimit(true),
+                data.getCapacityOn(CalendarData.Days.FRIDAY));
+        assertEquals(Capacity.create(EffortDuration.hours(4))
+                .overAssignableWithoutLimit(true),
+                data.getCapacityOn(CalendarData.Days.TUESDAY));
     }
 
     @Test

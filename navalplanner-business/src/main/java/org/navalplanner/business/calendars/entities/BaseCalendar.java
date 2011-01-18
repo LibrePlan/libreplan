@@ -52,7 +52,8 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
-    private static final EffortDuration DEFAULT_VALUE = EffortDuration.zero();
+    private static final Capacity DEFAULT_VALUE = Capacity.zero()
+            .overAssignableWithoutLimit(true);
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
@@ -272,7 +273,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         if (exceptionDay != null) {
             return exceptionDay.getDuration();
         }
-        return getDurationAt(date, getDayFrom(date));
+        return getCapacityConsideringCalendarDatasOn(date, getDayFrom(date))
+                .getStandardEffort();
     }
 
     private Days getDayFrom(LocalDate date) {
@@ -287,23 +289,22 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return true;
     }
 
-    public EffortDuration getDurationAt(LocalDate date, Days day) {
+    public Capacity getCapacityConsideringCalendarDatasOn(LocalDate date, Days day) {
         CalendarData calendarData = getCalendarData(date);
 
-        EffortDuration duration = calendarData.getDurationAt(day);
+        Capacity capacity = calendarData.getCapacityOn(day);
         BaseCalendar parent = getParent(date);
-        if (duration == null && parent != null) {
-            return parent.getDurationAt(date, day);
+        if (capacity == null && parent != null) {
+            return parent.getCapacityConsideringCalendarDatasOn(date, day);
         }
-        return valueIfNotNullElseDefaultValue(duration);
+        return valueIfNotNullElseDefaultValue(capacity);
     }
 
-    private EffortDuration valueIfNotNullElseDefaultValue(
-            EffortDuration duration) {
-        if (duration == null) {
+    private Capacity valueIfNotNullElseDefaultValue(Capacity capacity) {
+        if (capacity == null) {
             return DEFAULT_VALUE;
         }
-        return duration;
+        return capacity;
     }
 
     /**

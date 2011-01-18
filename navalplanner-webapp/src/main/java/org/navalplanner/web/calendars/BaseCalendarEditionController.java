@@ -86,6 +86,13 @@ import org.zkoss.zul.api.Window;
 public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
 
+    private static String asString(Capacity capacity) {
+        String extraEffortString = capacity.isOverAssignableWithoutLimit() ? _("unlimited")
+                : asString(capacity.getAllowedExtraEffort());
+
+        return asString(capacity.getStandardEffort()) + " " + extraEffortString;
+    }
+
     private static String asString(EffortDuration duration) {
         if (duration == null) {
             return "";
@@ -707,7 +714,7 @@ public abstract class BaseCalendarEditionController extends
                         summary.add("D");
                     }
                 } else {
-                    summary.add(asString(calendarData.getDurationAt(day)));
+                    summary.add(asString(calendarData.getCapacityOn(day)));
                 }
             }
             summaryListcell.appendChild(new Label(StringUtils.join(summary,

@@ -98,6 +98,10 @@ public class Capacity {
         }
     }
 
+    public boolean isZero() {
+        return standardEffort.isZero();
+    }
+
     public String getStandardEffortString() {
         return asString(getStandardEffort());
     }

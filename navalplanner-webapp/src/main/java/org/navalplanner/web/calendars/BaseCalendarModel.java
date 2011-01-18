@@ -298,7 +298,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return EffortDuration.zero();
         }
-        return getBaseCalendar().getDurationAt(selectedDate, day);
+        return getBaseCalendar().getCapacityConsideringCalendarDatasOn(
+                selectedDate, day).getStandardEffort();
     }
 
     @Override
