@@ -96,7 +96,7 @@
 
             <grid width="100%" sclass="calendar-exceptions">
             <columns>
-                        <column width="450px"/>
+                        <column width="500px"/>
                         <column />
             </columns>
             <rows>
@@ -124,8 +124,13 @@
                                     label="@{calendarExceptionType.name}" />
                             </combobox>
                         </row>
-                        <row id="exceptionDayWorkableTimeRow">
-                            <label value="${i18n:_('Workable Time')}" />
+                        <row id="exceptionDayNormalEffortRow">
+                            <label value="${i18n:_('Normal Effort')}" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Extra Effort')}" />
+                            <hbox id="exceptionDayExtraEffortBox">
+                            </hbox>
                         </row>
                     </rows>
                     </grid>

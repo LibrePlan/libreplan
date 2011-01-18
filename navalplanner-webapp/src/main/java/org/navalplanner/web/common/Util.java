@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -559,6 +560,21 @@ public class Util {
     public static <T extends Component> T findComponentAt(Component container,
             String idOfComponentToBeFound) {
         return (T) container.getFellow(idOfComponentToBeFound);
+    }
+
+    public interface ICreation<T extends Component> {
+        public T createAt(Component parent);
+    }
+
+    public static <T extends Component> T findOrCreate(Component container,
+            Class<T> klassOfComponentToFind, ICreation<T> ifNotFound) {
+        @SuppressWarnings("unchecked")
+        List<T> existent = ComponentsFinder.findComponentsOfType(
+                klassOfComponentToFind, container.getChildren());
+        if (!existent.isEmpty()) {
+            return existent.get(0);
+        }
+        return ifNotFound.createAt(container);
     }
 
 }

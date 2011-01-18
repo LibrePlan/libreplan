@@ -21,6 +21,7 @@
 package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.common.Util.findOrCreate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,9 +50,10 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.ICreation;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
+import org.navalplanner.web.common.components.CapacityPicker;
 import org.navalplanner.web.common.components.EffortDurationPicker;
-import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -116,7 +118,7 @@ public abstract class BaseCalendarEditionController extends
 
     private boolean creatingNewVersion = false;
 
-    private EffortDurationPicker exceptionDurationPicker;
+    private CapacityPicker capacityPicker;
 
     private IMessagesForUser messagesForUser;
 
@@ -142,30 +144,53 @@ public abstract class BaseCalendarEditionController extends
             prepareParentCombo();
         }
         prepareExceptionTypeCombo();
-        exceptionDurationPicker = addEffortDurationPickerAtWorkableTimeRow(comp);
+        capacityPicker = addEffortDurationPickerAtWorkableTimeRow(comp);
+        updateWithCapacityFrom(getSelectedExceptionType());
     }
 
-    private EffortDurationPicker addEffortDurationPickerAtWorkableTimeRow(
+    private CapacityPicker addEffortDurationPickerAtWorkableTimeRow(
             Component comp) {
-        EffortDurationPicker result = ensureOnePickerOn(comp);
-        setEffortDurationPicker(getSelectedExceptionType());
-        return result;
+        Component normalEffortRow = comp
+                .getFellow("exceptionDayNormalEffortRow");
+        Component extraEffortRow = comp.getFellow("exceptionDayExtraEffortBox");
+
+        EffortDurationPicker normalDuration = findOrCreateDurationPicker(normalEffortRow);
+        EffortDurationPicker extraDuration = findOrCreateDurationPicker(extraEffortRow);
+        Checkbox checkbox = findOrCreateOverAssignableCheckbox(extraEffortRow);
+        return CapacityPicker.workWith(checkbox, normalDuration, extraDuration,
+                Capacity.create(EffortDuration.zero()));
     }
 
-    private void setEffortDurationPicker(CalendarExceptionType exceptionType) {
-        EffortDurationPicker durationPicker = getEffortDurationPicker();
-        EffortDuration effortDuration = exceptionType != null ? exceptionType
-                .getDuration() : EffortDuration.zero();
-        durationPicker.setValue(effortDuration);
+    private EffortDurationPicker findOrCreateDurationPicker(Component parent) {
+        return findOrCreate(parent, EffortDurationPicker.class,
+                new ICreation<EffortDurationPicker>() {
+
+                    @Override
+                    public EffortDurationPicker createAt(Component parent) {
+                        EffortDurationPicker normalDuration = new EffortDurationPicker();
+                        parent.appendChild(normalDuration);
+                        return normalDuration;
+                    }
+                });
     }
 
-    private EffortDurationPicker getEffortDurationPicker() {
-        Component container = self.getFellowIfAny("exceptionDayWorkableTimeRow");
-        List<EffortDurationPicker> existent = ComponentsFinder
-                .findComponentsOfType(EffortDurationPicker.class,
-                        container.getChildren());
-        return !existent.isEmpty() ? (EffortDurationPicker) existent
-                .iterator().next() : null;
+    private Checkbox findOrCreateOverAssignableCheckbox(Component parent) {
+        return findOrCreate(parent, Checkbox.class, new ICreation<Checkbox>() {
+
+            @Override
+            public Checkbox createAt(Component parent) {
+                Checkbox infinitelyOverAssignable = new Checkbox();
+                infinitelyOverAssignable
+                        .setLabel(_("Infinitely Over Assignable"));
+                parent.appendChild(infinitelyOverAssignable);
+                return infinitelyOverAssignable;
+            }
+        });
+    }
+
+    private void updateWithCapacityFrom(CalendarExceptionType exceptionType) {
+        capacityPicker.setValue(exceptionType != null ? exceptionType
+                .getCapacity() : Capacity.create(EffortDuration.zero()));
     }
 
     private CalendarExceptionType getSelectedExceptionType() {
@@ -174,21 +199,6 @@ public abstract class BaseCalendarEditionController extends
             return (CalendarExceptionType) selectedItem.getValue();
         }
         return null;
-    }
-
-    private EffortDurationPicker ensureOnePickerOn(Component comp) {
-        Component container = comp.getFellow("exceptionDayWorkableTimeRow");
-        @SuppressWarnings("unchecked")
-        List<EffortDurationPicker> existent = ComponentsFinder
-                .findComponentsOfType(EffortDurationPicker.class,
-                        container.getChildren());
-        if (!existent.isEmpty()) {
-            return existent.get(0);
-        } else {
-            EffortDurationPicker result = new EffortDurationPicker();
-            container.appendChild(result);
-            return result;
-        }
     }
 
     private Combobox exceptionTypes;
@@ -206,7 +216,7 @@ public abstract class BaseCalendarEditionController extends
             public void onEvent(Event event) throws Exception {
                 Comboitem selectedItem = getSelectedItem((SelectEvent) event);
                 if (selectedItem != null) {
-                    setEffortDurationPicker(getValue(selectedItem));
+                    updateWithCapacityFrom(getValue(selectedItem));
                 }
             }
 
@@ -432,7 +442,8 @@ public abstract class BaseCalendarEditionController extends
         dateboxStartDate.setValue(selectedDay);
         Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
         dateboxEndDate.setValue(selectedDay);
-        exceptionDurationPicker.setValue(baseCalendarModel.getWorkableTime());
+        capacityPicker.setValue(Capacity.create(baseCalendarModel
+                .getWorkableTime()));
     }
 
     private void highlightDaysOnCalendar() {
@@ -571,10 +582,10 @@ public abstract class BaseCalendarEditionController extends
             Clients.closeErrorBox(dateboxEndDate);
         }
 
-        EffortDuration duration = exceptionDurationPicker.getValue();
+        Capacity capacity = capacityPicker.getValue();
         baseCalendarModel.createException(type,
                 LocalDate.fromDateFields(startDate),
-                LocalDate.fromDateFields(endDate), Capacity.create(duration));
+                LocalDate.fromDateFields(endDate), capacity);
         reloadDayInformation();
     }
 
@@ -1034,10 +1045,10 @@ public abstract class BaseCalendarEditionController extends
             Clients.closeErrorBox(dateboxEndDate);
         }
 
-        EffortDuration duration = exceptionDurationPicker.getValue();
+        Capacity capacity = capacityPicker.getValue();
         baseCalendarModel.updateException(type,
                 LocalDate.fromDateFields(startDate),
-                LocalDate.fromDateFields(endDate), Capacity.create(duration));
+                LocalDate.fromDateFields(endDate), capacity);
         reloadDayInformation();
     }
 
