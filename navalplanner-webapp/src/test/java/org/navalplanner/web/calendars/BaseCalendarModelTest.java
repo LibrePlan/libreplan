@@ -36,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +82,8 @@ public class BaseCalendarModelTest {
     private void setHours(BaseCalendar baseCalendar, Integer hours) {
         EffortDuration hoursDuration = EffortDuration.hours(hours);
         for (Days each : Days.values()) {
-            baseCalendar.setDurationAt(each, hoursDuration);
+            baseCalendar.setCapacityAt(each, Capacity.create(hoursDuration)
+                    .overAssignableWithoutLimit(true));
         }
     }
 

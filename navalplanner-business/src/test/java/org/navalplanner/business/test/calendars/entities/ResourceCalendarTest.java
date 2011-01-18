@@ -33,6 +33,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.workingday.EffortDuration;
 
@@ -47,7 +48,9 @@ public class ResourceCalendarTest {
         ResourceCalendar calendar = ResourceCalendar.create();
         calendar.setName("Test");
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, EffortDuration.hours(8));
+            calendar.setCapacityAt(each,
+                    Capacity.create(EffortDuration.hours(8))
+                            .overAssignableWithoutLimit(true));
         }
         return calendar;
     }

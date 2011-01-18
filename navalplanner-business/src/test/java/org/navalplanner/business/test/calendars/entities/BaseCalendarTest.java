@@ -80,16 +80,26 @@ public class BaseCalendarTest {
 
         calendar.setName("Test");
 
-        EffortDuration eightHours = hours(8);
-        calendar.setDurationAt(Days.MONDAY, eightHours);
-        calendar.setDurationAt(Days.TUESDAY, eightHours);
-        calendar.setDurationAt(Days.WEDNESDAY, eightHours);
-        calendar.setDurationAt(Days.THURSDAY, eightHours);
-        calendar.setDurationAt(Days.FRIDAY, eightHours);
-        calendar.setDurationAt(Days.SATURDAY, EffortDuration.zero());
-        calendar.setDurationAt(Days.SUNDAY, EffortDuration.zero());
+        Capacity eightHours = withNormalDuration(hours(8));
+        calendar.setCapacityAt(Days.MONDAY, eightHours);
+        calendar.setCapacityAt(Days.TUESDAY, eightHours);
+        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
+        calendar.setCapacityAt(Days.THURSDAY, eightHours);
+        calendar.setCapacityAt(Days.FRIDAY, eightHours);
+        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
+        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
 
         return calendar;
+    }
+
+    /**
+     * Creates a {@link Capacity} with normal {@link EffortDuration} and no
+     * extra hours limit
+     * @param effort
+     * @return
+     */
+    private static Capacity withNormalDuration(EffortDuration effort) {
+        return Capacity.create(effort).overAssignableWithoutLimit(true);
     }
 
     private BaseCalendar calendarFixture;
@@ -122,7 +132,7 @@ public class BaseCalendarTest {
 
     private void initializeAllToZeroHours(BaseCalendar calendar) {
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, EffortDuration.zero());
+            calendar.setCapacityAt(each, Capacity.zero());
         }
     }
 
@@ -307,8 +317,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setDurationAt(Days.WEDNESDAY, hours(4));
-        calendar.setDurationAt(Days.SUNDAY, hours(4));
+        calendar.setCapacityAt(Days.WEDNESDAY, withNormalDuration(hours(4)));
+        calendar.setCapacityAt(Days.SUNDAY, withNormalDuration(hours(4)));
 
         assertThat(calendar.getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
@@ -329,8 +339,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setDurationAt(Days.MONDAY, hours(1));
-        calendar.setDurationAt(Days.SUNDAY, hours(2));
+        calendar.setCapacityAt(Days.MONDAY, withNormalDuration(hours(1)));
+        calendar.setCapacityAt(Days.SUNDAY, withNormalDuration(hours(2)));
 
         assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(1)));
@@ -396,9 +406,9 @@ public class BaseCalendarTest {
     }
 
     public static void setHoursForAllDays(BaseCalendar calendar, Integer hours) {
-        EffortDuration duration = hours(hours);
+        Capacity capacity = withNormalDuration(hours(hours));
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, duration);
+            calendar.setCapacityAt(each, capacity);
         }
     }
 
@@ -593,7 +603,7 @@ public class BaseCalendarTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetHoursInvalid() {
         BaseCalendar calendar = createBasicCalendar();
-        calendar.setDurationAt(Days.MONDAY, hours(-5));
+        calendar.setCapacityAt(Days.MONDAY, withNormalDuration(hours(-5)));
     }
 
     @Test

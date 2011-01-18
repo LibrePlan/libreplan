@@ -58,14 +58,15 @@ public class CalendarData extends IntegrationEntity {
         }
     }
 
-    public void updateHourPerDay(Map<Integer, Integer> hoursPerDay)
+    public void updateCapacitiesPerDay(Map<Integer, Capacity> capacityPerDay)
             throws IllegalArgumentException {
-        if ((hoursPerDay != null)) {
-            for (Days day : Days.values()) {
-                Integer hours = hoursPerDay.get(day.ordinal());
-                if (hours != null) {
-                    setDurationAt(day, EffortDuration.hours(hours));
-                }
+        if (capacityPerDay == null) {
+            return;
+        }
+        for (Days day : Days.values()) {
+            Capacity capacity = capacityPerDay.get(day.ordinal());
+            if (capacity != null) {
+                setCapacityAt(day, capacity);
             }
         }
     }
@@ -86,7 +87,7 @@ public class CalendarData extends IntegrationEntity {
     public CalendarData() {
         capacityPerDay = new HashMap<Integer, Capacity>();
         for (Days each : Days.values()) {
-            setDurationAt(each, null);
+            setCapacityAt(each, null);
         }
     }
 
@@ -110,19 +111,12 @@ public class CalendarData extends IntegrationEntity {
         return capacity.getStandardEffort();
     }
 
-    private Capacity toCapacity(EffortDuration duration) {
-        if (duration == null) {
-            return null;
-        }
-        return Capacity.create(duration).overAssignableWithoutLimit(true);
-    }
-
     public EffortDuration getDurationAt(Days day) {
         return toDuration(capacityPerDay.get(day.ordinal()));
     }
 
-    public void setDurationAt(Days day, EffortDuration duration) {
-        capacityPerDay.put(day.ordinal(), toCapacity(duration));
+    public void setCapacityAt(Days day, Capacity capacity) {
+        capacityPerDay.put(day.ordinal(), capacity);
     }
 
 
@@ -131,7 +125,7 @@ public class CalendarData extends IntegrationEntity {
     }
 
     public void setDefault(Days day) {
-        setDurationAt(day, null);
+        setCapacityAt(day, null);
     }
 
     /**

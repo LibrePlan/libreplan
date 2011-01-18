@@ -497,14 +497,14 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
-    public void setDurationAt(Days day, EffortDuration duration) {
+    public void setCapacityAt(Days day, Capacity capacity) {
         CalendarData calendarData = getLastCalendarData();
-        calendarData.setDurationAt(day, duration);
+        calendarData.setCapacityAt(day, capacity);
     }
 
-    public void setDurationAt(Days day, EffortDuration effort, LocalDate date) {
+    public void setCapacityAt(Days day, Capacity capacity, LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
-        calendarData.setDurationAt(day, effort);
+        calendarData.setCapacityAt(day, capacity);
     }
 
     private CalendarData getCalendarDataBeforeTheLastIfAny() {

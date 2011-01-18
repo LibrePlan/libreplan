@@ -313,7 +313,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     public void unsetDefault(Days day) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setDurationAt(day, EffortDuration.zero(),
+            getBaseCalendar().setCapacityAt(day,
+                    Capacity.zero().overAssignableWithoutLimit(true),
                     selectedDate);
         }
     }
@@ -328,7 +329,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     public void setDurationAt(Days day, EffortDuration value) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setDurationAt(day, value, selectedDate);
+            getBaseCalendar().setCapacityAt(day,
+                    Capacity.create(value).overAssignableWithoutLimit(true),
+                    selectedDate);
         }
     }
 
