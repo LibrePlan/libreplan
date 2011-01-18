@@ -50,7 +50,9 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.ICreation;
+import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.navalplanner.web.common.components.CapacityPicker;
 import org.navalplanner.web.common.components.EffortDurationPicker;
@@ -68,6 +70,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -186,13 +189,17 @@ public abstract class BaseCalendarEditionController extends
 
             @Override
             public Checkbox createAt(Component parent) {
-                Checkbox infinitelyOverAssignable = new Checkbox();
-                infinitelyOverAssignable
-                        .setLabel(_("Infinitely Over Assignable"));
-                parent.appendChild(infinitelyOverAssignable);
-                return infinitelyOverAssignable;
+                Checkbox result = createInfinitelyOverAssignableCheckbox();
+                parent.appendChild(result);
+                return result;
             }
         });
+    }
+
+    private Checkbox createInfinitelyOverAssignableCheckbox() {
+        Checkbox infinitelyOverAssignable = new Checkbox();
+        infinitelyOverAssignable.setLabel(_("Infinitely Over Assignable"));
+        return infinitelyOverAssignable;
     }
 
     private void updateWithCapacityFrom(CalendarExceptionType exceptionType) {
@@ -331,30 +338,33 @@ public abstract class BaseCalendarEditionController extends
         public void render(Listitem item, Object data) throws Exception {
             final Days day = (Days) data;
 
-            Listcell labelListcell = new Listcell();
-            labelListcell.appendChild(new Label(day.toString()));
-            item.appendChild(labelListcell);
+            addLabelCell(item, day);
 
-            Listcell durationCell = new Listcell();
-            EffortDurationPicker durationPicker = new EffortDurationPicker();
-            durationCell.appendChild(durationPicker);
-            durationPicker.bind(new Util.Getter<EffortDuration>() {
+            EffortDurationPicker normalDurationPicker = new EffortDurationPicker();
+            EffortDurationPicker extraDurationPicker = new EffortDurationPicker();
+            Checkbox checkbox = createInfinitelyOverAssignableCheckbox();
 
-                @Override
-                public EffortDuration get() {
-                    return baseCalendarModel.getDurationAt(day);
-                }
-            }, new Util.Setter<EffortDuration>() {
+            addNormalDurationCell(item, normalDurationPicker);
+            addExtraEffortCell(item, extraDurationPicker, checkbox);
 
-                @Override
-                public void set(EffortDuration value) {
-                    baseCalendarModel.setDurationAt(day, value);
-                    reloadDayInformation();
-                }
-            });
-            durationPicker.setDisabled(baseCalendarModel.isDerived()
+            CapacityPicker capacityPicker = CapacityPicker.workWith(checkbox,
+                    normalDurationPicker,
+                    extraDurationPicker, new Getter<Capacity>() {
+
+                        @Override
+                        public Capacity get() {
+                            return baseCalendarModel.getCapacityAt(day);
+                        }
+                    }, new Setter<Capacity>() {
+
+                        @Override
+                        public void set(Capacity value) {
+                            baseCalendarModel.setCapacityAt(day, value);
+                            reloadDayInformation();
+                        }
+                    });
+            capacityPicker.setDisabled(baseCalendarModel.isDerived()
                     && baseCalendarModel.isDefault(day));
-            item.appendChild(durationCell);
 
             if (baseCalendarModel.isDerived()) {
                 Listcell defaultListcell = new Listcell();
@@ -389,6 +399,29 @@ public abstract class BaseCalendarEditionController extends
                 defaultListcell.appendChild(defaultCheckbox);
                 item.appendChild(defaultListcell);
             }
+        }
+
+        private void addLabelCell(Listitem item, final Days day) {
+            Listcell labelListcell = new Listcell();
+            labelListcell.appendChild(new Label(day.toString()));
+            item.appendChild(labelListcell);
+        }
+
+        private void addNormalDurationCell(Listitem item,
+                EffortDurationPicker normalDurationPicker) {
+            Listcell normalEffortCell = new Listcell();
+            normalEffortCell.appendChild(normalDurationPicker);
+            item.appendChild(normalEffortCell);
+        }
+
+        private void addExtraEffortCell(Listitem item,
+                EffortDurationPicker extraDurationPicker, Checkbox checkbox) {
+            Listcell extraEffortCell = new Listcell();
+            Hbox hbox = new Hbox();
+            hbox.appendChild(extraDurationPicker);
+            hbox.appendChild(checkbox);
+            extraEffortCell.appendChild(hbox);
+            item.appendChild(extraEffortCell);
         }
 
     }
@@ -1315,4 +1348,5 @@ public abstract class BaseCalendarEditionController extends
             reloadDayInformation();
         }
     }
+
 }

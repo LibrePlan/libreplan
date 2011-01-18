@@ -143,4 +143,12 @@ public class CapacityPicker {
         updateExtraEffortDisability();
     }
 
+    public void setDisabled(boolean disabled) {
+        standardEffortPicker.setDisabled(disabled);
+        updateExtraEffortDisability();
+        extraEffortPicker.setDisabled(extraEffortPicker.isDisabled()
+                || disabled);
+        overAssignableWithoutLimitCheckbox.setDisabled(disabled);
+    }
+
 }

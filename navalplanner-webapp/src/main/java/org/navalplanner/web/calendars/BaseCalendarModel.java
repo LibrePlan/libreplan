@@ -294,12 +294,12 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public EffortDuration getDurationAt(Days day) {
+    public Capacity getCapacityAt(Days day) {
         if (getBaseCalendar() == null) {
-            return EffortDuration.zero();
+            return Capacity.zero();
         }
         return getBaseCalendar().getCapacityConsideringCalendarDatasOn(
-                selectedDate, day).getStandardEffort();
+                selectedDate, day);
     }
 
     @Override
@@ -328,11 +328,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setDurationAt(Days day, EffortDuration value) {
+    public void setCapacityAt(Days day, Capacity value) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setCapacityAt(day,
-                    Capacity.create(value).overAssignableWithoutLimit(true),
-                    selectedDate);
+            getBaseCalendar().setCapacityAt(day, value, selectedDate);
         }
     }
 

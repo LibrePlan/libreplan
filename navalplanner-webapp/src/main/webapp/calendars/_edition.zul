@@ -178,7 +178,8 @@
                         itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
                         <listhead>
                             <listheader label="${i18n:_('Day of week')}" width="80px"/>
-                            <listheader label="${i18n:_('Workable Time')}" width="160px"/>
+                            <listheader label="${i18n:_('Normal Effort')}" width="160px"/>
+                            <listheader label="${i18n:_('Extra Effort')}" width="200px"/>
                             <listheader label="${i18n:_('Inh.')}" width="30px" tooltiptext="${i18n:_('Inherited from parent calendar')}" />
                         </listhead>
                     </listbox>

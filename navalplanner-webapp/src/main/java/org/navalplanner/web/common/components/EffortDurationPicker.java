@@ -87,6 +87,10 @@ public class EffortDurationPicker extends Hbox {
         seconds.setDisabled(disabled);
     }
 
+    public boolean isDisabled() {
+        return hours.isDisabled();
+    }
+
     public void bind(Getter<EffortDuration> getter) {
         updateUIWithValuesFrom(getter.get());
     }
