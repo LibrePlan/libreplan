@@ -111,16 +111,16 @@ public class CapacityPicker {
             public void set(Boolean value) {
                 updateCapacity(currentCapacity.overAssignableWithoutLimit(BooleanUtils
                         .isTrue(value)));
-                updateExtraEffortDisability(extraEffortPicker);
+                updateExtraEffortDisability();
             }
         });
-        updateExtraEffortDisability(extraEffortPicker);
+        updateExtraEffortDisability();
 
     }
 
-    private void updateExtraEffortDisability(
-            EffortDurationPicker extraHoursPicker) {
-        extraHoursPicker.setDisabled(currentCapacity.isOverAssignableWithoutLimit());
+    private void updateExtraEffortDisability() {
+        extraEffortPicker.setDisabled(currentCapacity
+                .isOverAssignableWithoutLimit());
     }
 
     private void updateCapacity(Capacity newCapacity) {
@@ -140,7 +140,7 @@ public class CapacityPicker {
         standardEffortPicker.setValue(capacity.getStandardEffort());
         extraEffortPicker.setValue(capacity.getAllowedExtraEffort());
         currentCapacity = capacity;
-        updateExtraEffortDisability(extraEffortPicker);
+        updateExtraEffortDisability();
     }
 
 }
