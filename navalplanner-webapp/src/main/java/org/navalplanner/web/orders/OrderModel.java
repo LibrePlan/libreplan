@@ -490,7 +490,12 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
-        dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
+        Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement.getDirectAdvanceAssignments();
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            directAdvanceAssignment.dontPoseAsTransientObjectAnymore();
+            dontPoseAsTransientObjectAnymore(directAdvanceAssignment
+                    .getAdvanceMeasurements());
+        }
         dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
         dontPoseAsTransientObjectAnymore(orderElement.getLabels());
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
