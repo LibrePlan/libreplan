@@ -248,7 +248,7 @@ public class MachineCRUDController extends GenericForwardComposer {
             throw new RuntimeException(e);
         }
 
-        baseCalendarEditionController.setSelectedDay(new Date());
+        baseCalendarEditionController.setSelectedDay(new LocalDate());
         Util.reloadBindings(editCalendarWindow);
         Util.reloadBindings(createNewVersionWindow);
     }

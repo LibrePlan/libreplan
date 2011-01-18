@@ -417,7 +417,7 @@ public abstract class BaseCalendarEditionController extends
     }
 
     private void reloadTypeDatesAndDuration() {
-        Date selectedDay = baseCalendarModel.getSelectedDay();
+        LocalDate selectedDay = baseCalendarModel.getSelectedDay();
 
         CalendarExceptionType type = baseCalendarModel
                 .getCalendarExceptionType(new LocalDate(selectedDay));
@@ -439,9 +439,9 @@ public abstract class BaseCalendarEditionController extends
 
         Datebox dateboxStartDate = (Datebox) window
                 .getFellow("exceptionStartDate");
-        dateboxStartDate.setValue(selectedDay);
+        dateboxStartDate.setValue(toDate(selectedDay));
         Datebox dateboxEndDate = (Datebox) window.getFellow("exceptionEndDate");
-        dateboxEndDate.setValue(selectedDay);
+        dateboxEndDate.setValue(toDate(selectedDay));
         capacityPicker.setValue(Capacity.create(baseCalendarModel
                 .getWorkableTime()));
     }
@@ -452,14 +452,28 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public Date getSelectedDay() {
-        Date selectedDay = baseCalendarModel.getSelectedDay();
+        Date selectedDay = toDate(baseCalendarModel.getSelectedDay());
         if (selectedDay == null) {
             return new Date();
         }
         return selectedDay;
     }
 
-    public void setSelectedDay(Date date) {
+    private static Date toDate(LocalDate date){
+        if (date == null) {
+            return null;
+        }
+        return date.toDateTimeAtStartOfDay().toDate();
+    }
+
+    private static LocalDate toLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(date);
+    }
+
+    public void setSelectedDay(LocalDate date) {
         baseCalendarModel.setSelectedDay(date);
 
         reloadDayInformation();
@@ -600,21 +614,21 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public Date getDateValidFrom() {
-        return baseCalendarModel.getDateValidFrom();
+        return toDate(baseCalendarModel.getDateValidFrom());
     }
 
     public void setDateValidFrom(Date date) {
         Component component = window.getFellow("dateValidFrom");
 
         try {
-            baseCalendarModel.setDateValidFrom(date);
+            baseCalendarModel.setDateValidFrom(toLocalDate(date));
         } catch (IllegalArgumentException e) {
             throw new WrongValueException(component, e.getMessage());
         } catch (UnsupportedOperationException e) {
             throw new WrongValueException(component, e.getMessage());
         }
         Clients.closeErrorBox(component);
-        baseCalendarModel.setSelectedDay(date);
+        baseCalendarModel.setSelectedDay(toLocalDate(date));
         reloadCurrentWindow();
     }
 
@@ -626,15 +640,14 @@ public abstract class BaseCalendarEditionController extends
         Component component = window.getFellow("expiringDate");
 
         try {
-            baseCalendarModel.setExpiringDate((new LocalDate(date)).plusDays(1)
-                    .toDateTimeAtStartOfDay().toDate());
+            baseCalendarModel.setExpiringDate(toLocalDate(date).plusDays(1));
         } catch (IllegalArgumentException e) {
             throw new WrongValueException(component, e.getMessage());
         } catch (UnsupportedOperationException e) {
             throw new WrongValueException(component, e.getMessage());
         }
         Clients.closeErrorBox(component);
-        baseCalendarModel.setSelectedDay(date);
+        baseCalendarModel.setSelectedDay(toLocalDate(date));
         reloadCurrentWindow();
     }
 
@@ -785,7 +798,7 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public void goToDate(Date date) {
-        setSelectedDay(date);
+        setSelectedDay(toLocalDate(date));
 
         reloadCurrentWindow();
     }
@@ -804,11 +817,11 @@ public abstract class BaseCalendarEditionController extends
         }
     }
 
+
     public void acceptCreateNewVersion() {
         Component component = createNewVersionWindow
                 .getFellow("dateValidFromNewVersion");
-        Date date = ((Datebox) component).getValue();
-
+        LocalDate date = getLocalDateFrom((Datebox) component);
         try {
             baseCalendarModel.createNewVersion(date);
         } catch (IllegalArgumentException e) {
@@ -820,6 +833,14 @@ public abstract class BaseCalendarEditionController extends
         Util.reloadBindings(createNewVersionWindow);
         setSelectedDay(date);
         reloadCurrentWindow();
+    }
+
+    private static LocalDate getLocalDateFrom(Datebox datebox) {
+        Date value = datebox.getValue();
+        if (value == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(value);
     }
 
     public void cancelNewVersion() {
@@ -882,8 +903,7 @@ public abstract class BaseCalendarEditionController extends
                         Listitem item = (Listitem) event.getTarget();
                         CalendarException calendarException = (CalendarException) item
                             .getValue();
-                        setSelectedDay(calendarException
-                            .getDate().toDateTimeAtStartOfDay().toDate());
+                        setSelectedDay(calendarException.getDate());
                         reloadDayInformation();
                     }
                 }
@@ -892,10 +912,9 @@ public abstract class BaseCalendarEditionController extends
 
         private void markAsSelected(Listitem item,
                 CalendarException calendarException) {
-            Date selectedDay = baseCalendarModel.getSelectedDay();
+            LocalDate selectedDay = baseCalendarModel.getSelectedDay();
             if (selectedDay != null) {
-                if (calendarException.getDate().equals(
-                        new LocalDate(selectedDay))) {
+                if (calendarException.getDate().equals(selectedDay)) {
                     item.setSelected(true);
                 }
             }
@@ -1298,8 +1317,7 @@ public abstract class BaseCalendarEditionController extends
         if (item != null) {
             CalendarException calendarException = (CalendarException) item
                 .getValue();
-            setSelectedDay(calendarException.getDate().toDateTimeAtStartOfDay()
-                .toDate());
+            setSelectedDay(calendarException.getDate());
             reloadDayInformation();
         }
     }

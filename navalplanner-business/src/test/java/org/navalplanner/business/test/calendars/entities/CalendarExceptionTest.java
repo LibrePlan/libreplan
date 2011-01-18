@@ -23,8 +23,6 @@ package org.navalplanner.business.test.calendars.entities;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 
-import java.util.Date;
-
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CalendarException;
@@ -40,7 +38,7 @@ public class CalendarExceptionTest {
 
     @Test
     public void testCreateExceptionDayWithDate() {
-        Date date = new Date();
+        LocalDate date = new LocalDate();
         CalendarExceptionType type = BaseCalendarTest
                 .createCalendarExceptionType();
 

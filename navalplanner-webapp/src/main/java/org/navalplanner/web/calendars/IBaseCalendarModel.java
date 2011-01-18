@@ -103,9 +103,9 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     boolean isEditing();
 
-    void setSelectedDay(Date date);
+    void setSelectedDay(LocalDate date);
 
-    Date getSelectedDay();
+    LocalDate getSelectedDay();
 
     DayType getTypeOfDay();
 
@@ -138,15 +138,15 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     Date getExpiringDate();
 
-    void setExpiringDate(Date date);
+    void setExpiringDate(LocalDate date);
 
-    Date getDateValidFrom();
+    LocalDate getDateValidFrom();
 
-    void setDateValidFrom(Date date);
+    void setDateValidFrom(LocalDate date);
 
     List<CalendarData> getHistoryVersions();
 
-    void createNewVersion(Date date);
+    void createNewVersion(LocalDate date);
 
     boolean isLastVersion();
 

@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
@@ -39,12 +37,6 @@ import org.navalplanner.business.workingday.EffortDuration;
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class CalendarException extends IntegrationEntity {
-
-    public static CalendarException create(Date date, EffortDuration duration,
-            CalendarExceptionType type) {
-        return create(new CalendarException(new LocalDate(date), from(duration,
-                type), type));
-    }
 
     public static CalendarException create(LocalDate date,
             EffortDuration duration, CalendarExceptionType type) {

@@ -24,7 +24,6 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -143,10 +142,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return getLastCalendarData().getParent();
     }
 
-    public BaseCalendar getParent(Date date) {
-        return getParent(new LocalDate(date));
-    }
-
     public BaseCalendar getParent(LocalDate date) {
         return getCalendarData(date).getParent();
     }
@@ -155,20 +150,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         getLastCalendarData().setParent(parent);
     }
 
-    public void setParent(BaseCalendar parent, Date date) {
-        setParent(parent, new LocalDate(date));
-    }
-
     public void setParent(BaseCalendar parent, LocalDate date) {
         getCalendarData(date).setParent(parent);
     }
 
     public boolean isDerived() {
         return (getParent() != null);
-    }
-
-    public boolean isDerived(Date date) {
-        return isDerived(new LocalDate(date));
     }
 
     public boolean isDerived(LocalDate date) {
@@ -192,10 +179,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         }
 
         return Collections.unmodifiableSet(exceptionDays);
-    }
-
-    public Set<CalendarException> getExceptions(Date date) {
-        return getExceptions(new LocalDate(date));
     }
 
     public Set<CalendarException> getExceptions(LocalDate date) {
@@ -240,10 +223,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         exceptions.add(day);
     }
 
-    public void removeExceptionDay(Date date) throws IllegalArgumentException {
-        removeExceptionDay(new LocalDate(date));
-    }
-
     public void removeExceptionDay(LocalDate date)
             throws IllegalArgumentException {
         CalendarException day = getOwnExceptionDay(date);
@@ -255,20 +234,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         exceptions.remove(day);
     }
 
-    public void updateExceptionDay(Date date, Capacity capacity,
-            CalendarExceptionType type) throws IllegalArgumentException {
-        updateExceptionDay(new LocalDate(date), capacity, type);
-    }
-
     public void updateExceptionDay(LocalDate date, Capacity capacity,
             CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
         CalendarException day = CalendarException.create(date, capacity, type);
         addExceptionDay(day);
-    }
-
-    public CalendarException getOwnExceptionDay(Date date) {
-        return getOwnExceptionDay(new LocalDate(date));
     }
 
     public CalendarException getOwnExceptionDay(LocalDate date) {
@@ -279,10 +249,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         }
 
         return null;
-    }
-
-    public CalendarException getExceptionDay(Date date) {
-        return getExceptionDay(new LocalDate(date));
     }
 
     public CalendarException getExceptionDay(LocalDate date) {
@@ -343,10 +309,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return true;
     }
 
-    public EffortDuration getDurationAt(Date date, Days day) {
-        return getDurationAt(new LocalDate(date), day);
-    }
-
     public EffortDuration getDurationAt(LocalDate date, Days day) {
         CalendarData calendarData = getCalendarData(date);
 
@@ -370,14 +332,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * Returns the number of workable hours for a specific period depending on
      * the calendar restrictions.
      */
-    public Integer getWorkableHours(Date initDate, Date endDate) {
-        return getWorkableHours(new LocalDate(initDate), new LocalDate(endDate));
-    }
-
-    /**
-     * Returns the number of workable hours for a specific period depending on
-     * the calendar restrictions.
-     */
     public Integer getWorkableHours(LocalDate init, LocalDate end) {
         return getWorkableDuration(init, end).roundToHours();
     }
@@ -394,14 +348,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             init = init.plusDays(1);
         }
         return result;
-    }
-
-    /**
-     * Returns the number of workable hours for a specific week depending on the
-     * calendar restrictions.
-     */
-    public Integer getWorkableHoursPerWeek(Date date) {
-        return getWorkableHoursPerWeek(new LocalDate(date));
     }
 
     /**
@@ -437,15 +383,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public void newVersion(Date date) throws IllegalArgumentException {
-        newVersion(new LocalDate(date));
-    }
-
-    /**
-     * Creates a new version this {@link BaseCalendar} from the specific date.
-     * It makes that the current calendar expires in the specific date. And the
-     * new calendar will be used from that date onwards.
-     */
     public void newVersion(LocalDate date) throws IllegalArgumentException {
         CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
         if ((calendarData.getExpiringDate() != null)
@@ -474,8 +411,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
         }
 
-        if (version.getExpiringDate().toDateTimeAtStartOfDay().toDate()
-                .compareTo(new Date()) <= 0) {
+        if (version.getExpiringDate().compareTo(new LocalDate()) <= 0) {
 
             throw new IllegalArgumentException(
                     "You can not add a version with previous date than current date");
@@ -522,10 +458,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return copy;
     }
 
-    public DayType getType(Date date) {
-        return getType(new LocalDate(date));
-    }
-
     public DayType getType(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
@@ -570,10 +502,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         calendarData.setDurationAt(day, duration);
     }
 
-    public void setDurationAt(Days day, EffortDuration effort, Date date) {
-        setDurationAt(day, effort, LocalDate.fromDateFields(date));
-    }
-
     public void setDurationAt(Days day, EffortDuration effort, LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         calendarData.setDurationAt(day, effort);
@@ -591,10 +519,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarData.isDefault(day);
     }
 
-    public boolean isDefault(Days day, Date date) {
-        return isDefault(day, new LocalDate(date));
-    }
-
     public boolean isDefault(Days day, LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         return calendarData.isDefault(day);
@@ -603,10 +527,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public void setDefault(Days day) {
         CalendarData calendarData = getLastCalendarData();
         calendarData.setDefault(day);
-    }
-
-    public void setDefault(Days day, Date date) {
-        setDefault(day, new LocalDate(date));
     }
 
     public void setDefault(Days day, LocalDate date) {
@@ -618,25 +538,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return getLastCalendarData().getExpiringDate();
     }
 
-    public LocalDate getExpiringDate(Date date) {
-        return getExpiringDate(new LocalDate(date));
-    }
-
     public LocalDate getExpiringDate(LocalDate date) {
         return getCalendarData(date).getExpiringDate();
     }
 
-    public void setExpiringDate(Date expiringDate) {
-        setExpiringDate(new LocalDate(expiringDate));
-    }
-
     public void setExpiringDate(LocalDate expiringDate) {
         setExpiringDate(expiringDate, new LocalDate());
-    }
-
-    public void setExpiringDate(Date expiringDate, Date date)
-            throws IllegalArgumentException {
-        setExpiringDate(new LocalDate(expiringDate), new LocalDate(date));
     }
 
     public void setExpiringDate(LocalDate expiringDate, LocalDate date)
@@ -674,20 +581,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(index);
     }
 
-    public LocalDate getValidFrom(Date date) {
-        return getValidFrom(new LocalDate(date));
-    }
-
     public LocalDate getValidFrom(LocalDate date) {
         CalendarData calendarData = getPreviousCalendarData(date);
         if (calendarData == null) {
             return null;
         }
         return calendarData.getExpiringDate();
-    }
-
-    public void setValidFrom(Date validFromDate, Date date) {
-        setValidFrom(new LocalDate(validFromDate), new LocalDate(date));
     }
 
     public void setValidFrom(LocalDate validFromDate, LocalDate date)
@@ -698,14 +597,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                     "You can not set this date for the first version");
         }
         setExpiringDate(calendarData, validFromDate);
-    }
-
-    public boolean isLastVersion(Date date) {
-        return isLastVersion(new LocalDate(date));
-    }
-
-    public boolean isFirstVersion(Date date) {
-        return isFirstVersion(new LocalDate(date));
     }
 
     public boolean isLastVersion(LocalDate date) {
@@ -724,15 +615,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * Returns a set of non workable days (0 hours) for a specific period
      * depending on the calendar restrictions.
      */
-    public Set<LocalDate> getNonWorkableDays(Date initDate, Date endDate) {
-        return getNonWorkableDays(new LocalDate(initDate), new LocalDate(
-                endDate));
-    }
-
-    /**
-     * Returns a set of non workable days (0 hours) for a specific period
-     * depending on the calendar restrictions.
-     */
     public Set<LocalDate> getNonWorkableDays(LocalDate init, LocalDate end) {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
@@ -744,9 +626,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return result;
     }
 
-    public CalendarExceptionType getExceptionType(Date date) {
-        return getExceptionType(new LocalDate(date));
-    }
 
     public CalendarExceptionType getExceptionType(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
@@ -830,10 +709,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             CalendarAvailability calendarAvailability)
             throws IllegalArgumentException {
         calendarAvailabilities.remove(calendarAvailability);
-    }
-
-    public boolean isActive(Date date) {
-        return isActive(new LocalDate(date));
     }
 
     public boolean isActive(LocalDate date) {

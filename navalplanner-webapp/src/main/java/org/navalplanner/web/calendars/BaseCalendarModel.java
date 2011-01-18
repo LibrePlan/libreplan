@@ -74,7 +74,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
      */
     protected BaseCalendar baseCalendar;
 
-    private Date selectedDate;
+    private LocalDate selectedDate;
 
     protected boolean editing = false;
 
@@ -243,14 +243,13 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setSelectedDay(Date date) {
+    public void setSelectedDay(LocalDate date) {
         this.selectedDate = date;
     }
 
     @Override
-    public Date getSelectedDay() {
-        return selectedDate != null ? new Date(this.selectedDate.getTime())
-                : null;
+    public LocalDate getSelectedDay() {
+        return selectedDate;
     }
 
     @Override
@@ -258,8 +257,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        return getBaseCalendar().getWorkableTimeAt(
-                LocalDate.fromDateFields(selectedDate));
+        return getBaseCalendar().getWorkableTimeAt(selectedDate);
     }
 
     @Override
@@ -404,7 +402,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setExpiringDate(Date date) {
+    public void setExpiringDate(LocalDate date) {
         if ((getBaseCalendar() != null)
                 && (getBaseCalendar().getExpiringDate(selectedDate) != null)) {
             getBaseCalendar()
@@ -413,20 +411,17 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public Date getDateValidFrom() {
+    public LocalDate getDateValidFrom() {
         if (getBaseCalendar() != null) {
             LocalDate validFromDate = getBaseCalendar().getValidFrom(
                     selectedDate);
-            if (validFromDate != null) {
-                return validFromDate.toDateTimeAtStartOfDay().toDate();
-            }
+            return validFromDate;
         }
-
         return null;
     }
 
     @Override
-    public void setDateValidFrom(Date date) {
+    public void setDateValidFrom(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().setValidFrom(date, selectedDate);
         }
@@ -442,7 +437,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void createNewVersion(Date date) {
+    public void createNewVersion(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().newVersion(date);
         }
@@ -631,11 +626,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        Date selectedDay = getSelectedDay();
+        LocalDate selectedDay = getSelectedDay();
         if (selectedDay == null) {
             return null;
         }
-        return getBaseCalendar().getCalendarData(new LocalDate(selectedDay));
+        return getBaseCalendar().getCalendarData(selectedDay);
     }
 
     @Override

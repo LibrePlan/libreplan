@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -140,10 +139,6 @@ public class CalendarData extends IntegrationEntity {
      */
     public LocalDate getExpiringDate() {
         return expiringDate;
-    }
-
-    public void setExpiringDate(Date expiringDate) {
-        setExpiringDate(new LocalDate(expiringDate));
     }
 
     public void setExpiringDate(LocalDate expiringDate) {

@@ -29,7 +29,6 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONF
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
-import java.util.Date;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -76,7 +75,7 @@ public class BaseCalendarModelTest {
         assertThat(baseCalendarModel.getBaseCalendars().get(previous).getId(),
                 equalTo(baseCalendar.getId()));
         assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                .getDurationAt(new Date(), Days.MONDAY), equalTo(hours(8)));
+                .getDurationAt(new LocalDate(), Days.MONDAY), equalTo(hours(8)));
     }
 
     private void setHours(BaseCalendar baseCalendar, Integer hours) {
@@ -103,7 +102,7 @@ public class BaseCalendarModelTest {
         assertThat(baseCalendarModel.getBaseCalendars().get(previous).getId(),
                 equalTo(baseCalendar.getId()));
         assertThat(baseCalendarModel.getBaseCalendars().get(previous)
-                .getDurationAt(new Date(), Days.MONDAY), equalTo(hours(4)));
+                .getDurationAt(new LocalDate(), Days.MONDAY), equalTo(hours(4)));
     }
 
     @Test
@@ -114,8 +113,7 @@ public class BaseCalendarModelTest {
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendars().get(
                 previous);
         baseCalendarModel.initEdit(baseCalendar);
-        Date date = (new LocalDate()).plusWeeks(1)
-                .toDateTimeAtStartOfDay().toDate();
+        LocalDate date = new LocalDate().plusWeeks(1);
         baseCalendarModel.createNewVersion(date);
         setHours(baseCalendarModel.getBaseCalendar(), 4);
         baseCalendarModel.confirmSave();
@@ -156,8 +154,7 @@ public class BaseCalendarModelTest {
         baseCalendarModel.getBaseCalendar().setName("Test");
         setHours(baseCalendarModel.getBaseCalendar(), 8);
         BaseCalendar parent = baseCalendarModel.getBaseCalendar();
-        baseCalendarModel.createNewVersion((new LocalDate()).plusMonths(1)
-                .toDateTimeAtStartOfDay().toDate());
+        baseCalendarModel.createNewVersion(new LocalDate().plusMonths(1));
         BaseCalendar parentNewVersion = baseCalendarModel.getBaseCalendar();
         baseCalendarModel.confirmSave();
 

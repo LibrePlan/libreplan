@@ -22,8 +22,7 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
-
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -102,7 +101,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToEditForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initEdit(baseCalendar);
         assignEditionController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
@@ -135,13 +134,13 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateForm() {
         baseCalendarModel.initCreate();
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
 
-    public void setSelectedDay(Date date) {
+    public void setSelectedDay(LocalDate date) {
         baseCalendarModel.setSelectedDay(date);
 
         reloadDayInformation();
@@ -223,7 +222,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initCreateDerived(baseCalendar);
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
@@ -236,7 +235,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initCreateCopy(baseCalendar);
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
