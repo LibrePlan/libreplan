@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -117,11 +118,28 @@ public class ProjectDetailsController extends GenericForwardComposer {
     }
 
     public void accept() {
-        if (tabs != null) {
-            tabs.goToOrdersList();
+        if (validate()) {
+            if (tabs != null) {
+                tabs.goToOrdersList();
+            }
+            orderController.editNewCreatedOrder();
+            close();
         }
-        orderController.editNewCreatedOrder();
-        close();
+    }
+
+    private boolean validate() {
+        if (!ConstraintChecker.isValid(window)) {
+            return false;
+        }
+        if (initDate.getValue() == null) {
+            showWrongValue();
+            return false;
+        }
+        return true;
+    }
+
+    private void showWrongValue() {
+        throw new WrongValueException(initDate, _("cannot be null or empty"));
     }
 
     private void close() {
