@@ -338,7 +338,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     private boolean isOverAssignable(LocalDate localDate) {
         CalendarException exceptionDay = getExceptionDay(localDate);
         if (exceptionDay != null) {
-            return exceptionDay.getType().isOverAssignable();
+            return exceptionDay.getType().isOverAssignableWithoutLimit();
         }
         return true;
     }
@@ -1021,7 +1021,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private boolean canWorkAt(CalendarException each) {
         return !each.getDuration().isZero()
-                || each.getType().isOverAssignable();
+                || each.getType().isOverAssignableWithoutLimit();
     }
 
     @Override

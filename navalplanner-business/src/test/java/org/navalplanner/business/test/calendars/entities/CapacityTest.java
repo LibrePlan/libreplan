@@ -44,9 +44,9 @@ public class CapacityTest {
     }
 
     @Test
-    public void ifOnlyTheStandardCapacitySpecifiedIsOverAssignable() {
+    public void ifOnlyTheStandardCapacitySpecifiedIsOverAssignableWithoutLimit() {
         Capacity capacity = Capacity.create(hours(8));
-        assertTrue(capacity.isOverAssignable());
+        assertTrue(capacity.isOverAssignableWithoutLimit());
     }
 
     @Test
@@ -56,9 +56,9 @@ public class CapacityTest {
     }
 
     @Test
-    public void ifHasAllowedExtraEffortItsNotOverassignable() {
+    public void ifHasAllowedExtraEffortItsNotOverassignableWithoutLimit() {
         Capacity capacity = Capacity.create(hours(8)).extraEffort(hours(0));
-        assertFalse(capacity.isOverAssignable());
+        assertFalse(capacity.isOverAssignableWithoutLimit());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class CapacityTest {
 
     @Test
     public void aZeroCapacityIsNotOverAssignable() {
-        assertFalse(Capacity.zero().isOverAssignable());
+        assertFalse(Capacity.zero().isOverAssignableWithoutLimit());
     }
 
     @Test

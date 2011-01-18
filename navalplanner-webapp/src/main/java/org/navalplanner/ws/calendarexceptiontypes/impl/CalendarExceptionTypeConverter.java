@@ -41,7 +41,7 @@ public final class CalendarExceptionTypeConverter {
         int seconds = (duration != null) ? duration.getSeconds() : 0;
         return new CalendarExceptionTypeDTO(calendarExceptionType.getCode(),
                 calendarExceptionType.getName(), calendarExceptionType
-                        .getColor(), calendarExceptionType.isOverAssignable(),
+                        .getColor(), calendarExceptionType.isOverAssignableWithoutLimit(),
                 seconds);
     }
 

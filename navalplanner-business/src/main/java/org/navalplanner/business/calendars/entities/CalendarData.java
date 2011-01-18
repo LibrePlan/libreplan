@@ -115,7 +115,7 @@ public class CalendarData extends IntegrationEntity {
         if (duration == null) {
             return null;
         }
-        return Capacity.create(duration).overAssignable(true);
+        return Capacity.create(duration).overAssignableWithoutLimit(true);
     }
 
     public EffortDuration getDurationAt(Days day) {

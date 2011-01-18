@@ -101,7 +101,7 @@ public class CalendarExceptionTypeServiceTest {
         assertThat(calendarExceptionTypeDTO.color,
                 equalTo(calendarExceptionType.getColor()));
         assertThat(calendarExceptionTypeDTO.overAssignable,
-                equalTo(calendarExceptionType.isOverAssignable()));
+                equalTo(calendarExceptionType.isOverAssignableWithoutLimit()));
     }
 
 }

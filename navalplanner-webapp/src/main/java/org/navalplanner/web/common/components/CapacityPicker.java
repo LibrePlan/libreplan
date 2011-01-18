@@ -103,13 +103,13 @@ public class CapacityPicker {
 
             @Override
             public Boolean get() {
-                return currentCapacity.isOverAssignable();
+                return currentCapacity.isOverAssignableWithoutLimit();
             }
         }, new Setter<Boolean>() {
 
             @Override
             public void set(Boolean value) {
-                updateCapacity(currentCapacity.overAssignable(BooleanUtils
+                updateCapacity(currentCapacity.overAssignableWithoutLimit(BooleanUtils
                         .isTrue(value)));
                 updateExtraEffortDisability(extraEffortPicker);
             }
@@ -120,7 +120,7 @@ public class CapacityPicker {
 
     private void updateExtraEffortDisability(
             EffortDurationPicker extraHoursPicker) {
-        extraHoursPicker.setDisabled(currentCapacity.isOverAssignable());
+        extraHoursPicker.setDisabled(currentCapacity.isOverAssignableWithoutLimit());
     }
 
     private void updateCapacity(Capacity newCapacity) {
@@ -136,7 +136,7 @@ public class CapacityPicker {
 
     public void setValue(Capacity capacity) {
         overAssignableWithoutLimitCheckbox.setChecked(capacity
-                .isOverAssignable());
+                .isOverAssignableWithoutLimit());
         standardEffortPicker.setValue(capacity.getStandardEffort());
         extraEffortPicker.setValue(capacity.getAllowedExtraEffort());
         currentCapacity = capacity;

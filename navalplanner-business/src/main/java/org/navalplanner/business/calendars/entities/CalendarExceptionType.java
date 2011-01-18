@@ -84,7 +84,7 @@ public class CalendarExceptionType extends IntegrationEntity {
         this.name = name;
         this.color = color;
         this.capacity = Capacity.zero();
-        this.capacity = this.capacity.overAssignable(!BooleanUtils
+        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils
                 .isTrue(notOverAssignable));
     }
 
@@ -117,17 +117,17 @@ public class CalendarExceptionType extends IntegrationEntity {
     /**
      * @return If more hours can be assigned on this day.
      */
-    public boolean isOverAssignable() {
-        return capacity.isOverAssignable();
+    public boolean isOverAssignableWithoutLimit() {
+        return capacity.isOverAssignableWithoutLimit();
     }
 
     public void setOverAssignable(Boolean overAssignable) {
-        this.capacity = capacity.overAssignable(BooleanUtils
+        this.capacity = capacity.overAssignableWithoutLimit(BooleanUtils
                 .isTrue(overAssignable));
     }
 
     public String getOverAssignableStr() {
-        return isOverAssignable() ? _("Yes") : _("No");
+        return isOverAssignableWithoutLimit() ? _("Yes") : _("No");
     }
 
     public EffortDuration getDuration() {

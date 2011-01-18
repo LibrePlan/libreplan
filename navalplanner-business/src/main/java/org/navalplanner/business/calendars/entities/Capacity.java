@@ -75,7 +75,7 @@ public class Capacity {
         return allowedExtraEffort;
     }
 
-    public boolean isOverAssignable() {
+    public boolean isOverAssignableWithoutLimit() {
         return allowedExtraEffort == null;
     }
 
@@ -87,8 +87,9 @@ public class Capacity {
         return new Capacity(standardEffort, allowedExtraEffort);
     }
 
-    public Capacity overAssignable(boolean overAssignable) {
-        if (overAssignable) {
+    public Capacity overAssignableWithoutLimit(
+            boolean overAssignableWithoutLimit) {
+        if (overAssignableWithoutLimit) {
             return new Capacity(standardEffort, null);
         } else {
             return new Capacity(standardEffort,
