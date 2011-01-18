@@ -37,8 +37,8 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
  */
 public class Capacity {
 
-    public static Capacity create(EffortDuration hours) {
-        return new Capacity(hours, null);
+    public static Capacity create(EffortDuration standardEffort) {
+        return new Capacity(standardEffort, null);
     }
 
     public static Capacity zero() {
