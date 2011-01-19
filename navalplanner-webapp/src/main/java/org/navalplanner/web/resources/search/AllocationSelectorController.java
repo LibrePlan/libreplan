@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.resources.entities.ResourceType;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -39,7 +39,7 @@ public abstract class AllocationSelectorController extends
     @Autowired
     protected IResourceSearchModel resourceSearchModel;
 
-    protected ResourceType type = ResourceType.NON_LIMITING_RESOURCE;
+    protected ResourceAllocationBehaviour behaviour;
 
     public AllocationSelectorController() {
 
@@ -57,9 +57,5 @@ public abstract class AllocationSelectorController extends
     public abstract void clearAll();
 
     public abstract void addTo(INewAllocationsAdder allocationsAdder);
-
-    public void setResourceTypeFilter(ResourceType type) {
-        this.type = type;
-    }
 
 }

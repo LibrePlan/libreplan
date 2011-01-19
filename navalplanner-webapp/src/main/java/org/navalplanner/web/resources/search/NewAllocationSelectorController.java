@@ -34,8 +34,10 @@ import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.lang.Objects;
@@ -49,6 +51,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.SimpleTreeModel;
@@ -82,8 +85,10 @@ public class NewAllocationSelectorController extends
 
     private AllocationType currentAllocationType;
 
-    public NewAllocationSelectorController() {
+    private ResourceAllocationBehaviour behaviour;
 
+    public NewAllocationSelectorController(ResourceAllocationBehaviour behaviour) {
+        this.behaviour = behaviour;
     }
 
     @Override
@@ -94,8 +99,12 @@ public class NewAllocationSelectorController extends
     }
 
     private void initializeComponents() {
+        initializeCriteriaTree();
+        initializeListboxResources();
+        initializeAllocationTypeSelector();
+    }
 
-        // Initialize criteria tree
+    private void initializeCriteriaTree() {
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
 
@@ -109,7 +118,9 @@ public class NewAllocationSelectorController extends
             });
         }
         criterionsTree.setTreeitemRenderer(criterionRenderer);
+    }
 
+    private void initializeListboxResources() {
         // Initialize found resources box
         listBoxResources.addEventListener(Events.ON_SELECT,
                 new EventListener() {
@@ -122,9 +133,12 @@ public class NewAllocationSelectorController extends
                 showSelectedAllocations();
             }
         });
+        listBoxResources.setMultiple(behaviour.allowMultipleSelection());
         listBoxResources.setItemRenderer(getListitemRenderer());
+    }
 
-        // Initialize radio group of selector types
+    private void initializeAllocationTypeSelector() {
+        // Add onCheck listener
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
@@ -136,7 +150,27 @@ public class NewAllocationSelectorController extends
                         showSelectedAllocations();
                     }
                 });
+        // Feed with values
+        for (AllocationType each: behaviour.allocationTypes()) {
+            allocationTypeSelector.appendChild(radio(each.getName()));
+        }
         doInitialSelection();
+    }
+
+    private Radio radio(String name) {
+        return new Radio(name);
+    }
+
+    private void doInitialSelection() {
+        currentAllocationType = AllocationType.GENERIC_WORKERS;
+        AllocationType.GENERIC_WORKERS.doTheSelectionOn(allocationTypeSelector);
+        onType(currentAllocationType);
+    }
+
+    private void onType(AllocationType type) {
+        currentAllocationType = type;
+        Util.reloadBindings(criterionsTree);
+        refreshListBoxResources();
     }
 
     private void showSelectedAllocations() {
@@ -157,23 +191,15 @@ public class NewAllocationSelectorController extends
     }
 
     private List<? extends Resource> getAllResources() {
-        return query().byResourceType(type).execute();
+        return query().byResourceType(getType()).execute();
+    }
+
+    private ResourceType getType() {
+        return behaviour.getType();
     }
 
     private IResourcesQuery<?> query() {
         return currentAllocationType.doQueryOn(resourceSearchModel);
-    }
-
-    private void doInitialSelection() {
-        currentAllocationType = AllocationType.GENERIC_WORKERS;
-        AllocationType.GENERIC_WORKERS.doTheSelectionOn(allocationTypeSelector);
-        onType(currentAllocationType);
-    }
-
-    private void onType(AllocationType type) {
-        currentAllocationType = type;
-        Util.reloadBindings(criterionsTree);
-        refreshListBoxResources();
     }
 
     private void refreshListBoxResources() {
@@ -189,7 +215,7 @@ public class NewAllocationSelectorController extends
         List<Criterion> criteria = getSelectedCriterions();
         List<Resource> selectedWorkers = getSelectedWorkers();
         refreshListBoxResources(query().byCriteria(criteria)
-                .byResourceType(type).execute());
+                .byResourceType(getType()).execute());
         listBoxResources.renderAll(); // force render so list items has the
                                       // value property so the resources can be
                                       // selected
@@ -262,7 +288,7 @@ public class NewAllocationSelectorController extends
     private void searchResources(String name, List<Criterion> criterions) {
         final List<? extends Resource> resources = query().byName(name)
                 .byCriteria(criterions)
-                .byResourceType(type)
+                .byResourceType(getType())
                 .execute();
         refreshListBoxResources(resources);
     }
@@ -331,10 +357,14 @@ public class NewAllocationSelectorController extends
         return result;
     }
 
+    public boolean isAllowSelectMultipleResources() {
+        return behaviour.allowMultipleSelection();
+    }
+
     /**
-     * Encapsulates {@link SimpleTreeNode}
-     *
      * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Encapsulates {@link SimpleTreeNode}
      *
      */
     private class CriterionTreeNode extends SimpleTreeNode {
@@ -420,8 +450,9 @@ public class NewAllocationSelectorController extends
     }
 
     /**
-     * Render for listBoxResources
      * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Render for listBoxResources
      */
     private class ResourceListRenderer implements ListitemRenderer {
 
@@ -446,20 +477,21 @@ public class NewAllocationSelectorController extends
     }
 
     /**
-     * Render for criterionsTree
-     *
-     * I had to implement a renderer for the Tree, for settin open to tree for
-     * each treeitem while being rendered.
-     *
-     * I tried to do this by iterating through the list of items after setting
-     * model in doAfterCompose, but I got a ConcurrentModificationException. It
-     * seems that at that point some other component was using the list of item,
-     * so it was not possible to modify it. There's not other point where to
-     * initialize components but doAfterCompose.
-     *
-     * Finally, I tried this solution and it works
-     *
      * @author Diego Pino Garcia <dpino@igalia.com>
+     *
+     *         Render for criterionsTree
+     *
+     *         I had to implement a renderer for the Tree. Every item in the
+     *         tree should be set as opened at first.
+     *
+     *         I tried to do this by iterating through the list of items after
+     *         setting the model at doAfterCompose, but I got a
+     *         ConcurrentModificationException. It seems that at that point some
+     *         other component was using the list of items, so it was not
+     *         possible to modify it. There's not other point where to
+     *         initialize components but doAfterCompose.
+     *
+     *         Finally, I tried this solution and it works
      *
      */
     private class CriterionRenderer implements TreeitemRenderer {
@@ -487,14 +519,6 @@ public class NewAllocationSelectorController extends
 
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
-    }
-
-    public void allowSelectMultipleResources(boolean multiple) {
-        listBoxResources.setMultiple(multiple);
-    }
-
-    public boolean isAllowSelectMultipleResources() {
-        return listBoxResources.isMultiple();
     }
 
 }

@@ -33,6 +33,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
@@ -716,6 +717,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     LimitingResourceEnum.NON_LIMITING_RESOURCE);
         }
 
+        public static ResourceType toResourceType(LimitingResourceEnum limitingResource) {
+            if (LIMITING_RESOURCE.equals(limitingResource)) {
+                return ResourceType.LIMITING_RESOURCE;
+            }
+            return ResourceType.NON_LIMITING_RESOURCE;
+        }
+
     }
 
     private void setupFilterLimitingResourceListbox() {
@@ -744,7 +752,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void setLimitingResource(LimitingResourceEnum option) {
         Worker worker = getWorker();
         if (worker != null) {
-            worker.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            worker.setResourceType(LimitingResourceEnum.toResourceType(option));
         }
     }
 

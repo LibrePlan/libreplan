@@ -19,17 +19,11 @@
 -->
 
 <zk>
-    <zscript><![CDATA[
-       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorComboController();
-    ]]>
-    </zscript>
-
-
-<vbox apply="${selectorController}">
-    <hbox>
-        <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
-        <bandboxMultipleSearch id="bdLimitingAllocationSelector"
-            widthBandbox="385px" widthListbox="600px" heightBbox="15px" />
-    </hbox>
-</vbox>
+    <vbox>
+        <hbox>
+            <label value="${i18n:_('Select criteria or resources')}" tooltiptext="${i18n:_('Select criteria set or a resource to add')}"/>
+            <bandboxMultipleSearch id="bbMultipleSearch"
+                    widthBandbox="385px" widthListbox="600px" heightBbox="15px" />
+        </hbox>
+    </vbox>
 </zk>

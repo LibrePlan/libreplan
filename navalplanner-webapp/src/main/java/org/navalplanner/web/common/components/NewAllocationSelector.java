@@ -34,12 +34,17 @@ import org.zkoss.zul.api.Radio;
 import org.zkoss.zul.api.Radiogroup;
 
 /**
- * ZK macro component for searching {@link Worker} entities
- *
  * @author Diego Pino García <dpino@igalia.com>
+ *
+ *         ZK macro component for searching {@link Worker} entities
+ *
  */
 @SuppressWarnings("serial")
 public class NewAllocationSelector extends AllocationSelector {
+
+    private NewAllocationSelectorController selectorController;
+
+    private ResourceAllocationBehaviour behaviour;
 
     public enum AllocationType {
         GENERIC_WORKERS(_("generic workers allocation")) {
@@ -104,7 +109,6 @@ public class NewAllocationSelector extends AllocationSelector {
             }
         };
 
-
         /**
          * Forces to mark the string as needing translation
          */
@@ -134,7 +138,7 @@ public class NewAllocationSelector extends AllocationSelector {
         public void doTheSelectionOn(Radiogroup radioGroup) {
             for (int i = 0; i < radioGroup.getItemCount(); i++) {
                 Radio radio = radioGroup.getItemAtIndexApi(i);
-                if (name().equals(radio.getValue())) {
+                if (name.equals(radio.getLabel())) {
                     radioGroup.setSelectedIndex(i);
                     break;
                 }
@@ -149,15 +153,23 @@ public class NewAllocationSelector extends AllocationSelector {
                 IResourceSearchModel resourceSearchModel);
 
         public abstract String asCaption(List<Criterion> criterions);
-    }
+
+    }   // AllocationType
 
     public NewAllocationSelectorController getController() {
-        return (NewAllocationSelectorController) this
-                .getVariable("selectorController", true);
+        if (selectorController == null) {
+            selectorController = new NewAllocationSelectorController(behaviour);
+            try {
+                selectorController.doAfterCompose(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return selectorController;
     }
 
-    public void allowSelectMultipleResources(boolean multiple) {
-        getController().allowSelectMultipleResources(multiple);
+    public void setBehaviour(String behaviour) {
+        this.behaviour = ResourceAllocationBehaviour.valueOf(behaviour);
     }
 
 }

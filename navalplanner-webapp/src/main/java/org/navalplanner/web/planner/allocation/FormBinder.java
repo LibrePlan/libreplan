@@ -46,6 +46,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
@@ -99,6 +100,8 @@ public class FormBinder {
             applyButton.setDisabled(false);
         }
     };
+
+    private ResourceAllocationBehaviour behaviour;
 
     private Grid allocationsGrid;
 
@@ -804,14 +807,33 @@ public class FormBinder {
     }
 
     public void loadAggregatedCalculations() {
-        allOriginalHours.setValue(Integer.toString(sumAllOriginalHours()));
-        allTotalHours.setValue(Integer.toString(sumAllTotalHours()));
-        allConsolidatedHours.setValue(Integer
-                .toString(sumAllConsolidatedHours()));
-        allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
-                .toString());
-        allConsolidatedResourcesPerDay
-                .setValue(sumAllConsolidatedResourcesPerDay().toString());
+        // Calculate aggregated values
+        if (behaviour.allowMultipleSelection()) {
+            allOriginalHours.setValue(Integer.toString(sumAllOriginalHours()));
+            allTotalHours.setValue(Integer.toString(sumAllTotalHours()));
+            allConsolidatedHours.setValue(Integer
+                    .toString(sumAllConsolidatedHours()));
+            allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
+                    .toString());
+            allConsolidatedResourcesPerDay
+                    .setValue(sumAllConsolidatedResourcesPerDay().toString());
+        }
+    }
+
+    public boolean allowMultipleSelection() {
+        return behaviour.allowMultipleSelection();
+    }
+
+    public void cannotAllocateMoreThanOneResource(List<Resource> resources) {
+        messagesForUser.showMessage(
+                Level.ERROR,
+                _("{0} could not be allocated. "
+                        + "Cannot allocate more than one resource",
+                        Resource.getCaptionFor(resources)));
+    }
+
+    public void setBehaviour(ResourceAllocationBehaviour behaviour) {
+        this.behaviour = behaviour;
     }
 
 }

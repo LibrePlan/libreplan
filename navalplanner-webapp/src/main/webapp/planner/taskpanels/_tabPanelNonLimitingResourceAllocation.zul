@@ -61,7 +61,7 @@
                     <separator spacing="10px"/>
 
                     <hbox align="bottom">
-                        <newAllocationSelectorCombo id="newAllocationSelectorCombo" />
+                        <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
                         <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
                         <button label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
                         <checkbox id="extendedViewCheckbox" label="${i18n:_('Extended view')}"
@@ -99,7 +99,7 @@
 
             <!-- Worker search -->
             <tabpanel>
-                <newAllocationSelector id="newAllocationSelector"/>
+                <newAllocationSelector id="newAllocationSelector" behaviour="NON_LIMITING" />
 
                 <!--  Select worker -->
                 <hbox>

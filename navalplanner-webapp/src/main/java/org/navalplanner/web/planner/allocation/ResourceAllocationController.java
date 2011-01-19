@@ -36,13 +36,13 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -151,9 +151,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         allResourcesPerDay = new Decimalbox();
         allResourcesPerDay.setWidth("80px");
-        newAllocationSelector.setResourceTypeFilter(ResourceType.NON_LIMITING_RESOURCE);
-        newAllocationSelectorCombo.setResourceTypeFilter(ResourceType.NON_LIMITING_RESOURCE);
-        newAllocationSelector.allowSelectMultipleResources(true);
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();
     }
@@ -194,6 +191,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
             formBinder = allocationRows.createFormBinder(planningState
                     .getCurrentScenario(), resourceAllocationModel);
+            formBinder.setBehaviour(ResourceAllocationBehaviour.NON_LIMITING);
             formBinder.setAllOriginalHours(allOriginalHours);
             formBinder.setAllTotalHours(allTotalHours);
             formBinder.setAllConsolidatedHours(allConsolidatedHours);

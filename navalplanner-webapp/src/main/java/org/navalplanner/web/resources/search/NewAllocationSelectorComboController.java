@@ -26,7 +26,7 @@ import java.util.List;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-import org.navalplanner.business.resources.entities.ResourceType;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceAllocationFilterEnum;
@@ -35,40 +35,47 @@ import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuer
 import org.zkoss.zk.ui.Component;
 
 /**
- * Controller for searching for {@link Resource}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ *
+ *         Controller for searching for {@link Resource}
  */
 public class NewAllocationSelectorComboController extends
         AllocationSelectorController {
 
-    private BandboxMultipleSearch bdLimitingAllocationSelector;
+    private ResourceAllocationBehaviour behaviour;
 
-    public NewAllocationSelectorComboController() {
+    private BandboxMultipleSearch bbMultipleSearch;
 
+    public NewAllocationSelectorComboController(ResourceAllocationBehaviour behaviour) {
+        this.behaviour = behaviour;
     }
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
+        bbMultipleSearch.setFinder(behaviour.getFinder());
     }
 
     /**
      * Does the actual search for workers
-     * @param criterions
+     *
+     * @param criteria
      */
-    private List<? extends Resource> searchResources(List<Criterion> criterions) {
-        return query(inferType(criterions)).byCriteria(criterions)
-                .byResourceType(type).execute();
+    private List<? extends Resource> searchResources(List<Criterion> criteria) {
+        return query(inferType(criteria)).byCriteria(criteria)
+                .byResourceType(behaviour.getType()).execute();
     }
 
-    private static ResourceEnum inferType(List<Criterion> criterions) {
-        if (criterions.isEmpty()) {
+    private static ResourceEnum inferType(List<Criterion> criteria) {
+        if (criteria.isEmpty()) {
             // FIXME resolve the ambiguity. One option is asking the user
             return ResourceEnum.WORKER;
         }
-        Criterion first = criterions.iterator().next();
-        return first.getType().getResource();
+        return first(criteria).getType().getResource();
+    }
+
+    private static Criterion first(List<Criterion> list) {
+        return list.iterator().next();
     }
 
     private IResourcesQuery<?> query(ResourceEnum resourceEnum) {
@@ -91,7 +98,7 @@ public class NewAllocationSelectorComboController extends
     }
 
     private List<FilterPair> getSelectedItems() {
-        return ((List<FilterPair>) bdLimitingAllocationSelector
+        return ((List<FilterPair>) bbMultipleSearch
                 .getSelectedElements());
     }
 
@@ -105,7 +112,7 @@ public class NewAllocationSelectorComboController extends
     }
 
     public void clearAll() {
-        this.bdLimitingAllocationSelector.clear();
+        bbMultipleSearch.clear();
     }
 
     public List<Resource> getSelectedResources() {
@@ -132,24 +139,8 @@ public class NewAllocationSelectorComboController extends
     }
 
     public void setDisabled(boolean disabled) {
-        bdLimitingAllocationSelector.clear();
-        bdLimitingAllocationSelector.setDisabled(disabled);
+        bbMultipleSearch.clear();
+        bbMultipleSearch.setDisabled(disabled);
     }
 
-    @Override
-    public void setResourceTypeFilter(ResourceType type) {
-        super.setResourceTypeFilter(type);
-        setResourceFinder();
-
-    }
-
-    private void setResourceFinder() {
-        if (type == ResourceType.LIMITING_RESOURCE) {
-            bdLimitingAllocationSelector
-                    .setFinder("limitingResourceAllocationMultipleFiltersFinder");
-        } else if (type == ResourceType.NON_LIMITING_RESOURCE) {
-            bdLimitingAllocationSelector
-                    .setFinder("nonLimitingResourceAllocationMultipleFiltersFinder");
-        }
-    }
 }

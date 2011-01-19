@@ -19,12 +19,7 @@
 -->
 
 <zk>
-    <zscript><![CDATA[
-       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorController();
-    ]]>
-    </zscript>
-
-    <vbox apply="${selectorController}">
+    <vbox>
 
         <groupbox style="margin-top: 5px" closable="false">
 
@@ -76,10 +71,7 @@
                                 <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
                                         sclass="context-help-popup" height="15px" />
                             </hbox>
-                            <radiogroup id="allocationTypeSelector" orient="vertical">
-                                <radio forEach="${selectorController.allocationTypes}"
-                                        label="${each.name}" value="${each}" />
-                            </radiogroup>
+                            <radiogroup id="allocationTypeSelector" orient="vertical" />
                         </row>
                         <row>
                             <label value="${i18n:_('Current selection')}" />

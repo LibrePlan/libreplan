@@ -20,7 +20,6 @@
 
 package org.navalplanner.web.common.components;
 
-import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.AllocationSelectorController;
@@ -35,11 +34,16 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
 
     private INewAllocationsAdder allocationsAdder;
 
+    protected abstract AllocationSelectorController getController();
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+    }
+
     public void clearAll() {
         getController().clearAll();
     }
-
-    protected abstract AllocationSelectorController getController();
 
     public void addChoosen() {
         getController().addTo(allocationsAdder);
@@ -50,10 +54,6 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
         if (getController() != null) {
             getController().clearAll();
         }
-    }
-
-    public void setResourceTypeFilter(ResourceType type) {
-        getController().setResourceTypeFilter(type);
     }
 
 }

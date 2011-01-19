@@ -593,7 +593,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     public void setLimitingResource(LimitingResourceEnum option) {
         Machine machine = getMachine();
         if (machine != null) {
-            machine.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            machine.setResourceType(LimitingResourceEnum.toResourceType(option));
         }
     }
 

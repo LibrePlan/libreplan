@@ -25,12 +25,12 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.TaskInformation;
 import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -88,9 +88,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        limitingNewAllocationSelector.setResourceTypeFilter(ResourceType.LIMITING_RESOURCE);
-        limitingNewAllocationSelectorCombo.setResourceTypeFilter(ResourceType.LIMITING_RESOURCE);
-        limitingNewAllocationSelector.allowSelectMultipleResources(false);
+        limitingNewAllocationSelector
+                .setBehaviour(ResourceAllocationBehaviour.LIMITING.toString());
     }
 
     public void setDisableHours(boolean disable) {
