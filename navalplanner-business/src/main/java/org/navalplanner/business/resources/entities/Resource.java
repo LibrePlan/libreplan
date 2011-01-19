@@ -113,6 +113,14 @@ public abstract class Resource extends IntegrationEntity {
         return resources;
     }
 
+    public static String getCaptionFor(List<Resource> resources) {
+        List<String> values = new ArrayList<String>();
+        for (Resource each: resources) {
+            values.add(each.getShortDescription());
+        }
+        return StringUtils.join(values, ", ");
+    }
+
     private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
