@@ -42,6 +42,8 @@ import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Tests for {@link BaseCalendar}.
@@ -771,6 +773,109 @@ public class BaseCalendarTest {
         assertFalse(nonWorkableDays.isEmpty());
         assertTrue(nonWorkableDays.contains(SATURDAY_LOCAL_DATE));
         assertTrue(nonWorkableDays.contains(SUNDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void aCalendarHasAMethodToConvertAnAmountOfResourcesPerDayToAEffortDuration() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(16)));
+    }
+
+    @Test
+    public void asDurationOnRespectsTheOverAssignablePropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .overAssignableWithoutLimit(true));
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(16)));
+    }
+
+    @Test
+    public void asDurationOnRespectsTheNotOverAssignablePropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .overAssignableWithoutLimit(false));
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(8)));
+    }
+
+    @Test
+    public void DurationOnRespectsTheExtraEffortPropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .extraEffort(hours(2)));
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(10)));
+
+    }
+
+    private void addExceptionOn(BaseCalendar calendar, LocalDate onDate,
+            Capacity capacity) {
+        calendar.addExceptionDay(CalendarException.create(onDate, capacity,
+                createCalendarExceptionType()));
+    }
+
+    @Test
+    public void asDurationOnRespectsAnOverAssignableCalendarException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
+                .overAssignableWithoutLimit(true));
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(1)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(2)));
+    }
+
+    @Test
+    public void asDurationOnRespectsANotOverAssignableCalendarException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
+                .overAssignableWithoutLimit(false));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(1)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(1)));
+    }
+
+    @Test
+    public void asDurationOnRespectsCapacityExtraEffort() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(2))
+                .extraEffort(hours(3)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(2)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(4)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(3)), equalTo(hours(5)));
     }
 
 }

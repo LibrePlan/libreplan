@@ -263,31 +263,23 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     public EffortDuration getCapacityOn(PartialDay date) {
-        return date.limitDuration(getWorkableTimeAt(date.getDate()));
+        return date.limitDuration(findCapacityAt(date.getDate())
+                .getStandardEffort());
     }
 
-    private EffortDuration getWorkableTimeAt(LocalDate date) {
+    private Capacity findCapacityAt(LocalDate date) {
         if (!isActive(date)) {
-            return EffortDuration.zero();
+            return Capacity.zero();
         }
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
-            return exceptionDay.getDuration();
+            return exceptionDay.getCapacity();
         }
-        return getCapacityConsideringCalendarDatasOn(date, getDayFrom(date))
-                .getStandardEffort();
+        return getCapacityConsideringCalendarDatasOn(date, getDayFrom(date));
     }
 
     private Days getDayFrom(LocalDate date) {
         return Days.values()[date.getDayOfWeek() - 1];
-    }
-
-    private boolean isOverAssignable(LocalDate localDate) {
-        CalendarException exceptionDay = getExceptionDay(localDate);
-        if (exceptionDay != null) {
-            return exceptionDay.getType().isOverAssignableWithoutLimit();
-        }
-        return true;
     }
 
     public Capacity getCapacityConsideringCalendarDatasOn(LocalDate date, Days day) {
@@ -750,24 +742,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     @Override
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
-        EffortDuration workableDuration = day
-                .limitDuration(getWorkableTimeAt(day.getDate()));
+        Capacity capacity = findCapacityAt(day.getDate());
+        EffortDuration workableDuration = day.limitDuration(capacity
+                .getStandardEffort());
         EffortDuration asDuration = amount
                 .asDurationGivenWorkingDayOf(workableDuration);
-        return limitOverAssignability(day.getDate(), asDuration,
-                workableDuration);
-    }
-
-    private EffortDuration limitOverAssignability(LocalDate day,
-            EffortDuration effortInitiallyCalculated,
-            EffortDuration workableHoursAtDay) {
-        boolean overAssignable = isOverAssignable(day);
-        if (overAssignable) {
-            return effortInitiallyCalculated;
-        } else {
-            return EffortDuration.min(effortInitiallyCalculated,
-                    multiplyByCapacity(workableHoursAtDay));
-        }
+        return capacity.limitDuration(asDuration);
     }
 
     /**

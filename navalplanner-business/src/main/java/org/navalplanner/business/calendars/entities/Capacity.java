@@ -142,4 +142,12 @@ public class Capacity {
                 .append(allowedExtraEffort).toHashCode();
     }
 
+    public EffortDuration limitDuration(EffortDuration duration) {
+        if (isOverAssignableWithoutLimit()) {
+            return duration;
+        }
+        return EffortDuration.min(standardEffort.plus(allowedExtraEffort),
+                duration);
+    }
+
 }
