@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -96,6 +97,9 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Component insertionPointLeftPanel;
     private Component insertionPointRightPanel;
     private Component insertionPointTimetracker;
+
+    private LocalDate previousStart;
+    private Interval previousInterval;
 
     public void paginationDown() {
         horizontalPagination.setSelectedIndex(horizontalPagination
@@ -179,14 +183,20 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.setZoomLevel(zoomLevel);
     }
 
     public void zoomIncrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.zoomIncrease();
     }
 
     public void zoomDecrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.zoomDecrease();
     }
 
@@ -226,6 +236,42 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
         return toolbar;
+    }
+
+    private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(
+            TimeTracker timeTracker) {
+        return new TimeTrackerComponent(timeTracker) {
+            @Override
+            protected void scrollHorizontalPercentage(int daysDisplacement) {
+                response("", new AuInvoke(queueListComponent,
+                        "scroll_horizontal", daysDisplacement + ""));
+                moveCurrentPositionScroll();
+            }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // get the previous data.
+                LocalDate previousStart = getPreviousStart();
+
+                // get the current data
+                int diffDays = getTimeTrackerComponent().getDiffDays(
+                        previousStart);
+                double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
+
+                response("move_scroll", new AuInvoke(queueListComponent,
+                        "move_scroll", "" + diffDays, "" + pixelPerDay));
+            }
+
+            protected void updateCurrentDayScroll() {
+                System.out.println("updateCurrentDayScroll");
+                double previousPixelPerDay = getTimeTracker().getMapper()
+                        .getPixelsPerDay().doubleValue();
+
+                response("update_day_scroll", new AuInvoke(queueListComponent,
+                        "update_day_scroll", "" + previousPixelPerDay));
+
+            }
+        };
     }
 
     @Override
@@ -286,6 +332,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 timeTracker.setFilter(paginatorFilter);
                 paginatorFilter.populateHorizontalListbox();
                 paginatorFilter.goToHorizontalPage(0);
+                adjustZoomPositionScroll();
             }
 
         });
@@ -316,6 +363,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 // TODO Auto-generated method stub
             }
         };
+    }
+
+    private void adjustZoomPositionScroll() {
+        getTimeTrackerComponent().movePositionScroll();
     }
 
     @SuppressWarnings("serial")
@@ -576,6 +627,20 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     .getSelectedIndex() + 1))
                     || horizontalPagination.isDisabled();
         }
+    }
+
+    private void savePreviousData() {
+        TimeTracker timeTracker = getTimeTrackerComponent().getTimeTracker();
+        this.previousStart = timeTracker.getRealInterval().getStart();
+        this.previousInterval = timeTracker.getMapper().getInterval();
+    }
+
+    public LocalDate getPreviousStart() {
+        return previousStart;
+    }
+
+    public Interval getPreviousInterval() {
+        return previousInterval;
     }
 
 }

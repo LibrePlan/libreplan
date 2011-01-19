@@ -43,6 +43,8 @@ zkLimitingResourcesList.SetVisibleDeadlineForQueueElement = function(task, visib
 function addLimitingResourcesListMethods(object) {
 	var scrollSync;
 
+	var SCROLL_DAY = 0;
+
 	function watermark() {
 		return document.getElementById('watermark');
 	}
@@ -132,9 +134,53 @@ function addLimitingResourcesListMethods(object) {
 		});
 	};
 
-	object.adjustScrollHorizontalPosition = function(cmp, offsetInPx) {
-		cmp.scrollLeft = offsetInPx;
-	}
+	object.update_day_scroll = function(cmp,previousPixelPerDay) {
+		var div1 = cmp;
+		var div2 = div1.parentNode;
+		var div3 = div2.parentNode;
+
+		var maxHPosition = div3.scrollWidth - div3.clientWidth;
+		if( maxHPosition > 0 ){
+			var proportion = div3.scrollWidth / maxHPosition;
+			var positionInScroll = div3.scrollLeft;
+			var positionInPx = positionInScroll * proportion;
+			if(positionInPx > 0){
+				var position = positionInPx / previousPixelPerDay;
+				var day = position;
+				SCROLL_DAY = position;
+			}
+		}
+	};
+
+	/**
+	 * Scrolls horizontally the ganttpanel when the zoom has resized the component
+	 * width.
+	 */
+
+	object.scroll_horizontal = function(cmp,daysDisplacement) {
+		SCROLL_DAY = daysDisplacement;
+	};
+
+	object.move_scroll = function(cmp,diffDays,pixelPerDay) {
+		var div1 = cmp;
+		var div2 = div1.parentNode;
+		var div3 = div2.parentNode;
+
+		var day = SCROLL_DAY;
+		day += parseInt(diffDays);
+		var newPosInPx = parseInt(day * pixelPerDay);
+		var maxHPosition = div3.scrollWidth - div3.clientWidth;
+		var newProportion = div3.scrollWidth / maxHPosition;
+		if( newProportion > 0){
+			var newPosInScroll = newPosInPx / newProportion;
+			if(newPosInScroll < 0){
+				newPosInScroll = 0;
+			}
+			div1.scrollLeft = newPosInScroll;
+			div2.scrollLeft = newPosInScroll;
+			div3.scrollLeft = newPosInScroll;
+		}
+	};
 
 	return object;
 }
