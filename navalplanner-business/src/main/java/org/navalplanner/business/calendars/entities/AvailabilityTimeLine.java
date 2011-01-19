@@ -352,19 +352,22 @@ public class AvailabilityTimeLine {
         if (invalids.isEmpty()) {
             return true;
         }
+        Interval possibleInterval = findPossibleIntervalFor(date);
+        return (possibleInterval == null || !possibleInterval.includes(date))
+                && additionalRestriction.isValid(date);
+    }
+
+    private Interval findPossibleIntervalFor(LocalDate date) {
         Interval point = Interval.point(date);
         int binarySearch = Collections.binarySearch(invalids, point);
         if (binarySearch >= 0) {
-            Interval interval = invalids.get(binarySearch);
-            return !interval.includes(date);
+            return invalids.get(binarySearch);
         } else {
             int insertionPoint = insertionPoint(binarySearch);
             if (insertionPoint == 0) {
-                return true;
+                return null;
             }
-            Interval interval = invalids
-                    .get(insertionPoint - 1);
-            return !interval.includes(date);
+            return invalids.get(insertionPoint - 1);
         }
     }
 
