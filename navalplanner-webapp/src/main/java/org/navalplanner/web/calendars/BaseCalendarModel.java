@@ -74,7 +74,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
      */
     protected BaseCalendar baseCalendar;
 
-    private LocalDate selectedDate;
+    private LocalDate selectedDate = new LocalDate();
 
     protected boolean editing = false;
 
@@ -244,7 +244,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
 
     @Override
     public void setSelectedDay(LocalDate date) {
-        this.selectedDate = date;
+        this.selectedDate = date != null ? date : new LocalDate();
     }
 
     @Override
