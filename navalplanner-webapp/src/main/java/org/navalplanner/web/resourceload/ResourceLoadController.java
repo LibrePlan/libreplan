@@ -30,10 +30,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -579,12 +579,17 @@ public class ResourceLoadController implements Composer {
                 if (resourcesLoadPanel.isVisibleChart()) {
                     loadChart.fillChart();
                 }
+                adjustZoomPositionScroll();
             }
         };
 
         keepAliveZoomListeners.add(zoomListener);
 
         return zoomListener;
+    }
+
+    private void adjustZoomPositionScroll() {
+        resourcesLoadPanel.getTimeTrackerComponent().movePositionScroll();
     }
 
     private IChartVisibilityChangedListener fillOnChartVisibilityChange(
