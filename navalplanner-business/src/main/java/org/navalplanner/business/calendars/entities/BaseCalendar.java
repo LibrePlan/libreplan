@@ -36,6 +36,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.IVetoer;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -789,10 +790,23 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     private void addInvaliditiesDerivedFromCalendar(AvailabilityTimeLine result) {
         addInvaliditiesFromAvailabilities(result);
         addInvaliditiesFromExceptions(result);
-        addInvaliditiesFromCalendarDatas(result);
+        addInvaliditiesFromEmptyCalendarDatas(result);
+        addInvaliditiesFromEmptyDaysInCalendarDatas(result);
     }
 
-    private void addInvaliditiesFromCalendarDatas(AvailabilityTimeLine result) {
+    private void addInvaliditiesFromEmptyDaysInCalendarDatas(
+            AvailabilityTimeLine result) {
+        result.setVetoer(new IVetoer() {
+
+            @Override
+            public boolean isValid(LocalDate date) {
+                return canWorkOn(date);
+            }
+        });
+    }
+
+    private void addInvaliditiesFromEmptyCalendarDatas(
+            AvailabilityTimeLine result) {
         LocalDate previous = null;
         for (CalendarData each : calendarDataVersions) {
             addInvalidityIfDataEmpty(result, previous, each);

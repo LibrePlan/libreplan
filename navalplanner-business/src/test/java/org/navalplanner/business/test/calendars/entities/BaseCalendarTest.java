@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
@@ -909,4 +910,13 @@ public class BaseCalendarTest {
         assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
     }
 
+    @Test
+    public void theAvailabilityTimeLineTakesIntoAccountTheDaysItCannotWorkDueToCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .overAssignableWithoutLimit(false));
+
+        AvailabilityTimeLine availability = calendar.getAvailability();
+        assertFalse(availability.isValid(MONDAY_LOCAL_DATE));
+    }
 }

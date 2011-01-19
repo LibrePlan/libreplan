@@ -20,6 +20,7 @@
  */
 package org.navalplanner.business.test.calendars.entities;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -38,6 +39,7 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.DatePoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.EndOfTime;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.IVetoer;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.StartOfTime;
 
@@ -301,6 +303,36 @@ public class AvailabilityTimeLineTest {
     }
 
     @Test
+    public void doingAnORDoesAnOrForAdditionalConstraints() {
+        boolean[][] validities = { { true, true }, { true, false },
+                { false, true }, { false, false } };
+        for (final boolean[] pairs : validities) {
+            AvailabilityTimeLine a = AvailabilityTimeLine.allValid();
+            a.setVetoer(new IVetoer() {
+
+                @Override
+                public boolean isValid(LocalDate date) {
+                    return pairs[0];
+                }
+            });
+            AvailabilityTimeLine b = AvailabilityTimeLine.allValid();
+            b.setVetoer(new IVetoer() {
+
+                @Override
+                public boolean isValid(LocalDate date) {
+                    return pairs[1];
+                }
+            });
+            AvailabilityTimeLine result = a.or(b);
+            boolean expected = pairs[0] || pairs[1];
+
+            assertThat(result.isValid(earlyExample), equalTo(expected));
+            assertThat(result.isValid(contemporaryExample), equalTo(expected));
+            assertThat(result.isValid(lateExample), equalTo(expected));
+        }
+    }
+
+    @Test
     public void doingAnAndWithAnAllValidTimeLineProducesTheSameTimeLine() {
         AvailabilityTimeLine timeLine = AvailabilityTimeLine.allValid();
         timeLine.invalidAt(earlyExample, contemporaryExample);
@@ -313,6 +345,36 @@ public class AvailabilityTimeLineTest {
                 point(earlyExample), point(contemporaryExample),
                 point(lateExample), point(lateExample
                         .plusDays(20)), EndOfTime.create()));
+    }
+
+    @Test
+    public void doingAnAndIntersectsTheAdditionalConstraints() {
+        boolean[][] validities = { { true, true }, { true, false },
+                { false, true }, { false, false } };
+        for (final boolean[] pairs : validities) {
+            AvailabilityTimeLine a = AvailabilityTimeLine.allValid();
+            a.setVetoer(new IVetoer() {
+
+                @Override
+                public boolean isValid(LocalDate date) {
+                    return pairs[0];
+                }
+            });
+            AvailabilityTimeLine b = AvailabilityTimeLine.allValid();
+            b.setVetoer(new IVetoer() {
+
+                @Override
+                public boolean isValid(LocalDate date) {
+                    return pairs[1];
+                }
+            });
+            AvailabilityTimeLine result = a.and(b);
+            boolean expected = pairs[0] && pairs[1];
+
+            assertThat(result.isValid(earlyExample), equalTo(expected));
+            assertThat(result.isValid(contemporaryExample), equalTo(expected));
+            assertThat(result.isValid(lateExample), equalTo(expected));
+        }
     }
 
     @Test
