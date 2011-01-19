@@ -97,10 +97,10 @@ planner = self;
                     id="taskdetailsContainer" sclass="taskdetailsContainer">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
                 </west>
-                <center sclass="taskspanel">
+                <center id="taskpanel" sclass="taskspanel">
                     <borderlayout>
                         <north border="0"><div sclass="timetrackergap" id="insertionPointTimetracker"></div></north>
-                        <center autoscroll="true" border="0" sclass="rightpanellayout">
+                        <center id="centerPanel" autoscroll="true" border="10" sclass="rightpanellayout">
                             <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
                         </center>
                     </borderlayout>

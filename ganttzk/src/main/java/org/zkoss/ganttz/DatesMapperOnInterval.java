@@ -49,7 +49,7 @@ public class DatesMapperOnInterval implements IDatesMapper {
     public LocalDate toDate(int pixels) {
         int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
                 .intValue();
-        return interval.getStart().plusDays(daysInto);
+        return getInterval().getStart().plusDays(daysInto);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class DatesMapperOnInterval implements IDatesMapper {
     }
 
     private Fraction getProportion(DateTime dateTime) {
-        return interval.getProportion(dateTime);
+        return getInterval().getProportion(dateTime);
     }
 
     private int toPixels(Fraction proportion) {
@@ -72,7 +72,7 @@ public class DatesMapperOnInterval implements IDatesMapper {
 
     @Override
     public int toPixels(ReadableDuration duration) {
-        DateTime end = interval.getStart().toDateTimeAtStartOfDay()
+        DateTime end = getInterval().getStart().toDateTimeAtStartOfDay()
                 .plus(duration);
         return toPixels(getProportion(end));
     }
@@ -96,6 +96,14 @@ public class DatesMapperOnInterval implements IDatesMapper {
     @Override
     public int getHorizontalSize() {
         return this.horizontalSize;
+    }
+
+    public Fraction getPixelsPerDay() {
+        return pixelsPerDay;
+    }
+
+    public Interval getInterval() {
+        return interval;
     }
 
 }

@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang.math.Fraction;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
@@ -43,6 +45,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -292,10 +295,17 @@ public class TaskList extends XulElement implements AfterCompose {
                         taskComponent.zoomChanged();
                     }
                     adjustZoomColumnsHeight();
+                    adjustZoomPositionScroll();
                 }
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
+    }
+
+    public LocalDate toDate(int pixels, Fraction pixelsPerDay, Interval interval) {
+        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
+                .intValue();
+        return interval.getStart().plusDays(daysInto);
     }
 
     private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
@@ -335,6 +345,10 @@ public class TaskList extends XulElement implements AfterCompose {
 
     public void adjustZoomColumnsHeight() {
         response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
+    }
+
+    private void adjustZoomPositionScroll() {
+        getTimeTrackerComponent().movePositionScroll();
     }
 
     public void redrawDependencies() {

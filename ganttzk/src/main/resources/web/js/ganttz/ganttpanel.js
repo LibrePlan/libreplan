@@ -24,13 +24,62 @@
  */
 zkGanttPanel = {};
 
+SCROLL_DAY = 0;
+
 zkGanttPanel.init = function(cmp){
+}
+
+zkGanttPanel.update_day_scroll = function(cmp,previousPixelPerDay) {
+	fromPixelToDay(previousPixelPerDay);
 }
 
 /**
  * Scrolls horizontally the ganttpanel when the zoom has resized the component
  * width.
  */
-zkGanttPanel.scroll_horizontal = function(cmp, offsetInPx) {
-	document.getElementById('ganttpanel_scroller_x').scrollLeft = offsetInPx;
+zkGanttPanel.scroll_horizontal = function(cmp,daysDisplacement) {
+	SCROLL_DAY = daysDisplacement;
+}
+
+zkGanttPanel.move_scroll = function(cmp,diffDays,pixelPerDay) {
+	fromDayToPixel(diffDays,pixelPerDay);
+}
+
+function fromPixelToDay(previousPixelPerDay){
+	var div1 = document.getElementById ("ganttpanel").parentNode;
+	var div2 = div1.parentNode;
+	var div3 = div2.parentNode;
+
+	var maxHPosition = div3.scrollWidth - div3.clientWidth;
+	if( maxHPosition > 0 ){
+		var proportion = div3.scrollWidth / maxHPosition;
+		var positionInScroll = div3.scrollLeft;
+		var positionInPx = positionInScroll * proportion;
+		if(positionInPx > 0){
+			var position = positionInPx / previousPixelPerDay;
+			var day = position;
+			SCROLL_DAY = position;
+		}
+	}
+}
+
+function fromDayToPixel(diffDays,pixelPerDay){
+	var div1 = document.getElementById ("ganttpanel").parentNode;
+	var div2 = div1.parentNode;
+	var div3 = div2.parentNode;
+
+	var day = SCROLL_DAY;
+	day += parseInt(diffDays);
+	var newPosInPx = parseInt(day * pixelPerDay);
+	var maxHPosition = div3.scrollWidth - div3.clientWidth;
+	var newProportion = div3.scrollWidth / maxHPosition;
+	if( newProportion > 0){
+		var newPosInScroll = newPosInPx / newProportion;
+		if(newPosInScroll < 0){
+			newPosInScroll = 0;
+		}
+		div1.scrollLeft = newPosInScroll;
+		div2.scrollLeft = newPosInScroll;
+		div3.scrollLeft = newPosInScroll;
+	}
 }

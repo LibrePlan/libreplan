@@ -285,8 +285,8 @@ function adjustScrollableDimensions() {
 	// Inner divs need recalculation to adjust to new scroll displacement lenght
 	document.getElementById('ganttpanel_inner_scroller_x').style["width"] = watermark.offsetWidth
 			+ "px";
-}
 
+}
 
 /**
  *

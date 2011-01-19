@@ -35,4 +35,16 @@ public class TimeTrackerComponentWithoutColumns extends TimeTrackerComponent {
     @Override
     protected void scrollHorizontalPercentage(int pixelsDisplacement) {
     }
+
+    @Override
+    protected void moveCurrentPositionScroll() {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    protected void updateCurrentDayScroll() {
+        // TODO Auto-generated method stub
+
+    }
 }

@@ -35,8 +35,8 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
+import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -305,6 +305,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
 
             }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            protected void updateCurrentDayScroll() {
+                // TODO Auto-generated method stub
+            }
         };
     }
 
@@ -316,6 +326,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 response("", new AuInvoke(queueListComponent,
                         "adjustScrollHorizontalPosition", pixelsDisplacement
                                 + ""));
+            }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // TODO Auto-generated method stub
+            }
+
+            @Override
+            protected void updateCurrentDayScroll() {
+                // TODO Auto-generated method stub
             }
         };
     }
@@ -349,6 +369,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
+    }
+
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
     }
 
     public void unschedule(QueueTask task) {

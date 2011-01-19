@@ -287,6 +287,18 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                         "adjustScrollHorizontalPosition", pixelsDisplacement
                                 + ""));
             }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            protected void updateCurrentDayScroll() {
+                // TODO Auto-generated method stub
+
+            }
         };
     }
 
@@ -345,6 +357,18 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
          @Override
          protected void scrollHorizontalPercentage(int pixelsDisplacement) {
          }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            protected void updateCurrentDayScroll() {
+                // TODO Auto-generated method stub
+
+            }
         };
     }
 
