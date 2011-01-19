@@ -84,7 +84,7 @@ public class VirtualWorker extends Worker {
 
     @AssertTrue
     @Override
-    public boolean checkConstraintUniqueNif() {
+    public boolean checkConstraintUniqueFiscalCode() {
         return true;
     }
 
