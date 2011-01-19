@@ -129,6 +129,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Textbox txtfilter;
 
+    private boolean isEditingWorkes;
+
     public WorkerCRUDController() {
     }
 
@@ -176,7 +178,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (save()) {
-            goToEditForm(getWorker());
+            if (this.isEditingWorkes) {
+                goToEditForm(getWorker());
+            } else {
+                this.goToEditVirtualWorkerForm(getWorker());
+            }
         }
     }
 
@@ -236,6 +242,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditForm(Worker worker) {
+        setEditingWorkes(true);
             getBookmarker().goToEditForm(worker);
             workerModel.prepareEditFor(worker);
             resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
@@ -249,6 +256,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditVirtualWorkerForm(Worker worker) {
+        setEditingWorkes(false);
         workerModel.prepareEditFor(worker);
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
@@ -262,6 +270,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToEditForm() {
+        setEditingWorkes(true);
         if (isCalendarNotNull()) {
             editCalendar();
         }
@@ -271,6 +280,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateForm() {
+        setEditingWorkes(true);
         getBookmarker().goToCreateForm();
         workerModel.prepareForCreate();
         createAsignedCriterions();
@@ -509,6 +519,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateVirtualWorkerForm() {
+        setEditingWorkes(false);
         workerModel.prepareForCreate(true);
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
@@ -819,6 +830,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             }
 
         };
+    }
+
+    public void setEditingWorkes(boolean isEditingWorkes) {
+        this.isEditingWorkes = isEditingWorkes;
+    }
+
+    public boolean isEditingWorkes() {
+        return isEditingWorkes;
     }
 
 }
