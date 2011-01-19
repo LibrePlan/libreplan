@@ -200,7 +200,7 @@ public class CutyPrint {
                 minWidthForTaskNameColumn);
 
         // Relative user styles
-        captureString += " --user-styles=" + generatedCSSFile;
+        captureString += " --user-style-path=" + generatedCSSFile;
 
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
