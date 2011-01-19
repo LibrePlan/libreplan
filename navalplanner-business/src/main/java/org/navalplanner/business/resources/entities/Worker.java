@@ -148,8 +148,8 @@ public class Worker extends Resource implements Comparable {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Worker ID already used. It has to be be unique")
-    public boolean checkConstraintUniqueNif() {
+    @AssertTrue(message = "Fiscal code already used. It has to be be unique")
+    public boolean checkConstraintUniqueFiscalCode() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
         }
@@ -164,7 +164,7 @@ public class Worker extends Resource implements Comparable {
                 return worker.getId().equals(getId());
             }
         } catch (InstanceNotFoundException e) {
-            return isNewObject();
+            return true;
         }
     }
 
