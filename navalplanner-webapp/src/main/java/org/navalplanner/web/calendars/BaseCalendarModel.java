@@ -49,6 +49,7 @@ import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -258,7 +259,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        return getBaseCalendar().getWorkableTimeAt(selectedDate);
+        return getBaseCalendar().getCapacityOn(
+                PartialDay.wholeDay(selectedDate));
     }
 
     @Override

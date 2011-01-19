@@ -28,6 +28,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  *
@@ -59,7 +60,8 @@ public class MonteCarloTask {
 
         double duration = daysDuration.doubleValue();
         for (int i = 0; i < duration;) {
-            EffortDuration workableTime = calendar.getWorkableTimeAt(day);
+            EffortDuration workableTime = calendar.getCapacityOn(PartialDay
+                    .wholeDay(day));
             if (!EffortDuration.zero().equals(workableTime)) {
                 i++;
             }

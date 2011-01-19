@@ -266,7 +266,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return date.limitDuration(getWorkableTimeAt(date.getDate()));
     }
 
-    public EffortDuration getWorkableTimeAt(LocalDate date) {
+    private EffortDuration getWorkableTimeAt(LocalDate date) {
         if (!isActive(date)) {
             return EffortDuration.zero();
         }
