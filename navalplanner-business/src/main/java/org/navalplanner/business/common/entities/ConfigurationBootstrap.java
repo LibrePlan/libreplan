@@ -114,8 +114,8 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
 
         Capacity eightHours = Capacity.create(EffortDuration.hours(8))
                 .overAssignableWithoutLimit(true);
-        Capacity zeroCapacity = Capacity.zero()
-                .overAssignableWithoutLimit(true);
+        Capacity zeroCapacity = Capacity.zero().overAssignableWithoutLimit(
+                false);
         calendar.setCapacityAt(Days.MONDAY, eightHours);
         calendar.setCapacityAt(Days.TUESDAY, eightHours);
         calendar.setCapacityAt(Days.WEDNESDAY, eightHours);

@@ -56,4 +56,11 @@
                       newColumnName="standard_effort" columnDataType="INTEGER"/>
     </changeSet>
 
+    <changeSet id="by_default_weekends_are_not_overassignable" author="ogonzalez">
+        <comment>By default weekends are not over assignable</comment>
+        <sql>
+        update capacity_per_day SET allowed_extra_effort = 0
+        where day_id IN (5, 6) AND allowed_extra_effort IS NULL
+        </sql>
+    </changeSet>
 </databaseChangeLog>
