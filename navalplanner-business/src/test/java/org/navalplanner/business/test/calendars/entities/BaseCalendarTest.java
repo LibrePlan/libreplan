@@ -878,4 +878,35 @@ public class BaseCalendarTest {
                 ResourcesPerDay.amount(3)), equalTo(hours(5)));
     }
 
+    @Test
+    public void canWorkOnRespectsTheCapacityOfTheException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
+                .extraEffort(hours(0)));
+
+        assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void canWorkOnRespectsIsOverAssignable() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
+                .overAssignableWithoutLimit(true));
+
+        assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void canWorkOnRespectsCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .overAssignableWithoutLimit(true));
+
+        assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .overAssignableWithoutLimit(false));
+        assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
 }

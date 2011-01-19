@@ -150,4 +150,9 @@ public class Capacity {
                 duration);
     }
 
+    public boolean allowsWorking() {
+        return !getStandardEffort().isZero() || isOverAssignableWithoutLimit()
+                || !getAllowedExtraEffort().isZero();
+    }
+
 }

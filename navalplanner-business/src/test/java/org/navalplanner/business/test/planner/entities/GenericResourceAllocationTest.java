@@ -242,7 +242,7 @@ public class GenericResourceAllocationTest {
                 hours(hoursPerDay)).anyTimes();
         expect(baseCalendar.isActive(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
-        expect(baseCalendar.canWork(isA(LocalDate.class))).andReturn(true)
+        expect(baseCalendar.canWorkOn(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(baseCalendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
@@ -588,7 +588,7 @@ public class GenericResourceAllocationTest {
                         isA(ResourcesPerDay.class))).andReturn(hours(unit))
                 .anyTimes();
 
-        expect(calendar.canWork(isA(LocalDate.class))).andReturn(true)
+        expect(calendar.canWorkOn(isA(LocalDate.class))).andReturn(true)
                 .anyTimes();
         expect(calendar.getCapacity()).andReturn(capacity).anyTimes();
         replay(calendar);

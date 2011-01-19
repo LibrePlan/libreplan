@@ -72,7 +72,7 @@ public class EffortDistributor {
         @Override
         public boolean isSelectable(Resource resource, LocalDate day) {
             ResourceCalendar resourceCalendar = resource.getCalendar();
-            return resourceCalendar == null || resourceCalendar.canWork(day);
+            return resourceCalendar == null || resourceCalendar.canWorkOn(day);
         }
     }
 

@@ -83,4 +83,29 @@ public class CapacityTest {
         Capacity capacity = new Capacity();
         assertThat(capacity.getStandardEffort(), equalTo(EffortDuration.zero()));
     }
+
+    @Test
+    public void aInitiallyZeroCapacityDoesNotAllowWorking() {
+        Capacity zero = Capacity.zero();
+        assertFalse(zero.allowsWorking());
+    }
+
+    @Test
+    public void aNonZeroCapacityAllowsWorking() {
+        Capacity capacity = Capacity.create(EffortDuration.minutes(1));
+        assertTrue(capacity.allowsWorking());
+    }
+
+    @Test
+    public void aCapacityWithExtraHoursAndZeroEffortAllowsWorking() {
+        Capacity capacity = Capacity.create(EffortDuration.zero()).extraEffort(
+                EffortDuration.minutes(1));
+        assertTrue(capacity.allowsWorking());
+    }
+
+    @Test
+    public void aCapacityWithZeroHoursAndOverAssignableWithoutLimitAllowsWorking() {
+        Capacity capacity = Capacity.zero().overAssignableWithoutLimit(true);
+        assertTrue(capacity.allowsWorking());
+    }
 }

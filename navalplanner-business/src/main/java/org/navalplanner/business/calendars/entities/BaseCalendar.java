@@ -695,15 +695,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return false;
     }
 
-    public boolean canWork(LocalDate date) {
-        return isActive(date) && canWorkConsideringOnlyException(date);
+    public boolean canWorkOn(LocalDate date) {
+        Capacity capacity = findCapacityAt(date);
+        return capacity.allowsWorking();
     }
 
-
-    private boolean canWorkConsideringOnlyException(LocalDate date) {
-        CalendarException exceptionDay = getExceptionDay(date);
-        return exceptionDay == null || canWorkAt(exceptionDay);
-    }
     public CalendarAvailability getLastCalendarAvailability() {
         if (calendarAvailabilities.isEmpty()) {
             return null;
@@ -848,15 +844,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private void addInvaliditiesFromExceptions(AvailabilityTimeLine timeLine) {
         for (CalendarException each : getExceptions()) {
-            if (!canWorkAt(each)) {
+            if (!each.getCapacity().allowsWorking()) {
                 timeLine.invalidAt(each.getDate());
             }
         }
-    }
-
-    private boolean canWorkAt(CalendarException each) {
-        return !each.getDuration().isZero()
-                || each.getType().isOverAssignableWithoutLimit();
     }
 
     @Override
