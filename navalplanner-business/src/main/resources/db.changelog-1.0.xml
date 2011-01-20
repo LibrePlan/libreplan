@@ -77,7 +77,8 @@
             <column name="resource_type" value="LIMITING_RESOURCE"/>
             <where>limited_resource = true</where>
         </update>
-        <addNotNullConstraint tableName="resource" columnName="resource_type" />
+        <addNotNullConstraint tableName="resource" columnName="resource_type"
+	     columnDataType="VARCHAR(64)" />
         <dropColumn tableName="resource" columnName="limited_resource"/>
     </changeSet>
 
