@@ -407,6 +407,15 @@ div.box.limiting-unassigned {
     border-collapse: collapse;
 }
 
+#timetrackerheader table.second_level_{
+    table-layout : fixed;
+}
+
+#timetrackerheader .second_level_ td {
+    -moz-box-sizing: border-box;
+    border-right: solid 1px #9EB6CE;
+}
+
 #timetracker .second_level_ tr {
     height: 14px;
 }
