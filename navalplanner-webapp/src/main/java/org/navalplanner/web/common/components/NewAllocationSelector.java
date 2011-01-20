@@ -31,8 +31,8 @@ import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
-import org.zkoss.zul.api.Radio;
-import org.zkoss.zul.api.Radiogroup;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 
 /**
  * @author Diego Pino García <dpino@igalia.com>
@@ -127,18 +127,9 @@ public class NewAllocationSelector extends AllocationSelector {
             return I18nHelper._(name);
         }
 
-        public static AllocationType getSelected(Radiogroup radioGroup) {
-            Radio selectedItemApi = radioGroup.getSelectedItemApi();
-            if (selectedItemApi == null) {
-                return null;
-            }
-            String name = selectedItemApi.getValue();
-            return AllocationType.valueOf(name);
-        }
-
         public void doTheSelectionOn(Radiogroup radioGroup) {
             for (int i = 0; i < radioGroup.getItemCount(); i++) {
-                Radio radio = radioGroup.getItemAtIndexApi(i);
+                Radio radio = radioGroup.getItemAtIndex(i);
                 if (name.equals(radio.getLabel())) {
                     radioGroup.setSelectedIndex(i);
                     break;

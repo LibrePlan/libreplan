@@ -145,21 +145,25 @@ public class NewAllocationSelectorController extends
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        AllocationType type = AllocationType
-                                .getSelected(allocationTypeSelector);
-                        onType(type);
+                        Radio radio = (Radio) event.getTarget();
+                        if (radio == null) {
+                            return;
+                        }
+                        onType(AllocationType.valueOf(radio.getValue()));
                         showSelectedAllocations();
                     }
                 });
         // Feed with values
         for (AllocationType each: behaviour.allocationTypes()) {
-            allocationTypeSelector.appendChild(radio(each.getName()));
+            allocationTypeSelector.appendChild(radio(each));
         }
         doInitialSelection();
     }
 
-    private Radio radio(String name) {
-        return new Radio(name);
+    private Radio radio(AllocationType allocationType) {
+        Radio result = new Radio(allocationType.getName());
+        result.setValue(allocationType.toString());
+        return result;
     }
 
     private void doInitialSelection() {
