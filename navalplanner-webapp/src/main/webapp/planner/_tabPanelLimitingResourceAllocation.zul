@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+                2011 Igalia,S.L
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -73,7 +74,7 @@
                     <separator spacing="10px"/>
                     <hbox>
                     <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" />
-                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                    <button label="${i18n:_('Add')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelectorCombo)" />
                     <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
                     </hbox>
                     <separator spacing="10px"/>
@@ -96,8 +97,8 @@
             <tabpanel >
                 <newAllocationSelector id="limitingNewAllocationSelector" />
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelector)" />
-                    <button label="${i18n:_('Close')}" onClick="limitingAllocationController.onCloseSelectWorkers()" />
+                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelector)" />
+                    <button label="${i18n:_('Close')}" onClick="limitingAllocationController.closeSelectWorkers()" />
                </hbox>
             </tabpanel>
         </tabpanels>
