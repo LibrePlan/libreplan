@@ -36,6 +36,7 @@ import org.navalplanner.web.planner.allocation.TaskInformation;
 import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -148,18 +149,18 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         return resourceAllocationModel.getResourceAllocationRows();
     }
 
-    public void onSelectWorkers(AllocationSelector allocationSelector) {
+    public void selectWorkers(AllocationSelector allocationSelector) {
         try {
             allocationSelector.addChoosen();
         } finally {
-            tabLimitingResourceAllocation.setSelected(true);
-            allocationSelector.clearAll();
+            closeSelectWorkers();
             Util.reloadBindings(gridLimitingAllocations);
         }
     }
 
-    public void onCloseSelectWorkers() {
+    public void closeSelectWorkers() {
         clear();
+        tabLimitingResourceAllocation.setSelected(true);
     }
 
     public void clear() {

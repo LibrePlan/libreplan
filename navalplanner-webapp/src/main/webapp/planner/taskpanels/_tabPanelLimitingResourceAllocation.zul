@@ -56,7 +56,7 @@
 
                     <hbox>
                         <newAllocationSelectorCombo id="limitingNewAllocationSelectorCombo" behaviour="LIMITING" />
-                        <button label="${i18n:_('Add')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelectorCombo)" />
+                        <button label="${i18n:_('Add')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelectorCombo)" />
                         <button label="${i18n:_('Advanced search')}" onClick="tabLimitingWorkerSearch.setSelected(true); " />
                     </hbox>
 
@@ -81,8 +81,8 @@
             <tabpanel >
                 <newAllocationSelector id="limitingNewAllocationSelector"  behaviour="LIMITING" />
                 <hbox>
-                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.onSelectWorkers(limitingNewAllocationSelector)" />
-                    <button label="${i18n:_('Close')}" onClick="limitingAllocationController.onCloseSelectWorkers()" />
+                    <button label="${i18n:_('Select')}" onClick="limitingAllocationController.selectWorkers(limitingNewAllocationSelector)" />
+                    <button label="${i18n:_('Close')}" onClick="limitingAllocationController.closeSelectWorkers()" />
                </hbox>
             </tabpanel>
         </tabpanels>
