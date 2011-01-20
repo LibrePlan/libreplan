@@ -23,10 +23,10 @@
         <n:table style="width: ${top.horizontalSize+2}px;" class="second_level_">
 
             <n:tr class="z-columns">
-                <n:th class="z-column" forEach="${top.detailsSecondLevel}"
+                <n:td class="z-column" forEach="${top.detailsSecondLevel}"
                 style="width: ${each.size}px">
                 ${each.name}
-                </n:th>
+                </n:td>
             </n:tr>
         </n:table>
     </n:div>
