@@ -557,7 +557,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz</artifactId>
-                <version>1.1_50</version>
+                <version>1.1_50_1</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
