@@ -31,6 +31,7 @@ import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
@@ -44,13 +45,14 @@ import org.navalplanner.business.workingday.IntraDayDate;
 public class AllocationResult {
 
     public static AllocationResult create(Task task,
-            CalculatedValue calculatedValue, List<AllocationRow> rows) {
+            CalculatedValue calculatedValue, List<AllocationRow> rows,
+            Integer newWorkableDays) {
         List<ResourceAllocation<?>> newAllocations = AllocationRow
                 .getNewFrom(rows);
         List<ModifiedAllocation> modified = AllocationRow.getModifiedFrom(rows);
-        return new AllocationResult(task, calculatedValue, createAggregate(
-                newAllocations, modified),
-                newAllocations, modified);
+        return new AllocationResult(task, newWorkableDays, calculatedValue,
+                createAggregate(newAllocations, modified), newAllocations,
+                modified);
     }
 
     private static AggregateOfResourceAllocations createAggregate(
@@ -59,7 +61,7 @@ public class AllocationResult {
         List<ResourceAllocation<?>> all = new ArrayList<ResourceAllocation<?>>();
         all.addAll(newAllocations);
         all.addAll(ModifiedAllocation.modified(modified));
-        return new AggregateOfResourceAllocations(all);
+        return AggregateOfResourceAllocations.createFromSatisfied(all);
     }
 
     public static AllocationResult createCurrent(Scenario scenario, Task task) {
@@ -67,17 +69,17 @@ public class AllocationResult {
                 .getSatisfiedResourceAllocations();
         List<ModifiedAllocation> modifiedAllocations = ModifiedAllocation.copy(
                 scenario, resourceAllocations);
-        AggregateOfResourceAllocations aggregate = new AggregateOfResourceAllocations(
-                ModifiedAllocation.modified(modifiedAllocations));
-        return new AllocationResult(task, task.getCalculatedValue(), aggregate,
+        AggregateOfResourceAllocations aggregate = AggregateOfResourceAllocations
+                .createFromSatisfied(ModifiedAllocation
+                        .modified(modifiedAllocations));
+        return new AllocationResult(task, task.getSpecifiedWorkableDays(),
+                task.getCalculatedValue(), aggregate,
                 Collections.<ResourceAllocation<?>> emptyList(),
                 modifiedAllocations);
 
     }
 
     private final AggregateOfResourceAllocations aggregate;
-
-    private final Integer daysDuration;
 
     private final CalculatedValue calculatedValue;
 
@@ -87,10 +89,13 @@ public class AllocationResult {
 
     private final List<Task.ModifiedAllocation> modified;
 
-    private final IntraDayDate end;
+    /**
+     * The number of workable days with wich the allocation has been done. Can
+     * be <code>null</code>
+     */
+    private final Integer newWorkableDays;
 
-    private AllocationResult(
-            Task task,
+    private AllocationResult(Task task, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             AggregateOfResourceAllocations aggregate,
             List<ResourceAllocation<?>> newAllocations,
@@ -99,21 +104,15 @@ public class AllocationResult {
         Validate.notNull(calculatedValue);
         Validate.notNull(task);
         this.task = task;
+        this.newWorkableDays = newWorkableDays;
         this.calculatedValue = calculatedValue;
         this.aggregate = aggregate;
-        this.daysDuration = aggregate.isEmpty() ? task.getDaysDuration()
-                : aggregate.getDaysDuration();
-        this.end = aggregate.isEmpty() ? null : aggregate.getEnd();
         this.newAllocations = newAllocations;
         this.modified = modified;
     }
 
     public AggregateOfResourceAllocations getAggregate() {
         return aggregate;
-    }
-
-    public Integer getDaysDuration() {
-        return daysDuration;
     }
 
     private List<ResourceAllocation<?>> getNew() {
@@ -130,8 +129,13 @@ public class AllocationResult {
 
     public void applyTo(Scenario scenario, Task task) {
         List<ModifiedAllocation> modified = getModified();
-        task.mergeAllocation(scenario, getCalculatedValue(), aggregate,
-                getNew(), modified, getNotModified(originals(modified)));
+        if (aggregate.isEmpty()) {
+            return;
+        }
+        task.mergeAllocation(scenario, getIntraDayStart(), getIntraDayEnd(),
+                newWorkableDays,
+                getCalculatedValue(), getNew(), modified,
+                getNotModified(originals(modified)));
     }
 
     private List<ResourceAllocation<?>> originals(
@@ -193,12 +197,24 @@ public class AllocationResult {
         return task.getStartAsLocalDate();
     }
 
+    private boolean isForwardsScheduled() {
+        return Direction.FORWARD.equals(task.getAllocationDirection());
+    }
+
     public IntraDayDate getIntraDayStart() {
-        return task.getIntraDayStartDate();
+        if (isForwardsScheduled() || aggregate.isEmpty()) {
+            return task.getIntraDayStartDate();
+        } else {
+            return aggregate.getStart();
+        }
     }
 
     public IntraDayDate getIntraDayEnd() {
-        return end;
+        if (!isForwardsScheduled() || aggregate.isEmpty()) {
+            return task.getIntraDayEndDate();
+        } else {
+            return aggregate.getEnd();
+        }
     }
 
 }

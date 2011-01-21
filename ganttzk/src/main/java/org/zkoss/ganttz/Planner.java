@@ -51,6 +51,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.au.AuRequest;
@@ -97,6 +98,24 @@ public class Planner extends HtmlMacroComponent  {
         return toLowercaseSet(values).contains("all");
     }
 
+    public static boolean guessShowAdvancesByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("advances");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
+    public static boolean guessShowReportedHoursByDefault(
+            Map<String, String[]> queryURLParameters) {
+        String[] values = queryURLParameters.get("reportedHours");
+        if (values == null) {
+            return false;
+        }
+        return toLowercaseSet(values).contains("all");
+    }
+
     private static Set<String> toLowercaseSet(String[] values) {
         Set<String> result = new HashSet<String>();
         for (String each : values) {
@@ -127,7 +146,11 @@ public class Planner extends HtmlMacroComponent  {
 
     private boolean isShowingCriticalPath = false;
 
+    private boolean isShowingAdvances = false;
+
     private boolean isShowingLabels = false;
+
+    private boolean isShowingReportedHours = false;
 
     private boolean isShowingResources = false;
 
@@ -282,8 +305,11 @@ public class Planner extends HtmlMacroComponent  {
             return;
         }
 
-        this.diagramGraph = GanttDiagramGraph.create(configuration
-                .getStartConstraints(), configuration.getEndConstraints(), configuration.isDependenciesConstraintsHavePriority());
+        this.diagramGraph = GanttDiagramGraph.create(
+                configuration.isScheduleBackwards(),
+                configuration.getStartConstraints(),
+                configuration.getEndConstraints(),
+                configuration.isDependenciesConstraintsHavePriority());
         FunctionalityExposedForExtensions<T> newContext = new FunctionalityExposedForExtensions<T>(
                 this, configuration, diagramGraph);
         addGraphChangeListenersFromConfiguration(configuration);
@@ -512,7 +538,27 @@ public class Planner extends HtmlMacroComponent  {
         }
     };
 
+    private IGraphChangeListener showAdvanceOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showAdvances();
+        }
+    };
+
+    private IGraphChangeListener showReportedHoursOnChange = new IGraphChangeListener() {
+
+        @Override
+        public void execute() {
+            context.showReportedHours();
+        }
+    };
+
     private boolean containersExpandedByDefault = false;
+
+    private boolean shownAdvanceByDefault = false;
+
+    private boolean shownReportedHoursByDefault = false;
 
     private FilterAndParentExpandedPredicates predicate;
 
@@ -533,6 +579,46 @@ public class Planner extends HtmlMacroComponent  {
                 showCriticalPathButton.setTooltiptext(_("Hide critical path"));
             }
             isShowingCriticalPath = !isShowingCriticalPath;
+        }
+    }
+
+    public void showAdvances() {
+        Button showAdvancesButton = (Button) getFellow("showAdvances");
+        if (disabilityConfiguration.isAdvancesEnabled()) {
+            if (isShowingAdvances) {
+                context.hideAdvances();
+                diagramGraph.removePostGraphChangeListener(showAdvanceOnChange);
+                showAdvancesButton.setSclass("planner-command");
+                showAdvancesButton.setTooltiptext(_("Show progress"));
+            } else {
+                context.showAdvances();
+                diagramGraph.addPostGraphChangeListener(showAdvanceOnChange);
+                showAdvancesButton.setSclass("planner-command clicked");
+                showAdvancesButton.setTooltiptext(_("Hide progress"));
+            }
+            isShowingAdvances = !isShowingAdvances;
+        }
+    }
+
+    public void showReportedHours() {
+        Button showReportedHoursButton = (Button) getFellow("showReportedHours");
+        if (disabilityConfiguration.isReportedHoursEnabled()) {
+            if (isShowingReportedHours) {
+                context.hideReportedHours();
+                diagramGraph
+                        .removePostGraphChangeListener(showReportedHoursOnChange);
+                showReportedHoursButton.setSclass("planner-command");
+                showReportedHoursButton
+                        .setTooltiptext(_("Show reported hours"));
+            } else {
+                context.showReportedHours();
+                diagramGraph
+                        .addPostGraphChangeListener(showReportedHoursOnChange);
+                showReportedHoursButton.setSclass("planner-command clicked");
+                showReportedHoursButton
+                        .setTooltiptext(_("Hide reported hours"));
+            }
+            isShowingReportedHours = !isShowingReportedHours;
         }
     }
 
@@ -595,6 +681,32 @@ public class Planner extends HtmlMacroComponent  {
     public void setAreContainersExpandedByDefault(
             boolean containersExpandedByDefault) {
         this.containersExpandedByDefault = containersExpandedByDefault;
+    }
+
+    public boolean areShownAdvancesByDefault() {
+        return shownAdvanceByDefault;
+    }
+
+    public boolean showAdvancesRightNow() {
+        return (areShownAdvancesByDefault() || isShowingAdvances);
+    }
+
+    public void setAreShownAdvancesByDefault(boolean shownAdvanceByDefault) {
+        this.shownAdvanceByDefault = shownAdvanceByDefault;
+        this.isShowingAdvances = shownAdvanceByDefault;
+    }
+
+    public void setAreShownReportedHoursByDefault(
+            boolean shownReportedHoursByDefault) {
+        this.shownReportedHoursByDefault = shownReportedHoursByDefault;
+    }
+
+    public boolean areShownReportedHoursByDefault() {
+        return shownReportedHoursByDefault;
+    }
+
+    public boolean showReportedHoursRightNow() {
+        return (areShownReportedHoursByDefault() || isShowingReportedHours);
     }
 
     public void expandAll() {
@@ -707,6 +819,10 @@ public class Planner extends HtmlMacroComponent  {
         return isShowingResources;
     }
 
+    public boolean isShowingAdvances() {
+        return isShowingAdvances;
+    }
+
     public boolean isExpandAll() {
         return isExpandAll;
     }
@@ -723,8 +839,17 @@ public class Planner extends HtmlMacroComponent  {
         }
         return null;
     }
+
     public String getWidgetClass(){
         return getDefinition().getDefaultWidgetClass();
+    }
+
+    public List getCriticalPath() {
+        return context.getCriticalPath();
+    }
+
+    public void updateCompletion(String progressType) {
+        getTaskList().updateCompletion(progressType);
     }
 
 }

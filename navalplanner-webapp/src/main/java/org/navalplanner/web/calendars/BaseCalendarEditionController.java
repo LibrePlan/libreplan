@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -35,21 +36,24 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.navalplanner.web.common.components.EffortDurationPicker;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -62,9 +66,11 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -111,11 +117,15 @@ public abstract class BaseCalendarEditionController extends
 
     private EffortDurationPicker exceptionDurationPicker;
 
+    private IMessagesForUser messagesForUser;
+
     public BaseCalendarEditionController(IBaseCalendarModel baseCalendarModel,
-            Window window, Window createNewVersionWindow) {
+            Window window, Window createNewVersionWindow,
+            IMessagesForUser messagesForUser) {
         this.baseCalendarModel = baseCalendarModel;
         this.window = window;
         this.createNewVersionWindow = createNewVersionWindow;
+        this.messagesForUser = messagesForUser;
     }
 
     public abstract void goToList();
@@ -287,12 +297,6 @@ public abstract class BaseCalendarEditionController extends
 
     public boolean isDerived() {
         return baseCalendarModel.isDerived();
-    }
-
-    private boolean isPast(Date date) {
-        LocalDate localDate = new LocalDate(date);
-        LocalDate currentLocalDate = new LocalDate();
-        return localDate.compareTo(currentLocalDate) <= 0;
     }
 
     public List<Days> getHoursPerDay() {
@@ -635,10 +639,6 @@ public abstract class BaseCalendarEditionController extends
             CalendarData calendarData = (CalendarData) data;
             item.setValue(calendarData);
 
-            Listcell nameListcell = new Listcell();
-            nameListcell.appendChild(new Label(baseCalendarModel.getName()));
-            item.appendChild(nameListcell);
-
             Listcell parentListcell = new Listcell();
             Label parentLabel = new Label();
             BaseCalendar parent = calendarData.getParent();
@@ -852,23 +852,25 @@ public abstract class BaseCalendarEditionController extends
             appendDayListcell(item, calendarException);
             appendExceptionTypeListcell(item, calendarException);
             appendDurationListcell(item, calendarException);
+            appendCodeListcell(item, calendarException);
             appendOperationsListcell(item, calendarException);
 
             markAsSelected(item, calendarException);
 
-            addEventListener(item);
         }
 
-        private void addEventListener(Listitem item) {
+        private void addEventListener(final Listitem item) {
             item.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    Listitem item = (Listitem) event.getTarget();
-                    CalendarException calendarException = (CalendarException) item
+                    if (!item.isSelected()) {
+                        Listitem item = (Listitem) event.getTarget();
+                        CalendarException calendarException = (CalendarException) item
                             .getValue();
-                    setSelectedDay(calendarException
+                        setSelectedDay(calendarException
                             .getDate().toDateTimeAtStartOfDay().toDate());
-                    reloadDayInformation();
+                        reloadDayInformation();
+                    }
                 }
             });
         }
@@ -908,6 +910,40 @@ public abstract class BaseCalendarEditionController extends
                 type = calendarException.getType().getName();
             }
             listcell.appendChild(new Label(type));
+            item.appendChild(listcell);
+        }
+
+        private void appendCodeListcell(final Listitem item,
+                final CalendarException calendarException) {
+            item.setValue(calendarException);
+            Listcell listcell = new Listcell();
+            final Textbox code = new Textbox();
+
+            if (getBaseCalendar() != null) {
+                code.setDisabled(getBaseCalendar().isCodeAutogenerated());
+            }
+
+            Util.bind(code, new Util.Getter<String>() {
+
+                @Override
+                public String get() {
+                    return calendarException.getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    try {
+                        calendarException.setCode(value);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(code, e.getMessage());
+                    }
+                }
+            });
+
+            code.setConstraint("no empty:" + _("cannot be null or empty"));
+
+            listcell.appendChild(code);
             item.appendChild(listcell);
         }
 
@@ -1022,6 +1058,7 @@ public abstract class BaseCalendarEditionController extends
 
             appendValidFromListcell(item, calendarAvailability);
             appendExpirationDateListcell(item, calendarAvailability);
+            appendAvailabilityCodeListcell(item, calendarAvailability);
             appendOperationsListcell(item, calendarAvailability);
         }
 
@@ -1103,6 +1140,40 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(listcell);
         }
 
+        private void appendAvailabilityCodeListcell(Listitem item,
+                final CalendarAvailability availability) {
+            item.setValue(availability);
+            Listcell listcell = new Listcell();
+            final Textbox code = new Textbox();
+
+            if (getBaseCalendar() != null) {
+                code.setDisabled(getBaseCalendar().isCodeAutogenerated());
+            }
+
+            Util.bind(code, new Util.Getter<String>() {
+
+                @Override
+                public String get() {
+                    return availability.getCode();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    try {
+                        availability.setCode(value);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(code, e.getMessage());
+                    }
+                }
+            });
+
+            code.setConstraint("no empty:" + _("cannot be null or empty"));
+
+            listcell.appendChild(code);
+            item.appendChild(listcell);
+        }
+
         private void appendOperationsListcell(Listitem item,
                 CalendarAvailability calendarAvailability) {
             Listcell listcell = new Listcell();
@@ -1149,6 +1220,10 @@ public abstract class BaseCalendarEditionController extends
         Util.reloadBindings(window.getFellow("calendarAvailabilities"));
     }
 
+    public void reloadExceptionsList() {
+        Util.reloadBindings(window.getFellow("exceptionsList"));
+    }
+
     public boolean isNotResourceCalendar() {
         BaseCalendar baseCalendar = baseCalendarModel.getBaseCalendar();
         if ((baseCalendar == null)
@@ -1158,4 +1233,51 @@ public abstract class BaseCalendarEditionController extends
         return true;
     }
 
+    public void validateCalendarExceptionCodes(){
+        Listbox listbox = (Listbox) window.getFellow("exceptionsList");
+        if (listbox != null) {
+            for (int i = 0; i < listbox.getItemCount(); i++) {
+                Listitem item = (Listitem) listbox.getItems().get(i);
+                if (item.getChildren().size() == 5) {
+                    Textbox code = (Textbox) ((Listcell) item.getChildren()
+                            .get(3)).getFirstChild();
+                    if (code != null && !code.isDisabled()
+                            && code.getValue().isEmpty()) {
+                        throw new WrongValueException(code,
+                                _("It can not be empty"));
+                    }
+                }
+            }
+        }
+    }
+
+    public void onCheckGenerateCode(Event e) {
+        CheckEvent ce = (CheckEvent) e;
+        if (ce.isChecked()) {
+            try {
+                baseCalendarModel.setCodeAutogenerated(ce.isChecked());
+            } catch (ConcurrentModificationException err) {
+                messagesForUser.showMessage(Level.ERROR, err.getMessage());
+            }
+        }
+        reloadCodeInformation();
+    }
+
+    private void reloadCodeInformation() {
+        Util.reloadBindings(window.getFellow("txtCode"));
+        reloadExceptionsList();
+        reloadActivationPeriods();
+    }
+
+    public void onSelectException(Event event) {
+        Listbox listBox = (Listbox) event.getTarget();
+        Listitem item = (Listitem) listBox.getSelectedItem();
+        if (item != null) {
+            CalendarException calendarException = (CalendarException) item
+                .getValue();
+            setSelectedDay(calendarException.getDate().toDateTimeAtStartOfDay()
+                .toDate());
+            reloadDayInformation();
+        }
+    }
 }

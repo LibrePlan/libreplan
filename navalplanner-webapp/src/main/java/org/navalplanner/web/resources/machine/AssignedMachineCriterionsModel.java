@@ -23,11 +23,12 @@ package org.navalplanner.web.resources.machine;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
@@ -40,6 +41,7 @@ import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.resources.worker.CriterionSatisfactionDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -56,7 +58,8 @@ import org.zkoss.zk.ui.WrongValueException;
 
 @Service()
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class AssignedMachineCriterionsModel implements IAssignedMachineCriterionsModel {
+public class AssignedMachineCriterionsModel extends IntegrationEntityModel
+        implements IAssignedMachineCriterionsModel {
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -67,9 +70,14 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     @Autowired
     private ICriterionDAO criterionDAO;
 
+    @Autowired
+    private ICriterionDAO entitySequenceDAO;
+
     private List<CriterionWithItsType> criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
 
     private Resource resource;
+
+    private CriterionSatisfaction currentCriterionSatisfaction;
 
     private Set<CriterionSatisfactionDTO> criterionSatisfactionDTOs = new HashSet<CriterionSatisfactionDTO>();
 
@@ -204,7 +212,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
         List<CriterionType> listTypes = getCriterionTypes();
         for (CriterionType criterionType : listTypes) {
-            Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+            List<Criterion> listCriterion = getDirectCriterions(criterionType);
             getCriterionWithItsType(criterionType, listCriterion);
         }
         return criterionsWithItsTypes;
@@ -216,7 +224,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         criterionsWithItsTypes = new ArrayList<CriterionWithItsType>();
         List<CriterionType> listTypes = getCriterionWorkersTypes();
         for (CriterionType criterionType : listTypes) {
-            Set<Criterion> listCriterion = getDirectCriterions(criterionType);
+            List<Criterion> listCriterion = getDirectCriterions(criterionType);
             getCriterionWithItsType(criterionType, listCriterion);
         }
         return criterionsWithItsTypes;
@@ -236,7 +244,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
     }
 
     private void getCriterionWithItsType(CriterionType type,
-            Set<Criterion> children) {
+            List<Criterion> children) {
         for (Criterion criterion : children) {
             // Create the criterion with its criterionType and its Hierarchy
             // label
@@ -245,14 +253,14 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
 
             // Add to the list
             criterionsWithItsTypes.add(criterionAndType);
-            getCriterionWithItsType(type, criterion.getChildren());
+            getCriterionWithItsType(type, criterion.getSortedChildren());
         }
     }
 
-    private static Set<Criterion> getDirectCriterions(
+    private static List<Criterion> getDirectCriterions(
             CriterionType criterionType) {
-        Set<Criterion> criterions = new HashSet<Criterion>();
-        for (Criterion criterion : criterionType.getCriterions()) {
+        List<Criterion> criterions = new ArrayList<Criterion>();
+        for (Criterion criterion : criterionType.getSortCriterions()) {
             if (criterion.getParent() == null) {
                 criterions.add(criterion);
             }
@@ -340,6 +348,7 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
         return satisfaction.overlapsWith(otherInterval);
     }
 
+    @Transactional
     public void save() throws ValidationException {
         for (CriterionSatisfactionDTO satisfactionDTO : getWithCriterionAssignedDTOs()) {
             save(satisfactionDTO);
@@ -360,8 +369,13 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
 
     private void addNewSatisfaction(CriterionSatisfactionDTO satisfactionDTO) {
         Interval interval = satisfactionDTO.getInterval();
-        resource.addSatisfaction(satisfactionDTO.getCriterionWithItsType(),
+        CriterionSatisfaction satisfaction = resource.addSatisfaction(
+                satisfactionDTO.getCriterionWithItsType(),
                 interval);
+
+        // set the autogenerated code
+        currentCriterionSatisfaction = satisfaction;
+        setDefaultCode();
     }
 
     private void removeSatisfaction(CriterionSatisfactionDTO satisfactionDTO) {
@@ -375,11 +389,9 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
                 .getCriterionSatisfaction();
         Criterion newCriterion = satisfactionDTO.getCriterionWithItsType()
                 .getCriterion();
-        Date newStartDate = satisfactionDTO.getStartDate();
-        Date newEndDate = satisfactionDTO.getEndDate();
         satisfaction.setCriterion(newCriterion);
-        satisfaction.setStartDate(newStartDate);
-        satisfaction.setEndDate(newEndDate);
+        satisfaction.setStartDate(satisfactionDTO.getStart());
+        satisfaction.setEndDate(satisfactionDTO.getEnd());
     }
 
     @Override
@@ -427,15 +439,30 @@ public class AssignedMachineCriterionsModel implements IAssignedMachineCriterion
                 if (satisfactionDTO.isIsDeleted()) {
                     satisfaction.setIsDeleted(true);
                 } else {
-                    satisfaction.setStartDate(satisfactionDTO.getStartDate());
+                    satisfaction.setStartDate(satisfactionDTO.getStart());
                     if (satisfactionDTO.getEndDate() != null) {
-                        satisfaction.finish(satisfactionDTO.getEndDate());
+                        satisfaction.finish(satisfactionDTO.getEnd());
                     }
                 }
             }
             newList.add(satisfaction);
         }
         resource.addSatisfactions(newList);
+    }
+
+    @Override
+    protected Set<IntegrationEntity> getChildren() {
+        return new HashSet<IntegrationEntity>();
+    }
+
+    @Override
+    public IntegrationEntity getCurrentEntity() {
+        return currentCriterionSatisfaction;
+    }
+
+    @Override
+    public EntityNameEnum getEntityName() {
+        return EntityNameEnum.CRITERION_SATISFACTION;
     }
 
 }

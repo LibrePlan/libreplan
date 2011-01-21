@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('NavalPlan: Advance Report')}"?>
+<?page title="${i18n:_('NavalPlan: Progress Report')}"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
@@ -30,7 +30,7 @@
 <div self="@{define(content)}">
 
 <window apply="${reportAdvancesController}"
-    title="${i18n:_('Advance Report')}">
+    title="${i18n:_('Progress Report')}">
 
     <vbox id="messagesContainer" />
 
@@ -39,13 +39,13 @@
         rowRenderer="@{controller.reportAdvancesOrderRenderer}"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
-            <column label="${i18n:_('Order code')}"/>
+            <column label="${i18n:_('Project code')}"/>
             <column label="${i18n:_('Customer reference code')}"/>
             <column label="${i18n:_('Name')}"/>
-            <column label="${i18n:_('Date last advance reported')}"/>
-            <column label="${i18n:_('Value last advance reported')}"/>
-            <column label="${i18n:_('Date last advance measurement')}"/>
-            <column label="${i18n:_('Value last advance measurement')}"/>
+            <column label="${i18n:_('Date last progress reported')}"/>
+            <column label="${i18n:_('Value last progress reported')}"/>
+            <column label="${i18n:_('Date last progress measurement')}"/>
+            <column label="${i18n:_('Value last progress measurement')}"/>
             <column label="${i18n:_('State')}"/>
             <column label="${i18n:_('Operations')}" />
         </columns>

@@ -56,6 +56,7 @@ import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -649,7 +650,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
             if (directAdvanceAssignment.getReportGlobalAdvance()) {
                 throw new DuplicateValueTrueReportGlobalAdvanceException(
-                        _("Cannot spread two advances in the same order element"),
+                        _("Cannot spread two progress in the same task"),
                         this, OrderElement.class);
             }
         }
@@ -673,7 +674,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Order Element"),
+                        _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
             }
@@ -700,7 +701,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             if (AdvanceType.equivalentInDB(directAdvanceAssignment
                     .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
-                        _("Duplicate Advance Assignment For Order Element"),
+                        _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
             }
@@ -822,20 +823,59 @@ public abstract class OrderElement extends IntegrationEntity implements
         return criterionRequirementHandler.getIndirectCriterionRequirement(criterionRequirements);
     }
 
-    public void applyStartConstraintIfNeededTo(Task task) {
-        if (getInitDate() != null) {
-            applyStartConstraintTo(task);
+    public void updatePositionConstraintOf(Task task) {
+        applyConstraintsInOrderElementParents(task);
+    }
+
+    public void applyInitialPositionConstraintTo(Task task) {
+        boolean applied = applyConstraintsInOrderElementParents(task);
+        if (applied) {
             return;
         }
-        OrderLineGroup parent = getParent();
-        if (parent != null) {
-            parent.applyStartConstraintIfNeededTo(task);
+        if (getOrder().isScheduleBackwards()) {
+            task.getPositionConstraint().asLateAsPossible();
+        } else {
+            task.getPositionConstraint().asSoonAsPossible();
         }
     }
 
-    protected void applyStartConstraintTo(Task task) {
-        task.getStartConstraint().notEarlierThan(
-                LocalDate.fromDateFields(this.getInitDate()));
+    /**
+     * Searches for init date or end constraints on order element and order
+     * element parents.
+     *
+     * @param task
+     * @return <code>true</code> if a constraint have been applied, otherwise
+     *         <code>false</code>
+     */
+    private boolean applyConstraintsInOrderElementParents(Task task) {
+        boolean scheduleBackwards = getOrder().isScheduleBackwards();
+        OrderElement current = this;
+        while (current != null) {
+            boolean applied = current.applyConstraintBasedOnInitOrEndDate(task,
+                    scheduleBackwards);
+            if (applied) {
+                return true;
+            }
+            current = current.getParent();
+        }
+        return false;
+    }
+
+    protected boolean applyConstraintBasedOnInitOrEndDate(Task task,
+            boolean scheduleBackwards) {
+        TaskPositionConstraint constraint = task.getPositionConstraint();
+        if (getInitDate() != null
+                && (getDeadline() == null || !scheduleBackwards)) {
+            constraint.notEarlierThan(
+                    LocalDate.fromDateFields(this.getInitDate()));
+            return true;
+        }
+        if (getDeadline() != null) {
+            constraint.finishNotLaterThan(
+                    LocalDate.fromDateFields(this.getDeadline()));
+            return true;
+        }
+        return false;
     }
 
     public Set<DirectCriterionRequirement> getDirectCriterionRequirement() {
@@ -920,12 +960,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         materialAssignments.remove(materialAssignment);
     }
 
-    public double getTotalMaterialAssigmentUnits() {
-        double result = 0;
+    public BigDecimal getTotalMaterialAssigmentUnits() {
+        BigDecimal result = BigDecimal.ZERO;
 
         final Set<MaterialAssignment> materialAssigments = getMaterialAssignments();
         for (MaterialAssignment each: materialAssigments) {
-            result += each.getUnits();
+            result = result.add(each.getUnits());
         }
         return result;
     }
@@ -1285,7 +1325,7 @@ public abstract class OrderElement extends IntegrationEntity implements
             repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
             if (repeatedOrder != null) {
                 throw new ValidationException(_(
-                        "Repeated Order code {0} in Order {1}",
+                        "Repeated Project code {0} in Project {1}",
                         repeatedOrder.getCode(), repeatedOrder.getName()));
             }
         }
@@ -1295,9 +1335,22 @@ public abstract class OrderElement extends IntegrationEntity implements
                 .findRepeatedOrderCodeInDB(order);
         if (repeatedOrder != null) {
             throw new ValidationException(_(
-                    "Repeated Order code {0} in Order {1}",
+                    "Repeated Project code {0} in Project {1}",
                     repeatedOrder.getCode(), repeatedOrder.getName()));
         }
+    }
+
+    public void setCodeAutogenerated(Boolean codeAutogenerated) {
+        if (getOrder().equals(this)) {
+            super.setCodeAutogenerated(codeAutogenerated);
+        }
+    }
+
+    public Boolean isCodeAutogenerated() {
+        if (getOrder().equals(this)) {
+            return super.isCodeAutogenerated();
+        }
+        return getOrder() != null ? getOrder().isCodeAutogenerated() : false;
     }
 
 }

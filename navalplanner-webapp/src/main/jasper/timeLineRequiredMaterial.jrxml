@@ -6,6 +6,7 @@
 	<parameter name="startingDate" class="java.util.Date"/>
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="status" class="java.lang.String"/>
+	<parameter name="logo" class="java.lang.String"/>
 	<field name="status" class="java.lang.String"/>
 	<field name="code" class="java.lang.String"/>
 	<field name="name" class="java.lang.String"/>
@@ -169,7 +170,7 @@
 		<band height="132" splitType="Stretch">
 			<image scaleImage="RealHeight">
 				<reportElement x="318" y="0" width="180" height="53"/>
-				<imageExpression class="java.lang.String"><![CDATA["logos/logo.png"]]></imageExpression>
+				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="0" y="80" width="100" height="15">

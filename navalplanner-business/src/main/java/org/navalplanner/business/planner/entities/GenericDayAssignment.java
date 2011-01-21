@@ -20,8 +20,6 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -119,13 +117,6 @@ public class GenericDayAssignment extends DayAssignment {
         }
     }
 
-
-    @Deprecated
-    public static GenericDayAssignment create(LocalDate day, int hours,
-            Resource resource) {
-        return create(new GenericDayAssignment(day, hours(hours), resource));
-    }
-
     public static GenericDayAssignment create(LocalDate day,
             EffortDuration duration, Resource resource) {
         return create(new GenericDayAssignment(day, duration, resource));
@@ -210,7 +201,7 @@ public class GenericDayAssignment extends DayAssignment {
 
     @Override
     public String toString() {
-        return super.toString() + " hours: " + getHours();
+        return super.toString() + " duration: " + getDuration();
     }
 
     @Override

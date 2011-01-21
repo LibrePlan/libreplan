@@ -278,4 +278,20 @@ public class IntraDayDateTest {
             }
         };
     }
+
+    @Test
+    public void roundsUpGoesToTheNextLocalDateOrKeepsTheSame() {
+        assertThat(IntraDayDate.create(today, halfHour).roundUp(),
+                equalTo(today.plusDays(1)));
+
+        assertThat(IntraDayDate.startOfDay(today).roundUp(), equalTo(today));
+    }
+
+    @Test
+    public void roundDownGoesToPreviousLocalDateOrKeepsTheSame() {
+        assertThat(IntraDayDate.create(today, halfHour).roundDown(),
+                equalTo(today));
+
+        assertThat(IntraDayDate.startOfDay(today).roundDown(), equalTo(today));
+    }
 }

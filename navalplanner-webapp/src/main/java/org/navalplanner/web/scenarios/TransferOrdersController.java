@@ -22,7 +22,6 @@ package org.navalplanner.web.scenarios;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.awt.Window;
 import java.util.List;
 import java.util.Set;
 
@@ -67,8 +66,6 @@ public class TransferOrdersController extends GenericForwardComposer {
     private BandboxSearch destinationScenarioBandboxSearch;
 
     private Listbox destinationScenarioOrders;
-
-    private Window transferOrdersWindow;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -165,7 +162,7 @@ public class TransferOrdersController extends GenericForwardComposer {
                                 transferOrdersModel.transfer(order);
                                 Util.reloadBindings(destinationScenarioOrders);
                                 messagesForUser.showMessage(Level.INFO,
-                                        _("Order {0} transfered", order
+                                        _("Project {0} transfered", order
                                                 .getName()));
                             } catch (ValidationException e) {
                                 messagesForUser.showInvalidValues(e);

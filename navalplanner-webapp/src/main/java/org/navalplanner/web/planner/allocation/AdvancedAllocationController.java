@@ -44,9 +44,11 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.planner.entities.Task;
@@ -93,6 +95,12 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Column;
 
+/**
+ *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ *
+ */
 public class AdvancedAllocationController extends GenericForwardComposer {
 
     public static class AllocationInput {
@@ -512,6 +520,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             advancedAllocationHorizontalPagination
                     .setDisabled(advancedAllocationHorizontalPagination
                             .getItems().size() < 2);
+            advancedAllocationHorizontalPagination.setSelectedIndex(0);
         }
 
         public void goToHorizontalPage(int interval) {
@@ -852,6 +861,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         if (rowsCached != null) {
             verticalPage = 0;
             verticalPaginationIndexes = new ArrayList<Integer>();
+            advancedAllocationVerticalPagination.getChildren().clear();
             for(int i=0; i<rowsCached.size(); i=
                     correctVerticalPageDownPosition(i+VERTICAL_MAX_ELEMENTS)) {
                 int endPosition = correctVerticalPageUpPosition(Math.min(
@@ -862,6 +872,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 item.appendChild(new Listcell(label));
                 advancedAllocationVerticalPagination.appendChild(item);
                 verticalPaginationIndexes.add(new Integer(i));
+            }
+            if (!rowsCached.isEmpty()) {
+                advancedAllocationVerticalPagination.setSelectedIndex(0);
             }
         }
     }
@@ -1088,6 +1101,8 @@ class Row {
 
     private final IMessagesForUser messages;
 
+    private final String functionName;
+
     private TaskElement task;
 
     void listenTo(Collection<Row> rows) {
@@ -1195,23 +1210,31 @@ class Row {
         }
     }
 
+    private Hbox hboxAssigmentFunctionsCombobox = null;
+
     Component getFunction() {
         if (isGroupingRow()) {
             return new Label();
         } else if (isLimiting) {
             return new Label(_("Limiting assignment"));
         } else {
-            Hbox hbox = new Hbox();
-
-            Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
-            appendListener(assignmentFunctionsCombo);
-
-            hbox.appendChild(assignmentFunctionsCombo);
-            hbox
-                    .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
-
-            return hbox;
+            if (hboxAssigmentFunctionsCombobox == null) {
+                initializeAssigmentFunctionsCombobox();
+            }
+            return hboxAssigmentFunctionsCombobox;
         }
+    }
+
+    private void initializeAssigmentFunctionsCombobox() {
+        hboxAssigmentFunctionsCombobox = new Hbox();
+
+        Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
+        appendListener(assignmentFunctionsCombo);
+        assignmentFunctionsCombo.setValue(functionName);
+
+        hboxAssigmentFunctionsCombobox.appendChild(assignmentFunctionsCombo);
+        hboxAssigmentFunctionsCombobox
+                .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
     }
 
     private void appendListener(final Combobox assignmentFunctionsCombo) {
@@ -1228,10 +1251,18 @@ class Row {
                         boolean hasChanged = !choosen
                                 .isTargetedTo(assignmentFunction);
                         boolean noPreviousAllocation = assignmentFunction == null;
-                        if (hasChanged
-                                && (noPreviousAllocation || isChangeConfirmed())) {
-                            choosen
-                                    .applyDefaultFunction(resourceAllocation);
+                        if (hasChanged) {
+                            boolean changeConfirmed = false;
+                            if (noPreviousAllocation || (changeConfirmed = isChangeConfirmed()) ) {
+                                choosen.applyDefaultFunction(resourceAllocation);
+                                assignmentFunctionsCombo.setVariable("previousValue", assignmentFunctionsCombo.getValue(), true);
+                                return;
+                            }
+
+                            if (!changeConfirmed) {
+                                String previousValue = (String) assignmentFunctionsCombo.getVariable("previousValue", true);
+                                assignmentFunctionsCombo.setValue(previousValue);
+                            }
                         }
                     }
 
@@ -1263,7 +1294,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("None");
+            return ASSIGNMENT_FUNCTION_NAME.NONE.toString();
         }
 
         @Override
@@ -1317,7 +1348,7 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Stretches");
+            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
         }
     };
 
@@ -1340,12 +1371,54 @@ class Row {
 
         @Override
         public String getName() {
-            return _("Interpolation");
+            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
         }
     };
 
-    private IAssignmentFunctionConfiguration[] functions = { none,
-            defaultStrechesFunction, strechesWithInterpolation };
+    private IAssignmentFunctionConfiguration sigmoidFunction = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            try {
+                Messagebox.show(_("Sigmoid function applied to current resource"),
+                        _("Sigmoid function"),
+                        Messagebox.OK, Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getName() {
+            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function instanceof SigmoidFunction;
+        }
+
+        @Override
+        public void applyDefaultFunction(
+                ResourceAllocation<?> resourceAllocation) {
+            resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
+            reloadHours();
+        }
+
+        private void reloadHours() {
+            reloadHoursSameRowForDetailItems();
+            reloadAllHours();
+            fireCellChanged();
+        }
+
+    };
+
+    private IAssignmentFunctionConfiguration[] functions = {
+            none,
+            defaultStrechesFunction,
+            strechesWithInterpolation,
+            sigmoidFunction
+    };
 
     private boolean isLimiting;
 
@@ -1398,9 +1471,8 @@ class Row {
     }
 
     private Row(IMessagesForUser messages,
-            AdvancedAllocationController.Restriction restriction,
-            String name, int level,
- List<? extends ResourceAllocation<?>> allocations,
+            AdvancedAllocationController.Restriction restriction, String name,
+            int level, List<? extends ResourceAllocation<?>> allocations,
             boolean limiting, TaskElement task) {
         this.messages = messages;
         this.restriction = restriction;
@@ -1408,8 +1480,25 @@ class Row {
         this.level = level;
         this.isLimiting = limiting;
         this.task = task;
-        this.aggregate = new AggregateOfResourceAllocations(
-                new ArrayList<ResourceAllocation<?>>(allocations));
+        this.aggregate = AggregateOfResourceAllocations
+                .createFromSatisfied(new ArrayList<ResourceAllocation<?>>(allocations));
+        this.functionName = getAssignmentFunctionName(allocations);
+    }
+
+    private String getAssignmentFunctionName(
+            List<? extends ResourceAllocation<?>> allocations) {
+        AssignmentFunction function = getAssignmentFunction(allocations);
+        return (function != null) ? function.getName()
+                : ASSIGNMENT_FUNCTION_NAME.NONE.toString();
+    }
+
+    private AssignmentFunction getAssignmentFunction(
+            List<? extends ResourceAllocation<?>> allocations) {
+        if (allocations != null) {
+            ResourceAllocation<?> allocation = allocations.iterator().next();
+            return allocation.getAssignmentFunction();
+        }
+        return null;
     }
 
     private Integer getHoursForDetailItem(DetailItem item) {

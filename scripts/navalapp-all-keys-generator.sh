@@ -29,3 +29,7 @@ if [ ! -f $GANTTZK_KEYS ]
     then touch $GANTTZK_KEYS
 fi
 ./gettext-keys-generator.pl -d $NAVALPLANNER_GANTTZK -k $GANTTZK_KEYS 2> /dev/null
+
+# Convert absolute paths to relative
+sed -i 's/\(#: \)\(.*\)\/\(ganttzk\|navalplanner-business\|navalplanner-webapp\)\/\(.*\)/\1\3\/\4/' $WEBAPP_KEYS
+sed -i 's/\(#: \)\(.*\)\/\(ganttzk\|navalplanner-business\|navalplanner-webapp\)\/\(.*\)/\1\3\/\4/' $GANTTZK_KEYS

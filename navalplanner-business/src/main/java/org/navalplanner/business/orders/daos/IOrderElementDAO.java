@@ -28,7 +28,6 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 

@@ -55,10 +55,6 @@ public class AdvanceAssignmentPlanningModel implements
 
     private TaskElement task;
 
-    private PlanningState planningState;
-
-    private IContextWithPlannerTask<TaskElement> context;
-
     private OrderElement orderElement;
 
     @Override
@@ -81,10 +77,8 @@ public class AdvanceAssignmentPlanningModel implements
     public void initAdvancesFor(TaskElement task,
             IContextWithPlannerTask<TaskElement> context,
             PlanningState planningState) {
-        this.context = context;
         initTask(task);
         initOrderElement();
-        this.planningState = planningState;
     }
 
     private void initTask(TaskElement task) {

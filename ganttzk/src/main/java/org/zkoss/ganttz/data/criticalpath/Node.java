@@ -26,7 +26,8 @@ import java.util.Set;
 
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.IDependency;
 
 
 /**
@@ -35,7 +36,7 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class Node<T extends ITaskFundamentalProperties> {
+public class Node<T, D extends IDependency<T>> {
 
     private T task;
     private Set<T> previousTasks = new HashSet<T>();
@@ -46,9 +47,19 @@ public class Node<T extends ITaskFundamentalProperties> {
     private Integer latestStart = null;
     private Integer latestFinish = null;
 
+    private LocalDate beginDate = null;
+    private LocalDate endDate = null;
+
     public Node(T task, Set<? extends T> previousTasks,
-            Set<? extends T> nextTasks) {
+            Set<? extends T> nextTasks, GanttDate startDate, GanttDate endDate) {
         this.task = task;
+
+        if (startDate != null) {
+            this.beginDate = new LocalDate(startDate.toDayRoundedDate());
+        }
+        if (endDate != null) {
+            this.endDate = new LocalDate(endDate.toDayRoundedDate());
+        }
 
         this.earliestStart = 0;
         this.earliestFinish = getDuration();
@@ -69,8 +80,16 @@ public class Node<T extends ITaskFundamentalProperties> {
         return Collections.unmodifiableSet(previousTasks);
     }
 
+    public void addPreviousTask(T task) {
+        previousTasks.add(task);
+    }
+
     public Set<T> getNextTasks() {
         return Collections.unmodifiableSet(nextTasks);
+    }
+
+    public void addNextTask(T task) {
+        nextTasks.add(task);
     }
 
     public int getEarliestStart() {
@@ -108,14 +127,7 @@ public class Node<T extends ITaskFundamentalProperties> {
             return 0;
         }
 
-        LocalDate beginDate = new LocalDate(task.getBeginDate()
-                .toDayRoundedDate());
-        LocalDate endDate = getTaskEndDate();
         return Days.daysBetween(beginDate, endDate).getDays();
-    }
-
-    private LocalDate getTaskEndDate() {
-        return new LocalDate(task.getEndDate().toDayRoundedDate());
     }
 
     @Override

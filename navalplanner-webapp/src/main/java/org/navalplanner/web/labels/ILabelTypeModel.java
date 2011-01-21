@@ -25,17 +25,16 @@ import java.util.List;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Interface for {@link LabelTypeModel}
- *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface ILabelTypeModel {
+public interface ILabelTypeModel extends IIntegrationEntityModel {
 
     /**
      * Removes {@link LabelType}
-     *
      * @param labelType
      */
     void confirmDelete(LabelType labelType);
@@ -47,14 +46,12 @@ public interface ILabelTypeModel {
 
     /**
      * Returns {@link LabelType}
-     *
      * @return
      */
     LabelType getLabelType();
 
     /**
      * Returns all {@link LabelType}
-     *
      * @return
      */
     List<LabelType> getLabelTypes();
@@ -71,7 +68,6 @@ public interface ILabelTypeModel {
 
     /**
      * Returns all {@link Label} for current {@link LabelType}
-     *
      * @return
      */
     List<Label> getLabels();
@@ -82,14 +78,12 @@ public interface ILabelTypeModel {
     void addLabel(String value);
 
     /**
-     *
      * @param label
      */
     void confirmDeleteLabel(Label label);
 
     /**
      * Check is {@link Label} name is unique
-     *
      * @param value
      */
     boolean labelNameIsUnique(String value);

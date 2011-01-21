@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.zkoss.util.InvalidValueException;
 
 /**
@@ -11,7 +12,7 @@ import org.zkoss.util.InvalidValueException;
  * @author Diego Pino <dpino@igalia.com>
  *
  */
-public interface ICalendarExceptionTypeModel {
+public interface ICalendarExceptionTypeModel extends IIntegrationEntityModel {
 
     void initCreate();
 

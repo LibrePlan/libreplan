@@ -110,6 +110,10 @@ public interface IContext<T> {
      */
     void recalculatePosition(T domainObject);
 
+
+    /** Returns list of Task that conform the critical path */
+    List<T> getCriticalPath();
+
     /**
      * Shows the critical path in the planner.
      */
@@ -120,8 +124,21 @@ public interface IContext<T> {
      */
     void hideCriticalPath();
 
+    /**
+     * Hides the advances in the planner.
+     */
+    void hideAdvances();
+
     public void reloadCharts();
 
     public GanttDiagramGraph getGanttDiagramGraph();
 
+    /**
+     * Shows the advances in the planner.
+     */
+    void showAdvances();
+
+    void showReportedHours();
+
+    void hideReportedHours();
 }

@@ -28,11 +28,6 @@
 <?component name="button" extends="button" mold="trendy"?>
 
 <zk>
-<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
-
-<borderlayout height="100%" width="100%" >
-<north border="none">
-<n:div>
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
@@ -40,13 +35,19 @@
 ]]>
 </zscript>
 
+<div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
+
+<borderlayout height="100%" width="100%" >
+<north border="none">
+<n:div>
+
 <scripts />
 
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
   <n:tr>
     <n:td width="180" valign="center">
         <n:a href="${contextPath}/">
-        <n:img src="${contextPath}/common/img/logo.png" /></n:a></n:td>
+        <n:img src="${contextPath}/common/img/${i18n:_('en')}/logo.png" /></n:a></n:td>
   <n:td valign="top">
   <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
     <n:tr>
@@ -65,6 +66,7 @@
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
             <n:tr>
               <n:td class="usuario">
+              <div if="${templateCtrl.scenariosVisible}">
                 ${i18n:_('scenario')}:
                 <button onClick="templateCtrl.changeScenario();"
                     label="${templateCtrl.scenario.name}" />
@@ -89,6 +91,7 @@
                     <button onClick="templateCtrl.cancel();"
                         label="${i18n:_('Cancel')}" />
                 </window>
+              </div>
               </n:td>
               <n:td class="usuario">${i18n:_('user')}: ${desktop.execution.userPrincipal.name}</n:td>
               <n:td><n:a href="${contextPath}/j_spring_security_logout" class="cerrar_sesion">[${i18n:_('Log out')}]</n:a></n:td>
@@ -118,6 +121,9 @@
 <south border="none">
 <n:table width="100%">
   <n:tr class="footer">
+    <n:td height="40" align="left" valign="bottom">
+        <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
+    </n:td>
     <n:td height="40" align="right" valign="bottom">
         <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>
         <n:img width="253" height="40" src="${contextPath}/common/img/logos_footer_administracion.png"/>

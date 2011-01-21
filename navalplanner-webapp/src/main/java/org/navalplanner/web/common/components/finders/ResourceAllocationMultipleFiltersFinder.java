@@ -173,7 +173,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
     private void searchInResources(String filter) {
         Map<Class<?>, List<Resource>> mapResources = databaseSnapshots
                 .snapshotMapResources();
-        boolean limited = (filter.length() < 3);
         for (Class<?> className : mapResources.keySet()) {
             for (Resource resource : mapResources.get(className)) {
 
@@ -233,10 +232,6 @@ public class ResourceAllocationMultipleFiltersFinder extends
 
     private boolean isModeResource() {
         return mode.equals(ResourceAllocationFilterEnum.Resource);
-    }
-
-    private boolean isModeCriterion() {
-        return mode.equals(ResourceAllocationFilterEnum.Criterion);
     }
 
     private boolean isModeNone() {

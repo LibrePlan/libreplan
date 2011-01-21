@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.ClassValidator;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.business.templates.entities.OrderLineTemplate;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
@@ -34,10 +35,8 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
-import org.zkoss.zul.Label;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treeitem;
-import org.zkoss.zul.TreeitemRenderer;
 
 /**
  * Controller for template element tree <br />
@@ -189,7 +188,7 @@ public class TemplatesTreeController extends
     }
 
     @Override
-    public TreeitemRenderer getRenderer() {
+    public TemplatesTreeRenderer getRenderer() {
         return new TemplatesTreeRenderer();
     }
 
@@ -220,5 +219,35 @@ public class TemplatesTreeController extends
         // There are no CriterionRequirement or advances in templates
             return tooltipText.toString();
         }
+
+    @Override
+    protected IHoursGroupHandler<OrderElementTemplate> getHoursGroupHandler() {
+        return new IHoursGroupHandler<OrderElementTemplate>() {
+
+            @Override
+            public boolean hasMoreThanOneHoursGroup(OrderElementTemplate element) {
+                return element.getHoursGroups().size() > 1;
+            }
+
+            @Override
+            public boolean isTotalHoursValid(OrderElementTemplate line,
+                    Integer value) {
+                return ((OrderLineTemplate) line).isTotalHoursValid(value);
+            }
+
+            @Override
+            public Integer getWorkHoursFor(OrderElementTemplate element) {
+                return element.getWorkHours();
+            }
+
+            @Override
+            public void setWorkHours(OrderElementTemplate element, Integer value) {
+                if (element instanceof OrderLineTemplate) {
+                    OrderLineTemplate line = (OrderLineTemplate) element;
+                    line.setWorkHours(value);
+                }
+            }
+        };
+    }
 
 }

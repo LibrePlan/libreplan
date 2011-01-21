@@ -21,10 +21,10 @@
 package org.navalplanner.web.orders;
 
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -68,7 +68,7 @@ public interface IManageOrderElementAdvancesModel {
 
     public boolean greatThanMaxValue(AdvanceMeasurement advanceMeasurement);
 
-    public boolean isDistinctValidDate(Date value,
+    public boolean isDistinctValidDate(LocalDate value,
             AdvanceMeasurement newAdvanceMeasurement);
 
     public BigDecimal getUnitPrecision();

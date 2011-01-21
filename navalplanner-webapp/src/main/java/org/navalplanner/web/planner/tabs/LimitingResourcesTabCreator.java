@@ -21,7 +21,7 @@ package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
-import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.PLANNIFICATION;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +42,7 @@ import org.zkoss.zul.Label;
 public class LimitingResourcesTabCreator {
 
     /* Unnecesary */
-    private static String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (order)");
+    private String ORDER_LIMITING_RESOURCES_VIEW = _("Limiting resources (project)");
 
     public static ITab create(Mode mode,
             LimitingResourcesController LimitingResourcesController,
@@ -107,7 +107,7 @@ public class LimitingResourcesTabCreator {
             protected void afterShowAction() {
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs
                         .appendChild(new Label(ORDER_LIMITING_RESOURCES_VIEW));
@@ -143,7 +143,7 @@ public class LimitingResourcesTabCreator {
                     breadcrumbs.getChildren().clear();
                 }
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
-                breadcrumbs.appendChild(new Label(PLANNIFICATION));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(
                         _("Limiting Resources Planning")));

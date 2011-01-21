@@ -92,7 +92,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setOrderElement(null);
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
 
@@ -104,7 +104,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReport.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -164,7 +164,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setOrderElement(null);
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
 
@@ -176,7 +176,7 @@ public final class WorkReportConverter {
             } catch (InstanceNotFoundException e) {
                 workReportLine.setResource(null);
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -359,7 +359,6 @@ public final class WorkReportConverter {
             throw new ValidationException(_("missing code in a work report."));
         }
 
-        WorkReportType type = workReport.getWorkReportType();
         /*
          * 1: Update the existing work report line or add new
          * work report line.
@@ -447,7 +446,7 @@ public final class WorkReportConverter {
                 workReport.setResource(resource);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no resource with this nif"));
+                        _("There is no resource with this ID"));
             }
         }
 
@@ -460,7 +459,7 @@ public final class WorkReportConverter {
                 workReport.setOrderElement(orderElement);
             } catch (InstanceNotFoundException e) {
                 throw new ValidationException(
-                        _("There is no order element with this code"));
+                        _("There is no task with this code"));
             }
         }
     }
@@ -512,7 +511,7 @@ public final class WorkReportConverter {
             workReportLine.setResource(resource);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("There is no resource with this nif"));
+                    _("There is no resource with this ID"));
         }
 
         /* Step 3.3: Update the order element. */
@@ -523,7 +522,7 @@ public final class WorkReportConverter {
             workReportLine.setOrderElement(orderElement);
         } catch (InstanceNotFoundException e) {
             throw new ValidationException(
-                    _("There is no order element with this code"));
+                    _("There is no task with this code"));
         }
 
         /* Step 3.4: Update the type of work hours. */

@@ -84,7 +84,10 @@ public abstract class Constraint<T> {
     }
 
     public interface IConstraintViolationListener<T> {
+
         public void constraintViolated(Constraint<T> constraint, T value);
+
+        public void constraintSatisfied(Constraint<T> constraint, T value);
     }
 
     public static class ConstraintBuilder<T> {
@@ -112,6 +115,10 @@ public abstract class Constraint<T> {
             return Constraint.apply(value, constraints);
         }
 
+        public T applyWithoutFinalCheck() {
+            return Constraint.apply(value, constraints, false);
+        }
+
     }
 
     public static <T> ConstraintBuilder<T> initialValue(T value) {
@@ -124,16 +131,26 @@ public abstract class Constraint<T> {
 
     public static <T> T apply(T initialValue,
             Collection<Constraint<T>> constraints) {
+        return apply(initialValue, constraints, true);
+    }
+
+    public static <T> T apply(T initialValue,
+            Collection<Constraint<T>> constraints, boolean doFinalCheck) {
         T result = initialValue;
         for (Constraint<T> each : constraints) {
             result = each.applyTo(result);
         }
-        for (Constraint<T> each : constraints) {
-            if (!each.isSatisfiedBy(result)) {
-                each.fireNotSatisfied(result);
-            }
+        if (doFinalCheck) {
+            checkSatisfyResult(constraints, result);
         }
         return result;
+    }
+
+    public static <T> void checkSatisfyResult(
+            Collection<? extends Constraint<T>> all, T result) {
+        for (Constraint<T> each : all) {
+            each.checkSatisfiesResult(result);
+        }
     }
 
     private static final Constraint<Object> VOID_CONSTRAINT = new Constraint<Object>() {
@@ -170,14 +187,22 @@ public abstract class Constraint<T> {
 
     public abstract boolean isSatisfiedBy(T value);
 
-    private void fireNotSatisfied(final T value) {
+    public void checkSatisfiesResult(T finalResult) {
+        fireSatisfaction(finalResult, isSatisfiedBy(finalResult));
+    }
+
+    private void fireSatisfaction(final T value, final boolean satisfied) {
         weakListeners
                 .fireEvent(new IListenerNotification<IConstraintViolationListener<T>>() {
 
                     @Override
                     public void doNotify(
                             IConstraintViolationListener<T> listener) {
-                        listener.constraintViolated(Constraint.this, value);
+                        if (satisfied) {
+                            listener.constraintSatisfied(Constraint.this, value);
+                        } else {
+                            listener.constraintViolated(Constraint.this, value);
+                        }
                     }
         });
     }

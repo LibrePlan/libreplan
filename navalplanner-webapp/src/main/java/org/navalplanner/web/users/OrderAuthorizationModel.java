@@ -38,7 +38,6 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserOrderAuthorization;
-import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -124,7 +123,7 @@ public class OrderAuthorizationModel implements IOrderAuthorizationModel {
                 replaceOrder(newOrder);
             }
         }catch (InstanceNotFoundException e) {
-            InvalidValue invalidValue = new InvalidValue(_("Order does not exist"),
+            InvalidValue invalidValue = new InvalidValue(_("Project does not exist"),
                     OrderAuthorization.class, "order", order, null);
             throw new ValidationException(invalidValue);
         }

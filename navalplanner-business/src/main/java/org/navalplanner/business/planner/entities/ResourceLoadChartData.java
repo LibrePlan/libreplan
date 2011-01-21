@@ -33,9 +33,7 @@ import java.util.TreeMap;
 import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;

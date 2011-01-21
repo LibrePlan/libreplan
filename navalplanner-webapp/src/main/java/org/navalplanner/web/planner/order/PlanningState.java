@@ -44,6 +44,7 @@ import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.zkoss.ganttz.Planner;
 
 public abstract class PlanningState {
 
@@ -209,18 +210,20 @@ public abstract class PlanningState {
         }
     }
 
-    public static PlanningState create(TaskGroup rootTask,
+    public static PlanningState create(Planner planner, TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
             ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
             IScenarioInfo scenarioInfo) {
-        return new WithDataPlanningState(rootTask, initialState,
+        return new WithDataPlanningState(planner, rootTask, initialState,
                 initialResources, criterionDAO, resourceDAO, scenarioInfo);
     }
 
     public static PlanningState createEmpty(Scenario currentScenario) {
         return new EmptyPlannigState(currentScenario);
     }
+
+    public abstract boolean isEmpty();
 
     public abstract Collection<? extends TaskElement> getTasksToSave();
 
@@ -237,6 +240,8 @@ public abstract class PlanningState {
     public abstract TaskGroup getRootTask();
 
     public abstract IScenarioInfo getScenarioInfo();
+
+    public abstract Planner getPlanner();
 
     public Scenario getCurrentScenario() {
         return getScenarioInfo().getCurrentScenario();
@@ -260,11 +265,14 @@ public abstract class PlanningState {
 
         private final IScenarioInfo scenarioInfo;
 
-        private WithDataPlanningState(TaskGroup rootTask,
+        private final Planner planner;
+
+        private WithDataPlanningState(Planner planner, TaskGroup rootTask,
                 Collection<? extends TaskElement> initialState,
                 Collection<? extends Resource> initialResources,
                 ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
                 IScenarioInfo scenarioInfo) {
+            this.planner = planner;
             this.rootTask = rootTask;
             this.criterionDAO = criterionDAO;
             this.resourceDAO = resourceDAO;
@@ -390,6 +398,17 @@ public abstract class PlanningState {
         public IScenarioInfo getScenarioInfo() {
             return scenarioInfo;
         }
+
+        @Override
+        public Planner getPlanner() {
+            return planner;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return false;
+        }
+
     }
 
     private static class EmptyPlannigState extends PlanningState {
@@ -434,6 +453,16 @@ public abstract class PlanningState {
         @Override
         public IScenarioInfo getScenarioInfo() {
             return new EmptySchedulingScenarioInfo(currentScenario);
+        }
+
+        @Override
+        public Planner getPlanner() {
+            return null;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return true;
         }
 
     }

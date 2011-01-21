@@ -54,7 +54,6 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
@@ -118,9 +117,6 @@ public class ReportAdvancesServiceTest {
 
     @Autowired
     private IOrderDAO orderDAO;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;

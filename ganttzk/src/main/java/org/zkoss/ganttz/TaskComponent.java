@@ -63,11 +63,16 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private static final int HEIGHT_PER_TASK = 10;
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
+    private static final int HALF_DEADLINE_MARK = 3;
 
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
     private PropertyChangeListener criticalPathPropertyListener;
+
+    private PropertyChangeListener showingAdvancePropertyListener;
+
+    private PropertyChangeListener showingReportedHoursPropertyListener;
 
     public static TaskComponent asTaskComponent(Task task,
             IDisabilityConfiguration disabilityConfiguration,
@@ -108,6 +113,12 @@ public class TaskComponent extends Div implements AfterCompose {
                     GanttDate value) {
                 // TODO mark graphically task as violated
             }
+
+            @Override
+            public void constraintSatisfied(Constraint<GanttDate> constraint,
+                    GanttDate value) {
+                // TODO mark graphically dependency as not violated
+            }
         };
         this.task.addConstraintViolationListener(taskViolationListener);
         reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
@@ -124,6 +135,7 @@ public class TaskComponent extends Div implements AfterCompose {
 
                 // FIXME: Refactorize to another listener
                 updateDeadline();
+                invalidate();
             }
 
         };
@@ -189,8 +201,11 @@ public class TaskComponent extends Div implements AfterCompose {
         cssClass += isResizingTasksEnabled() ? " yui-resize" : "";
         if (isContainer()) {
             cssClass += task.isExpanded() ? " expanded" : " closed ";
+            cssClass += task.isInCriticalPath() && !task.isExpanded() ? " critical"
+                    : "";
+        } else {
+            cssClass += task.isInCriticalPath() ? " critical" : "";
         }
-        cssClass += task.isInCriticalPath() ? " critical" : "";
         cssClass += " " + task.getAssignedStatus();
         if (task.isLimiting()) {
             cssClass += task.isLimitingAndHasDayAssignments() ? " limiting-assigned "
@@ -219,6 +234,42 @@ public class TaskComponent extends Div implements AfterCompose {
         }
         this.task
                 .addFundamentalPropertiesChangeListener(propertiesListener);
+
+        if (showingAdvancePropertyListener == null) {
+            showingAdvancePropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        try {
+                            updateCompletionAdvance();
+                        } catch (Exception e) {
+                            LOG.error("failure at updating completion", e);
+                        }
+                    }
+                }
+            };
+        }
+        this.task
+                .addAdvancesPropertyChangeListener(showingAdvancePropertyListener);
+
+        if (showingReportedHoursPropertyListener == null) {
+            showingReportedHoursPropertyListener = new PropertyChangeListener() {
+
+                @Override
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (isInPage() && !(task instanceof Milestone)) {
+                        try {
+                            updateCompletionReportedHours();
+                        } catch (Exception e) {
+                            LOG.error("failure at updating completion", e);
+                        }
+                    }
+                }
+            };
+        }
+        this.task
+                .addReportedHoursPropertyChangeListener(showingReportedHoursPropertyListener);
 
         if (criticalPathPropertyListener == null) {
             criticalPathPropertyListener = new PropertyChangeListener() {
@@ -249,7 +300,6 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private final Task task;
     private transient PropertyChangeListener propertiesListener;
-
     private IConstraintViolationListener<GanttDate> taskViolationListener;
 
     public TaskRow getRow() {
@@ -302,7 +352,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
                 size));
         this.task.resizeTo(end.toLocalDate());
-        updateWidth();
+        updateProperties();
     }
 
     void doAddDependency(String destinyTaskId) {
@@ -402,8 +452,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
     private void updateDeadline() {
         if (task.getDeadline() != null) {
-            String position = getMapper().toPixels(
-                    LocalDate.fromDateFields(task.getDeadline()))
+            String position = (getMapper().toPixels(
+                    LocalDate.fromDateFields(task.getDeadline())) - HALF_DEADLINE_MARK)
                     + "px";
             response(null, new AuInvoke(this, "moveDeadline", position));
         } else {
@@ -429,24 +479,51 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
         try {
-            updateCompletion();
+            updateCompletionReportedHours();
+            updateCompletionAdvance();
         } catch (Exception e) {
             LOG.error("failure at updating completion", e);
         }
     }
 
-    private void updateCompletion() {
-        int startPixels = this.task.getBeginDate().toPixels(getMapper());
-
-        String widthHoursAdvancePercentage = pixelsFromStartUntil(startPixels,
+    private void updateCompletionReportedHours() {
+        if (task.isShowingReportedHours()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
+            String widthHoursAdvancePercentage = pixelsFromStartUntil(
+                    startPixels,
                 this.task.getHoursAdvanceEndDate()) + "px";
-        response(null, new AuInvoke(this, "resizeCompletionAdvance",
+            response(null, new AuInvoke(this, "resizeCompletionAdvance",
                 widthHoursAdvancePercentage));
+        } else {
+            response(null, new AuInvoke(this, "resizeCompletionAdvance", "0px"));
+        }
+    }
 
-        String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+    private void updateCompletionAdvance() {
+        if (task.isShowingAdvances()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
+            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
                 this.task.getAdvanceEndDate()) + "px";
-        response(null, new AuInvoke(this, "resizeCompletion2Advance",
-                widthAdvancePercentage));
+            response(null, new AuInvoke(this, "resizeCompletion2Advance",
+                    widthAdvancePercentage));
+        } else {
+            response(null,
+                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+        }
+    }
+
+    public void updateCompletion(String progressType) {
+        if (task.isShowingAdvances()) {
+            int startPixels = this.task.getBeginDate().toPixels(getMapper());
+
+            String widthAdvancePercentage = pixelsFromStartUntil(startPixels,
+                    this.task.getAdvanceEndDate(progressType)) + "px";
+            response(null, new AuInvoke(this, "resizeCompletion2Advance",
+                    widthAdvancePercentage));
+        } else {
+            response(null,
+                    new AuInvoke(this, "resizeCompletion2Advance", "0px"));
+        }
     }
 
     private int pixelsFromStartUntil(int startPixels, GanttDate until) {
@@ -457,6 +534,10 @@ public class TaskComponent extends Div implements AfterCompose {
 
     public void updateTooltipText() {
         smartUpdate("taskTooltipText", task.updateTooltipText());
+    }
+
+    public void updateTooltipText(String progressType) {
+        smartUpdate("taskTooltipText", task.updateTooltipText(progressType));
     }
 
     private DependencyList getDependencyList() {

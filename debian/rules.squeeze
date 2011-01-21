@@ -1,0 +1,126 @@
+#! /usr/bin/make -f
+
+#export DH_VRBOSE=1
+export DH_OPTIONS
+export CURDIR
+
+MAKEFLAGS  += s
+JAVA_HOME  := /usr/lib/jvm/java-6-openjdk
+
+MAVEN_REPO := $(CURDIR)/debian/maven-repo
+MAVEN_OPTS := -Pprod,postgresql,-liquibase-update \
+              -DdataSource.jndiName=java:comp/env/jdbc/navalplan-ds \
+	      -Dmaven.test.skip=true -B \
+              -s $(CURDIR)/debian/maven-settings.xml
+
+
+define NFO
+@echo "[1;32m$1[0;0m"
+endef
+
+ifneq ($V,0)
+define CMD
+@echo "[1;1m$1[0;0m"
+@$1
+endef
+else
+define CMD
+@$1
+endef
+endif
+
+
+configure: configure-stamp
+configure-stamp:
+	$(call NFO,Configuring...)
+	$(call CMD,dh_testdir)
+	# Configure package here
+	$(call CMD,touch $@)
+
+build: build-arch
+
+build-arch: build-arch-stamp
+
+build-arch-stamp: configure-stamp 
+	$(call NFO,Building sources...)
+	# Build arch-dependant stuff
+	$(call CMD,mkdir -p $(MAVEN_REPO))
+	$(call CMD,mvn $(MAVEN_OPTS) install)
+	$(call CMD,touch $@)
+
+clean:
+	$(call NFO,Cleaning up...)
+	$(call CMD,dh_testdir)
+	$(call CMD,dh_testroot)
+	# Cleanup commands
+	$(call CMD,$(RM) build-arch-stamp build-indep-stamp configure-stamp)
+	$(call CMD,mkdir -p $(MAVEN_REPO))
+	# This is likely to fail, e.g. needs to be reviewed
+	-$(call CMD,mvn $(MAVEN_OPTS) -npu clean)
+	$(call CMD,$(RM) -r $(CURDIR)/maven-repo)
+	$(call CMD,dh_clean)
+
+install:
+	$(call NFO,Installing objects...)
+	$(call CMD,dh_testdir)
+	$(call CMD,dh_testroot)
+	$(call CMD,dh_clean -k)
+	$(call CMD,dh_installdirs)
+	# Copy SQL installation file
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/install/)
+	$(call CMD,cp $(CURDIR)/scripts/database/install.sql \
+		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/install/pgsql)
+	# Commands to install arch-dependant stuff
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/var/lib/tomcat6/webapps/)
+	$(call CMD,cp $(CURDIR)/navalplanner-webapp/target/navalplanner-webapp.war \
+		$(CURDIR)/debian/tmp/var/lib/tomcat6/webapps/navalplan.war)
+	# Copy SQL upgrade script for version 1.0.0
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/)
+	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.0.0.sql \
+		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0)
+	# Install Policy file
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)
+	$(call CMD,cp $(CURDIR)/debian/51navalplan.policy \
+		$(CURDIR)/debian/tmp/etc/tomcat6/policy.d/)
+	# Link Java PostgreSQL library
+	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/tomcat6/lib)
+	$(call CMD,ln -sf /usr/share/java/postgresql-jdbc3.jar $(CURDIR)/debian/tmp/usr/share/tomcat6/lib)
+	$(call CMD,dh_install)
+
+binary-indep: build install
+
+binary-arch: build install
+	$(call NFO,Making binary package...)
+	$(call CMD,dh_testdir)
+	$(call CMD,dh_testroot)
+	$(call CMD,dh_installchangelogs)
+	$(call CMD,dh_installdocs)
+	$(call CMD,dh_installexamples)
+# $(call CMD,dh_installmenu)
+	$(call CMD,dh_installdebconf)
+# $(call CMD,dh_installlogrotate)
+# $(call CMD,dh_installemacsen)
+# $(call CMD,dh_installpam)
+# $(call CMD,dh_installmime)
+# $(call CMD,dh_python)
+# $(call CMD,dh_installinit)
+# $(call CMD,dh_installcron)
+# $(call CMD,dh_installinfo)
+	$(call CMD,dh_installman)
+	$(call CMD,dh_link)
+	$(call CMD,dh_strip)
+	$(call CMD,dh_compress)
+	$(call CMD,dh_fixperms)
+# $(call CMD,dh_perl)
+	$(call CMD,dh_makeshlibs)
+	$(call CMD,dh_installdeb)
+	$(call CMD,dh_shlibdeps)
+	$(call CMD,dh_gencontrol)
+	$(call CMD,dh_md5sums)
+	$(call CMD,dh_builddeb)
+
+binary: binary-indep binary-arch
+
+
+.PHONY: build clean binary-indep binary-arch binary install install-indep
+.PHONY: install-arch configure 

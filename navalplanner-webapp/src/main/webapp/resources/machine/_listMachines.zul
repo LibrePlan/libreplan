@@ -28,6 +28,7 @@
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
     <newdatasortablegrid id="listing" model="@{controller.machines}" mold="paging"
+        rowRenderer="@{controller.machinesRenderer}"
         pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
@@ -36,26 +37,6 @@
             <newdatasortablecolumn label="${i18n:_('Limiting')}" sort="auto(limitingResource)" width="90px"/>
             <newdatasortablecolumn label="${i18n:_('Operations')}" width="90px"/>
         </columns>
-        <rows>
-            <row self="@{each='machine'}" value="@{machine}" onDoubleClick="controller.goToEditForm(self.value);">
-                <label value="@{machine.name}" />
-                <label value="@{machine.description}" />
-                <label value="@{machine.code}" />
-                <label value="@{machine.limitingResourceAsString}" />
-                <hbox>
-                    <button sclass="icono" image="/common/img/ico_editar1.png"
-                        hoverImage="/common/img/ico_editar.png"
-                        tooltiptext="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.getParent().getParent().value);">
-                    </button>
-                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                        hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmRemove(self.parent.parent.value);"/>
-
-                </hbox>
-            </row>
-        </rows>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
         label="${i18n:_('Create')}" sclass="create-button global-action">

@@ -131,9 +131,36 @@ public class ConstraintTest {
                             Constraint<Integer> constraint, Integer value) {
                         constraintViolated[0] = constraint;
                     }
+
+                    @Override
+                    public void constraintSatisfied(
+                            Constraint<Integer> constraint, Integer value) {
+                    }
                 });
         Constraint.apply(6, biggerThanFive, lessThanFive);
         assertThat(constraintViolated[0], equalTo(biggerThanFive));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void theSatisfiedConstraintsNotifiesItsListeners() {
+        final Constraint<Integer>[] constraintSatisfied = new Constraint[1];
+        biggerThanFive
+                .addConstraintViolationListener(new IConstraintViolationListener<Integer>() {
+
+                    @Override
+                    public void constraintViolated(
+                            Constraint<Integer> constraint, Integer value) {
+                    }
+
+                    @Override
+                    public void constraintSatisfied(
+                            Constraint<Integer> constraint, Integer value) {
+                        constraintSatisfied[0] = constraint;
+                    }
+                });
+        Constraint.apply(6, biggerThanFive);
+        assertThat(constraintSatisfied[0], equalTo(biggerThanFive));
     }
 
     @SuppressWarnings("unchecked")

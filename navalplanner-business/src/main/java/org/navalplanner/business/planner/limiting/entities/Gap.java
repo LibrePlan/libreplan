@@ -25,6 +25,7 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -65,6 +66,16 @@ public class Gap implements Comparable<Gap> {
             return result;
         }
 
+        public static List<GapOnQueue> onQueue(
+                LimitingResourceQueue queue, DateAndHour startTime,
+                DateAndHour endTime) {
+
+            Gap gap = (endTime == null || endTime.compareTo(startTime) <= 0) ? Gap
+                    .untilEnd(queue.getResource(), startTime) : Gap.create(
+                    queue.getResource(), startTime, endTime);
+            return GapOnQueue.onQueue(queue, Collections.singleton(gap));
+        }
+
         private final LimitingResourceQueue originQueue;
 
         private final Gap gap;
@@ -93,7 +104,11 @@ public class Gap implements Comparable<Gap> {
 
     public static Gap untilEnd(LimitingResourceQueueElement current,
             DateAndHour startInclusive) {
-        return new Gap(current.getResource(), startInclusive, null);
+        return untilEnd(current.getResource(), startInclusive);
+    }
+
+    private static Gap untilEnd(Resource resource, DateAndHour startInclusive) {
+        return new Gap(resource, startInclusive, null);
     }
 
     private DateAndHour startTime;
@@ -150,19 +165,34 @@ public class Gap implements Comparable<Gap> {
     public List<Integer> getHoursInGapUntilAllocatingAndGoingToTheEnd(
             BaseCalendar calendar,
             DateAndHour realStart, DateAndHour allocationEnd, int total) {
-        Validate.isTrue(getEndTime() == null || allocationEnd.compareTo(getEndTime()) <= 0);
+
+        Validate.isTrue(endTime == null || allocationEnd.compareTo(endTime) <= 0);
         Validate.isTrue(startTime == null
                 || realStart.compareTo(startTime) >= 0);
         Validate.isTrue(total >= 0);
         List<Integer> result = new ArrayList<Integer>();
+
+        // If endTime is null (last tasks) assume the end is in 10 years from now
+        DateAndHour endDate = getEndTime();
+        if (endDate == null) {
+            endDate = new DateAndHour(realStart);
+            endDate.plusYears(10);
+        }
+
         Iterator<PartialDay> daysUntilEnd = realStart.toIntraDayDate()
-                .daysUntil(getEndTime().toIntraDayDate()).iterator();
+                .daysUntil(endDate.toIntraDayDate()).iterator();
         while (daysUntilEnd.hasNext()) {
             PartialDay each = daysUntilEnd.next();
             int hoursAtDay = calendar.getCapacityOn(each).roundToHours();
-                int hours = Math.min(hoursAtDay, total);
+            int hours = Math.min(hoursAtDay, total);
             total -= hours;
-            result.add(hours);
+
+            // Don't add hours when total and hours are zero (it'd be like
+            // adding an extra 0 hour day when total is completed)
+            if (total != 0 || hours != 0) {
+                result.add(hours);
+            }
+
             if (total == 0
                     && DateAndHour.from(each.getDate())
                             .compareTo(allocationEnd) >= 0) {

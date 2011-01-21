@@ -25,8 +25,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest.year;
 
-import java.util.Date;
-
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTest;
@@ -82,9 +80,8 @@ public class IntervalTest {
         Interval range = Interval.range(year(1990), year(2000));
         assertTrue(range.contains(year(1990)));
         assertFalse(range.contains(year(2000)));
-        assertFalse(range.contains(new Date(year(1990).getTime() - 1)));
-        assertFalse(range.contains(new Date(year(1990).getTime() - 1)));
-        assertFalse(range.contains(new Date(year(2000).getTime() + 1)));
+        assertFalse(range.contains(year(1990).minusDays(1)));
+        assertFalse(range.contains(year(2000).plusDays(1)));
     }
 
     @Test

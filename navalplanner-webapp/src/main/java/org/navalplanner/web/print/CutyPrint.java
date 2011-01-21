@@ -60,7 +60,11 @@ public class CutyPrint {
 
     private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
     // Estimated maximum execution time (ms)
-    private static final int CUTYCAPT_TIMEOUT = 60000;
+
+    private static final int CUTYCAPT_TIMEOUT = 100000;
+
+    private static final int CAPTURE_DELAY = 10000;
+
 
     // Taskdetails left padding
     private static int TASKDETAILS_BASE_WIDTH = 310;
@@ -72,6 +76,7 @@ public class CutyPrint {
      * src/main/webapp/planner/css/ganttzk.css
      */
     private static final int BASE_TASK_NAME_PIXELS = 121;
+
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
 
@@ -180,20 +185,22 @@ public class CutyPrint {
         captureString += " --min-width=" + plannerWidth;
 
         // Static width and time delay parameters (FIX)
-        captureString += " --delay=3000 ";
 
+        captureString += " --delay=" + CAPTURE_DELAY;
 
         String generatedCSSFile = createCSSFile(
                 absolutePath + "/planner/css/print.css",
                 plannerWidth,
-                planner,
+ planner, parameters
+                .get("advances"),
+ parameters.get("reportedHours"),
                 parameters.get("labels"),
                 parameters.get("resources"),
                 expanded,
                 minWidthForTaskNameColumn);
 
         // Relative user styles
-        captureString += "--user-styles=" + generatedCSSFile;
+        captureString += " --user-styles=" + generatedCSSFile;
 
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
@@ -294,7 +301,9 @@ public class CutyPrint {
     }
 
     private static String createCSSFile(String srFile, int width,
-            Planner planner, String labels, String resources, boolean expanded,
+            Planner planner, String advances, String reportedHours,
+            String labels, String resources,
+            boolean expanded,
             int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
         try {
@@ -315,6 +324,14 @@ public class CutyPrint {
             if ((labels != null) && (labels.equals("all"))) {
                 includeCSSLines += " .task-labels { display: inline !important;} \n";
             }
+            if ((advances != null) && (advances.equals("all"))) {
+                includeCSSLines += " .completion2 { display: inline !important;} \n";
+            }
+            if ((reportedHours != null) && (reportedHours.equals("all"))) {
+                includeCSSLines += " .completion { display: inline !important;} \n";
+            }
+
+
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
@@ -334,8 +351,9 @@ public class CutyPrint {
         }
         if (generatedCSS != null) {
             return generatedCSS.getAbsolutePath();
-        } else
+        } else {
             return srFile;
+        }
     }
 
     private static String widthForTaskNamesColumnCSS(

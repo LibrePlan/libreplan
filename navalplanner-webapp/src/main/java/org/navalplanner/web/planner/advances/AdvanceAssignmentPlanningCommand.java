@@ -65,7 +65,7 @@ public class AdvanceAssignmentPlanningCommand implements IAdvanceAssignmentPlann
 
     @Override
     public String getName() {
-        return _("Advance assignment");
+        return _("Progress assignment");
     }
 
     @Override

@@ -19,6 +19,11 @@
  */
 package org.navalplanner.web.planner.order;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -28,10 +33,33 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
  */
 public final class BankHolidaysMarker implements
         IDetailItemModificator {
+
+    public static BankHolidaysMarker create(BaseCalendar calendar) {
+        BaseCalendarModel.forceLoadBaseCalendar(calendar);
+        return new BankHolidaysMarker(calendar);
+    }
+
+    private final ICalendar calendar;
+
+    /**
+     * <strong>Important: </strong>Make sure that the provided calendar has all
+     * its associated data loaded.
+     *
+     * @param calendar
+     */
+    public BankHolidaysMarker(ICalendar calendar) {
+        Validate.notNull(calendar);
+        this.calendar = calendar;
+    }
+
     @Override
     public DetailItem applyModificationsTo(DetailItem item, ZoomLevel z) {
-        if (z == ZoomLevel.DETAIL_FIVE) {
-            item.markBankHoliday();
+        if (z == ZoomLevel.DETAIL_FIVE && calendar != null) {
+            PartialDay day = PartialDay.wholeDay(item.getStartDate()
+                    .toLocalDate());
+            if (calendar.getCapacityOn(day).isZero()) {
+                item.markBankHoliday();
+            }
         }
         return item;
     }

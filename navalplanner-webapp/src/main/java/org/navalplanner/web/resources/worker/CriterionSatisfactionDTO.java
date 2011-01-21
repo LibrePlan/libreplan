@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.validator.NotNull;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.INewObject;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -63,9 +64,9 @@ public class CriterionSatisfactionDTO implements INewObject {
     private String criterionAndType;
 
     @NotNull
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     @NotNull
     private CriterionWithItsType criterionWithItsType;
@@ -80,13 +81,13 @@ public class CriterionSatisfactionDTO implements INewObject {
         this.setNewObject(true);
         this.state = "";
         this.criterionAndType = "";
-        this.startDate =  new Date();
+        this.startDate = new LocalDate();
         this.endDate = null;
     }
 
     public CriterionSatisfactionDTO(CriterionSatisfaction criterionSatisfaction) {
-        this.setStartDate(criterionSatisfaction.getStartDate());
-        this.setEndDate(criterionSatisfaction.getEndDate());
+        this.startDate = criterionSatisfaction.getStartDate();
+        this.endDate = criterionSatisfaction.getEndDate();
         this.state = "";
         this.criterionAndType = "";
         this.setCriterionSatisfaction(criterionSatisfaction);
@@ -132,11 +133,26 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public Date getStartDate() {
-        return startDate != null ? new Date(startDate.getTime()) : null;
+        return asDate(startDate);
+    }
+
+    public LocalDate getStart() {
+        return startDate;
+    }
+
+    public LocalDate getEnd() {
+        return endDate;
     }
 
     public Date getEndDate() {
-        return endDate != null ? new Date(endDate.getTime()) : null;
+        return asDate(endDate);
+    }
+
+    private Date asDate(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
+        return localDate.toDateTimeAtStartOfDay().toDate();
     }
 
     public CriterionSatisfaction getCriterionSatisfaction() {
@@ -164,11 +180,11 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+        this.startDate = asLocalDate(startDate);
     }
 
     public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+        this.endDate = asLocalDate(endDate);
     }
 
     public void setIsDeleted(boolean isDeleted) {
@@ -194,7 +210,7 @@ public class CriterionSatisfactionDTO implements INewObject {
         return false;
     }
 
-    public boolean isPreviousStartDate(Date startDate){
+    public boolean isPreviousStartDate(LocalDate startDate) {
         if (newObject) {
             return true;
         }
@@ -207,7 +223,11 @@ public class CriterionSatisfactionDTO implements INewObject {
         return false;
     }
 
-    public boolean isGreaterStartDate(Date endDate){
+    public boolean isPreviousStartDate(Date value) {
+        return isPreviousStartDate(asLocalDate(value));
+    }
+
+    public boolean isGreaterStartDate(Date endDate) {
         if (getStartDate() == null || endDate == null) {
             return true;
         }
@@ -217,7 +237,7 @@ public class CriterionSatisfactionDTO implements INewObject {
         return false;
     }
 
-    public boolean isPostEndDate(Date endDate){
+    public boolean isPostEndDate(LocalDate endDate) {
         if (newObject) {
             return true;
         }
@@ -231,6 +251,17 @@ public class CriterionSatisfactionDTO implements INewObject {
             return true;
         }
         return false;
+    }
+
+    public boolean isPostEndDate(Date value) {
+        return isPostEndDate(asLocalDate(value));
+    }
+
+    private LocalDate asLocalDate(Date value) {
+        if (value == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(value);
     }
 
     public String getCriterionAndType() {

@@ -34,4 +34,9 @@ public interface IConfigurationDAO extends IGenericDAO<Configuration, Long> {
      */
     Configuration getConfiguration();
 
+    /**
+     * @return The application configuration open a read-only transaction.
+     */
+    Configuration getConfigurationWithReadOnlyTransaction();
+
 }

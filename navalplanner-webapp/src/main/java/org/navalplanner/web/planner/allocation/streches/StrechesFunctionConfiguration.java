@@ -30,6 +30,7 @@ import org.navalplanner.web.planner.allocation.IAssignmentFunctionConfiguration;
 import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -53,10 +54,14 @@ public abstract class StrechesFunctionConfiguration implements
         ResourceAllocation<?> allocation = getAllocation();
         stretchesFunctionController
                 .setResourceAllocation(allocation, getType());
-        stretchesFunctionController.showWindow();
-        getAllocation().setAssignmentFunction(
-                stretchesFunctionController.getAssignmentFunction());
-        assignmentFunctionChanged();
+
+        int exitStatus = stretchesFunctionController.showWindow();
+        if (exitStatus == Messagebox.OK) {
+            getAllocation().setAssignmentFunction(
+                    stretchesFunctionController.getAssignmentFunction());
+            assignmentFunctionChanged();
+        }
+
     }
 
     private IGraphicGenerator getGraphicsGenerators() {

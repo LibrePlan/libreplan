@@ -41,6 +41,7 @@ import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
@@ -70,6 +71,7 @@ import org.navalplanner.ws.workreports.api.WorkReportDTO;
 import org.navalplanner.ws.workreports.api.WorkReportLineDTO;
 import org.navalplanner.ws.workreports.api.WorkReportListDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -107,9 +109,6 @@ public class WorkReportServiceTest {
     private IWorkReportTypeDAO workReportTypeDAO;
 
     @Autowired
-    private IAdHocTransactionService adHocTransaction;
-
-    @Autowired
     private IWorkReportDAO workReportDAO;
 
     @Autowired
@@ -117,6 +116,9 @@ public class WorkReportServiceTest {
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     private final String workReportTypeCode = "TypeCode-A";
 
@@ -432,9 +434,19 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @Transactional
+    @NotTransactional
     public void importValidWorkReport() {
-        int previous = workReportDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return workReportDAO.getAll().size();
+                    }
+                });
+
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
 
         WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
                 .asList(createWorkReportDTO(workReportTypeCode)));
@@ -444,7 +456,26 @@ public class WorkReportServiceTest {
         assertThat(
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
-        List<WorkReport> workReports = workReportDAO.getAll();
+                return null;
+            }
+        });
+
+        List<WorkReport> workReports = transactionService
+                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+                    @Override
+                    public List<WorkReport> execute() {
+                        List<WorkReport> list = workReportDAO.getAll();
+                        for (WorkReport workReport : list) {
+                            Set<WorkReportLine> workReportLines = workReport
+                                    .getWorkReportLines();
+                            for (WorkReportLine line : workReportLines) {
+                                line.getNumHours();
+                            }
+                        }
+                        return list;
+                    }
+                });
+
         assertThat(workReports.size(), equalTo(previous + 1));
 
         Set<WorkReportLine> workReportLines = workReports.get(previous)
@@ -472,8 +503,15 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importValidWorkReportWithDateAtWorkReportLevel() {
-        int previous = workReportDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return workReportDAO.getAll().size();
+                    }
+                });
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode2);
         Date date = new LocalDate().toDateTimeAtStartOfDay().toDate();
@@ -487,7 +525,21 @@ public class WorkReportServiceTest {
         assertThat(
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
-        List<WorkReport> workReports = workReportDAO.getAll();
+        List<WorkReport> workReports = transactionService
+                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+                    @Override
+                    public List<WorkReport> execute() {
+                        List<WorkReport> list = workReportDAO.getAll();
+                        for (WorkReport workReport : list) {
+                            Set<WorkReportLine> workReportLines = workReport
+                                    .getWorkReportLines();
+                            for (WorkReportLine line : workReportLines) {
+                                line.getDate();
+                            }
+                        }
+                        return list;
+                    }
+                });
         assertThat(workReports.size(), equalTo(previous + 1));
 
         assertThat(workReports.get(previous).getDate(), equalTo(date));
@@ -512,8 +564,15 @@ public class WorkReportServiceTest {
     }
 
     @Test
+    @NotTransactional
     public void importValidWorkReportCalculatedHours() {
-        int previous = workReportDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return workReportDAO.getAll().size();
+                    }
+                });
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode3);
         WorkReportLineDTO workReportLineDTO = workReportDTO.workReportLines
@@ -535,7 +594,21 @@ public class WorkReportServiceTest {
         assertThat(
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
-        List<WorkReport> workReports = workReportDAO.getAll();
+        List<WorkReport> workReports = transactionService
+                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+                    @Override
+                    public List<WorkReport> execute() {
+                        List<WorkReport> list = workReportDAO.getAll();
+                        for (WorkReport workReport : list) {
+                            Set<WorkReportLine> workReportLines = workReport
+                                    .getWorkReportLines();
+                            for (WorkReportLine line : workReportLines) {
+                                line.getNumHours();
+                            }
+                        }
+                        return list;
+                    }
+                });
         assertThat(workReports.size(), equalTo(previous + 1));
 
         Set<WorkReportLine> workReportLines = workReports.get(previous)
@@ -547,9 +620,15 @@ public class WorkReportServiceTest {
     }
 
     @Test
-    @Transactional
+    @NotTransactional
     public void importAndUpdateValidWorkReport() {
-        int previous = workReportDAO.getAll().size();
+        int previous = transactionService
+                .runOnTransaction(new IOnTransaction<Integer>() {
+                    @Override
+                    public Integer execute() {
+                        return workReportDAO.getAll().size();
+                    }
+                });
 
         WorkReportDTO workReportDTO = createWorkReportDTO(workReportTypeCode);
         WorkReportListDTO workReportListDTO = new WorkReportListDTO(Arrays
@@ -560,7 +639,21 @@ public class WorkReportServiceTest {
         assertThat(
                 instanceConstraintViolationsListDTO.instanceConstraintViolationsList
                         .size(), equalTo(0));
-        List<WorkReport> workReports = workReportDAO.getAll();
+        List<WorkReport> workReports = transactionService
+                .runOnTransaction(new IOnTransaction<List<WorkReport>>() {
+                    @Override
+                    public List<WorkReport> execute() {
+                        List<WorkReport> list = workReportDAO.getAll();
+                        for (WorkReport workReport : list) {
+                            Set<WorkReportLine> workReportLines = workReport
+                                    .getWorkReportLines();
+                            for (WorkReportLine line : workReportLines) {
+                                line.getNumHours();
+                            }
+                        }
+                        return list;
+                    }
+                });
         assertThat(workReports.size(), equalTo(previous + 1));
 
         Set<WorkReportLine> workReportLines = workReports.get(previous)

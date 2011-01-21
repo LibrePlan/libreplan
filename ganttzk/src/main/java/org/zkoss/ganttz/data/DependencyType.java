@@ -22,12 +22,7 @@ package org.zkoss.ganttz.data;
 
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
 import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
@@ -37,124 +32,58 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public enum DependencyType {
 
-    VOID {
-        @Override
-        public Date calculateEndDestinyTask(Task originalTask, Date current) {
-            return current;
-        }
+    VOID(Point.VOID, Point.VOID) {
 
         @Override
-        public Date calculateStartDestinyTask(Task originalTask,
-                Date current) {
-            return current;
-        }
-
-        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
-                IAdapter<V, ?> adapter) {
-            return Collections.emptyList();
-        }
-
-        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-                IAdapter<V, ?> adapter) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public PointType getPointModified() {
-            return PointType.NONE;
-        }
-
-    },
-    END_START {
-        @Override
-        public Date calculateEndDestinyTask(Task originalTask, Date current) {
-            return current;
-        }
-
-        @Override
-        public Date calculateStartDestinyTask(Task originalTask,
-                Date current) {
-            return getBigger(originalTask.getEndDate().toDayRoundedDate(),
-                    current);
-        }
-
-        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
-                IAdapter<V, ?> adapter) {
-            return Collections.singletonList(biggerThanTaskEndDate(adapter,
-                    source));
-        }
-
-        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-                GanttDiagramGraph.IAdapter<V, ?> adapter) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public PointType getPointModified() {
-            return PointType.BOTH;
-        }
-
-    },
-    START_START {
-
-        @Override
-        public Date calculateEndDestinyTask(Task originTask, Date current) {
-            return current;
-        }
-
-        @Override
-        public Date calculateStartDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getBeginDate().toDayRoundedDate(),
-                    current);
-        }
-
-        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
-                GanttDiagramGraph.IAdapter<V, ?> adapter) {
-            return Collections.singletonList(biggerThanTaskStartDate(adapter,
-                    source));
-        }
-
-        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-                GanttDiagramGraph.IAdapter<V, ?> adapter) {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public PointType getPointModified() {
-            return PointType.BOTH;
+        public DependencyType inverse() {
+            return VOID;
         }
     },
-    END_END {
+
+    END_START(Point.END, Point.START) {
 
         @Override
-        public Date calculateEndDestinyTask(Task originTask, Date current) {
-            return getBigger(originTask.getEndDate().toDayRoundedDate(),
-                    current);
+        public DependencyType inverse() {
+            return START_END;
         }
+    },
+
+    START_END(Point.START, Point.END) {
 
         @Override
-        public Date calculateStartDestinyTask(Task originTask, Date current) {
-            return current;
+        public DependencyType inverse() {
+            return END_START;
         }
+    },
+
+    START_START(Point.START, Point.START) {
 
         @Override
-        public PointType getPointModified() {
-            return PointType.END;
+        public DependencyType inverse() {
+            return START_START;
         }
+    },
+
+    END_END(Point.END, Point.END) {
 
         @Override
-        public <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-                IAdapter<V, ?> adapter) {
-            return Collections.singletonList(biggerThanTaskEndDate(adapter,
-                    source));
-        }
-
-        @Override
-        public <V> List<Constraint<GanttDate>> getStartConstraints(V source,
-                IAdapter<V, ?> adapter) {
-            return Collections.emptyList();
+        public DependencyType inverse() {
+            return END_END;
         }
     };
+
+    public enum Point {
+        VOID, START, END;
+    }
+
+    private final Point source;
+
+    private final Point destination;
+
+    private DependencyType(Point source, Point destination) {
+        this.source = source;
+        this.destination = destination;
+    }
 
     protected <V> Constraint<GanttDate> biggerThanTaskEndDate(
             IAdapter<V, ?> adapter, V source) {
@@ -166,32 +95,17 @@ public enum DependencyType {
         return biggerOrEqualThan(adapter.getStartDate(source));
     }
 
-    private static Date getBigger(Date date1, Date date2) {
-        if (date1.before(date2)) {
-            return date2;
-        }
-        return date1;
+    public Point[] getSourceAndDestination() {
+        return new Point[] { getSource(), getDestination() };
     }
 
-    public abstract Date calculateEndDestinyTask(Task originTask,
-            Date current);
-
-    public abstract Date calculateStartDestinyTask(Task originTask,
-            Date current);
-
-    public final List<Constraint<GanttDate>> getStartConstraints(Task source) {
-        return getStartConstraints(source, GanttDiagramGraph.taskAdapter());
+    public Point getSource() {
+        return this.source;
     }
 
-    public abstract <V> List<Constraint<GanttDate>> getStartConstraints(
-            V source, IAdapter<V, ?> adapter);
-
-    public final List<Constraint<GanttDate>> getEndConstraints(Task source) {
-        return getEndConstraints(source, GanttDiagramGraph.taskAdapter());
+    public Point getDestination() {
+        return this.destination;
     }
 
-    public abstract <V> List<Constraint<GanttDate>> getEndConstraints(V source,
-            IAdapter<V, ?> adapter);
-
-    public abstract PointType getPointModified();
+    public abstract DependencyType inverse();
 }

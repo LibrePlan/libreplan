@@ -24,9 +24,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.zkoss.ganttz.data.Dependency;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.IDependency;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Task;
+import org.zkoss.ganttz.data.constraint.Constraint;
 
 /**
  * Basic needed methods to calculate the critical path method over a graph of
@@ -34,7 +35,7 @@ import org.zkoss.ganttz.data.Task;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
+public interface ICriticalPathCalculable<T> {
 
     List<T> getInitialTasks();
 
@@ -51,5 +52,15 @@ public interface ICriticalPathCalculable<T extends ITaskFundamentalProperties> {
     boolean isContainer(T task);
 
     boolean contains(T container, T task);
+
+    GanttDate getStartDate(T task);
+
+    GanttDate getEndDateFor(T task);
+
+    List<Constraint<GanttDate>> getStartConstraintsFor(T task);
+
+    List<Constraint<GanttDate>> getEndConstraintsFor(T task);
+
+    List<T> getChildren(T task);
 
 }

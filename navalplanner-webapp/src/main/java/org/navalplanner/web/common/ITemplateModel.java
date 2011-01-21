@@ -33,6 +33,8 @@ public interface ITemplateModel {
 
     List<Scenario> getScenarios();
 
+    String getCompanyLogoURL();
+
     Scenario getScenarioByName(String name);
 
     public interface IOnFinished {
@@ -43,5 +45,7 @@ public interface ITemplateModel {
 
     void setScenario(String loginName, Scenario scenario,
             IOnFinished onFinish);
+
+    boolean isScenariosVisible();
 
 }

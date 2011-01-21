@@ -21,7 +21,6 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -38,7 +37,8 @@ import org.navalplanner.business.workingday.IntraDayDate;
  * for a {@link ResourceAllocation} at a {@link Scenario} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GenericDayAssignmentsContainer extends BaseEntity {
+public class GenericDayAssignmentsContainer extends BaseEntity implements
+        IDayAssignmentsContainer<GenericDayAssignment> {
 
     public static GenericDayAssignmentsContainer create(
             GenericResourceAllocation genericAllocation,
@@ -53,6 +53,11 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
     private Scenario scenario;
 
     private Set<GenericDayAssignment> dayAssignments = new HashSet<GenericDayAssignment>();
+
+    /**
+     * It can be <code>null</code>
+     */
+    private IntraDayDate intraDayStart;
 
     /**
      * It can be <code>null</code>
@@ -92,7 +97,7 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
         dayAssignments.addAll(copyToThisContainer(assignments));
     }
 
-    public void removeAll(List<? extends DayAssignment> assignments) {
+    public void removeAll(Collection<? extends DayAssignment> assignments) {
         dayAssignments.removeAll(assignments);
     }
 
@@ -104,6 +109,14 @@ public class GenericDayAssignmentsContainer extends BaseEntity {
     private Set<GenericDayAssignment> copyToThisContainer(
             Collection<? extends GenericDayAssignment> assignments) {
         return GenericDayAssignment.copy(this, assignments);
+    }
+
+    public IntraDayDate getIntraDayStart() {
+        return intraDayStart;
+    }
+
+    public void setIntraDayStart(IntraDayDate intraDayStart) {
+        this.intraDayStart = intraDayStart;
     }
 
     public IntraDayDate getIntraDayEnd() {

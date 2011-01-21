@@ -33,7 +33,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.ws.calendars.api.BaseCalendarDTO;
 import org.navalplanner.ws.calendars.api.BaseCalendarListDTO;
 import org.navalplanner.ws.calendars.api.ICalendarService;
@@ -64,9 +63,6 @@ public class CalendarServiceTest {
 
     @Autowired
     private SessionFactory sessionFactory;
-
-    @Autowired
-    private IAdHocTransactionService transactionService;
 
     private BaseCalendar givenBaseCalendarStored() {
         BaseCalendar calendar = BaseCalendar.create();

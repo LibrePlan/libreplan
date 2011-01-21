@@ -107,7 +107,7 @@
 <separator bar="false" spacing="80px" orient="vertical"/>
 
 <!-- Total hours order element -->
-<panel title="${i18n:_('Total hours order element')}"
+<panel title="${i18n:_('Total hours task')}"
         style="overflow:auto" >
     <panelchildren>
         <grid fixedLayout="true">
@@ -118,7 +118,7 @@
             <rows>
                 <row>
                     <label
-                        value="${i18n:_('Total hours order element')}:" />
+                        value="${i18n:_('Total hours task')}:" />
                     <hbox align="center">
                         <intbox id="orderElementTotalHours"
                             visible="@{criterionRequirementsController.editableHoursGroup}"

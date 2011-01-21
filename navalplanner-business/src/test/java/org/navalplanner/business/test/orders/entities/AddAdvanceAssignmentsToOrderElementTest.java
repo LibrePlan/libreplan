@@ -50,7 +50,6 @@ import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlob
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -91,9 +90,6 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     private SessionFactory sessionFactory;
 
     @Autowired
-    private IOrderElementDAO orderElementDao;
-
-    @Autowired
     private IOrderDAO orderDao;
 
     @Autowired
@@ -118,7 +114,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
                 .setupVersionUsing(scenarioManager, order);
         order.useSchedulingDataFor(orderVersion);
         order.setDescription("description");
-        order.setInitDate(CriterionSatisfactionDAOTest.year(2000));
+        order.setInitDate(CriterionSatisfactionDAOTest.year(2000)
+                .toDateTimeAtStartOfDay().toDate());
         order.setName("name");
         order.setResponsible("responsible");
         order.setCode("code");

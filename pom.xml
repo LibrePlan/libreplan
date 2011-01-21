@@ -5,7 +5,7 @@
     <groupId>org.navalplanner</groupId>
     <artifactId>navalplanner</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>NavalPlan</name>
 
     <!--
@@ -16,7 +16,6 @@
         <module>navalplanner-business</module>
         <module>ganttzk</module>
         <module>navalplanner-webapp</module>
-        <module>ganttzk-demo-webapp</module>
     </modules>
 
     <!--
@@ -81,7 +80,7 @@
                 <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>true</hibernate.format_sql>
                 <hibernate.use_sql_comments>true</hibernate.use_sql_comments>
-                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
             </properties>
         </profile>
 
@@ -95,7 +94,7 @@
                 <hibernate.show_sql>false</hibernate.show_sql>
                 <hibernate.format_sql>false</hibernate.format_sql>
                 <hibernate.use_sql_comments>false</hibernate.use_sql_comments>
-                <hibernate.hbm2ddl.auto>update</hibernate.hbm2ddl.auto>
+                <hibernate.hbm2ddl.auto>validate</hibernate.hbm2ddl.auto>
             </properties>
         </profile>
 
@@ -474,13 +473,13 @@
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>ganttzk</artifactId>
-                <version>1.0.0</version>
+                <version>${project.version}</version>
             </dependency>
             <!-- NavalPlan Business -->
             <dependency>
                 <groupId>org.navalplanner</groupId>
                 <artifactId>navalplanner-business</artifactId>
-                <version>1.0.0</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.dbunit</groupId>
@@ -568,6 +567,17 @@
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>1.6.2</version>
+            </dependency>
+	    <!-- LiquiBase -->
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-core</artifactId>
+                <version>2.0-rc7</version>
+            </dependency>
+            <dependency>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>2.0-rc7</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -788,6 +798,15 @@
                     <maxmem>512M</maxmem>
                 </configuration>
             </plugin>
+
+            <!-- =========================================================== -->
+            <!-- LiquiBase plugin -->
+	    <plugin>
+	        <groupId>org.liquibase</groupId>
+	        <artifactId>liquibase-maven-plugin</artifactId>
+                <version>2.0-rc7</version>
+            </plugin>
+
         </plugins>
     </build>
 

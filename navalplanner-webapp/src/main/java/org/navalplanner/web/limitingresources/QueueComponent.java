@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 
-import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -41,7 +40,6 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -176,8 +174,8 @@ public class QueueComponent extends XulElement implements
             if (interval != null) {
                 if (each.getEndDate().toDateMidnight()
                         .isAfter(interval.getStart().toDateMidnight())
-                        && each.getStartDate().toDateMidnight().isBefore(
-                                new DateTime(interval.getFinish()))) {
+                        && each.getStartDate().toDateMidnight()
+                                .isBefore(interval.getFinish().toDateMidnight())) {
                     result.add(createQueueTask(datesMapper, each));
                 }
             } else {
@@ -205,7 +203,7 @@ public class QueueComponent extends XulElement implements
         final OrderElement order = getRootOrder(task);
 
         StringBuilder result = new StringBuilder();
-        result.append(_("Order: {0} ", order.getName()));
+        result.append(_("Project: {0} ", order.getName()));
         result.append(_("Task: {0} ", task.getName()));
         result.append(_("Completed: {0}% ", element.getAdvancePercentage().multiply(new BigDecimal(100))));
 
@@ -450,15 +448,7 @@ public class QueueComponent extends XulElement implements
     }
 
     private void addDependenciesInPanel(LimitingResourceQueueElement element) {
-        final LimitingResourcesPanel panel = getLimitingResourcesPanel();
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsDestiny()) {
-            panel.addDependencyComponent(each);
-        }
-        for (LimitingResourceQueueDependency each : element
-                .getDependenciesAsOrigin()) {
-            panel.addDependencyComponent(each);
-        }
+        getLimitingResourcesPanel().addDependenciesFor(element);
     }
 
     public String getResourceName() {

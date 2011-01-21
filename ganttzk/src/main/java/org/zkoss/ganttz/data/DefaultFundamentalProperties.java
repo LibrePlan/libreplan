@@ -130,6 +130,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public void setEndDate(GanttDate endDate) {
+        this.beginDate = toMilliseconds(endDate) - this.lengthMilliseconds;
+    }
+
+    @Override
+    public void resizeTo(GanttDate endDate) {
         this.lengthMilliseconds = toMilliseconds(endDate) - beginDate;
     }
 
@@ -179,6 +184,11 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public List<Constraint<GanttDate>> getStartConstraints() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public List<Constraint<GanttDate>> getEndConstraints() {
         return Collections.emptyList();
     }
 
@@ -234,6 +244,21 @@ public class DefaultFundamentalProperties implements ITaskFundamentalProperties 
 
     @Override
     public void setDeadline(Date date) {
+    }
+
+    @Override
+    public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public GanttDate getAdvanceEndDate(String progressType) {
+        return null;
+    }
+
+    @Override
+    public String updateTooltipText(String progressType) {
+        return "";
     }
 
 }

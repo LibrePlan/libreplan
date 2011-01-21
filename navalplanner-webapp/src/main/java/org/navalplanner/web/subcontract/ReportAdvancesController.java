@@ -199,7 +199,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
                     try {
                         reportAdvancesModel.sendAdvanceMeasurements(order);
                         messagesForUser.showMessage(Level.INFO,
-                                _("Advances sent successfully"));
+                                _("Progress sent successfully"));
                     } catch (UnrecoverableErrorServiceException e) {
                         messagesForUser
                                 .showMessage(Level.ERROR, e.getMessage());

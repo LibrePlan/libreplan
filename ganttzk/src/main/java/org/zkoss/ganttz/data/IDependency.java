@@ -25,7 +25,7 @@ package org.zkoss.ganttz.data;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public interface IDependency<T extends ITaskFundamentalProperties> {
+public interface IDependency<T> {
 
     T getSource();
 

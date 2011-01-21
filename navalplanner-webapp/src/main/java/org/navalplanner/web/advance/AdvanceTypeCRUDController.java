@@ -155,7 +155,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                 }
                 if (!advanceTypeModel.distinctNames((String) value)) {
                     throw new WrongValueException(comp,
-                            _("The name is not valid, there is another advance type with the same name. "));
+                            _("The name is not valid, there is another progress type with the same name. "));
                 }
             }
         };
@@ -165,7 +165,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     private boolean save() {
         try {
             advanceTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, _("Advance type saved"));
+            messagesForUser.showMessage(Level.INFO, _("Progress type saved"));
             return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);

@@ -8,4 +8,8 @@ if [ -r /usr/share/dbconfig-common/dpkg/postinst.pgsql ] ; then
 	dbc_go navalplan $@
 fi
 
+if [ -L /usr/share/tomcat6/lib/postgresql-jdbc3.jar ] ; then
+	rm /usr/share/tomcat6/lib/postgresql-jdbc3.jar
+fi
+
 #DEBHELPER#

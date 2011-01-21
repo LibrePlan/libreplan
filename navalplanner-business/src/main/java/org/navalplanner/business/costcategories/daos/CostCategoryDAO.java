@@ -59,7 +59,7 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
     }
 
     @Override
-    public CostCategory findUniqueByName(String name) 
+    public CostCategory findUniqueByName(String name)
     throws InstanceNotFoundException {
         Criteria c = getSession().createCriteria(CostCategory.class).
         add(Restrictions.eq("name", name).ignoreCase());

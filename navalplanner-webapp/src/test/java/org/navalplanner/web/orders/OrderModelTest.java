@@ -39,7 +39,6 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -154,10 +153,6 @@ public class OrderModelTest {
 
     private Criterion criterion;
 
-    private Session getSession() {
-        return sessionFactory.getCurrentSession();
-    }
-
     private Order createValidOrder() {
         Order order = Order.create();
         order.setDescription("description");
@@ -227,7 +222,7 @@ public class OrderModelTest {
         order.add(line);
         line.setName(UUID.randomUUID().toString());
         line.setCode(UUID.randomUUID().toString());
-        line.getSchedulingState().schedule();
+        assert line.getSchedulingState().isSomewhatScheduled();
         orderModel.save();
         assertTrue(orderDAO.exists(order.getId()));
         TaskSource lineTaskSource = line.getTaskSource();
@@ -235,14 +230,15 @@ public class OrderModelTest {
     }
 
     @Test
-    public void itKnowsIfSchedulingDataHasBeenModified() {
+    public void ifAnOrderLineIsScheduledItsTypeChanges() {
         Order order = givenOrderFromPrepareForCreate();
-        assertFalse(order.hasSchedulingDataBeingModified());
         OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+        line.useSchedulingDataFor(order.getCurrentOrderVersion());
+        line.getSchedulingState().unschedule();
         order.add(line);
-        assertFalse(order.hasSchedulingDataBeingModified());
+        assertFalse(order.getSchedulingState().isSomewhatScheduled());
         line.getSchedulingState().schedule();
-        assertTrue(order.hasSchedulingDataBeingModified());
+        assertTrue(order.getSchedulingState().isSomewhatScheduled());
     }
 
     @Ignore("Test ignored until having the possibility to have a user " +

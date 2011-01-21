@@ -30,7 +30,7 @@ planner = self;
 
         <separator/>
         <!--  Commands -->
-        <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Order')}" caption="${i18n:_('Choosing Template')}" />
+        <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
 
         <button onClick="planner.invalidate()"
             image="/common/img/ico_refresh.png"
@@ -45,6 +45,9 @@ planner = self;
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${planner.zoomLevels}">
         </listbox>
+
+        <!-- Progress type -->
+
         <button id="showCriticalPath" onClick="planner.showCriticalPath();"
             image="/common/img/ico_criticalpath.png"
             tooltiptext="${i18n:_('Show/Hide Critical path')}" />
@@ -62,6 +65,20 @@ planner = self;
             image="/common/img/ico_flatten.png"
             tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
             sclass="planner-command" />
+
+        <hbox class="show-advances" align="center">
+            <button id="showAdvances" onClick="planner.showAdvances();"
+                image="/common/img/ico_progress.png"
+                style="width:46px"
+                tooltiptext="${i18n:_('Show/Hide Progress')}"
+                sclass="planner-command" />
+            <combobox id="cbProgressTypes" width="1px" visible="false" sclass="progress-types"/>
+        </hbox>
+
+        <button id="showReportedHours" onClick="planner.showReportedHours();"
+            image="/common/img/ico_costs.png"
+            tooltiptext="${i18n:_('Show/Hide reported hours')}"
+            sclass="planner-command"/>
         <separator />
 
         <!--  Filtering -->
@@ -94,4 +111,4 @@ planner = self;
             <div id="insertionPointChart" />
         </south>
     </borderlayout>
- </zk>
+</zk>

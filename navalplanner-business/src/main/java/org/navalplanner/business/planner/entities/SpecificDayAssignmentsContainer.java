@@ -21,7 +21,6 @@ package org.navalplanner.business.planner.entities;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
@@ -38,7 +37,8 @@ import org.navalplanner.business.workingday.IntraDayDate;
  * for a {@link ResourceAllocation} at a {@link Scenario} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class SpecificDayAssignmentsContainer extends BaseEntity {
+public class SpecificDayAssignmentsContainer extends BaseEntity implements
+        IDayAssignmentsContainer<SpecificDayAssignment> {
 
     public static SpecificDayAssignmentsContainer create(
             SpecificResourceAllocation specificResourceAllocation,
@@ -57,9 +57,15 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
     /**
      * It can be <code>null</code>
      */
+    private IntraDayDate intraDayStart;
+
+    /**
+     * It can be <code>null</code>
+     */
     private IntraDayDate intraDayEnd;
 
     @Valid
+    @Override
     public Set<SpecificDayAssignment> getDayAssignments() {
         return new HashSet<SpecificDayAssignment>(dayAssignments);
     }
@@ -84,18 +90,22 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
     }
 
     @NotNull
+    @Override
     public Scenario getScenario() {
         return scenario;
     }
 
+    @Override
     public void addAll(Collection<? extends SpecificDayAssignment> assignments) {
         dayAssignments.addAll(copyToThisContainer(assignments));
     }
 
-    public void removeAll(List<? extends DayAssignment> assignments) {
+    @Override
+    public void removeAll(Collection<? extends DayAssignment> assignments) {
         dayAssignments.removeAll(assignments);
     }
 
+    @Override
     public void resetTo(Collection<SpecificDayAssignment> assignments) {
         dayAssignments.clear();
         dayAssignments.addAll(copyToThisContainer(assignments));
@@ -106,10 +116,22 @@ public class SpecificDayAssignmentsContainer extends BaseEntity {
         return SpecificDayAssignment.copy(this, assignments);
     }
 
+    @Override
+    public IntraDayDate getIntraDayStart() {
+        return intraDayStart;
+    }
+
+    @Override
+    public void setIntraDayStart(IntraDayDate intraDayStart) {
+        this.intraDayStart = intraDayStart;
+    }
+
+    @Override
     public IntraDayDate getIntraDayEnd() {
         return intraDayEnd;
     }
 
+    @Override
     public void setIntraDayEnd(IntraDayDate intraDayEnd) {
         this.intraDayEnd = intraDayEnd;
     }

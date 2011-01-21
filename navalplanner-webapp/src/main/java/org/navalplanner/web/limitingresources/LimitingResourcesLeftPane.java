@@ -20,16 +20,12 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -39,15 +35,12 @@ import org.zkoss.zul.api.Tree;
 public class LimitingResourcesLeftPane extends HtmlMacroComponent {
 
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
-    private final QueueListComponent limitingResourcesList;
 
     public LimitingResourcesLeftPane(
             MutableTreeModel<LimitingResourceQueue> treeModel,
             QueueListComponent resourceLoadList) {
-        this.limitingResourcesList = resourceLoadList;
         this.modelForTree = treeModel;
     }
-
 
     @Override
     public void afterCompose() {
@@ -85,43 +78,6 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         };
     }
 
-    // private List<LimitingResourceQueue> calculatedClosedItems(Treeitem item)
-    // {
-    // List<LimitingResourceQueue> result = new
-    // ArrayList<LimitingResourceQueue>();
-    // Treechildren treeChildren = item.getTreechildren();
-    // if (treeChildren != null) {
-    // List<Treeitem> myTreeItems = (List<Treeitem>) treeChildren
-    // .getChildren();
-    // Iterator<Treeitem> iterator = myTreeItems.iterator();
-    // while (iterator.hasNext()) {
-    // Treeitem child = (Treeitem) iterator.next();
-    // if (!child.isOpen()) {
-    // result.addAll(getLineChildrenBy(child));
-    // } else {
-    // result.addAll(calculatedClosedItems(child));
-    // }
-    // }
-    // }
-    // return result;
-    // }
-
-    private List<LimitingResourceQueue> getLineChildrenBy(Treeitem item) {
-        List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        LimitingResourceQueue line = getLineByTreeitem(item);
-        return result;
-    }
-
-    private LimitingResourceQueue getLineByTreeitem(Treeitem child) {
-        LimitingResourceQueue line = null;
-        try {
-            line = (LimitingResourceQueue) child.getValue();
-        } catch (Exception e) {
-            return null;
-        }
-        return line;
-    }
-
     private Tree getContainerTree() {
         return (Tree) getFellow("loadsTree");
     }
@@ -144,14 +100,6 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         final String conceptName = principal.getResource().getName();
         label.setValue(conceptName);
         result.appendChild(label);
-        return result;
-    }
-
-
-    private static Popup createPopup(Div parent, String originalValue) {
-        Popup result = new Popup();
-        result.appendChild(new Label(originalValue));
-        parent.appendChild(result);
         return result;
     }
 }

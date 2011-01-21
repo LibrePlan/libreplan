@@ -21,6 +21,7 @@
 package org.zkoss.ganttz.adapters;
 
 import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
+import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.lessOrEqualThan;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -127,11 +128,17 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
 
     private boolean editingDatesEnabled = true;
 
-    private Date notBeforeThan = null;
+    private GanttDate notBeforeThan = null;
+
+    private GanttDate notAfterThan = null;
 
     private boolean dependenciesConstraintsHavePriority = false;
 
     private boolean criticalPathEnabled = true;
+
+    private boolean advancesEnabled = true;
+
+    private boolean reportedHoursEnabled = true;
 
     private boolean expandAllEnabled = true;
 
@@ -160,6 +167,8 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     private final List<IGraphChangeListener> preGraphChangeListeners = new ArrayList<IGraphChangeListener>();
 
     private final List<IGraphChangeListener> postGraphChangeListeners = new ArrayList<IGraphChangeListener>();
+
+    private boolean scheduleBackwards = false;
 
     public PlannerConfiguration(IAdapterToTaskFundamentalProperties<T> adapter,
             IStructureNavigator<T> navigator, List<? extends T> data) {
@@ -203,7 +212,11 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     }
 
     public void setNotBeforeThan(Date notBeforeThan) {
-        this.notBeforeThan = new Date(notBeforeThan.getTime());
+        this.notBeforeThan = GanttDate.createFrom(notBeforeThan);
+    }
+
+    public void setNotAfterThan(Date notAfterThan) {
+        this.notAfterThan = GanttDate.createFrom(notAfterThan);
     }
 
     public void setGoingDownInLastArrowCommand(
@@ -265,22 +278,28 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
         this.editingDatesEnabled = editingDatesEnabled;
     }
 
-    public List<Constraint<GanttDate>> getStartConstraints() {
-        return getStartConstraintsGiven(GanttDate
-                .createFrom(this.notBeforeThan));
-    }
-
     public static List<Constraint<GanttDate>> getStartConstraintsGiven(
             GanttDate notBeforeThan) {
         if (notBeforeThan != null) {
             return Collections.singletonList(biggerOrEqualThan(notBeforeThan));
-        } else {
-            return Collections.emptyList();
         }
+        return Collections.emptyList();
+    }
+
+    public List<Constraint<GanttDate>> getStartConstraints() {
+        return getStartConstraintsGiven(notBeforeThan);
+    }
+
+    public static List<Constraint<GanttDate>> getEndConstraintsGiven(
+            GanttDate notAfterThan) {
+        if (notAfterThan != null) {
+            return Collections.singletonList(lessOrEqualThan(notAfterThan));
+        }
+        return Collections.emptyList();
     }
 
     public List<Constraint<GanttDate>> getEndConstraints() {
-        return Collections.emptyList();
+        return getEndConstraintsGiven(notAfterThan);
     }
 
     public boolean isDependenciesConstraintsHavePriority() {
@@ -298,6 +317,24 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isCriticalPathEnabled() {
         return criticalPathEnabled;
+    }
+
+    public void setAdvancesEnabled(boolean advancesEnabled) {
+        this.advancesEnabled = advancesEnabled;
+    }
+
+    @Override
+    public boolean isAdvancesEnabled() {
+        return advancesEnabled;
+    }
+
+    public void setReportedHoursEnabled(boolean reportedHoursEnabled) {
+        this.reportedHoursEnabled = reportedHoursEnabled;
+    }
+
+    @Override
+    public boolean isReportedHoursEnabled() {
+        return reportedHoursEnabled;
     }
 
     public void setExpandAllEnabled(boolean expandAllEnabled) {
@@ -436,6 +473,14 @@ public class PlannerConfiguration<T> implements IDisabilityConfiguration {
     @Override
     public boolean isTreeEditable() {
         return treeEditable;
+    }
+
+    public boolean isScheduleBackwards() {
+        return scheduleBackwards;
+    }
+
+    public void setScheduleBackwards(boolean scheduleBackwards) {
+        this.scheduleBackwards = scheduleBackwards;
     }
 
 }

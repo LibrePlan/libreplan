@@ -103,10 +103,10 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         String infoAdvanceAssignment = advanceConsolidationModel
                 .getInfoAdvanceAssignment();
         if (infoAdvanceAssignment.isEmpty()) {
-            return _("Advance measurements");
+            return _("Progress measurements");
         }
 
-        return _("Advance measurements: ") + infoAdvanceAssignment;
+        return _("Progress measurements: ") + infoAdvanceAssignment;
     }
 
     public List<AdvanceConsolidationDTO> getAdvances() {

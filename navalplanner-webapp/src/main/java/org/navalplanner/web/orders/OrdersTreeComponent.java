@@ -67,7 +67,7 @@ public class OrdersTreeComponent extends TreeComponent {
         columns.add(codeColumn);
         columns.add(nameAndDescriptionColumn);
         columns.add(new OrdersTreeColumn(_("Hours"), "hours",
-                _("Total order element hours")) {
+                _("Total task hours")) {
 
             @Override
             protected void doCell(OrderElementTreeitemRenderer treeRenderer,

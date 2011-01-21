@@ -31,9 +31,9 @@
                 <grid height="200px" fixedLayout="true"
                     model="@{historicalAssignment.orderElementsWithThisAssignedTemplate}">
                     <columns>
-                        <column label="${i18n:_('Order code')}" sort="orderCode" sortDirection="descending"/>
-                        <column label="${i18n:_('Order Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
-                        <column label="${i18n:_('Order element code')}" sort="auto(name)" sortDirection="descending"/>
+                        <column label="${i18n:_('Project code')}" sort="orderCode" sortDirection="descending"/>
+                        <column label="${i18n:_('Project Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
+                        <column label="${i18n:_('Project element code')}" sort="auto(name)" sortDirection="descending"/>
                         <column label="${i18n:_('Estimated hours')}" />
                         <column label="${i18n:_('worked hours')}" />
                         <column label="${i18n:_('Operations')}" align="center" width="100px" />

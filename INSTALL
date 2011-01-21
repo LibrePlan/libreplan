@@ -5,8 +5,7 @@ Installation instructions
 Database creation
 -----------------
 
-* Current databases supported: PostgreSQL (default), MySQL, and HSQLDB
-  (In-Process/Standalone Mode).
+* Current databases supported: PostgreSQL (default) and MySQL.
 
 * For PostgreSQL and MySQL:
 
@@ -34,13 +33,13 @@ Database creation
         GRANT ALL ON navaldev.* to 'naval'@'localhost' identified by 'naval';
         GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
 
-  - For HSQLDB. There is nothing to do.
-
 
 Compilation
 -----------
 
-    cd xestion-producion
+* Execute the following commands::
+
+    cd navalplan
 
     mvn install
 
@@ -64,12 +63,6 @@ Compilation
 
         e.g. mvn -Pdev,mysql install
 
-  + HSQLDB:
-
-    - Use ``mvn -Pdev,hsqldb <<goal|fase>>``::
-
-        e.g. mvn -Pdev,hsqldb install
-
 
 Profiles
 --------
@@ -79,41 +72,47 @@ approach used in the project. The default profiles (the one assumed by the above
 instructions) are ``dev`` and ``postgresql`` (meaning "use PostgreSQL assuming a
 development environment").
 
+
 Print
 -----
 
-Printing system is based on a tool that produces several output formats rendering
-the specified URLs with the WebKit engine. To be able to print local diagrams this
-tool and a lightweight X server must be installed.
+Printing system is based on a tool that produces several output formats
+rendering the specified URLs with the WebKit engine. To be able to print local
+diagrams this tool and a lightweight X server must be installed.
 
-The capturing tool is CutyCapt [1], which has to be either compiled or installed from
-an external package. Once compiled from the tarball the binary CutyCapt must be located
-under /usr/bin/ to be available to the application.
+The capturing tool is CutyCapt [1]_, which has to be either compiled or
+installed from an external package. Once compiled from the tarball the binary
+CutyCapt must be located under ``/usr/bin/`` to be available to the application.
 
-X virtual framebuffer xvfb[2] package needs to be installed for the application running on
-a non-desktop server is capable of launching an X instance to create the print capture of
-the selected page.
+X virtual framebuffer xvfb [2]_ package needs to be installed for the
+application running on a non-desktop server is capable of launching an X
+instance to create the print capture of the selected page.
 
-[1] http://cutycapt.sourceforge.net/
-[2] http://www.xfree86.org/4.0.1/Xvfb.1.html
+.. [1] http://cutycapt.sourceforge.net/
+.. [2] http://www.xfree86.org/4.0.1/Xvfb.1.html
+
 
 User Documentation
 ------------------
 
-User documentation is done in *Reestructured Text*. It is necessary to have installed
-the following packages:
+User documentation is done in *reStructuredText*. It is necessary to have
+installed the following packages:
 
-   * automake package in order to be able to execute "make".
-   * "python-docutils" package version 0.4 or higher.
-   * "texlive-latex-base" package in order to have "pdflatex" available.
+   * ``automake`` package in order to be able to execute ``make``.
+   * ``python-docutils`` package version 0.4 or higher.
+   * ``texlive-latex-base`` package in order to have ``pdflatex`` available.
+
 
 Compilation
------------
+~~~~~~~~~~~
 
-The compilation is included in Maven build. If you execute "mvn install" documentation is generated.
+The compilation is included in Maven build. If you execute ``mvn install``
+documentation is generated.
 
-* For manual compilation, inside "doc/src/es", "doc/src/gl" or "doc/src/es"  directories:
-   make html
-   make pdf
+* For manual compilation, inside ``doc/src/es``, ``doc/src/gl`` or
+  ``doc/src/es`` directories:
 
-* Output is created in "doc/src/es/html" and "/doc/src/es/pdf" directories.
+    make html
+    make pdf
+
+* Output is created in ``doc/src/es/html`` and ``/doc/src/es/pdf`` directories.

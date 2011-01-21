@@ -72,9 +72,7 @@ public class OrderElementTemplateDAO extends
 
         // Execute query
         Query query = getSession().createQuery(strQuery);
-        if (name != null && !name.isEmpty()) {
-            query.setParameter("name", name);
-        }
+        query.setParameter("name", name);
 
         OrderElementTemplate orderElementTemplate = (OrderElementTemplate) query
                 .uniqueResult();

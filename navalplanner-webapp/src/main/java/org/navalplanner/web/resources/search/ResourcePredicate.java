@@ -54,8 +54,6 @@ public class ResourcePredicate implements IPredicate {
 
     private Boolean isLimitingResource;
 
-    private List<Resource> assignedResourcesInIntervalDates;
-
     public ResourcePredicate(List<FilterPair> filters, String personalFilters,
             LocalDate startDate,
             LocalDate finishDate,

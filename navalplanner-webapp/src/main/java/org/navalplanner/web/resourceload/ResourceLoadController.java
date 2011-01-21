@@ -37,6 +37,10 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -101,6 +105,12 @@ public class ResourceLoadController implements Composer {
     @Autowired
     private IResourceLoadModel resourceLoadModel;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
     private Order filterBy;
@@ -149,38 +159,50 @@ public class ResourceLoadController implements Composer {
         resourcesLoadPanel = null;
         firstLoad = true;
         resourceLoadModel.setPageFilterPosition(0);
-        reload(true); //show filter by resources by default
+        reload(true); // show filter by resources by default
     }
 
-    private void reload(boolean filterByResources) {
-        this.filterHasChanged = (filterByResources != currentFilterByResources);
-        this.currentFilterByResources = filterByResources;
+    private void reload(final boolean filterByResources) {
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
-        if (filterBy == null) {
-            if (resourcesLoadPanel == null) {
-                resetAdditionalFilters();
+            @Override
+            public Void execute() {
+                reloadInTransaction(filterByResources);
+                return null;
             }
-            resourceLoadModel.initGlobalView(filterByResources);
-        } else {
-            if (resourcesLoadPanel == null) {
-                deleteAdditionalFilters();
+
+            private void reloadInTransaction(boolean filterByResources) {
+                filterHasChanged = (filterByResources != currentFilterByResources);
+                currentFilterByResources = filterByResources;
+
+                if (filterBy == null) {
+                    if (resourcesLoadPanel == null) {
+                        resetAdditionalFilters();
+                    }
+                    resourceLoadModel.initGlobalView(filterByResources);
+                } else {
+                    if (resourcesLoadPanel == null) {
+                        deleteAdditionalFilters();
+                    }
+                    resourceLoadModel.initGlobalView(filterBy, filterByResources);
+                }
+                timeTracker = buildTimeTracker();
+                buildResourcesLoadPanel();
+
+                parent.getChildren().clear();
+                parent.appendChild(resourcesLoadPanel);
+
+                resourcesLoadPanel.afterCompose();
+                addSchedulingScreenListeners();
+                addCommands(resourcesLoadPanel);
+                if(firstLoad || filterHasChanged) {
+                    setupNameFilter();
+                }
+                firstLoad = false;
             }
-            resourceLoadModel.initGlobalView(filterBy, filterByResources);
-        }
-        timeTracker = buildTimeTracker();
-        buildResourcesLoadPanel();
-
-        this.parent.getChildren().clear();
-        this.parent.appendChild(resourcesLoadPanel);
-
-        resourcesLoadPanel.afterCompose();
-        addSchedulingScreenListeners();
-        addCommands(resourcesLoadPanel);
-        if(firstLoad || filterHasChanged) {
-            setupNameFilter();
-        }
-        firstLoad = false;
+        });
     }
+
 
     private void addListeners() {
         /* Listener to filter */
@@ -239,8 +261,14 @@ public class ResourceLoadController implements Composer {
         zoomLevel = (timeTracker == null) ? resourceLoadModel
                 .calculateInitialZoomLevel() : timeTracker.getDetailLevel();
         return new TimeTracker(resourceLoadModel.getViewInterval(), zoomLevel,
-                SeveralModificators.create(), SeveralModificators
-                        .create(new BankHolidaysMarker()), parent);
+                SeveralModificators.create(),
+                SeveralModificators.create(createBankHolidaysMarker()), parent);
+    }
+
+    private BankHolidaysMarker createBankHolidaysMarker() {
+        BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
+                .getDefaultCalendar();
+        return BankHolidaysMarker.create(defaultCalendar);
     }
 
     private void buildResourcesLoadPanel() {
@@ -484,7 +512,7 @@ public class ResourceLoadController implements Composer {
                     task);
              } else {
                 try {
-                    Messagebox.show(_("The order has no scheduled elements"),
+                    Messagebox.show(_("The project has no scheduled elements"),
                             _("Information"), Messagebox.OK,
                             Messagebox.INFORMATION);
                 } catch (InterruptedException e) {
@@ -494,7 +522,7 @@ public class ResourceLoadController implements Composer {
         } else {
             try {
                 Messagebox
-                        .show(_("You don't have read access to this order"),
+                        .show(_("You don't have read access to this project"),
                                 _("Information"), Messagebox.OK,
                                 Messagebox.INFORMATION);
             } catch (InterruptedException e) {

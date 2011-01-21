@@ -56,4 +56,6 @@ public interface IExternalCompanyDAO extends IGenericDAO<ExternalCompany, Long> 
     List<ExternalCompany> getAll();
 
     List<ExternalCompany> getExternalCompaniesAreClient();
+
+    boolean isAlreadyInUse(ExternalCompany company);
 }

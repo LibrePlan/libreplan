@@ -30,6 +30,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 
 /*
@@ -62,7 +63,7 @@ import org.navalplanner.web.resources.search.ResourcePredicate;
  * @author Diego Pino Garcia <dpino@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public interface IMachineModel {
+public interface IMachineModel extends IIntegrationEntityModel {
     // Initial conversational steps
     void initCreate();
     void initEdit(Machine machine);

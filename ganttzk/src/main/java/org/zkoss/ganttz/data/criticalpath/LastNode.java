@@ -22,17 +22,17 @@ package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.Set;
 
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
+import org.zkoss.ganttz.data.IDependency;
 
 /**
  * Class that represents the last node of the graph.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class LastNode<T extends ITaskFundamentalProperties> extends Node<T> {
+public class LastNode<T, D extends IDependency<T>> extends Node<T, D> {
 
     public LastNode(Set<? extends T> previousTasks) {
-        super(null, previousTasks, null);
+        super(null, previousTasks, null, null, null);
     }
 
     public void updateLatestValues() {

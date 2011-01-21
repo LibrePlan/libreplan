@@ -130,7 +130,6 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                int selectedItemIndex = listbox.getSelectedIndex();
                 List<Listitem> items = listbox.getItems();
                 if (!items.isEmpty()) {
                     listbox.setSelectedIndex(0);

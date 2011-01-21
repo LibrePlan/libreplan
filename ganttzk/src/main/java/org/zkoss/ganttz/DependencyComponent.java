@@ -71,6 +71,12 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                     GanttDate value) {
                 // TODO mark graphically dependency as violated
             }
+
+            @Override
+            public void constraintSatisfied(Constraint<GanttDate> constraint,
+                    GanttDate value) {
+                // TODO mark graphically dependency as not violated
+            }
         };
         this.dependency.addConstraintViolationListener(violationListener);
     }

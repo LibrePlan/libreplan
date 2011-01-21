@@ -42,6 +42,25 @@ public abstract class AllocationModification {
         return result;
     }
 
+    /**
+     * It ensures that the provided allocations have at least one associated
+     * resource. A {@link AllocationModification} doesn't have associated
+     * resources when creating an {@link AllocationModification} from a
+     * unsatisfied generic allocation.
+     */
+    protected static <T extends AllocationModification> List<T> ensureNoOneWithoutAssociatedResources(
+            Collection<? extends T> modifications, IResourceDAO resourceDAO) {
+        List<T> result = new ArrayList<T>();
+        for (T each : modifications) {
+            if (each.hasNoResources()) {
+                each.withNewResources(resourceDAO);
+            }
+            assert !each.hasNoResources();
+            result.add(each);
+        }
+        return result;
+    }
+
     private final ResourceAllocation<?> beingModified;
 
     private List<Resource> resourcesOnWhichApplyAllocation;
@@ -50,6 +69,10 @@ public abstract class AllocationModification {
         this.beingModified = beingModified;
         this.resourcesOnWhichApplyAllocation = Collections
                 .unmodifiableList(new ArrayList<Resource>(resources));
+    }
+
+    private boolean hasNoResources() {
+        return resourcesOnWhichApplyAllocation.isEmpty();
     }
 
     protected void withNewResources(IResourceDAO resourceDAO) {

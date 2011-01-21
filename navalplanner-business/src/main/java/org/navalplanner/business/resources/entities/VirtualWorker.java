@@ -43,6 +43,15 @@ public class VirtualWorker extends Worker {
         return create(virtualWorker);
     }
 
+    public static VirtualWorker create(String code) {
+        VirtualWorker virtualWorker = new VirtualWorker();
+        virtualWorker.setNewObject(true);
+        virtualWorker.setNif("[Virtual]");
+        virtualWorker.setSurname("---");
+        virtualWorker.getCalendar();
+        return create(virtualWorker, code);
+    }
+
     private String observations;
 
     /**

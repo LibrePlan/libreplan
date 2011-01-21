@@ -83,8 +83,6 @@ public class TimeLineRequiredMaterialModel implements
 
     private Date endingDate;
 
-    private MaterialStatusEnum status;
-
     private List<MaterialAssignment> listMaterialAssignment = new ArrayList<MaterialAssignment>();
 
     private MutableTreeModel<Object> allMaterialCategories = MutableTreeModel
@@ -249,12 +247,10 @@ public class TimeLineRequiredMaterialModel implements
 
     private TaskElement lookToUpAssignedTask(MaterialAssignment material) {
         OrderElement current = material.getOrderElement();
-        OrderElement result = current;
         while (current != null) {
             if (current.isSchedulingPoint()) {
                 return current.getAssociatedTaskElement();
             }
-            result = current;
             current = current.getParent();
         }
         return null;

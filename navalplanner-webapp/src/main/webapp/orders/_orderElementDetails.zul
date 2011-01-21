@@ -19,7 +19,7 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.DetailsOrderElementController">
+    apply="org.navalplanner.web.orders.DetailsOrderElementController" width="100%">
     <!-- Details data -->
     <grid id="details" sizedByContent="true">
         <columns >
@@ -28,7 +28,7 @@
         </columns>
         <rows>
             <row>
-                <label value="${i18n:_('Order element name')}" />
+                <label value="${i18n:_('Task name')}" />
                 <textbox id="name"
                     value="@{detailsController.orderElement.name}"
                     constraint="no empty:${i18n:_('Cannot be empty or null')}" width="500px" />

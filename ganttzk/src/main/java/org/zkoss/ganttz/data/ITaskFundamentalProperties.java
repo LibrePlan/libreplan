@@ -56,6 +56,8 @@ public interface ITaskFundamentalProperties {
 
     public void setEndDate(GanttDate endDate);
 
+    public void resizeTo(GanttDate endDate);
+
     public String getNotes();
 
     public void setNotes(String notes);
@@ -74,9 +76,11 @@ public interface ITaskFundamentalProperties {
 
     public String getResourcesText();
 
-    List<Constraint<GanttDate>> getStartConstraints();
+    public List<Constraint<GanttDate>> getStartConstraints();
 
-    public void moveTo(GanttDate date);
+    public List<Constraint<GanttDate>> getEndConstraints();
+
+    public void moveTo(GanttDate newStart);
 
     public boolean isSubcontracted();
 
@@ -93,5 +97,11 @@ public interface ITaskFundamentalProperties {
     public boolean isFixed();
 
     public String updateTooltipText();
+
+    public List<Constraint<GanttDate>> getCurrentLengthConstraint();
+
+    public GanttDate getAdvanceEndDate(String progressType);
+
+    String updateTooltipText(String progressType);
 
 }

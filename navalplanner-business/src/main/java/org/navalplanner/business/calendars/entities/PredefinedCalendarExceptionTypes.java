@@ -20,9 +20,6 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import java.util.ArrayList;
-import java.util.List;
-
 
 /**
  * Defines the default {@link CalendarExceptionType}.

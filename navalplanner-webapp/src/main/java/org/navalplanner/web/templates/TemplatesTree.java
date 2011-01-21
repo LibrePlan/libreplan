@@ -55,11 +55,11 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     @Override
     protected OrderElementTemplate createNewElement(String name, int hours) {
-        // Pending to set proper hours parameter
         OrderLineTemplate result = OrderLineTemplate.createNew();
         result.setName(name);
         result.setCode(_("New code"));
         result.setDescription(_("New Description"));
+        result.setWorkHours(hours);
         return result;
     }
 

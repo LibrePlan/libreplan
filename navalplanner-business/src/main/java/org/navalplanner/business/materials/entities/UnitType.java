@@ -62,8 +62,6 @@ public class UnitType extends IntegrationEntity{
 
     private String measure;
 
-    private Boolean generateCode = false;
-
     // Default constructor, needed by Hibernate
     protected UnitType() {
 
@@ -80,14 +78,6 @@ public class UnitType extends IntegrationEntity{
 
     public void setMeasure(String measure) {
         this.measure = measure;
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
     }
 
     @AssertTrue(message = "the measure unit type has to be unique. It is already used")

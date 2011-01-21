@@ -45,7 +45,7 @@ public class TimeLineRequiredMaterialDTO{
 
     private String name;
 
-    private Double units = 0.0;
+    private BigDecimal units = BigDecimal.ZERO;
 
     private BigDecimal unitPrice = BigDecimal.ZERO;
 
@@ -145,11 +145,11 @@ public class TimeLineRequiredMaterialDTO{
         this.name = name;
     }
 
-    public Double getUnits() {
+    public BigDecimal getUnits() {
         return units;
     }
 
-    public void setUnits(Double units) {
+    public void setUnits(BigDecimal units) {
         this.units = units;
     }
 

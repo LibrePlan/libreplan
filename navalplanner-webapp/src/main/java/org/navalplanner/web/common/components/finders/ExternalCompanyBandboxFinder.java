@@ -49,7 +49,7 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private final String headers[] = { _("Nif"), _("Name") };
+    private final String headers[] = { _("ID"), _("Name") };
 
     @Override
     @Transactional(readOnly = true)

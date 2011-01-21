@@ -49,6 +49,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Image;
@@ -119,6 +122,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     }
 
     private void showEditWindow() {
+        // openTemplateTree is not called if it's the first tab shown
+        bindTemplatesTreeWithModel();
         bindAdvancesComponentWithCurrentTemplate();
         bindMaterialsControllerWithCurrentTemplate();
         bindCriterionRequirementControllerWithCurrentTemplate();
@@ -216,6 +221,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         if (isAllValid()) {
             model.confirmSave();
             model.initEdit(getTemplate());
+            bindTemplatesTreeWithModel();
             messagesForUser.showMessage(Level.INFO, _("Template saved"));
         }
     }
@@ -270,25 +276,48 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         breadcrumbs.appendChild(new Label(_("Project Templates")));
     }
 
+    /**
+     * Ensures that the tree component is correctly initialized. It's called
+     * from templates.zul page when selecting the tab.
+     * <p>
+     * Please not that this method is not called if the first tab shown is the
+     * templates tree tab.
+     * </p>
+     */
     public void openTemplateTree() {
         if (treeComponent == null) {
             final TemplatesTreeController treeController = new TemplatesTreeController(
                     model, this);
             treeComponent = (TreeComponent) editWindow.getFellow("orderElementTree");
             treeComponent.useController(treeController);
+            controlSelectionWithOnClick(getTreeFrom(treeComponent));
             treeController.setReadOnly(false);
-        }
-
-        final Tree tree = (Tree) treeComponent.getFellowIfAny("tree");
-        if (tree.getModel() == null) {
             setTreeRenderer(treeComponent);
-            reloadTree(treeComponent);
         }
+        bindTemplatesTreeWithModel();
     }
 
-    private void reloadTree(TreeComponent orderElementsTree) {
-        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setModel(orderElementsTree.getController().getTreeModel());
+    private void bindTemplatesTreeWithModel() {
+        if (treeComponent == null) {
+            // if the tree is not initialized yet no bind has to be done
+            return;
+        }
+        treeComponent.getController().bindModelIfNeeded();
+    }
+
+    private Tree getTreeFrom(TreeComponent treeComponent) {
+        return (Tree) treeComponent.getFellowIfAny("tree");
+    }
+
+    private void controlSelectionWithOnClick(final Tree tree) {
+        tree.addEventListener(Events.ON_SELECT, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                //undo the work done by this event
+                //to be able to control it from the ON_CLICK event
+                tree.clearSelection();
+            }
+        });
     }
 
     private void setTreeRenderer(TreeComponent orderElementsTree) {

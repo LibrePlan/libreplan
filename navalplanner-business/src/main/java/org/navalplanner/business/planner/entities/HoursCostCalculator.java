@@ -21,7 +21,8 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -80,8 +81,9 @@ public class HoursCostCalculator implements ICostCalculator {
             if(((filterStartDate == null) || day.compareTo(filterStartDate) >= 0) &&
                     ((filterEndDate == null) || day.compareTo(filterEndDate) <= 0)) {
                 BigDecimal cost = advanceMeasurement.getValue().setScale(2)
-                        .multiply(new BigDecimal(totalHours)).divide(
-                                new BigDecimal(100));
+                        .multiply(new BigDecimal(totalHours))
+                        .divide(new BigDecimal(100),
+                                new MathContext(2, RoundingMode.HALF_UP));
                 result.put(day, cost);
             }
         }

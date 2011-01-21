@@ -20,7 +20,8 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.Date;
+
+import org.joda.time.LocalDate;
 
 /**
  * It's a predicate that can be applied on resources <br />
@@ -30,8 +31,8 @@ public interface ICriterion {
 
     boolean isSatisfiedBy(Resource resource);
 
-    boolean isSatisfiedBy(Resource resource, Date start, Date end);
+    boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end);
 
-    boolean isSatisfiedBy(Resource resource, Date atThisDate);
+    boolean isSatisfiedBy(Resource resource, LocalDate atThisDate);
 
 }

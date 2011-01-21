@@ -97,13 +97,13 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a order"));
+            throw new WrongValueException(bdOrders, _("please, select a project"));
         }
         boolean result = schedulingProgressPerOrderModel
                 .addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
-                    _("This order has already been added."));
+                    _("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -145,7 +145,7 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
     }
 
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
 
         result.put("referenceDate", getReferenceDate());
         result.put("startingDate", getStartingDate());

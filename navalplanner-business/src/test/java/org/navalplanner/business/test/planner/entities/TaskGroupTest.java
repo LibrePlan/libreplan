@@ -28,6 +28,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -37,6 +38,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -55,9 +57,14 @@ public class TaskGroupTest {
         assertTrue("a task group has no task elements initially", tasks
                 .isEmpty());
         TaskElement child1 = new Task();
+        LocalDate start = new LocalDate(2000, 10, 20);
+        child1.setIntraDayStartDate(IntraDayDate.startOfDay(start));
+        child1.setIntraDayEndDate(IntraDayDate.startOfDay(start.plusDays(10)));
         taskGroup.addTaskElement(child1);
+
         TaskGroup child2 = createValidTaskGroup();
         taskGroup.addTaskElement(child2);
+
         List<TaskElement> taskElements = taskGroup.getChildren();
         assertThat(taskElements.size(), equalTo(2));
         assertThat(taskGroup.getChildren(), equalTo(Arrays.asList(child1,
@@ -93,7 +100,10 @@ public class TaskGroupTest {
                 .mockSchedulingDataForVersion(orderLine);
         TaskSource taskSource = TaskSource.create(version, Arrays
                 .asList(hoursGroup));
-        return TaskGroup.create(taskSource);
+        TaskGroup result = TaskGroup.create(taskSource);
+        result.setIntraDayEndDate(IntraDayDate.startOfDay(result
+                .getIntraDayStartDate().getDate().plusDays(10)));
+        return result;
     }
 
 }

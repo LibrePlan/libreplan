@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?page title="${i18n:_('NavalPlan: Advances')}"?>
+<?page title="${i18n:_('NavalPlan: Progress')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
@@ -33,10 +33,10 @@
         apply="org.navalplanner.web.advance.AdvanceTypeCRUDController">
         <vbox id="messagesContainer"></vbox>
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="${i18n:_('Create Advance Type')}"
+        <edition top_id="createWindow" title="${i18n:_('Create Progress Type')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
             save_and_continue_button_label="${i18n:_('Save &amp; Continue')}" />
-        <edition top_id="editWindow" title="${i18n:_('Edit Advance Type')}"
+        <edition top_id="editWindow" title="${i18n:_('Edit Progress Type')}"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}"
             save_and_continue_button_label="${i18n:_('Save &amp; Continue')}" />
     </window>

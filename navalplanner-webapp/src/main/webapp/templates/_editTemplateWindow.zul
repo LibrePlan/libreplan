@@ -38,14 +38,14 @@
     class="org.navalplanner.web.templates.quality.QualityFormAssignerComponent"
     macroURI="/templates/_assignedQualityForms.zul" ?>
 
-<window id="editTemplateWindow" title="${i18n:_('Edit order element')}"
+<window id="editTemplateWindow" title="${i18n:_('Edit task')}"
     width="950px" left="50px" top="50px"
     closable="true" onClose="self.visible = false; event.stopPropagation()"
     visible="false" >
 
 <tabbox height="620px" id="tabboxOrderElement">
     <tabs>
-        <tab label="${i18n:_('Advances')}" />
+        <tab label="${i18n:_('Progress')}" />
         <tab label="${i18n:_('Labels')}" />
         <tab label="${i18n:_('Criterion requirement')}" />
         <tab label="${i18n:_('Materials')}" />

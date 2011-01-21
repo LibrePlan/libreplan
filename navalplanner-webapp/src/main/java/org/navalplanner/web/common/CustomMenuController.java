@@ -29,8 +29,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.security.SecurityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
@@ -49,7 +52,13 @@ import org.zkoss.zul.Vbox;
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
     private List<CustomMenuItem> firstLevel;
+
+
+    private IConfigurationModel configurationModel;
 
     public static class CustomMenuItem {
 
@@ -170,7 +179,6 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 for (CustomMenuItem child : ci.children) {
                     if (child.contains(requestPath)) {
                         child.setActive(true);
-                        List<CustomMenuItem> test = child.children;
                         for (CustomMenuItem c : child.children) {
                             if (c.contains(requestPath)) {
                                 c.setActive(true);
@@ -243,12 +251,14 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         }
         resourcesItems.add(subItem(_("Subcontracting"), "/subcontract/subcontractedTasks.zul", "",
                 subItem(_("Subcontracted Tasks"), "/subcontract/subcontractedTasks.zul", ""),
-                subItem(_("Report Advances"), "/subcontract/reportAdvances.zul", "")));
+                subItem(_("Report Progress"), "/subcontract/reportAdvances.zul", "")));
         topItem(_("Resources"), "/resources/worker/worker.zul", "", resourcesItems);
 
+        if (isScenariosVisible()) {
         topItem(_("Scenarios"), "/scenarios/scenarios.zul", "",
                 subItem(_("Scenarios Management"), "/scenarios/scenarios.zul",""),
                 subItem(_("Transfer Projects Between Scenarios"), "/scenarios/transferOrders.zul", ""));
+        }
 
         if (SecurityUtils.isUserInRole(UserRole.ROLE_ADMINISTRATION)) {
             topItem(_("Administration / Management"), "/advance/advanceTypes.zul", "",
@@ -261,13 +271,15 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
                 subItem(_("Quality Forms"),"/qualityforms/qualityForms.zul","12-formularios-calidad.html#administraci-n-de-formularios-de-calidade"),
                 subItem(_("Cost Categories"),"/costcategories/costCategory.zul","14-custos.html#categor-as-de-custo"),
                 subItem(_("Data Types"),"/advance/advanceTypes.zul", "04-avances.html#id1",
-                    subItem(_("Advances"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
+                    subItem(_("Progress"),"/advance/advanceTypes.zul", "04-avances.html#id1"),
                     subItem(_("Criteria"),"/resources/criterions/criterions.zul","02-criterios.html#id1"),
                     subItem(_("Exception Days"),"/excetiondays/exceptionDays.zul",""),
                     subItem(_("Labels"), "/labels/labelTypes.zul","10-etiquetas.html"),
                     subItem(_("Unit Measures"), "/materials/unitTypes.zul", "11-materiales.html#administraci-n-de-materiais"),
                     subItem(_("Work Hours"),"/costcategories/typeOfWorkHours.zul","14-custos.html#administraci-n-de-horas-traballadas"),
-                    subItem(_("Work Report Types"),"/workreports/workReportTypes.zul","09-partes.html#id2")));
+                            subItem(_("Work Report Models"),
+                                    "/workreports/workReportTypes.zul",
+                                    "09-partes.html#id2")));
             }
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
@@ -457,5 +469,10 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         currentOne = button;
     }
 
+    public boolean isScenariosVisible() {
+        return Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction()
+                .isScenariosVisible();
+    }
 
 }

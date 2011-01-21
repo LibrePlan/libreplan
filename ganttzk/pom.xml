@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.navalplanner</groupId>
         <artifactId>navalplanner</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
     <artifactId>ganttzk</artifactId>
     <packaging>jar</packaging>
@@ -72,6 +72,11 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
+        </dependency>
+        <!-- Commons collections -->
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
         </dependency>
         <!-- ZK  -->
         <dependency>

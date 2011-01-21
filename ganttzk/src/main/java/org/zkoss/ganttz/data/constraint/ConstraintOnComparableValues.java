@@ -36,11 +36,16 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         return instantiate(ComparisonType.BIGGER_OR_EQUAL_THAN, value);
     }
 
+    public static <T extends Comparable<T>> Constraint<T> lessOrEqualThan(
+            T value) {
+        return instantiate(ComparisonType.LESS_OR_EQUAL_THAN, value);
+    }
+
     public static <T extends Comparable<T>> Constraint<T> equalTo(T value) {
         return instantiate(ComparisonType.EQUAL_TO, value);
     }
 
-    private static <T extends Comparable<T>> Constraint<T> instantiate(
+    public static <T extends Comparable<T>> Constraint<T> instantiate(
             ComparisonType type, T value) {
         if (value == null) {
             return Constraint.voidConstraint();
@@ -49,7 +54,7 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
     }
 
     public enum ComparisonType {
-        LESS_OR_EQUAL_THAN, BIGGER_OR_EQUAL_THAN, EQUAL_TO;
+        LESS_OR_EQUAL_THAN, LESS_OR_EQUAL_THAN_RIGHT_FLOATING, BIGGER_OR_EQUAL_THAN, BIGGER_OR_EQUAL_THAN_LEFT_FLOATING, EQUAL_TO;
     }
 
     private final T comparisonValue;
@@ -70,6 +75,9 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
         switch (comparisonType) {
         case LESS_OR_EQUAL_THAN:
             return min(comparisonValue, value);
+        case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
+        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
+            return comparisonValue;
         case BIGGER_OR_EQUAL_THAN:
             return max(comparisonValue, value);
         case EQUAL_TO:
@@ -91,8 +99,10 @@ public class ConstraintOnComparableValues<T extends Comparable<T>> extends
     public boolean isSatisfiedBy(T value) {
         switch (comparisonType) {
         case LESS_OR_EQUAL_THAN:
+        case LESS_OR_EQUAL_THAN_RIGHT_FLOATING:
             return value.compareTo(comparisonValue) <= 0;
         case BIGGER_OR_EQUAL_THAN:
+        case BIGGER_OR_EQUAL_THAN_LEFT_FLOATING:
             return value.compareTo(comparisonValue) >= 0;
         case EQUAL_TO:
             return value.compareTo(comparisonValue) == 0;

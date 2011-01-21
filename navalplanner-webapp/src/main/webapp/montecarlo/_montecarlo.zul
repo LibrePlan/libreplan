@@ -1,0 +1,106 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<zk>
+
+    <zscript><![CDATA[
+        rsController = arg.get("monteCarloController");
+    ]]>
+    </zscript>
+
+    <div self="@{define(content)}" >
+        <window apply="${rsController}">
+
+            <!--Lists of tasks in the critical path -->
+            <grid id="gridCriticalPathTasks"
+                    mold="paging"
+                    pageSize="10"
+                    fixedLayout="true">
+
+                <auxhead>
+                    <auxheader colspan="2"/>
+                    <auxheader label="${i18n:_('Optimistic')}" colspan="2" align="center"/>
+                    <auxheader label="${i18n:_('Normal')}" colspan="2" align="center"/>
+                    <auxheader label="${i18n:_('Pessimistic')}" colspan="2" align="center"/>
+                </auxhead>
+
+                <columns >
+                    <column align="center" label="${i18n:_('Task')}" width="20%"/>
+                    <column align="center" label="${i18n:_('Duration')}"/>
+                    <column align="center" label="${i18n:_('Estimated days')}"/>
+                    <column align="center" label="${i18n:_('Probability %')}"/>
+                    <column align="center" label="${i18n:_('Estimated days')}"/>
+                    <column align="center" label="${i18n:_('Probability %')}"/>
+                    <column align="center" label="${i18n:_('Estimated days')}"/>
+                    <column align="center" label="${i18n:_('Probability %')}"/>
+                </columns>
+            </grid>
+
+            <separator bar="false" spacing="100px" orient="vertical"/>
+
+            <hbox>
+                <grid>
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row>
+                            <label value="${i18n:_('Critical path')}" />
+                            <listbox id="lbCriticalPaths" mold="select"/>
+                        </row>
+                    </rows>
+                </grid>
+            </hbox>
+
+            <separator bar="false" spacing="100px" orient="vertical"/>
+
+            <!-- Launch montecarlo -->
+            <hbox>
+                <grid>
+                    <columns>
+                        <column width="200px" />
+                        <column />
+                        <column />
+                    </columns>
+                    <rows>
+                        <row spans="1,3">
+                            <label value="${i18n:_('Group by weeks')}" />
+                            <checkbox id="cbGroupByWeeks"
+                                width="200px" />
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Number of iterations')}" />
+                            <intbox id="ibIterations"
+                                width="200px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                            <button id="btnRunMonteCarlo" label="${i18n:_('Go!')}" />
+                            <progressmeter id="progressMonteCarloCalculation" value="0" />
+                        </row>
+                    </rows>
+                </grid>
+            </hbox>
+
+        </window>
+    </div>
+
+</zk>

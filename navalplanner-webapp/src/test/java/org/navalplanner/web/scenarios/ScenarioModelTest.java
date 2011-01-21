@@ -237,7 +237,7 @@ public class ScenarioModelTest {
     @Test(expected = IllegalArgumentException.class)
     public void testRemoveScenarioWithDerivedScenraios() {
         Scenario scenario = givenStoredScenario();
-        Scenario derived = givenStoredScenario(scenario);
+        givenStoredScenario(scenario);
         scenarioModel.remove(scenario);
     }
 

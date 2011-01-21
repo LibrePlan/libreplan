@@ -24,13 +24,15 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.business.workreports.entities.WorkReport;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Model for UI operations related to {@link TypeOfWorkHours}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public interface ITypeOfWorkHoursModel {
+public interface ITypeOfWorkHoursModel extends IIntegrationEntityModel {
 
     /**
      * Makes some operations needed before edit a {@link TypeOfWorkHours}.
@@ -59,11 +61,12 @@ public interface ITypeOfWorkHoursModel {
      */
     TypeOfWorkHours getTypeOfWorkHours();
 
-    /**
-     * Stores the current {@link WorkReport}.
-     *
-     * @throws ValidationException
-     *             If validation fails
-     */
-    void confirmSave() throws ValidationException;
+	/**
+	 * Stores the current {@link WorkReport}.
+	 *
+	 * @throws ValidationException
+	 *             If validation fails
+	 */
+	void confirmSave() throws ValidationException;
+
 }

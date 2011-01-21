@@ -1,60 +1,10 @@
 #! /usr/bin/make -f
 
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	qmake CutyCapt.pro
-	touch $@
+#export DH_VERBOSE = 1
 
-binary-indep: install
-	dh_testdir
-	dh_testroot
-	dh_installchangelogs
-#	dh_installchangelogs
-#	dh_install
-#	dh_installmenu
-#	dh_installdebconf
-#	dh_installlogrotate
-#	dh_installemacsen
-#	dh_installpam
-#	dh_installmime
-#	dh_installinit
-#	dh_installcron
-#	dh_installinfo
-#	dh_installwm
-#	dh_installudev
-#	dh_lintian
-#	dh_undocumented
-	dh_installman
-	dh_link
-	dh_compress
-	dh_fixperms
-#	dh_perl
-#	dh_python
-	dh_installdeb
-	dh_gencontrol
-	dh_md5sums
-	dh_builddeb
+%:
+	dh --buildsystem=qmake $@
 
-binary-arch: install
-
-install: build
-	dh_testdir
-	dh_testroot
-	$(RM) build-stamp
+override_dh_auto_install:
 	install -g root -o root -m 755 -d       $(CURDIR)/debian/cutycapt/usr/bin
 	install -g root -o root -m 755 CutyCapt $(CURDIR)/debian/cutycapt/usr/bin
-
-binary: binary-arch binary-indep
-
-build: build-stamp
-
-build-stamp:
-	qmake CutyCapt.pro
-	$(MAKE)
-	touch $@
-
-clean:
-	dh $@
-
-.PHONY: build binary clean binary-arch install binary-indep configure

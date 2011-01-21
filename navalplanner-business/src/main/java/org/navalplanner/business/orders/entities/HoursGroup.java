@@ -33,7 +33,6 @@ import java.util.UUID;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -418,7 +417,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
             repeatedHoursGroup = ((OrderLineGroup) order).findRepeatedHoursGroupCode();
             if (repeatedHoursGroup != null) {
                 throw new ValidationException(_(
-                        "Repeated Hours Group code {0} in Order {1}",
+                        "Repeated Hours Group code {0} in Project {1}",
                         repeatedHoursGroup.getCode(), repeatedHoursGroup
                                 .getParentOrderLine().getName()));
             }
@@ -428,7 +427,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
                 .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
         if (repeatedHoursGroup != null) {
             throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Order {1}",
+                    "Repeated Hours Group code {0} in Project {1}",
                     repeatedHoursGroup.getCode(), repeatedHoursGroup
                             .getParentOrderLine().getName()));
         }

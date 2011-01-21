@@ -54,12 +54,12 @@ import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
-import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -219,15 +219,13 @@ public class TaskElementTest {
     }
 
     @Test
-    public void ifNoParentWithStartDateTheStartConstraintIsSoonAsPossible() {
+    public void ifNoParentWithStartDateThePositionConstraintIsSoonAsPossible() {
         OrderLine orderLine = OrderLine.create();
         addOrderTo(orderLine);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
-        assertThat(task.getStartConstraint(),
-                isOfType(StartConstraintType.AS_SOON_AS_POSSIBLE));
+        assertThat(task.getPositionConstraint(),
+                isOfType(PositionConstraintType.AS_SOON_AS_POSSIBLE));
     }
 
     private void addOrderTo(OrderElement orderElement) {
@@ -238,20 +236,30 @@ public class TaskElementTest {
     }
 
     @Test
+    public void ifTheOrderLineHasDeadlineThePositionConstraintIsNotLaterThan() {
+        OrderLine orderLine = OrderLine.create();
+        addOrderTo(orderLine);
+        LocalDate deadline = new LocalDate(2007, 4, 4);
+        orderLine.setDeadline(asDate(deadline));
+        TaskSource taskSource = asTaskSource(orderLine);
+        Task task = Task.createTask(taskSource);
+        assertThat(task.getPositionConstraint(),
+                isOfType(PositionConstraintType.FINISH_NOT_LATER_THAN));
+    }
+
+    @Test
     @SuppressWarnings("unchecked")
-    public void ifSomeParentHasInitDateTheStartConstraintIsNotEarlierThan() {
+    public void ifSomeParentHasInitDateThePositionConstraintIsNotEarlierThan() {
         LocalDate initDate = new LocalDate(2005, 10, 5);
         OrderLineGroup group = OrderLineGroup.create();
         addOrderTo(group);
         group.setInitDate(asDate(initDate));
         OrderLine orderLine = OrderLine.create();
         group.add(orderLine);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
-        assertThat(task.getStartConstraint(), allOf(
-                isOfType(StartConstraintType.START_NOT_EARLIER_THAN),
+        assertThat(task.getPositionConstraint(), allOf(
+                isOfType(PositionConstraintType.START_NOT_EARLIER_THAN),
                 hasValue(initDate)));
     }
 
@@ -262,23 +270,21 @@ public class TaskElementTest {
         Order order = orderLine.getOrder();
         Date initDate = asDate(new LocalDate(2005, 10, 5));
         order.setInitDate(initDate);
-        LocalDate deadline = new LocalDate(2007, 4, 4);
-        orderLine.setDeadline(asDate(deadline));
         TaskSource taskSource = asTaskSource(orderLine);
         Task task = Task.createTask(taskSource);
-        assertThat(task.getStartConstraint(),
-                isOfType(StartConstraintType.AS_SOON_AS_POSSIBLE));
+        assertThat(task.getPositionConstraint(),
+                isOfType(PositionConstraintType.AS_SOON_AS_POSSIBLE));
     }
 
-    private static Matcher<TaskStartConstraint> isOfType(
-            final StartConstraintType type) {
-        return new BaseMatcher<TaskStartConstraint>() {
+    private static Matcher<TaskPositionConstraint> isOfType(
+            final PositionConstraintType type) {
+        return new BaseMatcher<TaskPositionConstraint>() {
 
             @Override
             public boolean matches(Object object) {
-                if (object instanceof TaskStartConstraint) {
-                    TaskStartConstraint startConstraint = (TaskStartConstraint) object;
-                    return startConstraint.getStartConstraintType() == type;
+                if (object instanceof TaskPositionConstraint) {
+                    TaskPositionConstraint startConstraint = (TaskPositionConstraint) object;
+                    return startConstraint.getConstraintType() == type;
                 }
                 return false;
             }
@@ -291,13 +297,13 @@ public class TaskElementTest {
         };
     }
 
-    private static Matcher<TaskStartConstraint> hasValue(final LocalDate value) {
-        return new BaseMatcher<TaskStartConstraint>() {
+    private static Matcher<TaskPositionConstraint> hasValue(final LocalDate value) {
+        return new BaseMatcher<TaskPositionConstraint>() {
 
             @Override
             public boolean matches(Object object) {
-                if (object instanceof TaskStartConstraint) {
-                    TaskStartConstraint startConstraint = (TaskStartConstraint) object;
+                if (object instanceof TaskPositionConstraint) {
+                    TaskPositionConstraint startConstraint = (TaskPositionConstraint) object;
                     LocalDate constraintDate = startConstraint
                             .getConstraintDate();
                     boolean bothNotNull = value != null

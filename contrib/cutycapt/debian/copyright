@@ -1,0 +1,30 @@
+This package was debianized by Adrian Perez
+<aperez@igalia.com> on Fri, 08 Jan 2009 12:25:00 +0200.
+
+
+It was downloaded from http://cutycapt.sourceforge.net/
+
+
+Upstream Author: Björn Höhrmann <bjoern@hoehrmann.de>
+
+
+Copyright (C) 2003-2010 Bjoern Hoehrmann <bjoern@hoehrmann.de>
+
+
+CutyCapt is licensed under the GNU General Public License v2:
+
+   This program is free software; you can redistribute it and/or
+   modify it under the terms of the GNU General Public License
+   as published by the Free Software Foundation; either version 2
+   of the License, or (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+   On Debian systems, the complete text of the license can be found
+   in the file /usr/share/common-licenses/GPL-2.
+
+
+The Debian packaging is Copyright (C) 2010-11, Igalia, S.L.
+and is licensed under the GPL, see `/usr/share/common-licenses/GPL-3'.

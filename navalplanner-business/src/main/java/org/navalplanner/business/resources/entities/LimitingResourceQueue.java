@@ -21,8 +21,11 @@
 package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -46,6 +49,15 @@ public class LimitingResourceQueue extends BaseEntity {
         new TreeSet<LimitingResourceQueueElement>(new LimitingResourceQueueElementComparator());
 
     private List<GapOnQueue> cachedGaps;
+
+    public static Collection<LimitingResourceQueue> queuesOf(
+            Collection<LimitingResourceQueueElement> queueElements) {
+        Set<LimitingResourceQueue> result = new HashSet<LimitingResourceQueue>();
+        for (LimitingResourceQueueElement each: queueElements) {
+            result.add(each.getLimitingResourceQueue());
+        }
+        return result;
+    }
 
     public static LimitingResourceQueue create() {
         return create(new LimitingResourceQueue());
@@ -147,8 +159,14 @@ public class LimitingResourceQueue extends BaseEntity {
      */
     public void reloadLimitingResourceQueueElement(
             LimitingResourceQueueElement element) {
-        limitingResourceQueueElements.remove(element);
-        limitingResourceQueueElements.add(element);
+        if (limitingResourceQueueElements.contains(element)) {
+            limitingResourceQueueElements.remove(element);
+            limitingResourceQueueElements.add(element);
+        }
+    }
+
+    public String toString() {
+        return getResource() != null ? getResource().getName() : "";
     }
 
 }

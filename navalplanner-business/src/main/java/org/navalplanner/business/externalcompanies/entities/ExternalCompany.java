@@ -160,7 +160,7 @@ public class ExternalCompany extends BaseEntity {
         }
     }
 
-    @AssertTrue(message="company NIF has to be unique. It is already used")
+    @AssertTrue(message="Company ID already used. It has to be be unique")
     public boolean checkConstraintUniqueNif() {
         IExternalCompanyDAO dao = Registry.getExternalCompanyDAO();
 

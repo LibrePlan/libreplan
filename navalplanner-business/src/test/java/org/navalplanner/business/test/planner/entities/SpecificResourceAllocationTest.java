@@ -177,23 +177,26 @@ public class SpecificResourceAllocationTest {
         replay(this.worker);
     }
 
-    private void givenTask(LocalDate start, LocalDate end) {
+    private void givenTask(IntraDayDate start, IntraDayDate end) {
         task = createNiceMock(Task.class);
         expect(task.getCalendar()).andReturn(baseCalendar).anyTimes();
         expect(task.getStartDate()).andReturn(
                 start.toDateTimeAtStartOfDay().toDate()).anyTimes();
-        expect(task.getIntraDayStartDate()).andReturn(
-                IntraDayDate.startOfDay(start)).anyTimes();
+        expect(task.getIntraDayStartDate()).andReturn(start).anyTimes();
         expect(task.getEndDate()).andReturn(
                 end.toDateTimeAtStartOfDay().toDate()).anyTimes();
-        expect(task.getIntraDayEndDate()).andReturn(
-                IntraDayDate.startOfDay(end)).anyTimes();
-        expect(task.getFirstDayNotConsolidated()).andReturn(
-                IntraDayDate.startOfDay(start)).anyTimes();
+        expect(task.getIntraDayEndDate()).andReturn(end).anyTimes();
+        expect(task.getFirstDayNotConsolidated()).andReturn(start).anyTimes();
         replay(task);
     }
 
     private void givenSpecificResourceAllocation(LocalDate start, LocalDate end) {
+        givenSpecificResourceAllocation(IntraDayDate.startOfDay(start),
+                IntraDayDate.startOfDay(end));
+    }
+
+    private void givenSpecificResourceAllocation(IntraDayDate start,
+            IntraDayDate end) {
         givenWorker();
         givenTask(start, end);
         specificResourceAllocation = SpecificResourceAllocation.create(task);
@@ -239,13 +242,35 @@ public class SpecificResourceAllocationTest {
 
     @Test
     public void canAllocateUntilSomeEndDate() {
-        givenAssignedHours(4);
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.until(start.plusDays(3)).allocate(
-                ResourcesPerDay.amount(1));
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(3))
+                .allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8,
                 8));
+    }
+
+    @Test
+    public void canAllocateFromEndUntilSomeStartDate() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.resourcesPerDayFromEndUntil(start).allocate(
+                ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8));
+    }
+
+    @Test
+    public void canAllocateFromEndInTheMiddleOfTheDayToStartDate() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        IntraDayDate end = IntraDayDate.create(start.plusDays(3), hours(3));
+        givenSpecificResourceAllocation(IntraDayDate.startOfDay(start), end);
+        specificResourceAllocation.resourcesPerDayFromEndUntil(start).allocate(
+                ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 3));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
     }
 
     @Test
@@ -289,6 +314,41 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation.onInterval(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5));
+    }
+
+    @Test
+    public void canAssignFromStartUntilEnd() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromStartUntil(start.plusDays(4))
+                .allocateHours(32);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
+    public void canAssignFromEndUntilStart() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromEndUntil(start).allocateHours(32);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
+    public void ifEndIsInTheMiddleOfADayFromEndUntilStartCalculatesResourcesPerDayCorrectly() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        IntraDayDate end = IntraDayDate.create(start.plusDays(3), hours(4));
+        givenSpecificResourceAllocation(IntraDayDate.startOfDay(start), end);
+        specificResourceAllocation.fromEndUntil(start).allocateHours(28);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 4));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
     }
 
     @Test
@@ -375,7 +435,35 @@ public class SpecificResourceAllocationTest {
                 .getAmount().compareTo(original.getAmount()) > 0);
     }
 
+    @Test
     @SuppressWarnings("serial")
+    public void theResourcesPerDayAreTheOnesSpecifiedEvenIfInTheLastDayNoAllocationCanBeDone() {
+        final LocalDate start = new LocalDate(2000, 2, 4);
+        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+            {
+                put(start.plusDays(3), 0);
+            }
+        });
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(4))
+                .allocate(ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
+    @Test
+    public void theResourcesPerDayAreTheOnesSpecifiedEvenIfTheStartIsInTheMiddleOfTheDay() {
+        final IntraDayDate start = IntraDayDate.create(
+                new LocalDate(2000, 2, 4), hours(4));
+        givenResourceCalendarAlwaysReturning(8);
+        IntraDayDate end = IntraDayDate.startOfDay(start.getDate().plusDays(4));
+        givenSpecificResourceAllocation(start, end);
+        specificResourceAllocation.resourcesPerDayUntil(end.asExclusiveEnd())
+                .allocate(ResourcesPerDay.amount(1));
+        assertThat(specificResourceAllocation.getResourcesPerDay(),
+                equalTo(ResourcesPerDay.amount(1)));
+    }
+
     @Test
     public void theHoursAreDistributedTakingIntoAccountTheWorkableHours() {
         final LocalDate start = new LocalDate(2000, 2, 4);

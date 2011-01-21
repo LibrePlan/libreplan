@@ -26,17 +26,17 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -47,6 +47,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
+import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -55,9 +56,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
-import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
@@ -82,8 +81,6 @@ public class FormBinder {
     private AggregateOfResourceAllocations aggregate;
 
     private AllocationResult lastAllocation;
-
-    private Datebox endDate;
 
     private Button applyButton;
 
@@ -115,9 +112,11 @@ public class FormBinder {
 
     private List<AllocationRow> rows = Collections.emptyList();
 
-    private Checkbox recommendedAllocationCheckbox;
+    private WorkableDaysAndDatesBinder workableDaysAndDatesBinder;
 
-    private EventListener recommendedCheckboxListener;
+    private Button btnRecommendedAllocation;
+
+    private boolean recommendedAllocationIsPressed = false;
 
     private ProportionalDistributor hoursDistributorForRecommendedAllocation;
 
@@ -183,8 +182,7 @@ public class FormBinder {
 
     public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
         this.allHoursInput = assignedHoursComponent;
-        this.allHoursInput.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
+        this.allHoursInput.setConstraint(positiveValueRequired());
         allHoursInputComponentDisabilityRule();
         loadValueForAssignedHoursComponent();
         onChangeEnableApply(assignedHoursComponent);
@@ -208,21 +206,23 @@ public class FormBinder {
         return lastAllocation;
     }
 
-    public void setCalculatedValue(CalculatedValue calculatedValue) {
-        if (calculatedValue == allocationRowsHandler
-                .getCalculatedValue()) {
+    public void setCalculatedValue(CalculatedValue newCalculatedValue) {
+        CalculatedValue previousCalculatedValue = allocationRowsHandler
+                .getCalculatedValue();
+        if (newCalculatedValue == previousCalculatedValue) {
             return;
         }
-        allocationRowsHandler.setCalculatedValue(calculatedValue);
+        allocationRowsHandler.setCalculatedValue(newCalculatedValue);
         applyDisabledRules();
-        loadValueForEndDate();
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+        workableDaysAndDatesBinder.switchFromTo(previousCalculatedValue,
+                newCalculatedValue);
         applyButton.setDisabled(false);
     }
 
     private void applyDisabledRules() {
         allHoursInputComponentDisabilityRule();
-        endDateDisabilityRule();
+        workableDaysAndDatesBinder.applyDisabledRules();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
     }
@@ -282,47 +282,155 @@ public class FormBinder {
 
     private void onChangeEnableApply(InputElement inputElement) {
         inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
+    }
+
+    public void setWorkableDays(Intbox duration,
+            final TaskPropertiesController taskPropertiesController,
+            final Label labelTaskStart, final Label labelTaskEnd) {
+        this.workableDaysAndDatesBinder = new WorkableDaysAndDatesBinder(
+                duration, labelTaskStart, labelTaskEnd,
+                taskPropertiesController);
+    }
+
+    class WorkableDaysAndDatesBinder {
+
+        private Intbox taskWorkableDays;
+
+        private Label labelTaskStart;
+
+        private Label labelTaskEnd;
+
+        WorkableDaysAndDatesBinder(final Intbox taskWorkableDays,
+                final Label labelTaskStart, final Label labelTaskEnd,
+                final TaskPropertiesController taskPropertiesController) {
+            this.taskWorkableDays = taskWorkableDays;
+            this.labelTaskStart = labelTaskStart;
+            this.labelTaskEnd = labelTaskEnd;
+            initializeDateAndDurationFieldsFromTaskOriginalValues();
+            taskWorkableDays.addEventListener(Events.ON_CHANGE,
+                    new EventListener() {
+
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            Task task = getTask();
+                            Integer workableDays = taskWorkableDays.getValue();
+                            if (allocationRowsHandler.isForwardsAllocation()) {
+                                LocalDate newEndDate = task
+                                        .calculateEndGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskEndDate(newEndDate);
+                                showValueOfDateOn(labelTaskEnd, newEndDate);
+                            } else {
+                                LocalDate newStart = task
+                                        .calculateStartGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskStartDate(newStart);
+                                showValueOfDateOn(labelTaskStart, newStart);
+                            }
+                        }
+                    });
+            applyDisabledRules();
+            onChangeEnableApply(taskWorkableDays);
+        }
+
+        void applyDisabledRules() {
+            this.taskWorkableDays.setDisabled(allocationRowsHandler
+                    .getCalculatedValue() == CalculatedValue.END_DATE);
+        }
+
+        private void initializeDateAndDurationFieldsFromTaskOriginalValues() {
+            Task task = getTask();
+            showValueOfDateOn(labelTaskStart, task.getStartAsLocalDate());
+            showValueOfDateOn(labelTaskEnd, task.getIntraDayEndDate()
+                    .asExclusiveEnd());
+
+            taskWorkableDays.setConstraint(positiveValueRequired());
+            taskWorkableDays.setValue(task.getWorkableDays());
+        }
+
+        Integer getValue() {
+            return taskWorkableDays.getValue();
+        }
+
+        private Integer lastSpecifiedWorkableDays = null;
+
+        void switchFromTo(CalculatedValue previousCalculatedValue,
+                CalculatedValue newCalculatedValue) {
+            if (newCalculatedValue == CalculatedValue.END_DATE) {
+                clearDateAndDurationFields();
+            } else if (previousCalculatedValue == CalculatedValue.END_DATE
+                    && taskWorkableDays.getValue() == null) {
+                initializeDateAndDurationFieldsFromLastValues();
+            }
+        }
+
+        private void clearDateAndDurationFields() {
+            (allocationRowsHandler.isForwardsAllocation() ? labelTaskEnd
+                    : labelTaskStart).setValue("");
+            taskWorkableDays.setConstraint((Constraint) null);
+            lastSpecifiedWorkableDays = taskWorkableDays.getValue();
+            taskWorkableDays.setValue(null);
+        }
+
+        private void initializeDateAndDurationFieldsFromLastValues() {
+            if (lastSpecifiedWorkableDays == null) {
+                initializeDateAndDurationFieldsFromTaskOriginalValues();
+            } else {
+                Task task = getTask();
+                taskWorkableDays.setConstraint(positiveValueRequired());
+                taskWorkableDays.setValue(lastSpecifiedWorkableDays);
+                showValueOfDateOn(
+                        labelTaskEnd,
+                        task.calculateEndGivenWorkableDays(lastSpecifiedWorkableDays));
+                lastSpecifiedWorkableDays = null;
+            }
+        }
+
+        void afterApplicationReloadValues() {
+            if (getCalculatedValue() != CalculatedValue.END_DATE
+                    || aggregate.isEmpty()) {
+                return;
+            }
+            LocalDate start = aggregate.getStart().getDate();
+            LocalDate end = aggregate.getEnd().asExclusiveEnd();
+            showValueOfDateOn(labelTaskStart, start);
+            showValueOfDateOn(labelTaskEnd, end);
+            taskWorkableDays
+                    .setValue(getTask().getWorkableDaysFrom(start, end));
+        }
+
+        private void showValueOfDateOn(final Label label, LocalDate date) {
+            DateTimeFormatter formatter = DateTimeFormat.forStyle("S-")
+                    .withLocale(Locales.getCurrent());
+            label.setValue(formatter.print(date));
+        }
 
     }
 
-    public void setEndDate(Datebox endDate) {
-        this.endDate = endDate;
-        this.endDate.setConstraint(datePosteriorOrEqualToStartDate());
-        endDateDisabilityRule();
-        loadValueForEndDate();
-        onChangeEnableApply(endDate);
+    private static SimpleConstraint positiveValueRequired() {
+        return new SimpleConstraint(SimpleConstraint.NO_EMPTY
+                | SimpleConstraint.NO_NEGATIVE);
+    }
+
+    public LocalDate getAllocationEnd() {
+        return getTask().calculateEndGivenWorkableDays(
+                workableDaysAndDatesBinder.getValue());
+    }
+
+    public LocalDate getAllocationStart() {
+        return getTask().calculateStartGivenWorkableDays(
+                workableDaysAndDatesBinder.getValue());
+    }
+
+    private Task getTask() {
+        return allocationRowsHandler.getTask();
     }
 
     public void setAllResourcesPerDay(Decimalbox allResourcesPerDay) {
         this.allResourcesPerDay = allResourcesPerDay;
-        this.allResourcesPerDay.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE));
+        this.allResourcesPerDay.setConstraint(positiveValueRequired());
         allResourcesPerDayVisibilityRule();
         onChangeEnableApply(allResourcesPerDay);
-    }
-
-    private Constraint datePosteriorOrEqualToStartDate() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                Date date = (Date) value;
-                LocalDate startDate = allocationRowsHandler.getStartDate();
-                if (new LocalDate(date).isBefore(startDate)) {
-                    throw new WrongValueException(comp, _(
-                            "{0} must not be before {1}", date, startDate));
-                }
-            }
-        };
-    }
-
-    private void loadValueForEndDate() {
-        this.endDate.setValue(allocationRowsHandler.getEnd());
-    }
-
-    private void endDateDisabilityRule() {
-        this.endDate.setDisabled(allocationRowsHandler
-                .getCalculatedValue() == CalculatedValue.END_DATE);
     }
 
     private void allResourcesPerDayVisibilityRule() {
@@ -390,9 +498,9 @@ public class FormBinder {
         loadResourcesPerDay();
         loadHoursValues();
         loadValueForAssignedHoursComponent();
-        loadValueForEndDate();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
+        workableDaysAndDatesBinder.afterApplicationReloadValues();
         Util.reloadBindings(allocationsGrid);
     }
 
@@ -455,8 +563,8 @@ public class FormBinder {
         return result;
     }
 
-    public LocalDate getAllocationEnd() {
-        return new LocalDate(endDate.getValue());
+    public Integer getWorkableDays() {
+        return workableDaysAndDatesBinder.getValue();
     }
 
     public void setDeleteButtonFor(AllocationRow row,
@@ -511,16 +619,6 @@ public class FormBinder {
                         Criterion.getCaptionFor(resourceType, criterions)));
     }
 
-    public void markEndDateMustBeAfterStartDate() {
-        DateTimeFormatter formatter = ISODateTimeFormat.basicDate().withLocale(
-                Locales.getCurrent());
-        LocalDate start = allocationRowsHandler.getStartDate();
-        throw new WrongValueException(endDate, _(
-                "end date: {0} must be after start date: {1}",
-                getAllocationEnd().toString(formatter), start
-                        .toString(formatter)));
-    }
-
     public void markNoEmptyResourcesPerDay(List<AllocationRow> rows) {
         Validate.isTrue(!rows.isEmpty());
         final String message = _("resources per day must be not empty and bigger than zero");
@@ -546,35 +644,25 @@ public class FormBinder {
             this.applyButton.removeEventListener(Events.ON_CLICK,
                     applyButtonListener);
         }
-        if (this.recommendedAllocationCheckbox != null) {
-            this.recommendedAllocationCheckbox.removeEventListener(
-                    Events.ON_CHECK, recommendedCheckboxListener);
-        }
         for (InputElement inputElement : inputsAssociatedWithOnChangeEnableApply) {
             inputElement.removeEventListener(Events.ON_CHANGE,
                     onChangeEnableApply);
         }
     }
 
-    public void setCheckbox(Checkbox recommendedAllocation) {
-        this.recommendedAllocationCheckbox = recommendedAllocation;
-        this.recommendedAllocationCheckbox
-                .setChecked(this.recommendedAllocation);
-        disableIfNeededWorkerSearch();
-        recommendedCheckboxListener = new EventListener() {
-
+    public void setRecommendedAllocation(Button recommendedAllocation) {
+        this.btnRecommendedAllocation = recommendedAllocation;
+        btnRecommendedAllocation.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                if (recommendedAllocationCheckbox.isChecked()) {
-                    activatingRecommendedAllocation();
-                } else {
-                    deactivatingRecommendedAllocation();
-                }
+                recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
+                 if (recommendedAllocationIsPressed) {
+                     activatingRecommendedAllocation();
+                 } else {
+                     deactivatingRecommendedAllocation();
+                 }
             }
-
-        };
-        this.recommendedAllocationCheckbox.addEventListener(Events.ON_CHECK,
-                recommendedCheckboxListener);
+        });
     }
 
     private void activatingRecommendedAllocation() {
@@ -634,11 +722,13 @@ public class FormBinder {
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
+        this.workerSearchTab.setDisabled(recommendedAllocation);
     }
 
     public void setNewAllocationSelectorCombo(
             NewAllocationSelectorCombo newAllocationSelectorCombo) {
         this.newAllocationSelectorCombo = newAllocationSelectorCombo;
+        this.newAllocationSelectorCombo.setDisabled(recommendedAllocation);
     }
 
     private void sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay() {
@@ -650,7 +740,9 @@ public class FormBinder {
     private BigDecimal sumResourcesPerDayFromInputs() {
         BigDecimal sum = BigDecimal.ZERO;
         for (AllocationRow each : rows) {
-            sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
+            if (each.getResourcesPerDayInput().isValid()) {
+                sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
+            }
         }
         return sum;
     }

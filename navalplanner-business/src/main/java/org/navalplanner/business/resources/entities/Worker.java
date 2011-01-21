@@ -32,10 +32,14 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class Worker extends Resource {
+public class Worker extends Resource implements Comparable {
 
     public static Worker create() {
         return create(new Worker());
+    }
+
+    public static Worker create(String code) {
+        return create(new Worker(), code);
     }
 
     public static Worker create(String firstName, String surname,
@@ -96,7 +100,7 @@ public class Worker extends Resource {
     }
 
     public String getDescription() {
-        return getFirstName()+" "+getSurname();
+        return getFirstName() + " " + getSurname();
     }
 
     @Override
@@ -126,7 +130,7 @@ public class Worker extends Resource {
         return getSurname() + ", " + getFirstName();
     }
 
-    @NotEmpty(message="worker's NIF not specified")
+    @NotEmpty(message="Worker ID cannot be empty")
     public String getNif() {
         return nif;
     }
@@ -182,4 +186,14 @@ public class Worker extends Resource {
     public ResourceEnum getType() {
         return type;
     }
+
+    @Override
+    public int compareTo(Object arg0) {
+        if (!(arg0 instanceof Worker)) {
+            return -1;
+        }
+        Worker worker = (Worker) arg0;
+        return worker.getShortDescription().compareTo(getShortDescription());
+    }
+
 }

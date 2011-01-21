@@ -28,11 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
-import org.navalplanner.business.planner.entities.StartConstraintType;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
+import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskStartConstraint;
+import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.Util;
@@ -41,6 +42,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskEditFormComposer;
 import org.zkoss.ganttz.TaskEditFormComposer.TaskDTO;
+import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -71,7 +73,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
     // This is a workaround, because in business we don't have access to
     // I18nHelper
     private enum WebStartConstraintType {
-        AS_SOON_AS_POSSIBLE(StartConstraintType.AS_SOON_AS_POSSIBLE) {
+        AS_SOON_AS_POSSIBLE(PositionConstraintType.AS_SOON_AS_POSSIBLE) {
             @Override
             public String getDescription() {
                 return _("as soon as possible");
@@ -82,7 +84,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("AS_SOON_AS_POSSIBLE");
             }
         },
-        START_NOT_EARLIER_THAN(StartConstraintType.START_NOT_EARLIER_THAN) {
+        START_NOT_EARLIER_THAN(PositionConstraintType.START_NOT_EARLIER_THAN) {
             @Override
             public String getDescription() {
                 return _("start not earlier than");
@@ -93,7 +95,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 return _("START_NOT_EARLIER_THAN");
             }
         },
-        START_IN_FIXED_DATE(StartConstraintType.START_IN_FIXED_DATE) {
+        START_IN_FIXED_DATE(PositionConstraintType.START_IN_FIXED_DATE) {
             @Override
             public String getDescription() {
                 return _("start in fixed date");
@@ -103,17 +105,42 @@ public class TaskPropertiesController extends GenericForwardComposer {
             public String getName() {
                 return _("START_IN_FIXED_DATE");
             }
+        },
+        FINISH_NOT_LATER_THAN(PositionConstraintType.FINISH_NOT_LATER_THAN) {
+            @Override
+            public String getDescription() {
+                return _("finish not later than");
+            }
+
+            @Override
+            public String getName() {
+                return _("FINISH_NOT_LATER_THAN");
+            }
+        },
+        AS_LATE_AS_POSSIBLE(PositionConstraintType.AS_LATE_AS_POSSIBLE) {
+            @Override
+            public String getDescription() {
+                return _("as late as possible");
+            }
+
+            @Override
+            public String getName() {
+                return _("AS_LATE_AS_POSSIBLE");
+            }
         };
 
-        public static void appendItems(Combobox combo) {
+        public static void setItems(Combobox combo, Order order) {
+            combo.getChildren().clear();
             for (WebStartConstraintType type : WebStartConstraintType.values()) {
-                combo.appendChild(type.createCombo());
+                if (type != AS_LATE_AS_POSSIBLE || order.getDeadline() != null) {
+                    combo.appendChild(type.createCombo());
+                }
             }
         }
 
-        private final StartConstraintType type;
+        private final PositionConstraintType type;
 
-        private WebStartConstraintType(StartConstraintType type) {
+        private WebStartConstraintType(PositionConstraintType type) {
             this.type = type;
         }
 
@@ -130,13 +157,13 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
 
         public static boolean representsType(Comboitem item,
-                StartConstraintType type) {
+                PositionConstraintType type) {
             WebStartConstraintType webType = (WebStartConstraintType) item
                     .getValue();
             return webType.equivalentTo(type);
         }
 
-        private boolean equivalentTo(StartConstraintType type) {
+        private boolean equivalentTo(PositionConstraintType type) {
             return this.type == type;
         }
 
@@ -144,7 +171,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
             return type.isAssociatedDateRequired();
         }
 
-        public StartConstraintType getType() {
+        public PositionConstraintType getType() {
             return type;
         }
     }
@@ -169,6 +196,10 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private Intbox duration;
 
+    private Datebox startDateBox;
+
+    private Datebox endDateBox;
+
     private Combobox startConstraintTypes;
 
     private Datebox startConstraintDate;
@@ -190,6 +221,14 @@ public class TaskPropertiesController extends GenericForwardComposer {
         this.currentContext = context;
         this.currentTaskElement = taskElement;
 
+        Order order = null;
+        if (context != null) {
+            order = findOrderIn(context);
+        } else {
+            order = taskElement.getOrderElement().getOrder();
+        }
+
+        WebStartConstraintType.setItems(startConstraintTypes, order);
         originalState = getResourceAllocationType(currentTaskElement);
         setOldState(originalState);
 
@@ -199,21 +238,24 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraintDate.setDisabled(disabled);
         lbResourceAllocationType.setDisabled(disabled);
 
-        lbResourceAllocationType.addEventListener(Events.ON_SELECT,
-                new EventListener() {
-                    @Override
-                    public void onEvent(Event event) throws Exception {
-
-                        editTaskController
-                                .selectAssignmentTab(lbResourceAllocationType
-                                        .getSelectedIndex() + 1);
-                    }
-                });
-
         if (context != null) {
             taskEditFormComposer.init(context.getRelativeTo(), context.getTask());
         }
         updateComponentValuesForTask();
+    }
+
+    private Order findOrderIn(IContextWithPlannerTask<TaskElement> context) {
+        TaskElement topTask = context.getMapper().findAssociatedDomainObject(
+                findTopMostTask(context));
+        return topTask.getParent().getOrderElement().getOrder();
+    }
+
+    private org.zkoss.ganttz.data.Task findTopMostTask(
+            IContextWithPlannerTask<TaskElement> context) {
+        List<? extends TaskContainer> parents = context.getMapper().getParents(
+                context.getTask());
+        return parents.isEmpty() ? context.getTask() : parents.get(parents
+                .size() - 1);
     }
 
     private void setOldState(ResourceAllocationTypeEnum state) {
@@ -247,8 +289,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
             showResourceAllocationTypeRow(task);
         } else {
             hideDurationRow();
-            if (currentTaskElement instanceof ITaskLeafConstraint) {
-                showStartConstraintRow((ITaskLeafConstraint) currentTaskElement);
+            if (currentTaskElement instanceof ITaskPositionConstrained) {
+                showStartConstraintRow((ITaskPositionConstrained) currentTaskElement);
             } else {
                 hideStartConstraintRow();
             }
@@ -270,15 +312,15 @@ public class TaskPropertiesController extends GenericForwardComposer {
         startConstraint.setVisible(false);
     }
 
-    private void showStartConstraintRow(ITaskLeafConstraint task) {
+    private void showStartConstraintRow(ITaskPositionConstrained task) {
         startConstraint.setVisible(true);
-        StartConstraintType type = task.getStartConstraint()
-                .getStartConstraintType();
+        PositionConstraintType type = task.getPositionConstraint()
+                .getConstraintType();
         startConstraintTypes.setSelectedItemApi(findComboWithType(type));
-        startConstraintDate.setVisible(type.isAssociatedDateRequired());
+        updateStartConstraint(type);
     }
 
-    private Comboitem findComboWithType(StartConstraintType type) {
+    private Comboitem findComboWithType(PositionConstraintType type) {
         for (Object component : startConstraintTypes.getChildren()) {
             if (component instanceof Comboitem) {
                 Comboitem item = (Comboitem) component;
@@ -292,14 +334,22 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void constraintTypeChoosen(WebStartConstraintType constraint) {
         startConstraintDate.setVisible(constraint.isAssociatedDateRequired());
-        TaskStartConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
-                .getStartConstraint();
-        startConstraintDate.setValue(taskStartConstraint.getConstraintDateAsDate());
+        updateStartConstraint(constraint.getType());
+    }
+
+    private void updateStartConstraint(PositionConstraintType type) {
+        TaskPositionConstraint taskStartConstraint = currentTaskElementAsTaskLeafConstraint()
+                .getPositionConstraint();
+        startConstraintDate.setVisible(type.isAssociatedDateRequired());
+        if (taskStartConstraint.getConstraintDateAsDate() != null) {
+            startConstraintDate.setValue(taskStartConstraint
+                    .getConstraintDateAsDate());
+        }
     }
 
     private boolean saveConstraintChanges() {
-        TaskStartConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint()
-                .getStartConstraint();
+        TaskPositionConstraint taskConstraint = currentTaskElementAsTaskLeafConstraint()
+                .getPositionConstraint();
         WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
                 .getSelectedItemApi().getValue();
         LocalDate inputDate = type.isAssociatedDateRequired() ? LocalDate
@@ -315,12 +365,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         }
     }
 
-    private ITaskLeafConstraint currentTaskElementAsTaskLeafConstraint() {
-        return (ITaskLeafConstraint) currentTaskElement;
-    }
-
-    private Task currentTaskElementAsTask() {
-        return (Task) currentTaskElement;
+    private ITaskPositionConstrained currentTaskElementAsTaskLeafConstraint() {
+        return (ITaskPositionConstrained) currentTaskElement;
     }
 
     private void hideDurationRow() {
@@ -329,7 +375,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     private void showDurationRow(Task task) {
         hours.getFellow("durationRow").setVisible(true);
-        duration.setValue(task.getDaysDuration());
+        duration.setValue(task.getWorkableDays());
     }
 
     @Override
@@ -337,7 +383,6 @@ public class TaskPropertiesController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         tabpanel = (Tabpanel) comp;
         taskEditFormComposer.doAfterCompose(comp);
-        WebStartConstraintType.appendItems(startConstraintTypes);
         startConstraintTypes.addEventListener(Events.ON_SELECT,
                 new EventListener() {
 
@@ -357,14 +402,15 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
                 final ResourceAllocationTypeEnum oldState = getOldState();
                 ResourceAllocationTypeEnum newState = getSelectedValue(new ArrayList(se.getSelectedItems()));
-                        if (thereIsTransition(newState)) {
-                            if (isConsolidatedTask()) {
-                                restoreOldState();
-                                editTaskController
-                                        .showNonPermitChangeResourceAllocationType();
-                            } else {
-                                changeResourceAllocationType(oldState, newState);
-                            }
+                if (thereIsTransition(newState)) {
+                    if (isConsolidatedTask()) {
+                        restoreOldState();
+                        editTaskController.showNonPermitChangeResourceAllocationType();
+                    } else {
+                        changeResourceAllocationType(oldState, newState);
+                        editTaskController.selectAssignmentTab(lbResourceAllocationType
+                                .getSelectedIndex() + 1);
+                    }
                 }
                 if (oldState == null) {
                     setOldState(newState);
@@ -398,11 +444,11 @@ public class TaskPropertiesController extends GenericForwardComposer {
 
     public void accept() {
         boolean ok = true;
-        if (currentTaskElement instanceof ITaskLeafConstraint) {
+        if (currentTaskElement instanceof ITaskPositionConstrained) {
             ok = saveConstraintChanges();
         }
         if (ok) {
-            taskEditFormComposer.accept();
+            taskEditFormComposer.acceptWithoutCopyingDates();
         }
     }
 
@@ -663,5 +709,16 @@ public class TaskPropertiesController extends GenericForwardComposer {
             return task.hasConsolidations();
         }
         return false;
+    }
+
+    public void updateTaskEndDate(LocalDate endDate) {
+        getGanttTaskDTO().endDate = endDate.toDateTimeAtStartOfDay().toDate();
+        Util.reloadBindings(endDateBox);
+    }
+
+    public void updateTaskStartDate(LocalDate newStart) {
+        getGanttTaskDTO().beginDate = newStart.toDateTimeAtStartOfDay()
+                .toDate();
+        Util.reloadBindings(startDateBox);
     }
 }

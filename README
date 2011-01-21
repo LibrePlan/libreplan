@@ -5,34 +5,32 @@ NavalPlan
 Description
 -----------
 
+*NavalPlan* is a free software web application for project management.
+
 *NavalPlan* is a planning tool for users based on some concepts: company and
 multi-project overview, criteria assignments, tasks tagging, resources
-management, resource allocation (specific and generic) company load control,
+management, resource allocation (specific and generic), company load control,
 external integration, etc.
+
+Although its name is clearly related to shipbuilding, *Navalplan* is a fully
+useful planning tool for any type of company whose workflow requires project and
+order administration and scheduling.
 
 Features
 ~~~~~~~~
 
-* Company and multi-project overview.
-* Criteria management: Criteria are a system entity that enables resources
-  (both humans and machines) and tasks to be classified.
-* Resources management: There are two different kinds: humans and machines.
-* Resource allocation: One of the key points of the program is having the
-  possibility of two kinds of designation: specific and generic. Generic
-  allocation is based on criteria that are required to carry out a task and
-  must be fulfilled by resources that are capable of performing them.
-* Calendars: Calendars determine the available productive hours for different
-  resources. The user may create general calendars for the company or input
-  characteristics for more specific calendars, meaning that calendars for
-  resources and tasks can be made.
-* Labels: These are elements that are used to label project tasks. With these
-  labels, the user of the program can group tasks together according to
-  concept, which can then be checked at a later date as a group or after being
-  filtered.
-* Orders and order elements: Work requested by clients is treated by the
-  application as an order, which is structured in order elements. The order and
-  its elements adhere to a hierarchical structure of undefined levels. This
-  element tree is the basis when planning work.
+* Multiproject management. It offers a global vision of the company managing
+  several projects sharing resources.
+* Group resource allocations: dynamic groups based on criteria.
+* Flexible calendars.
+* Configurable Gantt chart from Work Breakdown Structure (WBS) [1]_.
+* Resource Breakdown Structure (RBS) chart [2]_.
+* Overload resource allocation control.
+* Earned Value Management [3]_.
+* Cost analysis based on work reports.
+* Integration with other *NavalPlan* instances and third-parties.
+* Other functionalities: Materials, quality forms, project templates, planning
+  scenarios, multiple task progress measurement ...
 
 
 Requirements
@@ -60,6 +58,9 @@ Webpage
 You can find more information about *NavalPlan* at
 http://www.navalplan.org/en/.
 
+For information related with *NavalPlan* development you can visit the wiki at
+http://wiki.navalplan.org/.
+
 
 Reporting bugs
 --------------
@@ -71,7 +72,7 @@ License
 -------
 
 *NavalPlan* is released under the terms of the GNU Affero General Public
-License version 3 [1]_.
+License version 3 [4]_.
 
 Please read the ``COPYING`` file for details.
 
@@ -80,11 +81,14 @@ Authors
 -------
 
 This project is sponsored by *Fundación para o Fomento da Calidade Industrial e
-o Desenvolvemento Tecnolóxico de Galicia* [2]_.
+o Desenvolvemento Tecnolóxico de Galicia* [5]_.
 
 Please see ``AUTHORS`` file for more information about the authors.
 
 
 
-.. [1] http://www.fsf.org/licensing/licenses/agpl.html
-.. [2] http://www.fundacioncalidade.org/
+.. [1] http://en.wikipedia.org/wiki/Work_Breakdown_Structure
+.. [2] http://en.wikipedia.org/wiki/Resource_Breakdown_Structure
+.. [3] http://en.wikipedia.org/wiki/Earned_Value_Management
+.. [4] http://www.fsf.org/licensing/licenses/agpl.html
+.. [5] http://www.fundacioncalidade.org/

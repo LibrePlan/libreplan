@@ -28,16 +28,16 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 
 /**
  * LabeType entity
- *
  * @author Diego Pino Garcia<dpino@igalia.com>
- *
  */
 public class LabelType extends IntegrationEntity implements Comparable {
 
@@ -46,7 +46,7 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
     private Set<Label> labels = new HashSet<Label>();
 
-    private Boolean generateCode = false;
+    private Integer lastLabelSequenceCode = 0;
 
     // Default constructor, needed by Hibernate
     // At least package visibility, https://www.hibernate.org/116.html#A6
@@ -72,14 +72,6 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
     }
 
     public Set<Label> getLabels() {
@@ -176,6 +168,31 @@ public class LabelType extends IntegrationEntity implements Comparable {
 
         throw new InstanceNotFoundException(code, Label.class.getName());
 
+    }
+
+    public void generateLabelCodes(int numberOfDigits) {
+        for (Label label : this.getLabels()) {
+            if ((label.getCode() == null) || (label.getCode().isEmpty())
+                    || (!label.getCode().startsWith(this.getCode()))) {
+                this.incrementLastLabelSequenceCode();
+                String labelCode = EntitySequence.formatValue(numberOfDigits,
+                        this.getLastLabelSequenceCode());
+                label.setCode(this.getCode()
+                        + EntitySequence.CODE_SEPARATOR_CHILDREN + labelCode);
+            }
+        }
+    }
+
+    public void incrementLastLabelSequenceCode() {
+        if (this.lastLabelSequenceCode == null) {
+            this.lastLabelSequenceCode = 0;
+        }
+        this.lastLabelSequenceCode++;
+    }
+
+    @NotNull(message = "last label sequence code not specified")
+    public Integer getLastLabelSequenceCode() {
+        return lastLabelSequenceCode;
     }
 
 }

@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.SimpleTreeNode;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
@@ -50,6 +51,7 @@ import org.zkoss.zul.api.Window;
  * Controller for CRUD actions over a {@link BaseCalendar}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class BaseCalendarCRUDController extends GenericForwardComposer {
 
@@ -61,11 +63,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private Window editWindow;
 
-    private Window confirmRemove;
-
     private Window createNewVersion;
-
-    private boolean confirmingRemove = false;
 
     private OnlyOneVisible visibility;
 
@@ -122,6 +120,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     public void save() {
         try {
+            validateCalendarExceptionCodes();
+            baseCalendarModel.generateCalendarCodes();
             baseCalendarModel.confirmSave();
             messagesForUser.showMessage(Level.INFO, _(
                     "Base calendar \"{0}\" saved", baseCalendarModel
@@ -129,62 +129,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
-        }
-    }
-
-    public void confirmRemove(BaseCalendar baseCalendar) {
-        baseCalendarModel.initRemove(baseCalendar);
-        showConfirmingWindow();
-    }
-
-    public void cancelRemove() {
-        confirmingRemove = false;
-        baseCalendarModel.cancel();
-        confirmRemove.setVisible(false);
-        Util.reloadBindings(confirmRemove);
-    }
-
-    public boolean isConfirmingRemove() {
-        return confirmingRemove;
-    }
-
-    private void hideConfirmingWindow() {
-        confirmingRemove = false;
-        Util.reloadBindings(confirmRemove);
-    }
-
-    private void showConfirmingWindow() {
-        confirmingRemove = true;
-        try {
-            Util.reloadBindings(confirmRemove);
-            confirmRemove.doModal();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void remove() {
-        String name = baseCalendarModel.getBaseCalendar().getName();
-        if (baseCalendarModel.isParent()) {
-            hideConfirmingWindow();
-            messagesForUser
-                    .showMessage(Level.ERROR,
-                            _("The calendar was not removed because it still has children. "
-                                    + "Some other calendar is derived from this one."));
-        } else if (baseCalendarModel.isDefaultCalendar(baseCalendarModel
-                .getBaseCalendar())) {
-            hideConfirmingWindow();
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _("The default calendar can not be removed. "
-                                    + "Please, change the default calendar in the Configuration window before."));
-        } else {
-            baseCalendarModel.confirmRemove();
-            hideConfirmingWindow();
-            Util.reloadBindings(listWindow);
-            messagesForUser.showMessage(Level.INFO, _(
-                    "Removed calendar \"{0}\"", name));
         }
     }
 
@@ -205,7 +149,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void assignEditionController() {
         editionController = new BaseCalendarEditionController(
-                baseCalendarModel, editWindow, createNewVersion) {
+                baseCalendarModel, editWindow, createNewVersion,
+                messagesForUser) {
 
             @Override
             public void goToList() {
@@ -233,7 +178,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void assignCreateController() {
         createController = new BaseCalendarEditionController(baseCalendarModel,
-                createWindow, createNewVersion) {
+                createWindow, createNewVersion, messagesForUser) {
 
             @Override
             public void goToList() {
@@ -264,15 +209,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     editWindow);
         }
         return visibility;
-    }
-
-    private void reloadCurrentWindow() {
-        if (baseCalendarModel.isEditing()) {
-            Util.reloadBindings(editWindow);
-        } else {
-            Util.reloadBindings(createWindow);
-        }
-        highlightDaysOnCalendar();
     }
 
     private void reloadDayInformation() {
@@ -413,6 +349,58 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     }
 
+    private void confirmRemove(BaseCalendar calendar) {
+
+        // Has parent?
+        if (hasParent(calendar)) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("Calendar cannot be removed because it still has children. "
+                                    + "Some other calendar is derived from this one."));
+            return;
+        }
+
+        // Is default calendar?
+        if (isDefault(calendar)) {
+            messagesForUser
+                    .showMessage(
+                            Level.ERROR,
+                            _("Default calendar cannot be removed. "
+                                    + "Please, change the default calendar in the Configuration window before."));
+            return;
+        }
+
+        try {
+            int status = Messagebox
+                    .show(_("Confirm deleting {0}. Are you sure?",
+                            calendar.getName()), _("Delete"), Messagebox.OK
+                            | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                remove(calendar);
+            }
+
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+        }
+    }
+
+    private void remove(BaseCalendar calendar) {
+        final String name = calendar.getName();
+        baseCalendarModel.confirmRemove(calendar);
+        messagesForUser.showMessage(Level.INFO,
+                _("Removed calendar \"{0}\"", name));
+        Util.reloadBindings(listWindow);
+    }
+
+    public boolean isDefault(BaseCalendar calendar) {
+        return baseCalendarModel.isDefaultCalendar(calendar);
+    }
+
+    public boolean hasParent(BaseCalendar calendar) {
+        return baseCalendarModel.isParent(calendar);
+    }
+
     public BaseCalendarEditionController getEditionController() {
         if (isEditing()) {
             return editionController;
@@ -421,4 +409,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
+    private void validateCalendarExceptionCodes() {
+        if (baseCalendarModel.isEditing()) {
+            this.editionController.validateCalendarExceptionCodes();
+        } else {
+            this.createController.validateCalendarExceptionCodes();
+        }
+    }
 }

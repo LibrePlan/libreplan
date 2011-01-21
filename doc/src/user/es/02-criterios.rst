@@ -10,7 +10,7 @@ En el proyecto, existen varias operaciones que se pueden realizar con criterios:
 * Administración de criterios
 * Asignación de criterios a recursos.
 * Asignación de criterios a tareas.
-* Filtrado de entidades por criterios. Es posible filtrar tareas y elementos de pedido por criterios para realizar operaciones en la aplicación. 
+* Filtrado de entidades por criterios. Es posible filtrar tareas y elementos de pedido por criterios para realizar operaciones en la aplicación.
 
 De las tres funcionalidades anteriores sólo se explicará la primera de ellas en esta sección dejando para secciones posteriores los dos tipos de asignación, la de recursos en el capitulo "Gestión de recursos" y la de filstrado en el capítulo "Planificación de tareas".
 

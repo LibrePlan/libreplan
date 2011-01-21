@@ -27,6 +27,8 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -66,8 +68,9 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         c.add(Restrictions.eq("name", name));
 
         ExternalCompany found = (ExternalCompany) c.uniqueResult();
-        if (found == null)
+        if (found == null) {
             throw new InstanceNotFoundException(name, ExternalCompany.class.getName());
+        }
 
         return found;
     }
@@ -101,8 +104,9 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         c.add(Restrictions.eq("nif", nif));
 
         ExternalCompany found = (ExternalCompany) c.uniqueResult();
-        if (found == null)
+        if (found == null) {
             throw new InstanceNotFoundException(nif, ExternalCompany.class.getName());
+        }
 
         return found;
     }
@@ -134,4 +138,19 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
         return c.list();
 
     }
+
+    @Override
+    public boolean isAlreadyInUse(ExternalCompany company) {
+        if (company.isNewObject()) {
+            return false;
+        }
+        boolean usedInOrders = !getSession().createCriteria(Order.class).add(
+                Restrictions.eq("customer", company)).list()
+                .isEmpty();
+        boolean usedInSubcontratedTask = !getSession().createCriteria(
+                SubcontractedTaskData.class).add(
+                Restrictions.eq("externalCompany", company)).list().isEmpty();
+        return usedInOrders || usedInSubcontratedTask;
+    }
+
 }

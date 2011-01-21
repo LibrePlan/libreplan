@@ -18,8 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController"
-    width="100%">
+    apply="org.navalplanner.web.orders.AssignedHoursToOrderElementController" width="100%">
 
     <!-- Direct imputation -->
     <vbox width="100%">
@@ -57,7 +56,7 @@
                         </row>
                         <row>
                             <label
-                                value="${i18n:_('Sum of all order line elements imputed hours')}" />
+                                value="${i18n:_('Sum of all task leafs imputed hours')}" />
                             <label id="totalIDC"
                                 value="@{assignedHoursToOrderElementController.hoursChildren}" />
                         </row>

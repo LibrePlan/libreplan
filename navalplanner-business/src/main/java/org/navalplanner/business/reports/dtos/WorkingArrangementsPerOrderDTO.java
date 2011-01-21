@@ -36,7 +36,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  *

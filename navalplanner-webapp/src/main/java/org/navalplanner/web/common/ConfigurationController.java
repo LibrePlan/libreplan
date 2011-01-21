@@ -22,12 +22,19 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
-import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.entities.EntityNameEnum;
+import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
@@ -37,24 +44,38 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.ArrayGroupsModel;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Group;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Listitem;
+import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
+
 
 /**
  * Controller for {@link Configuration} entity.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
     private Window configurationWindow;
+
     private BandboxSearch defaultCalendarBandboxSearch;
+
+    private Listbox lbTypeProgress;
 
     private IConfigurationModel configurationModel;
 
@@ -62,7 +83,17 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private OrderSequenceRowRenderer orderSequenceRowRenderer = new OrderSequenceRowRenderer();
+    private Grid entitySequencesGrid;
+
+    private Combobox entityCombo;
+
+    private Intbox numDigitBox;
+
+    private Textbox prefixBox;
+
+    private Checkbox scenariosVisible;
+
+    private Map<EntityNameEnum, Boolean> mapOpenedGroups = new HashMap<EntityNameEnum, Boolean>();
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -75,14 +106,67 @@ public class ConfigurationController extends GenericForwardComposer {
                     @Override
                     public void onEvent(Event event) throws Exception {
                         Listitem selectedItem = (Listitem) ((SelectEvent) event)
-                                .getSelectedItems()
-                                .iterator().next();
+                                .getSelectedItems().iterator().next();
                         setDefaultCalendar((BaseCalendar) selectedItem
                                 .getValue());
                     }
                 });
-
+        initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
+        initOpenedGroup();
+        reloadEntitySequences();
+        if (moreScenariosThanMasterCreated()) {
+            scenariosVisible.setChecked(true);
+            scenariosVisible.setDisabled(true);
+            scenariosVisible
+                    .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
+        }
+    }
+
+    private void initializeProgressTypeList() {
+        lbTypeProgress.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Listitem selectedItem = getSelectedItem((SelectEvent) event);
+                if (selectedItem != null) {
+                    ProgressType progressType = (ProgressType) selectedItem.getValue();
+                    configurationModel.setProgressType(progressType);
+                }
+            }
+
+            private Listitem getSelectedItem(SelectEvent event) {
+                final Set<Listitem> selectedItems = event.getSelectedItems();
+                return selectedItems.iterator().next();
+            }
+
+        });
+    }
+
+    public List<ProgressType> getProgressTypes() {
+        return configurationModel.getProgresTypes();
+    }
+
+    public ProgressType getSelectedProgressType() {
+        return configurationModel.getProgressType();
+    }
+
+    public void setSelectedProgressType(ProgressType progressType) {
+        configurationModel.setProgressType(progressType);
+    }
+
+    private void initOpenedGroup() {
+        for (final EntityNameEnum entityName : EntityNameEnum.values()) {
+            this.mapOpenedGroups.put(entityName, false);
+        }
+    }
+
+    private boolean isOpenedGroup(EntityNameEnum entityName) {
+        return mapOpenedGroups.get(entityName);
+    }
+
+    public void onOpenGroup(EntityNameEnum entityName, boolean open) {
+        mapOpenedGroups.put(entityName, open);
     }
 
     public List<BaseCalendar> getCalendars() {
@@ -98,17 +182,22 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        if (ConstraintChecker.isValid(configurationWindow)) {
+        if (ConstraintChecker.isValid(configurationWindow)
+                && checkValidEntitySequenceRows()) {
             try {
                 configurationModel.confirm();
+                configurationModel.init();
                 messages.showMessage(Level.INFO, _("Changes saved"));
                 reloadWindow();
+                initOpenedGroup();
+                reloadEntitySequences();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
             } catch (ConcurrentModificationException e) {
                 messages.showMessage(Level.ERROR, e.getMessage());
                 configurationModel.init();
                 reloadWindow();
+                reloadEntitySequences();
             }
         }
     }
@@ -117,10 +206,47 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.cancel();
         messages.showMessage(Level.INFO, _("Changes have been canceled"));
         reloadWindow();
+        initOpenedGroup();
+        reloadEntitySequences();
+    }
+
+    private boolean checkValidEntitySequenceRows() {
+        Rows rows = entitySequencesGrid.getRows();
+        for (Row row : (List<Row>) rows.getChildren()) {
+            if (!(row instanceof Group)) {
+                EntitySequence seq = (EntitySequence) row.getValue();
+                if (seq != null) {
+                    Textbox prefixBox = (Textbox) row.getChildren().get(1);
+                    if (!seq.isAlreadyInUse()) {
+                        String errorMessage = this.validPrefix(seq, prefixBox
+                                .getValue());
+                        if (errorMessage != null) {
+                            throw new WrongValueException(prefixBox,
+                                    errorMessage);
+                        }
+                    }
+
+                    Intbox digitsBox = (Intbox) row.getChildren().get(2);
+                    try {
+                        if (!seq.isAlreadyInUse()) {
+                            seq.setNumberOfDigits(digitsBox.getValue());
+                        }
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(digitsBox, e.getMessage());
+                    }
+                }
+            }
+        }
+        return true;
     }
 
     private void reloadWindow() {
         Util.reloadBindings(configurationWindow);
+    }
+
+    private void reloadEntitySequences() {
+        entitySequencesGrid.setModel(getEntitySequenceModel());
+        entitySequencesGrid.invalidate();
     }
 
     public String getCompanyCode() {
@@ -131,12 +257,50 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setCompanyCode(companyCode);
     }
 
+    public String getCompanyLogoURL() {
+        return configurationModel.getCompanyLogoURL();
+    }
+
+    public void setCompanyLogoURL(String companyLogoURL) {
+        configurationModel.setCompanyLogoURL(companyLogoURL);
+    }
+
     public Boolean getGenerateCodeForCriterion() {
         return configurationModel.getGenerateCodeForCriterion();
     }
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
         configurationModel.setGenerateCodeForCriterion(generateCodeForCriterion);
+    }
+
+    public Boolean getGenerateCodeForWorkReportType() {
+        return configurationModel.getGenerateCodeForWorkReportType();
+    }
+
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        configurationModel
+                .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
+    }
+
+    public Boolean getGenerateCodeForCalendarExceptionType() {
+        return configurationModel.getGenerateCodeForCalendarExceptionType();
+    }
+
+    public void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType) {
+        configurationModel
+                .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
+    }
+
+    public Boolean getGenerateCodeForCostCategory() {
+        return configurationModel.getGenerateCodeForCostCategory();
+    }
+
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        configurationModel
+                .setGenerateCodeForCostCategory(generateCodeForCostCategory);
     }
 
     public Boolean getGenerateCodeForLabel() {
@@ -183,167 +347,37 @@ public class ConfigurationController extends GenericForwardComposer {
                 generateCodeForMaterialCategories);
     }
 
+    public void reloadGeneralConfiguration() {
+        reloadWindow();
+    }
+
     public Boolean getGenerateCodeForUnitTypes() {
         return configurationModel.getGenerateCodeForUnitTypes();
     }
 
-    public void setGenerateCodeForUnitTypes(
-            Boolean generateCodeForUnitTypes) {
-        configurationModel.setGenerateCodeForUnitTypes(
-                generateCodeForUnitTypes);
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+        configurationModel
+                .setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
     }
 
-    public List<OrderSequence> getOrderSequences() {
-        return configurationModel.getOrderSequences();
+    public Boolean getGenerateCodeForBaseCalendars() {
+        return configurationModel.getGenerateCodeForBaseCalendars();
     }
 
-    public void addOrderSequence() {
-        configurationModel.addOrderSequence();
-        reloadOrderSequencesList();
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        configurationModel
+                .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
-    public void removeOrderSequence(OrderSequence orderSequence) {
+    public void removeEntitySequence(EntitySequence entitySequence) {
         try {
-            configurationModel.removeOrderSequence(orderSequence);
+            configurationModel.removeEntitySequence(entitySequence);
         } catch (IllegalArgumentException e) {
             messages.showMessage(Level.ERROR, e.getMessage());
         }
-        reloadOrderSequencesList();
-    }
-
-    private void reloadOrderSequencesList() {
-        Util
-                .reloadBindings(configurationWindow
-                        .getFellow("orderSequencesList"));
-    }
-
-    public OrderSequenceRowRenderer getOrderSequenceRowRenderer() {
-        return orderSequenceRowRenderer;
-    }
-
-    private class OrderSequenceRowRenderer implements RowRenderer {
-
-        @Override
-        public void render(Row row, Object data) throws Exception {
-            OrderSequence orderSequence = (OrderSequence) data;
-            row.setValue(orderSequence);
-
-            appendActiveCheckbox(row, orderSequence);
-            appendPrefixTextbox(row, orderSequence);
-            appendNumberOfDigitsInbox(row, orderSequence);
-            appendLastValueInbox(row, orderSequence);
-            appendOperations(row, orderSequence);
-        }
-
-        private void appendActiveCheckbox(Row row,
-                final OrderSequence orderSequence) {
-            Checkbox checkbox = Util.bind(new Checkbox(),
-                    new Util.Getter<Boolean>() {
-
-                        @Override
-                        public Boolean get() {
-                            return orderSequence.isActive();
-                        }
-                    }, new Util.Setter<Boolean>() {
-
-                        @Override
-                        public void set(Boolean value) {
-                            orderSequence.setActive(value);
-                        }
-                    });
-
-            row.appendChild(checkbox);
-        }
-
-        private void appendPrefixTextbox(Row row,
-                final OrderSequence orderSequence) {
-            final Textbox tempTextbox = new Textbox();
-            Textbox textbox = Util.bind(tempTextbox,
-                    new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                    return orderSequence.getPrefix();
-                }
-            }, new Util.Setter<String>() {
-
-                @Override
-                public void set(String value) {
-                    try {
-                        orderSequence.setPrefix(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempTextbox, e
-                                .getMessage());
-                    }
-                }
-            });
-            textbox.setConstraint("no empty:" + _("cannot be null or empty"));
-
-            if (orderSequence.isAlreadyInUse()) {
-                textbox.setDisabled(true);
-            }
-
-            row.appendChild(textbox);
-        }
-
-        private void appendNumberOfDigitsInbox(Row row,
-                final OrderSequence orderSequence) {
-            final Intbox tempIntbox = new Intbox();
-            Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
-
-                @Override
-                public Integer get() {
-                    return orderSequence.getNumberOfDigits();
-                }
-            }, new Util.Setter<Integer>() {
-
-                @Override
-                public void set(Integer value) {
-                    try {
-                        orderSequence.setNumberOfDigits(value);
-                    } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempIntbox, e.getMessage());
-                    }
-                }
-            });
-            intbox.setConstraint("no empty:" + _("cannot be null or empty"));
-
-            if (orderSequence.isAlreadyInUse()) {
-                intbox.setDisabled(true);
-            }
-
-            row.appendChild(intbox);
-        }
-
-        private void appendLastValueInbox(Row row,
-                final OrderSequence orderSequence) {
-            Textbox textbox = Util.bind(new Textbox(),
-                    new Util.Getter<String>() {
-
-                @Override
-                public String get() {
-                            return OrderSequence.formatValue(orderSequence
-                                    .getNumberOfDigits(), orderSequence
-                                    .getLastValue());
-                }
-            });
-
-            row.appendChild(textbox);
-        }
-
-        private void appendOperations(Row row, final OrderSequence orderSequence) {
-            final Button removeButton = Util
-                    .createRemoveButton(new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    removeOrderSequence(orderSequence);
-                }
-            });
-
-            row.appendChild(removeButton);
-        }
-
+        onOpenGroup(entitySequence.getEntityName(), true);
+        reloadEntitySequences();
     }
 
     public void setExpandCompanyPlanningViewCharts(
@@ -376,4 +410,325 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isExpandResourceLoadViewCharts();
     }
 
+    public void setMonteCarloMethodTabVisible(
+            Boolean expandResourceLoadViewCharts) {
+        configurationModel
+                .setMonteCarloMethodTabVisible(expandResourceLoadViewCharts);
+    }
+
+    public Boolean isMonteCarloMethodTabVisible() {
+        return configurationModel.isMonteCarloMethodTabVisible();
+    }
+
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        configurationModel.setScenariosVisible(scenariosVisible);
+    }
+
+    public Boolean isScenariosVisible() {
+        return configurationModel.isScenariosVisible();
+    }
+
+    public class EntitySequenceGroupRenderer implements RowRenderer {
+        @Override
+        public void render(Row row, Object data) throws Exception {
+
+            EntitySequence entitySequence = (EntitySequence) data;
+            final EntityNameEnum entityName = entitySequence.getEntityName();
+
+            if (row instanceof Group) {
+                final Group group = ((Group) row);
+                if (!isOpenedGroup(entityName)) {
+                    group.setOpen(false);
+                }
+                group.setValue(entityName);
+                group
+                        .appendChild(new Label(_(entityName
+                                .getSequenceLiteral())));
+                group.addEventListener(Events.ON_OPEN, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        onOpenGroup(entityName, group.isOpen());
+                    }
+                });
+
+            } else {
+
+                row.setValue(entitySequence);
+                appendActiveRadiobox(row, entitySequence);
+                appendPrefixTextbox(row, entitySequence);
+                appendNumberOfDigitsInbox(row, entitySequence);
+                appendLastValueInbox(row, entitySequence);
+                appendOperations(row, entitySequence);
+
+                if (entitySequence.isAlreadyInUse()) {
+                    row
+                            .setTooltiptext(_("The code sequence is already in use and it can not be updated."));
+                }
+            }
+        }
+
+        private void appendActiveRadiobox(final Row row,
+                final EntitySequence entitySequence) {
+
+            final Radio radiobox = Util.bind(new Radio(),
+                    new Util.Getter<Boolean>() {
+
+                        @Override
+                        public Boolean get() {
+                            return entitySequence.isActive();
+                        }
+                    }, new Util.Setter<Boolean>() {
+
+                        @Override
+                        public void set(Boolean value) {
+                            updateOtherSequences(entitySequence);
+                            entitySequence.setActive(value);
+                            Util.reloadBindings(entitySequencesGrid);
+                            reloadEntitySequences();
+                        }
+                    });
+
+            row.appendChild(radiobox);
+        }
+
+        private void updateOtherSequences(final EntitySequence activeSequence) {
+            for (EntitySequence sequence : getEntitySequences(activeSequence
+                    .getEntityName())) {
+                    sequence.setActive(false);
+            }
+        }
+
+        private void appendPrefixTextbox(Row row,
+                final EntitySequence entitySequence) {
+            final Textbox tempTextbox = new Textbox();
+            tempTextbox.setWidth("200px");
+            Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
+
+                @Override
+                public String get() {
+                    return entitySequence.getPrefix();
+                }
+            }, new Util.Setter<String>() {
+
+                @Override
+                public void set(String value) {
+                    try {
+                        entitySequence.setPrefix(value);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(tempTextbox, e
+                                .getMessage());
+                    }
+                }
+            });
+            textbox.setConstraint(checkConstraintFormatPrefix());
+
+            if (entitySequence.isAlreadyInUse()) {
+                textbox.setDisabled(true);
+            }
+
+            row.appendChild(textbox);
+        }
+
+        private void appendNumberOfDigitsInbox(Row row,
+                final EntitySequence entitySequence) {
+            final Intbox tempIntbox = new Intbox();
+            Intbox intbox = Util.bind(tempIntbox, new Util.Getter<Integer>() {
+
+                @Override
+                public Integer get() {
+                    return entitySequence.getNumberOfDigits();
+                }
+            }, new Util.Setter<Integer>() {
+
+                @Override
+                public void set(Integer value) {
+                    try {
+                        entitySequence.setNumberOfDigits(value);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(tempIntbox, e
+                                .getMessage());
+                    }
+                }
+            });
+            intbox.setConstraint(checkConstraintNumberOfDigits());
+
+            if (entitySequence.isAlreadyInUse()) {
+                intbox.setDisabled(true);
+            }
+
+            row.appendChild(intbox);
+        }
+
+        private void appendLastValueInbox(Row row,
+                final EntitySequence entitySequence) {
+            Textbox textbox = Util.bind(new Textbox(),
+                    new Util.Getter<String>() {
+
+                        @Override
+                        public String get() {
+                            return EntitySequence.formatValue(entitySequence
+                                    .getNumberOfDigits(), entitySequence
+                                    .getLastValue());
+                        }
+                    });
+
+            row.appendChild(textbox);
+        }
+
+        private void appendOperations(final Row row,
+                final EntitySequence entitySequence) {
+            final Button removeButton = Util
+                    .createRemoveButton(new EventListener() {
+
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            if (isLastOne(entitySequence)) {
+                                showMessageNotDelete();
+                            } else {
+                                removeEntitySequence(entitySequence);
+                            }
+                        }
+                    });
+
+            if (entitySequence.isAlreadyInUse()) {
+                removeButton.setDisabled(true);
+            }
+
+            row.appendChild(removeButton);
+        }
+
+    }
+
+    public Constraint checkConstraintFormatPrefix() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+
+                Row row = (Row) comp.getParent();
+                EntitySequence sequence = (EntitySequence) row.getValue();
+                if (!sequence.isAlreadyInUse()) {
+                    String errorMessage = validPrefix(sequence, (String) value);
+                    if (errorMessage != null) {
+                        throw new WrongValueException(comp, errorMessage);
+                    }
+                }
+            }
+        };
+    }
+
+    private String validPrefix(EntitySequence sequence, String prefixValue) {
+        sequence.setPrefix(prefixValue);
+        if (!configurationModel.checkFrefixFormat(sequence)) {
+            String message = _("format prefix invalid. It cannot be empty or contain '_' or whitespaces.");
+            if (sequence.getEntityName().canContainLowBar()) {
+                message = _("format prefix invalid. It cannot be empty or contain whitespaces.");
+            }
+            return message;
+        }
+        return null;
+    }
+
+    public Constraint checkConstraintNumberOfDigits(){
+        return new Constraint(){
+
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                Row row = (Row) comp.getParent();
+                EntitySequence sequence = (EntitySequence) row.getValue();
+                if (!sequence.isAlreadyInUse()) {
+                    Integer numberOfDigits = (Integer) value;
+                    try {
+                    sequence.setNumberOfDigits(numberOfDigits);
+                    } catch (IllegalArgumentException e) {
+                        throw new WrongValueException(comp, e.getMessage());
+                    }
+                }
+            }
+        };
+    }
+
+    public void addEntitySequence(EntityNameEnum entityName, String prefix,
+            Integer digits) {
+        configurationModel.addEntitySequence(entityName, prefix, digits);
+        onOpenGroup(entityName, true);
+        reloadEntitySequences();
+    }
+
+    public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
+        return configurationModel.getEntitySequences(entityName);
+    }
+
+    private boolean isLastOne(EntitySequence sequence) {
+        return (getEntitySequences(sequence.getEntityName()).size() == 1);
+    }
+
+    private void showMessageNotDelete() {
+        try {
+            Messagebox
+                    .show(
+                            _("It can not be deleted. At least one sequence is necessary."),
+                            _("Deleting sequence"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+        } catch (InterruptedException e) {
+            messages.showMessage(Level.ERROR, e.getMessage());
+        }
+    }
+
+    public class EntitySequenceComparator implements Comparator {
+        @Override
+        public int compare(Object o1, Object o2) {
+            EntitySequence seq1 = (EntitySequence) o1;
+            EntitySequence seq2 = (EntitySequence) o2;
+            return seq1.getEntityName().compareTo(seq2.getEntityName());
+        }
+    }
+
+    public ArrayGroupsModel getEntitySequenceModel() {
+        return new ArrayGroupsModel(getAllEntitySequences().toArray(),
+                new EntitySequenceComparator());
+    }
+
+    public EntitySequenceGroupRenderer getEntitySequenceGroupRenderer() {
+        return new EntitySequenceGroupRenderer();
+    }
+
+    private List<EntitySequence> getAllEntitySequences() {
+        List<EntitySequence> allSequences = new ArrayList<EntitySequence>();
+        for (final EntityNameEnum entityName : EntityNameEnum.values()) {
+            allSequences.addAll(this.getEntitySequences(entityName));
+        }
+        return allSequences;
+    }
+
+    public void addNewEntitySequence() {
+        if (entityCombo != null && numDigitBox != null) {
+            if (entityCombo.getSelectedItem() == null) {
+                throw new WrongValueException(entityCombo,
+                        _("Select entity, please"));
+            }
+
+            if (prefixBox.getValue() == null || prefixBox.getValue().isEmpty()) {
+                throw new WrongValueException(prefixBox,
+                        _("cannot be null or empty"));
+            }
+
+            try {
+                addEntitySequence((EntityNameEnum) entityCombo
+                        .getSelectedItem().getValue(), prefixBox.getValue(),
+                        numDigitBox.getValue());
+            } catch (IllegalArgumentException e) {
+                throw new WrongValueException(numDigitBox, e.getMessage());
+            }
+        }
+    }
+
+    public EntityNameEnum[] getEntityNames() {
+        return EntityNameEnum.values();
+    }
+
+    public boolean moreScenariosThanMasterCreated() {
+        return configurationModel.moreScenariosThanMasterCreated();
+    }
 }

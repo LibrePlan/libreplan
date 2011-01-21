@@ -25,7 +25,7 @@
    <column label="${i18n:_('Operations')}" />
    <column label="${i18n:_('Name')}" sort="auto(lower(firstName))" />
    <column label="${i18n:_('Surname')}" sort="auto(lower(surname))" />
-   <column label="${i18n:_('NIF')}" sort="auto(nif)" />
+   <column label="${i18n:_('ID')}" sort="auto(nif)" />
   </columns>
   <rows>
    <row self="@{each='worker'}" value="@{worker}">

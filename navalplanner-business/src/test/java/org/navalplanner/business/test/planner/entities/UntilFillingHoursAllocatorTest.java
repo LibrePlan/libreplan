@@ -50,6 +50,7 @@ import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalc
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -74,6 +75,8 @@ public class UntilFillingHoursAllocatorTest {
     private BaseCalendar taskCalendar;
 
     private Integer initialLengthDaysForTask;
+
+    private IntraDayDate endDate;
 
     @Test(expected = IllegalArgumentException.class)
     public void allTasksOfAllocationsMustBeNotNull() {
@@ -112,12 +115,58 @@ public class UntilFillingHoursAllocatorTest {
     }
 
     @Test
+    public void theEndDateIsTheDayAfterIfItIsCompletelyFilled() {
+        LocalDate start = new LocalDate();
+        givenStartDate(IntraDayDate.create(start, hours(1)));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(7);
+        assertThat(endDate, equalTo(startDate.nextDayAtStart()));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(0)));
+    }
+
+    @Test
     public void allTheRequestedHoursAreAssignedFor() {
         givenSpecificAllocations(ResourcesPerDay.amount(2));
         ResourceAllocation.allocating(allocations).untilAllocating(32);
         ResourceAllocation<?> allocation = allocations.get(0)
                 .getBeingModified();
         assertThat(allocation.getAssignments(), haveHours(16, 16));
+    }
+
+    @Test
+    public void theAllocationCanBeDoneFromEnd() {
+        givenStartDate(IntraDayDate.startOfDay(new LocalDate(2009, 1, 10)));
+        givenTaskOfDaysLength(10);// so end is day 20
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate newStart = ResourceAllocation.allocating(allocations)
+                .untilAllocating(Direction.BACKWARD, 16);
+        assertThat(newStart,
+                equalTo(IntraDayDate.startOfDay(new LocalDate(2009, 1, 18))));
+    }
+
+    @Test
+    public void theAllocationCanBeDoneFromAnEndThatIsInTheMiddleOfTheDay() {
+        givenStartDate(IntraDayDate
+                .create(new LocalDate(2009, 1, 10), hours(4)));
+        givenEndDate(IntraDayDate.create(new LocalDate(2009, 1, 19), hours(2)));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate newStart = ResourceAllocation.allocating(allocations)
+                .untilAllocating(Direction.BACKWARD, 10);
+        assertThat(newStart,
+                equalTo(IntraDayDate.startOfDay(new LocalDate(2009, 1, 18))));
+
+    }
+
+    @Test
+    public void theAllocationCanBeDoneFromEndAndTheStartDateIsCorrectlyCalculatedIfTheLastDayDoesntTakeAll() {
+        givenStartDate(IntraDayDate.startOfDay(new LocalDate(2009, 1, 10)));
+        givenTaskOfDaysLength(10);// so end is day 20
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        IntraDayDate newStart = ResourceAllocation.allocating(allocations)
+                .untilAllocating(Direction.BACKWARD, 14);
+        assertThat(newStart, equalTo(IntraDayDate.create(new LocalDate(2009, 1,
+                18), hours(2))));
     }
 
     @Test
@@ -374,6 +423,10 @@ public class UntilFillingHoursAllocatorTest {
         this.startDate = start;
     }
 
+    private void givenEndDate(IntraDayDate end) {
+        this.endDate = end;
+    }
+
     private void createTaskIfNotCreatedYet() {
         if (task != null) {
             return;
@@ -383,7 +436,9 @@ public class UntilFillingHoursAllocatorTest {
             startDate = IntraDayDate.startOfDay(new LocalDate(2009, 10, 10));
         }
         IntraDayDate end = null;
-        if (initialLengthDaysForTask != null) {
+        if (this.endDate != null) {
+            end = endDate;
+        } else if (initialLengthDaysForTask != null) {
             LocalDate startPlusDays = startDate.getDate().plusDays(
                     initialLengthDaysForTask);
             end = IntraDayDate.startOfDay(startPlusDays);

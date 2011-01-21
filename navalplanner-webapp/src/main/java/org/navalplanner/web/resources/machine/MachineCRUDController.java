@@ -22,6 +22,7 @@ package org.navalplanner.web.resources.machine;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -45,7 +46,6 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.navalplanner.web.resources.worker.CriterionsController;
@@ -55,6 +55,8 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -62,9 +64,14 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -82,8 +89,6 @@ public class MachineCRUDController extends GenericForwardComposer {
     private Window editWindow;
 
     private IMachineModel machineModel;
-
-    private IURLHandlerRegistry URLHandlerRegistry;
 
     private OnlyOneVisible visibility;
 
@@ -138,6 +143,7 @@ public class MachineCRUDController extends GenericForwardComposer {
         setupResourcesCostCategoryAssignmentController(comp);
         showListWindow();
         initFilterComponent();
+        setupFilterLimitingResourceListbox();
     }
 
     private void showListWindow() {
@@ -208,7 +214,6 @@ public class MachineCRUDController extends GenericForwardComposer {
     /**
      * Loads {@link Machine} into model, shares loaded {@link Machine} with
      * {@link CriterionsController}
-     *
      * @param machine
      */
     public void goToEditForm(Machine machine) {
@@ -301,8 +306,9 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     private String showInvalidValues(ValidationException e) {
         String result = "";
-        for (InvalidValue each : e.getInvalidValues())
+        for (InvalidValue each : e.getInvalidValues()) {
             result = result + each.getMessage();
+        }
         return result;
     }
 
@@ -355,7 +361,10 @@ public class MachineCRUDController extends GenericForwardComposer {
             parentCalendar = machineModel.getDefaultCalendar();
         }
 
-        machineModel.setCalendar(parentCalendar.newDerivedResourceCalendar());
+        resourceCalendarModel.initCreateDerived(parentCalendar);
+        resourceCalendarModel.generateCalendarCodes();
+        machineModel.setCalendar((ResourceCalendar) resourceCalendarModel
+                .getBaseCalendar());
     }
 
     private Window editCalendarWindow;
@@ -375,7 +384,7 @@ public class MachineCRUDController extends GenericForwardComposer {
 
         baseCalendarEditionController = new BaseCalendarEditionController(
                 resourceCalendarModel, editCalendarWindow,
-                createNewVersionWindow) {
+                createNewVersionWindow, messagesForUser) {
 
             @Override
             public void goToList() {
@@ -394,9 +403,11 @@ public class MachineCRUDController extends GenericForwardComposer {
 
             @Override
             public void save() {
+                validateCalendarExceptionCodes();
                 ResourceCalendar calendar = (ResourceCalendar) resourceCalendarModel
                         .getBaseCalendar();
                 if (calendar != null) {
+                    resourceCalendarModel.generateCalendarCodes();
                     machineModel.setCalendarOfMachine(calendar);
                 }
                 reloadWindow();
@@ -556,8 +567,16 @@ public class MachineCRUDController extends GenericForwardComposer {
         listing.invalidate();
     }
 
-    public Set<LimitingResourceEnum> getLimitingResourceFilterOptionList() {
-        return LimitingResourceEnum.getLimitingResourceFilterOptionList();
+    private void setupFilterLimitingResourceListbox() {
+        for(LimitingResourceEnum resourceEnum :
+            LimitingResourceEnum.getLimitingResourceFilterOptionList()) {
+            Listitem item = new Listitem();
+            item.setParent(filterLimitingResource);
+            item.setValue(resourceEnum);
+            item.appendChild(new Listcell(resourceEnum.toString()));
+            filterLimitingResource.appendChild(item);
+        }
+        filterLimitingResource.setSelectedIndex(0);
     }
 
     public Set<LimitingResourceEnum> getLimitingResourceOptionList() {
@@ -584,12 +603,14 @@ public class MachineCRUDController extends GenericForwardComposer {
 
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
-        if(ce.isChecked()) {
-            //we have to auto-generate the code if it's unsaved
-            if(getMachine().isNewObject()) {
-                getMachine().setCodeAutogenerated();
-                Util.reloadBindings(editWindow);
+        if (ce.isChecked()) {
+            // we have to auto-generate the code if it's unsaved
+            try {
+                machineModel.setCodeAutogenerated(ce.isChecked());
+            } catch (ConcurrentModificationException err) {
+                messagesForUser.showMessage(Level.ERROR, err.getMessage());
             }
+            Util.reloadBindings(editWindow);
         }
     }
 
@@ -617,4 +638,46 @@ public class MachineCRUDController extends GenericForwardComposer {
                     Level.INFO, _("This machine was already removed by other user"));
         }
     }
+
+    public RowRenderer getMachinesRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final Machine machine = (Machine) data;
+                row.setValue(machine);
+
+                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                        new EventListener() {
+                            @Override
+                            public void onEvent(Event event) throws Exception {
+                                goToEditForm(machine);
+                            }
+                        });
+
+                row.appendChild(new Label(machine.getName()));
+                row.appendChild(new Label(machine.getDescription()));
+                row.appendChild(new Label(machine.getCode()));
+                row.appendChild(new Label((Boolean.TRUE.equals(machine
+                        .isLimitingResource())) ? _("yes") : _("no")));
+
+                Hbox hbox = new Hbox();
+                hbox.appendChild(Util.createEditButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(machine);
+                    }
+                }));
+                hbox.appendChild(Util.createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmRemove(machine);
+                    }
+                }));
+                row.appendChild(hbox);
+            }
+
+        };
+    }
+
 }

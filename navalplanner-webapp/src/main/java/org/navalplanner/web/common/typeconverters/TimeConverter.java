@@ -41,7 +41,6 @@ public class TimeConverter implements TypeConverter {
 
     @Override
     public Object coerceToUi(Object object, Component component) {
-        LocalTime date = ((LocalTime) object);
         DateTimeFormatter fmt = DateTimeFormat.forPattern("h:mm a");
         return object != null ? fmt.print((LocalTime) object) : new String("");
     }

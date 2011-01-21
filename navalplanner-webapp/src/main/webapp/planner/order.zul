@@ -49,35 +49,52 @@
 
     <editTaskWindow id="editTaskWindow" editController="${editController}" />
 
+    <!-- Progress assignment window -->
     <window id="advanceAssignmentPlanningWindow"
-        apply="${advanceAssignmentController}"
-        title="${advanceAssignmentController.title}" width="950px"
-        visible="false">
-         <vbox id="messagesAdvanceAssignmentContainer" />
-         <listOrderElementAdvances id="orderElementAdvances"/>
+            apply="${advanceAssignmentController}"
+            title="${advanceAssignmentController.title}"
+            width="950px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
+
+        <vbox id="messagesAdvanceAssignmentContainer" />
+
+        <listOrderElementAdvances id="orderElementAdvances"/>
+
+        <separator />
+
+        <!-- Control buttons -->
         <hbox>
             <button label="${i18n:_('Accept')}"
-                onClick="advanceAssignmentController.accept();" />
+                    sclass="save-button global-action"
+                    onClick="advanceAssignmentController.accept();" />
             <button label="${i18n:_('Cancel')}"
-                onClick="advanceAssignmentController.cancel();" />
+                    sclass="cancel-button global-action"
+                    onClick="advanceAssignmentController.cancel();" />
         </hbox>
+
     </window>
 
+    <!-- Progress consolitation -->
     <window id="advanceWindow"
-        apply="${advanceController}"
-        title="${i18n:_('Advance consolidation')}" width="700px"
-        closable="true" visible="false">
+            apply="${advanceController}"
+            title="${i18n:_('Progress consolidation')}"
+            width="700px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
 
         <vbox>
 
-            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
                     style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
                 <panelchildren>
                     <label value="@{advanceController.infoMessages}" />
                 </panelchildren>
             </panel>
 
-            <panel title="${i18n:_('Advance Consolidation')}" border="normal"
+            <panel title="${i18n:_('Progress Consolidation')}" border="normal"
                     style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
                 <panelchildren>
                     <vbox>
@@ -110,36 +127,49 @@
                 </panelchildren>
             </panel>
 
+            <!-- Control buttons -->
             <hbox>
                 <button label="${i18n:_('Accept')}"
-                    onClick="advanceController.accept();" />
+                        sclass="save-button global-action"
+                        onClick="advanceController.accept();" />
                 <button label="${i18n:_('Cancel')}"
-                    onClick="advanceController.cancel();" />
+                        sclass="cancel-button global-action"
+                        onClick="advanceController.cancel();" />
             </hbox>
 
         </vbox>
 
     </window>
 
+    <!-- Calendar allocation -->
     <window id="calendarAllocationWindow"
-        apply="${calendarController}"
-        title="${i18n:_('Calendar allocation')}" width="600px"
-        closable="true" visible="false">
+            apply="${calendarController}"
+            title="${i18n:_('Calendar allocation')}"
+            width="600px"
+            visible="false"
+            closable="true"
+            onClose="self.visible = false; event.stopPropagation();" >
 
         <vbox>
 
-            <label value="${i18n:_('Select the calendar')}" />
+            <panel title="${i18n:_('Calendar')}"
+                    border="normal" style="overflow:auto" >
+                <panelchildren>
+                    <combobox id="calendarCombo">
+                        <comboitem self="@{each='baseCalendar'}" value="@{baseCalendar}"
+                                label="@{baseCalendar.name}" />
+                    </combobox>
+                </panelchildren>
+            </panel>
 
-            <combobox id="calendarCombo">
-                <comboitem self="@{each='baseCalnedar'}" value="@{baseCalnedar}"
-                    label="@{baseCalnedar.name}" />
-            </combobox>
-
+            <!-- Control buttons -->
             <hbox>
-                <button label="${i18n:_('Assign')}" sclass="save-button"
-                    onClick="calendarController.assign(calendarCombo.selectedItem);" />
-                <button label="${i18n:_('Cancel')}" sclass="cancel-button"
-                    onClick="calendarController.cancel();" />
+                <button label="${i18n:_('Accept')}"
+                        sclass="save-button global-action"
+                        onClick="calendarController.assign(calendarCombo.selectedItem);" />
+                <button label="${i18n:_('Cancel')}"
+                        sclass="cancel-button global-action"
+                        onClick="calendarController.cancel();" />
             </hbox>
 
         </vbox>

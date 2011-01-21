@@ -23,7 +23,6 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -45,8 +44,6 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.Util.Getter;
-import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -61,12 +58,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
@@ -86,8 +80,6 @@ import org.zkoss.zul.impl.api.InputElement;
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Vbox orderElementFilter;
-
-    private Hbox orderFilter;
 
     private BandboxMultipleSearch bdFiltersOrderElement;
 
@@ -137,16 +129,78 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         return orderModel.getOrderElementTreeModel();
     }
 
-    public void createTemplate() {
+    public void createTemplateFromSelectedOrderElement() {
         if (tree.getSelectedCount() == 1) {
             createTemplate(getSelectedNode());
         } else {
-            try {
-                Messagebox.show(_("Choose a order element "
-                        + "from which create a template from"));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void editSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            showEditionOrderElement(tree.getSelectedItem());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void moveSelectedOrderElementUp() {
+        if (tree.getSelectedCount() == 1) {
+            Treeitem item =  tree.getSelectedItem();
+            up((OrderElement)item.getValue());
+            Treeitem brother = (Treeitem) item.getPreviousSibling();
+            if (brother != null) {
+                brother.setSelected(true);
             }
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void moveSelectedOrderElementDown() {
+        if (tree.getSelectedCount() == 1) {
+            Treeitem item =  tree.getSelectedItem();
+            down((OrderElement)item.getValue());
+            Treeitem brother = (Treeitem) item.getNextSibling();
+            if (brother != null) {
+                brother.setSelected(true);
+            }
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void indentSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            indent(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void unindentSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            unindent(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    public void deleteSelectedOrderElement() {
+        if (tree.getSelectedCount() == 1) {
+            remove(getSelectedNode());
+        } else {
+            showSelectAnElementMessageBox();
+        }
+    }
+
+    private void showSelectAnElementMessageBox() {
+        try {
+            Messagebox.show(_("Choose a task "
+                    + "to operate on it"));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -171,8 +225,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     public void found(OrderElementTemplate template) {
                         OrderLineGroup parent = (OrderLineGroup) getModel()
                                 .getRoot();
-                        OrderElement created = orderModel.createFrom(parent,
-                                template);
+                        orderModel.createFrom(parent, template);
                         getModel().addNewlyAddedChildrenOf(parent);
                     }
                 });
@@ -193,24 +246,12 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         try {
             Messagebox
                     .show(
-                            _("Templates can only be created from already existent order elements.\n"
-                                    + "Newly order elements cannot be used."),
+                            _("Templates can only be created from already existent tasks.\n"
+                                    + "Newly tasks cannot be used."),
                             _("Operation cannot be done"), Messagebox.OK,
                             Messagebox.INFORMATION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private void notifyDateboxCantBeCreated(final String dateboxName,
-            final String codeOrderElement) {
-        try {
-            Messagebox.show(_("the " + dateboxName
-                    + "datebox of the order element " + codeOrderElement
-                    + " could not be created.\n"),
-                    _("Operation cannot be done"), Messagebox.OK,
-                    Messagebox.INFORMATION);
-        } catch (InterruptedException e) {
         }
     }
 
@@ -229,6 +270,35 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     void doEditFor(Order order) {
         Util.reloadBindings(tree);
+    }
+
+    public void disabledCodeBoxes(boolean disabled) {
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren treeChildren = tree.getTreechildren();
+        if (treeChildren != null) {
+            childrenSet.addAll((Collection<Treeitem>) treeChildren.getItems());
+        }
+        for (Treeitem each : childrenSet) {
+            disableCodeBoxes(each, disabled);
+        }
+    }
+
+    private void disableCodeBoxes(Treeitem item, boolean disabled) {
+        Treerow row = item.getTreerow();
+        InputElement codeBox = (InputElement) ((Treecell) row.getChildren()
+                .get(1)).getChildren().get(0);
+        codeBox.setDisabled(disabled);
+        codeBox.invalidate();
+
+        Set<Treeitem> childrenSet = new HashSet<Treeitem>();
+        Treechildren children = item.getTreechildren();
+        if (children != null) {
+            childrenSet.addAll((Collection<Treeitem>) children.getItems());
+        }
+
+        for (Treeitem each : childrenSet) {
+            disableCodeBoxes(each, disabled);
+        }
     }
 
     @Override
@@ -317,13 +387,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
     }
 
-    private enum Navigation {
-        LEFT, UP, RIGHT, DOWN;
-        public static Navigation getIntentFrom(KeyEvent keyEvent) {
-            return values()[keyEvent.getKeyCode() - 37];
-        }
-    }
-
     private Map<OrderElement, Textbox> orderElementCodeTextboxes = new HashMap<OrderElement, Textbox>();
 
     public Map<OrderElement, Textbox> getOrderElementCodeTextboxes() {
@@ -332,171 +395,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     public class OrderElementTreeitemRenderer extends Renderer {
 
-        private Map<OrderElement, Intbox> hoursIntBoxByOrderElement = new HashMap<OrderElement, Intbox>();
-
         public OrderElementTreeitemRenderer() {
-        }
-
-        private void registerKeyboardListener(final InputElement inputElement) {
-            inputElement.setCtrlKeys("#up#down");
-            inputElement.addEventListener("onCtrlKey", new EventListener() {
-                private Treerow treerow = getCurrentTreeRow();
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Navigation navigation = Navigation.getIntentFrom((KeyEvent)event);
-                    moveFocusTo(inputElement, navigation, treerow);
-                }
-            });
-        }
-
-        private void moveFocusTo(InputElement inputElement, Navigation navigation, Treerow treerow) {
-            List<InputElement> boxes = getBoxes(treerow);
-            int position = boxes.indexOf(inputElement);
-
-            switch (navigation) {
-            case UP:
-                focusGoUp(treerow, position);
-                break;
-            case DOWN:
-                focusGoDown(treerow, position);
-                break;
-            case LEFT:
-                if (position == 0) {
-                    focusGoUp(treerow, boxes.size() - 1);
-                } else {
-                    if(boxes.get(position - 1).isDisabled()) {
-                        moveFocusTo(boxes.get(position - 1), Navigation.LEFT, treerow);
-                    }
-                    else {
-                        boxes.get(position - 1).focus();
-                    }
-                }
-                break;
-            case RIGHT:
-                if (position == boxes.size() - 1) {
-                    focusGoDown(treerow, 0);
-                } else {
-                    if(boxes.get(position + 1).isDisabled()) {
-                        moveFocusTo(boxes.get(position + 1), Navigation.RIGHT, treerow);
-                    }
-                    else {
-                        boxes.get(position + 1).focus();
-                    }
-                }
-                break;
-            }
-        }
-
-        private void focusGoUp(Treerow treerow, int position) {
-            Treeitem parent = (Treeitem) treerow.getParent();
-            List treeItems = parent.getParent().getChildren();
-            int myPosition = parent.indexOf();
-
-            if(myPosition > 0) {
-                // the current node is not the first brother
-                if(((Treeitem)treeItems.get(myPosition - 1)).getTreechildren() == null) {
-                    //the previous brother doesn't have children, or we don't care
-                    Treerow upTreerow =
-                        ((Treeitem)treeItems.get(myPosition - 1)).getTreerow();
-
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
-                }
-                else {
-                    //we have to move to the last child of the previous brother
-                    Treerow upTreerow = findLastTreerow((Treeitem)treeItems.get(myPosition - 1));
-
-                    while(!upTreerow.isVisible()) {
-                        upTreerow = (Treerow)
-                            ((Treeitem)upTreerow.getParent().getParent().getParent()).getTreerow();
-                    }
-
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
-                }
-            }
-            else {
-                // the node is the first brother
-                if(parent.getParent().getParent() instanceof Treeitem) {
-                    // the node has a parent, so we move up to it
-                    Treerow upTreerow = ((Treeitem)parent.getParent().getParent()).getTreerow();
-
-                    focusCorrectBox(upTreerow, position, Navigation.LEFT);
-                }
-            }
-        }
-
-        private Treerow findLastTreerow(Treeitem item) {
-            if(item.getTreechildren() == null) {
-                return item.getTreerow();
-            }
-            List children = item.getTreechildren().getChildren();
-            Treeitem lastchild = (Treeitem) children.get(children.size()-1);
-
-            return findLastTreerow(lastchild);
-        }
-
-        private void focusGoDown(Treerow treerow, int position) {
-            Treeitem parent = (Treeitem) treerow.getParent();
-            focusGoDown(parent, position, false);
-        }
-
-        private void focusGoDown(Treeitem parent, int position, boolean skipChildren) {
-            if(parent.getTreechildren() == null || skipChildren) {
-                // Moving from a node to its brother
-                List treeItems = parent.getParent().getChildren();
-                int myPosition = parent.indexOf();
-
-                if(myPosition < treeItems.size() - 1) {
-                    // the current node is not the last one
-                    Treerow downTreerow =
-                        ((Treeitem)treeItems.get(myPosition + 1)).getTreerow();
-
-                    focusCorrectBox(downTreerow, position, Navigation.RIGHT);
-                }
-                else {
-                    // the node is the last brother
-                    if(parent.getParent().getParent() instanceof Treeitem) {
-                        focusGoDown((Treeitem)parent.getParent().getParent(), position, true);
-                    }
-                }
-            }
-            else {
-                // Moving from a parent node to its children
-                Treerow downTreerow =
-                    ((Treeitem)parent.getTreechildren().getChildren().get(0)).getTreerow();
-
-                if(!downTreerow.isVisible()) {
-                    focusGoDown(parent, position, true);
-                }
-
-                focusCorrectBox(downTreerow, position, Navigation.RIGHT);
-            }
-        }
-
-        private void focusCorrectBox(Treerow treerow, int position, Navigation whereIfDisabled) {
-            List<InputElement> boxes = getBoxes(treerow);
-
-            if(boxes.get(position).isDisabled()) {
-                moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
-            }
-            else {
-                boxes.get(position).focus();
-            }
-        }
-
-        private List<InputElement> getBoxes(Treerow row) {
-            InputElement codeBox = (InputElement)
-                ((Treecell)row.getChildren().get(1)).getChildren().get(0);
-            InputElement nameBox = (InputElement)
-                ((Treecell)row.getChildren().get(2)).getChildren().get(0);
-            InputElement hoursBox = (InputElement)
-                ((Treecell)row.getChildren().get(3)).getChildren().get(0);
-            InputElement initDateBox = (InputElement)
-                ((Hbox)((Treecell)row.getChildren().get(4)).getChildren().get(0)).getChildren().get(0);
-            InputElement endDateBox = (InputElement)
-                ((Hbox)((Treecell)row.getChildren().get(5)).getChildren().get(0)).getChildren().get(0);
-
-            return Arrays.asList(codeBox, nameBox, hoursBox, initDateBox, endDateBox);
         }
 
         @Override
@@ -526,7 +425,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 textBox.setDisabled(true);
             }
             addCell(cssClass, textBox);
-            registerKeyboardListener(textBox);
         }
 
         @Override
@@ -541,7 +439,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             IOrderElementModel model = orderModel
                     .getOrderElementModel(currentOrderElement);
             orderElementController.openWindow(model);
-            updateOrderElementHours(currentOrderElement);
+            updateHoursFor(currentOrderElement);
         }
 
         protected void addCodeCell(final OrderElement orderElement) {
@@ -575,7 +473,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             }
 
             addCell(textBoxCode);
-            registerKeyboardListener(textBoxCode);
             orderElementCodeTextboxes.put(orderElement, textBoxCode);
         }
 
@@ -598,8 +495,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 dinamicDatebox.setDisabled(true);
             }
-            addDateCell(dinamicDatebox, _("init"), currentOrderElement);
-            registerKeyboardListener(dinamicDatebox.getDateTextBox());
+            addDateCell(dinamicDatebox, _("init"));
         }
 
         void addEndDateCell(final OrderElement currentOrderElement) {
@@ -620,104 +516,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             if (readOnly) {
                 dinamicDatebox.setDisabled(true);
             }
-            addDateCell(dinamicDatebox, _("end"), currentOrderElement);
-            registerKeyboardListener(dinamicDatebox.getDateTextBox());
-        }
-
-        void addHoursCell(final OrderElement currentOrderElement) {
-            Intbox intboxHours = buildHoursIntboxFor(currentOrderElement);
-            hoursIntBoxByOrderElement.put(currentOrderElement, intboxHours);
-            if (readOnly) {
-                intboxHours.setDisabled(true);
-            }
-
-            Treecell cellHours = addCell(intboxHours);
-            setReadOnlyHoursCell(currentOrderElement, intboxHours, cellHours);
-            registerKeyboardListener(intboxHours);
-        }
-
-        private void addDateCell(final DynamicDatebox dinamicDatebox,
-                final String dateboxName,
-                final OrderElement currentOrderElement) {
-
-            Component cell = Executions.getCurrent().createComponents(
-                    "/common/components/dynamicDatebox.zul", null, null);
-            try {
-                dinamicDatebox.doAfterCompose(cell);
-            } catch (Exception e) {
-                notifyDateboxCantBeCreated(dateboxName, currentOrderElement
-                        .getCode());
-            }
-            registerFocusEvent(dinamicDatebox.getDateTextBox());
-            addCell(cell);
-        }
-
-        private Intbox buildHoursIntboxFor(
-                final OrderElement currentOrderElement) {
-            Intbox result = new Intbox();
-            if (currentOrderElement instanceof OrderLine) {
-                OrderLine orderLine = (OrderLine) currentOrderElement;
-                Util.bind(result, getHoursGetterFor(currentOrderElement),
-                        getHoursSetterFor(orderLine));
-                result.setConstraint(getHoursConstraintFor(orderLine));
-            } else {
-                // If it's a container hours cell is not editable
-                Util.bind(result, getHoursGetterFor(currentOrderElement));
-            }
-            return result;
-        }
-
-        private Getter<Integer> getHoursGetterFor(
-                final OrderElement currentOrderElement) {
-            return new Util.Getter<Integer>() {
-                @Override
-                public Integer get() {
-                    return currentOrderElement.getWorkHours();
-                }
-            };
-        }
-
-        private Constraint getHoursConstraintFor(final OrderLine orderLine) {
-            return new Constraint() {
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    if (!orderLine.isTotalHoursValid((Integer) value)) {
-                        throw new WrongValueException(
-                                comp,
-                                _("Value is not valid, taking into account the current list of HoursGroup"));
-                    }
-                }
-            };
-        }
-
-        private Setter<Integer> getHoursSetterFor(final OrderLine orderLine) {
-            return new Util.Setter<Integer>() {
-                @Override
-                public void set(Integer value) {
-                    orderLine.setWorkHours(value);
-                    List<OrderElement> parentNodes = getModel().getParents(
-                            orderLine);
-                    // Remove the last element because it's an
-                    // Order node, not an OrderElement
-                    parentNodes.remove(parentNodes.size() - 1);
-                    for (OrderElement node : parentNodes) {
-                        Intbox intbox = hoursIntBoxByOrderElement.get(node);
-                        intbox.setValue(node.getWorkHours());
-                    }
-                }
-            };
+            addDateCell(dinamicDatebox, _("end"));
         }
 
         @Override
         protected void addOperationsCell(final Treeitem item,
                 final OrderElement currentOrderElement) {
             addCell(createEditButton(currentOrderElement, item),
-                    createTemplateButton(currentOrderElement),
-                    createDownButton(item,currentOrderElement),
-                    createUpButton(item,currentOrderElement),
-                    createUnindentButton(item, currentOrderElement),
-                    createIndentButton(item, currentOrderElement),
                     createRemoveButton(currentOrderElement));
         }
 
@@ -732,21 +537,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                         }
                     });
             return editbutton;
-        }
-
-        private Component createTemplateButton(
-                final OrderElement currentOrderElement) {
-            Button templateButton = createButton(
-                    "/common/img/ico_derived1.png", _("Create Template"),
-                    "/common/img/ico_derived.png",
-                    "icono",
-                    new EventListener() {
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            createTemplate(currentOrderElement);
-                        }
-                    });
-            return templateButton;
         }
 
     }
@@ -854,7 +644,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         }
         // To calculate other unit advances implement
         // getOtherAdvancesPercentage()
-        tooltipText.append(" " + _("Advance") + ":" + elem.getAdvancePercentage());
+        tooltipText.append(" " + _("Progress") + ":" + elem.getAdvancePercentage());
         tooltipText.append(".");
 
         // tooltipText.append(elem.getAdvancePercentage());
@@ -867,32 +657,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
-        updateOrderElementHours(currentOrderElement);
-    }
-
-    private void updateOrderElementHours(OrderElement orderElement) {
-        if ((!readOnly) && (orderElement instanceof OrderLine)) {
-            Intbox boxHours = (Intbox) getRenderer().hoursIntBoxByOrderElement
-                .get(orderElement);
-            boxHours.setValue(orderElement.getWorkHours());
-            Treecell tc = (Treecell) boxHours.getParent();
-            setReadOnlyHoursCell(orderElement, boxHours, tc);
-            boxHours.invalidate();
-        }
-    }
-
-    private void setReadOnlyHoursCell(OrderElement orderElement,
-            Intbox boxHours, Treecell tc) {
-        if ((!readOnly) && (orderElement instanceof OrderLine)) {
-            if (orderElement.getHoursGroups().size() > 1) {
-                boxHours.setReadonly(true);
-                tc
-                    .setTooltiptext(_("Not editable for containing more that an hours group."));
-            } else {
-                boxHours.setReadonly(false);
-                tc.setTooltiptext(_(""));
-            }
-        }
+        getRenderer().updateHoursFor(currentOrderElement);
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
@@ -953,12 +718,41 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     .showMessage(
                             Level.ERROR,
                             _(
-                                    "You can not remove the order element \"{0}\" because of this or any of its children are already in use in some work reports",
+                                    "You can not remove the task \"{0}\" because of this or any of its children are already in use in some work reports",
                                     element.getName()));
         } else {
             super.remove(element);
             orderElementCodeTextboxes.remove(element);
         }
+    }
+
+    @Override
+    protected IHoursGroupHandler<OrderElement> getHoursGroupHandler() {
+        return new IHoursGroupHandler<OrderElement>() {
+
+            @Override
+            public boolean hasMoreThanOneHoursGroup(OrderElement element) {
+                return element.getHoursGroups().size() > 1;
+            }
+
+            @Override
+            public boolean isTotalHoursValid(OrderElement line, Integer value) {
+                return ((OrderLine) line).isTotalHoursValid(value);
+            }
+
+            @Override
+            public Integer getWorkHoursFor(OrderElement element) {
+                return element.getWorkHours();
+            }
+
+            @Override
+            public void setWorkHours(OrderElement element, Integer value) {
+                if (element instanceof OrderLine) {
+                    OrderLine line = (OrderLine) element;
+                    line.setWorkHours(value);
+                }
+            }
+        };
     }
 
 }

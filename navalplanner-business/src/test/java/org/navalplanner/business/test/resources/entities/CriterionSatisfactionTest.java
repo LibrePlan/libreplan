@@ -29,9 +29,9 @@ import static org.navalplanner.business.test.resources.daos.CriterionSatisfactio
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
@@ -50,20 +50,17 @@ public class CriterionSatisfactionTest {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
         CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(year(2000), criterion, worker);
-        Date end = year(2006);
+        LocalDate end = year(2006);
         criterionSatisfaction.finish(end);
         assertTrue(criterionSatisfaction.isFinished());
         assertEquals(end, criterionSatisfaction.getEndDate());
-        criterionSatisfaction.getEndDate().setTime(end.getTime() + 2000);
-        assertEquals("endDate must be well encapsulated", end,
-                criterionSatisfaction.getEndDate());
     }
 
     @Test
     public void canFinishWhenItStarted() throws Exception {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
-        Date start = year(2000);
+        LocalDate start = year(2000);
         CriterionSatisfaction criterionSatisfaction = CriterionSatisfaction.create(start, criterion, worker);
         criterionSatisfaction.finish(start);
         assertTrue(criterionSatisfaction.isFinished());

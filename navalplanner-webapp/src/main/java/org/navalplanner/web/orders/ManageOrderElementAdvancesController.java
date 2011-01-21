@@ -132,7 +132,7 @@ public class ManageOrderElementAdvancesController extends
             manageOrderElementAdvancesModel.confirmSave();
             return true;
         } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
-            messagesForUser.showMessage(Level.ERROR, _("cannot include an Advance of the same Advance type twice"));
+            messagesForUser.showMessage(Level.ERROR, _("cannot include a progress of the same progress type twice"));
         } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
             messagesForUser.showMessage(
                     Level.ERROR, _("spread values are not valid, at least one value should be true"));
@@ -178,14 +178,16 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void increaseScreenHeight() {
-        if (tabboxOrderElement != null) {
+        if ((tabboxOrderElement != null)
+                && (!tabboxOrderElement.getHeight().equals("680px"))) {
             tabboxOrderElement.setHeight("680px");
             tabboxOrderElement.invalidate();
         }
     }
 
     private void resetScreenHeight() {
-        if (tabboxOrderElement != null) {
+        if ((tabboxOrderElement != null)
+                && (!tabboxOrderElement.getHeight().equals("620px"))) {
             tabboxOrderElement.setHeight("620px");
             tabboxOrderElement.invalidate();
         }
@@ -214,7 +216,7 @@ public class ManageOrderElementAdvancesController extends
          * advance.
          */
         setSelectedAdvanceLine();
-        validateListAdvanceMeasurement();
+        findErrorsInMeasurements();
 
         /*
          * preparation to select the advance line. Set the current selected
@@ -256,7 +258,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public void goToCreateLineAdvanceAssignment() {
-        validateListAdvanceMeasurement();
+        findErrorsInMeasurements();
         boolean fineResult = manageOrderElementAdvancesModel
                 .addNewLineAdvaceAssignment();
         if (fineResult) {
@@ -294,6 +296,8 @@ public class ManageOrderElementAdvancesController extends
                 if (indexSelectedItem > editAdvances.getIndexOfItem(listItem)) {
                     selectAdvanceLine(indexSelectedItem - 1);
                 } else {
+                    prepareEditAdvanceMeasurements(getAdvanceAssignments().get(
+                            indexSelectedItem));
                     reloadAdvances();
                 }
             }
@@ -317,10 +321,10 @@ public class ManageOrderElementAdvancesController extends
         String infoAdvanceAssignment = manageOrderElementAdvancesModel
                 .getInfoAdvanceAssignment();
         if (infoAdvanceAssignment.isEmpty()) {
-            return _("Advance measurements");
+            return _("Progress measurements");
         }
 
-        return _("Advance measurements: ") + infoAdvanceAssignment;
+        return _("Progress measurements: ") + infoAdvanceAssignment;
     }
 
     public boolean isReadOnlyAdvanceMeasurements() {
@@ -587,21 +591,32 @@ public class ManageOrderElementAdvancesController extends
     private void appendRadioSpread(final Listitem listItem){
         final AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
                 .getValue();
-        Radio reportGlobalAdvance = new Radio();
-        reportGlobalAdvance.setChecked(advanceAssignment
-                .getReportGlobalAdvance());
 
-        reportGlobalAdvance.addEventListener(Events.ON_CHECK,
-            new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                        resetScreenHeight();
+        final Radio reportGlobalAdvance = Util.bind(new Radio(),
+                new Util.Getter<Boolean>() {
+
+                    @Override
+                    public Boolean get() {
+                        return advanceAssignment.getReportGlobalAdvance();
+                    }
+                }, new Util.Setter<Boolean>() {
+
+                    @Override
+                    public void set(Boolean value) {
+                        advanceAssignment.setReportGlobalAdvance(value);
                         setReportGlobalAdvance(listItem);
-            }
-        });
+                    }
+                });
+
         Listcell listCell = new Listcell();
         listCell.appendChild(reportGlobalAdvance);
         listItem.appendChild(listCell);
+
+        if (((AdvanceAssignment) listItem.getValue()).getReportGlobalAdvance()) {
+            reportGlobalAdvance.getRadiogroup().setSelectedItem(
+                    reportGlobalAdvance);
+            reportGlobalAdvance.getRadiogroup().invalidate();
+        }
     }
 
     private void appendCalculatedCheckbox(final Listitem listItem){
@@ -668,11 +683,11 @@ public class ManageOrderElementAdvancesController extends
                 && (advance.getAdvanceType().isQualityForm())) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
-                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+                    .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             addMeasurementButton.setDisabled(true);
             addMeasurementButton
-                    .setTooltiptext(_("Calculated advances can not be modified"));
+                    .setTooltiptext(_("Calculated progress can not be modified"));
         }
 
         hbox.appendChild(addMeasurementButton);
@@ -695,11 +710,11 @@ public class ManageOrderElementAdvancesController extends
                 && (advance.getAdvanceType().isQualityForm())) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Advances that are reported by quality forms can not be modified"));
+                    .setTooltiptext(_("Progress that are reported by quality forms can not be modified"));
         } else if (advance instanceof IndirectAdvanceAssignment) {
             removeButton.setDisabled(true);
             removeButton
-                    .setTooltiptext(_("Calculated advances can not be removed"));
+                    .setTooltiptext(_("Calculated progress can not be removed"));
         }
 
         hbox.appendChild(removeButton);
@@ -846,26 +861,16 @@ public class ManageOrderElementAdvancesController extends
     private void setReportGlobalAdvance(final Listitem item){
         boolean spread = true;
         if (!radioSpreadIsConsolidated()) {
-            for (int i = 0; i < editAdvances.getChildren().size(); i++) {
-                if (editAdvances.getChildren().get(i) instanceof Listitem) {
-                    Listitem listItem = (Listitem) editAdvances.getChildren()
-                            .get(i);
-                    Listcell celdaSpread = (Listcell) listItem.getChildren()
-                            .get(5);
-                    Radio radioSpread = ((Radio) celdaSpread.getFirstChild());
-                    if (!radioSpread.isDisabled()) {
-                        radioSpread.setChecked(false);
-                        ((AdvanceAssignment) listItem.getValue())
-                                .setReportGlobalAdvance(false);
-                    }
-                }
+            for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+                advance.setReportGlobalAdvance(false);
             }
         } else {
             spread = false;
         }
-        Listcell celdaSpread = (Listcell) item.getChildren().get(5);
-        ((Radio) celdaSpread.getFirstChild()).setChecked(spread);
         ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
+        Util.reloadBindings(editAdvances);
+        resetScreenHeight();
+        setSelectedAdvanceLine();
     }
 
     private boolean radioSpreadIsConsolidated() {
@@ -926,20 +931,45 @@ public class ManageOrderElementAdvancesController extends
                 if (advance != null) {
                     // Validate the value of the advance measurement
                     Decimalbox valueBox = getDecimalboxBy(listItem);
-                    valueBox.setValue(advance.getValue());
+                    validateMeasurementValue(valueBox, advance.getValue());
 
                     // Validate the date of the advance measurement
                     Datebox dateBox = getDateboxBy(listItem);
                     if (advance.getDate() == null) {
-                        dateBox.setValue(null);
+                        validateMeasurementDate(dateBox, null);
                     } else {
-                        dateBox.setValue(advance.getDate()
-                                .toDateTimeAtStartOfDay().toDate());
+                        validateMeasurementDate(dateBox, advance.getDate()
+                            .toDateTimeAtStartOfDay().toDate());
                     }
                 }
             }
         }
         return true;
+    }
+
+    private boolean validateAdvanceMeasurement(AdvanceMeasurement advance) {
+        boolean result = true;
+        // Validate the value of advance measurement
+        if (advance.getValue() == null) {
+            result = false;
+        } else {
+            String errorMessage = validateValueAdvanceMeasurement(advance);
+            if (errorMessage != null) {
+                result = false;
+            }
+        }
+
+        // Validate the date of advance measurement
+        if (advance.getDate() == null) {
+            result = false;
+        } else {
+            String errorMessage = validateDateAdvanceMeasurement(advance
+                    .getDate(), advance);
+            if (errorMessage != null) {
+                result = false;
+            }
+        }
+        return result;
     }
 
     private Combobox getComboboxTypeBy(Listitem item) {
@@ -963,16 +993,10 @@ public class ManageOrderElementAdvancesController extends
 
     private boolean validateReportGlobalAdvance(){
         boolean existItems = false;
-        for(int i=0; i< editAdvances.getChildren().size(); i++){
-            if(editAdvances.getChildren().get(i) instanceof Listitem){
-                Listitem listItem = (Listitem) editAdvances.getChildren().get(i);
-                AdvanceAssignment advanceAssignment = (AdvanceAssignment) listItem
-                        .getValue();
-                existItems = true;
-                if ((advanceAssignment != null)
-                        && (advanceAssignment.getReportGlobalAdvance())) {
+        for (AdvanceAssignment advance : this.getAdvanceAssignments()) {
+            existItems = true;
+            if (advance.getReportGlobalAdvance()) {
                     return true;
-                }
             }
         }
         return (!existItems);
@@ -1013,6 +1037,7 @@ public class ManageOrderElementAdvancesController extends
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
                         updatesValue(value);
+                        validateMeasurementValue(value, value.getValue());
                     } else {
                         showMessagesConsolidation(2);
                     }
@@ -1036,7 +1061,6 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
-            value.setConstraint(checkValidValue());
         }
 
         private void appendLabelPercentage(final Listitem listitem) {
@@ -1068,6 +1092,7 @@ public class ManageOrderElementAdvancesController extends
                 public void onEvent(Event event) throws Exception {
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
+                        validateMeasurementDate(date, date.getValue());
                         setCurrentDate(listitem);
                     } else {
                         showMessagesConsolidation(2);
@@ -1107,49 +1132,6 @@ public class ManageOrderElementAdvancesController extends
                     }
                 }
             });
-            date.setConstraint(checkValidDate());
-        }
-
-        private Constraint checkValidValue() {
-            Constraint newConstraint = new Constraint() {
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
-                    if ((advanceMeasurement != null)
-                            && (manageOrderElementAdvancesModel
-                                    .canRemoveOrChange(advanceMeasurement))) {
-                        advanceMeasurement.setValue((BigDecimal) value);
-                        if (((BigDecimal) value) == null) {
-                            throw new WrongValueException(
-                                    comp,
-                                    _("Value is not valid, the current value must be not empty"));
-                        } else {
-                            if (manageOrderElementAdvancesModel
-                                    .greatThanMaxValue(advanceMeasurement)) {
-                                throw new WrongValueException(
-                                        comp,
-                                        _("Value is not valid, the current value must be less than max value"));
-                            }
-                            if (!manageOrderElementAdvancesModel
-                                    .isPrecisionValid(advanceMeasurement)) {
-                                throw new WrongValueException(
-                                        comp,
-                                        _("Value is not valid, the Precision value must be exact "
-                                            + manageOrderElementAdvancesModel
-                                                    .getUnitPrecision()));
-                            }
-                            if (manageOrderElementAdvancesModel
-                                .lessThanPreviousMeasurements()) {
-                                throw new WrongValueException(
-                                    comp,
-                                        _("Value is not valid, the value must be greater than the value of the previous advances."));
-                            }
-                        }
-                    }
-                }
-            };
-            return newConstraint;
         }
 
         private AdvanceMeasurement getAdvanceMeasurementByComponent(
@@ -1160,54 +1142,6 @@ public class ManageOrderElementAdvancesController extends
             } catch (Exception e) {
                 return null;
             }
-        }
-
-        private Constraint checkValidDate() {
-            Constraint newConstraint = new Constraint() {
-                @Override
-                public void validate(Component comp, Object value)
-                        throws WrongValueException {
-                    AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
-                    if ((manageOrderElementAdvancesModel
-                            .canRemoveOrChange(advanceMeasurement))) {
-                        if (((Date) value) == null) {
-                            advanceMeasurement.setDate(null);
-                            throw new WrongValueException(
-                                    comp,
-                                    _("The date is not valid, the date must be not empty"));
-                        } else {
-                            if (!manageOrderElementAdvancesModel
-                                    .isDistinctValidDate((Date) value,
-                                            advanceMeasurement)) {
-                                throw new WrongValueException(
-                                        comp,
-                                        _("The date is not valid, the date must be unique for this advanced assignment"));
-                            }
-                            if (advanceMeasurement != null) {
-                                 LocalDate oldDate = advanceMeasurement
-                                 .getDate();
-                                advanceMeasurement.setDate(new LocalDate(
-                                        (Date) value));
-
-                                 if (manageOrderElementAdvancesModel
-                                 .hasConsolidatedAdvances(advanceMeasurement)){
-                                     advanceMeasurement.setDate(oldDate);
-                                } else {
-                                    manageOrderElementAdvancesModel
-                                        .sortListAdvanceMeasurement();
-                                    if (manageOrderElementAdvancesModel
-                                        .lessThanPreviousMeasurements()) {
-                                        throw new WrongValueException(
-                                            comp,
-                                            _("Value is not valid, the value must be greater than the value of the previous advances."));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            };
-            return newConstraint;
         }
 
         private void appendRemoveButton(final Listitem listItem) {
@@ -1222,11 +1156,11 @@ public class ManageOrderElementAdvancesController extends
                     && (advance.getAdvanceType().isQualityForm())) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Advances measurements that are reported by quality forms can not be removed"));
+                        .setTooltiptext(_("Progress measurements that are reported by quality forms can not be removed"));
             } else if (advance.isFake()) {
                 removeButton.setDisabled(true);
                 removeButton
-                        .setTooltiptext(_("Calculated advances measurement can not be removed"));
+                        .setTooltiptext(_("Calculated progress measurement can not be removed"));
             }
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
@@ -1260,7 +1194,7 @@ public class ManageOrderElementAdvancesController extends
     private Button createAddMeasurementButton() {
         Button addButton = new Button();
         addButton.setLabel(_("Add measure"));
-        addButton.setTooltiptext(_("Add new advance measurement"));
+        addButton.setTooltiptext(_("Add new progress measurement"));
         return addButton;
     }
 
@@ -1269,7 +1203,7 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageNotAddMoreAdvances() {
-        String message = _("All advance types have already been assigned.");
+        String message = _("All progress types have already been assigned.");
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
     }
@@ -1283,34 +1217,36 @@ public class ManageOrderElementAdvancesController extends
     }
 
     private void showMessageDeleteSpread() {
-        String message = _("This advance can not be removed, because it is spread. It is necessary to select another advance as spread.");
-        increaseScreenHeight();
-        messagesForUser.showMessage(Level.ERROR, message);
+        String message = _("This progress can not be removed, because it is spread. It is necessary to select another progress as spread.");
+        showErrorMessage(message);
     }
 
     private void showMessagesConsolidation(int opcion) {
         String message = "";
         switch (opcion) {
         case 1:
-            message = _("This advance can not be changed or removed, because it has got consolidated advances. It is needed to remove the consolidation on all its advances.");
+            message = _("This progress can not be changed or removed, because it has got consolidated progress. It is needed to remove the consolidation on all its progress.");
             break;
         case 2:
-            message = _("This advance measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
+            message = _("This progress measurement can not be changed or removed, because it is consolidated. It is needed to remove its consolidation.");
             break;
         case 3:
-            message = _("This advance measurement can not be in current date, because it is consolidated. it is necessary to select other date.");
+            message = _("This progress measurement can not be in current date, because it is consolidated. it is necessary to select other date.");
             break;
         }
         if (!StringUtils.isBlank(message)) {
-            increaseScreenHeight();
-            messagesForUser.showMessage(Level.ERROR, message);
+            showErrorMessage(message);
         }
     }
 
     private void showMessagesConsolidation(LocalDate date) {
-        String message = _("This advance measurement can not be in "
+        String message = _("This progress measurement can not be in "
                 + date
                 + ", because it is consolidated. it is necessary to select other date.");
+        showErrorMessage(message);
+    }
+
+    private void showErrorMessage(String message) {
         increaseScreenHeight();
         messagesForUser.showMessage(Level.ERROR, message);
     }
@@ -1324,4 +1260,134 @@ public class ManageOrderElementAdvancesController extends
                 .createPercentageAdvances(getOrderElement());
     }
 
+    private String validateValueAdvanceMeasurement(
+            AdvanceMeasurement measurement) {
+        if (manageOrderElementAdvancesModel.greatThanMaxValue(measurement)) {
+            return _("Value is not valid, the current value must be less than max value");
+        }
+        if (!manageOrderElementAdvancesModel.isPrecisionValid(measurement)) {
+            return _("Value is not valid, the Precision value must be exact "
+                    + manageOrderElementAdvancesModel.getUnitPrecision());
+        }
+        if (manageOrderElementAdvancesModel.lessThanPreviousMeasurements()) {
+            return _("Value is not valid, the value must be greater than the value of the previous progress.");
+        }
+        return null;
+    }
+
+    private String validateDateAdvanceMeasurement(LocalDate value,
+            AdvanceMeasurement measurement) {
+        LocalDate oldDate = measurement.getDate();
+        measurement.setDate(value);
+
+        if (!manageOrderElementAdvancesModel.isDistinctValidDate(value,
+                measurement)) {
+            return _("The date is not valid, the date must be unique for this progress assignment");
+        }
+        if (measurement != null) {
+            if (manageOrderElementAdvancesModel
+                    .hasConsolidatedAdvances(measurement)) {
+                measurement.setDate(oldDate);
+            } else {
+                manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
+                if (manageOrderElementAdvancesModel
+                        .lessThanPreviousMeasurements()) {
+                    return _("Value is not valid, the value must be greater than the value of the previous progress.");
+                }
+            }
+        }
+        return null;
+    }
+
+    public boolean findErrorsInMeasurements() {
+        boolean result = findPageWithError();
+        validateListAdvanceMeasurement();
+        return result;
+    }
+
+    private boolean findPageWithError() {
+        int currentPage = editAdvancesMeasurement.getActivePage();
+        int i = 0;
+        int page = 0;
+        changePage(page);
+        for (Listitem item : (List<Listitem>) editAdvancesMeasurement
+                .getItems()) {
+            AdvanceMeasurement advance = (AdvanceMeasurement) item.getValue();
+            if (advance != null) {
+                if (!validateAdvanceMeasurement(advance)) {
+                    return true;
+                }
+                i++;
+                if (i == editAdvancesMeasurement.getPageSize()) {
+                    i = 0;
+                    changePage(++page);
+                }
+            }
+        }
+        changePage(currentPage);
+        return false;
+    }
+
+    private void changePage(int page) {
+        if ((page >= 0) && (page < editAdvancesMeasurement.getPageCount())) {
+            editAdvancesMeasurement.setActivePage(page);
+            editAdvancesMeasurement.invalidate();
+        }
+    }
+
+    public void onPagingMeasurement() {
+        validateListAdvanceMeasurement();
+    }
+
+    public void validateMeasurementDate(Component comp, Date value)
+            throws WrongValueException {
+        AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+        if ((manageOrderElementAdvancesModel
+                .canRemoveOrChange(advanceMeasurement))) {
+            if (value == null) {
+                advanceMeasurement.setDate(null);
+                ((Datebox) comp).setValue(value);
+                throw new WrongValueException(comp,
+                        _("The date is not valid, the date must be not empty"));
+            } else {
+                String errorMessage = validateDateAdvanceMeasurement(
+                        new LocalDate(value), advanceMeasurement);
+                ((Datebox) comp).setValue(advanceMeasurement.getDate()
+                        .toDateTimeAtStartOfDay().toDate());
+                if (errorMessage != null) {
+                    throw new WrongValueException(comp, errorMessage);
+                }
+            }
+        }
+    }
+
+    public void validateMeasurementValue(Component comp, Object value)
+            throws WrongValueException {
+        AdvanceMeasurement advanceMeasurement = getAdvanceMeasurementByComponent(comp);
+        if ((advanceMeasurement != null)
+                && (manageOrderElementAdvancesModel
+                        .canRemoveOrChange(advanceMeasurement))) {
+            advanceMeasurement.setValue((BigDecimal) value);
+            ((Decimalbox) comp).setValue((BigDecimal) value);
+            if (((BigDecimal) value) == null) {
+                throw new WrongValueException(
+                        comp,
+                        _("Value is not valid, the current value must be not empty"));
+            } else {
+                String errorMessage = validateValueAdvanceMeasurement(advanceMeasurement);
+                if (errorMessage != null) {
+                    throw new WrongValueException(comp, errorMessage);
+                }
+            }
+        }
+    }
+
+    private AdvanceMeasurement getAdvanceMeasurementByComponent(Component comp) {
+        try {
+            Listitem item = (Listitem) comp.getParent().getParent();
+            return (AdvanceMeasurement) item.getValue();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

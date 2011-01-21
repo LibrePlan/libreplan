@@ -20,17 +20,10 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
-import org.zkoss.ganttz.data.Dependency;
+import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.constraint.Constraint;
-import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -38,18 +31,13 @@ import org.zkoss.zul.impl.XulElement;
  * @author Francisco Javier Moran Rúa <jmoran@igalia.com>
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class LimitingDependencyComponent extends XulElement implements
-        AfterCompose {
+public class LimitingDependencyComponent extends XulElement {
 
     private QueueTask source;
 
     private QueueTask destination;
 
     private DependencyType type;
-
-    // private Dependency dependency;
-
-    private IConstraintViolationListener<Date> violationListener;
 
     public LimitingDependencyComponent(QueueTask source, QueueTask destination,
             DependencyType type) {
@@ -62,29 +50,6 @@ public class LimitingDependencyComponent extends XulElement implements
         Validate.notNull(destination);
         this.source = source;
         this.destination = destination;
-        // this.dependency = dependency;
-        violationListener = new IConstraintViolationListener<Date>() {
-
-            @Override
-            public void constraintViolated(Constraint<Date> constraint,
-                    Date value) {
-                // TODO mark graphically dependency as violated
-            }
-        };
-        // this.dependency.addConstraintViolationListener(violationListener);
-    }
-
-    @Override
-    public void afterCompose() {
-        PropertyChangeListener listener = new PropertyChangeListener() {
-
-            @Override
-            public void propertyChange(PropertyChangeEvent evt) {
-                redrawDependency();
-            }
-        };
-        // this.source.getTask().addFundamentalPropertiesChangeListener(listener);
-        // this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
     }
 
     /**
@@ -122,13 +87,6 @@ public class LimitingDependencyComponent extends XulElement implements
         response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
-    public boolean contains(QueueTask task) {
-        return false;
-        // Task sourceTask = getSource().getTask();
-        // Task destinationTask = getDestination().getTask();
-        // return task.equals(sourceTask) || task.equals(destinationTask);
-    }
-
     public QueueTask getSource() {
         return source;
     }
@@ -137,20 +95,8 @@ public class LimitingDependencyComponent extends XulElement implements
         return destination;
     }
 
-    // public Dependency getDependency() {
-    // return dependency;
-    // }
-
     public DependencyType getDependencyType() {
         return type;
-    }
-
-    public boolean hasSameSourceAndDestination(Dependency dependency) {
-        return false;
-        // Task sourceTask = source.getTask();
-        // Task destinationTask = destination.getTask();
-        // return sourceTask.equals(dependency.getSource())
-        // && destinationTask.equals(dependency.getDestination());
     }
 
 }

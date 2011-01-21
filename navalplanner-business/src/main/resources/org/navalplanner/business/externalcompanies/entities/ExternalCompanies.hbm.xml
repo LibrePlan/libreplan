@@ -3,7 +3,7 @@
 <hibernate-mapping package="org.navalplanner.business.externalcompanies.entities" default-access="field">
 
 <!-- ExternalCompany -->
-<class name="ExternalCompany" table="EXTERNAL_COMPANY">
+<class name="ExternalCompany" table="external_company">
     <id name="id" type="long" access="property">
         <generator class="hilo">
             <param name="max_lo">100</param>
@@ -19,16 +19,18 @@
 
     <property name="subcontractor" />
 
-    <property name="interactsWithApplications" />
+    <property name="interactsWithApplications"
+        column="interacts_with_applications" />
 
-    <property name="appURI" />
+    <property name="appURI" column="app_uri" />
 
-    <property name="ourCompanyLogin" />
+    <property name="ourCompanyLogin" column="our_company_login" />
 
-    <property name="ourCompanyPassword" />
+    <property name="ourCompanyPassword" column="our_company_password" />
 
     <!-- Not indexed, navigation from User to this is not even implemented -->
-    <many-to-one name="companyUser" class="org.navalplanner.business.users.entities.User" />
+    <many-to-one name="companyUser" class="org.navalplanner.business.users.entities.User"
+        column="company_user" />
 </class>
 
 </hibernate-mapping>

@@ -27,13 +27,14 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public interface ICostCategoryModel {
+public interface ICostCategoryModel extends IIntegrationEntityModel {
 
     /**
      * Get all {@link CostCategory} elements

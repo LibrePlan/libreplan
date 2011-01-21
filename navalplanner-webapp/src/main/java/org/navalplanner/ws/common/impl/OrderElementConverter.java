@@ -266,11 +266,20 @@ public final class OrderElementConverter {
         return orderElement;
     }
 
+    private static void checkOrderElementDTOCode(
+            OrderElementDTO orderElementDTO,
+            String instance) {
+        if (orderElementDTO.code == null) {
+            throw new ValidationException(instance + _(": code not found"));
+        }
+    }
+
     private static void addOrCriterionRequirements(OrderElement orderElement,
             OrderElementDTO orderElementDTO) {
         addOrCriterionRequirementsEntities(orderElement,
                 orderElementDTO.criterionRequirements);
 
+        if (orderElement != null) {
         if (orderElementDTO instanceof OrderLineDTO) {
             for (HoursGroupDTO hoursGroupDTO : ((OrderLineDTO) orderElementDTO).hoursGroups) {
                 HoursGroup hoursGroup = ((OrderLine) orderElement)
@@ -286,6 +295,7 @@ public final class OrderElementConverter {
                         .getOrderElement(childDTO.code);
                 addOrCriterionRequirements(child, childDTO);
             }
+        }
         }
     }
 
@@ -369,6 +379,7 @@ public final class OrderElementConverter {
         OrderElement orderElement;
 
         if (orderElementDTO instanceof OrderLineDTO) {
+            checkOrderElementDTOCode(orderElementDTO, "OrderLineDTO");
             if ((configuration.isHoursGroups())
                     && (!((OrderLineDTO) orderElementDTO).hoursGroups.isEmpty())) {
                 orderElement = OrderLine
@@ -390,6 +401,7 @@ public final class OrderElementConverter {
         } else { // orderElementDTO instanceof OrderLineGroupDTO
 
             if (orderElementDTO instanceof OrderDTO) {
+                checkOrderElementDTOCode(orderElementDTO, "OrderDTO");
                 orderElement = Order.createUnvalidated(orderElementDTO.code);
                 Scenario current = Registry.getScenarioManager().getCurrent();
                 ((Order) orderElement).setVersionForScenario(current,
@@ -407,6 +419,7 @@ public final class OrderElementConverter {
                 }
                 ((Order) orderElement).setCalendar(calendar);
             } else { // orderElementDTO instanceof OrderLineGroupDTO
+                checkOrderElementDTOCode(orderElementDTO, "OrderLineGroupDTO");
                 orderElement = OrderLineGroup
                         .createUnvalidated(orderElementDTO.code);
             }
@@ -541,7 +554,7 @@ public final class OrderElementConverter {
         if (orderElementDTO instanceof OrderLineDTO) {
             if (!(orderElement instanceof OrderLine)) {
                 throw new ValidationException(_(
-                        "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                        "Task {0} : Task group is incompatible type with {1}"
                                 + orderElement.getCode(), orderElement
                                 .getClass().getName()));
             }
@@ -564,7 +577,7 @@ public final class OrderElementConverter {
             if (orderElementDTO instanceof OrderDTO) {
                 if (!(orderElement instanceof Order)) {
                     throw new ValidationException(_(
-                            "Order element {0} : Order is incompatible type with {1}"
+                            "Task {0} : Project is incompatible type with {1}"
                                     + orderElement.getCode(), orderElement
                                     .getClass().getName()));
 
@@ -597,7 +610,7 @@ public final class OrderElementConverter {
             } else { // orderElementDTO instanceof OrderLineGroupDTO
                 if (!(orderElement instanceof OrderLineGroup)) {
                     throw new ValidationException(_(
-                            "Order element {0} : OrderLineGroup is incompatible type with {1}"
+                            "Task {0} : Task group is incompatible type with {1}"
                                     + orderElement.getCode(), orderElement
                                     .getClass().getName()));
                 }
@@ -610,7 +623,7 @@ public final class OrderElementConverter {
                 } else {
                     if (checkConstraintUniqueOrderCode(orderElementDTO)) {
                         throw new ValidationException(
-                                _("Order element {0} : Duplicate code in DB"
+                                _("Task {0} : Duplicate code in DB"
                                         + orderElementDTO.code));
                     }
                     if (checkConstraintUniqueHoursGroupCode(orderElementDTO)) {
@@ -802,11 +815,11 @@ public final class OrderElementConverter {
                         .addSubcontractorAdvanceAssignment();
             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                 throw new ValidationException(
-                        _("Duplicate value true report global Advance for order element "
+                        _("Duplicate value true report global progress for task"
                                 + orderElement.getCode()));
             } catch (DuplicateAdvanceAssignmentForOrderElementException e) {
                 throw new ValidationException(
-                        _("Duplicate advance assignment for order element "
+                        _("Duplicate progress assignment for task "
                                 + orderElement.getCode()));
             }
         }

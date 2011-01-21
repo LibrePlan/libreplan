@@ -409,11 +409,11 @@ public abstract class OrderElementTemplate extends BaseEntity implements
         return result;
     }
 
-    public double getTotalMaterialAssigmentUnits() {
-        double result = 0;
+    public BigDecimal getTotalMaterialAssigmentUnits() {
+        BigDecimal result = BigDecimal.ZERO;
         for (MaterialAssignmentTemplate each : materialAssignments) {
             if (each.getUnits() != null) {
-                result += each.getUnits();
+                result = result.add(each.getUnits());
             }
         }
         return result;

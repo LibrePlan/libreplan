@@ -66,12 +66,13 @@ public class AssignedMaterialsToOrderElementController extends
         return assignedMaterialsToOrderElementModel.getAllMaterialCategories();
     }
 
-    public double getTotalUnits() {
-        double result = 0;
+    @Override
+    public BigDecimal getTotalUnits() {
+        BigDecimal result = BigDecimal.ZERO;
 
         final OrderElement orderElement = getOrderElement();
         if (orderElement != null) {
-            result = orderElement.getTotalMaterialAssigmentUnits();
+            result = result.add(orderElement.getTotalMaterialAssigmentUnits());
         }
         return result;
     }
@@ -106,12 +107,11 @@ public class AssignedMaterialsToOrderElementController extends
     }
 
     @Override
-    protected double getUnits(MaterialAssignment assignment) {
+    protected BigDecimal getUnits(MaterialAssignment assignment) {
         return assignment.getUnits();
     }
 
-    @Override
-    protected void setUnits(MaterialAssignment assignment, double units) {
+    protected void setUnits(MaterialAssignment assignment, BigDecimal units) {
         assignment.setUnits(units);
     }
 

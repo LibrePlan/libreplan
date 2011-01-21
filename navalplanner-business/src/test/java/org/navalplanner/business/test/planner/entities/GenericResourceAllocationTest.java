@@ -38,7 +38,6 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -143,8 +142,9 @@ public class GenericResourceAllocationTest {
     }
 
     private void setupIsSatisfiedByAll(Criterion criterion) {
-        expect(criterion.isSatisfiedBy(isA(Resource.class), isA(Date.class)))
-                .andReturn(true).anyTimes();
+        expect(
+                criterion.isSatisfiedBy(isA(Resource.class),
+                        isA(LocalDate.class))).andReturn(true).anyTimes();
     }
 
     private void givenWorkersWithoutLoadAndWithoutCalendar() {
@@ -199,7 +199,7 @@ public class GenericResourceAllocationTest {
 
     private org.navalplanner.business.resources.entities.Interval fromVeryEarlyTime() {
         return org.navalplanner.business.resources.entities.Interval
-                .from(new Date(0));
+                .from(new LocalDate(0, 1, 1));
     }
 
     private void givenCalendarsForResources(int capacity1, int capacity2,
@@ -337,7 +337,7 @@ public class GenericResourceAllocationTest {
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
-                                 .until(start.plusDays(2))
+                                 .resourcesPerDayUntil(start.plusDays(2))
                                  .allocate(resourcesPerDay);
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
@@ -360,8 +360,9 @@ public class GenericResourceAllocationTest {
 
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .allocate(resourcesPerDay);
-        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
-                start.plusDays(2)).allocate(resourcesPerDay);
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .resourcesPerDayUntil(start.plusDays(2))
+                .allocate(resourcesPerDay);
 
         List<GenericDayAssignment> orderedAssignmentsFor = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker1);
@@ -378,8 +379,9 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
-        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
-                start.minusDays(1)).allocate(resourcesPerDay);
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .resourcesPerDayUntil(start.minusDays(1))
+                .allocate(resourcesPerDay);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -390,8 +392,8 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
-        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
-                null).allocate(resourcesPerDay);
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .resourcesPerDayUntil(null).allocate(resourcesPerDay);
     }
 
     @Test
@@ -402,8 +404,8 @@ public class GenericResourceAllocationTest {
         givenWorkersWithoutLoadAndWithoutCalendar();
         ResourcesPerDay resourcesPerDay = ResourcesPerDay.amount(1);
 
-        genericResourceAllocation.forResources(Arrays.asList(worker1)).until(
-                start).allocate(resourcesPerDay);
+        genericResourceAllocation.forResources(Arrays.asList(worker1))
+                .resourcesPerDayUntil(start).allocate(resourcesPerDay);
         assertThat(genericResourceAllocation.getResourcesPerDay(),
                 equalTo(ResourcesPerDay.amount(0)));
         assertTrue(genericResourceAllocation.getOrderedAssignmentsFor(worker1)

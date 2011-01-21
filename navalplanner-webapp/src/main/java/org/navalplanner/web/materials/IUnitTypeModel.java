@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.UnitType;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Interface for the model which lets the client of this model
@@ -52,7 +53,7 @@ import org.navalplanner.business.materials.entities.UnitType;
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
 
-public interface IUnitTypeModel {
+public interface IUnitTypeModel extends IIntegrationEntityModel {
 
     // Non conversational methods
 

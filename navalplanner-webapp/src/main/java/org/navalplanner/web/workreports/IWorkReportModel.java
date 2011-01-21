@@ -35,6 +35,7 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.zkoss.ganttz.IPredicate;
 
 /**
@@ -42,7 +43,7 @@ import org.zkoss.ganttz.IPredicate;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public interface IWorkReportModel {
+public interface IWorkReportModel extends IIntegrationEntityModel {
 
     /**
      * Add new {@link WorkReportLine} to {@link WorkReport}
@@ -239,4 +240,5 @@ public interface IWorkReportModel {
 
     List<OrderElement> getOrderElements();
 
+    void generateWorkReportLinesIfIsNecessary();
 }

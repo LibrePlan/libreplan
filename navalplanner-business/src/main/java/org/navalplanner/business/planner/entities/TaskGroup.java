@@ -20,10 +20,9 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -31,7 +30,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 
@@ -48,11 +49,27 @@ public class TaskGroup extends TaskElement {
 
     private List<TaskElement> taskElements = new ArrayList<TaskElement>();
 
+    private PlanningData planningData;
+
     /**
      * Constructor for hibernate. Do not use!
      */
     public TaskGroup() {
 
+    }
+
+    public BigDecimal getCriticalPathProgressByDuration() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getProgressByDuration();
+    }
+
+    public BigDecimal getCriticalPathProgressByNumHours() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getProgressByNumHours();
     }
 
     @SuppressWarnings("unused")
@@ -65,10 +82,15 @@ public class TaskGroup extends TaskElement {
         Validate.notNull(task);
         task.setParent(this);
         addTaskElement(taskElements.size(), task);
-        Date newPossibleEndDate = task.getEndDate();
-        if (getEndDate() == null
-                || getEndDate().compareTo(newPossibleEndDate) < 0) {
-            setEndDate(newPossibleEndDate);
+        IntraDayDate newPossibleEndDate = task.getIntraDayEndDate();
+        if (getIntraDayEndDate() == null
+                || getIntraDayEndDate().compareTo(newPossibleEndDate) < 0) {
+            setIntraDayEndDate(newPossibleEndDate);
+        }
+        IntraDayDate newPossibleStart = task.getIntraDayStartDate();
+        if (getIntraDayStartDate() == null
+                || getIntraDayStartDate().compareTo(newPossibleStart) > 0) {
+            setIntraDayStartDate(newPossibleStart);
         }
     }
 
@@ -112,8 +134,24 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected void moveAllocations(Scenario scenario) {
-        // do nothing
+    protected IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO) {
+        return new IDatesHandler() {
+
+            @Override
+            public void moveTo(IntraDayDate newStartDate) {
+                setIntraDayStartDate(newStartDate);
+            }
+
+            @Override
+            public void resizeTo(IntraDayDate endDate) {
+                setIntraDayEndDate(endDate);
+            }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                setIntraDayEndDate(newEnd);
+            }
+        };
     }
 
     public void setTaskChildrenTo(List<TaskElement> children) {
@@ -153,18 +191,9 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected void initializeEndDate() {
-        List<Date> endDates = getEndDates(getChildren());
-        setEndDate(Collections.max(endDates));
-    }
-
-    private List<Date> getEndDates(Collection<? extends TaskElement> children) {
-        List<Date> result = new ArrayList<Date>();
-        for (TaskElement each : children) {
-            Validate.notNull(each.getEndDate());
-            result.add(each.getEndDate());
-        }
-        return result;
+    protected void initializeDates() {
+        setIntraDayStartDate(getSmallestStartDateFromChildren());
+        setIntraDayEndDate(getBiggestEndDateFromChildren());
     }
 
     @Override
@@ -187,6 +216,11 @@ public class TaskGroup extends TaskElement {
         return false;
     }
 
+    public void fitStartAndEndDatesToChildren() {
+        setIntraDayStartDate(getSmallestStartDateFromChildren());
+        setIntraDayEndDate(getBiggestEndDateFromChildren());
+    }
+
     public IntraDayDate getSmallestStartDateFromChildren() {
         return Collections.min(getChildrenStartDates());
     }
@@ -198,4 +232,52 @@ public class TaskGroup extends TaskElement {
         }
         return result;
     }
+
+    public IntraDayDate getBiggestEndDateFromChildren() {
+        return Collections.max(getChildrenEndDates());
+    }
+
+    private List<IntraDayDate> getChildrenEndDates() {
+        List<IntraDayDate> result = new ArrayList<IntraDayDate>();
+        for (TaskElement each : getChildren()) {
+            result.add(each.getIntraDayEndDate());
+        }
+        return result;
+    }
+
+    public void updateCriticalPathProgress(List<TaskElement> criticalPath) {
+        Validate.isTrue(getParent() == null);
+        if (planningData == null) {
+            planningData = PlanningData.create(this);
+        }
+        List<Task> criticalPathJustTasks = new ArrayList<Task>();
+        for (TaskElement taskElement : criticalPath) {
+            if (taskElement instanceof Task) {
+                criticalPathJustTasks.add((Task) taskElement);
+            }
+        }
+        planningData.update(criticalPathJustTasks);
+    }
+
+    /**
+     * For a root task, retrieves the progress selected by the progressType
+     * If there's not progressType, return taskElement.advancePercentage
+     *
+     */
+    public BigDecimal getAdvancePercentage(ProgressType progressType) {
+        if (isTaskRoot(this)) {
+            if (progressType.equals(ProgressType.CRITICAL_PATH_DURATION)) {
+                return getCriticalPathProgressByDuration();
+            }
+            if (progressType.equals(ProgressType.CRITICAL_PATH_NUMHOURS)) {
+                return getCriticalPathProgressByNumHours();
+            }
+        }
+        return super.getAdvancePercentage();
+    }
+
+    private boolean isTaskRoot(TaskGroup taskGroup) {
+        return taskGroup.getParent() == null;
+    }
+
 }

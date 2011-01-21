@@ -185,6 +185,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     private void loadAssociatedData(OrderElementTemplate template) {
         loadAdvanceAssignments(template);
         loadQualityForms(template);
+        loadLabels(template);
         loadCriterionRequirements(template);
         getOrderElementsOnConversation().initialize(template);
     }
@@ -219,6 +220,16 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         for (OrderElementTemplate each : template.getChildrenTemplates()) {
             loadQualityForms(each);
         }
+    }
+
+    private void loadLabels(OrderElementTemplate template) {
+        for (Label each : template.getLabels()) {
+            each.getName();
+        }
+        for (OrderElementTemplate each : template.getChildrenTemplates()) {
+            loadLabels(each);
+        }
+
     }
 
     private void loadAdvanceAssignments(OrderElementTemplate template) {

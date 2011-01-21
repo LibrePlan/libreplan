@@ -2,7 +2,7 @@
 <!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 <hibernate-mapping package="org.navalplanner.business.planner.entities"
     default-access="field">
-    <class name="TaskElement">
+    <class name="TaskElement" table="task_element">
         <id name="id" column="id" type="long" access="property">
             <generator class="hilo">
                 <param name="max_lo">100</param>
@@ -13,104 +13,133 @@
         <property name="notes"/>
         <component name="startDate"
             class="org.navalplanner.business.workingday.IntraDayDate">
-            <property  name="date" column="startDate" not-null="true"
+            <property  name="date" column="start_date" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-            <property name="effortDuration" column="startDayDuration"
+            <property name="effortDuration" column="start_day_duration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
         <component name="endDate" class="org.navalplanner.business.workingday.IntraDayDate">
-            <property name="date" column="endDate" not-null="true"
+            <property name="date" column="end_date" not-null="true"
                 type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-            <property name="effortDuration" column="endDayDuration"
+            <property name="effortDuration" column="end_day_duration"
                 type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
         </component>
         <property name="deadline" type="org.joda.time.contrib.hibernate.PersistentLocalDate" />
-        <property name="advancePercentage" column="ADVANCE_PERCENTAGE" access="field" scale="4"/>
+        <property name="advancePercentage" column="advance_percentage" access="field" scale="4"/>
 
-        <property name="sumOfHoursAllocated"/>
+        <property name="sumOfHoursAllocated" column="sum_of_hours_allocated" />
 
         <!-- Indexed -->
         <many-to-one name="parent" class="TaskGroup" cascade="none" column="parent"
-            index="idx_TaskElement_on_TaskGroup" />
+            index="idx_task_element_on_task_group" />
 
-        <one-to-one name="taskSource" cascade="delete"/>
+        <one-to-one name="taskSource" cascade="delete" />
 
         <!-- Indexed on the other side -->
         <set name="dependenciesWithThisOrigin" cascade="all-delete-orphan">
-            <key column="ORIGIN"></key>
+            <key column="origin"></key>
             <one-to-many class="Dependency" />
         </set>
 
         <!-- Not indexed -->
         <set name="dependenciesWithThisDestination" cascade="all-delete-orphan">
-            <key column="DESTINATION"></key>
+            <key column="destination"></key>
             <one-to-many class="Dependency" />
         </set>
 
         <!-- Not indexed -->
-        <many-to-one name="calendar" column="BASE_CALENDAR_ID" cascade="none"
+        <many-to-one name="calendar" column="base_calendar_id" cascade="none"
             class="org.navalplanner.business.calendars.entities.BaseCalendar"/>
 
-        <joined-subclass name="Task">
-            <key column="TASK_ELEMENT_ID"></key>
-            <property name="calculatedValue">
+        <joined-subclass name="Task" table="task">
+            <key column="task_element_id"></key>
+            <property name="calculatedValue" column="calculated_value">
                 <type name="org.hibernate.type.EnumType">
                     <param name="enumClass">org.navalplanner.business.planner.entities.CalculatedValue</param>
                 </type>
             </property>
-            <component name="startConstraint">
-                <property name="startConstraintType">
+            <component name="positionConstraint">
+                <property name="constraintType" column="constraint_type">
                     <type name="org.hibernate.type.EnumType">
-                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                        <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"
+                    column="constraint_date" />
             </component>
+
+            <property name="workableDays" column="workable_days" />
+
+            <property name="lastAllocationDirection" column="allocation_direction">
+                <type name="org.hibernate.type.EnumType">
+                    <param name="enumClass">org.navalplanner.business.planner.entities.ResourceAllocation$Direction</param>
+                </type>
+            </property>
 
             <one-to-one name="consolidation" class="org.navalplanner.business.planner.entities.consolidations.Consolidation"
                 cascade="all"/>
 
             <!-- Indexed on the other side -->
             <set name="resourceAllocations" cascade="all-delete-orphan">
-                <key column="TASK" />
+                <key column="task" />
                 <one-to-many class="ResourceAllocation" />
             </set>
 
             <!-- Already indexed because it's unique -->
             <many-to-one name="subcontractedTaskData"
-                column="SUBCONTRATED_TASK_DATA_ID"
+                column="subcontrated_task_data_id"
                 unique="true" cascade="all" lazy="false" />
 
             <property name="priority" />
 
         </joined-subclass>
 
-        <joined-subclass name="TaskGroup">
-            <key column="TASK_ELEMENT_ID"></key>
+        <joined-subclass name="TaskGroup" table="task_group">
+            <key column="task_element_id"></key>
+
+            <one-to-one name="planningData" class="PlanningData" cascade="all" />
 
             <!-- Indexed on the other side -->
             <list name="taskElements" cascade="all">
                 <key column="parent" not-null="false"></key>
-                <index column="positionInParent"></index>
+                <index column="position_in_parent"></index>
                 <one-to-many class="TaskElement" />
             </list>
         </joined-subclass>
 
-        <joined-subclass name="TaskMilestone">
-            <key column="TASK_ELEMENT_ID"></key>
+        <joined-subclass name="TaskMilestone" table="task_milestone">
+            <key column="task_element_id"></key>
 
             <component name="startConstraint">
-                <property name="startConstraintType">
+                <property name="constraintType" column="constraint_type">
                     <type name="org.hibernate.type.EnumType">
-                        <param name="enumClass">org.navalplanner.business.planner.entities.StartConstraintType</param>
+                        <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" />
+                <property name="constraintDate" column="constraint_date"
+                    type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
             </component>
         </joined-subclass>
 
     </class>
-    <class name="Dependency">
+
+
+    <!-- PlanningData -->
+    <class name="PlanningData" table="planning_data">
+        <id name="id" column="planning_data_id">
+            <generator class="foreign">
+                <param name="property">rootTask</param>
+            </generator>
+        </id>
+        <one-to-one name="rootTask" class="TaskGroup" constrained="true"
+            cascade="all" lazy="false" />
+        <property name="progressByDuration" column="progress_by_duration" scale="6" />
+        <property name="progressByNumHours" column="progress_by_num_hours" scale="6" />
+    </class>
+
+
+    <class name="Dependency" table="dependency">
+
         <id name="id" type="long" access="property">
             <generator class="hilo"></generator>
         </id>
@@ -118,12 +147,12 @@
 
         <!-- Indexed -->
         <many-to-one class="TaskElement" name="origin"
-            column="ORIGIN"
-            index="idx_Dependency_on_TaskElement_origin" />
+            column="origin"
+            index="idx_dependency_on_task_element_origin" />
 
         <!-- Not indexed, navigation in that direction is not useful -->
         <many-to-one class="TaskElement" name="destination"
-            column="DESTINATION" />
+            column="destination" />
 
         <!-- Not indexed, relation from the other side is one-to-one -->
         <many-to-one class="org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency"
@@ -141,28 +170,29 @@
     </class>
 
     <!-- SubcontractedTaskData -->
-    <class name="SubcontractedTaskData">
+    <class name="SubcontractedTaskData" table="subcontracted_task_data">
         <id name="id" type="long" access="property">
             <generator class="hilo"></generator>
         </id>
         <version name="version" access="property" type="long" />
 
         <!-- Not indexed, navigation from ExternalCompany to this is not even implemented -->
-        <many-to-one name="externalCompany" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany" />
+        <many-to-one name="externalCompany" class="org.navalplanner.business.externalcompanies.entities.ExternalCompany"
+            column="external_company" />
 
         <one-to-one name="task" class="Task"
             property-ref="subcontractedTaskData" lazy="false"/>
 
-        <property name="subcontratationDate" />
-        <property name="subcontractCommunicationDate" />
-        <property name="workDescription" />
-        <property name="subcontractPrice" />
-        <property name="subcontractedCode" />
+        <property name="subcontratationDate" column="subcontratation_date" />
+        <property name="subcontractCommunicationDate" column="subcontract_communication_date" />
+        <property name="workDescription" column="work_description" />
+        <property name="subcontractPrice" column="subcontract_price"/>
+        <property name="subcontractedCode" column="subcontracted_code"/>
 
-        <property name="nodeWithoutChildrenExported" />
-        <property name="labelsExported" />
-        <property name="materialAssignmentsExported" />
-        <property name="hoursGroupsExported" />
+        <property name="nodeWithoutChildrenExported" column="node_without_children_exported" />
+        <property name="labelsExported" column="labels_exported" />
+        <property name="materialAssignmentsExported" column="material_assignments_exported" />
+        <property name="hoursGroupsExported" column="hours_groups_exported" />
 
         <property name="state" >
             <type name="org.hibernate.type.EnumType">

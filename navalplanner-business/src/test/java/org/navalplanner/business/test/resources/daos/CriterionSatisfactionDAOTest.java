@@ -27,9 +27,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.util.Calendar;
-import java.util.Date;
-
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -109,20 +107,12 @@ public class CriterionSatisfactionDAOTest {
         satisfactionDAO.save(criterionSatisfaction);
     }
 
-    public static Date year(int year) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        return calendar.getTime();
+    public static LocalDate year(int year) {
+        return new LocalDate(year, 1, 1);
     }
 
-    public static Date date(int year,int month, int day) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear();
-        calendar.set(Calendar.YEAR, year);
-        calendar.set(Calendar.MONTH, month);
-        calendar.set(Calendar.DAY_OF_MONTH, day);
-        return calendar.getTime();
+    public static LocalDate date(int year, int month, int day) {
+        return new LocalDate(year, month, day);
     }
 
     @Test

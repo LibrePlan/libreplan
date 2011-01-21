@@ -19,26 +19,26 @@
 -->
 
 <vbox id="${arg.id}"
-	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController"
-	width="100%">
-    <panel title="${i18n:_('Advance assignments')}" border="normal">
+	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController" width="100%">
+    <panel title="${i18n:_('Progress assignments')}" border="normal">
         <panelchildren>
             <vbox id="messagesContainerAdvances" />
-            <vbox align="left">
+            <vbox align="left" width="100%">
                 <hbox>
-                    <button label="${i18n:_('Add new advance assignment')}"
+                    <button label="${i18n:_('Add new progress assignment')}"
                         onClick="manageOrderElementAdvancesController.goToCreateLineAdvanceAssignment();">
                     </button>
                 </hbox>
             </vbox>
-            <vbox width="100%">
+            <vbox>
+            <radiogroup>
             <listbox id="editAdvances" height="170px"
                      model="@{manageOrderElementAdvancesController.advanceAssignments}"
                      itemRenderer="@{manageOrderElementAdvancesController.advancesRenderer}" mold="paging"
                      onSelect="manageOrderElementAdvancesController.selectAdvanceLine(self.selectedItem);"
                      pageSize="4">
                     <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Advance unit type" />
+                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Progress unit type" />
                          <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="80px" align="center"/>
                          <listheader label="${i18n:_('Current value')}" width="80px" align="center"/>
                          <listheader label="${i18n:_('Percentage')}" width="80px" align="center"/>
@@ -49,6 +49,7 @@
                          <listheader label="${i18n:_('Operations')}" width="130px" align="center"/>
                      </listhead>
             </listbox>
+            </radiogroup>
             </vbox>
         </panelchildren>
     </panel>
@@ -59,7 +60,8 @@
                     <listbox id="editAdvancesMeasurement" width="380px" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
-                             mold="paging" pageSize="5" sclass="advance-measurement">
+                             mold="paging" pageSize="5" sclass="advance-measurement"
+                             onPaging="manageOrderElementAdvancesController.onPagingMeasurement();">
                             <listhead>
                                 <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
                                 <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
@@ -68,7 +70,7 @@
                             </listhead>
                     </listbox>
                 </vbox>
-                <chart id="chart" title="${i18n:_('Advance Progress')}"
+                <chart id="chart" title="${i18n:_('Progress Evolution')}"
                     type="time_series" threeD="false"
                     model="@{manageOrderElementAdvancesController.chartData}"
                     xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"

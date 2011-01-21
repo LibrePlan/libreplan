@@ -32,8 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -284,14 +284,18 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<Criterion> getCriterionsOn(Collection<? extends Task> tasks) {
         Set<Criterion> result = new LinkedHashSet<Criterion>();
         for (Task eachTask : tasks) {
-            for (GenericResourceAllocation eachAllocation : onlyGeneric(eachTask
-                    .getSatisfiedResourceAllocations())) {
-                for (Criterion eachCriterion : eachAllocation.getCriterions()) {
-                    result.add(eachCriterion);
-                }
-            }
+            result.addAll(getCriterionsOn(eachTask));
         }
         return new ArrayList<Criterion>(result);
+    }
+
+    private Set<Criterion> getCriterionsOn(Task task) {
+        Set<Criterion> result = new LinkedHashSet<Criterion>();
+        for (GenericResourceAllocation eachAllocation : onlyGeneric(task
+                .getSatisfiedResourceAllocations())) {
+            result.addAll(eachAllocation.getCriterions());
+        }
+        return result;
     }
 
     private List<Resource> resourcesToShow() {
@@ -421,6 +425,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(new ArrayList<ResourceAllocation<?>>(
                 allocations));
 
+        // REVISAR ESTO ANTES DE ACABAR
         if (filter()) {
             // build time lines for current order
             if (byOrder.get(filterBy) != null) {
@@ -455,7 +460,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
 
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(criterion,
-                "Other orders", "global-generic", allocations,
+                "Other projects", "global-generic", allocations,
                 getCurrentTimeLineRole(null)),
                 buildTimeLinesGroupForOrder(
                 criterion, byOrder));
@@ -486,24 +491,41 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
+
             Task task = entry.getKey();
-            Set<Criterion> criterions = task.getCriterions();
-            TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
 
-            /**
-             * Each resource line has the same role than its allocated task, so
-             * that link with the resource allocation screen
-             */
-            LoadTimeLine timeLine = new LoadTimeLine(buildTimeLine(criterions,
-                    task, criterion, "global-generic", entry.getValue(), role),
-                    buildTimeLinesForEachResource(criterion, onlyGeneric(entry
-                            .getValue()), role));
-            if (!timeLine.isEmpty()) {
-                secondLevel.add(timeLine);
+            Map<Set<Criterion>, List<GenericResourceAllocation>> mapSameCriteria = getAllocationsWithSameCriteria((entry
+                    .getValue()));
+            for (Entry<Set<Criterion>, List<GenericResourceAllocation>> entrySameCriteria : mapSameCriteria
+                    .entrySet()) {
+                Set<Criterion> criterions = entrySameCriteria.getKey();
+                List<GenericResourceAllocation> genericAllocations = entrySameCriteria
+                        .getValue();
+                List<ResourceAllocation<?>> resourceAllocations = new ArrayList<ResourceAllocation<?>>(
+                        genericAllocations);
+                TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(task);
+
+                /**
+                 * Each resource line has the same role than its allocated task,
+                 * so that link with the resource allocation screen
+                 */
+                LoadTimeLine timeLine = new LoadTimeLine(buildTimeLine(
+                        criterions, task, criterion, "global-generic",
+                        resourceAllocations, role),
+                        buildTimeLinesForEachResource(criterion,
+                                genericAllocations, role));
+                if (!timeLine.isEmpty()) {
+                    secondLevel.add(timeLine);
+                }
             }
-
         }
         return secondLevel;
+    }
+
+    private Map<Set<Criterion>, List<GenericResourceAllocation>> getAllocationsWithSameCriteria(
+            List<ResourceAllocation<?>> genericAllocations) {
+        return GenericResourceAllocation
+                .byCriterions(onlyGeneric(genericAllocations));
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachResource(
@@ -533,8 +555,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private String getDescriptionResourceWithCriterions(Resource resource) {
         Set<CriterionSatisfaction> criterionSatisfactions = resource
                 .getCriterionSatisfactions();
-        return resource.getShortDescription()
-                + getCriterionSatisfactionDescription(criterionSatisfactions);
+        return resource.getShortDescription();
     }
 
     private String getCriterionSatisfactionDescription(
@@ -624,7 +645,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(null);
         LoadTimeLine group = new LoadTimeLine(buildTimeLine(resource,
-                _("Other orders"), resourceAllocations, "resource", role),
+                _("Other projects"), resourceAllocations, "resource", role),
                 buildTimeLinesGroupForOrder(resource, byOrder));
         return group;
     }

@@ -38,7 +38,7 @@
         <tabpanels>
             <tabpanel>
                 <!-- Order element information -->
-                <panel title="${i18n:_('Order Element Information')}:" border="normal">
+                <panel title="${i18n:_('Task Information')}:" border="normal">
                     <panelchildren>
 
                     <grid id="gridLimitingOrderElementHours">

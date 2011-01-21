@@ -44,7 +44,6 @@ import org.zkoss.zul.Window;
 
 /**
  * Controller for {@link OrderElement} view of {@link Order} entities <br />
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -84,7 +83,6 @@ public class OrderElementController extends GenericForwardComposer {
 
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
 
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -118,7 +116,7 @@ public class OrderElementController extends GenericForwardComposer {
                 && (!StringUtils.isBlank(getOrderElement().getName()))) {
             name = ": " + getOrderElement().getName();
         }
-        return _("Edit order element {0}", name);
+        return _("Edit task {0}", name);
     }
 
     public void setupManageOrderElementAdvancesController()

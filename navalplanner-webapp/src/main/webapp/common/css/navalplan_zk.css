@@ -21,8 +21,7 @@
         width: 300px;
     }
 
-.plannerlayout #watermark,
-.plannerlayout #watermark .timetracker_column_even {
+.plannerlayout #watermark {
     height: 99999px !important;
 }
 
@@ -663,7 +662,7 @@ div.z-grid {
     height:25px;
 }
 .orderTree .operations {
-    width:160px;
+    width:80px;
 }
 .orderTree .name {
     min-width:120px;
@@ -1090,6 +1089,11 @@ span.z-dottree-line {
 .perspective-active.advanced-allocation .z-button-cm {
     background-image: url(../img/ico_advanced-allocation.png);
 }
+.perspective.montecarlo-simulation .z-button-cm,
+.perspective-active.montecarlo-simulation .z-button-cm {
+    background-image: url(../img/ico_montecarlo-simulation.png);
+}
+
 
 .perspectives-column {
     display:none;
@@ -1205,6 +1209,10 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 	padding: 10px;
 }
 
+.resourcesload .z-west-body .z-tree-header ,
+.limitingresources .z-west-body .z-tree-header {
+    width: 100% !important;
+}
 
 .z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
     -moz-background-clip:border;
@@ -1380,7 +1388,11 @@ tr.z-tree-row-seld .z-row-cnt {
 }
 
 .projects-list .date {
-    width:120px;
+    width:100px;
+}
+
+.projects-list .customer {
+    max-width:150px;
 }
 
 .z-band-popup td.z-list-cell {
@@ -1441,4 +1453,61 @@ display:none;
 
 .filter-more-options .z-groupbox-hl {
     cursor:pointer;
+}
+
+#ganttpanel #timetracker {
+    overflow: hidden;
+}
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .bankHoliday {
+    height: 99999px;
+}
+
+.calendar-exceptions div.z-grid-body {
+    overflow: hidden;
+}
+
+/* Expand vertical boxes for non-ffox browsers */
+.z-vbox {
+    width:100%;
+}
+
+.earned-parameter-column .z-label,
+.earned-parameter-column .z-checkbox-cnt {
+    font-size: 10px;
+}
+.earned-parameter-column {
+    white-space: nowrap;
+}
+
+.progress-types.z-combobox {
+    position: relative;
+    left: -3px;
+}
+
+.progress-types {
+    margin-left:-10px;
+}
+
+.progress-types.z-combobox .z-combobox-inp {
+    margin:0;
+    padding:0;
+    border:0;
+    color: transparent;
+    background: transparent;
+    border: 0;
+    border-width: 0;
+    outline: none;
+    text-indent: -200px;
+}
+
+.show-advances img  {
+    position:relative;
+    left: -8px;
+}
+
+.progress-types.z-combobox .z-combobox-img {
+    background-image: url(../img/small-combo-arrow.png);
+    border: 0;
 }

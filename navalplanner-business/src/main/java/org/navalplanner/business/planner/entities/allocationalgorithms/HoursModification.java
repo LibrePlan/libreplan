@@ -54,6 +54,13 @@ public abstract class HoursModification extends AllocationModification {
                              .fromStartUntil(end)
                              .allocateHours(getHours());
         }
+
+        @Override
+        public void allocateFromEndUntil(LocalDate start) {
+            genericAllocation.forResources(getResources())
+                             .fromEndUntil(start)
+                             .allocateHours(getHours());
+        }
     }
 
     private static class OnSpecificAllocation extends HoursModification {
@@ -71,6 +78,12 @@ public abstract class HoursModification extends AllocationModification {
             specific.fromStartUntil(end)
                     .allocateHours(getHours());
         }
+
+        @Override
+        public void allocateFromEndUntil(LocalDate start) {
+            specific.fromEndUntil(start)
+                    .allocateHours(getHours());
+        }
     }
 
     public static HoursModification create(
@@ -86,17 +99,18 @@ public abstract class HoursModification extends AllocationModification {
     }
 
     public static List<HoursModification> fromExistent(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            Collection<? extends ResourceAllocation<?>> allocations,
+            IResourceDAO resourceDAO) {
         List<HoursModification> result = new ArrayList<HoursModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asHoursModification());
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
     }
 
     public static List<HoursModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
-        List<HoursModification> result = fromExistent(allocations);
+        List<HoursModification> result = fromExistent(allocations, resourceDAO);
         for (HoursModification each : result) {
             each.withNewResources(resourceDAO);
         }
@@ -117,6 +131,8 @@ public abstract class HoursModification extends AllocationModification {
     }
 
     public abstract void allocateUntil(LocalDate end);
+
+    public abstract void allocateFromEndUntil(LocalDate start);
 
     public int getHours() {
         return hours;

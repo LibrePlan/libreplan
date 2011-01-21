@@ -20,9 +20,12 @@
 
 package org.zkoss.ganttz.data;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -41,7 +44,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.constraint.Constraint;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues;
+import org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.ComparisonType;
 import org.zkoss.ganttz.data.criticalpath.ICriticalPathCalculable;
 import org.zkoss.ganttz.util.IAction;
 import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
@@ -52,7 +58,8 @@ import org.zkoss.ganttz.util.PreAndPostNotReentrantActionsWrapper;
  * dependencies and in the duration of the tasks using listeners. <br/>
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class GanttDiagramGraph<V, D> {
+public class GanttDiagramGraph<V, D extends IDependency<V>> implements
+        ICriticalPathCalculable<V> {
 
     private static final Log LOG = LogFactory.getLog(GanttDiagramGraph.class);
 
@@ -76,7 +83,7 @@ public class GanttDiagramGraph<V, D> {
         return GANTTZK_ADAPTER;
     }
 
-    public interface IAdapter<V, D> {
+    public interface IAdapter<V, D extends IDependency<V>> {
         List<V> getChildren(V task);
 
         boolean isContainer(V task);
@@ -92,19 +99,13 @@ public class GanttDiagramGraph<V, D> {
 
         void setEndDateFor(V task, GanttDate newEnd);
 
-        GanttDate getSmallestBeginDateFromChildrenFor(V container);
-
-        Constraint<GanttDate> getCurrentLenghtConstraintFor(V task);
-
-        Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(V task);
-
-        List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-                Set<D> incoming);
-
-        List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Set<D> withDependencies);
+        public List<Constraint<GanttDate>> getConstraints(
+                ConstraintCalculator<V> calculator, Set<D> withDependencies,
+                Point point);
 
         List<Constraint<GanttDate>> getStartConstraintsFor(V task);
+
+        List<Constraint<GanttDate>> getEndConstraintsFor(V task);
 
         V getSource(D dependency);
 
@@ -116,15 +117,13 @@ public class GanttDiagramGraph<V, D> {
 
         DependencyType getType(D dependency);
 
-        TaskPoint<V, D> getDestinationPoint(D dependency);
-
         boolean isVisible(D dependency);
 
         boolean isFixed(V task);
 
     }
 
-    static class GanttZKAdapter implements IAdapter<Task, Dependency> {
+    public static class GanttZKAdapter implements IAdapter<Task, Dependency> {
 
         @Override
         public List<Task> getChildren(Task task) {
@@ -169,12 +168,6 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public TaskPoint<Task, Dependency> getDestinationPoint(
-                Dependency dependency) {
-            return dependency.getDestinationPoint();
-        }
-
-        @Override
         public boolean isVisible(Dependency dependency) {
             return dependency.isVisible();
         }
@@ -184,22 +177,6 @@ public class GanttDiagramGraph<V, D> {
             return task.getEndDate();
         }
 
-        @Override
-        public Constraint<GanttDate> getCurrentLenghtConstraintFor(Task task) {
-            return task.getCurrentLengthConstraint();
-        }
-
-        @Override
-        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
-                Task task) {
-            return task.getEndDateBiggerThanStartDate();
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-                Set<Dependency> incoming) {
-            return Dependency.getEndConstraints(incoming);
-        }
 
         @Override
         public void setEndDateFor(Task task, GanttDate newEnd) {
@@ -217,9 +194,11 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Set<Dependency> withDependencies) {
-            return Dependency.getStartConstraints(withDependencies);
+        public List<Constraint<GanttDate>> getConstraints(
+                ConstraintCalculator<Task> calculator,
+                Set<Dependency> withDependencies, Point pointBeingModified) {
+            return Dependency.getConstraintsFor(calculator, withDependencies,
+                    pointBeingModified);
         }
 
         @Override
@@ -228,9 +207,8 @@ public class GanttDiagramGraph<V, D> {
         }
 
         @Override
-        public GanttDate getSmallestBeginDateFromChildrenFor(Task container) {
-            return ((TaskContainer) container)
-                    .getSmallestBeginDateFromChildren();
+        public List<Constraint<GanttDate>> getEndConstraintsFor(Task task) {
+            return task.getEndConstraints();
         }
 
         @Override
@@ -241,14 +219,13 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public static class GanttZKDiagramGraph extends
-            GanttDiagramGraph<Task, Dependency> implements
-            ICriticalPathCalculable<Task> {
+            GanttDiagramGraph<Task, Dependency> {
 
-        private GanttZKDiagramGraph(
+        private GanttZKDiagramGraph(boolean scheduleBackwards,
                 List<Constraint<GanttDate>> globalStartConstraints,
                 List<Constraint<GanttDate>> globalEndConstraints,
                 boolean dependenciesConstraintsHavePriority) {
-            super(GANTTZK_ADAPTER, globalStartConstraints,
+            super(scheduleBackwards, GANTTZK_ADAPTER, globalStartConstraints,
                     globalEndConstraints,
                     dependenciesConstraintsHavePriority);
         }
@@ -259,11 +236,12 @@ public class GanttDiagramGraph<V, D> {
         public void execute();
     }
 
-    public static GanttZKDiagramGraph create(
+    public static GanttZKDiagramGraph create(boolean scheduleBackwards,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
-        return new GanttZKDiagramGraph(globalStartConstraints,
+        return new GanttZKDiagramGraph(scheduleBackwards,
+                globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
     }
 
@@ -278,6 +256,8 @@ public class GanttDiagramGraph<V, D> {
     private final List<Constraint<GanttDate>> globalStartConstraints;
 
     private final List<Constraint<GanttDate>> globalEndConstraints;
+
+    private final boolean scheduleBackwards;
 
     private DependenciesEnforcer enforcer = new DependenciesEnforcer();
 
@@ -344,18 +324,23 @@ public class GanttDiagramGraph<V, D> {
         }
     }
 
-    public static <V, D> GanttDiagramGraph<V, D> create(IAdapter<V, D> adapter,
+    public static <V, D extends IDependency<V>> GanttDiagramGraph<V, D> create(
+            boolean scheduleBackwards,
+            IAdapter<V, D> adapter,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
-        return new GanttDiagramGraph<V, D>(adapter, globalStartConstraints,
+        return new GanttDiagramGraph<V, D>(scheduleBackwards, adapter,
+                globalStartConstraints,
                 globalEndConstraints, dependenciesConstraintsHavePriority);
     }
 
-    protected GanttDiagramGraph(IAdapter<V, D> adapter,
+    protected GanttDiagramGraph(boolean scheduleBackwards,
+            IAdapter<V, D> adapter,
             List<Constraint<GanttDate>> globalStartConstraints,
             List<Constraint<GanttDate>> globalEndConstraints,
             boolean dependenciesConstraintsHavePriority) {
+        this.scheduleBackwards = scheduleBackwards;
         this.adapter = adapter;
         this.globalStartConstraints = globalStartConstraints;
         this.globalEndConstraints = globalEndConstraints;
@@ -851,22 +836,52 @@ public class GanttDiagramGraph<V, D> {
 
         boolean enforceParentShrinkage(V container) {
             GanttDate oldBeginDate = adapter.getStartDate(container);
-            GanttDate firstStart = adapter
-                    .getSmallestBeginDateFromChildrenFor(container);
+            GanttDate firstStart = getSmallestBeginDateFromChildrenFor(container);
+            GanttDate lastEnd = getBiggestEndDateFromChildrenFor(container);
             GanttDate previousEnd = adapter.getEndDateFor(container);
-            if (firstStart.after(oldBeginDate)) {
-                adapter.setStartDateFor(container, firstStart);
-                adapter.setEndDateFor(container, previousEnd);
+            if (firstStart.after(oldBeginDate) || previousEnd.after(lastEnd)) {
+                adapter.setStartDateFor(container,
+                        GanttDate.max(firstStart, oldBeginDate));
+                adapter.setEndDateFor(container,
+                        GanttDate.min(lastEnd, previousEnd));
                 return true;
             }
             return false;
         }
     }
 
+    private GanttDate getSmallestBeginDateFromChildrenFor(V container) {
+        return Collections.min(getChildrenDates(container, Point.START));
+    }
+
+    private GanttDate getBiggestEndDateFromChildrenFor(V container) {
+        return Collections.max(getChildrenDates(container, Point.END));
+    }
+
+    private List<GanttDate> getChildrenDates(V container, Point point) {
+        List<V> children = adapter.getChildren(container);
+        List<GanttDate> result = new ArrayList<GanttDate>();
+        if (children.isEmpty()) {
+            result.add(getDateFor(container, point));
+        }
+        for (V each : children) {
+            result.add(getDateFor(each, point));
+        }
+        return result;
+    }
+
+    GanttDate getDateFor(V task, Point point) {
+        if (point.equals(Point.START)) {
+            return adapter.getStartDate(task);
+        } else {
+            return adapter.getEndDateFor(task);
+        }
+    }
+
     List<Recalculation> getRecalculationsNeededFrom(V task) {
         List<Recalculation> result = new LinkedList<Recalculation>();
         Set<Recalculation> parentRecalculationsAlreadyDone = new HashSet<Recalculation>();
-        Recalculation first = recalculationFor(TaskPoint.both(adapter, task));
+        Recalculation first = recalculationFor(allPointsPotentiallyModified(task));
         first.couldHaveBeenModifiedBeforehand();
         Queue<Recalculation> pendingOfNavigate = new LinkedList<Recalculation>();
         result.addAll(getParentsRecalculations(parentRecalculationsAlreadyDone,
@@ -875,7 +890,7 @@ public class GanttDiagramGraph<V, D> {
         pendingOfNavigate.offer(first);
         while (!pendingOfNavigate.isEmpty()) {
             Recalculation current = pendingOfNavigate.poll();
-            for (TaskPoint<V, D> each : getImmendiateReachableFrom(current.taskPoint)) {
+            for (TaskPoint each : current.taskPoint.getImmendiateReachable()) {
                 Recalculation recalculationToAdd = recalculationFor(each);
                 ListIterator<Recalculation> listIterator = result
                         .listIterator();
@@ -899,9 +914,9 @@ public class GanttDiagramGraph<V, D> {
 
     private List<Recalculation> getParentsRecalculations(
             Set<Recalculation> parentRecalculationsAlreadyDone,
-            TaskPoint<V, D> taskPoint) {
+            TaskPoint taskPoint) {
         List<Recalculation> result = new ArrayList<Recalculation>();
-        for (TaskPoint<V, D> eachParent : parentsRecalculationsNeededFor(taskPoint)) {
+        for (TaskPoint eachParent : parentsRecalculationsNeededFor(taskPoint)) {
             Recalculation parentRecalculation = parentRecalculation(eachParent.task);
             if (!parentRecalculationsAlreadyDone
                     .contains(parentRecalculation)) {
@@ -912,10 +927,9 @@ public class GanttDiagramGraph<V, D> {
         return result;
     }
 
-    private Set<TaskPoint<V, D>> parentsRecalculationsNeededFor(
-            TaskPoint<V, D> current) {
-        Set<TaskPoint<V, D>> result = new LinkedHashSet<TaskPoint<V, D>>();
-        if (current.pointType == PointType.BOTH) {
+    private Set<TaskPoint> parentsRecalculationsNeededFor(TaskPoint current) {
+        Set<TaskPoint> result = new LinkedHashSet<TaskPoint>();
+        if (current.areAllPointsPotentiallyModified()) {
             List<V> path = fromTaskToTop(current.task);
             if (path.size() > 1) {
                 path = path.subList(1, path.size());
@@ -926,10 +940,10 @@ public class GanttDiagramGraph<V, D> {
         return result;
     }
 
-    private Collection<? extends TaskPoint<V, D>> asBothPoints(List<V> parents) {
-        List<TaskPoint<V, D>> result = new ArrayList<TaskPoint<V, D>>();
+    private Collection<? extends TaskPoint> asBothPoints(List<V> parents) {
+        List<TaskPoint> result = new ArrayList<TaskPoint>();
         for (V each : parents) {
-            result.add(TaskPoint.both(adapter, each));
+            result.add(allPointsPotentiallyModified(each));
         }
         return result;
     }
@@ -945,10 +959,10 @@ public class GanttDiagramGraph<V, D> {
     }
 
     private Recalculation parentRecalculation(V task) {
-        return new Recalculation(TaskPoint.both(adapter, task), true);
+        return new Recalculation(allPointsPotentiallyModified(task), true);
     }
 
-    private Recalculation recalculationFor(TaskPoint<V, D> taskPoint) {
+    private Recalculation recalculationFor(TaskPoint taskPoint) {
         return new Recalculation(taskPoint, false);
     }
 
@@ -956,7 +970,7 @@ public class GanttDiagramGraph<V, D> {
 
         private final boolean parentRecalculation;
 
-        private final TaskPoint<V, D> taskPoint;
+        private final TaskPoint taskPoint;
 
         private Set<Recalculation> recalculationsCouldAffectThis = new HashSet<Recalculation>();
 
@@ -966,7 +980,7 @@ public class GanttDiagramGraph<V, D> {
 
         private boolean couldHaveBeenModifiedBeforehand = false;
 
-        Recalculation(TaskPoint<V, D> taskPoint, boolean isParentRecalculation) {
+        Recalculation(TaskPoint taskPoint, boolean isParentRecalculation) {
             Validate.notNull(taskPoint);
             this.taskPoint = taskPoint;
             this.parentRecalculation = isParentRecalculation;
@@ -991,19 +1005,6 @@ public class GanttDiagramGraph<V, D> {
             return (recalculationsCouldAffectThis.isEmpty() || parentsHaveBeenModified());
         }
 
-        private boolean taskChangesPosition() {
-            PointType pointType = taskPoint.pointType;
-            V task = taskPoint.task;
-            switch (pointType) {
-            case BOTH:
-                return enforceStartAndEnd(task);
-            case END:
-                return enforceEnd(task);
-            default:
-                return false;
-            }
-        }
-
         private boolean parentsHaveBeenModified() {
             for (Recalculation each : recalculationsCouldAffectThis) {
                 if (!each.recalculationCalled) {
@@ -1018,81 +1019,590 @@ public class GanttDiagramGraph<V, D> {
             return false;
         }
 
-        private boolean enforceStartAndEnd(V task) {
-            Set<D> incoming = graph.incomingEdgesOf(task);
-            GanttDate previousEndDate = adapter.getEndDateFor(task);
-            boolean startDateChanged = enforceStartDate(task, incoming);
-            boolean endDateChanged = !parentRecalculation
-                    && enforceEndDate(task, previousEndDate, incoming);
-            return startDateChanged || endDateChanged;
-        }
-
-        private boolean enforceEnd(V task) {
-            Set<D> incoming = graph.incomingEdgesOf(task);
-            GanttDate previousEndDate = adapter.getEndDateFor(task);
-            return enforceEndDate(task, previousEndDate, incoming);
+        private boolean taskChangesPosition() {
+            ChangeTracker tracker = trackTaskChanges();
+            Constraint.initialValue(noRestrictions())
+                    .withConstraints(getConstraintsToApply())
+                    .apply();
+            return tracker.taskHasChanged();
         }
 
         @SuppressWarnings("unchecked")
-        private boolean enforceEndDate(V task, GanttDate previousEndDate,
-                Set<D> incoming) {
-            if (adapter.isFixed(task)) {
-                return false;
+        private List<Constraint<PositionRestrictions>> getConstraintsToApply() {
+            Constraint<PositionRestrictions> weakForces = scheduleBackwards ? new WeakForwardForces()
+                    : new WeakBackwardsForces();
+            Constraint<PositionRestrictions> dominatingForces = scheduleBackwards ? new DominatingBackwardForces()
+                    : new DominatingForwardForces();
+            if (dependenciesConstraintsHavePriority) {
+                return asList(weakForces, dominatingForces);
+            } else {
+                return asList(weakForces, dominatingForces, weakForces);
             }
-            Constraint<GanttDate> currentLength = adapter
-                    .getCurrentLenghtConstraintFor(task);
-            Constraint<GanttDate> respectStartDate = adapter
-                    .getEndDateBiggerThanStartDateConstraintFor(task);
-            GanttDate newEnd = Constraint
-                    .<GanttDate> initialValue(null)
-                    .withConstraints(currentLength)
-                    .withConstraints(adapter.getEndConstraintsGivenIncoming(incoming))
-                    .withConstraints(respectStartDate)
-                    .apply();
-            if (hasChanged(previousEndDate, newEnd)) {
-                adapter.setEndDateFor(task, newEnd);
-            }
-            return !previousEndDate.equals(newEnd);
         }
 
-        private boolean enforceStartDate(V task, Set<D> incoming) {
-            if (adapter.isFixed(task)) {
-                return false;
+        abstract class PositionRestrictions {
+
+            abstract List<Constraint<GanttDate>> getStartConstraints();
+
+            abstract List<Constraint<GanttDate>> getEndConstraints();
+
+            abstract boolean satisfies(PositionRestrictions other);
+
+        }
+
+
+        private final class NoRestrictions extends PositionRestrictions {
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return Collections.emptyList();
             }
-            GanttDate newStart = calculateStartDateFor(task, incoming);
-            GanttDate old = adapter.getStartDate(task);
-            if (hasChanged(old, newStart)) {
-                adapter.setStartDateFor(task, newStart);
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            boolean satisfies(PositionRestrictions restrictions) {
                 return true;
             }
-            return false;
         }
 
-        private boolean hasChanged(GanttDate old, GanttDate newValue) {
-            if (old == newValue) {
+        PositionRestrictions noRestrictions() {
+            return new NoRestrictions();
+        }
+
+        DatesBasedPositionRestrictions biggerThan(GanttDate start, GanttDate end) {
+            ComparisonType type = isScheduleForward() ? ComparisonType.BIGGER_OR_EQUAL_THAN
+                    : ComparisonType.BIGGER_OR_EQUAL_THAN_LEFT_FLOATING;
+            return new DatesBasedPositionRestrictions(type, start, end);
+        }
+
+        DatesBasedPositionRestrictions lessThan(GanttDate start, GanttDate end) {
+            ComparisonType type = isScheduleForward() ? ComparisonType.LESS_OR_EQUAL_THAN_RIGHT_FLOATING
+                    : ComparisonType.LESS_OR_EQUAL_THAN;
+            return new DatesBasedPositionRestrictions(type, start, end);
+        }
+
+        class DatesBasedPositionRestrictions extends PositionRestrictions {
+
+            private Constraint<GanttDate> startConstraint;
+            private Constraint<GanttDate> endConstraint;
+            private final GanttDate start;
+            private final GanttDate end;
+
+            public DatesBasedPositionRestrictions(
+                    ComparisonType comparisonType, GanttDate start,
+                    GanttDate end) {
+                this.start = start;
+                this.end = end;
+                this.startConstraint = ConstraintOnComparableValues
+                        .instantiate(comparisonType, start);
+                this.endConstraint = ConstraintOnComparableValues.instantiate(
+                        comparisonType, end);
+            }
+
+            boolean satisfies(PositionRestrictions other) {
+                if (DatesBasedPositionRestrictions.class.isInstance(other)) {
+                    return satisfies(DatesBasedPositionRestrictions.class
+                            .cast(other));
+                }
                 return false;
             }
-            return (old == null) != (newValue == null)
-                    || old.compareTo(newValue) != 0;
+
+            private boolean satisfies(DatesBasedPositionRestrictions other) {
+                return startConstraint.isSatisfiedBy(other.start)
+                        && endConstraint.isSatisfiedBy(other.end);
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return Collections.singletonList(startConstraint);
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return Collections.singletonList(endConstraint);
+            }
+
         }
 
-        private GanttDate calculateStartDateFor(V task, Set<D> withDependencies) {
-            List<Constraint<GanttDate>> dependencyConstraints = adapter
-                    .getStartConstraintsGiven(withDependencies);
-            GanttDate newStart;
-            if (dependenciesConstraintsHavePriority) {
-                newStart = Constraint.<GanttDate> initialValue(null)
-                        .withConstraints(adapter.getStartConstraintsFor(task))
-                        .withConstraints(dependencyConstraints)
-                        .withConstraints(globalStartConstraints).apply();
+        class ChangeTracker {
+            private GanttDate start;
+            private GanttDate end;
+            private final V task;
 
-            } else {
-                newStart = Constraint.<GanttDate> initialValue(null)
-                        .withConstraints(dependencyConstraints)
-                        .withConstraints(adapter.getStartConstraintsFor(task))
-                        .withConstraints(globalStartConstraints).apply();
+            public ChangeTracker(V task) {
+                this.task = task;
+                this.start = adapter.getStartDate(task);
+                this.end = adapter.getEndDateFor(task);
             }
-            return newStart;
+
+            public boolean taskHasChanged() {
+                return areNotEqual(adapter.getStartDate(task), this.start)
+                        || areNotEqual(adapter.getEndDateFor(task), this.end);
+            }
+
+        }
+
+        boolean areNotEqual(GanttDate a, GanttDate b) {
+            return a != b && a.compareTo(b) != 0;
+        }
+
+        protected ChangeTracker trackTaskChanges() {
+            return new ChangeTracker(taskPoint.task);
+        }
+
+
+        abstract class Forces extends Constraint<PositionRestrictions> {
+
+            protected final V task;
+
+            public Forces() {
+                this.task = taskPoint.task;
+            }
+
+            private PositionRestrictions resultingRestrictions = new NoRestrictions();
+
+            protected PositionRestrictions applyConstraintTo(
+                    PositionRestrictions restrictions) {
+                if (adapter.isFixed(task)) {
+                    return restrictions;
+                }
+                resultingRestrictions = enforceUsingPreviousRestrictions(restrictions);
+                return resultingRestrictions;
+            }
+
+            public boolean isSatisfiedBy(PositionRestrictions value) {
+                return resultingRestrictions.satisfies(value);
+            }
+
+            public void checkSatisfiesResult(PositionRestrictions finalResult) {
+                super.checkSatisfiesResult(finalResult);
+                if (DatesBasedPositionRestrictions.class
+                        .isInstance(finalResult)) {
+                    checkConstraintsAgainst(DatesBasedPositionRestrictions.class
+                            .cast(finalResult));
+                }
+            }
+
+            private void checkConstraintsAgainst(
+                    DatesBasedPositionRestrictions finalResult) {
+                checkStartConstraints(finalResult.start);
+                checkEndConstraints(finalResult.end);
+            }
+
+            private void checkStartConstraints(GanttDate finalStart) {
+                Constraint
+                        .checkSatisfyResult(getStartConstraints(), finalStart);
+            }
+
+
+            private void checkEndConstraints(GanttDate finalEnd) {
+                Constraint.checkSatisfyResult(getEndConstraints(), finalEnd);
+            }
+
+            abstract List<Constraint<GanttDate>> getStartConstraints();
+
+            abstract List<Constraint<GanttDate>> getEndConstraints();
+
+            abstract PositionRestrictions enforceUsingPreviousRestrictions(
+                    PositionRestrictions restrictions);
+        }
+
+        abstract class Dominating extends Forces {
+
+            private final Point primary;
+            private final Point secondary;
+
+            public Dominating(Point primary, Point secondary) {
+                Validate.isTrue(isSupportedPoint(primary));
+                Validate.isTrue(isSupportedPoint(secondary));
+                Validate.isTrue(!primary.equals(secondary));
+
+                this.primary = primary;
+                this.secondary = secondary;
+            }
+
+            private boolean isSupportedPoint(Point point) {
+                EnumSet<Point> validPoints = EnumSet.of(Point.START, Point.END);
+                return validPoints.contains(point);
+            }
+
+            private Point getPrimaryPoint() {
+                return primary;
+            }
+
+            private Point getSecondaryPoint() {
+                return secondary;
+            }
+
+            @Override
+            PositionRestrictions enforceUsingPreviousRestrictions(
+                    PositionRestrictions restrictions) {
+                if (parentRecalculation) {
+                    // avoid interference from task containers shrinking
+                    return enforcePrimaryPoint(restrictions);
+                } else if (taskPoint.areAllPointsPotentiallyModified()) {
+                    return enforceBoth(restrictions);
+                } else if (taskPoint.somePointPotentiallyModified()) {
+                    return enforceSecondaryPoint(restrictions);
+                }
+                return restrictions;
+            }
+
+            private PositionRestrictions enforceBoth(
+                    PositionRestrictions restrictions) {
+                ChangeTracker changeTracker = trackTaskChanges();
+                PositionRestrictions currentRestrictions = enforcePrimaryPoint(restrictions);
+                if (changeTracker.taskHasChanged() || parentRecalculation
+                        || couldHaveBeenModifiedBeforehand) {
+                    return enforceSecondaryPoint(currentRestrictions);
+                }
+                return currentRestrictions;
+            }
+
+            private PositionRestrictions enforcePrimaryPoint(
+                    PositionRestrictions originalRestrictions) {
+                GanttDate newDominatingPointDate = calculatePrimaryPointDate(originalRestrictions);
+                return enforceRestrictionsFor(primary, newDominatingPointDate);
+            }
+
+            /**
+             * Calculates the new date for the primary point based on the
+             * present constraints. If there are no constraints this method will
+             * return the existent commanding point date
+             * @param originalRestrictions
+             */
+            private GanttDate calculatePrimaryPointDate(
+                    PositionRestrictions originalRestrictions) {
+                GanttDate newDate = Constraint
+                        .<GanttDate> initialValue(null)
+                        .withConstraints(
+                                getConstraintsFrom(originalRestrictions,
+                                        getPrimaryPoint()))
+                        .withConstraints(getConstraintsFor(getPrimaryPoint()))
+                        .applyWithoutFinalCheck();
+                if (newDate == null) {
+                    return getTaskDateFor(getPrimaryPoint());
+                }
+                return newDate;
+            }
+
+            private List<Constraint<GanttDate>> getConstraintsFor(Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    return getStartConstraints();
+                case END:
+                    return getEndConstraints();
+                default:
+                    throw new RuntimeException("shouldn't happen");
+                }
+            }
+
+            private PositionRestrictions enforceSecondaryPoint(
+                    PositionRestrictions restrictions) {
+                GanttDate newSecondaryPointDate = calculateSecondaryPointDate(restrictions);
+                if (newSecondaryPointDate == null) {
+                    return restrictions;
+                }
+                restrictions = enforceRestrictionsFor(getSecondaryPoint(),
+                        newSecondaryPointDate);
+                if (taskPoint.onlyModifies(getSecondaryPoint())) {
+                    // primary point constraints could be the ones "commanding"
+                    // now
+                    GanttDate potentialPrimaryDate = calculatePrimaryPointDate(restrictions);
+                    if (!doSatisfyOrderCondition(potentialPrimaryDate,
+                            getTaskDateFor(getPrimaryPoint()))) {
+                        return enforceRestrictionsFor(getPrimaryPoint(),
+                                potentialPrimaryDate);
+                    }
+                }
+                return restrictions;
+            }
+
+
+            private GanttDate calculateSecondaryPointDate(
+                    PositionRestrictions restrictions) {
+                GanttDate newEnd = Constraint
+                        .<GanttDate> initialValue(null)
+                        .withConstraints(
+                                getConstraintsFrom(restrictions,
+                                        getSecondaryPoint()))
+                        .withConstraints(getConstraintsFor(getSecondaryPoint()))
+                        .applyWithoutFinalCheck();
+                return newEnd;
+            }
+
+            protected abstract boolean doSatisfyOrderCondition(
+                    GanttDate supposedlyBefore, GanttDate supposedlyAfter);
+
+            private PositionRestrictions enforceRestrictionsFor(Point point,
+                    GanttDate newDate) {
+                GanttDate old = getTaskDateFor(point);
+                if (areNotEqual(old, newDate)) {
+                    setTaskDateFor(point, newDate);
+                }
+                return createRestrictionsFor(getTaskDateFor(Point.START),
+                        getTaskDateFor(Point.END));
+            }
+
+            GanttDate getTaskDateFor(Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                return getDateFor(task, point);
+            }
+
+            protected abstract PositionRestrictions createRestrictionsFor(
+                    GanttDate start, GanttDate end);
+
+            private void setTaskDateFor(Point point, GanttDate date) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    adapter.setStartDateFor(task, date);
+                    break;
+                case END:
+                    adapter.setEndDateFor(task, date);
+                }
+            }
+
+            private List<Constraint<GanttDate>> getConstraintsFrom(
+                    PositionRestrictions restrictions, Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    return restrictions.getStartConstraints();
+                case END:
+                    return restrictions.getEndConstraints();
+                default:
+                    throw new RuntimeException("shouldn't happen");
+                }
+            }
+
+            protected List<Constraint<GanttDate>> getConstraintsForPrimaryPoint() {
+                List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
+                if (dependenciesConstraintsHavePriority) {
+                    result.addAll(getTaskConstraints(getPrimaryPoint()));
+                    result.addAll(getDependenciesConstraintsFor(getPrimaryPoint()));
+
+                } else {
+                    result.addAll(getDependenciesConstraintsFor(getPrimaryPoint()));
+                    result.addAll(getTaskConstraints(getPrimaryPoint()));
+                }
+                result.addAll(getGlobalConstraintsToApply(getPrimaryPoint()));
+                return result;
+            }
+
+            private Collection<Constraint<GanttDate>> getGlobalConstraintsToApply(
+                    Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    return globalStartConstraints;
+                case END:
+                    return globalEndConstraints;
+                default:
+                    throw new RuntimeException("shouldn't happen");
+                }
+            }
+
+            protected List<Constraint<GanttDate>> getConstraintsForSecondaryPoint() {
+                return getDependenciesConstraintsFor(getSecondaryPoint());
+            }
+
+            private List<Constraint<GanttDate>> getDependenciesConstraintsFor(
+                    Point point) {
+                final Set<D> withDependencies = getDependenciesAffectingThisTask();
+                return adapter.getConstraints(getCalculator(),
+                        withDependencies, point);
+            }
+
+            protected abstract Set<D> getDependenciesAffectingThisTask();
+
+            private List<Constraint<GanttDate>> getTaskConstraints(Point point) {
+                Validate.isTrue(isSupportedPoint(point));
+                switch (point) {
+                case START:
+                    return adapter.getStartConstraintsFor(task);
+                case END:
+                    return adapter.getEndConstraintsFor(task);
+                default:
+                    throw new RuntimeException("shouldn't happen");
+                }
+            }
+
+            protected abstract ConstraintCalculator<V> getCalculator();
+
+            protected ConstraintCalculator<V> createNormalCalculator() {
+                return createCalculator(false);
+            }
+
+            protected ConstraintCalculator<V> createBackwardsCalculator() {
+                return createCalculator(true);
+            }
+
+            private ConstraintCalculator<V> createCalculator(boolean inverse) {
+                return new ConstraintCalculator<V>(inverse) {
+
+                    @Override
+                    protected GanttDate getStartDate(V vertex) {
+                        return adapter.getStartDate(vertex);
+                    }
+
+                    @Override
+                    protected GanttDate getEndDate(V vertex) {
+                        return adapter.getEndDateFor(vertex);
+                    }
+                };
+            }
+
+        }
+
+        class DominatingForwardForces extends Dominating {
+
+            public DominatingForwardForces() {
+                super(Point.START, Point.END);
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return getConstraintsForPrimaryPoint();
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return getConstraintsForSecondaryPoint();
+            }
+
+            @Override
+            protected Set<D> getDependenciesAffectingThisTask() {
+                return graph.incomingEdgesOf(task);
+            }
+
+            @Override
+            protected ConstraintCalculator<V> getCalculator() {
+                return createNormalCalculator();
+            }
+
+            @Override
+            protected PositionRestrictions createRestrictionsFor(
+                    GanttDate start, GanttDate end) {
+                return biggerThan(start, end);
+            }
+
+            @Override
+            protected boolean doSatisfyOrderCondition(
+                    GanttDate supposedlyBefore,
+                    GanttDate supposedlyAfter) {
+                return supposedlyBefore.compareTo(supposedlyAfter) <= 0;
+            }
+
+        }
+
+        class DominatingBackwardForces extends Dominating {
+
+            public DominatingBackwardForces() {
+                super(Point.END, Point.START);
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return getConstraintsForSecondaryPoint();
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return getConstraintsForPrimaryPoint();
+            }
+
+            @Override
+            protected Set<D> getDependenciesAffectingThisTask() {
+                return graph.outgoingEdgesOf(task);
+            }
+
+            @Override
+            protected ConstraintCalculator<V> getCalculator() {
+                return createBackwardsCalculator();
+            }
+
+            @Override
+            protected PositionRestrictions createRestrictionsFor(
+                    GanttDate start, GanttDate end) {
+                return lessThan(start, end);
+            }
+
+            @Override
+            protected boolean doSatisfyOrderCondition(
+                    GanttDate supposedlyBefore,
+                    GanttDate supposedlyAfter) {
+                return supposedlyBefore.compareTo(supposedlyAfter) >= 0;
+            }
+
+        }
+
+        class WeakForwardForces extends Forces {
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return adapter.getStartConstraintsFor(task);
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            PositionRestrictions enforceUsingPreviousRestrictions(
+                    PositionRestrictions restrictions) {
+                GanttDate result = Constraint.<GanttDate> initialValue(null)
+                        .withConstraints(restrictions.getStartConstraints())
+                        .withConstraints(getStartConstraints())
+                        .applyWithoutFinalCheck();
+                if (result != null && !result.equals(getStartDate(task))) {
+                    return enforceRestrictions(result);
+                }
+                return restrictions;
+            }
+
+            private PositionRestrictions enforceRestrictions(GanttDate result) {
+                adapter.setStartDateFor(task, result);
+                return biggerThan(result, adapter.getEndDateFor(task));
+            }
+
+        }
+
+        class WeakBackwardsForces extends Forces {
+
+            @Override
+            PositionRestrictions enforceUsingPreviousRestrictions(
+                    PositionRestrictions restrictions) {
+                GanttDate result = Constraint.<GanttDate> initialValue(null)
+                        .withConstraints(restrictions.getEndConstraints())
+                        .withConstraints(getEndConstraints())
+                        .applyWithoutFinalCheck();
+                if (result != null && !result.equals(getEndDateFor(task))) {
+                    return enforceRestrictions(result);
+                }
+                return restrictions;
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getStartConstraints() {
+                return Collections.emptyList();
+            }
+
+            @Override
+            List<Constraint<GanttDate>> getEndConstraints() {
+                return adapter.getEndConstraintsFor(task);
+            }
+
+            private PositionRestrictions enforceRestrictions(GanttDate newEnd) {
+                adapter.setEndDateFor(task, newEnd);
+                return lessThan(adapter.getStartDate(task), newEnd);
+            }
+
         }
 
         @Override
@@ -1124,7 +1634,7 @@ public class GanttDiagramGraph<V, D> {
         @Override
         public boolean equals(Object obj) {
             if (Recalculation.class.isInstance(obj)) {
-                Recalculation other = (Recalculation) obj;
+                Recalculation other = Recalculation.class.cast(obj);
                 return new EqualsBuilder().append(parentRecalculation, other.parentRecalculation)
                                           .append(taskPoint, other.taskPoint)
                                           .isEquals();
@@ -1149,8 +1659,36 @@ public class GanttDiagramGraph<V, D> {
     public void removeDependency(D dependency) {
         graph.removeEdge(dependency);
         V destination = adapter.getDestination(dependency);
+        V source = adapter.getSource(dependency);
         enforcer.enforceRestrictionsOn(destination);
+        enforcer.enforceRestrictionsOn(source);
     }
+
+    public boolean canAddDependency(D dependency) {
+        return !isForbidden(dependency) && doesNotProvokeLoop(dependency);
+    }
+
+    private boolean isForbidden(D dependency) {
+        if (!adapter.isVisible(dependency)) {
+            // the invisible dependencies, the ones used to implement container
+            // behavior are not forbidden
+            return false;
+        }
+
+        boolean endEndDependency = DependencyType.END_END == dependency
+                .getType();
+        boolean startStartDependency = DependencyType.START_START == dependency
+                .getType();
+
+        V source = adapter.getSource(dependency);
+        V destination = adapter.getDestination(dependency);
+        boolean destinationIsContainer = adapter.isContainer(destination);
+        boolean sourceIsContainer = adapter.isContainer(source);
+
+        return (destinationIsContainer && endEndDependency)
+                || (sourceIsContainer && startStartDependency);
+    }
+
 
     public void add(D dependency) {
         add(dependency, true);
@@ -1161,6 +1699,9 @@ public class GanttDiagramGraph<V, D> {
     }
 
     private void add(D dependency, boolean enforceRestrictions) {
+        if (isForbidden(dependency)) {
+            return;
+        }
         V source = adapter.getSource(dependency);
         V destination = adapter.getDestination(dependency);
         graph.addEdge(source, destination, dependency);
@@ -1216,7 +1757,7 @@ public class GanttDiagramGraph<V, D> {
         return result;
     }
 
-    public D getDependencyFrom(V from, V to) {
+    public IDependency<V> getDependencyFrom(V from, V to) {
         return graph.getEdge(from, to);
     }
 
@@ -1291,9 +1832,9 @@ public class GanttDiagramGraph<V, D> {
     }
 
     public boolean doesNotProvokeLoop(D dependency) {
-        Set<TaskPoint<V, D>> reachableFromDestination = getReachableFrom(adapter
-                .getDestinationPoint(dependency));
-        for (TaskPoint<V, D> each : reachableFromDestination) {
+        Set<TaskPoint> reachableFromDestination = destinationPoint(dependency)
+                .getReachable();
+        for (TaskPoint each : reachableFromDestination) {
             if (each.sendsModificationsThrough(dependency)) {
                 return false;
             }
@@ -1301,94 +1842,147 @@ public class GanttDiagramGraph<V, D> {
         return true;
     }
 
-    /**
-     * It indicates if the task is modified both the start and end, only the end
-     * property or none of the properties
-     * @author Óscar González Fernández <ogonzalez@igalia.com>
-     */
-    public enum PointType {
-        BOTH, END, NONE;
+    TaskPoint destinationPoint(D dependency) {
+        V source = getDependencyDestination(dependency);
+        return new TaskPoint(source,
+                potentiallyModifiedDestinationPoints(dependency.getType()));
+    }
 
-        public boolean sendsModificationsThrough(DependencyType type) {
-            switch (this) {
-            case NONE:
-                return false;
-            case BOTH:
-                return true;
-            case END:
-                return type == DependencyType.END_END || type == DependencyType.END_START;
-            default:
-                throw new RuntimeException("unexpected value: " + this);
-            }
+    private Set<Point> potentiallyModifiedDestinationPoints(DependencyType type) {
+        Point destinationPoint = getDestinationPoint(type);
+        if (isDominatingPoint(destinationPoint)) {
+            return EnumSet.of(Point.START, Point.END);
+        } else {
+            return EnumSet.of(destinationPoint);
         }
     }
 
-    public static class TaskPoint<T, D> {
+    /**
+     * The dominating point is the one that causes the other point to be
+     * modified; e.g. when doing forward scheduling the dominating point is the
+     * start.
+     */
+    private boolean isDominatingPoint(Point point) {
+        return isScheduleForward() && point == Point.START
+                || isScheduleBackwards() && point == Point.END;
+    }
 
-        public static <T, D> TaskPoint<T, D> both(IAdapter<T, D> adapter, T task) {
-            return new TaskPoint<T, D>(adapter, task, PointType.BOTH);
-        }
+    private Point getDestinationPoint(DependencyType type) {
+        return type.getSourceAndDestination()[isScheduleForward() ? 1 : 0];
+    }
 
-        public static <T, D> TaskPoint<T, D> endOf(IAdapter<T, D> adapter,
-                T task) {
-            return new TaskPoint<T, D>(adapter, task, PointType.END);
-        }
+    private V getDependencySource(D dependency) {
+        return isScheduleForward() ? adapter.getSource(dependency) : adapter
+                .getDestination(dependency);
+    }
 
-        final T task;
+    private V getDependencyDestination(D dependency) {
+        return isScheduleForward() ? adapter.getDestination(dependency)
+                : adapter.getSource(dependency);
+    }
 
-        final PointType pointType;
+    TaskPoint allPointsPotentiallyModified(V task) {
+        return new TaskPoint(task, EnumSet.of(Point.START, Point.END));
+    }
 
-        private final IAdapter<T, D> adapter;
+    private class TaskPoint {
 
-        public TaskPoint(IAdapter<T, D> adapter, T task, PointType pointType) {
-            this.adapter = adapter;
+        private final V task;
+
+        private final boolean isContainer;
+
+        private final Set<Point> pointsModified;
+
+        TaskPoint(V task, Set<Point> pointsModified) {
             this.task = task;
-            this.pointType = pointType;
+            this.pointsModified = Collections.unmodifiableSet(pointsModified);
+            this.isContainer = adapter.isContainer(task);
         }
+
 
         @Override
         public String toString() {
-            return String.format("%s(%s)", task, pointType);
+            return String.format("%s(%s)", task, pointsModified);
         }
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof TaskPoint<?, ?>) {
-                TaskPoint<?, ?> other = (TaskPoint<?, ?>) obj;
-                return new EqualsBuilder().append(task, other.task).append(
-                        pointType, other.pointType).isEquals();
+            if (TaskPoint.class.isInstance(obj)) {
+                TaskPoint other = TaskPoint.class.cast(obj);
+                return new EqualsBuilder().append(task, other.task)
+                        .append(pointsModified, other.pointsModified)
+                        .isEquals();
             }
             return false;
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder().append(task).append(pointType).toHashCode();
+            return new HashCodeBuilder().append(task).append(pointsModified)
+                    .toHashCode();
+        }
+
+        public boolean areAllPointsPotentiallyModified() {
+            return pointsModified.size() > 1;
+        }
+
+        public boolean somePointPotentiallyModified() {
+            return pointsModified.contains(Point.START)
+                    || pointsModified.contains(Point.END);
+        }
+
+        public boolean onlyModifies(Point point) {
+            return pointsModified.size() == 1 && pointsModified.contains(point);
+        }
+
+        Set<TaskPoint> getReachable() {
+            Set<TaskPoint> result = new HashSet<TaskPoint>();
+            Queue<TaskPoint> pending = new LinkedList<TaskPoint>();
+            result.add(this);
+            pending.offer(this);
+            while (!pending.isEmpty()) {
+                TaskPoint current = pending.poll();
+                Set<TaskPoint> immendiate = current.getImmendiateReachable();
+                for (TaskPoint each : immendiate) {
+                    if (!result.contains(each)) {
+                        result.add(each);
+                        pending.offer(each);
+                    }
+                }
+            }
+            return result;
+        }
+
+        private Set<TaskPoint> getImmendiateReachable() {
+            Set<TaskPoint> result = new HashSet<TaskPoint>();
+            Set<D> candidates = immediateDependencies();
+            for (D each : candidates) {
+                if (this.sendsModificationsThrough(each)) {
+                    result.add(destinationPoint(each));
+                }
+            }
+            return result;
+        }
+
+        private Set<D> immediateDependencies() {
+            return isScheduleForward() ? graph.outgoingEdgesOf(this.task)
+                    : graph.incomingEdgesOf(this.task);
         }
 
         public boolean sendsModificationsThrough(D dependency) {
-            DependencyType type = adapter.getType(dependency);
-            return adapter.getSource(dependency).equals(task)
-                    && pointType.sendsModificationsThrough(type);
-        }
-    }
+            V source = getDependencySource(dependency);
+            Point dependencySourcePoint = getSourcePoint(adapter
+                    .getType(dependency));
 
-    private Set<TaskPoint<V, D>> getReachableFrom(TaskPoint<V, D> task) {
-        Set<TaskPoint<V, D>> result = new HashSet<TaskPoint<V, D>>();
-        Queue<TaskPoint<V, D>> pending = new LinkedList<TaskPoint<V, D>>();
-        result.add(task);
-        pending.offer(task);
-        while (!pending.isEmpty()) {
-            TaskPoint<V, D> current = pending.poll();
-            Set<TaskPoint<V, D>> immendiate = getImmendiateReachableFrom(current);
-            for (TaskPoint<V, D> each : immendiate) {
-                if (!result.contains(each)) {
-                    result.add(each);
-                    pending.offer(each);
-                }
-            }
+            return source.equals(task)
+                    && (!isContainer || pointsModified
+                            .contains(dependencySourcePoint));
         }
-        return result;
+
+        private Point getSourcePoint(DependencyType type) {
+            Point[] sourceAndDestination = type.getSourceAndDestination();
+            return sourceAndDestination[isScheduleForward() ? 0 : 1];
+        }
     }
 
 
@@ -1401,16 +1995,40 @@ public class GanttDiagramGraph<V, D> {
         return result;
     }
 
-    private Set<TaskPoint<V, D>> getImmendiateReachableFrom(
-            TaskPoint<V, D> current) {
-        Set<TaskPoint<V, D>> result = new HashSet<TaskPoint<V, D>>();
-        Set<D> outgoingEdgesOf = graph.outgoingEdgesOf(current.task);
-        for (D each : outgoingEdgesOf) {
-            if (current.sendsModificationsThrough(each)) {
-                result.add(adapter.getDestinationPoint(each));
-            }
+    public boolean isScheduleForward() {
+        return !isScheduleBackwards();
+    }
+
+    public boolean isScheduleBackwards() {
+        return scheduleBackwards;
+    }
+
+    @Override
+    public GanttDate getEndDateFor(V task) {
+        return adapter.getEndDateFor(task);
+    }
+
+    @Override
+    public List<Constraint<GanttDate>> getStartConstraintsFor(V task) {
+        return adapter.getStartConstraintsFor(task);
+    }
+
+    @Override
+    public List<Constraint<GanttDate>> getEndConstraintsFor(V task) {
+        return adapter.getEndConstraintsFor(task);
+    }
+
+    @Override
+    public GanttDate getStartDate(V task) {
+        return adapter.getStartDate(task);
+    }
+
+    @Override
+    public List<V> getChildren(V task) {
+        if (!isContainer(task)) {
+            return Collections.emptyList();
         }
-        return result;
+        return adapter.getChildren(task);
     }
 
 }

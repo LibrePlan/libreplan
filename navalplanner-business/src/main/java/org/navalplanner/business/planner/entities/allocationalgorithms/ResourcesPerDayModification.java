@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -43,6 +42,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -58,7 +58,6 @@ public abstract class ResourcesPerDayModification extends
                 ResourcesPerDay resourcesPerDay,
                 Collection<? extends Resource> resources) {
             super(resourceAllocation, resourcesPerDay, resources);
-            Validate.isTrue(!resources.isEmpty());
             this.genericAllocation = resourceAllocation;
         }
 
@@ -69,8 +68,14 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public void applyAllocationUntil(LocalDate endExclusive) {
-            genericAllocation.forResources(getResources()).until(endExclusive)
-                    .allocate(getGoal());
+            genericAllocation.forResources(getResources())
+                    .resourcesPerDayUntil(endExclusive).allocate(getGoal());
+        }
+
+        @Override
+        public void applyAllocationFromEndUntil(LocalDate start) {
+            genericAllocation.forResources(getResources())
+                    .resourcesPerDayFromEndUntil(start).allocate(getGoal());
         }
 
         @Override
@@ -136,7 +141,14 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public void applyAllocationUntil(LocalDate endExclusive) {
-            resourceAllocation.until(endExclusive).allocate(getGoal());
+            resourceAllocation.resourcesPerDayUntil(endExclusive).allocate(
+                    getGoal());
+        }
+
+        @Override
+        public void applyAllocationFromEndUntil(LocalDate start) {
+            resourceAllocation.resourcesPerDayFromEndUntil(start).allocate(
+                    getGoal());
         }
 
         @Override
@@ -182,7 +194,8 @@ public abstract class ResourcesPerDayModification extends
 
     public static List<ResourcesPerDayModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
-        List<ResourcesPerDayModification> result = fromExistent(allocations);
+        List<ResourcesPerDayModification> result = fromExistent(allocations,
+                resourceDAO);
         for (ResourcesPerDayModification each : result) {
             each.withNewResources(resourceDAO);
         }
@@ -198,16 +211,13 @@ public abstract class ResourcesPerDayModification extends
     }
 
     public static List<ResourcesPerDayModification> fromExistent(
-            Collection<? extends ResourceAllocation<?>> allocations) {
+            Collection<? extends ResourceAllocation<?>> allocations,
+            IResourceDAO resourcesDAO) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
-            Validate.isTrue(resourceAllocation.hasAssignments());
-            ResourcesPerDay perDay = resourceAllocation
-                    .getResourcesPerDay();
-            Validate.notNull(perDay);
             result.add(resourceAllocation.asResourcesPerDayModification());
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourcesDAO);
     }
 
     protected static ICalendar calendarFor(Resource associatedResource) {
@@ -236,6 +246,8 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract void applyAllocationUntil(LocalDate endExclusive);
 
+    public abstract void applyAllocationFromEndUntil(LocalDate start);
+
     public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
             EffortDuration limit);
 
@@ -245,10 +257,16 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract String getNoValidPeriodsMessageDueToIntersectionMessage();
 
-    public boolean isDayFilled(LocalDate day, EffortDuration taken) {
-        return getBeingModified().getAllocationCalendar()
-                .asDurationOn(PartialDay.wholeDay(day), goal).equals(taken);
+    public boolean thereAreMoreSpaceAvailableAt(IntraDayDate date) {
+        LocalDate day = date.getDate();
+        EffortDuration dayDuration = getBeingModified().getAllocationCalendar()
+                .asDurationOn(PartialDay.wholeDay(day), goal);
+        return dayDuration.compareTo(date.getEffortDuration()) > 0;
     }
 
+    public EffortDuration durationAtDay(PartialDay day) {
+        return getBeingModified().getAllocationCalendar().asDurationOn(day,
+                goal);
+    }
 
 }

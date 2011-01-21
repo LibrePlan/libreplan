@@ -20,6 +20,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -45,4 +47,27 @@ public class AssignmentFunction extends BaseEntity {
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
         // override at subclasses
     }
+
+    public String getName() {
+        // override at subclasses
+        return null;
+    }
+
+    public enum ASSIGNMENT_FUNCTION_NAME {
+        NONE(_("None")),
+        STRETCHES(_("Stretches")),
+        INTERPOLATION(_("Interporlation")),
+        SIGMOID(_("Sigmoid"));
+
+        private String name;
+
+        private ASSIGNMENT_FUNCTION_NAME(String name) {
+            this.name = name;
+        }
+
+        public String toString() {
+            return name;
+        }
+    }
+
 }

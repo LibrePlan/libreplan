@@ -31,7 +31,7 @@
     <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
 <groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false">
-        <caption label="More options" />
+        <caption label="${i18n:_('More options')}" />
 
 <hbox>
     <!-- Filter by date -->
@@ -42,9 +42,7 @@
 
     <!-- Limiting resource -->
     <label value="${i18n:_('Limiting resource')}"/>
-    <listbox id="filterLimitingResource"
-        mold="select"
-        model="@{controller.limitingResourceFilterOptionList}" />
+    <listbox id="filterLimitingResource" mold="select" />
     </hbox>
       </groupbox>
 

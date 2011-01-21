@@ -24,6 +24,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +123,10 @@ public class OrderPlanningController implements Composer {
                 .retrieve();
     }
 
+    public List<org.navalplanner.business.planner.entities.TaskElement> getCriticalPath() {
+        return planner != null ? planner.getCriticalPath() : null;
+    }
+
     public void setOrder(Order order,
             ICommand<TaskElement>... additionalCommands) {
         Validate.notNull(additionalCommands);
@@ -164,6 +169,12 @@ public class OrderPlanningController implements Composer {
         }
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
+
+        planner.setAreShownAdvancesByDefault(Planner
+                .guessShowAdvancesByDefault(parameters));
+
+        planner.setAreShownReportedHoursByDefault(Planner
+                .guessShowReportedHoursByDefault(parameters));
 
         orderElementFilter = (Vbox) planner.getFellow("orderElementFilter");
         // Configuration of the order filter

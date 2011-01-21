@@ -26,8 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
@@ -39,41 +38,13 @@ import org.zkoss.ganttz.util.ConstraintViolationNotificator;
  */
 public class Dependency implements IDependency<Task> {
 
-    private enum Calculation {
-        START {
-            @Override
-            public List<Constraint<GanttDate>> toConstraints(Task source,
-                    DependencyType type) {
-                return type.getStartConstraints(source);
-            }
-        },
-        END {
-            @Override
-            public List<Constraint<GanttDate>> toConstraints(Task source,
-                    DependencyType type) {
-                return type.getEndConstraints(source);
-            }
-        };
-
-        abstract List<Constraint<GanttDate>> toConstraints(Task source,
-                DependencyType type);
-    }
-
-    public static List<Constraint<GanttDate>> getStartConstraints(
-            Collection<Dependency> dependencies) {
-        return getConstraintsFor(dependencies, Calculation.START);
-    }
-
-    public static List<Constraint<GanttDate>> getEndConstraints(
-            Collection<Dependency> incoming) {
-        return getConstraintsFor(incoming, Calculation.END);
-    }
-
-    private static List<Constraint<GanttDate>> getConstraintsFor(
-            Collection<Dependency> dependencies, Calculation calculation) {
+    public static List<Constraint<GanttDate>> getConstraintsFor(
+            ConstraintCalculator<Task> calculator,
+            Collection<Dependency> dependencies, Point pointBeingModified) {
         List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
-        for (Dependency dependency : dependencies) {
-            result.addAll(dependency.toConstraints(calculation));
+        for (Dependency each : dependencies) {
+            result.addAll(each.withViolationNotification(calculator
+                    .getConstraints(each, pointBeingModified)));
         }
         return result;
     }
@@ -111,9 +82,9 @@ public class Dependency implements IDependency<Task> {
         this(source, destination, type, true);
     }
 
-    private List<Constraint<GanttDate>> toConstraints(Calculation calculation) {
-        return violationsNotificator.withListener(calculation.toConstraints(
-                source, type));
+    private List<Constraint<GanttDate>> withViolationNotification(
+            List<Constraint<GanttDate>> original) {
+        return violationsNotificator.withListener(original);
     }
 
     public void addConstraintViolationListener(
@@ -165,11 +136,6 @@ public class Dependency implements IDependency<Task> {
 
     public Dependency createWithType(DependencyType type) {
         return new Dependency(source, destination, type, visible);
-    }
-
-    public TaskPoint<Task, Dependency> getDestinationPoint() {
-        return new TaskPoint<Task, Dependency>(new GanttZKAdapter(),
-                destination, type.getPointModified());
     }
 
 }

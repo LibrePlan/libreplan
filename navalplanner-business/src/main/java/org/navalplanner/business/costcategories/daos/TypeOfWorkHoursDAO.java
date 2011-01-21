@@ -60,8 +60,9 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
         c.add(Restrictions.eq("code", code));
 
         TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
-        if (found==null)
+        if (found == null) {
             throw new InstanceNotFoundException(code, TypeOfWorkHours.class.getName());
+        }
         return found;
     }
 

@@ -45,7 +45,6 @@ import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.materials.bootstrap.UnitTypeBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
-import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.daos.IUnitTypeDAO;
 import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.UnitType;
@@ -82,9 +81,6 @@ public class MaterialServiceTest {
 
     @Autowired
     private IMaterialCategoryDAO materialCategoryDAO;
-
-    @Autowired
-    private IMaterialDAO materialDAO;
 
     @Autowired
     private IUnitTypeDAO unitTypeDAO;

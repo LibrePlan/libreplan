@@ -27,11 +27,12 @@ then
 	#
 	saved_ifs=${IFS}
 	IFS=$'\n'
+	{ cat /etc/tomcat6/context.xml; echo; } |
 	while read -r line ; do
 		if [[ ${line} = *\</Context\>* ]] ; then
 			cat <<-EOF
 				<!-- begin:navalplan -->
-				<Resource name="jdbc/navalplanner-ds" auth="Container"
+				<Resource name="jdbc/navalplan-ds" auth="Container"
 					type="javax.sql.DataSource"
 					maxActive="100" maxIdle="30" maxWait="10000"
 					username="${dbc_dbuser}" password="${dbc_dbpass}"
@@ -41,8 +42,7 @@ then
 			EOF
 		fi
 		echo "${line}"
-	done < /etc/tomcat6/context.xml \
-	     > /etc/tomcat6/context.xml.new
+	done > /etc/tomcat6/context.xml.new
 	IFS=${saved_ifs}
 
 	mv /etc/tomcat6/context.xml.new \
@@ -69,12 +69,12 @@ then
 fi
 
 
-#if [ -x /etc/init.d/tomcat5.5 ] ; then
-#	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
-#		invoke-rc.d tomcat5.5 restart
-#	else
-#		/etc/init.d/tomcat5.5 restart
-#	fi
-#fi
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 restart
+	else
+		/etc/init.d/tomcat6 restart
+	fi
+fi
 
 #DEBHELPER#

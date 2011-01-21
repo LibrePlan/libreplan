@@ -20,17 +20,23 @@
 
 package org.navalplanner.business.resources.entities;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.springframework.stereotype.Component;
@@ -149,8 +155,7 @@ public class CriterionType extends IntegrationEntity implements
 
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
-    private Boolean generateCode = false;
-
+    private Integer lastCriterionSequenceCode = 0;
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -216,6 +221,17 @@ public class CriterionType extends IntegrationEntity implements
 
     @Valid
     public Set<Criterion> getCriterions() {
+        return criterions;
+    }
+
+    public List<Criterion> getSortCriterions() {
+        List<Criterion> criterions = new ArrayList<Criterion>(getCriterions());
+        Collections.sort(criterions, new Comparator<Criterion>() {
+            @Override
+            public int compare(Criterion o1, Criterion o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
         return criterions;
     }
 
@@ -490,14 +506,6 @@ public class CriterionType extends IntegrationEntity implements
         return Registry.getCriterionTypeDAO();
     }
 
-    public Boolean getGenerateCode() {
-        return generateCode;
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
-    }
-
     /**
      * It checks there are no {@link AdvanceAssignment} any criteria of this
      * {@link CriterionType} has been assigned to any {@link Resource}
@@ -520,4 +528,26 @@ public class CriterionType extends IntegrationEntity implements
                 .checkChildrenAssignedToAnyResource(this)));
     }
 
+	@NotNull(message = "last criterion sequence code not specified")
+	public Integer getLastCriterionSequenceCode() {
+		return lastCriterionSequenceCode;
+	}
+
+	public void incrementLastCriterionSequenceCode() {
+        if (this.lastCriterionSequenceCode == null) {
+            this.lastCriterionSequenceCode = 0;
+        }
+        this.lastCriterionSequenceCode++;
+    }
+
+    public void setGenerateCode(Criterion criterion, int numberOfDigits) {
+        if ((criterion.getCode() == null) || (criterion.getCode().isEmpty())
+                || (!criterion.getCode().startsWith(getCode()))) {
+            incrementLastCriterionSequenceCode();
+            String criterionCode = EntitySequence.formatValue(numberOfDigits,
+                    getLastCriterionSequenceCode());
+            criterion.setCode(getCode()
+                    + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
+        }
+    }
 }

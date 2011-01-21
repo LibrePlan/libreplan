@@ -90,3 +90,14 @@ a.ayuda:hover {
     margin-top: 30px;
     width: 300px;
 }
+
+.supported-browsers {
+    color: #BBBBBB;
+    font-size: 9px;
+}
+
+.navalplan-version {
+    float: right;
+    color: #009900;
+    font-size: 10px;
+}

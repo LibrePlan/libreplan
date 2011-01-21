@@ -27,10 +27,10 @@ import static org.navalplanner.business.resources.entities.CriterionCompounder.b
 import static org.navalplanner.business.resources.entities.CriterionCompounder.not;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
@@ -207,12 +207,12 @@ public class CriterionTest {
             }
 
             @Override
-            public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+            public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
                 return isSatisfiedBy(resource);
             }
 
             @Override
-            public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+            public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
                 return isSatisfiedBy(resource);
             }
         };

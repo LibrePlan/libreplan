@@ -29,12 +29,13 @@ import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * CriterionsModel contract <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public interface ICriterionsModel {
+public interface ICriterionsModel extends IIntegrationEntityModel {
 
     boolean getAllowHierarchy();
 
@@ -65,18 +66,14 @@ public interface ICriterionsModel {
 
     public void prepareForEdit(CriterionType criterionType);
 
-    public void prepareForRemove(CriterionType criterionType);
-
     /**
      * Reloads {@link CriterionType} from DB and all its criterions
-     *
      * This method should be call after saveAndContinue() from controller to
      * synchronize what has been committed to DB after saving and the model
-     *
      */
     void reloadCriterionType();
 
-    public void remove(CriterionType criterionType);
+    public void confirmRemove(CriterionType criterionType);
 
     void saveCriterionType() throws ValidationException;
 
@@ -84,7 +81,7 @@ public interface ICriterionsModel {
 
     boolean isDeletable(Criterion criterion);
 
-    boolean isDeletable(CriterionType criterionType);
+    boolean canRemove(CriterionType criterionType);
 
     void addForRemoval(Criterion criterion);
 }

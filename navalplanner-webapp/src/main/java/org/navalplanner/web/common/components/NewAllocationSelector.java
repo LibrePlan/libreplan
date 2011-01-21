@@ -153,7 +153,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
     public NewAllocationSelectorController getController() {
         return (NewAllocationSelectorController) this
-                .getVariable("controller", true);
+                .getVariable("selectorController", true);
     }
 
     public void allowSelectMultipleResources(boolean multiple) {

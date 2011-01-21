@@ -20,28 +20,30 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static java.util.Collections.emptyList;
+import static org.navalplanner.business.workingday.EffortDuration.min;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
-import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
@@ -54,36 +56,34 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class Task extends TaskElement implements ITaskLeafConstraint {
-
-    private static final Log LOG = LogFactory.getLog(Task.class);
+public class Task extends TaskElement implements ITaskPositionConstrained {
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
         OrderElement orderElement = taskSource.getOrderElement();
-        orderElement.applyStartConstraintIfNeededTo(task);
+        orderElement.applyInitialPositionConstraintTo(task);
         Task result = create(task, taskSource);
-        result.initializeEndDate();
+        result.initializeDates();
         return result;
     }
 
     @Override
-    protected void initializeEndDate() {
+    protected void initializeDates() {
         EffortDuration workHours = EffortDuration.hours(getWorkHours());
-        EffortDuration effortStandardPerDay = EffortDuration.hours(8);
-
-        int daysElapsed = workHours.divideBy(effortStandardPerDay);
-        EffortDuration remainder = workHours.remainderFor(effortStandardPerDay);
+        DurationBetweenDates duration = fromFixedDuration(workHours);
 
         IntraDayDate start = getIntraDayStartDate();
-        IntraDayDate newEnd = IntraDayDate.create(
-                start.getDate().plusDays(daysElapsed), start
-                        .getEffortDuration().plus(remainder));
-        setIntraDayEndDate(newEnd);
+        if (start != null) {
+            setIntraDayEndDate(duration.fromStartToEnd(start));
+        } else {
+            IntraDayDate end = getIntraDayEndDate();
+            setIntraDayStartDate(duration.fromEndToStart(end));
+        }
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
@@ -95,6 +95,7 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         return new HashSet<ResourceAllocation<?>>(resourceAllocations);
     }
 
+    @SuppressWarnings("unused")
     @AfterCopy
     private void ifLimitingAllocationRemove() {
         if (isLimiting()) {
@@ -102,13 +103,17 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         }
     }
 
-    private TaskStartConstraint startConstraint = new TaskStartConstraint();
+    private TaskPositionConstraint positionConstraint = new TaskPositionConstraint();
 
     private SubcontractedTaskData subcontractedTaskData;
 
     private Integer priority;
 
     private Consolidation consolidation;
+
+    private Integer workableDays;
+
+    private Direction lastAllocationDirection = Direction.FORWARD;
 
     /**
      * Constructor for hibernate. Do not use!
@@ -138,8 +143,13 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public int getAssignedHours() {
-        return new AggregateOfResourceAllocations(resourceAllocations)
+        return AggregateOfResourceAllocations.createFromSatisfied(resourceAllocations)
                 .getTotalHours();
+    }
+
+    private int getTotalIntendedHours() {
+        return AggregateOfResourceAllocations
+                .createFromAll(resourceAllocations).getIntendedHours();
     }
 
     public int getTotalHours() {
@@ -212,7 +222,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     public boolean isLimitingAndHasDayAssignments() {
         ResourceAllocation<?> resourceAllocation = getAssociatedLimitingResourceAllocation();
-        return (resourceAllocation != null) ? resourceAllocation.isLimitingAndHasDayAssignments() : false;
+        return resourceAllocation != null
+                && resourceAllocation.isLimitingAndHasDayAssignments();
     }
 
     public void addResourceAllocation(ResourceAllocation<?> resourceAllocation) {
@@ -258,24 +269,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     public void setCalculatedValue(CalculatedValue calculatedValue) {
         Validate.notNull(calculatedValue);
         this.calculatedValue = calculatedValue;
-    }
-
-    public void setDaysDuration(Integer duration) {
-        Validate.notNull(duration);
-        Validate.isTrue(duration >= 0);
-        DateTime endDate = toDateTime(getStartDate()).plusDays(duration);
-        setEndDate(endDate.toDate());
-    }
-
-    public Integer getDaysDuration() {
-        Days daysBetween = Days.daysBetween(new LocalDate(
-                toDateTime(getStartDate())), new LocalDate(
-                toDateTime(getEndDate())));
-        return daysBetween.getDays();
-    }
-
-    private DateTime toDateTime(Date startDate) {
-        return new DateTime(startDate.getTime());
     }
 
     /**
@@ -359,28 +352,15 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     }
 
-    public void mergeAllocation(Scenario scenario,
-            CalculatedValue calculatedValue,
-            AggregateOfResourceAllocations aggregate,
-            List<ResourceAllocation<?>> newAllocations,
-            List<ModifiedAllocation> modifications,
-            Collection<? extends ResourceAllocation<?>> toRemove) {
-        if (aggregate.isEmpty()) {
-            return;
-        }
-        final IntraDayDate start = aggregate.getStart();
-        final IntraDayDate end = aggregate.getEnd();
-        mergeAllocation(scenario, start, end, calculatedValue, newAllocations,
-                modifications, toRemove);
-    }
-
-    private void mergeAllocation(Scenario scenario, final IntraDayDate start,
-            final IntraDayDate end,
+    public void mergeAllocation(Scenario scenario, final IntraDayDate start,
+            final IntraDayDate end, Integer newWorkableDays,
             CalculatedValue calculatedValue,
             List<ResourceAllocation<?>> newAllocations,
             List<ModifiedAllocation> modifications,
             Collection<? extends ResourceAllocation<?>> toRemove) {
         this.calculatedValue = calculatedValue;
+        this.workableDays = calculatedValue == CalculatedValue.END_DATE ? null
+                : newWorkableDays;
         setIntraDayStartDate(start);
         setIntraDayEndDate(end);
         for (ModifiedAllocation pair : modifications) {
@@ -407,17 +387,24 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void explicityMoved(LocalDate date) {
-        getStartConstraint().explicityMovedTo(date);
+        getPositionConstraint().explicityMovedTo(date);
     }
 
-    public TaskStartConstraint getStartConstraint() {
-        if (startConstraint == null) {
-            startConstraint = new TaskStartConstraint();
+    public TaskPositionConstraint getPositionConstraint() {
+        if (positionConstraint == null) {
+            positionConstraint = new TaskPositionConstraint();
         }
-        return startConstraint;
+        return positionConstraint;
     }
 
     private static abstract class AllocationModificationStrategy {
+
+        protected final IResourceDAO resourceDAO;
+
+        public AllocationModificationStrategy(IResourceDAO resourceDAO) {
+            Validate.notNull(resourceDAO);
+            this.resourceDAO = resourceDAO;
+        }
 
         public abstract List<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations);
@@ -430,26 +417,30 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     private static class WithTheSameHoursAndResourcesPerDay extends
             AllocationModificationStrategy {
 
+        public WithTheSameHoursAndResourcesPerDay(IResourceDAO resourceDAO) {
+            super(resourceDAO);
+        }
+
         @Override
         public List<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.fromExistent(allocations);
+            return HoursModification.fromExistent(allocations, resourceDAO);
         }
 
         @Override
         public List<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.fromExistent(allocations);
+            return ResourcesPerDayModification.fromExistent(allocations,
+                    resourceDAO);
         }
 
     }
 
     private static class WithAnotherResources extends
             AllocationModificationStrategy {
-        private final IResourceDAO resourceDAO;
 
-        WithAnotherResources(IResourceDAO resourceDAO) {
-            this.resourceDAO = resourceDAO;
+        public WithAnotherResources(IResourceDAO resourceDAO) {
+            super(resourceDAO);
         }
 
         @Override
@@ -473,38 +464,232 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected void moveAllocations(Scenario scenario) {
-        reassign(scenario, new WithTheSameHoursAndResourcesPerDay());
+    protected IDatesHandler createDatesHandler(final Scenario scenario,
+            final IResourceDAO resourceDAO) {
+        return new IDatesHandler() {
+
+            @Override
+            public void moveTo(IntraDayDate newStartDate) {
+                IntraDayDate previousStart = getIntraDayStartDate();
+                if (previousStart.equals(newStartDate)) {
+                    return;
+                }
+                setIntraDayEndDate(calculateEndKeepingLength(newStartDate));
+                setIntraDayStartDate(newStartDate);
+                doReassignment(Direction.FORWARD);
+            }
+
+            private void doReassignment(Direction direction) {
+                reassign(scenario, direction,
+                        new WithTheSameHoursAndResourcesPerDay(resourceDAO));
+            }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                if (getIntraDayEndDate().equals(newEnd)) {
+                    return;
+                }
+                setIntraDayStartDate(calculateNewStartGivenEnd(newEnd));
+                setIntraDayEndDate(newEnd);
+                doReassignment(Direction.BACKWARD);
+            }
+
+            private IntraDayDate calculateNewStartGivenEnd(IntraDayDate newEnd) {
+                return calculateStartKeepingLength(newEnd);
+            }
+
+            @Override
+            public void resizeTo(IntraDayDate endDate) {
+                if (!canBeResized() || getIntraDayEndDate().equals(endDate)) {
+                    return;
+                }
+                setIntraDayEndDate(endDate);
+                updateWorkableDays();
+                doReassignment(getAllocationDirection());
+            }
+
+            private void updateWorkableDays() {
+                assert calculatedValue != CalculatedValue.END_DATE;
+                workableDays = getWorkableDaysBetweenDates();
+            }
+
+        };
+    }
+
+    public IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
+        DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+        return durationBetweenDates.fromStartToEnd(newStartDate);
+    }
+
+    private IntraDayDate calculateStartKeepingLength(IntraDayDate newEnd) {
+        DurationBetweenDates durationBetweenDates = getDurationBetweenDates();
+        return durationBetweenDates.fromEndToStart(newEnd);
+    }
+
+    private DurationBetweenDates getDurationBetweenDates() {
+        if (workableDays != null) {
+            return fromFixedDuration(workableDays);
+        } else {
+            return fromCurrentDuration();
+        }
+    }
+
+    private DurationBetweenDates fromFixedDuration(int fixedNumberOfWorkableDays) {
+        return new DurationBetweenDates(fixedNumberOfWorkableDays,
+                EffortDuration.zero());
+    }
+
+    private DurationBetweenDates fromCurrentDuration() {
+        IntraDayDate start = getIntraDayStartDate();
+        IntraDayDate end = getIntraDayEndDate();
+        int calculatedWorkableDays = getWorkableDaysFrom(start.roundUp(),
+                end.roundDown());
+        EffortDuration extraDuration = getExtraDurationAtStart(start).plus(
+                end.getEffortDuration());
+        return new DurationBetweenDates(calculatedWorkableDays, extraDuration);
+    }
+
+    private EffortDuration getExtraDurationAtStart(IntraDayDate start) {
+        if (start.getEffortDuration().isZero()) {
+            return EffortDuration.zero();
+        }
+        ICalendar calendar = getNullSafeCalendar();
+        EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                .wholeDay(start.getDate()));
+        return capacity.minus(min(start.getEffortDuration(), capacity));
+    }
+
+    private ICalendar getNullSafeCalendar() {
+        return getCalendar() != null ? getCalendar() : SameWorkHoursEveryDay
+                .getDefaultWorkingDay();
+    }
+
+    private DurationBetweenDates fromFixedDuration(EffortDuration duration) {
+        return new DurationBetweenDates(0, duration);
+    }
+
+    private class DurationBetweenDates {
+
+        private final int numberOfWorkableDays;
+
+        private final EffortDuration remainderDuration;
+
+        private final ICalendar calendar;
+
+        private DurationBetweenDates(int numberOfWorkableDays,
+                EffortDuration remainderDuration) {
+            this.numberOfWorkableDays = numberOfWorkableDays;
+            this.remainderDuration = remainderDuration;
+            this.calendar = getNullSafeCalendar();
+
+        }
+
+        public IntraDayDate fromStartToEnd(IntraDayDate newStartDate) {
+            LocalDate resultDay = calculateEndGivenWorkableDays(
+                    newStartDate.getDate(), numberOfWorkableDays);
+            return plusDuration(IntraDayDate.startOfDay(resultDay),
+                    remainderDuration.plus(newStartDate.getEffortDuration()));
+        }
+
+        private IntraDayDate plusDuration(IntraDayDate start,
+                EffortDuration remaining) {
+            IntraDayDate result = IntraDayDate.startOfDay(start.getDate());
+            remaining = remaining.plus(start.getEffortDuration());
+            LocalDate current = start.getDate();
+            while (!remaining.isZero()) {
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(current));
+                result = IntraDayDate.create(current, remaining);
+                remaining = remaining.minus(min(capacity, remaining));
+                current = current.plusDays(1);
+            }
+            return result;
+        }
+
+        public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
+            LocalDate resultDay = calculateStartGivenWorkableDays(
+                    newEnd.getDate(), numberOfWorkableDays);
+            return minusDuration(plusDuration(
+                    IntraDayDate.startOfDay(resultDay),
+                            newEnd.getEffortDuration()), remainderDuration);
+        }
+
+        private IntraDayDate minusDuration(IntraDayDate date,
+                EffortDuration decrement) {
+            IntraDayDate result = IntraDayDate.create(
+                    date.getDate(),
+                    date.getEffortDuration().minus(
+                            min(decrement, date.getEffortDuration())));
+            decrement = decrement
+                    .minus(min(date.getEffortDuration(), decrement));
+            LocalDate resultDay = date.getDate();
+            while (!decrement.isZero()) {
+                resultDay = resultDay.minusDays(1);
+                EffortDuration capacity = calendar.getCapacityOn(PartialDay
+                        .wholeDay(resultDay));
+                result = IntraDayDate.create(resultDay,
+                        capacity.minus(min(capacity, decrement)));
+                decrement = decrement.minus(min(capacity, decrement));
+            }
+            return result;
+        }
+    }
+
+    /**
+     * The allocation direction in which the allocation must be done
+     */
+    public Direction getAllocationDirection() {
+        if (lastAllocationDirection == null || hasConsolidations()) {
+            return Direction.FORWARD;
+        }
+        return lastAllocationDirection;
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
             IResourceDAO resourceDAO) {
-        reassign(scenario, new WithAnotherResources(resourceDAO));
+        reassign(scenario, getAllocationDirection(),
+                new WithAnotherResources(resourceDAO));
     }
 
-    private void reassign(Scenario onScenario, AllocationModificationStrategy strategy) {
+    private void reassign(Scenario onScenario, Direction direction,
+            AllocationModificationStrategy strategy) {
+        this.lastAllocationDirection = direction;
         if (isLimiting()) {
             return;
         }
         List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                getSatisfiedResourceAllocations());
+                getResourceAlloations());
         List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
                 .modified(copied);
-        List<ResourcesPerDayModification> allocations = strategy
-                .getResourcesPerDayModified(toBeModified);
-        if (allocations.isEmpty()) {
+        if (toBeModified.isEmpty()) {
             return;
         }
+        doAllocation(strategy, direction, toBeModified);
+        updateDerived(copied);
+
+        List<ResourceAllocation<?>> newAllocations = emptyList(),
+        modifiedAllocations = emptyList();
+        mergeAllocation(onScenario, getIntraDayStartDate(),
+                getIntraDayEndDate(), workableDays, calculatedValue,
+                newAllocations, copied, modifiedAllocations);
+    }
+
+    private void doAllocation(AllocationModificationStrategy strategy,
+            Direction direction, List<ResourceAllocation<?>> toBeModified) {
+        List<ResourcesPerDayModification> allocations = strategy
+                .getResourcesPerDayModified(toBeModified);
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            ResourceAllocation.allocating(allocations)
-                              .allocateOnTaskLength();
+            ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             break;
         case END_DATE:
-            IntraDayDate end = ResourceAllocation
-                                .allocating(allocations)
-                                .untilAllocating(getAssignedHours());
-            setIntraDayEndDate(end);
+            IntraDayDate date = ResourceAllocation.allocating(allocations)
+                    .untilAllocating(direction, getTotalIntendedHours());
+            if (direction == Direction.FORWARD) {
+                setIntraDayEndDate(date);
+            } else {
+                setIntraDayStartDate(date);
+            }
             break;
         case RESOURCES_PER_DAY:
             List<HoursModification> hoursModified = strategy
@@ -515,12 +700,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
-        updateDerived(copied);
-        mergeAllocation(onScenario, getIntraDayStartDate(),
-                getIntraDayEndDate(),
-                calculatedValue, Collections
-                        .<ResourceAllocation<?>> emptyList(), copied,
-                Collections.<ResourceAllocation<?>> emptyList());
     }
 
     private void updateDerived(List<ModifiedAllocation> allocations) {
@@ -561,10 +740,6 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
     }
 
 
-    private LocalDate asLocalDate(Date date) {
-        return new LocalDate(date.getTime());
-    }
-
     public List<AggregatedHoursGroup> getAggregatedByCriterions() {
         return getTaskSource().getAggregatedByCriterions();
     }
@@ -603,8 +778,8 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
 
     @Override
     protected boolean canBeResized() {
-        return ((calculatedValue != CalculatedValue.END_DATE) || (resourceAllocations
-                .isEmpty()));
+        return calculatedValue != CalculatedValue.END_DATE
+                || resourceAllocations.isEmpty();
     }
 
     @Override
@@ -662,6 +837,83 @@ public class Task extends TaskElement implements ITaskLeafConstraint {
             }
         }
         return getIntraDayStartDate();
+    }
+
+    public Integer getWorkableDays() {
+        if (workableDays == null) {
+            return getWorkableDaysBetweenDates();
+        }
+        return workableDays;
+    }
+
+    public Integer getDaysBetweenDates() {
+        Days daysBetween = Days.daysBetween(getStartAsLocalDate(),
+                getIntraDayEndDate().asExclusiveEnd());
+        return daysBetween.getDays();
+    }
+
+    public Integer getSpecifiedWorkableDays() {
+        return workableDays;
+    }
+
+    private Integer getWorkableDaysBetweenDates() {
+        LocalDate end = getIntraDayEndDate().asExclusiveEnd();
+        return getWorkableDaysUntil(end);
+    }
+
+    public Integer getWorkableDaysUntil(LocalDate end) {
+        return getWorkableDaysFrom(getStartAsLocalDate(), end);
+    }
+
+    public Integer getWorkableDaysFrom(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        int result = 0;
+        for (LocalDate current = startInclusive; current
+                .compareTo(endExclusive) < 0; current = current
+                .plusDays(1)) {
+            if (isWorkable(current)) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public LocalDate calculateEndGivenWorkableDays(int workableDays) {
+        return calculateEndGivenWorkableDays(getIntraDayStartDate().getDate(),
+                workableDays);
+    }
+
+    public LocalDate calculateStartGivenWorkableDays(int workableDays) {
+        return calculateStartGivenWorkableDays(getEndAsLocalDate(),
+                workableDays);
+    }
+
+    private LocalDate calculateEndGivenWorkableDays(LocalDate start,
+            int workableDays) {
+        LocalDate result = start;
+        for (int i = 0; i < workableDays; result = result.plusDays(1)) {
+            if (isWorkable(result)) {
+                i++;
+            }
+        }
+        return result;
+    }
+
+    private LocalDate calculateStartGivenWorkableDays(LocalDate end,
+            int workableDays) {
+        LocalDate result = end;
+        for (int i = 0; i < workableDays; result = result.minusDays(1)) {
+            if (isWorkable(result.minusDays(1))) {
+                i++;
+            }
+        }
+        return result;
+    }
+
+    private boolean isWorkable(LocalDate day) {
+        ICalendar calendar = getCalendar();
+        assert calendar != null;
+        return !calendar.getCapacityOn(PartialDay.wholeDay(day)).isZero();
     }
 
 }

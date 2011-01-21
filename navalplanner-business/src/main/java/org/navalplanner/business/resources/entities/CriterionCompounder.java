@@ -22,9 +22,10 @@ package org.navalplanner.business.resources.entities;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.joda.time.LocalDate;
 
 /**
  * Compounds some {@link ICriterion} into one <br />
@@ -70,12 +71,12 @@ public class CriterionCompounder {
         }
 
         @Override
-        public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
             return !criterion.isSatisfiedBy(resource, start, end);
         }
 
         @Override
-        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
             return !criterion.isSatisfiedBy(resource, atThisDate);
         }
     }
@@ -98,7 +99,7 @@ public class CriterionCompounder {
             return false;
         }
 
-        public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
             for (ICriterion criterion : criterions) {
                 if (criterion.isSatisfiedBy(resource, start, end)) {
                     return true;
@@ -108,7 +109,7 @@ public class CriterionCompounder {
         }
 
         @Override
-        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
             for (ICriterion criterion : criterions) {
                 if (criterion.isSatisfiedBy(resource, atThisDate)) {
                     return true;
@@ -152,7 +153,7 @@ public class CriterionCompounder {
         }
 
         @Override
-        public boolean isSatisfiedBy(Resource resource, Date start, Date end) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate start, LocalDate end) {
             for (ICriterion criterion : criterions) {
                 if (!criterion.isSatisfiedBy(resource, start, end)) {
                     return false;
@@ -162,7 +163,7 @@ public class CriterionCompounder {
         }
 
         @Override
-        public boolean isSatisfiedBy(Resource resource, Date atThisDate) {
+        public boolean isSatisfiedBy(Resource resource, LocalDate atThisDate) {
             for (ICriterion criterion : criterions) {
                 if (!criterion.isSatisfiedBy(resource, atThisDate)) {
                     return false;

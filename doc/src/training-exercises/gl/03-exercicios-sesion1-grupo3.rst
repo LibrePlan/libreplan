@@ -157,7 +157,7 @@ Crear un pedido cada grupo cos seguintes datos e poñerlle, os puntos de planifi
 
          * 2  Bloque 1   *Punto de planificación* - Criterio Grupo 3
 
-            * 2.1 Pintar camarotes A e B- 350 h - **Punto de  planificación** - Criterio Pintor 
+            * 2.1 Pintar camarotes A e B- 350 h - **Punto de  planificación** - Criterio Pintor
             * 2.2 Pintar sala de  máquinas - 200 h - **Punto de  planificación** - Criterio Pintor
             * 2.3 Pintas cociña de buque - 100 h - **Punto de  planificación** - Criterio Pintor
 

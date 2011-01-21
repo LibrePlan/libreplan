@@ -34,6 +34,7 @@ import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * This interface contains the operations to create/edit a {@link BaseCalendar}.
@@ -61,8 +62,9 @@ import org.navalplanner.business.workingday.EffortDuration;
  * </ul>
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IBaseCalendarModel {
+public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
 
     /*
@@ -131,7 +133,7 @@ public interface IBaseCalendarModel {
 
     void setParent(BaseCalendar parent);
 
-    boolean isParent();
+    boolean isParent(BaseCalendar calendar);
 
     Date getExpiringDate();
 
@@ -190,12 +192,14 @@ public interface IBaseCalendarModel {
 
     void confirmSave() throws ValidationException;
 
-    void confirmRemove();
+    void confirmRemove(BaseCalendar calendar);
 
     void cancel();
 
     EffortDuration getDurationAt(Days day);
 
     void setDurationAt(Days day, EffortDuration value);
+
+    void generateCalendarCodes();
 
 }

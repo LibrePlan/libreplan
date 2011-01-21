@@ -43,7 +43,7 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Autowired
     private IOrderDAO orderDAO;
 
-    private final String headers[] = { _("Order"), _("Order code") };
+    private final String headers[] = { _("Project"), _("Project code") };
 
     @Override
     @Transactional(readOnly = true)

@@ -28,7 +28,7 @@ Esto creará unha copia local de trabajo, para empezar a trabajar se recomienda 
  $ git branch NomeDaRama
  $ git checkout NomeDaRama
 
-Unha vez dentro da rama, a medida que se vai avanzando coa implementación ou ao terminar coa implementación faise o commit do traballo feito. Debe terse en conta que as modificacións deben ter unha unidade de obxectivo e funcións. 
+Unha vez dentro da rama, a medida que se vai avanzando coa implementación ou ao terminar coa implementación faise o commit do traballo feito. Debe terse en conta que as modificacións deben ter unha unidade de obxectivo e funcións.
 
 ::
 
@@ -38,7 +38,7 @@ Unha vez dentro da rama, a medida que se vai avanzando coa implementación ou ao
 
 E importate ter o habito de crear mensaxes de commit de calidad xa que permite facilitar o traballo aos intergradores. Como regla xleneral as mensaxes deben comezar cunha liña de non mais de 50 caracteres que describe o cambio de forma concisa, esta debe estar seguida dunha liña en blanco, seguida dunha explicación detallada. E recomendabe que a explicación detallada inclua a motivación do campo e contraste a implementación coa anterior comportamento. Outra recomedación e empregar o tempso verbais en presente. O emprego de puntos e secuencias é correcto.
 
-A primeira liña da mensaxe dará lugar al nombre del fichero del parche. 
+A primeira liña da mensaxe dará lugar al nombre del fichero del parche.
 
 Previamente a enviar o parche ao integrador, debemos comprobar o seu funcionamento coa última versión no upstream do master, polo que teremos que actualizar a última copia.
 

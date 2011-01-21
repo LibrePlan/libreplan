@@ -44,7 +44,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
         return create(beingBuilt, order);
     }
 
-    @NotNull(message = "order calendar not specified")
+    @NotNull(message = "project calendar not specified")
     private BaseCalendar calendar;
 
     @Override
@@ -69,7 +69,7 @@ public class OrderTemplate extends OrderLineGroupTemplate {
 
     @Override
     public String getType() {
-        return _("Order");
+        return _("Project");
     }
 
 }

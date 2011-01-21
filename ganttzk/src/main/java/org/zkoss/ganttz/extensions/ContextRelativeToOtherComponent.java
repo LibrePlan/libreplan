@@ -121,4 +121,28 @@ public class ContextRelativeToOtherComponent<T> implements IContext<T> {
         return context.getGanttDiagramGraph();
     }
 
+    @Override
+    public List<T> getCriticalPath() {
+        return context.getCriticalPath();
+    }
+
+    @Override
+    public void hideAdvances() {
+        context.hideAdvances();
+    }
+
+    @Override
+    public void showAdvances() {
+        context.showAdvances();
+    }
+
+    @Override
+    public void hideReportedHours() {
+        context.hideReportedHours();
+    }
+
+    @Override
+    public void showReportedHours() {
+        context.showReportedHours();
+    }
 }

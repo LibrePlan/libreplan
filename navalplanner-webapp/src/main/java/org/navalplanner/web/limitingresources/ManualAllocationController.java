@@ -22,10 +22,12 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -227,6 +229,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     private void setAssignableQueues(final LimitingResourceQueueElement element) {
         List<LimitingResourceQueue> queues = getLimitingResourceQueueModel().getAssignableQueues(element);
         listAssignableQueues.setModel(new SimpleListModel(queues));
+        listAssignableQueues.setItemRenderer(queueRenderer);
         listAssignableQueues.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
@@ -277,15 +280,22 @@ public class ManualAllocationController extends GenericForwardComposer {
 
     private void nonAppropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
-        getLimitingResourceQueueModel()
+        List<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
                 .nonAppropriativeAllocation(element, queue, time);
-        limitingResourcesPanel.appendQueueElementToQueue(element);
+        refreshQueues(LimitingResourceQueue.queuesOf(inserted));
     }
 
     private void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time) {
         Validate.notNull(time);
-        getLimitingResourceQueueModel().appropriativeAllocation(element, queue, time);
-        limitingResourcesPanel.refreshQueue(queue);
+        Set<LimitingResourceQueueElement> inserted = getLimitingResourceQueueModel()
+                .appropriativeAllocation(element, queue, time);
+        refreshQueues(LimitingResourceQueue.queuesOf(inserted));
+    }
+
+    private void refreshQueues(Collection<LimitingResourceQueue> queues) {
+        for (LimitingResourceQueue each : queues) {
+            limitingResourcesPanel.refreshQueue(each);
+        }
     }
 
     private DateAndHour getSelectedAllocationTime() {
@@ -414,7 +424,8 @@ public class ManualAllocationController extends GenericForwardComposer {
      */
     public void highlightDaysInGap(String uuid, Gap gap) {
         final LocalDate start = gap.getStartTime().getDate();
-        final LocalDate end = getEndAllocationDate(gap);
+        final LocalDate end = gap.getEndTime() != null ? gap.getEndTime()
+                .getDate() : null;
 
         final String jsCall = "highlightDaysInInterval('"
                 + uuid + "', '"
@@ -435,11 +446,6 @@ public class ManualAllocationController extends GenericForwardComposer {
                 + jsonInterval(formatDate(start), null) + "', '"
                 + jsonHighlightColor() + "');";
         Clients.evalJavaScript(jsCall);
-    }
-
-    private LocalDate getEndAllocationDate(Gap gap) {
-        final DateAndHour endTime = endAllocationDates.get(gap);
-        return endTime != null ? endTime.getDate() : null;
     }
 
     public String formatDate(LocalDate date) {
@@ -528,12 +534,14 @@ public class ManualAllocationController extends GenericForwardComposer {
         public void render(Listitem item, Object data) throws Exception {
             final LimitingResourceQueue queue = (LimitingResourceQueue) data;
             item.setValue(queue);
+//            item.setLabel("test1");
             item.appendChild(cell(queue));
         }
 
         private Listcell cell(LimitingResourceQueue queue) {
            Listcell result = new Listcell();
            result.setLabel(queue.getResource().getName());
+//           result.setLabel("test2");
            return result;
         }
 

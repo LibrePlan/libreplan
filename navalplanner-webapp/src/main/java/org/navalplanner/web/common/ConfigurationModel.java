@@ -22,21 +22,27 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.ConcurrentModificationException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
-import org.navalplanner.business.common.daos.IOrderSequenceDAO;
+import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
-import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.entities.EntityNameEnum;
+import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.i18n.I18nHelper;
+import org.navalplanner.business.scenarios.daos.IScenarioDAO;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -58,7 +64,7 @@ public class ConfigurationModel implements IConfigurationModel {
      */
     private Configuration configuration;
 
-    private List<OrderSequence> orderSequences;
+    private Map<EntityNameEnum, List<EntitySequence>> entitySequences = new HashMap<EntityNameEnum, List<EntitySequence>>();
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -67,7 +73,10 @@ public class ConfigurationModel implements IConfigurationModel {
     private IBaseCalendarDAO baseCalendarDAO;
 
     @Autowired
-    private IOrderSequenceDAO orderSequenceDAO;
+    private IEntitySequenceDAO entitySequenceDAO;
+
+    @Autowired
+    private IScenarioDAO scenarioDAO;
 
     @Override
     @Transactional(readOnly = true)
@@ -87,7 +96,18 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional(readOnly = true)
     public void init() {
         this.configuration = getCurrentConfiguration();
-        this.orderSequences = orderSequenceDAO.getAll();
+        initEntitySequences();
+    }
+
+    private void initEntitySequences() {
+        this.entitySequences.clear();
+        for (EntityNameEnum entityName : EntityNameEnum.values()) {
+            entitySequences.put(entityName, new ArrayList<EntitySequence>());
+        }
+        for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
+            entitySequences.get(entitySequence.getEntityName()).add(
+                    entitySequence);
+        }
     }
 
     private Configuration getCurrentConfiguration() {
@@ -119,35 +139,44 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     @Transactional
     public void confirm() {
-        if (orderSequences.isEmpty()) {
-            throw new ValidationException(
-                    _("At least one order sequence is needed"));
-        }
 
-        if (!checkConstraintJustOneOrderSequenceActive()) {
-            throw new ValidationException(
-                    _("Just one order sequence must be active"));
-        }
-
-        if (!checkConstraintPrefixNotRepeated()) {
-            throw new ValidationException(
-                    _("Order sequence prefixes can not be repeated"));
-        }
-
+        checkEntitySequences();
         try {
             configurationDAO.save(configuration);
-            storeAndRemoveOrderSequences();
+            storeAndRemoveEntitySequences();
         } catch (HibernateOptimisticLockingFailureException e) {
             throw new ConcurrentModificationException(
-                    _("Some order was created during the configuration process, it is impossible to update order sequence table. Please, try again later"));
+                    _("Some entity sequence was created during the configuration process, it is impossible to update entity sequence table. Please, try again later"));
         }
-
     }
 
-    private boolean checkConstraintPrefixNotRepeated() {
+    private void checkEntitySequences() {
+        // check if exist at least one sequence for each entity
+        for (EntityNameEnum entityName : EntityNameEnum.values()) {
+            String entity = entityName.getDescription();
+            List<EntitySequence> sequences = entitySequences.get(entityName);
+            if (sequences.isEmpty()) {
+                throw new ValidationException(_(
+                        "At least one {0} sequence is needed", entity));
+            }
+
+            if (!isAnyActive(sequences)) {
+                throw new ValidationException(_(
+                        "At least one {0} sequence must be active", entity));
+            }
+            if (!checkConstraintPrefixNotRepeated(sequences)) {
+                throw new ValidationException(_(
+                        "The {0} sequence prefixes can not be repeated",
+                        entityName.getDescription()));
+            }
+        }
+    }
+
+    private boolean checkConstraintPrefixNotRepeated(
+            List<EntitySequence> sequences) {
         Set<String> prefixes = new HashSet<String>();
-        for (OrderSequence orderSequence : orderSequences) {
-            String prefix = orderSequence.getPrefix();
+        for (EntitySequence sequence : sequences) {
+            String prefix = sequence.getPrefix();
             if (prefixes.contains(prefix)) {
                 return false;
             }
@@ -156,35 +185,55 @@ public class ConfigurationModel implements IConfigurationModel {
         return true;
     }
 
-    private void storeAndRemoveOrderSequences() {
-        for (OrderSequence orderSequence : orderSequences) {
-            orderSequenceDAO.save(orderSequence);
+    private boolean isAnyActive(List<EntitySequence> sequences) {
+        for (EntitySequence entitySequence : sequences) {
+            if (entitySequence.isActive()) {
+                return true;
+            }
         }
+        return false;
+    }
 
-        List<OrderSequence> toRemove = orderSequenceDAO
-                .findOrderSquencesNotIn(orderSequences);
-        for (OrderSequence orderSequence : toRemove) {
+    private void storeAndRemoveEntitySequences() {
+        Collection<List<EntitySequence>> col_sequences = entitySequences
+                .values();
+        List<EntitySequence> sequences = new ArrayList<EntitySequence>();
+        for (List<EntitySequence> list : col_sequences) {
+            sequences.addAll(list);
+        }
+        removeEntitySequences(sequences);
+        storeEntitySequences(sequences);
+    }
+
+    public void removeEntitySequences(final List<EntitySequence> sequences) {
+        // first one is necessary to remove the deleted sequences.
+        List<EntitySequence> toRemove = entitySequenceDAO
+                .findEntitySquencesNotIn(sequences);
+        for (final EntitySequence entitySequence : toRemove) {
             try {
-                orderSequenceDAO.remove(orderSequence);
+                entitySequenceDAO.remove(entitySequence);
             } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
+                throw new ValidationException(
+                        _("Some sequences to remove not existed"));
             } catch (IllegalArgumentException e) {
-                throw new RuntimeException(e);
+                throw new ValidationException(e.getMessage());
             }
         }
     }
 
-    private boolean checkConstraintJustOneOrderSequenceActive() {
-        boolean someoneActive = false;
-        for (OrderSequence orderSequence : orderSequences) {
-            if (orderSequence.isActive()) {
-                if (someoneActive) {
-                    return false;
-                }
-                someoneActive = true;
+    public void storeEntitySequences(List<EntitySequence> sequences) {
+        // it updates the sequences that are not active first
+        List<EntitySequence> toSaveAfter = new ArrayList<EntitySequence>();
+        for (EntitySequence entitySequence : sequences) {
+            if (entitySequence.isActive()) {
+                toSaveAfter.add(entitySequence);
+            } else {
+                entitySequenceDAO.save(entitySequence);
             }
         }
-        return someoneActive;
+        for (EntitySequence entitySequence : toSaveAfter) {
+            entitySequenceDAO.save(entitySequence);
+        }
     }
 
     @Override
@@ -221,6 +270,57 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setGenerateCodeForCriterion(generateCodeForCriterion);
         }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForWorkReportType() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForWorkReportType();
+    }
+
+    @Override
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForWorkReportType(generateCodeForWorkReportType);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForCalendarExceptionType() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForCalendarExceptionType();
+    }
+
+    @Override
+    public void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForCalendarExceptionType(generateCodeForCalendarExceptionType);
+        }
+    }
+
+    @Override
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForCostCategory(generateCodeForCostCategory);
+        }
+    }
+
+    @Override
+    public Boolean getGenerateCodeForCostCategory() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForCostCategory();
     }
 
     @Override
@@ -311,32 +411,27 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
-            if (configuration != null) {
-                configuration.setGenerateCodeForUnitTypes(
-                        generateCodeForUnitTypes);
-            }
-    }
-
-    @Override
-    public List<OrderSequence> getOrderSequences() {
-        return Collections.unmodifiableList(orderSequences);
-    }
-
-    @Override
-    public void addOrderSequence() {
-        orderSequences.add(OrderSequence.create(""));
-    }
-
-    @Override
-    public void removeOrderSequence(OrderSequence orderSequence)
-            throws IllegalArgumentException {
-        if (orderSequence.getLastValue() > 0) {
-            throw new IllegalArgumentException(
-                    I18nHelper
-                            ._("You can not remove this order sequence, it is already in use"));
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        if (configuration != null) {
+            configuration
+                    .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
         }
-        orderSequences.remove(orderSequence);
+    }
+
+    @Override
+    public Boolean getGenerateCodeForBaseCalendars() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.getGenerateCodeForBaseCalendars();
+    }
+
+    @Override
+    public void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes) {
+        if (configuration != null) {
+            configuration.setGenerateCodeForUnitTypes(generateCodeForUnitTypes);
+        }
     }
 
     @Override
@@ -345,6 +440,23 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration
                     .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
+        }
+    }
+
+    @Override
+    public Boolean isMonteCarloMethodTabVisible() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isMonteCarloMethodTabVisible();
+    }
+
+    @Override
+    public void setMonteCarloMethodTabVisible(
+            Boolean visible) {
+        if (configuration != null) {
+            configuration
+                    .setMonteCarloMethodTabVisible(visible);
         }
     }
 
@@ -373,7 +485,6 @@ public class ConfigurationModel implements IConfigurationModel {
         return configuration.isExpandOrderPlanningViewCharts();
     }
 
-
     @Override
     public void setExpandResourceLoadViewCharts(
             Boolean expandResourceLoadViewCharts) {
@@ -389,6 +500,77 @@ public class ConfigurationModel implements IConfigurationModel {
             return null;
         }
         return configuration.isExpandResourceLoadViewCharts();
+    }
+
+    public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
+        return entitySequences.get(entityName);
+    }
+
+    public void addEntitySequence(EntityNameEnum entityName, String prefix,
+            Integer digits) {
+        List<EntitySequence> sequences = entitySequences.get(entityName);
+        EntitySequence entitySequence = EntitySequence.create(prefix,
+                entityName, digits);
+        if (sequences.isEmpty()) {
+            entitySequence.setActive(true);
+        }
+        sequences.add(entitySequence);
+    }
+
+    public void removeEntitySequence(EntitySequence entitySequence)
+            throws IllegalArgumentException {
+        entitySequences.get(entitySequence.getEntityName()).remove(
+                entitySequence);
+    }
+
+    public boolean checkFrefixFormat(EntitySequence sequence) {
+        return (sequence.checkConstraintWithoutLowBar() && sequence
+                .checkConstraintPrefixWithoutWhiteSpaces());
+    }
+
+    @Override
+    public List<ProgressType> getProgresTypes() {
+        return ProgressType.getAll();
+    }
+
+    @Override
+    public void setProgressType(ProgressType progressType) {
+        configuration.setProgressType(progressType);
+    }
+
+    @Override
+    public ProgressType getProgressType() {
+        return configuration.getProgressType();
+    }
+
+    @Override
+    public String getCompanyLogoURL() {
+        return configuration.getCompanyLogoURL();
+    }
+
+    @Override
+    public void setCompanyLogoURL(String companyLogoURL) {
+        configuration.setCompanyLogoURL(companyLogoURL);
+    }
+
+    @Override
+    public Boolean isScenariosVisible() {
+        return configuration.isScenariosVisible();
+    }
+
+    @Override
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        configuration.setScenariosVisible(scenariosVisible);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean moreScenariosThanMasterCreated() {
+        List<Scenario> scenarios = scenarioDAO.getAll();
+        if (scenarios != null) {
+            return scenarios.size() > 1;
+        }
+        return false;
     }
 
 }

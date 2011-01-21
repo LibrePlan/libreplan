@@ -21,12 +21,9 @@
 package org.navalplanner.web.common;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
-import static org.navalplanner.web.planner.TaskElementAdapter.toGantt;
-import static org.navalplanner.web.planner.TaskElementAdapter.toIntraDay;
-import static org.zkoss.ganttz.data.constraint.ConstraintOnComparableValues.biggerOrEqualThan;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
@@ -36,6 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -44,8 +42,6 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
-import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -53,8 +49,6 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -63,14 +57,13 @@ import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.ConstraintCalculator;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHook;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IDependenciesEnforcerHookFactory;
-import org.zkoss.ganttz.data.GanttDiagramGraph.PointType;
-import org.zkoss.ganttz.data.GanttDiagramGraph.TaskPoint;
+import org.zkoss.ganttz.data.IDependency;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
@@ -90,7 +83,8 @@ import org.zkoss.zk.ui.util.Clients;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class TemplateModel implements ITemplateModel {
 
-    private static class DependencyWithVisibility {
+    public static class DependencyWithVisibility implements
+            IDependency<TaskElement> {
 
         public static DependencyWithVisibility createInvisible(
                 TaskElement source, TaskElement destination, DependencyType type) {
@@ -103,25 +97,12 @@ public class TemplateModel implements ITemplateModel {
                     .getDestination(), toGraphicalType(each.getType()), true);
         }
 
-        public static List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Adapter adapter, Set<DependencyWithVisibility> withDependencies) {
+        public static List<Constraint<GanttDate>> getConstraints(
+                ConstraintCalculator<TaskElement> calculator,
+                Set<DependencyWithVisibility> withDependencies, Point point) {
             List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
             for (DependencyWithVisibility each : withDependencies) {
-                TaskElement source = each.getSource();
-                DependencyType type = each.getGraphicalType();
-                result.addAll(type.getStartConstraints(source, adapter));
-            }
-            return result;
-        }
-
-        public static List<Constraint<GanttDate>> getEndConstraintsGiven(
-                Adapter adapter,
-                Set<DependencyWithVisibility> withDependencies) {
-            List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
-            for (DependencyWithVisibility each : withDependencies) {
-                TaskElement source = each.getSource();
-                DependencyType type = each.getGraphicalType();
-                result.addAll(type.getEndConstraints(source, adapter));
+                result.addAll(calculator.getConstraints(each, point));
             }
             return result;
         }
@@ -157,7 +138,7 @@ public class TemplateModel implements ITemplateModel {
             return destination;
         }
 
-        public DependencyType getGraphicalType() {
+        public DependencyType getType() {
             return type;
         }
 
@@ -170,179 +151,11 @@ public class TemplateModel implements ITemplateModel {
             case END_END:
                 return DependencyType.END_END;
             case START_END:
-                throw new RuntimeException(Dependency.Type.START_END
-                        + " graphically it's not supported");
+                return DependencyType.START_END;
             default:
                 throw new RuntimeException("can't handle "
                         + domainDependencyType);
             }
-        }
-
-        public PointType getPointType() {
-            return getGraphicalType().getPointModified();
-        }
-
-    }
-
-    private static IDatesInterceptor asIntercerptor(
-            final IDependenciesEnforcerHook hook) {
-        return new IDatesInterceptor() {
-
-            @Override
-            public void setStartDate(IntraDayDate previousStart,
-                    IntraDayDate previousEnd, IntraDayDate newStart) {
-                hook.setStartDate(convert(previousStart.getDate()),
-                        convert(previousEnd.asExclusiveEnd()),
-                        convert(newStart.getDate()));
-            }
-
-            @Override
-            public void setNewEnd(IntraDayDate previousEnd, IntraDayDate newEnd) {
-                hook.setNewEnd(convert(previousEnd.getDate()),
-                        convert(newEnd.asExclusiveEnd()));
-            }
-        };
-    }
-
-    private static GanttDate convert(LocalDate date) {
-        return GanttDate.createFrom(date);
-    }
-
-    public class Adapter implements
-            IAdapter<TaskElement, DependencyWithVisibility> {
-
-        private final Scenario scenario;
-
-        private Adapter(Scenario scenario) {
-            Validate.notNull(scenario);
-            this.scenario = scenario;
-        }
-
-        @Override
-        public DependencyWithVisibility createInvisibleDependency(
-                TaskElement origin, TaskElement destination, DependencyType type) {
-            return DependencyWithVisibility.createInvisible(origin,
-                    destination, type);
-        }
-
-        @Override
-        public List<TaskElement> getChildren(TaskElement task) {
-            if (!task.isLeaf()) {
-                return task.getChildren();
-            } else {
-                return new ArrayList<TaskElement>();
-            }
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getEndConstraintsGivenIncoming(
-                Set<DependencyWithVisibility> incoming) {
-            return DependencyWithVisibility.getEndConstraintsGiven(this,
-                    incoming);
-        }
-
-        @Override
-        public Constraint<GanttDate> getCurrentLenghtConstraintFor(
-                TaskElement task) {
-            if (isContainer(task)) {
-                return Constraint.emptyConstraint();
-            }
-            return biggerOrEqualThan(this.getEndDateFor(task));
-        }
-
-        @Override
-        public Class<DependencyWithVisibility> getDependencyType() {
-            return DependencyWithVisibility.class;
-        }
-
-        @Override
-        public TaskElement getDestination(DependencyWithVisibility dependency) {
-            return dependency.getDestination();
-        }
-
-        @Override
-        public TaskPoint<TaskElement, DependencyWithVisibility> getDestinationPoint(
-                DependencyWithVisibility dependency) {
-            return new TaskPoint<TaskElement, DependencyWithVisibility>(this,
-                    dependency.getDestination(), dependency.getPointType());
-        }
-
-        @Override
-        public Constraint<GanttDate> getEndDateBiggerThanStartDateConstraintFor(
-                TaskElement task) {
-            return biggerOrEqualThan(getStartDate(task));
-        }
-
-        @Override
-        public GanttDate getEndDateFor(TaskElement task) {
-            return toGantt(task.getIntraDayEndDate());
-        }
-
-        @Override
-        public GanttDate getSmallestBeginDateFromChildrenFor(
-                TaskElement container) {
-            TaskGroup taskGroup = (TaskGroup) container;
-            return toGantt(taskGroup.getSmallestStartDateFromChildren());
-        }
-
-        @Override
-        public TaskElement getSource(DependencyWithVisibility dependency) {
-            return dependency.getSource();
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getStartConstraintsFor(
-                TaskElement task) {
-            return TaskElementAdapter.getStartConstraintsFor(task);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getStartConstraintsGiven(
-                Set<DependencyWithVisibility> withDependencies) {
-            return DependencyWithVisibility.getStartConstraintsGiven(this,
-                    withDependencies);
-        }
-
-        @Override
-        public GanttDate getStartDate(TaskElement task) {
-            return toGantt(task.getIntraDayStartDate());
-        }
-
-        @Override
-        public DependencyType getType(DependencyWithVisibility dependency) {
-            return dependency.getGraphicalType();
-        }
-
-        @Override
-        public boolean isContainer(TaskElement task) {
-            return !task.isLeaf() && !task.isMilestone();
-        }
-
-        @Override
-        public boolean isVisible(DependencyWithVisibility dependency) {
-            return dependency.isVisible();
-        }
-
-        @Override
-        public void registerDependenciesEnforcerHookOn(TaskElement task,
-                IDependenciesEnforcerHookFactory<TaskElement> hookFactory) {
-            IDependenciesEnforcerHook enforcer = hookFactory.create(task);
-            task.setDatesInterceptor(asIntercerptor(enforcer));
-        }
-
-        @Override
-        public void setEndDateFor(TaskElement task, GanttDate newEnd) {
-            task.setIntraDayEndDate(toIntraDay(newEnd));
-        }
-
-        @Override
-        public void setStartDateFor(TaskElement task, GanttDate newStart) {
-            task.moveTo(scenario, toIntraDay(newStart));
-        }
-
-        @Override
-        public boolean isFixed(TaskElement task) {
-            return task.isLimitingAndHasDayAssignments();
         }
 
     }
@@ -365,10 +178,19 @@ public class TemplateModel implements ITemplateModel {
     @Autowired
     private IAdHocTransactionService transactionService;
 
+    @Autowired
+    private IConfigurationDAO configurationDAO;
+
     @Override
     @Transactional(readOnly = true)
     public List<Scenario> getScenarios() {
         return scenarioDAO.getAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getCompanyLogoURL() {
+        return configurationDAO.getConfiguration().getCompanyLogoURL();
     }
 
     @Override
@@ -464,8 +286,7 @@ public class TemplateModel implements ITemplateModel {
             }
 
         };
-        LongOperationFeedback.progressive(desktop, LongOperationFeedback
-                .withAsyncUpates(reassignations));
+        LongOperationFeedback.progressive(desktop, reassignations);
     }
 
     private IDesktopUpdate notifySuccess(
@@ -515,11 +336,11 @@ public class TemplateModel implements ITemplateModel {
     }
 
     private IDesktopUpdate showStart(final int ordersNumber) {
-        return sendMessage(_("Reassigning {0} orders", ordersNumber));
+        return sendMessage(_("Reassigning {0} projects", ordersNumber));
     }
 
     private IDesktopUpdate showProgress(int remaining) {
-        return sendMessage(_("{0} orders reassignation remaining", remaining));
+        return sendMessage(_("{0} projects reassignation remaining", remaining));
     }
 
     private IDesktopUpdate sendMessage(final String message) {
@@ -543,9 +364,15 @@ public class TemplateModel implements ITemplateModel {
 
     private void doReassignationsOn(Order order, Scenario from, Scenario to) {
         copyAssignments(order, from, to);
-        installDependenciesEnforcer(order, new Adapter(to));
+        installDependenciesEnforcer(order, TemplateModelAdapter.create(to,
+                asLocalDate(order.getInitDate()),
+                asLocalDate(order.getDeadline()), resourceDAO));
         doReassignations(order, to);
         doTheSaving(order);
+    }
+
+    private LocalDate asLocalDate(Date date) {
+        return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
     private void copyAssignments(Order order, Scenario from, Scenario to) {
@@ -554,7 +381,7 @@ public class TemplateModel implements ITemplateModel {
         }
     }
 
-    private void installDependenciesEnforcer(Order order, Adapter adapter) {
+    private void installDependenciesEnforcer(Order order, TemplateModelAdapter adapter) {
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(order, adapter);
         TaskSource taskSource = order.getTaskSource();
         graph.addTopLevel(taskSource.getTask());
@@ -567,11 +394,12 @@ public class TemplateModel implements ITemplateModel {
     private GanttDiagramGraph<TaskElement, DependencyWithVisibility> createFor(
             Order order, IAdapter<TaskElement, DependencyWithVisibility> adapter) {
         List<Constraint<GanttDate>> startConstraints = PlannerConfiguration
-                .getStartConstraintsGiven(GanttDate.createFrom(order
-                        .getInitDate()));
-        List<Constraint<GanttDate>> endConstraints = Collections.emptyList();
+                .getStartConstraintsGiven((GanttDate) GanttDate.createFrom(order.getInitDate()));
+        List<Constraint<GanttDate>> endConstraints = PlannerConfiguration
+                .getEndConstraintsGiven((GanttDate) GanttDate.createFrom(order.getDeadline()));
         GanttDiagramGraph<TaskElement, DependencyWithVisibility> result = GanttDiagramGraph
-                .create(adapter, startConstraints, endConstraints,
+                .create(order.isScheduleBackwards(), adapter, startConstraints,
+                        endConstraints,
                         order.getDependenciesConstraintsHavePriority());
         return result;
     }
@@ -615,4 +443,11 @@ public class TemplateModel implements ITemplateModel {
         }
         return result;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isScenariosVisible() {
+        return configurationDAO.getConfiguration().isScenariosVisible();
+    }
+
 }

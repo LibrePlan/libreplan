@@ -492,7 +492,7 @@ public class MutableTreeModelTest {
     }
 
     @Test
-    public void movingUpAndDownSendsEvents() {
+    public void movingUpAndDownSendsRemovalAndAddingEventsSoZKReloadsCorrectlyTheData() {
         final MutableTreeModel<Prueba> model = MutableTreeModel
                 .create(Prueba.class);
         Prueba prueba1 = new Prueba();
@@ -510,10 +510,14 @@ public class MutableTreeModelTest {
             }
         });
         model.up(prueba2);
-        checkIsValid(getLast(eventsFired), TreeDataEvent.CONTENTS_CHANGED,
+        checkIsValid(getPreviousToLast(eventsFired),
+                TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 0, 1);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.INTERVAL_ADDED,
                 model.getRoot(), 0, 1);
         model.down(prueba1);
-        checkIsValid(getLast(eventsFired), TreeDataEvent.CONTENTS_CHANGED,
+        checkIsValid(getPreviousToLast(eventsFired),
+                TreeDataEvent.INTERVAL_REMOVED, model.getRoot(), 1, 2);
+        checkIsValid(getLast(eventsFired), TreeDataEvent.INTERVAL_ADDED,
                 model.getRoot(), 1, 2);
     }
 
@@ -577,6 +581,10 @@ public class MutableTreeModelTest {
         assertThat(event.getIndexFrom(), equalTo(expectedFromPosition));
         assertThat(event.getIndexTo(), equalTo(expectedToPosition));
         assertThat(event.getType(), equalTo(type));
+    }
+
+    private TreeDataEvent getPreviousToLast(List<TreeDataEvent> list) {
+        return list.get(list.size() - 2);
     }
 
     private TreeDataEvent getLast(List<TreeDataEvent> list) {

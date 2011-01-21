@@ -20,28 +20,29 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.joda.time.LocalDate;
 
 /**
  * Represents a time interval <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class Interval {
-    protected final Date start;
-    protected final Date end;
+    protected final LocalDate start;
 
-    public static Interval from(Date start) {
+    protected final LocalDate end;
+
+    public static Interval from(LocalDate start) {
         return new OpenEndedInterval(start);
     }
 
-    public static Interval point(Date date) {
+    public static Interval point(LocalDate date) {
         return new Point(date);
     }
 
-    public static Interval range(Date start, Date end) {
+    public static Interval range(LocalDate start, LocalDate end) {
         Validate.notNull(start, "start date must be not null");
         if (end == null) {
             return from(start);
@@ -52,7 +53,7 @@ public abstract class Interval {
         return new Range(start, end);
     }
 
-    protected Interval(Date start, Date end) {
+    protected Interval(LocalDate start, LocalDate end) {
         Validate.notNull(start, "start date must be not null");
         if (end != null) {
             Validate.isTrue(start.compareTo(end) <= 0,
@@ -62,7 +63,7 @@ public abstract class Interval {
         this.end = end;
     }
 
-    public abstract boolean contains(Date date);
+    public abstract boolean contains(LocalDate date);
 
     @Override
     public boolean equals(Object obj) {
@@ -79,7 +80,7 @@ public abstract class Interval {
         return new HashCodeBuilder().append(start).append(end).toHashCode();
     }
 
-    private boolean dateEquals(Date date1, Date date2) {
+    private boolean dateEquals(LocalDate date1, LocalDate date2) {
         return date1 == date2
                 || (date1 != null && date2 != null && date1.equals(date2));
     }
@@ -88,30 +89,30 @@ public abstract class Interval {
 
     public abstract boolean overlapsWith(Interval interval);
 
-    public boolean before(Date date) {
-        return start.before(date);
+    public boolean before(LocalDate date) {
+        return start.isBefore(date);
     }
 
-    public Date getStart() {
-        return new Date(start.getTime());
+    public LocalDate getStart() {
+        return start;
     }
 
-    public Date getEnd() {
-        return end != null ? new Date(end.getTime()) : null;
+    public LocalDate getEnd() {
+        return end;
     }
 
 }
 
 class Range extends Interval {
 
-    Range(Date start, Date end) {
+    Range(LocalDate start, LocalDate end) {
         super(start, end);
         Validate.notNull(start);
         Validate.notNull(end);
     }
 
     @Override
-    public boolean contains(Date date) {
+    public boolean contains(LocalDate date) {
         return date.compareTo(start) >= 0 && date.compareTo(end) < 0;
     }
 
@@ -122,7 +123,7 @@ class Range extends Interval {
             return point.overlapsWith(this);
         }
         return start.compareTo(included.start) <= 0 && included.end != null
-                && end.after(included.end);
+                && end.isAfter(included.end);
     }
 
     @Override
@@ -147,12 +148,12 @@ class Range extends Interval {
 }
 
 class OpenEndedInterval extends Interval {
-    OpenEndedInterval(Date start) {
+    OpenEndedInterval(LocalDate start) {
         super(start, null);
     }
 
     @Override
-    public boolean contains(Date date) {
+    public boolean contains(LocalDate date) {
         return date.compareTo(start) >= 0;
     }
 
@@ -163,8 +164,8 @@ class OpenEndedInterval extends Interval {
 
     @Override
     public boolean overlapsWith(Interval interval) {
-        return start.before(interval.start) || interval.end == null
-                || start.before(interval.end);
+        return start.isBefore(interval.start) || interval.end == null
+                || start.isBefore(interval.end);
     }
 
     @Override
@@ -175,12 +176,12 @@ class OpenEndedInterval extends Interval {
 
 class Point extends Interval {
 
-    Point(Date date) {
+    Point(LocalDate date) {
         super(date, date);
     }
 
     @Override
-    public boolean contains(Date date) {
+    public boolean contains(LocalDate date) {
         return start.equals(date);
     }
 

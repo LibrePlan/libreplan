@@ -19,8 +19,7 @@
 -->
 
 <vbox id="${arg.id}"
-    apply="org.navalplanner.web.orders.AssignedTaskQualityFormsToOrderElementController"
-    width="100%" >
+    apply="org.navalplanner.web.orders.AssignedTaskQualityFormsToOrderElementController" width="100%">
     <!-- Quality Forms-->
     <vbox width="100%">
         <vbox id="messagesContainerTaskQualityForms"/>
@@ -46,7 +45,7 @@
                         <column width="25px"/>
                         <column label="${i18n:_('Task quality form name')}" sort="auto(lower(qualityForm.name))" sortDirection="descending"/>
                         <column label="${i18n:_('Type')}" />
-                        <column label="${i18n:_('Report advance')}" />
+                        <column label="${i18n:_('Report progress')}" />
                         <column label="${i18n:_('Operations')}" />
                     </columns>
                 </grid>

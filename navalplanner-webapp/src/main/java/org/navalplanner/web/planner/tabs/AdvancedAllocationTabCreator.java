@@ -20,6 +20,8 @@
 package org.navalplanner.web.planner.tabs;
 
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.BREADCRUMBS_SEPARATOR;
+import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.getSchedulingLabel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,11 +46,11 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
@@ -62,6 +64,8 @@ import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zul.Image;
+import org.zkoss.zul.Label;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -185,10 +189,20 @@ public class AdvancedAllocationTabCreator {
             taskElementDAO.reattach(task);
             allocationResult.applyTo(currentScenario, task);
             taskElementDAO.save(task);
+            updateParentsPositions(task);
+        }
+
+        private void updateParentsPositions(TaskElement task) {
+            TaskGroup current = task.getParent();
+            while (current != null) {
+                current.fitStartAndEndDatesToChildren();
+                taskElementDAO.save(current);
+                current = current.getParent();
+            }
         }
     }
 
-    private static final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
+    private final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
     private final Mode mode;
     private final IAdHocTransactionService adHocTransactionService;
     private final IOrderDAO orderDAO;
@@ -198,27 +212,30 @@ public class AdvancedAllocationTabCreator {
 
     private final IResourceDAO resourceDAO;
     private final Scenario currentScenario;
+    private final Component breadcrumbs;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario,
-            IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
+            Component breadcrumbs) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack)
-                .build();
+                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack,
+                breadcrumbs).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack) {
+            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
+            Component breadcrumbs) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
         Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
         Validate.notNull(currentScenario);
+        Validate.notNull(breadcrumbs);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
@@ -226,6 +243,7 @@ public class AdvancedAllocationTabCreator {
         this.taskElementDAO = taskElementDAO;
         this.resourceDAO = resourceDAO;
         this.currentScenario = currentScenario;
+        this.breadcrumbs = breadcrumbs;
     }
 
     private ITab build() {
@@ -250,6 +268,14 @@ public class AdvancedAllocationTabCreator {
 
             @Override
             protected void afterShowAction() {
+                breadcrumbs.getChildren().clear();
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(getSchedulingLabel()));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(_("Advanced Allocation")));
+                breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
+                breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
+
                 if (firstTime) {
                     firstTime = false;
                     return;

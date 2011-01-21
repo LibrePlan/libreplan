@@ -420,7 +420,7 @@ div.box.limiting-unassigned {
 
 #watermark .timetracker_column_today.timetracker_column_deadline,
 #watermark .timetracker_column_deadline.timetracker_column_today  {
-    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
+    background-image: url("../../zkau/web/ganttz/img/pixel.gif");
 }
 
 /* Background image for current day vertical line */
@@ -431,7 +431,7 @@ div.box.limiting-unassigned {
 
 #watermark .timetracker_column_deadline {
     background-image:
-        url("../../zkau/web/ganttz/img/watermark_deadline.png");
+        url("../../zkau/web/ganttz/img/pixel.gif");
     background-repeat: repeat-y;
 }
 

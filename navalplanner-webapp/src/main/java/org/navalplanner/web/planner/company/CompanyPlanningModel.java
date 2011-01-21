@@ -42,9 +42,11 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -208,7 +210,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand,
             IPredicate predicate) {
-
+        currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
         boolean expandPlanningViewChart = configurationDAO.
                 getConfiguration().isExpandCompanyPlanningViewCharts();
@@ -229,7 +231,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 @Override
                 public String getName() {
-                    return _("Create new order");
+                    return _("Create new project");
                 }
 
                 @Override
@@ -250,7 +252,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
                 @Override
                 public String getName() {
-                    return _("Create new order from template");
+                    return _("Create new project from template");
                 }
 
                 @Override
@@ -290,7 +292,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         OrderPlanningModel.configureInitialZoomLevelFor(planner,
                 defaultZoomLevel);
 
-        configuration.setSecondLevelModificators(new BankHolidaysMarker());
+        configuration.setSecondLevelModificators(BankHolidaysMarker.create(getDefaultCalendar()));
         planner.setConfiguration(configuration);
 
         if(expandPlanningViewChart) {
@@ -317,6 +319,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     }
                 });
         }
+    }
+
+    private BaseCalendar getDefaultCalendar() {
+        return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
     private void setupChartAndItsContent(final Planner planner,
@@ -692,6 +698,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
         ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setPreventCalculateResourcesText(true);
+        taskElementAdapter.useScenario(currentScenario);
         List<TaskElement> toShow;
         toShow = retainOnlyTopLevel(predicate);
 
@@ -712,7 +719,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             //anyway, if it happenned we return an empty list
             return result;
         }
-        currentScenario = scenarioManager.getCurrent();
         List<Order> list = orderDAO.getOrdersByReadAuthorizationByScenario(
                 user, currentScenario);
         for (Order order : list) {
@@ -742,7 +748,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         Date endDate = null;
         for (Order each : list) {
             TaskGroup associatedTaskElement = each.getAssociatedTaskElement();
-            startDate = Collections.min(notNull(startDate, each.getInitDate()));
+            startDate = Collections.min(notNull(startDate, each.getInitDate(),
+                    associatedTaskElement.getStartDate()));
             endDate = Collections.max(notNull(endDate, each.getDeadline(),
                     associatedTaskElement.getEndDate()));
         }
@@ -949,4 +956,10 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
     public void goToCreateOtherOrderFromTemplate(OrderTemplate template) {
         tabs.goToCreateotherOrderFromTemplate(template);
     }
+
+    @Transactional(readOnly=true)
+    public ProgressType getProgressTypeFromConfiguration() {
+        return configurationDAO.getConfiguration().getProgressType();
+    }
+
 }

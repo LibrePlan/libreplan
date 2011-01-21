@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
@@ -36,27 +35,31 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.ICalendar;
-import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.entities.ProgressType;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class TaskElement extends BaseEntity {
+
+    private static final Log LOG = LogFactory.getLog(TaskElement.class);
 
     public interface IDatesInterceptor {
         public void setStartDate(IntraDayDate previousStart,
@@ -105,8 +108,12 @@ public abstract class TaskElement extends BaseEntity {
         taskElement.taskSource = taskSource;
         taskElement.updateDeadlineFromOrderElement();
         taskElement.setName(taskElement.getOrderElement().getName());
-        taskElement.setStartDate(taskElement.getOrderElement().getOrder()
-                .getInitDate());
+        Order order = taskElement.getOrderElement().getOrder();
+        if (order.isScheduleBackwards()) {
+            taskElement.setEndDate(order.getDeadline());
+        } else {
+            taskElement.setStartDate(order.getInitDate());
+        }
         return create(taskElement);
     }
 
@@ -143,13 +150,13 @@ public abstract class TaskElement extends BaseEntity {
 
     private Boolean simplifiedAssignedStatusCalculationEnabled = false;
 
-    public void initializeEndDateIfDoesntExist() {
-        if (getEndDate() == null) {
-            initializeEndDate();
+    public void initializeDatesIfNeeded() {
+        if (getIntraDayEndDate() == null || getIntraDayStartDate() == null) {
+            initializeDates();
         }
     }
 
-    protected abstract void initializeEndDate();
+    protected abstract void initializeDates();
 
     public void updateDeadlineFromOrderElement() {
         Date newDeadline = this.taskSource.getOrderElement().getDeadline();
@@ -174,7 +181,6 @@ public abstract class TaskElement extends BaseEntity {
         this.startDate = task.startDate;
         this.taskSource = task.getTaskSource();
     }
-
 
     public TaskSource getTaskSource() {
         return taskSource;
@@ -232,12 +238,12 @@ public abstract class TaskElement extends BaseEntity {
         return Collections.unmodifiableSet(dependenciesWithThisDestination);
     }
 
-    @NotNull
     public Date getStartDate() {
         return startDate != null ? startDate.getDate().toDateTimeAtStartOfDay()
                 .toDate() : null;
     }
 
+    @NotNull
     public IntraDayDate getIntraDayStartDate() {
         return startDate;
     }
@@ -256,61 +262,15 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayStartDate(IntraDayDate startDate) {
+        if (startDate == null) {
+            LOG.error(doNotProvideNullsDiscouragingMessage());
+        }
         IntraDayDate previousStart = getIntraDayStartDate();
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.startDate = startDate;
         datesInterceptor.setStartDate(previousStart, previousEnd,
                 getIntraDayStartDate());
     }
-
-    /**
-     * Sets the startDate to newStartDate. It can update the endDate
-     *
-     * @param scenario
-     * @param newStartDate
-     */
-    public void moveTo(Scenario scenario, IntraDayDate newStartDate) {
-        if (newStartDate == null) {
-            return;
-        }
-        IntraDayDate previousStart = this.startDate;
-        this.endDate = calculateEndKeepingLength(newStartDate);
-        setIntraDayStartDate(newStartDate);
-        if (!previousStart.equals(newStartDate)) {
-            moveAllocations(scenario);
-        }
-    }
-
-    private IntraDayDate calculateEndKeepingLength(IntraDayDate newStartDate) {
-        final IntraDayDate start = getIntraDayStartDate();
-        final IntraDayDate end = getIntraDayEndDate();
-        final int numberOfDays = start.numberOfDaysUntil(end);
-        EffortDuration resultDuration = zero();
-        ICalendar calendar = getCalendar() != null ? getCalendar()
-                : SameWorkHoursEveryDay.getDefaultWorkingDay();
-        if (getIntraDayStartDate().getEffortDuration().compareTo(
-                getIntraDayEndDate().getEffortDuration()) <= 0) {
-            resultDuration = end.getEffortDuration().minus(
-                    start.getEffortDuration());
-        } else {
-            EffortDuration capacity = calendar.getCapacityOn(
-                    PartialDay.wholeDay(start.getDate()));
-            resultDuration = end.getEffortDuration().plus(
-                    capacity.minus(min(start.getEffortDuration(), capacity)));
-        }
-        resultDuration = resultDuration.plus(newStartDate.getEffortDuration());
-        LocalDate resultDay = newStartDate.getDate().plusDays(
-                numberOfDays);
-        final EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                .wholeDay(resultDay));
-        if (resultDuration.compareTo(capacity) >= 0) {
-            resultDay = resultDay.plusDays(1);
-            resultDuration = resultDuration.minus(capacity);
-        }
-        return IntraDayDate.create(resultDay, resultDuration);
-    }
-
-    protected abstract void moveAllocations(Scenario scenario);
 
     @NotNull
     public Date getEndDate() {
@@ -325,29 +285,69 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public void setIntraDayEndDate(IntraDayDate endDate) {
+        if (endDate == null) {
+            LOG.error(doNotProvideNullsDiscouragingMessage());
+        }
         IntraDayDate previousEnd = getIntraDayEndDate();
         this.endDate = endDate;
         datesInterceptor.setNewEnd(previousEnd, this.endDate);
     }
 
+    private String doNotProvideNullsDiscouragingMessage() {
+        return "The provided date shouldn't be null.\n"
+                + "Providing null values to start or end dates is not safe.\n"
+                + "In a near future an exception will be thrown if you provide a null value to a start or end date.\n"
+                + "Please detect the caller and fix it";
+    }
+
+    @NotNull
     public IntraDayDate getIntraDayEndDate() {
         return endDate;
     }
 
-    public void resizeTo(Scenario scenario, Date endDate) {
-        resizeTo(scenario,
-                IntraDayDate.startOfDay(LocalDate.fromDateFields(endDate)));
+    public IDatesHandler getDatesHandler(Scenario scenario,
+            IResourceDAO resourceDAO) {
+        return noNullDates(createDatesHandler(scenario, resourceDAO));
     }
 
-    public void resizeTo(Scenario scenario, IntraDayDate endDate) {
-        if (!canBeResized()) {
-            return;
-        }
-        boolean sameDay = this.endDate.areSameDay(endDate.getDate());
-        setIntraDayEndDate(endDate);
-        if (!sameDay) {
-            moveAllocations(scenario);
-        }
+    private IDatesHandler noNullDates(final IDatesHandler decorated) {
+        return new IDatesHandler() {
+
+            @Override
+            public void resizeTo(IntraDayDate endDate) {
+                Validate.notNull(endDate);
+                decorated.resizeTo(endDate);
+            }
+
+            @Override
+            public void moveTo(IntraDayDate newStartDate) {
+                Validate.notNull(newStartDate);
+                decorated.moveTo(newStartDate);
+            }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                Validate.notNull(newEnd);
+                decorated.moveEndTo(newEnd);
+            }
+        };
+    }
+
+    protected abstract IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO);
+
+    public interface IDatesHandler {
+
+        /**
+         * Sets the startDate to newStartDate. It can update the endDate
+         *
+         * @param scenario
+         * @param newStartDate
+         */
+        void moveTo(IntraDayDate newStartDate);
+
+        void moveEndTo(IntraDayDate newEnd);
+
+        void resizeTo(IntraDayDate endDate);
     }
 
     protected abstract boolean canBeResized();
@@ -591,6 +591,13 @@ public abstract class TaskElement extends BaseEntity {
     public BigDecimal getAdvancePercentage() {
         return (advancePercentage == null) ? BigDecimal.ZERO
                 : advancePercentage;
+    }
+
+    public BigDecimal getAdvancePercentage(ProgressType progressType) {
+        if (progressType.equals(ProgressType.SPREAD_PROGRESS)) {
+            return advancePercentage;
+        }
+        return BigDecimal.ZERO;
     }
 
     public void setAdvancePercentage(BigDecimal advancePercentage) {

@@ -87,21 +87,6 @@ public class TaskContainer extends Task {
         return tasks;
     }
 
-    public GanttDate getSmallestBeginDateFromChildren() {
-        if (tasks.isEmpty()) {
-            return getBeginDate();
-        }
-        return getSmallest(getStartDates());
-    }
-
-    private List<GanttDate> getStartDates() {
-        ArrayList<GanttDate> result = new ArrayList<GanttDate>();
-        for (Task task : tasks) {
-            result.add(task.getBeginDate());
-        }
-        return result;
-    }
-
     private List<GanttDate> getEndDates() {
         ArrayList<GanttDate> result = new ArrayList<GanttDate>();
         for (Task task : tasks) {

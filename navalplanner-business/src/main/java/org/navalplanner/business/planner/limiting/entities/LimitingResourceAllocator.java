@@ -79,6 +79,12 @@ public class LimitingResourceAllocator {
         public void setCurrent(EffortDuration currentDuration) {
             this.currentDuration = currentDuration;
         }
+
+        @Override
+        public IntraDayDate limitNext(IntraDayDate nextDay) {
+            return nextDay;
+        }
+
     }
 
     private final static ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay
@@ -193,10 +199,10 @@ public class LimitingResourceAllocator {
                 return 0;
             }
 
-            for (pos = 0; pos < elements.size(); pos++) {
+            for (pos = 1; pos < elements.size(); pos++) {
                 final LimitingResourceQueueElement each = elements.get(pos);
                 final DateAndHour startTime = each.getStartTime();
-                if (until.isAfter(startTime) || until.isEquals(startTime)) {
+                if (until.isBefore(startTime) || until.isEquals(startTime)) {
                     return pos;
                 }
             }
@@ -252,7 +258,7 @@ public class LimitingResourceAllocator {
         if (pos > 0) {
             LimitingResourceQueueElement previous = elements.get(pos - 1);
             return Gap.create(resource, DateAndHour
-                    .Max(previous.getEndTime(), startTimeBecauseOfGantt), next
+                    .max(previous.getEndTime(), startTimeBecauseOfGantt), next
                     .getStartTime());
         }
 
@@ -269,7 +275,7 @@ public class LimitingResourceAllocator {
 
         final DateAndHour queueEndTime = (lastElement != null) ? lastElement
                 .getEndTime() : null;
-        DateAndHour startTime = DateAndHour.Max(_startTime, queueEndTime);
+        DateAndHour startTime = DateAndHour.max(_startTime, queueEndTime);
         return Gap
                 .create(resource, startTime, null);
     }

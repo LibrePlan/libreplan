@@ -40,9 +40,9 @@
             </listbox>
 
             <vbox>
-                <button id="assignButton" label="${i18n:_('&lt;&lt;')}"
+                <button id="assignButton" label="&lt;&lt;"
                     onClick="top.assign(unassignedObjects);" />
-                <button id="unassignButton" label="${i18n:_('&gt;&gt;')}"
+                <button id="unassignButton" label="&gt;&gt;"
                     onClick="top.unassign(assignedObjects);" />
             </vbox>
 

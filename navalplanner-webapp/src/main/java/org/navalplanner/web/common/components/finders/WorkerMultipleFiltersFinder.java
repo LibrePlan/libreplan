@@ -44,6 +44,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Override
     public List<FilterPair> getFirstTenFilters() {
+        getListMatching().clear();
         Iterator<Worker> iteratorWorker = getListWorkers().iterator();
         while(iteratorWorker.hasNext() && getListMatching().size() < 10) {
             Worker worker = iteratorWorker.next();
@@ -70,7 +71,6 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
 
     }
     private void searchInWorkers(String filter) {
-        boolean limited = (filter.length() < 3);
         for (Worker worker : getListWorkers()) {
             String name = StringUtils.deleteWhitespace(
                     worker.getShortDescription().toLowerCase());

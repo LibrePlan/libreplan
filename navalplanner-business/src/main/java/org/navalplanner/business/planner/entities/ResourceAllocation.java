@@ -78,6 +78,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
             Collection<T> resourceAllocations) {
+        Validate.notNull(resourceAllocations);
+        Validate.noNullElements(resourceAllocations);
         List<T> result = new ArrayList<T>();
         for (T each : resourceAllocations) {
             if (each.isSatisfied()) {
@@ -142,6 +144,41 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         o2.getIntraDayStartDate());
             }
         };
+    }
+
+    public enum Direction {
+        FORWARD {
+            @Override
+            public IntraDayDate getDateFromWhichToAllocate(Task task) {
+                return IntraDayDate.max(task.getFirstDayNotConsolidated(),
+                        task.getIntraDayStartDate());
+            }
+
+            @Override
+            void limitAvailabilityOn(AvailabilityTimeLine availability,
+                    IntraDayDate dateFromWhichToAllocate) {
+                availability.invalidUntil(dateFromWhichToAllocate
+                        .asExclusiveEnd());
+            }
+        },
+        BACKWARD {
+            @Override
+            public IntraDayDate getDateFromWhichToAllocate(Task task) {
+                return task.getIntraDayEndDate();
+            }
+
+            @Override
+            void limitAvailabilityOn(AvailabilityTimeLine availability,
+                    IntraDayDate dateFromWhichToAllocate) {
+                availability.invalidFrom(dateFromWhichToAllocate.getDate());
+            }
+        };
+
+        public abstract IntraDayDate getDateFromWhichToAllocate(Task task);
+
+        abstract void limitAvailabilityOn(AvailabilityTimeLine availability,
+                IntraDayDate dateFromWhichToAllocate);
+
     }
 
     public static AllocationsSpecified allocating(
@@ -229,7 +266,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public IntraDayDate untilAllocating(int hoursToAllocate) {
-            return untilAllocating(hoursToAllocate, doNothing());
+            return untilAllocating(Direction.FORWARD, hoursToAllocate);
+        }
+
+        public IntraDayDate untilAllocating(Direction direction,
+                int hoursToAllocate) {
+            return untilAllocating(direction, hoursToAllocate, doNothing());
         }
 
         private static INotFulfilledReceiver doNothing() {
@@ -244,7 +286,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public IntraDayDate untilAllocating(int hoursToAllocate,
                 final INotFulfilledReceiver receiver) {
+            return untilAllocating(Direction.FORWARD, hoursToAllocate, receiver);
+        }
+
+        public IntraDayDate untilAllocating(Direction direction,
+                int hoursToAllocate, final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
+                    direction,
                     task, allocations) {
 
                 @Override
@@ -256,15 +304,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(
-                        ResourceAllocation<T> allocation, IntraDayDate end,
+                        ResourceAllocation<T> allocation,
+                        IntraDayDate resultDate,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
-                    allocation.resetAssignmentsTo(dayAssignments, end);
+                    Task task = AllocationsSpecified.this.task;
+                    if (isForwardScheduling()) {
+                        allocation.resetAssignmentsTo(dayAssignments,
+                                task.getIntraDayStartDate(), resultDate);
+                    } else {
+                        allocation.resetAssignmentsTo(dayAssignments,
+                                resultDate, task.getIntraDayEndDate());
+                    }
                     allocation.updateResourcesPerDay();
                 }
 
                 @Override
                 protected CapacityResult thereAreAvailableHoursFrom(
-                        IntraDayDate start,
+                        IntraDayDate dateFromWhichToAllocate,
                         ResourcesPerDayModification resourcesPerDayModification,
                         EffortDuration effortToAllocate) {
                     ICalendar calendar = getCalendar(resourcesPerDayModification);
@@ -272,7 +328,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getGoal();
                     AvailabilityTimeLine availability = resourcesPerDayModification
                             .getAvailability();
-                    availability.invalidUntil(start.asExclusiveEnd());
+                    getDirection().limitAvailabilityOn(availability,
+                            dateFromWhichToAllocate);
                     return ThereAreHoursOnWorkHoursCalculator
                             .thereIsAvailableCapacityFor(calendar,
                                     availability, resourcesPerDay,
@@ -298,7 +355,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             IntraDayDate result = allocator
                     .untilAllocating(hours(hoursToAllocate));
             if (result == null) {
-                return task.getIntraDayEndDate();
+                // allocation could not be done
+                return direction == Direction.FORWARD ? task
+                        .getIntraDayEndDate() : task.getIntraDayStartDate();
             }
             return result;
         }
@@ -313,6 +372,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
                     allocations);
             allocator.allocateUntil(endExclusive);
+        }
+
+        public void allocateFromEndUntil(LocalDate start) {
+            AllocatorForTaskDurationAndSpecifiedResourcesPerDay allocator = new AllocatorForTaskDurationAndSpecifiedResourcesPerDay(
+                    allocations);
+            allocator.allocateFromEndUntil(start);
         }
     }
 
@@ -361,6 +426,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
+        public void allocateFromEndUntil(LocalDate start) {
+            Validate.notNull(start);
+            Validate.isTrue(start.isBefore(task.getEndAsLocalDate()));
+            for (HoursModification each : hoursModifications) {
+                each.allocateFromEndUntil(start);
+            }
+
+        }
+
     }
 
     private Task task;
@@ -368,6 +442,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private AssignmentFunction assignmentFunction;
 
     @OnCopy(Strategy.SHARE)
+    @NotNull
     private ResourcesPerDay resourcesPerDay;
 
     private Integer intendedTotalHours;
@@ -415,7 +490,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * Constructor for hibernate. Do not use!
      */
     public ResourceAllocation() {
-
+        this.assignmentsState = buildFromDBState();
     }
 
     /**
@@ -425,17 +500,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public abstract List<Resource> getAssociatedResources();
 
-    @OnCopy(Strategy.IGNORE)
-    private Scenario currentScenario;
-
     public void switchToScenario(Scenario scenario) {
         Validate.notNull(scenario);
-        currentScenario = scenario;
-        scenarioChangedTo(currentScenario);
+        assignmentsState = assignmentsState.switchTo(scenario);
         switchDerivedAllocationsTo(scenario);
     }
-
-    protected abstract void scenarioChangedTo(Scenario scenario);
 
     private void switchDerivedAllocationsTo(Scenario scenario) {
         for (DerivedAllocation each : derivedAllocations) {
@@ -464,6 +533,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         Validate.notNull(task);
         this.task = task;
         this.assignmentFunction = assignmentFunction;
+        this.assignmentsState = buildInitialTransientState();
     }
 
     protected ResourceAllocation(ResourcesPerDay resourcesPerDay, Task task) {
@@ -478,6 +548,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private void updateOriginalTotalAssigment() {
+        if (!isSatisfied()) {
+            return;
+        }
         if ((task.getConsolidation() == null)
                 || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
             originalTotalAssignment = getNonConsolidatedHours();
@@ -512,7 +585,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public abstract IAllocatable withPreviousAssociatedResources();
 
-    protected abstract class AssignmentsAllocation implements IAllocatable {
+    protected abstract class AssignmentsAllocator implements IAllocatable {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
@@ -537,20 +610,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateResourcesPerDay until(final LocalDate endExclusive) {
-            return new IAllocateResourcesPerDay() {
+        public IAllocateResourcesPerDay resourcesPerDayUntil(final LocalDate endExclusive) {
+            IntraDayDate startInclusive = getStartSpecifiedByTask();
+            IntraDayDate end = IntraDayDate.startOfDay(endExclusive);
+            return new AllocateResourcesPerDayOnInterval(startInclusive, end);
+        }
 
-                @Override
-                public void allocate(ResourcesPerDay resourcesPerDay) {
-                    IntraDayDate startInclusive = getStartAfterConsolidated();
-                    List<T> assignmentsCreated = createAssignments(
-                            resourcesPerDay, startInclusive,
-                            IntraDayDate.startOfDay(endExclusive));
-                    resetAssignmentsTo(assignmentsCreated);
-                    updateResourcesPerDay();
-                }
-
-            };
+        @Override
+        public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(
+                LocalDate start) {
+            IntraDayDate startInclusive = IntraDayDate.max(
+                    IntraDayDate.startOfDay(start), getStartSpecifiedByTask());
+            IntraDayDate endDate = task.getIntraDayEndDate();
+            return new AllocateResourcesPerDayOnInterval(startInclusive,
+                    endDate);
         }
 
         private List<PartialDay> getDays(IntraDayDate startInclusive,
@@ -560,6 +633,29 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
                     "the end must be equal or posterior than start");
             return IntraDayDate.toList(startInclusive.daysUntil(endExclusive));
+        }
+
+        private final class AllocateResourcesPerDayOnInterval implements
+                IAllocateResourcesPerDay {
+
+            private final IntraDayDate startInclusive;
+
+            private final IntraDayDate endExclusive;
+
+            private AllocateResourcesPerDayOnInterval(
+                    IntraDayDate startInclusive, IntraDayDate endExclusive) {
+                this.startInclusive = startInclusive;
+                this.endExclusive = endExclusive;
+            }
+
+            @Override
+            public void allocate(ResourcesPerDay resourcesPerDay) {
+                List<T> assignmentsCreated = createAssignments(resourcesPerDay,
+                        startInclusive, endExclusive);
+                resetAssignmentsTo(assignmentsCreated, startInclusive,
+                        endExclusive);
+                updateResourcesPerDay();
+            }
         }
 
         private class AllocateHoursOnInterval implements
@@ -592,16 +688,31 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocate(end, hours(hours));
+                    allocate(getStartSpecifiedByTask(),
+                            IntraDayDate.startOfDay(end), hours(hours));
                 }
             };
         }
 
-        private void allocate(LocalDate end, EffortDuration durationToAssign) {
-            IntraDayDate startInclusive = getStartAfterConsolidated();
-            List<T> assignmentsCreated = createAssignments(startInclusive,
-                    IntraDayDate.startOfDay(end), durationToAssign);
-            resetAssignmentsTo(assignmentsCreated);
+        @Override
+        public IAllocateHoursOnInterval fromEndUntil(final LocalDate start) {
+            return new IAllocateHoursOnInterval() {
+
+                @Override
+                public void allocateHours(int hours) {
+                    allocate(IntraDayDate.startOfDay(start),
+                            task.getIntraDayEndDate(), hours(hours));
+                }
+            };
+        }
+
+        private void allocate(IntraDayDate startInclusive,
+                IntraDayDate endExclusive, EffortDuration durationToAssign) {
+            IntraDayDate afterConsolidated = getStartSpecifiedByTask();
+            List<T> assignmentsCreated = createAssignments(
+                    IntraDayDate.max(afterConsolidated, startInclusive),
+                    endExclusive, durationToAssign);
+            resetAssignmentsTo(assignmentsCreated, startInclusive, endExclusive);
             updateResourcesPerDay();
         }
 
@@ -730,14 +841,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        resetAssignmentsTo(assignments, null);
+        resetAssignmentsTo(assignments, task.getIntraDayStartDate(),
+                task.getIntraDayEndDate());
     }
 
     protected void resetAssignmentsTo(List<T> assignments,
+            IntraDayDate intraDayStart,
             IntraDayDate intraDayEnd) {
         removingAssignments(withoutConsolidated(getAssignments()));
         addingAssignments(assignments);
         updateOriginalTotalAssigment();
+        getDayAssignmentsState().setIntraDayStart(intraDayStart);
         getDayAssignmentsState().setIntraDayEnd(intraDayEnd);
     }
 
@@ -857,11 +971,47 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public ResourceAllocation<T> copy(Scenario scenario) {
         Validate.notNull(scenario);
         ResourceAllocation<T> copy = createCopy(scenario);
+        copy.assignmentsState = copy.toTransientStateWithInitial(
+                getUnorderedFor(scenario), getIntraDayStartDateFor(scenario),
+                getIntraDayEndFor(scenario));
         copy.resourcesPerDay = resourcesPerDay;
         copy.originalTotalAssignment = originalTotalAssignment;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         return copy;
+    }
+
+    private DayAssignmentsState toTransientStateWithInitial(
+            Collection<? extends T> initialAssignments, IntraDayDate start,
+            IntraDayDate end) {
+        TransientState result = new TransientState(initialAssignments);
+        result.setIntraDayStart(start);
+        result.setIntraDayEnd(end);
+        return result;
+    }
+
+    private Set<T> getUnorderedFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return new HashSet<T>();
+        }
+        return container.getDayAssignments();
+    }
+
+    private IntraDayDate getIntraDayStartDateFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayStart();
+    }
+
+    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
+        IDayAssignmentsContainer<T> container = retrieveContainerFor(scenario);
+        if (container == null) {
+            return null;
+        }
+        return container.getIntraDayEnd();
     }
 
     abstract ResourceAllocation<T> createCopy(Scenario scenario);
@@ -885,7 +1035,29 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return DayAssignment.sum(getAssignments()).roundToHours();
     }
 
-    protected abstract class DayAssignmentsState {
+    protected int getIntendedHours() {
+        if (isUnsatisfied()) {
+            return originalTotalAssignment;
+        }
+        return getAssignedHours();
+    }
+
+    @OnCopy(Strategy.IGNORE)
+    private DayAssignmentsState assignmentsState;
+
+    protected DayAssignmentsState getDayAssignmentsState() {
+        return assignmentsState;
+    }
+
+    private TransientState buildInitialTransientState() {
+        return new TransientState(new HashSet<T>());
+    }
+
+    private DayAssignmentsState buildFromDBState() {
+        return new NoExplicitlySpecifiedScenario();
+    }
+
+    abstract class DayAssignmentsState {
 
         private List<T> dayAssignmentsOrdered = null;
 
@@ -896,6 +1068,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
             return dayAssignmentsOrdered;
         }
+
+        /**
+         * It can be null. It allows to mark that the allocation is started in a
+         * point within a day instead of the start of the day
+         */
+        abstract IntraDayDate getIntraDayStart();
+
+        /**
+         * Set a new intraDayStart.
+         *
+         * @param intraDayStart
+         *            it can be <code>null</code>
+         * @see getIntraDayStart
+         */
+        public abstract void setIntraDayStart(IntraDayDate intraDayStart);
+
 
         /**
          * It can be null. It allows to mark that the allocation is finished in
@@ -922,18 +1110,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         protected void clearCachedData() {
             dayAssignmentsOrdered = null;
-            clearFieldsCalculatedFromAssignments();
         }
 
         private void setParentFor(Collection<? extends T> assignments) {
             for (T each : assignments) {
-                setParentFor(each);
+                setItselfAsParentFor(each);
             }
         }
-
-        protected abstract void clearFieldsCalculatedFromAssignments();
-
-        protected abstract void setParentFor(T each);
 
         protected void removingAssignments(
                 List<? extends DayAssignment> assignments){
@@ -965,9 +1148,96 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        protected abstract DayAssignmentsState switchTo(Scenario scenario);
+        final protected DayAssignmentsState switchTo(Scenario scenario) {
+            DayAssignmentsState result = explicitlySpecifiedState(scenario);
+            copyTransientPropertiesIfAppropiateTo(result);
+            return result;
+        }
+
+        /**
+         * Override if necessary to do extra actions
+         */
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
+        }
     }
 
+    protected abstract void setItselfAsParentFor(T dayAssignment);
+
+    private class TransientState extends DayAssignmentsState {
+
+        private final Set<T> assignments;
+
+        private IntraDayDate intraDayStart;
+
+        private IntraDayDate intraDayEnd;
+
+        TransientState(Collection<? extends T> assignments) {
+            this.assignments = new HashSet<T>(assignments);
+        }
+
+        @Override
+        final protected Collection<T> getUnorderedAssignments() {
+            return assignments;
+        }
+
+        @Override
+        final protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            this.assignments.removeAll(assignments);
+        }
+
+        @Override
+        final protected void addAssignments(Collection<? extends T> assignments) {
+            this.assignments.addAll(assignments);
+        }
+
+        @Override
+        final protected void resetTo(Collection<T> assignments) {
+            this.assignments.clear();
+            this.assignments.addAll(assignments);
+        }
+
+        @Override
+        public IntraDayDate getIntraDayStart() {
+            return intraDayStart;
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            this.intraDayStart = intraDayStart;
+        }
+
+        @Override
+        final IntraDayDate getIntraDayEnd() {
+            return intraDayEnd;
+        }
+
+        @Override
+        public final void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            this.intraDayEnd = intraDayEnd;
+        }
+
+        protected void copyTransientPropertiesIfAppropiateTo(
+                DayAssignmentsState newStateForScenario) {
+            newStateForScenario.resetTo(getUnorderedAssignments());
+            newStateForScenario.setIntraDayStart(getIntraDayStart());
+            newStateForScenario.setIntraDayEnd(getIntraDayEnd());
+        };
+
+    }
+
+    private DayAssignmentsState explicitlySpecifiedState(Scenario scenario) {
+        IDayAssignmentsContainer<T> container;
+        container = retrieveOrCreateContainerFor(scenario);
+        return new ExplicitlySpecifiedScenarioState(container);
+    }
+
+    protected abstract IDayAssignmentsContainer<T> retrieveContainerFor(
+            Scenario scenario);
+
+    protected abstract IDayAssignmentsContainer<T> retrieveOrCreateContainerFor(
+            Scenario scenario);
     /**
      * It uses the current scenario retrieved from {@link IScenarioManager} in
      * order to return the assignments for that scenario. This state doesn't
@@ -976,21 +1246,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * is changed since the assignments are cached and the assignments for the
      * previous one would be returned<br />
      */
-    protected abstract class NoExplicitlySpecifiedScenario extends
+    private class NoExplicitlySpecifiedScenario extends
             DayAssignmentsState {
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            modificationsNotAllowed();
-        }
 
         @Override
         protected final void removeAssignments(
                 List<? extends DayAssignment> assignments) {
-            modificationsNotAllowed();
-        }
-
-        protected final void setParentFor(T each) {
             modificationsNotAllowed();
         }
 
@@ -1009,11 +1270,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             modificationsNotAllowed();
         }
 
-        @Override
-        protected final void clearFieldsCalculatedFromAssignments() {
-            modificationsNotAllowed();
-        }
-
         private void modificationsNotAllowed() {
             throw new IllegalStateException(
                     "modifications to assignments can't be done "
@@ -1022,25 +1278,89 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         protected Collection<T> getUnorderedAssignments() {
-            Scenario currentScenario = currentScenario();
-            return getUnorderedAssignmentsForScenario(currentScenario);
+            Scenario scenario = currentScenario();
+            return retrieveOrCreateContainerFor(scenario).getDayAssignments();
         }
 
         private Scenario currentScenario() {
             return Registry.getScenarioManager().getCurrent();
         }
 
-        IntraDayDate getIntraDayEnd() {
-            return getIntraDayEndFor(currentScenario());
+        @Override
+        IntraDayDate getIntraDayStart() {
+            return retrieveContainerFor(currentScenario()).getIntraDayStart();
         }
 
-        protected abstract IntraDayDate getIntraDayEndFor(Scenario scenario);
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return retrieveOrCreateContainerFor(currentScenario())
+                    .getIntraDayEnd();
+        }
 
-        protected abstract Collection<T> getUnorderedAssignmentsForScenario(
-                Scenario scenario);
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            modificationsNotAllowed();
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            modificationsNotAllowed();
+        }
+
     }
 
-    protected abstract DayAssignmentsState getDayAssignmentsState();
+    private class ExplicitlySpecifiedScenarioState extends
+            DayAssignmentsState {
+
+        private final IDayAssignmentsContainer<T> container;
+
+        ExplicitlySpecifiedScenarioState(IDayAssignmentsContainer<T> container) {
+            Validate.notNull(container);
+            this.container = container;
+        }
+
+        @Override
+        protected void addAssignments(Collection<? extends T> assignments) {
+            container.addAll(assignments);
+        }
+
+        @Override
+        protected Collection<T> getUnorderedAssignments() {
+            return container.getDayAssignments();
+        }
+
+        @Override
+        protected void removeAssignments(
+                List<? extends DayAssignment> assignments) {
+            container.removeAll(assignments);
+        }
+
+        @Override
+        protected void resetTo(Collection<T> assignmentsCopied) {
+            container.resetTo(assignmentsCopied);
+        }
+
+        @Override
+        IntraDayDate getIntraDayStart() {
+            return container.getIntraDayStart();
+        }
+
+        @Override
+        public void setIntraDayStart(IntraDayDate intraDayStart) {
+            container.setIntraDayStart(intraDayStart);
+        }
+
+        @Override
+        IntraDayDate getIntraDayEnd() {
+            return container.getIntraDayEnd();
+        }
+
+        @Override
+        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
+            container.setIntraDayEnd(intraDayEnd);
+        }
+
+    }
 
     public int getConsolidatedHours() {
         return DayAssignment.sum(getConsolidatedAssignments()).roundToHours();
@@ -1081,12 +1401,26 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return calculateResourcesPerDayFromAssignments(getNonConsolidatedAssignments());
     }
 
+    /**
+     * Calculates the intended resources per day for this allocation. If the
+     * allocation is not satisfied cannot be calculated on the current
+     * assignment values and must be retrieved from the value in the field.
+     */
+    protected ResourcesPerDay getIntendedResourcesPerDay() {
+        if (isUnsatisfied()) {
+            return getResourcesPerDay();
+        }
+        return getNonConsolidatedResourcePerDay();
+    }
+
     public ResourcesPerDay getConsolidatedResourcePerDay() {
         return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
     }
 
-    @NotNull
     public ResourcesPerDay getResourcesPerDay() {
+        if (resourcesPerDay == null) {
+            return ResourcesPerDay.amount(0);
+        }
         return resourcesPerDay;
     }
 
@@ -1133,14 +1467,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return start != null ? start.getDate() : null;
     }
 
-    public IntraDayDate getStartAfterConsolidated() {
-        IntraDayDate taskStart = getIntraDayStartDate();
+    private IntraDayDate getStartSpecifiedByTask() {
+        IntraDayDate taskStart = task.getIntraDayStartDate();
         IntraDayDate firstDayNotConsolidated = getTask()
                 .getFirstDayNotConsolidated();
         return IntraDayDate.max(taskStart, firstDayNotConsolidated);
     }
 
     public IntraDayDate getIntraDayStartDate() {
+        IntraDayDate intraDayStart = getDayAssignmentsState()
+                .getIntraDayStart();
+        if (intraDayStart != null) {
+            return intraDayStart;
+        }
         return task.getIntraDayStartDate();
     }
 
@@ -1234,8 +1573,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         switchToScenario(scenario);
         mergeAssignments(modifications);
-        updateOriginalTotalAssigment();
-        updateResourcesPerDay();
+        if (modifications.isSatisfied()) {
+            updateOriginalTotalAssigment();
+            updateResourcesPerDay();
+        }
         setWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }
@@ -1265,6 +1606,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     final void mergeAssignments(ResourceAllocation<?> modifications) {
         getDayAssignmentsState().mergeAssignments(modifications);
+        getDayAssignmentsState().setIntraDayStart(
+                modifications.getDayAssignmentsState().getIntraDayStart());
         getDayAssignmentsState().setIntraDayEnd(
                 modifications.getDayAssignmentsState().getIntraDayEnd());
     }

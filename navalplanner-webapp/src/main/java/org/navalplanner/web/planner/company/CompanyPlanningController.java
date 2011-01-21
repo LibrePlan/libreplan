@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
@@ -47,10 +48,16 @@ import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -61,7 +68,7 @@ import org.zkoss.zul.Vbox;
  */
 @org.springframework.stereotype.Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class CompanyPlanningController implements Composer{
+public class CompanyPlanningController implements Composer {
 
     @Autowired
     private ICompanyPlanningModel model;
@@ -91,6 +98,8 @@ public class CompanyPlanningController implements Composer{
                 .retrieve();
     }
 
+    private Combobox cbProgressTypes;
+
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         planner = (Planner) comp;
@@ -105,6 +114,14 @@ public class CompanyPlanningController implements Composer{
         }
         planner.setAreContainersExpandedByDefault(Planner
                 .guessContainersExpandedByDefault(parameters));
+
+        initializeListboxProgressTypes();
+
+        planner.setAreShownAdvancesByDefault(Planner
+                .guessShowAdvancesByDefault(parameters));
+
+        planner.setAreShownReportedHoursByDefault(Planner
+                .guessShowReportedHoursByDefault(parameters));
 
         orderFilter = (Vbox) planner.getFellow("orderFilter");
         // Configuration of the order filter
@@ -121,6 +138,52 @@ public class CompanyPlanningController implements Composer{
         checkIncludeOrderElements = (Checkbox) filterComponent
                 .getFellow("checkIncludeOrderElements");
         filterComponent.setVisible(true);
+    }
+
+    private void initializeListboxProgressTypes() {
+        if (cbProgressTypes == null) {
+            cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
+        }
+        cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
+
+        // FIXME: Select default configuration option
+        // cbProgressTypes.renderAll();
+        cbProgressTypes.invalidate();
+        Comboitem item = findListitemValue(cbProgressTypes,
+                getProgressTypeFromConfiguration());
+        if (item != null) {
+            cbProgressTypes.setSelectedItem(item);
+        }
+
+        // Update completion of tasks on selecting new progress type
+        cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                planner.updateCompletion(getSelectedProgressType().toString());
+            }
+
+            private ProgressType getSelectedProgressType() {
+                return (ProgressType) cbProgressTypes.getSelectedItem().getValue();
+            }
+
+        });
+
+        cbProgressTypes.setVisible(true);
+    }
+
+    private Comboitem findListitemValue(Combobox listbox, ProgressType value) {
+        for (Object each : listbox.getChildren()) {
+            final Comboitem item = (Comboitem) each;
+            if (value.equals(item.getValue())) {
+                return item;
+            }
+        }
+        return null;
+    }
+
+    public ProgressType getProgressTypeFromConfiguration() {
+        return model.getProgressTypeFromConfiguration();
     }
 
     public void setConfigurationForPlanner() {

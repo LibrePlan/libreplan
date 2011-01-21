@@ -24,45 +24,46 @@
     ]]>
     </zscript>
 
-
-<vbox apply="${selectorController}">
+    <vbox apply="${selectorController}">
 
         <groupbox style="margin-top: 5px" closable="false">
-        <caption label="${i18n:_('Select criteria set or specific resources for allocation')}" />
 
+            <caption label="${i18n:_('Select criteria set or specific resources for allocation')}" />
 
-    <hbox>
-        <vbox sclass="allocation-criterion-selector">
-            <!-- Criteria -->
+            <hbox>
 
-            <tree id="criterionsTree" width="420px"
-                height="340px" vflex="true" multiple="true"
-                model="@{selectorController.criterions}"
-                zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
-                <attribute name="onSelect"><![CDATA[ selectorController.showSelectedAllocations() ]]></attribute>
-                <treecols>
-                    <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
-                </treecols>
-            </tree>
-        </vbox>
+                <!-- Criteria -->
+                <vbox sclass="allocation-criterion-selector">
 
-        <vbox>
+                    <tree id="criterionsTree" width="420px"
+                            height="340px" vflex="true" multiple="true"
+                            model="@{selectorController.criterions}"
+                            zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
+                        <treecols>
+                            <treecol label="${i18n:_('Criteria')}" tooltiptext="${i18n:_('Criteria (Hold CTRL for multiple selection)')}" />
+                        </treecols>
+                   </tree>
 
-            <!--Matchings -->
-            <listbox id="listBoxResources" width="420px"
-                vflex="true" multiple="true" height="340px"
-                itemRenderer="@{selectorController.listitemRenderer}" style="margin:5px;"
-                onFocus="selectorController.showSelectedAllocations()" >
-                <attribute name="onSelect"><![CDATA[
-                    selectorController.showSelectedAllocations();
-                     ]]></attribute>
-                <listhead>
-                    <listheader label="${i18n:_('Found resources')}" tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
-                </listhead>
-            </listbox>
-        </vbox>
-    </hbox>
+                </vbox>
 
+                <!--Matchings -->
+                <vbox>
+
+                    <listbox id="listBoxResources" width="420px" height="340px"
+                            vflex="true" multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
+                            itemRenderer="@{selectorController.listitemRenderer}" >
+                        <listhead>
+                            <listheader label="${i18n:_('Found resources')}"
+                                    tooltiptext="${i18n:_('Resources matching selected criteria')}" sort="auto" />
+                        </listhead>
+                    </listbox>
+
+                </vbox>
+
+            </hbox>
+
+            <!-- Assignment Type -->
+            <hbox>
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
@@ -70,24 +71,30 @@
                     </columns>
                     <rows>
                         <row>
-        <hbox><label value="${i18n:_('Assignment Type')}" /><image sclass="context-help-popup" height="15px" src="/common/img/axuda.gif" tooltip="allocation-type-popup" /></hbox>
-        <radiogroup id="allocationTypeSelector" orient="vertical" onSelect="selectorController.showSelectedAllocations()">
-            <radio forEach="${selectorController.allocationTypes}"
-                label="${each.name}" value="${each}" />
-        </radiogroup>
-            </row>
-            <row>
-            <label value="${i18n:_('Current selection')}" />
-            <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
-            </row>
-        </rows></grid>
+                            <hbox>
+                                <label value="${i18n:_('Assignment Type')}" />
+                                <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
+                                        sclass="context-help-popup" height="15px" />
+                            </hbox>
+                            <radiogroup id="allocationTypeSelector" orient="vertical">
+                                <radio forEach="${selectorController.allocationTypes}"
+                                        label="${each.name}" value="${each}" />
+                            </radiogroup>
+                        </row>
+                        <row>
+                            <label value="${i18n:_('Current selection')}" />
+                            <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
+                        </row>
+                    </rows>
+                </grid>
+            </hbox>
 
-</groupbox>
+        </groupbox>
 
+        <popup id="allocation-type-popup" width="700px" >
+            <iframe id="iframe" src="/help/${i18n:_('en')}/08-asignacion.html" width="100%" />
+        </popup>
 
-    <popup id="allocation-type-popup" width="700px" >
-        <iframe id="iframe" src="/help/${i18n:_('en')}/08-asignacion.html" width="100%" />
-    </popup>
+    </vbox>
 
-</vbox>
 </zk>

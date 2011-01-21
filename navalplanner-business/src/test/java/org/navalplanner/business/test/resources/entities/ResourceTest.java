@@ -34,7 +34,6 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -243,7 +242,7 @@ public class ResourceTest {
         assertThat(worker.getCurrentSatisfactionsFor(criterion).size(),
                 equalTo(0));
         assertFalse(criterion.isSatisfiedBy(worker));
-        Interval fromNow = Interval.from(new Date());
+        Interval fromNow = Interval.from(new LocalDate());
         assertTrue(worker.canAddSatisfaction(new CriterionWithItsType(
                 criterionType, criterion), fromNow));
         worker.addSatisfaction(new CriterionWithItsType(criterionType,
@@ -490,8 +489,9 @@ public class ResourceTest {
         };
         CriterionWithItsType criterionWithItsType = new CriterionWithItsType(
                 type, criterion);
-        assertFalse(worker.canAddSatisfaction(criterionWithItsType, Interval
-                .from(new Date())));
+        LocalDate today = new LocalDate();
+        assertFalse(worker.canAddSatisfaction(criterionWithItsType,
+                Interval.from(today)));
         worker.addSatisfaction(criterionWithItsType);
     }
 

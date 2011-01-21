@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
@@ -39,13 +40,13 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -234,6 +235,9 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
             }
             result = container;
         }
+        result
+.setShowingReportedHours(planner.showReportedHoursRightNow());
+        result.setShowingAdvances(planner.showAdvancesRightNow());
         mapper.register(topInsertionPosition, result, data, parent);
         return result;
     }
@@ -348,7 +352,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     private boolean canAddDependency(Dependency dependency) {
-        return diagramGraph.doesNotProvokeLoop(dependency)
+        return diagramGraph.canAddDependency(dependency)
                 && adapter.canAddDependency(toDomainDependency(dependency));
     }
 
@@ -362,9 +366,23 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         getDependencyList().remove(dependency);
     }
 
-    public void changeType(Dependency dependency, DependencyType type) {
-        removeDependency(dependency);
-        addDependency(dependency.createWithType(type));
+    /**
+     * Substitutes the dependency for a new one with the same source and
+     * destination but with the specified type. If the new dependency cannot be
+     * added, the old one remains.
+     * @param dependency
+     * @param type
+     *            the new type
+     * @return true only if the new dependency can be added.
+     */
+    public boolean changeType(Dependency dependency, DependencyType type) {
+        Dependency newDependency = dependency.createWithType(type);
+        boolean canAddDependency = diagramGraph.canAddDependency(newDependency);
+        if (canAddDependency) {
+            removeDependency(dependency);
+            addDependency(newDependency);
+        }
+        return canAddDependency;
     }
 
     @Override
@@ -380,21 +398,69 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     @Override
     public void showCriticalPath() {
-        List<Task> criticalPath = new CriticalPathCalculator<Task>()
+        CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
+                .create();
+
+        List<Task> criticalPath = criticalPathCalculator
                 .calculateCriticalPath(diagramGraph);
         for (Task task : diagramGraph.getTasks()) {
-            if (criticalPath.contains(task)) {
-                task.setInCriticalPath(true);
-            } else {
-                task.setInCriticalPath(false);
-            }
+            task.setInCriticalPath(isInCriticalPath(criticalPath, task));
         }
+    }
+
+    private boolean isInCriticalPath(List<Task> criticalPath, Task task) {
+        if (task.isContainer()) {
+            List<Task> allTaskLeafs = ((TaskContainer) task).getAllTaskLeafs();
+            return CollectionUtils.containsAny(criticalPath, allTaskLeafs);
+        } else {
+            return criticalPath.contains(task);
+        }
+    }
+
+    @Override
+    public List<T> getCriticalPath() {
+        List<T> result = new ArrayList<T>();
+        CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
+                .create();
+        for (Task each : criticalPathCalculator
+                .calculateCriticalPath(diagramGraph)) {
+            result.add(mapper.findAssociatedDomainObject(each));
+        }
+        return result;
     }
 
     @Override
     public void hideCriticalPath() {
         for (Task task : diagramGraph.getTasks()) {
             task.setInCriticalPath(false);
+        }
+    }
+
+    @Override
+    public void showAdvances() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingAdvances(true);
+        }
+    }
+
+    @Override
+    public void hideAdvances() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingAdvances(false);
+        }
+    }
+
+    @Override
+    public void showReportedHours() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingReportedHours(true);
+        }
+    }
+
+    @Override
+    public void hideReportedHours() {
+        for (Task task : diagramGraph.getTasks()) {
+            task.setShowingReportedHours(false);
         }
     }
 
@@ -414,6 +480,10 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox expanded = (Checkbox) parent.getFellow("print_expanded");
         Checkbox resources = (Checkbox) parent.getFellow("print_resources");
         Checkbox labels = (Checkbox) parent.getFellow("print_labels");
+        Checkbox advances = (Checkbox) parent.getFellow("print_advances");
+        Checkbox reportedHours = (Checkbox) parent
+                .getFellow("print_reported_hours");
+
         if (layout.getSelectedIndex() == 2) {
             parameters.put("extension", ".png");
         }
@@ -422,6 +492,12 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         if (labels.isChecked() == true) {
             parameters.put("labels", "all");
+        }
+        if (advances.isChecked() == true) {
+            parameters.put("advances", "all");
+        }
+        if (reportedHours.isChecked() == true) {
+            parameters.put("reportedHours", "all");
         }
         if (resources.isChecked() == true) {
             parameters.put("resources", "all");

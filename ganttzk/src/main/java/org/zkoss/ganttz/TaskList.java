@@ -92,6 +92,13 @@ public class TaskList extends XulElement implements AfterCompose {
         this.predicate = predicate;
     }
 
+    public void updateCompletion(String progressType) {
+        for (TaskComponent task: getTaskComponents()) {
+            task.updateCompletion(progressType);
+            task.updateTooltipText(progressType);
+        }
+    }
+
     public List<Task> getAllTasks() {
         return new ArrayList<Task>(currentTotalTasks);
     }

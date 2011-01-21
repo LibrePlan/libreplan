@@ -145,8 +145,8 @@ public class SaveCommand implements ISaveCommand {
 
     private void notifyUserThatSavingIsDone() {
         try {
-            Messagebox.show(_("Scheduling saved"), _("Information"), Messagebox.OK,
-                    Messagebox.INFORMATION);
+            Messagebox.show(_("Scheduling saved"), _("Information"),
+                    Messagebox.OK, Messagebox.INFORMATION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -186,8 +186,32 @@ public class SaveCommand implements ISaveCommand {
             // gantt as transiet
             dontPoseAsTransient(taskElement);
         }
+        saveRootTaskIfNecessary();
+    }
+
+    private void saveRootTaskIfNecessary() {
         if (!state.getTasksToSave().isEmpty()) {
-            updateRootTaskPosition();
+            TaskGroup rootTask = state.getRootTask();
+
+            updateRootTaskPosition(rootTask);
+            updateCriticalPathProgress(rootTask);
+            taskElementDAO.save(rootTask);
+        }
+    }
+
+    private void updateCriticalPathProgress(TaskGroup rootTask) {
+        rootTask.updateCriticalPathProgress((List<TaskElement>) state
+                .getPlanner().getCriticalPath());
+    }
+
+    private void updateRootTaskPosition(TaskGroup rootTask) {
+        final Date min = minDate(state.getTasksToSave());
+        if (min != null) {
+            rootTask.setStartDate(min);
+        }
+        final Date max = maxDate(state.getTasksToSave());
+        if (max != null) {
+            rootTask.setEndDate(max);
         }
     }
 
@@ -216,10 +240,9 @@ public class SaveCommand implements ISaveCommand {
     private void updateLimitingResourceQueueElementDates(Task task) {
         LimitingResourceQueueElement limiting = task
                 .getAssociatedLimitingResourceQueueElementIfAny();
-        Date initDate = state
-                .getRootTask().getOrderElement().getInitDate();
-        limiting.updateDates(initDate, task
-                .getDependenciesWithThisDestination());
+        Date initDate = state.getRootTask().getOrderElement().getInitDate();
+        limiting.updateDates(initDate,
+                task.getDependenciesWithThisDestination());
     }
 
     private void removeEmptyConsolidation(TaskElement taskElement) {
@@ -243,24 +266,24 @@ public class SaveCommand implements ISaveCommand {
     private boolean isEmptyConsolidation(final Consolidation consolidation) {
         return transactionService
                 .runOnTransaction(new IOnTransaction<Boolean>() {
-            @Override
-            public Boolean execute() {
+                    @Override
+                    public Boolean execute() {
 
-                consolidationDAO.reattach(consolidation);
-                if (consolidation instanceof CalculatedConsolidation) {
-                    SortedSet<CalculatedConsolidatedValue> consolidatedValues = ((CalculatedConsolidation) consolidation)
-                            .getCalculatedConsolidatedValues();
-                    return consolidatedValues.isEmpty();
-                }
-                if (consolidation instanceof NonCalculatedConsolidation) {
-                    SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = ((NonCalculatedConsolidation) consolidation)
-                            .getNonCalculatedConsolidatedValues();
-                    return consolidatedValues.isEmpty();
-                }
-                return false;
+                        consolidationDAO.reattach(consolidation);
+                        if (consolidation instanceof CalculatedConsolidation) {
+                            SortedSet<CalculatedConsolidatedValue> consolidatedValues = ((CalculatedConsolidation) consolidation)
+                                    .getCalculatedConsolidatedValues();
+                            return consolidatedValues.isEmpty();
+                        }
+                        if (consolidation instanceof NonCalculatedConsolidation) {
+                            SortedSet<NonCalculatedConsolidatedValue> consolidatedValues = ((NonCalculatedConsolidation) consolidation)
+                                    .getNonCalculatedConsolidatedValues();
+                            return consolidatedValues.isEmpty();
+                        }
+                        return false;
 
-            }
-        });
+                    }
+                });
     }
 
     // newly added TaskElement such as milestones must be called
@@ -271,7 +294,8 @@ public class SaveCommand implements ISaveCommand {
         }
         dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
         dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
-        Set<ResourceAllocation<?>> resourceAllocations = taskElement.getSatisfiedResourceAllocations();
+        Set<ResourceAllocation<?>> resourceAllocations = taskElement
+                .getSatisfiedResourceAllocations();
         dontPoseAsTransientAndChildrenObjects(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
@@ -293,19 +317,19 @@ public class SaveCommand implements ISaveCommand {
 
     private void updateLimitingQueueDependencies(Task t) {
 
-        for (Dependency each: t.getDependenciesWithThisOrigin()) {
+        for (Dependency each : t.getDependenciesWithThisOrigin()) {
             addLimitingDependencyIfNeeded(each);
             removeLimitingDependencyIfNeeded(each);
         }
     }
 
     private void addLimitingDependencyIfNeeded(Dependency d) {
-        if (d.isDependencyBetweenLimitedAllocatedTasks() &&
-                !d.hasLimitedQueueDependencyAssociated()) {
-            LimitingResourceQueueElement origin =
-                calculateQueueElementFromDependency((Task) d.getOrigin());
-            LimitingResourceQueueElement destiny =
-                calculateQueueElementFromDependency((Task) d.getDestination());
+        if (d.isDependencyBetweenLimitedAllocatedTasks()
+                && !d.hasLimitedQueueDependencyAssociated()) {
+            LimitingResourceQueueElement origin = calculateQueueElementFromDependency((Task) d
+                    .getOrigin());
+            LimitingResourceQueueElement destiny = calculateQueueElementFromDependency((Task) d
+                    .getDestination());
 
             LimitingResourceQueueDependency queueDependency = LimitingResourceQueueDependency
                     .create(origin, destiny, d,
@@ -316,20 +340,21 @@ public class SaveCommand implements ISaveCommand {
         }
     }
 
-    private LimitingResourceQueueElement
-        calculateQueueElementFromDependency(Task t) {
+    private LimitingResourceQueueElement calculateQueueElementFromDependency(
+            Task t) {
 
         LimitingResourceQueueElement result = null;
         // TODO: Improve this method: One Task can only have one
         // limiting resource allocation
-        Set<ResourceAllocation<?>> allocations = t.getLimitingResourceAllocations();
+        Set<ResourceAllocation<?>> allocations = t
+                .getLimitingResourceAllocations();
 
         if (allocations.isEmpty() || allocations.size() != 1) {
-            throw new ValidationException("Incorrect limiting resource " +
-                "allocation configuration");
+            throw new ValidationException("Incorrect limiting resource "
+                    + "allocation configuration");
         }
 
-        for (ResourceAllocation<?> r: allocations) {
+        for (ResourceAllocation<?> r : allocations) {
             result = r.getLimitingResourceQueueElement();
         }
 
@@ -337,22 +362,22 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void removeLimitingDependencyIfNeeded(Dependency d) {
-        if (!d.isDependencyBetweenLimitedAllocatedTasks() &&
-            (d.hasLimitedQueueDependencyAssociated())) {
-               LimitingResourceQueueDependency queueDependency =
-                    d.getQueueDependency();
-                queueDependency.getHasAsOrigin().remove(queueDependency);
-                queueDependency.getHasAsDestiny().remove(queueDependency);
-                d.setQueueDependency(null);
-                try {
-                    limitingResourceQueueDependencyDAO.
-                    remove(queueDependency.getId());
-                } catch (InstanceNotFoundException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException("Trying to delete instance " +
-                            " does not exist");
-                }
+        if (!d.isDependencyBetweenLimitedAllocatedTasks()
+                && (d.hasLimitedQueueDependencyAssociated())) {
+            LimitingResourceQueueDependency queueDependency = d
+                    .getQueueDependency();
+            queueDependency.getHasAsOrigin().remove(queueDependency);
+            queueDependency.getHasAsDestiny().remove(queueDependency);
+            d.setQueueDependency(null);
+            try {
+                limitingResourceQueueDependencyDAO.remove(queueDependency
+                        .getId());
+            } catch (InstanceNotFoundException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Trying to delete instance "
+                        + " does not exist");
             }
+        }
     }
 
     private void dontPoseAsTransient(OrderElement orderElement) {
@@ -441,27 +466,16 @@ public class SaveCommand implements ISaveCommand {
 
     private static void dontPoseAsTransient(LimitingResourceQueueElement element) {
         if (element != null) {
-            for (LimitingResourceQueueDependency d: element.getDependenciesAsOrigin()) {
+            for (LimitingResourceQueueDependency d : element
+                    .getDependenciesAsOrigin()) {
                 d.dontPoseAsTransientObjectAnymore();
             }
-            for (LimitingResourceQueueDependency d: element.getDependenciesAsDestiny()) {
+            for (LimitingResourceQueueDependency d : element
+                    .getDependenciesAsDestiny()) {
                 d.dontPoseAsTransientObjectAnymore();
             }
             element.dontPoseAsTransientObjectAnymore();
         }
-    }
-
-    private void updateRootTaskPosition() {
-        TaskGroup rootTask = state.getRootTask();
-        final Date min = minDate(state.getTasksToSave());
-        if (min != null) {
-            rootTask.setStartDate(min);
-        }
-        final Date max = maxDate(state.getTasksToSave());
-        if (max != null) {
-            rootTask.setEndDate(max);
-        }
-        taskElementDAO.save(rootTask);
     }
 
     private Date maxDate(Collection<? extends TaskElement> tasksToSave) {
@@ -524,9 +538,8 @@ public class SaveCommand implements ISaveCommand {
     private boolean userAcceptsCreateANewOrderVersion() {
         try {
             int status = Messagebox
-                    .show(
-                            _("Confirm creating a new order version for this scenario and derived. Are you sure?"),
-                            _("New order version"), Messagebox.OK
+                    .show(_("Confirm creating a new project version for this scenario and derived. Are you sure?"),
+                            _("New project version"), Messagebox.OK
                                     | Messagebox.CANCEL, Messagebox.QUESTION);
             return (Messagebox.OK == status);
         } catch (InterruptedException e) {

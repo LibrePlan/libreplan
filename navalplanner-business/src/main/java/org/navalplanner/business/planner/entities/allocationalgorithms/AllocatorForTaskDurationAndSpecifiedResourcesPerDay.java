@@ -44,4 +44,10 @@ public class AllocatorForTaskDurationAndSpecifiedResourcesPerDay {
             allocation.applyAllocationUntil(endExclusive);
         }
     }
+
+    public void allocateFromEndUntil(LocalDate start) {
+        for (ResourcesPerDayModification allocation : allocations) {
+            allocation.applyAllocationFromEndUntil(start);
+        }
+    }
 }

@@ -473,6 +473,15 @@ public class StretchesFunction extends AssignmentFunction {
         type = getDesiredType();
     }
 
+    @Override
+    public String getName() {
+        if (StretchesFunction.Type.INTERPOLATED.equals(type)) {
+            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
+        } else {
+            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
+        }
+    }
+
     public List<Interval> getIntervalsDefinedByStreches() {
         if (stretches.isEmpty()) {
             return Collections.emptyList();

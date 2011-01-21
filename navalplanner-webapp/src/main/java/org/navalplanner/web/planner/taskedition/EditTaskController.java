@@ -22,14 +22,12 @@ package org.navalplanner.web.planner.taskedition;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.ITaskLeafConstraint;
+import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.workingday.IntraDayDate;
@@ -116,6 +114,7 @@ public class EditTaskController extends GenericForwardComposer {
         window = (Window) comp;
         taskPropertiesController.doAfterCompose(taskPropertiesTabpanel);
         resourceAllocationController.doAfterCompose(resourceAllocationTabpanel);
+        resourceAllocationController.setEditTaskController(this);
         subcontractController.doAfterCompose(subcontractTabpanel);
         initLimitingResourceAllocationController();
     }
@@ -445,26 +444,12 @@ public class EditTaskController extends GenericForwardComposer {
         return isTask(taskElement);
     }
 
-    public Date getStartConstraintDate() {
-        if ((taskElement == null) || (!isTaskLeafConstraint())) {
-            return null;
-        }
-        return ((ITaskLeafConstraint) taskElement).getStartConstraint()
-                .getConstraintDateAsDate();
-    }
-
     private boolean isTaskLeafConstraint() {
-        return (taskElement != null && taskElement instanceof ITaskLeafConstraint);
-    }
-
-    public void setStartConstraintDate(Date date) {
-        if ((taskElement != null) && (isTask())) {
-            resourceAllocationController.setStartDate(date);
-        }
+        return (taskElement != null && taskElement instanceof ITaskPositionConstrained);
     }
 
     public void showNonPermitChangeResourceAllocationType() {
-        String message = _("The task has got advance consolidations.It must delete all consolidations to change the resource allocation type ");
+        String message = _("The task has got progress consolidations. It must delete all consolidations to change the resource allocation type ");
         try {
             Messagebox.show(message, _("Information"), Messagebox.OK,
                     Messagebox.INFORMATION);

@@ -42,7 +42,6 @@ import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -68,10 +67,6 @@ public class TimeLineRequiredMaterialController extends
     private Datebox startingDate;
 
     private Datebox endingDate;
-
-    private Combobox cbStatus;
-
-    private Listbox listStatus;
 
     private Date filterStartingDate = getDefaultStartingDate();
 
@@ -107,13 +102,13 @@ public class TimeLineRequiredMaterialController extends
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a order"));
+            throw new WrongValueException(bdOrders, _("please, select a project"));
         }
         boolean result = timeLineRequiredMaterialModel
                 .addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
-                    _("This order has already been added."));
+                    _("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -184,7 +179,8 @@ public class TimeLineRequiredMaterialController extends
 
     @Override
     protected Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+        Map<String, Object> result = super.getParameters();
+
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
         result.put("status", getSelectedStatusName());

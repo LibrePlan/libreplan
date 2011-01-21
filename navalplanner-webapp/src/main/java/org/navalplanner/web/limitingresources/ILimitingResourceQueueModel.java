@@ -21,6 +21,7 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.List;
+import java.util.Set;
 
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -55,7 +56,7 @@ import org.zkoss.ganttz.util.Interval;
  */
 public interface ILimitingResourceQueueModel {
 
-    boolean nonAppropriativeAllocation(
+    List<LimitingResourceQueueElement> nonAppropriativeAllocation(
             LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour time);
 
     /**
@@ -127,7 +128,8 @@ public interface ILimitingResourceQueueModel {
      * @param queue
      * @param allocationTime
      */
-    void appropriativeAllocation(LimitingResourceQueueElement element, LimitingResourceQueue queue,
+    Set<LimitingResourceQueueElement> appropriativeAllocation(
+            LimitingResourceQueueElement element, LimitingResourceQueue queue,
             DateAndHour allocationTime);
 
     void unschedule(LimitingResourceQueueElement element);
@@ -138,7 +140,7 @@ public interface ILimitingResourceQueueModel {
 
     boolean userCanRead(Order order, String loginName);
 
-    void replaceLimitingResourceQueueElement(
+    List<LimitingResourceQueueElement> replaceLimitingResourceQueueElement(
             LimitingResourceQueueElement oldElement,
             LimitingResourceQueueElement newElement);
 

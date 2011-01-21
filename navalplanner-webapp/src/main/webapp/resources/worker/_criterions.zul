@@ -18,19 +18,21 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<panel id="criterionsContainer" title="${i18n:_('Assigned criteria')}" border="normal">
-    <panelchildren>
-        <hbox align="center">
-                <separator bar="false" spacing="40px" orient="horizontal"/>
+<div id="criterionsContainer">
+
+        <hbox width="100%" style="margin:5px">
+        <hbox align="pack">
                 <separator bar="false" spacing="20px" orient="vertical"/>
+                <label value="${i18n:_('New criterion')}" />
                 <button onClick="assignedCriterionsController.addCriterionSatisfaction();"
-                    label="${i18n:_('Add criterion')}" />
+                    label="${i18n:_('Add')}" />
         </hbox>
         <div align="right">
                 <label class="subtitulo" value="${i18n:_('Show only current satisfied criteria')}" />
                 <checkbox id="criterionFilterCheckbox" onCheck="assignedCriterionsController.reload();" />
                 <separator bar="false" spacing="20px" orient="vertical"/>
         </div>
+        </hbox>
         <newdatasortablegrid id="listingCriterions" mold="paging" pageSize="10" fixedLayout="true"
             model="@{assignedCriterionsController.criterionSatisfactionDTOs}">
             <columns>
@@ -88,5 +90,4 @@
                 </row>
             </rows>
         </newdatasortablegrid>
-    </panelchildren>
-</panel>
+</div>

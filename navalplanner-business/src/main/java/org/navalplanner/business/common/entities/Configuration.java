@@ -55,11 +55,27 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForUnitTypes = true;
 
+    private Boolean generateCodeForBaseCalendars = true;
+
     private Boolean expandCompanyPlanningViewCharts = false;
 
     private Boolean expandOrderPlanningViewCharts = true;
 
     private Boolean expandResourceLoadViewCharts = true;
+
+    private Boolean monteCarloMethodTabVisible = false;
+
+    private Boolean generateCodeForWorkReportType = true;
+
+    private Boolean generateCodeForCalendarExceptionType = true;
+
+    private Boolean generateCodeForCostCategory = true;
+
+    private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
+
+    private String companyLogoURL = "";
+
+    private Boolean scenariosVisible = false;
 
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
@@ -174,6 +190,77 @@ public class Configuration extends BaseEntity {
 
     public Boolean isExpandResourceLoadViewCharts() {
         return expandResourceLoadViewCharts;
+    }
+
+    public Boolean isMonteCarloMethodTabVisible() {
+        return monteCarloMethodTabVisible;
+    }
+
+    public void setMonteCarloMethodTabVisible(Boolean monteCarloMethodTabVisible) {
+        this.monteCarloMethodTabVisible = monteCarloMethodTabVisible;
+    }
+
+    public Boolean isScenariosVisible() {
+        return scenariosVisible;
+    }
+
+    public void setScenariosVisible(Boolean scenariosVisible) {
+        this.scenariosVisible = scenariosVisible;
+    }
+
+    public void setGenerateCodeForBaseCalendars(
+            Boolean generateCodeForBaseCalendars) {
+        this.generateCodeForBaseCalendars = generateCodeForBaseCalendars;
+    }
+
+    public Boolean getGenerateCodeForBaseCalendars() {
+        return generateCodeForBaseCalendars;
+    }
+
+    public void setGenerateCodeForWorkReportType(
+            Boolean generateCodeForWorkReportType) {
+        this.generateCodeForWorkReportType = generateCodeForWorkReportType;
+    }
+
+    public Boolean getGenerateCodeForWorkReportType() {
+        return generateCodeForWorkReportType;
+    }
+
+    public void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType) {
+        this.generateCodeForCalendarExceptionType = generateCodeForCalendarExceptionType;
+    }
+
+    public Boolean getGenerateCodeForCalendarExceptionType() {
+        return this.generateCodeForCalendarExceptionType;
+    }
+
+    public void setGenerateCodeForCostCategory(
+            Boolean generateCodeForCostCategory) {
+        this.generateCodeForCostCategory = generateCodeForCostCategory;
+    }
+
+    public Boolean getGenerateCodeForCostCategory() {
+        return generateCodeForCostCategory;
+    }
+
+    public void setProgressType(ProgressType progressType) {
+        this.progressType = progressType;
+    }
+
+    public ProgressType getProgressType() {
+        return progressType;
+    }
+
+    public void setCompanyLogoURL(String companyLogoURL) {
+        if (companyLogoURL != null) {
+            companyLogoURL = companyLogoURL.trim();
+        }
+        this.companyLogoURL = companyLogoURL;
+    }
+
+    public String getCompanyLogoURL() {
+        return companyLogoURL;
     }
 
 }

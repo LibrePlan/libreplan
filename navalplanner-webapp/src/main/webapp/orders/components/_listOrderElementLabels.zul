@@ -22,7 +22,7 @@
     assignedLabelsController = self.controller;
 ]]>
 </zscript>
-<vbox apply="${assignedLabelsController}" width="100%" >
+<vbox apply="${assignedLabelsController}" width="100%">
     <!-- Indirect labels -->
     <vbox width="100%">
         <panel title="${i18n:_('Indirect labels')}" border="normal">

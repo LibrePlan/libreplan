@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
@@ -44,8 +44,6 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MutableTreeModel;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -155,15 +153,16 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 treeModel);
 
         leftPane = new LimitingResourcesLeftPane(treeModel, queueListComponent);
-        registerNeededScripts();
     }
 
     public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
         queueListComponent.appendQueueElement(element);
+        dependencyList.addDependenciesFor(element);
     }
 
-    public void removeQueueElementFromQueue(LimitingResourceQueueElement element) {
-        queueListComponent.removeQueueElement(element);
+    public void removeQueueElementFrom(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
+        queueListComponent.removeQueueElementFrom(queue, element);
+        dependencyList.removeDependenciesFor(element);
     }
 
     private MutableTreeModel<LimitingResourceQueue> createModelForTree() {
@@ -234,16 +233,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
         return toolbar;
-    }
-
-    private void registerNeededScripts() {
-        // getScriptsRegister().register(
-        // ScriptsRequiredByLimitingResourcesPanel.class);
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     private TimeTrackerComponent timeTrackerForLimitingResourcesPanel(
@@ -343,11 +332,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private void reloadPanelComponents() {
-
         timeTrackerComponent.getChildren().clear();
-
-        // paginatorFilter.setInterval(timeTracker.getRealInterval());
-        // timeTracker.setFilter(paginatorFilter);
 
         if (timeTrackerHeader != null) {
             timeTrackerHeader.afterCompose();
@@ -357,49 +342,17 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     }
 
     private LimitingDependencyList generateDependencyComponentsList() {
-        Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
-                .getLimitingResourceElementToQueueTaskMap();
+        Set<LimitingResourceQueueElement> queueElements = queueListComponent
+                .getLimitingResourceElementToQueueTaskMap().keySet();
 
-        for (LimitingResourceQueueElement queueElement : queueElementsMap
-                .keySet()) {
-            for (LimitingResourceQueueDependency dependency : queueElement
-                    .getDependenciesAsOrigin()) {
-                addDependencyComponent(dependencyList, queueElementsMap,
-                        dependency);
-            }
+        for (LimitingResourceQueueElement each : queueElements) {
+            dependencyList.addDependenciesFor(each);
         }
         return dependencyList;
     }
 
-    public void addDependencyComponent(
-            LimitingResourceQueueDependency dependency) {
-        final Map<LimitingResourceQueueElement, QueueTask> queueElementsMap = queueListComponent
-                .getLimitingResourceElementToQueueTaskMap();
-        addDependencyComponent(dependencyList, queueElementsMap, dependency);
-    }
-
-    private void addDependencyComponent(LimitingDependencyList dependencyList,
-            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
-            LimitingResourceQueueDependency dependency) {
-
-        LimitingDependencyComponent component = createDependencyComponent(
-                queueElementsMap, dependency);
-        if (component != null) {
-            dependencyList.addDependencyComponent(component);
-        }
-    }
-
-    private LimitingDependencyComponent createDependencyComponent(
-            Map<LimitingResourceQueueElement, QueueTask> queueElementsMap,
-            LimitingResourceQueueDependency dependency) {
-
-        final QueueTask origin = queueElementsMap.get(dependency
-                .getHasAsOrigin());
-        final QueueTask destination = queueElementsMap.get(dependency
-                .getHasAsDestiny());
-        return (origin != null && destination != null) ? new LimitingDependencyComponent(
-                origin, destination)
-                : null;
+    public Map<LimitingResourceQueueElement, QueueTask> getQueueTaskMap() {
+        return queueListComponent.getLimitingResourceElementToQueueTaskMap();
     }
 
     public void clearComponents() {
@@ -417,18 +370,23 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
             @Override
             protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+
             }
         };
     }
 
     public void unschedule(QueueTask task) {
+        LimitingResourceQueueElement queueElement = task.getLimitingResourceQueueElement();
+        LimitingResourceQueue queue = queueElement.getLimitingResourceQueue();
+
         limitingResourcesController.unschedule(task);
         removeQueueTask(task);
+        dependencyList.removeDependenciesFor(queueElement);
+        queueListComponent.removeQueueElementFrom(queue, queueElement);
     }
 
     private void removeQueueTask(QueueTask task) {
         task.detach();
-        dependencyList.removeDependencyComponents(task);
     }
 
     public void moveQueueTask(QueueTask queueTask) {
@@ -442,7 +400,22 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 .getLimitingResourceQueueElement());
     }
 
+    public void removeDependenciesFor(LimitingResourceQueueElement element) {
+        dependencyList.removeDependenciesFor(element);
+    }
+
+    public void addDependenciesFor(LimitingResourceQueueElement element) {
+        dependencyList.addDependenciesFor(element);
+    }
+
+    public void refreshQueues(Set<LimitingResourceQueue> queues) {
+        for (LimitingResourceQueue each: queues) {
+            refreshQueue(each);
+        }
+    }
+
     public void refreshQueue(LimitingResourceQueue queue) {
+        dependencyList.removeDependenciesFor(queue);
         queueListComponent.refreshQueue(queue);
     }
 
@@ -455,8 +428,10 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     public void reloadComponent() {
         timeTrackerHeader.recreate();
         timeTrackerComponent.recreate();
+        dependencyList.clear();
         queueListComponent.invalidate();
         queueListComponent.afterCompose();
+        queueListComponent.refreshQueues();
         rebuildDependencies();
     }
 
@@ -508,18 +483,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
             setInterval(timeTracker.getRealInterval());
         }
 
-        public void paginationDown() {
-            paginatorFilter.goToHorizontalPage(horizontalPagination
-                    .getSelectedIndex() - 1);
-            reloadComponent();
-        }
-
-        public void paginationUp() {
-            paginatorFilter.goToHorizontalPage(horizontalPagination
-                    .getSelectedIndex() + 1);
-            reloadComponent();
-        }
-
         @Override
         public Collection<DetailItem> selectsFirstLevel(
                 Collection<DetailItem> firstLevelDetails) {
@@ -569,14 +532,15 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                     itemEnd = itemEnd.plus(intervalIncrease());
                 }
             }
-            horizontalPagination.setDisabled(horizontalPagination.getItems()
-                    .size() < 2);
+            horizontalPagination.setSelectedIndex(0);
+
+            // Disable pagination if there's only one page
+            int size = horizontalPagination.getItems().size();
+            horizontalPagination.setDisabled(size == 1);
         }
 
         public void goToHorizontalPage(int interval) {
             paginatorStart = intervalStart;
-            // paginatorStart = new
-            // DateTime(timeTracker.getRealInterval().getStart());
             paginatorStart = timeTracker.getDetailsFirstLevel().iterator()
                     .next().getStartDate();
 
@@ -594,12 +558,6 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         private void updatePaginationButtons() {
             paginationDownButton.setDisabled(isFirstPage());
             paginationUpButton.setDisabled(isLastPage());
-        }
-
-        public void previous() {
-            paginatorStart = paginatorStart.minus(intervalIncrease());
-            paginatorEnd = paginatorEnd.minus(intervalIncrease());
-            updatePaginationButtons();
         }
 
         public boolean isFirstPage() {

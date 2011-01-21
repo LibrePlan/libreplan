@@ -22,7 +22,6 @@ package org.navalplanner.web.planner.allocation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +33,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
@@ -59,8 +59,6 @@ public class AllocationRowsHandler {
 
     private CalculatedValue calculatedValue;
 
-    private Integer daysDuration;
-
     private final IWorkerFinder workersFinder;
 
     private AllocationRowsHandler(Task task, List<AllocationRow> initialRows,
@@ -69,7 +67,6 @@ public class AllocationRowsHandler {
         this.workersFinder = workersFinder;
         this.currentRows = new ArrayList<AllocationRow>(initialRows);
         this.calculatedValue = task.getCalculatedValue();
-        this.daysDuration = task.getDaysDuration();
     }
 
     public void addSpecificResourceAllocationFor(List<Resource> resource) {
@@ -208,11 +205,6 @@ public class AllocationRowsHandler {
                 && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
-        if (calculatedValue != CalculatedValue.END_DATE
-                && formBinder.getAllocationEnd().isBefore(
-                new LocalDate(task.getStartDate()))) {
-            formBinder.markEndDateMustBeAfterStartDate();
-        }
         if (calculatedValue != CalculatedValue.RESOURCES_PER_DAY) {
             List<AllocationRow> rows = getRowsWithEmptyResourcesPerDay();
             if (!rows.isEmpty()) {
@@ -239,7 +231,7 @@ public class AllocationRowsHandler {
                 calculateNumberOfHoursAllocation();
                 break;
             case END_DATE:
-                calculateEndDateAllocation();
+                calculateEndDateOrStartDateAllocation();
                 break;
             case RESOURCES_PER_DAY:
                 calculateResourcesPerDayAllocation();
@@ -250,8 +242,7 @@ public class AllocationRowsHandler {
         }
         createDerived();
         AllocationResult result = AllocationResult.create(task,
-                calculatedValue, currentRows);
-        daysDuration = result.getDaysDuration();
+                calculatedValue, currentRows, getWorkableDaysIfApplyable());
         AllocationRow.loadDataFromLast(currentRows);
         return result;
     }
@@ -259,14 +250,24 @@ public class AllocationRowsHandler {
     private void calculateNumberOfHoursAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
-        ResourceAllocation.allocating(allocations).allocateUntil(
-                formBinder.getAllocationEnd());
+        if (isForwardsAllocation()) {
+            ResourceAllocation.allocating(allocations).allocateUntil(
+                    formBinder.getAllocationEnd());
+        } else {
+            ResourceAllocation.allocating(allocations).allocateFromEndUntil(
+                    formBinder.getAllocationStart());
+        }
     }
 
-    private void calculateEndDateAllocation() {
+    public boolean isForwardsAllocation() {
+        return Direction.FORWARD.equals(task.getAllocationDirection());
+    }
+
+    private void calculateEndDateOrStartDateAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows);
         ResourceAllocation.allocating(allocations).untilAllocating(
+                task.getAllocationDirection(),
                 formBinder.getAssignedHours(), notFullfiledReceiver());
     }
 
@@ -289,8 +290,26 @@ public class AllocationRowsHandler {
     private void calculateResourcesPerDayAllocation() {
         List<HoursModification> hours = AllocationRow
                 .createHoursModificationsAndAssociate(task, currentRows);
-        ResourceAllocation.allocatingHours(hours).allocateUntil(
-                formBinder.getAllocationEnd());
+        if (isForwardsAllocation()) {
+            ResourceAllocation.allocatingHours(hours).allocateUntil(
+                    formBinder.getAllocationEnd());
+        } else {
+            ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(
+                    formBinder.getAllocationStart());
+        }
+    }
+
+    private Integer getWorkableDaysIfApplyable() {
+        switch (calculatedValue) {
+        case NUMBER_OF_HOURS:
+        case RESOURCES_PER_DAY:
+            return formBinder.getWorkableDays();
+        case END_DATE:
+            return null;
+        default:
+            throw new RuntimeException("unexpected calculatedValue: "
+                    + calculatedValue);
+        }
     }
 
     private void createDerived() {
@@ -318,7 +337,6 @@ public class AllocationRowsHandler {
 
     public void setCalculatedValue(CalculatedValue calculatedValue) {
         this.calculatedValue = calculatedValue;
-        this.daysDuration = task.getDaysDuration();
     }
 
     public AllocationResult getInitialAllocation(Scenario currentScenario) {
@@ -330,10 +348,6 @@ public class AllocationRowsHandler {
         return task;
     }
 
-    public Integer getDaysDuration() {
-        return daysDuration;
-    }
-
     public Set<Resource> getAllocationResources() {
         Set<Resource> result = new HashSet<Resource>();
         for (AllocationRow each : currentRows) {
@@ -342,17 +356,8 @@ public class AllocationRowsHandler {
         return result;
     }
 
-    public Date getEnd() {
-        LocalDate start = getStartDate();
-        return toDate(start.plusDays(getDaysDuration()));
-    }
-
     public LocalDate getStartDate() {
         return new LocalDate(task.getStartDate());
-    }
-
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     public void removeAll() {

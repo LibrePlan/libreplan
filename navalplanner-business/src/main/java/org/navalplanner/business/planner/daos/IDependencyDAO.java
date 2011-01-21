@@ -19,8 +19,6 @@
  */
 package org.navalplanner.business.planner.daos;
 
-import java.util.List;
-
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 

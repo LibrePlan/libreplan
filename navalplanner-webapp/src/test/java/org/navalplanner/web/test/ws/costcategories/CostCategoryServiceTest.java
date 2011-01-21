@@ -43,6 +43,8 @@ import org.hibernate.SessionFactory;
 import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IHourCostDAO;
@@ -57,6 +59,7 @@ import org.navalplanner.ws.costcategories.api.CostCategoryListDTO;
 import org.navalplanner.ws.costcategories.api.HourCostDTO;
 import org.navalplanner.ws.costcategories.api.ICostCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -92,6 +95,9 @@ public class CostCategoryServiceTest {
     private final String typeOfWorkHoursCodeA = "code-A";
 
     private final String typeOfWorkHoursCodeB = "code-B";
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Test
     @Rollback(false)
@@ -178,56 +184,100 @@ public class CostCategoryServiceTest {
     }
 
     @Test
-     public void testUpdateCostCategory() throws InstanceNotFoundException {
+    @NotTransactional
+    public void testUpdateCostCategory() throws InstanceNotFoundException {
 
-         //First one it creates  Valid cost category DTO with a hour cost
-         final String costCategoryCode = "code-CC";
-         final String hourCostCode = "code-HC";
+        // First one it creates Valid cost category DTO with a hour cost
+        final String costCategoryCode = "code-CC";
+        final String hourCostCode = "code-HC";
 
-         Set<HourCostDTO> cc1_HourCostDTOs = new HashSet<HourCostDTO>();
+        Set<HourCostDTO> cc1_HourCostDTOs = new HashSet<HourCostDTO>();
 
         XMLGregorianCalendar initDate = DateConverter
                 .toXMLGregorianCalendar(new Date());
         XMLGregorianCalendar endDate = initDate;
 
-         HourCostDTO cc1_1_HourCostDTO = new HourCostDTO(hourCostCode,new BigDecimal(3),
- initDate, endDate, typeOfWorkHoursCodeA);
-         cc1_HourCostDTOs.add(cc1_1_HourCostDTO);
-         CostCategoryDTO cc1 = new CostCategoryDTO(costCategoryCode,"newCC1", true, cc1_HourCostDTOs);
+        final HourCostDTO cc1_1_HourCostDTO = new HourCostDTO(hourCostCode,
+                new BigDecimal(3), initDate, endDate, typeOfWorkHoursCodeA);
+        cc1_HourCostDTOs.add(cc1_1_HourCostDTO);
+        final CostCategoryDTO cc1 = new CostCategoryDTO(costCategoryCode,
+                "newCC1",
+                true, cc1_HourCostDTOs);
 
-         CostCategoryListDTO costCategoryListDTO = createCostCategoryListDTO(cc1);
+        CostCategoryListDTO costCategoryListDTO = createCostCategoryListDTO(cc1);
 
-         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = costCategoryService
-                 .addCostCategories(costCategoryListDTO).instanceConstraintViolationsList;
-        costCategoryDAO.flush();
-        hourCostDAO.flush();
+        List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList = costCategoryService
+                .addCostCategories(costCategoryListDTO).instanceConstraintViolationsList;
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                costCategoryDAO.flush();
+                hourCostDAO.flush();
+                return null;
+            }
+        });
 
-         /* Test. */
+        /* Test. */
+        assertTrue(instanceConstraintViolationsList.toString(),
+                instanceConstraintViolationsList.size() == 0);
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                assertTrue(costCategoryDAO.existsByCode(cc1.code));
+                return null;
+            }
+        });
+        final CostCategory costCategory = transactionService
+                .runOnTransaction(new IOnTransaction<CostCategory>() {
+                    @Override
+                    public CostCategory execute() {
+                        CostCategory cost;
+                        try {
+                            cost = costCategoryDAO.findByCode(cc1.code);
+                            cost.getHourCosts().size();
+                            return cost;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        assertTrue(costCategory.getHourCosts().size() == 1);
 
-         assertTrue(instanceConstraintViolationsList.toString(),
-                 instanceConstraintViolationsList.size() == 0);
-         assertTrue(costCategoryDAO.existsByCode(cc1.code));
-        CostCategory costCategory = null;
-         try {
-            costCategory = costCategoryDAO.findByCode(cc1.code);
-             assertTrue(costCategory.getHourCosts().size() == 1);
-            HourCost hourCost = hourCostDAO.findByCode(hourCostCode);
-            LocalDate currentDate = LocalDate.fromDateFields(new Date());
-            assertTrue(hourCost.getInitDate().compareTo(currentDate) == 0);
-            assertFalse(hourCost.getEndDate() == null);
-            assertTrue(hourCost.getEndDate().compareTo(hourCost.getInitDate()) == 0);
-            assertTrue(hourCost.getPriceCost().compareTo(new BigDecimal(3)) == 0);
-            assertTrue(hourCost.getType().getCode().equalsIgnoreCase(
-                    typeOfWorkHoursCodeA));
-         } catch (InstanceNotFoundException e) {
-             assertTrue(false);
-         }
-        costCategoryDAO.flush();
-        sessionFactory.getCurrentSession().evict(costCategory);
+        final HourCost hourCost = transactionService
+                .runOnTransaction(new IOnTransaction<HourCost>() {
+                    @Override
+                    public HourCost execute() {
+                        try {
+                            HourCost cost = hourCostDAO
+                                    .findByCode(hourCostCode);
+                            cost.getType().getCode();
+                            return cost;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        LocalDate currentDate = LocalDate.fromDateFields(new Date());
+        assertTrue(hourCost.getInitDate().compareTo(currentDate) == 0);
+        assertFalse(hourCost.getEndDate() == null);
+        assertTrue(hourCost.getEndDate().compareTo(hourCost.getInitDate()) == 0);
+        assertTrue(hourCost.getPriceCost().compareTo(new BigDecimal(3)) == 0);
+        assertTrue(hourCost.getType().getCode().equalsIgnoreCase(
+                typeOfWorkHoursCodeA));
+
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                costCategoryDAO.flush();
+                sessionFactory.getCurrentSession().evict(costCategory);
+                return null;
+            }
+        });
+
         costCategory.dontPoseAsTransientObjectAnymore();
 
-         // Update the previous cost category
-         Set<HourCostDTO> cc2_HourCostDTOs = new HashSet<HourCostDTO>();
+        // Update the previous cost category
+        Set<HourCostDTO> cc2_HourCostDTOs = new HashSet<HourCostDTO>();
 
         XMLGregorianCalendar initDate2 = DateConverter
                 .toXMLGregorianCalendar(new Date());
@@ -235,44 +285,71 @@ public class CostCategoryServiceTest {
                 .toXMLGregorianCalendar(getNextMonthDate());
 
         HourCostDTO cc2_1_HourCostDTO = new HourCostDTO(hourCostCode,
-                new BigDecimal(100), initDate2, endDate2,
-                typeOfWorkHoursCodeB);
+                new BigDecimal(100), initDate2, endDate2, typeOfWorkHoursCodeB);
         cc2_HourCostDTOs.add(cc2_1_HourCostDTO);
-         CostCategoryDTO cc2 = new CostCategoryDTO(costCategoryCode,"updateCC1", false, cc2_HourCostDTOs);
+        CostCategoryDTO cc2 = new CostCategoryDTO(costCategoryCode,
+                "updateCC1", false, cc2_HourCostDTOs);
 
         /* Cost category type list. */
-         costCategoryListDTO = createCostCategoryListDTO(cc2);
+        costCategoryListDTO = createCostCategoryListDTO(cc2);
 
         instanceConstraintViolationsList = costCategoryService
-                 .addCostCategories(costCategoryListDTO).instanceConstraintViolationsList;
+                .addCostCategories(costCategoryListDTO).instanceConstraintViolationsList;
 
-         /* Test. */
-         assertTrue(instanceConstraintViolationsList.toString(),
+        /* Test. */
+        assertTrue(instanceConstraintViolationsList.toString(),
                 instanceConstraintViolationsList.size() == 0);
-         assertTrue(costCategoryDAO.existsByCode(cc1.code));
-        assertTrue(hourCostDAO.existsByCode(cc1_1_HourCostDTO.code));
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                assertTrue(costCategoryDAO.existsByCode(cc1.code));
+                assertTrue(hourCostDAO.existsByCode(cc1_1_HourCostDTO.code));
+                return null;
+            }
+        });
 
-         // Check if the changes was updated
-         try {
-            costCategory = costCategoryDAO
-                    .findByCode(costCategoryCode);
-            assertTrue(costCategory.getHourCosts().size() == 1);
-            assertTrue(costCategory.getName().equalsIgnoreCase("updateCC1"));
-            assertFalse(costCategory.getEnabled());
+        final CostCategory costCategory2 = transactionService
+                .runOnTransaction(new IOnTransaction<CostCategory>() {
+                    @Override
+                    public CostCategory execute() {
+                        CostCategory cost;
+                        try {
+                            cost = costCategoryDAO.findByCode(costCategoryCode);
+                            cost.getHourCosts().size();
+                            return cost;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
 
-            HourCost hourCost = hourCostDAO.findByCode(cc1_1_HourCostDTO.code);
-            LocalDate nextMonthDate = LocalDate
-                    .fromDateFields(getNextMonthDate());
-            assertTrue(hourCost.getInitDate().compareTo(
-                    LocalDate.fromDateFields(new Date())) == 0);
-            assertFalse(hourCost.getEndDate() == null);
-            assertTrue(hourCost.getEndDate().compareTo(nextMonthDate) == 0);
-            assertTrue(hourCost.getPriceCost().compareTo(new BigDecimal(100)) == 0);
-            assertTrue(hourCost.getType().getCode().equalsIgnoreCase(
-                    typeOfWorkHoursCodeB));
-         } catch (InstanceNotFoundException e) {
-             assertTrue(false);
-         }
+        // Check if the changes was updated
+        assertTrue(costCategory2.getHourCosts().size() == 1);
+        assertTrue(costCategory2.getName().equalsIgnoreCase("updateCC1"));
+        assertFalse(costCategory2.getEnabled());
+
+        final HourCost hourCost2 = transactionService
+                .runOnTransaction(new IOnTransaction<HourCost>() {
+                    @Override
+                    public HourCost execute() {
+                        try {
+                            HourCost cost = hourCostDAO
+                                    .findByCode(cc1_1_HourCostDTO.code);
+                            cost.getType().getCode();
+                            return cost;
+                        } catch (InstanceNotFoundException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+        LocalDate nextMonthDate = LocalDate.fromDateFields(getNextMonthDate());
+        assertTrue(hourCost2.getInitDate().compareTo(
+                LocalDate.fromDateFields(new Date())) == 0);
+        assertFalse(hourCost2.getEndDate() == null);
+        assertTrue(hourCost2.getEndDate().compareTo(nextMonthDate) == 0);
+        assertTrue(hourCost2.getPriceCost().compareTo(new BigDecimal(100)) == 0);
+        assertTrue(hourCost2.getType().getCode().equalsIgnoreCase(
+                typeOfWorkHoursCodeB));
     }
 
     private Date getNextMonthDate() {

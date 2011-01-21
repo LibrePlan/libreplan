@@ -71,7 +71,7 @@
         </panel>
 
         <!-- Advance type -->
-        <panel title="${i18n:_('Advance type')}" border="normal"
+        <panel title="${i18n:_('Progress type')}" border="normal"
             style="overflow:auto">
             <panelchildren>
                 <grid width="600px">
@@ -81,7 +81,7 @@
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Advance type')}:" />
+                            <label value="${i18n:_('Progress type')}:" />
                             <listbox id="lbAdvanceType"
                                     model="@{controller.advanceTypeDTOs}"
                                     mold="select"
@@ -97,7 +97,7 @@
         </panel>
 
         <!-- Select orders -->
-        <panel title="${i18n:_('Filter by orders')}"
+        <panel title="${i18n:_('Filter by projects')}"
             border="normal"
             style="overflow:auto">
             <panelchildren>

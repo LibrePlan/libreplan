@@ -62,15 +62,17 @@
                     onSelect="limitingResourcesPanel.setZoomLevel(self.selectedItem.value);" >
                 </listbox>
 
-            <separator/>
-            <label>${i18n:_('Pagination')}:</label>
-            <button tooltiptext="${i18n:_('Page down')}" image="/common/img/ico_left.png" id="paginationDownButton"
-            onClick="limitingResourcesPanel.paginationDown();" disabled="true" />
-            <listbox mold="select" rows="1" visible="true" id="horizontalPagination"
-            onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
-            <button tooltiptext="${i18n:_('Page up')}" image="/common/img/ico_right.png" id="paginationUpButton"
-            onClick="limitingResourcesPanel.paginationUp();" />
+                <separator/>
 
+                <label>${i18n:_('Pagination')}:</label>
+                <button id="paginationDownButton" tooltiptext="${i18n:_('Page down')}" disabled="true"
+                        image="/common/img/ico_left.png"
+                        onClick="limitingResourcesPanel.paginationDown();" />
+                <listbox id="horizontalPagination" mold="select" rows="1" visible="true"
+                        onSelect="limitingResourcesPanel.goToSelectedHorizontalPage();" />
+                <button id="paginationUpButton" tooltiptext="${i18n:_('Page up')}"
+                        image="/common/img/ico_right.png"
+                        onClick="limitingResourcesPanel.paginationUp();" />
 
             </hbox>
         </north>
@@ -130,7 +132,7 @@
                                     tooltiptext="Select/deselect all"/>
                             </hbox>
                         </newdatasortablecolumn>
-                        <newdatasortablecolumn label="${i18n:_('Order')}" sort="auto(lower(orderName))"/>
+                        <newdatasortablecolumn label="${i18n:_('Project')}" sort="auto(lower(orderName))"/>
                         <newdatasortablecolumn label="${i18n:_('Task')}" sort="auto(lower(taskName))"/>
                         <newdatasortablecolumn label="${i18n:_('Resource / Criteria')}" sort="auto(resourceOrCriteria)"/>
                         <newdatasortablecolumn label="${i18n:_('Earlier starting date')}" sort="auto(date)"/>

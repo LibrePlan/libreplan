@@ -22,8 +22,7 @@ package org.zkoss.ganttz.data.criticalpath;
 
 import java.util.Set;
 
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
-
+import org.zkoss.ganttz.data.IDependency;
 
 
 /**
@@ -31,10 +30,10 @@ import org.zkoss.ganttz.data.ITaskFundamentalProperties;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class InitialNode<T extends ITaskFundamentalProperties> extends Node<T> {
+public class InitialNode<T, D extends IDependency<T>> extends Node<T, D> {
 
     public InitialNode(Set<? extends T> nextTasks) {
-        super(null, null, nextTasks);
+        super(null, null, nextTasks, null, null);
     }
 
 }

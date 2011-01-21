@@ -35,6 +35,7 @@ import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 
 /**
@@ -80,7 +81,7 @@ import org.navalplanner.web.resources.search.ResourcePredicate;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
-public interface IWorkerModel {
+public interface IWorkerModel extends IIntegrationEntityModel {
 
     void save() throws ValidationException;
 

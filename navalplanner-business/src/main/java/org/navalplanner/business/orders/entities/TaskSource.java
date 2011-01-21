@@ -20,6 +20,7 @@
 package org.navalplanner.business.orders.entities;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -104,10 +105,24 @@ public class TaskSource extends BaseEntity {
         public TaskElement apply(ITaskSourceDAO taskSourceDAO,
                 boolean preeexistent) {
             updateTaskWithOrderElement(taskSource.getTask(), taskSource.getOrderElement());
+            updatePositionRestrictions();
             taskSourceDAO.saveWithoutValidating(taskSource);
             return taskSource.getTask();
         }
 
+        private void updatePositionRestrictions() {
+            if (hasSomeAllocationDone(taskSource.getTask())) {
+                return;
+            }
+            taskSource.getOrderElement().updatePositionConstraintOf(
+                    (Task) taskSource.getTask());
+        }
+
+
+    }
+
+    private static boolean hasSomeAllocationDone(TaskElement taskElement) {
+        return !taskElement.getAllResourceAllocations().isEmpty();
     }
 
     /**
@@ -119,15 +134,16 @@ public class TaskSource extends BaseEntity {
     private static void updateTaskWithOrderElement(TaskElement task,
             OrderElement orderElement) {
         task.setName(orderElement.getName());
-        if (task.getStartDate() == null) {
-            task.setStartDate(orderElement.getOrder().getInitDate());
+        Date orderInitDate = orderElement.getOrder().getInitDate();
+        if (task.getStartDate() == null && orderInitDate != null) {
+            task.setStartDate(orderInitDate);
         }
         if (task.getEndDate() == null) {
-            task.initializeEndDateIfDoesntExist();
+            task.initializeDatesIfNeeded();
         }
-        if (task.getSatisfiedResourceAllocations().isEmpty()) {
+        if (!hasSomeAllocationDone(task)) {
             task.setEndDate(null);
-            task.initializeEndDateIfDoesntExist();
+            task.initializeDatesIfNeeded();
         }
         task.updateDeadlineFromOrderElement();
     }

@@ -22,7 +22,6 @@ package org.navalplanner.business.requirements.entities;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.hibernate.validator.NotNull;
-import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Criterion;

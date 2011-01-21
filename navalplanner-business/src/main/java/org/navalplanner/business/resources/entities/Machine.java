@@ -30,11 +30,10 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
 
 /**
-* Entity
-*
-* @author Javier Moran Rua <jmoran@igalia.com>
-* @author Fernando Bellas Permuy <fbellas@udc.es>
-*/
+ * Entity
+ * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Fernando Bellas Permuy <fbellas@udc.es>
+ */
 public class Machine extends Resource {
 
     private final static ResourceEnum type = ResourceEnum.MACHINE;
@@ -95,7 +94,11 @@ public class Machine extends Resource {
         return create(new Machine());
     }
 
-    @NotEmpty(message="machine name not specified")
+    public static Machine create(String code) {
+        return create(new Machine(), code);
+    }
+
+    @NotEmpty(message = "machine name not specified")
     public String getName() {
         return name;
     }

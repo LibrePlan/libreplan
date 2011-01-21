@@ -90,7 +90,7 @@ public class AssignedMaterialsToOrderElementTemplateModel extends
     }
 
     @Override
-    protected Double getUnits(MaterialAssignmentTemplate assigment) {
+    protected BigDecimal getUnits(MaterialAssignmentTemplate assigment) {
         return assigment.getUnits();
     }
 

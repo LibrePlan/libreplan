@@ -24,7 +24,6 @@ import static org.navalplanner.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +49,6 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -105,17 +103,13 @@ public class SpecificResourceAllocation extends
                 resourcesPerDay, task));
     }
 
-    /**
-     * Constructor for hibernate. Do not use!
-     */
     public SpecificResourceAllocation() {
-        state = buildFromDBState();
     }
 
-    private SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
+    @Override
+    protected SpecificDayAssignmentsContainer retrieveOrCreateContainerFor(
             Scenario scenario) {
-        Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
-        SpecificDayAssignmentsContainer retrieved = containers.get(scenario);
+        SpecificDayAssignmentsContainer retrieved = retrieveContainerFor(scenario);
         if (retrieved != null) {
             return retrieved;
         }
@@ -125,23 +119,20 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
+    @Override
+    protected SpecificDayAssignmentsContainer retrieveContainerFor(
+            Scenario scenario) {
+        Map<Scenario, SpecificDayAssignmentsContainer> containers = containersByScenario();
+        return containers.get(scenario);
+    }
+
     private SpecificResourceAllocation(ResourcesPerDay resourcesPerDay,
             Task task) {
         super(resourcesPerDay, task);
-        state = buildInitialTransientState();
     }
 
     private SpecificResourceAllocation(Task task) {
         super(task);
-        state = buildInitialTransientState();
-    }
-
-    private DayAssignmentsState buildFromDBState() {
-        return new SpecificDayAssignmentsNoExplicitlySpecifiedScenario();
-    }
-
-    private TransientState buildInitialTransientState() {
-        return new TransientState(new HashSet<SpecificDayAssignment>());
     }
 
     @NotNull
@@ -166,21 +157,33 @@ public class SpecificResourceAllocation extends
     public void allocate(ResourcesPerDay resourcesPerDay) {
         Validate.notNull(resourcesPerDay);
         Validate.notNull(resource);
-        new SpecificAssignmentsAllocation().allocate(resourcesPerDay);
+        new SpecificAssignmentsAllocator().allocate(resourcesPerDay);
     }
 
     @Override
-    public IAllocateResourcesPerDay until(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocation().until(endExclusive);
+    public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive) {
+        return new SpecificAssignmentsAllocator()
+                .resourcesPerDayUntil(endExclusive);
+    }
+
+    @Override
+    public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start) {
+        SpecificAssignmentsAllocator allocator = new SpecificAssignmentsAllocator();
+        return allocator.resourcesPerDayFromEndUntil(start);
     }
 
     @Override
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive) {
-        return new SpecificAssignmentsAllocation().fromStartUntil(endExclusive);
+        return new SpecificAssignmentsAllocator().fromStartUntil(endExclusive);
     }
 
-    private final class SpecificAssignmentsAllocation extends
-            AssignmentsAllocation {
+    @Override
+    public IAllocateHoursOnInterval fromEndUntil(LocalDate start) {
+        return new SpecificAssignmentsAllocator().fromEndUntil(start);
+    }
+
+    private final class SpecificAssignmentsAllocator extends
+            AssignmentsAllocator {
 
         @Override
         protected List<SpecificDayAssignment> distributeForDay(LocalDate day,
@@ -197,7 +200,7 @@ public class SpecificResourceAllocation extends
 
     @Override
     public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end) {
-        return new SpecificAssignmentsAllocation().onInterval(start, end);
+        return new SpecificAssignmentsAllocator().onInterval(start, end);
     }
 
     @Override
@@ -234,26 +237,19 @@ public class SpecificResourceAllocation extends
     @Override
     ResourceAllocation<SpecificDayAssignment> createCopy(Scenario scenario) {
         SpecificResourceAllocation result = create(getTask());
-        result.toTransientStateWithInitial(getUnorderedFor(scenario),
-                getIntraDayEndFor(scenario));
         result.resource = getResource();
         return result;
     }
 
-    private void toTransientStateWithInitial(
-            Set<SpecificDayAssignment> initialAssignments, IntraDayDate end) {
-        this.state = new TransientState(initialAssignments);
-        this.state.setIntraDayEnd(end);
-    }
-
     @Override
     public ResourcesPerDayModification asResourcesPerDayModification() {
-        return ResourcesPerDayModification.create(this, getResourcesPerDay());
+        return ResourcesPerDayModification.create(this,
+                getIntendedResourcesPerDay());
     }
 
     @Override
     public HoursModification asHoursModification() {
-        return HoursModification.create(this, getAssignedHours());
+        return HoursModification.create(this, getIntendedHours());
     }
 
     @Override
@@ -267,179 +263,9 @@ public class SpecificResourceAllocation extends
         return Collections.singletonList(resource);
     }
 
-    private class ExplicitlySpecifiedScenarioState extends DayAssignmentsState {
-
-        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
-        private final SpecificDayAssignmentsContainer container;
-
-        private ExplicitlySpecifiedScenarioState(Scenario scenario) {
-            Validate.notNull(scenario);
-            this.container = retrieveOrCreateContainerFor(scenario);
-        }
-
-        @Override
-        protected void addAssignments(
-                Collection<? extends SpecificDayAssignment> assignments) {
-            container.addAll(assignments);
-        }
-
-        @Override
-        protected void clearFieldsCalculatedFromAssignments() {
-        }
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
-            return container.getDayAssignments();
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            container.removeAll(assignments);
-        }
-
-        @Override
-        protected void resetTo(
-                Collection<SpecificDayAssignment> assignmentsCopied) {
-            container.resetTo(assignmentsCopied);
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return container.getIntraDayEnd();
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            container.setIntraDayEnd(intraDayEnd);
-        }
-
-        @Override
-        protected void setParentFor(SpecificDayAssignment each) {
-            each.setSpecificResourceAllocation(outerSpecificAllocation);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(
-                    scenario);
-        }
-    }
-
-    private class TransientState extends DayAssignmentsState {
-        private SpecificResourceAllocation outerSpecificAllocation = SpecificResourceAllocation.this;
-
-        private final Set<SpecificDayAssignment> specificDaysAssignment;
-
-        private IntraDayDate intraDayEnd;
-
-        TransientState(Set<SpecificDayAssignment> specificDayAssignments) {
-            this.specificDaysAssignment = specificDayAssignments;
-        }
-
-        @Override
-        protected void addAssignments(
-                Collection<? extends SpecificDayAssignment> assignments) {
-            specificDaysAssignment.addAll(assignments);
-        }
-
-        @Override
-        protected void clearFieldsCalculatedFromAssignments() {
-        }
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignments() {
-            return specificDaysAssignment;
-        }
-
-        @Override
-        protected void removeAssignments(
-                List<? extends DayAssignment> assignments) {
-            specificDaysAssignment.removeAll(assignments);
-        }
-
-        @Override
-        protected void resetTo(
-                Collection<SpecificDayAssignment> assignmentsCopied) {
-            specificDaysAssignment.clear();
-            specificDaysAssignment.addAll(assignmentsCopied);
-        }
-
-        @Override
-        protected void setParentFor(SpecificDayAssignment each) {
-            each.setSpecificResourceAllocation(outerSpecificAllocation);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            ExplicitlySpecifiedScenarioState result = new ExplicitlySpecifiedScenarioState(
-                    scenario);
-            result.resetTo(specificDaysAssignment);
-            result.setIntraDayEnd(intraDayEnd);
-            return result;
-        }
-
-        @Override
-        IntraDayDate getIntraDayEnd() {
-            return intraDayEnd;
-        }
-
-        @Override
-        public void setIntraDayEnd(IntraDayDate intraDayEnd) {
-            this.intraDayEnd = intraDayEnd;
-        }
-    }
-
-    private Set<SpecificDayAssignment> getUnorderedFor(Scenario scenario) {
-        SpecificDayAssignmentsContainer container = containersByScenario()
-                .get(scenario);
-        if (container == null) {
-            return new HashSet<SpecificDayAssignment>();
-        }
-        return container.getDayAssignments();
-    }
-
-    private IntraDayDate getIntraDayEndFor(Scenario scenario) {
-        SpecificDayAssignmentsContainer container = containersByScenario().get(
-                scenario);
-        if (container == null) {
-            return null;
-        }
-        return container.getIntraDayEnd();
-    }
-
-    private class SpecificDayAssignmentsNoExplicitlySpecifiedScenario extends
-            NoExplicitlySpecifiedScenario {
-
-        @Override
-        protected Collection<SpecificDayAssignment> getUnorderedAssignmentsForScenario(
-                Scenario scenario) {
-            return getUnorderedFor(scenario);
-        }
-
-        @Override
-        protected DayAssignmentsState switchTo(Scenario scenario) {
-            return new ExplicitlySpecifiedScenarioState(scenario);
-        }
-
-        @Override
-        protected IntraDayDate getIntraDayEndFor(Scenario scenario) {
-            return retrieveOrCreateContainerFor(scenario).getIntraDayEnd();
-        }
-
-    }
-
-    @OnCopy(Strategy.IGNORE)
-    private DayAssignmentsState state;
-
     @Override
-    protected void scenarioChangedTo(Scenario scenario) {
-        this.state = getDayAssignmentsState().switchTo(scenario);
-    }
-
-    @Override
-    protected ResourceAllocation<SpecificDayAssignment>.DayAssignmentsState getDayAssignmentsState() {
-        return state;
+    protected void setItselfAsParentFor(SpecificDayAssignment dayAssignment) {
+        dayAssignment.setSpecificResourceAllocation(this);
     }
 
     @Override
@@ -491,8 +317,10 @@ public class SpecificResourceAllocation extends
         List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
         int i = 0;
         for (DayAssignment each : assignments) {
+            EffortDuration durationForAssignment = EffortDuration
+                    .hours(newHoursPerDay[i++]);
             result.add(SpecificDayAssignment.create(each.getDay(),
-                    newHoursPerDay[i++], resource));
+                    durationForAssignment, resource));
         }
         return result;
     }

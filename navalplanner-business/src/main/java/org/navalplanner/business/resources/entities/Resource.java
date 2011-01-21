@@ -20,7 +20,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -129,8 +127,6 @@ public abstract class Resource extends IntegrationEntity {
     private Boolean limitingResource = Boolean.FALSE;
 
     private LimitingResourceQueue limitingResourceQueue;
-
-    private Boolean generateCode = false;
 
     private void clearCachedData() {
         assignmentsByDayCached = null;
@@ -270,11 +266,11 @@ public abstract class Resource extends IntegrationEntity {
             return this;
         }
 
-        public Query at(Date date) {
+        public Query at(LocalDate date) {
             return enforcedInAll(Interval.point(date));
         }
 
-        public Query between(Date start, Date end) {
+        public Query between(LocalDate start, LocalDate end) {
             return enforcedInAll(Interval.range(start, end));
         }
 
@@ -418,7 +414,8 @@ public abstract class Resource extends IntegrationEntity {
 
     public CriterionSatisfaction addSatisfaction(
             CriterionWithItsType criterionWithItsType) {
-        return addSatisfaction(criterionWithItsType, Interval.from(new Date()));
+        LocalDate today = new LocalDate();
+        return addSatisfaction(criterionWithItsType, Interval.from(today));
     }
 
     private static class EnsureSatisfactionIsCorrect {
@@ -519,11 +516,12 @@ public abstract class Resource extends IntegrationEntity {
 
     public List<CriterionSatisfaction> finish(
             CriterionWithItsType criterionWithItsType) {
-        return finishEnforcedAt(criterionWithItsType.getCriterion(), new Date());
+        LocalDate today = new LocalDate();
+        return finishEnforcedAt(criterionWithItsType.getCriterion(), today);
     }
 
     public List<CriterionSatisfaction> finishEnforcedAt(Criterion criterion,
-            Date date) {
+            LocalDate date) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
         for (CriterionSatisfaction criterionSatisfaction : query().from(
                 criterion).at(date).result()) {
@@ -901,11 +899,7 @@ public abstract class Resource extends IntegrationEntity {
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
             LocalDate current) {
-        return criterionToSatisfy.isSatisfiedBy(this, asDate(current));
-    }
-
-    private Date asDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDateTime().toDate();
+        return criterionToSatisfy.isSatisfiedBy(this, current);
     }
 
     public void addUnvalidatedSatisfaction(CriterionSatisfaction
@@ -1006,8 +1000,9 @@ public abstract class Resource extends IntegrationEntity {
 
     public void addResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignments.add(assignment);
-        if(assignment.getResource()!=this)
+        if (assignment.getResource() != this) {
             assignment.setResource(this);
+        }
     }
 
     public void addUnvalidatedResourcesCostCategoryAssignment(
@@ -1019,8 +1014,9 @@ public abstract class Resource extends IntegrationEntity {
 
     public void removeResourcesCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {
         resourcesCostCategoryAssignments.remove(assignment);
-        if(assignment.getResource()==this)
+        if (assignment.getResource() == this) {
             assignment.setResource(null);
+        }
     }
 
     @AssertTrue(message="Some criterion satisfactions overlap in time")
@@ -1148,18 +1144,6 @@ public abstract class Resource extends IntegrationEntity {
 
     public void setLimitingResource(Boolean limitingResource) {
         this.limitingResource = limitingResource;
-    }
-
-    public String getLimitingResourceAsString() {
-        return (Boolean.TRUE.equals(isLimitingResource())) ? _("yes") : _("no");
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
     }
 
     public LimitingResourceQueue getLimitingResourceQueue() {

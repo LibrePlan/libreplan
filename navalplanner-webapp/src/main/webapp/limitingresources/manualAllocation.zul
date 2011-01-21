@@ -50,24 +50,26 @@
 
 
     <!-- Select assignable queues -->
-            <panel title="${i18n:_('Select queue')}" border="normal" width="280px">
-            <panelchildren>
-                <listbox id="listAssignableQueues"
-                    itemRenderer="@{manualAllocationController.queueRenderer}"
-                    mold="select" width="235px"/>
-                        <div height="20px"/>
-                        <grid id="gridCurrentQueue" sclass="current-queue-information">
-                            <columns>
-                                <column width="95px"/>
-                                </columns>
-                             <rows>
-                             <row><label value="Current queue" /><label value="@{manualAllocationController.currentQueue}" /></row>
-                             <row><label value="Start date" /><label value="@{manualAllocationController.currentStart}" /></row>
-                             <row><label value="End date" /><label value="@{manualAllocationController.currentEnd}" /></row>
-                         </rows></grid>
+    <panel title="${i18n:_('Select queue')}" border="normal" width="280px">
+        <panelchildren>
 
-            </panelchildren>
-        </panel>
+            <listbox id="listAssignableQueues"
+                mold="select" width="235px"/>
+
+            <separator />
+
+            <grid id="gridCurrentQueue" sclass="current-queue-information">
+                <columns>
+                    <column width="95px"/>
+                </columns>
+                <rows>
+                    <row><label value="Current queue" /><label value="@{manualAllocationController.currentQueue}" /></row>
+                    <row><label value="Start date" /><label value="@{manualAllocationController.currentStart}" /></row>
+                    <row><label value="End date" /><label value="@{manualAllocationController.currentEnd}" /></row>
+                </rows>
+            </grid>
+        </panelchildren>
+    </panel>
 
 
     <!-- Select date -->

@@ -116,15 +116,58 @@ public class LongOperationFeedback {
         };
     }
 
-    public static <T> IBackGroundOperation<T> withAsyncUpates(
-            final IBackGroundOperation<T> backgroundOperation) {
+    /**
+     * Executes a long operation. The background operation can send
+     * {@link IDesktopUpdate} objects that can update desktop state. Trying to
+     * update the components in any other way would fail
+     */
+    public static void progressive(final Desktop desktop,
+            final IBackGroundOperation<IDesktopUpdate> operation) {
+        progressive(desktop, operation,
+                new IDesktopUpdatesEmitter<IDesktopUpdate>() {
+
+                    @Override
+                    public void doUpdate(IDesktopUpdate update) {
+                        update.doUpdate();
+                    }
+                });
+    }
+
+    /**
+     * Executes a long operation. The background operation can send
+     * <code>T</code> objects that can update desktop state. A
+     * {@link IDesktopUpdatesEmitter} that handle these objects is necessary.
+     * Trying to update the components in any other way would fail.
+     */
+    public static <T> void progressive(final Desktop desktop,
+            final IBackGroundOperation<T> operation,
+            final IDesktopUpdatesEmitter<T> emitter) {
+        desktop.enableServerPush(true);
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    IBackGroundOperation<T> operationWithAsyncUpates = withAsyncUpates(
+                            operation, desktop);
+                    operationWithAsyncUpates.doOperation(emitter);
+                } catch (Exception e) {
+                    LOG.error("error executing background operation", e);
+                } finally {
+                    desktop.enableServerPush(false);
+                }
+            }
+        });
+    }
+
+    private static <T> IBackGroundOperation<T> withAsyncUpates(
+            final IBackGroundOperation<T> backgroundOperation,
+            final Desktop desktop) {
         return new IBackGroundOperation<T>() {
 
             @Override
             public void doOperation(
-                    IDesktopUpdatesEmitter<T> desktopUpdateEmitter) {
+                    IDesktopUpdatesEmitter<T> originalEmitter) {
                 NotBlockingDesktopUpdates<T> notBlockingDesktopUpdates = new NotBlockingDesktopUpdates<T>(
-                        desktopUpdateEmitter);
+                        desktop, originalEmitter);
                 Future<?> future = executor.submit(notBlockingDesktopUpdates);
                 try {
                     backgroundOperation.doOperation(notBlockingDesktopUpdates);
@@ -149,9 +192,12 @@ public class LongOperationFeedback {
 
         private BlockingQueue<EndOrValue<T>> queue = new LinkedBlockingQueue<EndOrValue<T>>();
         private final IDesktopUpdatesEmitter<T> original;
+        private final Desktop desktop;
 
-        NotBlockingDesktopUpdates(IDesktopUpdatesEmitter<T> original) {
+        NotBlockingDesktopUpdates(Desktop desktop,
+                IDesktopUpdatesEmitter<T> original) {
             this.original = original;
+            this.desktop = desktop;
         }
 
         @Override
@@ -177,17 +223,23 @@ public class LongOperationFeedback {
                 if (current.isEnd()) {
                     return;
                 }
-                batch.add(current.getValue());
-                while ((current = queue.poll()) != null) {
-                    if (current.isEnd()) {
-                        break;
-                    }
-                    batch.add(current.getValue());
+                try {
+                    Executions.activate(desktop);
+                } catch (Exception e) {
+                    LOG.error("unable to access desktop", e);
+                    throw new RuntimeException(e);
                 }
-                if (!batch.isEmpty()) {
-                    for (T each : batch) {
-                        original.doUpdate(each);
+                try {
+                    original.doUpdate(current.getValue());
+                    while ((current = queue.poll()) != null) {
+                        if (current.isEnd()) {
+                            break;
+                        }
+                        batch.add(current.getValue());
+                        original.doUpdate(current.getValue());
                     }
+                } finally {
+                    Executions.deactivate(desktop);
                 }
                 if (current != null && current.isEnd()) {
                     return;
@@ -242,79 +294,4 @@ public class LongOperationFeedback {
         }
 
     }
-
-    /**
-     * Executes a long operation. The background operation can send
-     * {@link IDesktopUpdate} objects that can update desktop state. Trying to
-     * update the components in any other way would fail
-     */
-    public static void progressive(final Desktop desktop,
-            final IBackGroundOperation<IDesktopUpdate> operation) {
-        progressive(desktop, operation,
-                new IDesktopUpdatesEmitter<IDesktopUpdate>() {
-
-                    @Override
-                    public void doUpdate(IDesktopUpdate update) {
-                        update.doUpdate();
-                    }
-        });
-    }
-
-    /**
-     * Executes a long operation. The background operation can send
-     * <code>T</code> objects that can update desktop state. A
-     * {@link IDesktopUpdatesEmitter} that handle these objects is necessary.
-     * Trying to update the components in any other way would fail.
-     */
-    public static <T> void progressive(final Desktop desktop,
-            final IBackGroundOperation<T> operation,
-            final IDesktopUpdatesEmitter<T> emitter) {
-        desktop.enableServerPush(true);
-        executor.execute(new Runnable() {
-            public void run() {
-                try {
-                    operation.doOperation(decorateWithActivations(desktop,
-                            emitter));
-                } catch (Exception e) {
-                    LOG.error("error executing background operation", e);
-                } finally {
-                    desktop.enableServerPush(false);
-                }
-            }
-        });
-    }
-
-    private static <T> IDesktopUpdatesEmitter<T> decorateWithActivations(
-            final Desktop desktop, final IDesktopUpdatesEmitter<T> emitter) {
-        return new EmitterWithActivations<T>(desktop, emitter);
-    }
-
-    private static final class EmitterWithActivations<T> implements
-            IDesktopUpdatesEmitter<T> {
-        private final Desktop desktop;
-
-        private final IDesktopUpdatesEmitter<T> emitter;
-
-        private EmitterWithActivations(Desktop desktop,
-                IDesktopUpdatesEmitter<T> emitter) {
-            this.desktop = desktop;
-            this.emitter = emitter;
-        }
-
-        @Override
-        public void doUpdate(T value) {
-            try {
-                Executions.activate(desktop);
-            } catch (Exception e) {
-                LOG.error("unable to access desktop", e);
-                throw new RuntimeException(e);
-            }
-            try {
-                emitter.doUpdate(value);
-            } finally {
-                Executions.deactivate(desktop);
-            }
-        }
-    }
-
 }

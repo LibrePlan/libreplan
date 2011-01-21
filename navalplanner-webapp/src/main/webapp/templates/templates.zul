@@ -22,6 +22,7 @@
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/project-templates.css"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
@@ -58,7 +59,7 @@
                     <tab label="${i18n:_('Template Tree')}"
                         disabled="@{templatesForOrdersController.templateTreeDisabled}"
                         onSelect="templatesForOrdersController.openTemplateTree()" />
-                    <tab label="${i18n:_('Advances')}" />
+                    <tab label="${i18n:_('Progress')}" />
                     <tab label="${i18n:_('Labels')}" />
                     <tab id="tabRequirements" label="${i18n:_('Criterion Requirement')}" />
                     <tab label="${i18n:_('Materials')}" />

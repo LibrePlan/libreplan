@@ -29,8 +29,6 @@ import static org.junit.Assert.assertThat;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -39,6 +37,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.hibernate.SessionFactory;
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -148,19 +147,14 @@ public class ResourceDAOTest {
 
     private Worker createAndSaveResourceSatisfyingAllCriterions(final Collection<Criterion> criterions) {
         Worker result = givenValidWorker();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            Interval interval = Interval.range(sdf.parse("01/01/1970"), null);
-            Set<CriterionSatisfaction> satisfactions = new HashSet<CriterionSatisfaction>();
-            for (Criterion each: criterions) {
-                satisfactions.add(CriterionSatisfaction.create(each, result, interval));
-            }
-            result.addSatisfactions(satisfactions);
-            resourceDAO.save(result);
-        } catch (ParseException e) {
-
+        Interval interval = Interval.range(new LocalDate(1970, 1, 1), null);
+        Set<CriterionSatisfaction> satisfactions = new HashSet<CriterionSatisfaction>();
+        for (Criterion each : criterions) {
+            satisfactions.add(CriterionSatisfaction.create(each, result,
+                    interval));
         }
+        result.addSatisfactions(satisfactions);
+        resourceDAO.save(result);
         return result;
     }
 

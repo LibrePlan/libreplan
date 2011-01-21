@@ -23,7 +23,9 @@ package org.navalplanner.web.common;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.common.entities.OrderSequence;
+import org.navalplanner.business.common.entities.EntityNameEnum;
+import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.ProgressType;
 
 /**
  * Contract for {@link ConfigurationModel}.
@@ -51,6 +53,19 @@ public interface IConfigurationModel {
     String getCompanyCode();
     void setCompanyCode(String companyCode);
 
+    Boolean getGenerateCodeForWorkReportType();
+
+    void setGenerateCodeForWorkReportType(Boolean generateCodeForWorkReportType);
+
+    Boolean getGenerateCodeForCalendarExceptionType();
+
+    void setGenerateCodeForCostCategory(Boolean generateCodeForCostCategory);
+
+    Boolean getGenerateCodeForCostCategory();
+
+    void setGenerateCodeForCalendarExceptionType(
+            Boolean generateCodeForCalendarExceptionType);
+
     Boolean getGenerateCodeForCriterion();
     void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
 
@@ -71,9 +86,12 @@ public interface IConfigurationModel {
     void setGenerateCodeForMaterialCategories(
             Boolean generateCodeForMaterialCategories);
 
-    List<OrderSequence> getOrderSequences();
-    void addOrderSequence();
-    void removeOrderSequence(OrderSequence orderSequence)
+    List<EntitySequence> getEntitySequences(EntityNameEnum entityName);
+
+    void addEntitySequence(EntityNameEnum entityName, String prefix,
+            Integer digits);
+
+    void removeEntitySequence(EntitySequence entitySequence)
             throws IllegalArgumentException;
 
     void setExpandCompanyPlanningViewCharts(
@@ -89,6 +107,10 @@ public interface IConfigurationModel {
 
     Boolean isExpandResourceLoadViewCharts();
 
+    Boolean isMonteCarloMethodTabVisible();
+
+    void setMonteCarloMethodTabVisible(Boolean visible);
+
     /*
      * Final conversation steps
      */
@@ -98,5 +120,27 @@ public interface IConfigurationModel {
     Boolean getGenerateCodeForUnitTypes();
 
     void setGenerateCodeForUnitTypes(Boolean generateCodeForUnitTypes);
+
+    void setGenerateCodeForBaseCalendars(Boolean generateCodeForBaseCalendars);
+
+    Boolean getGenerateCodeForBaseCalendars();
+
+    boolean checkFrefixFormat(EntitySequence sequence);
+
+    List<ProgressType> getProgresTypes();
+
+    void setProgressType(ProgressType progressType);
+
+    ProgressType getProgressType();
+
+    String getCompanyLogoURL();
+
+    void setCompanyLogoURL(String companyLogoURL);
+
+    Boolean isScenariosVisible();
+
+    void setScenariosVisible(Boolean scenariosVisible);
+
+    Boolean moreScenariosThanMasterCreated();
 
 }

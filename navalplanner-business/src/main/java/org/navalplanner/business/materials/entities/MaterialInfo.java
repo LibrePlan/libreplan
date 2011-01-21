@@ -31,7 +31,7 @@ public class MaterialInfo {
 
     private Material material;
 
-    private Double units = 0.0;
+    private BigDecimal units = BigDecimal.ZERO;
 
     private BigDecimal unitPrice = BigDecimal.ZERO;
 
@@ -45,15 +45,15 @@ public class MaterialInfo {
     }
 
     @NotNull(message = "units not specified")
-    public Double getUnits() {
+    public BigDecimal getUnits() {
         return units;
     }
 
-    public void setUnits(Double units) {
-        this.units = units != null ? units : 0;
+    public void setUnits(BigDecimal units) {
+        this.units = units != null ? units : BigDecimal.ZERO;
     }
 
-    public void setUnitsWithoutNullCheck(Double units) {
+    public void setUnitsWithoutNullCheck(BigDecimal units) {
         this.units = units;
     }
 
@@ -79,8 +79,7 @@ public class MaterialInfo {
     }
 
     public BigDecimal getTotalPrice() {
-        BigDecimal result = new BigDecimal(getUnits());
-        return result.multiply(getUnitPrice());
+        return getUnits().multiply(getUnitPrice());
     }
 
 }

@@ -25,7 +25,6 @@ import java.util.Map;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.navalplanner.web.common.components.ExtendedJasperreport;
-import org.zkoss.zk.ui.Executions;
 
 public class NavalplannerReport implements INavalplannerReport {
 

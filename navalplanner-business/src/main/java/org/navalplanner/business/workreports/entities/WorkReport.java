@@ -31,6 +31,7 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -74,14 +75,13 @@ public class WorkReport extends IntegrationEntity {
 
     private OrderElement orderElement;
 
-    private Boolean generateCode = false;
-
     private Set<Label> labels = new HashSet<Label>();
 
     private Set<WorkReportLine> workReportLines = new HashSet<WorkReportLine>();
 
     private Set<DescriptionValue> descriptionValues = new HashSet<DescriptionValue>();
 
+    private Integer lastWorkReportLineSequenceCode = 0;
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -197,14 +197,6 @@ public class WorkReport extends IntegrationEntity {
                 this.orderElement = null;
             }
         }
-    }
-
-    public Boolean getGenerateCode() {
-        return generateCode;
-    }
-
-    public void setGenerateCode(Boolean generateCode) {
-        this.generateCode = generateCode;
     }
 
     @SuppressWarnings("unused")
@@ -427,4 +419,30 @@ public class WorkReport extends IntegrationEntity {
     public boolean checkConstraintNonRepeatedWorkReportLinesCodes() {
         return getFirstRepeatedCode(this.workReportLines) == null;
     }
+
+    public void generateWorkReportLineCodes(int numberOfDigits) {
+        for (WorkReportLine line : this.getWorkReportLines()) {
+            if ((line.getCode() == null) || (line.getCode().isEmpty())
+                    || (!line.getCode().startsWith(this.getCode()))) {
+                this.incrementLastWorkReportLineSequenceCode();
+                String lineCode = EntitySequence.formatValue(numberOfDigits,
+                        this.getLastWorkReportLineSequenceCode());
+                line.setCode(this.getCode()
+                        + EntitySequence.CODE_SEPARATOR_CHILDREN + lineCode);
+            }
+        }
+    }
+
+    public void incrementLastWorkReportLineSequenceCode() {
+        if(lastWorkReportLineSequenceCode==null){
+            lastWorkReportLineSequenceCode = 0;
+        }
+        lastWorkReportLineSequenceCode++;
+    }
+
+    @NotNull(message = "last order element sequence code not specified")
+    public Integer getLastWorkReportLineSequenceCode() {
+        return lastWorkReportLineSequenceCode;
+    }
+
 }

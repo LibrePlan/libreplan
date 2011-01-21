@@ -21,11 +21,16 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/login.css"?>
 
+<?xel-method prefix="project" name="version" class="org.navalplanner.business.common.VersionInformation"
+    signature="java.lang.String getVersion()"?>
+
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript>
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
+    logoLoginLink = contextPath + "/common/img/" +
+        org.navalplanner.web.I18nHelper._("en") + "/logo_login.png";
 ]]>
 </zscript>
 
@@ -36,7 +41,7 @@
 </n:table>
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
   <n:tr>
-    <n:td height="100" align="left" valign="middle"><n:img src="${contextPath}/common/img/logo_login.png" alt="NavalPlan" /></n:td>
+    <n:td height="100" align="left" valign="middle"><n:img src="${contextPath}/common/img/${i18n:_('en')}/logo_login.png" alt="NavalPlan" /></n:td>
   </n:tr>
 </n:table>
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF">
@@ -45,7 +50,7 @@
     <n:td class="identificacion">${i18n:_('Access to the system')}</n:td>
     <n:td align="right" valign="bottom">
         <div tooltiptext="${i18n:_('Help on authentication (opens a new window)')}">
-            <n:a href="http://www.navalplan.org/fileadmin/templates/doc/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
+            <n:a href="${contextPath}/help/${i18n:_('en')}/index.html" target="_blank" class="ayuda">${i18n:_('Help')}</n:a>
         </div>
     </n:td>
   </n:tr>
@@ -106,10 +111,11 @@
 
 <n:table width="750" border="0" align="center" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" class="tabla_inferior">
   <n:tr>
-    <n:td height="40" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
+    <n:td height="10" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
   <n:tr>
-    <n:td></n:td>
+    <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
+    <n:div style="float:right;color:green;font-size:10px;">v${project:version()}</n:div></n:td>
   </n:tr>
   <n:tr>
     <n:td height="100"><div align="right"><n:img src="${contextPath}/common/img/logos_footer.gif" width="475" height="40" /></div></n:td>

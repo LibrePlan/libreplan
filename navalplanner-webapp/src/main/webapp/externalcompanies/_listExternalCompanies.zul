@@ -19,14 +19,15 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Companies List')}">
-    <newdatasortablegrid id="listing" model="@{controller.companies}" mold="paging"
-        pageSize="10">
+    <newdatasortablegrid id="listing" model="@{controller.companiesDTO}" mold="paging"
+        pageSize="10"
+        onInitRender="controller.sortByDefaultByName();">
         <columns sizable="true">
-            <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" />
-            <newdatasortablecolumn label="${i18n:_('NIF')}" />
+            <newdatasortablecolumn id="columnName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
+            <newdatasortablecolumn label="${i18n:_('Company ID')}" />
             <newdatasortablecolumn label="${i18n:_('Client')}" />
             <newdatasortablecolumn label="${i18n:_('Subcontractor')}" />
-            <newdatasortablecolumn label="${i18n:_('Integrated user')}" />
+            <newdatasortablecolumn label="${i18n:_('Associated user')}" />
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
@@ -35,12 +36,17 @@
                 <label value="@{company.nif}" />
                 <checkbox checked="@{company.client}" disabled="true" />
                 <checkbox checked="@{company.subcontractor}" disabled="true" />
-                <label value="@{company.companyUser.loginName}" />
+                <label value="@{company.companyUser}" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
                         tooltiptext="${i18n:_('Edit')}"
                         onClick="controller.goToEditForm(self.parent.parent.value)">
+                    </button>
+                     <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.confirmRemove(self.parent.parent.value)">
                     </button>
                 </hbox>
             </row>

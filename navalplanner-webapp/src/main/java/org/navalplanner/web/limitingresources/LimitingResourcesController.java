@@ -26,11 +26,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -41,7 +46,6 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.common.Util;
 import org.navalplanner.web.limitingresources.LimitingResourcesPanel.IToolbarCommand;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -49,7 +53,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.zkoss.ganttz.resourceload.IFilterChangedListener;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -82,9 +85,13 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Autowired
     private ILimitingResourceQueueModel limitingResourceQueueModel;
 
-    private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
-    private Order filterBy;
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
     private org.zkoss.zk.ui.Component parent;
 
@@ -103,8 +110,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private final LimitingResourceQueueElementsRenderer limitingResourceQueueElementsRenderer =
         new LimitingResourceQueueElementsRenderer();
 
-    private transient IFilterChangedListener filterChangedListener;
-
     public LimitingResourcesController() {
     }
 
@@ -120,27 +125,39 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     private void reload() {
-        // FIXME: Temporary fix, it seems the page was already rendered, so
-        // clear it all as it's going to be rendered again
-        parent.getChildren().clear();
+        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
-        limitingResourceQueueModel.initGlobalView();
+            @Override
+            public Void execute() {
+                reloadInTransaction();
+                return null;
+            }
 
-        // Initialize interval
-        timeTracker = buildTimeTracker();
-        limitingResourcesPanel = buildLimitingResourcesPanel();
+            private void reloadInTransaction() {
+                // FIXME: Temporary fix, it seems the page was already rendered,
+                // so
+                // clear it all as it's going to be rendered again
+                parent.getChildren().clear();
 
-        this.parent.appendChild(limitingResourcesPanel);
-        limitingResourcesPanel.afterCompose();
+                limitingResourceQueueModel.initGlobalView();
 
-        cbSelectAll = (Checkbox) limitingResourcesPanel
-                .getFellowIfAny("cbSelectAll");
+                // Initialize interval
+                timeTracker = buildTimeTracker();
+                limitingResourcesPanel = buildLimitingResourcesPanel();
 
-        initGridUnassignedLimitingResourceQueueElements();
-        initManualAllocationWindow();
-        initEditTaskWindow();
+                parent.appendChild(limitingResourcesPanel);
+                limitingResourcesPanel.afterCompose();
 
-        addCommands(limitingResourcesPanel);
+                cbSelectAll = (Checkbox) limitingResourcesPanel
+                        .getFellowIfAny("cbSelectAll");
+
+                initGridUnassignedLimitingResourceQueueElements();
+                initManualAllocationWindow();
+                initEditTaskWindow();
+
+                addCommands(limitingResourcesPanel);
+            }
+        });
     }
 
     private void initGridUnassignedLimitingResourceQueueElements() {
@@ -187,7 +204,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
                 .getViewInterval(), ZoomLevel.DETAIL_THREE,
                 SeveralModificators.create(),
-                SeveralModificators.create(new BankHolidaysMarker()), parent);
+                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),parent);
+    }
+
+    private BaseCalendar getDefaultCalendar() {
+        return configurationDAO.getConfiguration().getDefaultCalendar();
     }
 
     private LimitingResourcesPanel buildLimitingResourcesPanel() {
@@ -301,7 +322,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void filterBy(Order order) {
-        this.filterBy = order;
     }
 
     public void saveQueues() {
@@ -320,44 +340,69 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     public void editResourceAllocation(
             LimitingResourceQueueElement oldElement) {
+
         try {
             Task task = oldElement.getTask();
 
             EditTaskController editTaskController = getEditController(editTaskWindow);
             editTaskController.showEditFormResourceAllocationFromLimitingResources(task);
 
-            Set<LimitingResourceQueueDependency> outgoingDependencies = oldElement.getDependenciesAsOrigin();
-            Set<LimitingResourceQueueDependency> incomingDependencies = oldElement.getDependenciesAsDestiny();
-
             // New resource allocation or resource allocation modified ?
             if (editTaskController.getStatus() == Messagebox.OK) {
+
                 // Update resource allocation for element
-                LimitingResourceQueueElement newElement = task.getResourceAllocation().getLimitingResourceQueueElement();
+                LimitingResourceQueueElement newElement = copyFrom(oldElement,
+                        getQueueElementFrom(task));
 
-                newElement.setEarlierStartDateBecauseOfGantt(oldElement.getEarlierStartDateBecauseOfGantt());
-                newElement.setResourceAllocation(task.getResourceAllocation());
+                // Replace old limiting resource with new one
+                LimitingResourceQueue oldQueue = oldElement.getLimitingResourceQueue();
+                List<LimitingResourceQueueElement> modified = limitingResourceQueueModel
+                        .replaceLimitingResourceQueueElement(oldElement,
+                                newElement);
 
-                // Update dependencies
-                for (LimitingResourceQueueDependency each: outgoingDependencies) {
-                    each.setOrigin(newElement);
-                    newElement.add(each);
+                // Refresh modified queues
+                Set<LimitingResourceQueue> toRefreshQueues = new HashSet<LimitingResourceQueue>();
+                toRefreshQueues.addAll(LimitingResourceQueue.queuesOf(modified));
+                if (oldQueue != null) {
+                    toRefreshQueues.add(oldQueue);
                 }
-                for (LimitingResourceQueueDependency each: incomingDependencies) {
-                    each.setDestiny(newElement);
-                    newElement.add(each);
-                }
-
-                limitingResourceQueueModel.replaceLimitingResourceQueueElement(oldElement, newElement);
-                if (newElement.getLimitingResourceQueue() != null) {
-                    limitingResourcesPanel.removeQueueElementFromQueue(oldElement);
-                    limitingResourcesPanel.appendQueueElementToQueue(newElement);
-                }
-                Util.reloadBindings(gridUnassignedLimitingResourceQueueElements);
+                limitingResourcesPanel.refreshQueues(toRefreshQueues);
             }
         } catch (SuspendNotAllowedException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private LimitingResourceQueueElement getQueueElementFrom(Task task) {
+        return task.getResourceAllocation().getLimitingResourceQueueElement();
+    }
+
+    /**
+     * Copies earliestStartDateBecauseOfGantt and dependencies from source to dest
+     *
+     * @param source
+     * @param dest
+     * @return
+     */
+    private LimitingResourceQueueElement copyFrom(
+            LimitingResourceQueueElement source,
+            LimitingResourceQueueElement dest) {
+
+        dest.setEarlierStartDateBecauseOfGantt(source
+                .getEarlierStartDateBecauseOfGantt());
+
+        for (LimitingResourceQueueDependency each : source
+                .getDependenciesAsOrigin()) {
+            each.setOrigin(dest);
+            dest.add(each);
+        }
+        for (LimitingResourceQueueDependency each : source
+                .getDependenciesAsDestiny()) {
+            each.setDestiny(dest);
+            dest.add(each);
+        }
+
+        return dest;
     }
 
     private EditTaskController getEditController(Window window) {
@@ -476,8 +521,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 for (LimitingResourceQueueElement each : inserted) {
                     // FIXME visually wrong if an element jumps from a queue to
                     // another
-                    limitingResourcesPanel.refreshQueue(each
-                            .getLimitingResourceQueue());
+                    LimitingResourceQueue queue = each.getLimitingResourceQueue();
+                    // Remove all dependency components associated to element
+                    limitingResourcesPanel.removeDependenciesFor(each);
+                    // Dependencies will be created again on refreshing queue
+                    limitingResourcesPanel.refreshQueue(queue);
                 }
             } else {
                 showErrorMessage(_("Cannot allocate selected element. There is not any queue " +

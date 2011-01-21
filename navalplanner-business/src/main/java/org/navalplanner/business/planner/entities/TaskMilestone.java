@@ -30,13 +30,15 @@ import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Javier Moran Rua <jmoran@igalia.com>
  */
-public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
+public class TaskMilestone extends TaskElement implements ITaskPositionConstrained {
 
     public static TaskMilestone create(Date initialDate) {
         Validate.notNull(initialDate);
@@ -48,7 +50,7 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
-    private TaskStartConstraint startConstraint = new TaskStartConstraint();
+    private TaskPositionConstraint startConstraint = new TaskPositionConstraint();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -116,12 +118,29 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     }
 
     @Override
-    protected void moveAllocations(Scenario scenario) {
-        // do nothing
+    protected IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO) {
+        return new IDatesHandler() {
+
+            @Override
+            public void moveTo(IntraDayDate newStartDate) {
+                setIntraDayStartDate(newStartDate);
+                setIntraDayEndDate(newStartDate);
+            }
+
+            @Override
+            public void resizeTo(IntraDayDate endDate) {
+                moveTo(endDate);
+            }
+
+            @Override
+            public void moveEndTo(IntraDayDate newEnd) {
+                moveTo(newEnd);
+            }
+        };
     }
 
     @Override
-    protected void initializeEndDate() {
+    protected void initializeDates() {
         // do nothing
     }
 
@@ -146,12 +165,12 @@ public class TaskMilestone extends TaskElement implements ITaskLeafConstraint {
     }
 
     public void explicityMoved(LocalDate date) {
-        getStartConstraint().explicityMovedTo(date);
+        getPositionConstraint().explicityMovedTo(date);
     }
 
-    public TaskStartConstraint getStartConstraint() {
+    public TaskPositionConstraint getPositionConstraint() {
         if (startConstraint == null) {
-            startConstraint = new TaskStartConstraint();
+            startConstraint = new TaskPositionConstraint();
         }
         return startConstraint;
     }

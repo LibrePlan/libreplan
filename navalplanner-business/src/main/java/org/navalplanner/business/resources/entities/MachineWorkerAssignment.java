@@ -22,6 +22,7 @@ package org.navalplanner.business.resources.entities;
 
 import java.util.Date;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
@@ -83,6 +84,21 @@ public class MachineWorkerAssignment extends BaseEntity {
 
     public Worker getWorker() {
         return worker;
+    }
+
+    public LocalDate getStart() {
+        return asLocalDate(startDate);
+    }
+
+    public LocalDate getFinish() {
+        return asLocalDate(finishDate);
+    }
+
+    private LocalDate asLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(date);
     }
 
 }

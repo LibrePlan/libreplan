@@ -21,6 +21,7 @@
 package org.navalplanner.business.templates.entities;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroupHandler;
@@ -45,7 +46,9 @@ public class HoursGroupOrderLineTemplateHandler extends HoursGroupHandler<OrderL
 
     @Override
     protected HoursGroup createHoursGroup(OrderLineTemplate orderLine) {
-        return HoursGroup.create(orderLine);
+        HoursGroup result = HoursGroup.create(orderLine);
+        result.setCode(UUID.randomUUID().toString());
+        return result;
     }
 
     @Override

@@ -53,7 +53,7 @@ public class InsertionRequirements {
     private static DateAndHour calculateEarliestPossibleEnd(
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingEnd) {
-        return DateAndHour.Max(asDateAndHour(element
+        return DateAndHour.max(asDateAndHour(element
                 .getEarliestEndDateBecauseOfGantt()),
                 max(dependenciesAffectingEnd));
     }
@@ -61,7 +61,7 @@ public class InsertionRequirements {
     private static DateAndHour calculateEarliestPossibleStart(
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingStart) {
-        return DateAndHour.Max(asDateAndHour(element
+        return DateAndHour.max(asDateAndHour(element
                 .getEarlierStartDateBecauseOfGantt()),
                 max(dependenciesAffectingStart));
     }
@@ -71,7 +71,7 @@ public class InsertionRequirements {
         DateAndHour result = null;
         for (LimitingResourceQueueDependency each : dependencies) {
             assert !each.getHasAsOrigin().isDetached();
-            result = DateAndHour.Max(result, each.getDateFromOrigin());
+            result = DateAndHour.max(result, each.getDateFromOrigin());
         }
         return result;
     }
@@ -108,7 +108,7 @@ public class InsertionRequirements {
         if (!isPotentiallyValid(gap)) {
             return AllocationSpec.invalidOn(gapOnQueue);
         }
-        DateAndHour realStart = DateAndHour.Max(earliestPossibleStart, gap
+        DateAndHour realStart = DateAndHour.max(earliestPossibleStart, gap
                 .getStartTime());
         Resource resource = gapOnQueue.getOriginQueue().getResource();
         List<Integer> hours = gap.getHoursInGapUntilAllocatingAndGoingToTheEnd(

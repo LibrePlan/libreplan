@@ -147,7 +147,8 @@ public class ResourceAllocationDAOTest {
         OrderVersion orderVersion = setupVersionUsing(scenarioManager,
                 order);
         orderLine.useSchedulingDataFor(orderVersion);
-        orderLine.getSchedulingState().schedule();
+        assert orderLine.getSchedulingStateType().isSomewhatScheduled();
+
         orderElementDAO.save(orderLine);
 
         HoursGroup hoursGroup = HoursGroup.create(orderLine);

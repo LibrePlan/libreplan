@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,39 +33,26 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Toolbarbutton;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class OrderCostsPerResourceController extends GenericForwardComposer {
+public class OrderCostsPerResourceController extends NavalplannerReportController {
+
+    private static final String REPORT_NAME = "orderCostsPerResourceReport";
 
     private IOrderCostsPerResourceModel orderCostsPerResourceModel;
-
-    private OrderCostsPerResourceReport orderCostsPerResourceReport;
 
     private Datebox startingDate;
 
     private Datebox endingDate;
-
-    private ComboboxOutputFormat outputFormat;
-
-    private Hbox URItext;
-
-    private Toolbarbutton URIlink;
-
-    private static final String HTML = "html";
 
     private Listbox lbOrders;
 
@@ -87,32 +73,15 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
         orderCostsPerResourceModel.init();
     }
 
-    public void showReport(ExtendedJasperreport report) {
-        final String type = outputFormat.getOutputFormat();
-
-        orderCostsPerResourceReport = new OrderCostsPerResourceReport(report);
-        orderCostsPerResourceReport.setDatasource(getDataSource());
-        orderCostsPerResourceReport.setParameters(getParameters());
-
-        String URI = orderCostsPerResourceReport.show(type);
-        if (type.equals(HTML)) {
-            URItext.setStyle("display: none");
-            Executions.getCurrent().sendRedirect(URI, "_blank");
-        } else {
-            URItext.setStyle("display: inline");
-            URIlink.setHref(URI);
-        }
-
-    }
-
-    private JRDataSource getDataSource() {
+    protected JRDataSource getDataSource() {
         return orderCostsPerResourceModel.getOrderReport(getSelectedOrders(),
                 getStartingDate(), getEndingDate(), getSelectedLabels(),
                 getSelectedCriterions());
     }
 
-    private Map<String, Object> getParameters() {
-        Map<String, Object> result = new HashMap<String, Object>();
+    @Override
+    public Map<String, Object> getParameters() {
+        Map<String, Object> result = super.getParameters();
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
@@ -132,12 +101,12 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
-            throw new WrongValueException(bdOrders, _("please, select a order"));
+            throw new WrongValueException(bdOrders, _("please, select a project"));
         }
         boolean result = orderCostsPerResourceModel.addSelectedOrder(order);
         if (!result) {
             throw new WrongValueException(bdOrders,
-                    _("This order has already been added."));
+                    _("This project has already been added."));
         } else {
             Util.reloadBindings(lbOrders);
         }
@@ -243,6 +212,11 @@ public class OrderCostsPerResourceController extends GenericForwardComposer {
     public void onRemoveCriterion(Criterion criterion) {
         orderCostsPerResourceModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    @Override
+    protected String getReportName() {
+        return REPORT_NAME;
     }
 
 }

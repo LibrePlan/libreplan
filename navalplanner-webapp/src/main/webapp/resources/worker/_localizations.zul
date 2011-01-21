@@ -39,8 +39,8 @@
             </listbox>
         </vbox>
         <vbox style="margin-top:80px">
-            <button id="unassignButton" label="${i18n:_('&gt;&gt;')}"></button>
-            <button id="assignButton" label="${i18n:_('&lt;&lt;')}"></button>
+            <button id="unassignButton" label="&gt;&gt;"></button>
+            <button id="assignButton" label="&lt;&lt;"></button>
         </vbox>
 
         <vbox>

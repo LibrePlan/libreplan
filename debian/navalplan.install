@@ -1,2 +1,5 @@
-debian/tmp/var/lib/tomcat6/webapps/navalplanner-webapp.war
+debian/tmp/var/lib/tomcat6/webapps/navalplan.war
 debian/tmp/etc/tomcat6/policy.d/51navalplan.policy
+debian/tmp/usr/share/dbconfig-common/data/navalplan/install/pgsql
+debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0
+debian/tmp/usr/share/tomcat6/lib/postgresql-jdbc3.jar

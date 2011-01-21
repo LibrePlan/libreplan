@@ -76,4 +76,19 @@ public interface IExternalCompanyModel {
      * @param companyUser
      */
     void setCompanyUser(User companyUser);
+
+    /**
+     * Delete the selected {@link ExternalCompany} object.
+     * @param company
+     *            The object to be deleted
+     * @return true if the {@link ExternalCompany} has been deleted correctly.
+     */
+    boolean deleteCompany(ExternalCompany company);
+
+    /**
+     * Check out if the company has been already used.
+     * @param company
+     * @return true if the company has been already used.
+     */
+    boolean isAlreadyInUse(ExternalCompany company);
 }

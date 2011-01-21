@@ -41,9 +41,11 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
  */
 public class CriterionRequirementWrapper  implements INewObject {
 
-    public static final String DIRECT = _("Direct");
+    public final String DIRECT = _("Direct");
 
-    public static final String INDIRECT = _("Indirect");
+    public static String getIndirectTypeLabel() {
+        return _("Indirect");
+    }
 
     private String type;
 
@@ -105,7 +107,9 @@ public class CriterionRequirementWrapper  implements INewObject {
     }
 
     public String getCriterionAndType() {
-        if(criterionWithItsType == null) return criterionAndType;
+        if (criterionWithItsType == null) {
+            return criterionAndType;
+        }
         return criterionWithItsType.getNameAndType();
     }
 
@@ -143,7 +147,7 @@ public class CriterionRequirementWrapper  implements INewObject {
         if (criterionRequirement instanceof DirectCriterionRequirement) {
             type = DIRECT;
         } else if (criterionRequirement instanceof IndirectCriterionRequirement) {
-            type = INDIRECT;
+            type = getIndirectTypeLabel();
         }
     }
 
