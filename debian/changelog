@@ -1,9 +1,17 @@
+navalplan (1.0.2-1) maverick; urgency=low
+
+  * Fixed database installation script.
+  * Added bugfixed from stable branch.
+  * Released version 1.0.2.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 21 Jan 2011 12:07:33 +0100
+
 navalplan (1.0.1-1) maverick; urgency=low
 
   * Added dependency with ttf-freefont on Debian package (needed for Jasper
     reports).
-  * Added bugfixed on stable branch.
-  * Released version 1.1.
+  * Added bugfixed from stable branch.
+  * Released version 1.0.1.
 
  -- Manuel Rego Casasnovas <mrego@erizana>  Fri, 14 Jan 2011 09:58:33 +0100
 
