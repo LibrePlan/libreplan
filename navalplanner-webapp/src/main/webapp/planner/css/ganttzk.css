@@ -48,9 +48,8 @@
 }
 
 #listdetails_container td {
-    border-bottom: 1px solid #86A4BE;
-    border-left: 1px solid #86A4BE;
-    border: 0px;
+    border-bottom: dotted 1px #CCC;
+    border-right: dotted 1px #CCC;
 }
 
 #listdetails_container td {
@@ -173,7 +172,6 @@
 }
 
 .order-startdate, .order-enddate  {
-    border-left: 1px dotted;
     padding-left: 3px;
 }
 
@@ -802,7 +800,7 @@ div.z-tree {
 }
 
 .listdetails td {
-    border-bottom: 1px dotted #86A4BE !important;
+    border-bottom: 1px dotted #CCC !important;
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
