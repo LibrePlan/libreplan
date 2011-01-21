@@ -723,8 +723,12 @@ zkTaskContainer.legendResize = function(cmp) {
 	var taskdetailsContainer = YAHOO.util.Selector.query('.taskdetailsContainer')[0];
 	var legendContainer = YAHOO.util.Selector.query('.legend-container')[0];
 	var legendContainerEarned = YAHOO.util.Selector.query('.legend-container')[1];
-	legendContainer.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
-	legendContainerEarned.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	if ( legendContainer != undefined ) {
+		legendContainer.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	}
+	if ( legendContainerEarned != undefined ) {
+		legendContainerEarned.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	}
 
 };
 
