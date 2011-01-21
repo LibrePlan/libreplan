@@ -1,6 +1,48 @@
 NEWS
 ====
 
+Version 1.0.2 (21 Jan 2011)
+---------------------------
+
+Bugfixing release due to a problem with database installation that makes Debian
+package not work if it was newly installed in a system. Apart from fixing this
+important bug, this version also includes other fixes done since 1.0.1 release.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.0.x verion, you will need to manually execute on
+your database the SQL sentences from file:
+``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0``
+
+To get database access information review ``/etc/tomcat6/context.xml`` file.
+
+Changes
+~~~~~~~
+
+* Fixed problem in Debian package install with some missing SQL sentences.
+* Fix bug in 'Worker search' screen, close button was not working for limiting
+  resources
+* [Bug #815] Fix bug
+* Small enhancement in CutyCapt command.
+* Fixed problem with CSS not being used in printing.
+* [Bug #813] it corrects redirects in the editing virtual workers screen
+* [Bug #812] changes Map for SortedMap in PredefinedDatabaseSnapshots
+* [Bug #812] sorts the combo of multiple search in allocation pop-up.
+* [Bug #796] Fixed. The problem is that the AdvanceMeasurement was still marked
+  as transient.
+* [Bug #811] Translate pending messages including string 'nif/NIF'
+* [Bug #797] checks out if obligatory data are introduced to create a new
+  project.
+* [Bug #797] checks out that deadline is greater than start date in project
+  popup window.
+* [Bug #803] Refactor LimitingResourcesPanel
+* [Bug #803] Fix bug dependencies were not being drawn again on changing zoom
+  level in LimitingResources
+* [Bug #809] Fixed marking to translate missing label.
+* Fixed wrong e-mail on debian/changelog.
+
+
 Version 1.0.1 (14 Jan 2011)
 ---------------------------
 
