@@ -27,11 +27,11 @@
         <caption label="${i18n:_('Task Information')}" />
 
         <!-- Task rows  -->
-        <grid id="gridTaskRows">
+        <grid id="gridTaskRows" width="100%">
             <columns>
-                <column label="${i18n:_('Criteria')}" width="200px" align="center"/>
-                <column label="${i18n:_('Type')}" width="200px" align="center"/>
-                <column label="${i18n:_('Hours')}" align="center"/>
+                <column label="${i18n:_('Criteria')}" width="300px" align="center"/>
+                <column label="${i18n:_('Type')}" width="140px" align="center"/>
+                <column label="${i18n:_('Hours')}" width="80px" align="center"/>
             </columns>
             <foot>
                 <footer label=""/>

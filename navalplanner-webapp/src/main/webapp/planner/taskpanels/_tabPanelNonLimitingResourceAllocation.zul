@@ -45,7 +45,7 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <hbox align="end">
+                <hbox align="end" width="100%">
 
                     <!-- Task Information -->
                     <taskInformation id="taskInformation" />
@@ -61,7 +61,7 @@
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
 
-                    <hbox align="bottom">
+                    <hbox align="bottom" width="100%">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
                         <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
                         <button label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
