@@ -629,6 +629,14 @@ div.z-grid {
     border-top: 0;
 }
 
+#timetrackerheader .second_level_ {
+    -webkit-margin-start: -1px;
+}
+
+#timetrackerheader .second_level_ td {
+    border-bottom: solid 1px #9EB6CE;
+}
+
 .listdetails div {
     border: 0;
 }
