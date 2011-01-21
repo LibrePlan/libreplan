@@ -33,7 +33,7 @@
             <hbox>
 
                 <!-- Criteria -->
-                <vbox sclass="allocation-criterion-selector">
+                <vbox sclass="allocation-criterion-selector" width="100%">
 
                     <tree id="criterionsTree" width="420px"
                             height="340px" vflex="true" multiple="true"
@@ -63,15 +63,15 @@
             </hbox>
 
             <!-- Assignment Type -->
-            <hbox>
+            <hbox width="100%">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
                         <column  />
                     </columns>
-                    <rows>
-                        <row>
-                            <hbox>
+                    <rows width="100%">
+                        <row width="100%">
+                            <hbox width="100%">
                                 <label value="${i18n:_('Assignment Type')}" />
                                 <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
                                         sclass="context-help-popup" height="15px" />
@@ -81,7 +81,7 @@
                                         label="${each.name}" value="${each}" />
                             </radiogroup>
                         </row>
-                        <row>
+                        <row width="100%">
                             <label value="${i18n:_('Current selection')}" />
                             <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
                         </row>
