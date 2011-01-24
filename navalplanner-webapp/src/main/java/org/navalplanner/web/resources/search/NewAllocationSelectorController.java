@@ -166,16 +166,17 @@ public class NewAllocationSelectorController extends
         return result;
     }
 
-    private void doInitialSelection() {
-        currentAllocationType = AllocationType.GENERIC_WORKERS;
-        AllocationType.GENERIC_WORKERS.doTheSelectionOn(allocationTypeSelector);
-        onType(currentAllocationType);
-    }
-
     private void onType(AllocationType type) {
         currentAllocationType = type;
         Util.reloadBindings(criterionsTree);
         refreshListBoxResources();
+    }
+
+    private void doInitialSelection() {
+        Radio item = allocationTypeSelector.getItemAtIndex(0);
+        currentAllocationType = AllocationType.valueOf(item.getValue());
+        showSelectedAllocations();
+        item.setSelected(true);
     }
 
     private void showSelectedAllocations() {
