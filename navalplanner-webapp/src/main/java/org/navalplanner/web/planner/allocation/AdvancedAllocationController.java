@@ -1559,19 +1559,11 @@ class Row {
     }
 
     private void reloadHoursOnInterval(Component component, DetailItem item) {
-        if (isGroupingRow()) {
+        if (isGroupingRow() || isBeforeTaskStartDate(item)
+                || isBeforeLatestConsolidation(item)) {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("calculated-hours");
-        }
-        else if (isBeforeTaskStartDate(item)) {
-            Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("unmodifiable-hours");
-        } else if (isBeforeLatestConsolidation(item)) {
-            Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("consolidated-hours");
+            label.setClass(getLabelClassFor(item));
         } else {
             Intbox intbox = (Intbox) component;
             intbox.setValue(getHoursForDetailItem(item));
@@ -1579,6 +1571,19 @@ class Row {
                 intbox.setDisabled(true);
             }
         }
+    }
+
+    private String getLabelClassFor(DetailItem item) {
+        if (isGroupingRow()) {
+            return "calculated-hours";
+        }
+        if (isBeforeTaskStartDate(item)) {
+            return "unmodifiable-hours";
+        }
+        if (isBeforeLatestConsolidation(item)) {
+            return "consolidated-hours";
+        }
+        return "";
     }
 
     private boolean isBeforeTaskStartDate(DetailItem item) {
