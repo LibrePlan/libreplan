@@ -1519,8 +1519,8 @@ class Row {
     }
 
     private boolean cannotBeEdited(DetailItem item) {
-        return isGroupingRow() || isBeforeTaskStartDate(item) ||
-            isBeforeLatestConsolidation(item);
+        return isGroupingRow() || doesNotIntersectWithTask(item)
+                || isBeforeLatestConsolidation(item);
     }
 
     private Intbox disableIfNeeded(DetailItem item, Intbox intBox) {
@@ -1577,7 +1577,7 @@ class Row {
         if (isGroupingRow()) {
             return "calculated-hours";
         }
-        if (isBeforeTaskStartDate(item)) {
+        if (doesNotIntersectWithTask(item)) {
             return "unmodifiable-hours";
         }
         if (isBeforeLatestConsolidation(item)) {
@@ -1586,9 +1586,18 @@ class Row {
         return "";
     }
 
+    private boolean doesNotIntersectWithTask(DetailItem item) {
+        return isBeforeTaskStartDate(item) || isAfterTaskEndDate(item);
+    }
+
     private boolean isBeforeTaskStartDate(DetailItem item) {
         return task.getIntraDayStartDate().compareTo(
                 item.getEndDate().toLocalDate()) >= 0;
+    }
+
+    private boolean isAfterTaskEndDate(DetailItem item) {
+        return task.getIntraDayEndDate().compareTo(
+                item.getStartDate().toLocalDate()) <= 0;
     }
 
     private boolean isBeforeLatestConsolidation(DetailItem item) {
