@@ -1519,3 +1519,33 @@ display:none;
     background-image: url(../img/small-combo-arrow.png);
     border: 0;
 }
+
+.advancedallocationlayout .second_level_ td {
+    border-right: solid 1px #ABC6DE;
+    border-bottom: solid 1px #ABC6DE;
+}
+
+.advancedallocationlayout .second_level_ th {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.advancedallocationlayout div.z-grid {
+    border-top: 0px;
+}
+
+.advancedallocationlayout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #F2F2F2;
+}
+
+.advanced-assignment-area td .z-intbox {
+    height: 20px;
+    background: #3C90BE;
+    color: white;
+    border-right: solid 1px white;
+}
+
+.advanced-assignment-area td .z-intbox[value="0"] {
+    background: #ABCDE1;
+    color: white;
+}
