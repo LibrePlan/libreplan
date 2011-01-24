@@ -77,6 +77,9 @@ public abstract class AllocationRow {
     public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
             SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
+    private static final SimpleConstraint CONSTRAINT_FOR_HOURS_INPUT = new SimpleConstraint(
+            SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
+
     private static final Log LOG = LogFactory.getLog(AllocationRow.class);
 
     public static void assignHours(List<AllocationRow> rows, int[] hours) {
@@ -206,8 +209,7 @@ public abstract class AllocationRow {
     private Grid derivedAllocationsGrid;
 
     private void initializeResourcesPerDayInput() {
-        resourcesPerDayInput.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_NEGATIVE));
+        resourcesPerDayInput.setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
         resourcesPerDayInput.setWidth("80px");
         Util.bind(resourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
@@ -232,9 +234,7 @@ public abstract class AllocationRow {
         initializeResourcesPerDayInput();
         hoursInput.setValue(0);
         hoursInput.setWidth("80px");
-        hoursInput.setDisabled(true);
-        hoursInput.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_NEGATIVE));
+        hoursInput.setConstraint(constraintForHoursInput());
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
@@ -362,18 +362,12 @@ public abstract class AllocationRow {
     }
 
     private Constraint constraintForHoursInput() {
-        if (hoursInput.isDisabled()) {
-            return null;
-        }
-        return new SimpleConstraint(SimpleConstraint.NO_EMPTY
-                | SimpleConstraint.NO_NEGATIVE);
+        return (hoursInput.isDisabled()) ? null : CONSTRAINT_FOR_HOURS_INPUT;
     }
 
     private Constraint constraintForResourcesPerDayInput() {
-        if (resourcesPerDayInput.isDisabled()) {
-            return null;
-        }
-        return CONSTRAINT_FOR_RESOURCES_PER_DAY;
+        return (resourcesPerDayInput.isDisabled()) ? null
+                : CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
     public void loadDataFromLast() {
