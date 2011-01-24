@@ -66,19 +66,20 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.daos.TaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.test.externalcompanies.daos.ExternalCompanyDAOTest;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -551,7 +552,9 @@ public class TaskElementDAOTest {
                 SpecificResourceAllocation allocation =
                     SpecificResourceAllocation.create(task);
                 allocation.setResource(createValidWorker());
-                LocalDate start = new LocalDate(2000, 2, 4);
+                LocalDate start = task.getStartAsLocalDate();
+                task.setIntraDayEndDate(IntraDayDate.startOfDay(start
+                        .plusDays(2)));
                 allocation.onInterval(start, start.plusDays(2)).allocateHours(16);
                 assertTrue(allocation.getAssignedHours() > 0);
 

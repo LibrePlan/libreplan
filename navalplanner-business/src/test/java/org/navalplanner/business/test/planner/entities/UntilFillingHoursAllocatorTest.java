@@ -280,6 +280,7 @@ public class UntilFillingHoursAllocatorTest {
 
     @Test
     public void theResourcesPerDayAreKeptCorrectlyCalculatedAfterUpdatingTheEndInterval() {
+        givenTaskOfDaysLength(10);
         final ResourcesPerDay oneResourcePerDay = ResourcesPerDay.amount(1);
         givenSpecificAllocations(oneResourcePerDay);
         ResourceAllocation.allocating(allocations).untilAllocating(30);

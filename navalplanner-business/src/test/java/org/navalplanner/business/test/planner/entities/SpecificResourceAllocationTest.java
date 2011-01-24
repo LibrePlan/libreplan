@@ -318,6 +318,74 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void thePartOfTheIntervalUsedIsTheOneOverlapping() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start.plusDays(1),
+                start.plusDays(6)).allocateHours(12);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(4, 4, 4));
+    }
+
+    @Test
+    public void thePartOfTheIntervalUsedIsTheOneOverlappingWithTheTask() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+
+        specificResourceAllocation.fromStartUntil(start.plusDays(2))
+                .allocateHours(16);
+        specificResourceAllocation.onInterval(start, start.plusDays(6))
+                .allocateHours(12);
+
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(3, 3, 3, 3));
+    }
+
+    @Test
+    public void theEndIsNotChangedIfAZeroAllocationIsDoneInTheLastDay() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        LocalDate end = start.plusDays(4);
+
+        specificResourceAllocation.fromStartUntil(end).allocateHours(32);
+        specificResourceAllocation.onInterval(start.plusDays(3), end)
+                .allocateHours(0);
+
+        assertThat(specificResourceAllocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(end)));
+    }
+
+    @Test
+    public void theEndCanGrowUntilReachingTheEndOfTheTask() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        LocalDate end = start.plusDays(4);
+
+        specificResourceAllocation.fromStartUntil(end.minusDays(1))
+                .allocateHours(24);
+        assertThat(specificResourceAllocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(end.minusDays(1))));
+
+        specificResourceAllocation.onInterval(start, end).allocateHours(32);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8));
+        assertThat(specificResourceAllocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(end)));
+    }
+
+    @Test
+    public void theStartIsNotChangedIfAZeroAllocationIsDoneInTheFirstDay() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromStartUntil(start.plusDays(4))
+                .allocateHours(32);
+        specificResourceAllocation.onInterval(start, start.plusDays(1))
+                .allocateHours(0);
+        assertThat(specificResourceAllocation.getIntraDayStartDate(),
+                equalTo(IntraDayDate.startOfDay(start)));
+    }
+
+    @Test
     public void canAssignFromStartUntilEnd() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
