@@ -304,12 +304,14 @@ public class SpecificResourceAllocation extends
 
     public void allocateKeepingProportions(LocalDate start,
             LocalDate endExclusive, int newHoursForInterval) {
-        List<DayAssignment> assignments = getAssignments(start, endExclusive);
+        IntervalInsideTask interval = new IntervalInsideTask(start,
+                endExclusive);
+        List<DayAssignment> assignments = interval.getAssignmentsOnInterval();
         ProportionalDistributor distributor = ProportionalDistributor
                 .create(asHours(assignments));
         int[] newHoursPerDay = distributor.distribute(newHoursForInterval);
-        resetAssigmentsForInterval(start, endExclusive, assignmentsForNewHours(
-                assignments, newHoursPerDay));
+        resetAssigmentsForInterval(interval,
+                assignmentsForNewHours(assignments, newHoursPerDay));
     }
 
     private List<SpecificDayAssignment> assignmentsForNewHours(
