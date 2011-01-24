@@ -1509,15 +1509,17 @@ class Row {
     }
 
     Component hoursOnInterval(DetailItem item) {
-        Component result =
-            isGroupingRow() || isBeforeTaskStartDate(item) ||
-                isBeforeLatestConsolidation(item) ?
-                    new Label() :
-                    disableIfNeeded(item, noNegativeIntbox());
+        Component result = cannotBeEdited(item) ? new Label()
+                : disableIfNeeded(item, noNegativeIntbox());
         reloadHoursOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
         return result;
+    }
+
+    private boolean cannotBeEdited(DetailItem item) {
+        return isGroupingRow() || isBeforeTaskStartDate(item) ||
+            isBeforeLatestConsolidation(item);
     }
 
     private Intbox disableIfNeeded(DetailItem item, Intbox intBox) {
@@ -1533,8 +1535,7 @@ class Row {
 
     private void addListenerIfNeeded(final DetailItem item,
             final Component component) {
-        if (isGroupingRow() || isBeforeTaskStartDate(item) ||
-                isBeforeLatestConsolidation(item)) {
+        if (cannotBeEdited(item)) {
             return;
         }
         final Intbox intbox = (Intbox) component;
@@ -1558,8 +1559,7 @@ class Row {
     }
 
     private void reloadHoursOnInterval(Component component, DetailItem item) {
-        if (isGroupingRow() || isBeforeTaskStartDate(item)
-                || isBeforeLatestConsolidation(item)) {
+        if (cannotBeEdited(item)) {
             Label label = (Label) component;
             label.setValue(getHoursForDetailItem(item) + "");
             label.setClass(getLabelClassFor(item));
