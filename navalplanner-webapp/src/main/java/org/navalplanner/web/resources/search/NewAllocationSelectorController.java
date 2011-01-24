@@ -185,11 +185,8 @@ public class NewAllocationSelectorController extends
 
     private String buildSelectedAllocationsString() {
         if (currentAllocationType == AllocationType.SPECIFIC) {
-            List<String> result = new ArrayList<String>();
-            for (Resource each : getSelectedResourcesOnListbox()) {
-                result.add(each.getShortDescription());
-            }
-            return StringUtils.join(result, ",");
+            List<Resource> resources = getSelectedResources();
+            return Resource.getCaptionFor(resources);
         } else {
             List<Criterion> criteria = getSelectedCriterions();
             return currentAllocationType.asCaption(criteria);
@@ -339,7 +336,7 @@ public class NewAllocationSelectorController extends
         if (isGenericType()) {
             return allResourcesShown();
         } else {
-            return getSelectedResourcesOnListbox();
+            return getSelectedResources();
         }
     }
 
@@ -354,7 +351,7 @@ public class NewAllocationSelectorController extends
     }
 
     @SuppressWarnings("unchecked")
-    private List<Resource> getSelectedResourcesOnListbox() {
+    private List<Resource> getSelectedResources() {
         List<Resource> result = new ArrayList<Resource>();
         Set<Listitem> selectedItems = listBoxResources.getSelectedItems();
         for (Listitem item : selectedItems) {
