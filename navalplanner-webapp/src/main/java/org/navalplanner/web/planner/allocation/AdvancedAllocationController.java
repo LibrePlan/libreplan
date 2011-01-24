@@ -1582,9 +1582,8 @@ class Row {
     }
 
     private boolean isBeforeTaskStartDate(DetailItem item) {
-        DateTime taskStartDate =
-            new DateTime(task.getStartDate().getTime());
-        return item.getEndDate().compareTo(taskStartDate) < 0;
+        return task.getIntraDayStartDate().compareTo(
+                item.getEndDate().toLocalDate()) >= 0;
     }
 
     private boolean isBeforeLatestConsolidation(DetailItem item) {
