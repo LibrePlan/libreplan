@@ -409,6 +409,11 @@ button.z-button {
     left: 10px;
 }
 
+#messages-div {
+    position:fixed;
+    margin-top:-10px;
+}
+
 div.z-errbox {
     background-color: #EECCCC;
     color:red;
