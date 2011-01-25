@@ -65,8 +65,9 @@
             onSelect="advancedAllocationController.goToSelectedVerticalPage();" />
             <button tooltiptext="Vertical Page down" image="/common/img/ico_down.png" id="verticalPaginationDownButton"
             onClick="advancedAllocationController.verticalPagedown();" disabled="true" />
-
-            <div id="messages" />
+            <n:div id="messages-div">
+                <div id="messages" />
+            </n:div>
         </hbox>
    </north>
 
