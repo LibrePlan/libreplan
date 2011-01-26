@@ -189,7 +189,14 @@ public class AdvancedAllocationTabCreator {
             taskElementDAO.reattach(task);
             allocationResult.applyTo(currentScenario, task);
             taskElementDAO.save(task);
+            makeNewAssignmentsDontPoseAsTransient(task);
             updateParentsPositions(task);
+        }
+
+        private void makeNewAssignmentsDontPoseAsTransient(TaskElement task) {
+            for (DayAssignment each : task.getDayAssignments()) {
+                each.dontPoseAsTransientObjectAnymore();
+            }
         }
 
         private void updateParentsPositions(TaskElement task) {
