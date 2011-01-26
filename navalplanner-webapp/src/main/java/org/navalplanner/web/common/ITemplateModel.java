@@ -49,4 +49,8 @@ public interface ITemplateModel {
 
     boolean isScenariosVisible();
 
+    boolean isChangedDefaultAdminPassword();
+
+    String getIdAdminUser();
+
 }

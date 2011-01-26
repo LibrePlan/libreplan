@@ -128,4 +128,13 @@ public class TemplateController extends GenericForwardComposer {
     public Boolean getScenariosVisible() {
         return (templateModel != null) && templateModel.isScenariosVisible();
     }
+
+    public Boolean getDefaultPasswdVisible() {
+        return (templateModel != null) && (getIdAdminUser() != null)
+                && (!templateModel.isChangedDefaultAdminPassword());
+    }
+
+    public String getIdAdminUser() {
+        return templateModel.getIdAdminUser();
+    }
 }

@@ -72,6 +72,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForCostCategory = true;
 
+    private Boolean changedDefaultAdminPassword = false;
+
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
     private String companyLogoURL = "";
@@ -262,6 +264,16 @@ public class Configuration extends BaseEntity {
 
     public String getCompanyLogoURL() {
         return companyLogoURL;
+    }
+
+    public void setChangedDefaultAdminPassword(
+            Boolean changedDefaultAdminPassword) {
+        this.changedDefaultAdminPassword = changedDefaultAdminPassword;
+    }
+
+    public Boolean getChangedDefaultAdminPassword() {
+        return changedDefaultAdminPassword == null ? false
+                : changedDefaultAdminPassword;
     }
 
 }

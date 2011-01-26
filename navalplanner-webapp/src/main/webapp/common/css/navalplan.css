@@ -187,3 +187,8 @@ a.sub_menu:hover {
     right:0;
     z-index:2;
 }
+
+.footer-messages-area {
+	color: #ffa100;
+	font-size: 11px;
+}

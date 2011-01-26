@@ -27,22 +27,23 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.Dependency;
-import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -50,6 +51,7 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -60,11 +62,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.ConstraintCalculator;
 import org.zkoss.ganttz.data.DependencyType;
-import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.IDependency;
+import org.zkoss.ganttz.data.DependencyType.Point;
+import org.zkoss.ganttz.data.GanttDiagramGraph.IAdapter;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
@@ -451,4 +453,22 @@ public class TemplateModel implements ITemplateModel {
         return configurationDAO.getConfiguration().isScenariosVisible();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean isChangedDefaultAdminPassword() {
+        return configurationDAO.getConfiguration()
+                .getChangedDefaultAdminPassword();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getIdAdminUser() {
+        String login = MandatoryUser.ADMIN.getLoginName();
+        try {
+            return Registry.getUserDAO().findByLoginName(login).getId()
+                    .toString();
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
 }

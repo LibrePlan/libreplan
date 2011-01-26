@@ -36,6 +36,8 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -74,11 +76,18 @@ public class UserCRUDController extends GenericForwardComposer implements
 
     private Autocomplete profileAutocomplete;
 
+    private IURLHandlerRegistry URLHandlerRegistry;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        final URLHandler<IUserCRUDController> handler = URLHandlerRegistry
+                .getRedirectorFor(IUserCRUDController.class);
+        handler.registerListener(this, page);
+
         getVisibility().showOnly(listWindow);
         passwordBox = (Textbox) createWindow.getFellowIfAny("password");
         passwordConfirmationBox = (Textbox) createWindow.getFellowIfAny("passwordConfirmation");
