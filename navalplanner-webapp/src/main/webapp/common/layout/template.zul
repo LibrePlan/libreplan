@@ -126,11 +126,13 @@
     <n:td height="40" align="left" valign="bottom">
         <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
     </n:td>
-    <n:td>
-        <div if="${templateCtrl.defaultPasswdVisible}">
-            <n:span id="footer-messages-area" class="footer-messages-area">${i18n:_('The admin account default password was not changed')}.</n:span>
-            <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}" class="footer-messages-area">[${i18n:_('Click here')}]</n:a>
-        </div>
+    <n:td  valign="center">
+        <n:div id="warningDefaultPasswd" style="display:${templateCtrl.defaultPasswdVisible}">
+            <div>
+                <n:span id="footer-messages-area" class="footer-messages-area">${i18n:_('The admin account default password was not changed')}.</n:span>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}" class="footer-messages-area">[${i18n:_('Click here')}]</n:a>
+            </div>
+        </n:div>
     </n:td>
     <n:td height="40" align="right" valign="bottom">
         <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>

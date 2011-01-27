@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -32,12 +33,14 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Model for UI operations related to {@link User}
@@ -73,15 +76,44 @@ public class UserModel implements IUserModel {
             //because it must exist to perform the encoding
             Validate.notEmpty(user.getLoginName());
 
-            if (clearNewPassword != null) {
+            if (getClearNewPassword() != null) {
+
+                /**
+                 * it ckecks if the admin password has changed and if so sets
+                 * true in the field changedDefaultAdminPassword.
+                 */
+                if (user.getLoginName().equalsIgnoreCase(
+                        MandatoryUser.ADMIN.getLoginName())) {
+                    checkIfChangeDefaultAdminPasswd();
+                }
+
                 user.setPassword(dbPasswordEncoderService.
-                        encodePassword(clearNewPassword, user.getLoginName()));
+                        encodePassword(getClearNewPassword(), user.getLoginName()));
             }
         }
         catch (IllegalArgumentException e) {}
 
         user.validate();
         userDAO.save(user);
+    }
+
+    private void checkIfChangeDefaultAdminPasswd() {
+        boolean changedPasswd = true;
+        if (getClearNewPassword().isEmpty()
+                || getClearNewPassword().equals(MandatoryUser.ADMIN
+                        .getClearPassword())) {
+            changedPasswd = false;
+        }
+        // save the field changedDefaultAdminPassword in configuration.
+        Registry.getConfigurationDAO().saveChangedDefaultAdminPassword(
+                changedPasswd);
+
+        // show or hide the warning
+        if (changedPasswd) {
+            Clients.evalJavaScript("hideWarningDefaultPasswd();");
+        } else {
+            Clients.evalJavaScript("showWarningDefaultPasswd();");
+        }
     }
 
     @Override
@@ -176,10 +208,19 @@ public class UserModel implements IUserModel {
         //user.getLoginName must exist to do that, and we're
         //not sure at this point
         if(password != "") {
-            clearNewPassword = password;
+            setClearNewPassword(password);
         }
         else{
-            clearNewPassword = null;
+            setClearNewPassword(null);
         }
+    }
+
+    public void setClearNewPassword(String clearNewPassword) {
+        this.clearNewPassword = clearNewPassword;
+    }
+
+    @Override
+    public String getClearNewPassword() {
+        return clearNewPassword;
     }
 }

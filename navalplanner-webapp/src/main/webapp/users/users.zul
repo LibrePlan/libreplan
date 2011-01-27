@@ -29,6 +29,20 @@
 <?component name="list" inline="true" macroURI="_listUsers.zul"?>
 <?component name="edition" inline="true" macroURI="_editUser.zul"?>
 <zk>
+  <script type="text/JavaScript">
+    <![CDATA[
+        function showWarningDefaultPasswd()  {
+			var warningDefaultPasswd = document.getElementById ("warningDefaultPasswd");
+			warningDefaultPasswd.style["display"] = "inline";
+        }
+
+		function hideWarningDefaultPasswd()  {
+			var warningDefaultPasswd = document.getElementById ("warningDefaultPasswd");
+			warningDefaultPasswd.style["display"] = "none";
+        }
+    ]]>
+  </script>
+
     <window self="@{define(content)}"
         apply="org.navalplanner.web.users.UserCRUDController">
         <vbox id="messagesContainer"></vbox>

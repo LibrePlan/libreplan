@@ -120,4 +120,6 @@ public interface IUserModel {
      */
     void setPassword(String password);
 
+    String getClearNewPassword();
+
 }

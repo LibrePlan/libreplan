@@ -23,10 +23,12 @@ package org.navalplanner.business.common.daos;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.navalplanner.business.common.entities.Configuration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -54,4 +56,13 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
         return getConfiguration();
     }
 
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveChangedDefaultAdminPassword(boolean change) {
+        Query query = getSession()
+                .createQuery(
+                        "UPDATE Configuration e SET e.changedDefaultAdminPassword = :change");
+        query.setParameter("change", change);
+        query.executeUpdate();
+    }
 }
