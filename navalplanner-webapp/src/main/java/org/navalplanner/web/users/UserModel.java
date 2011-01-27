@@ -65,7 +65,18 @@ public class UserModel implements IUserModel {
     @Override
     @Transactional(readOnly=true)
     public List<User> getUsers() {
-        return userDAO.list(User.class);
+        List<User> users = userDAO.list(User.class);
+        initializeUsers(users);
+        return users;
+    }
+
+    private void initializeUsers(List<User> users) {
+        for (User user : users) {
+            user.getRoles().size();
+            for (Profile profile : user.getProfiles()) {
+                profile.getRoles().size();
+            }
+        }
     }
 
     @Override

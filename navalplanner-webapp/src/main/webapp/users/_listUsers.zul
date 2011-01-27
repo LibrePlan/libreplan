@@ -25,12 +25,14 @@
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('User login name')}" sort="auto(loginName)" />
             <newdatasortablecolumn label="${i18n:_('Disabled')}" />
+            <newdatasortablecolumn label="${i18n:_('Is administrator')}" />
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
             <row self="@{each='user'}" value="@{user}">
                 <label value="@{user.loginName}" />
                 <checkbox checked="@{user.disabled}" disabled="true" />
+                <checkbox checked="@{user.administrator}" disabled="true" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"

@@ -166,6 +166,10 @@ public class User extends BaseEntity {
         return disabled;
     }
 
+    public boolean isAdministrator() {
+        return isInRole(UserRole.ROLE_ADMINISTRATION);
+    }
+
     @AssertTrue(message="login name is already being used by another user")
     public boolean checkConstraintUniqueLoginName() {
 
