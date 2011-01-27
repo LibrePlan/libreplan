@@ -30,7 +30,8 @@
     <label value="${i18n:_('Personal details')}"/>
     <textbox id="txtfilter" width="200px" onOK="controller.onApplyFilter()"/>
 
-<groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false">
+<groupbox sclass="filter-more-options" mold="3d"  width="120px" open="false" 
+    contentStyle="border: 1px solid #B2CCD9;">
         <caption label="${i18n:_('More options')}" />
 
 <hbox>

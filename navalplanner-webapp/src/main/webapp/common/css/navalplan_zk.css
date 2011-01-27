@@ -1421,9 +1421,9 @@ display:none;
     overflow: visible;
 }
 
-.filter-more-options .z-groupbox-body {
+.filter-more-options .z-groupbox-cnt {
     width: 900px;
-    left: -780px;
+    left: -792px;
     position: relative;
     background-color: #F0FAFF;
 }
@@ -1434,7 +1434,7 @@ display:none;
 .filter-more-options .z-groupbox-header {
     margin-top: 0px;
 }
-.filter-more-options .z-groupbox-br {
+.filter-more-options .z-groupbox-bl {
     display: none;
 }
 
