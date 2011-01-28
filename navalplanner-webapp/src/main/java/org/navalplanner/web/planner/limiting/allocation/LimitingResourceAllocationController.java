@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
@@ -40,6 +41,9 @@ import org.navalplanner.web.planner.taskedition.TaskPropertiesController.Resourc
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
+import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
+import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -100,15 +104,16 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
 
     /**
      * Shows Resource Allocation window
+     * @param context
      * @param task
      * @param ganttTask
      * @param planningState
      */
-    public void init(org.navalplanner.business.planner.entities.Task task,
+    public void init(IContextWithPlannerTask<TaskElement> context, org.navalplanner.business.planner.entities.Task task,
             PlanningState planningState,
             IMessagesForUser messagesForUser) {
         try {
-            resourceAllocationModel.init(task, planningState);
+            resourceAllocationModel.init(context, task, planningState);
             resourceAllocationModel.setLimitingResourceAllocationController(this);
 
             // if exist resource allocation with day assignments, it can not
