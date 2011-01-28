@@ -24,8 +24,10 @@ import java.util.List;
 
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
 import org.navalplanner.web.planner.order.PlanningState;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Contract for {@link Task}.
@@ -42,7 +44,7 @@ public interface ILimitingResourceAllocationModel extends INewAllocationsAdder {
 
     List<LimitingAllocationRow> getResourceAllocationRows();
 
-    void init(Task task, PlanningState planningState);
+    void init(IContextWithPlannerTask<TaskElement> context, Task task, PlanningState planningState);
 
     void setLimitingResourceAllocationController(
             LimitingResourceAllocationController limitingResourceAllocationController);

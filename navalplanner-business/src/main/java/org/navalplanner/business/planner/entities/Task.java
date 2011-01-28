@@ -86,6 +86,25 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
+    /**
+     * Calculates end date for a task, starting from start until fulfilling
+     * number of hours.
+     *
+     * For tasks with limiting resources it's needed to resize a task if the
+     * number of hours allocated to a resource changes. In non limiting
+     * resources, the task is resized because when the number of hours changes,
+     * new days assignments are generated, and then the task is resized
+     * accordingly.
+     *
+     * @param hours
+     */
+    public void resizeToHours(int hours) {
+        Validate.isTrue(isLimiting());
+        EffortDuration workHours = EffortDuration.hours(hours);
+        DurationBetweenDates duration = new DurationBetweenDates(0, workHours);
+        setIntraDayEndDate(duration.fromStartToEnd(getIntraDayStartDate()));
+    }
+
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
 
     private Set<ResourceAllocation<?>> resourceAllocations = new HashSet<ResourceAllocation<?>>();
