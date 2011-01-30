@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -438,35 +437,41 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
                 queuesState
                         .getPotentiallyAffectedByInsertion(externalQueueElement),
                 requirements.getElement(), allocation);
-        result.addAll(moved);
-        result.addAll(scheduleUnscheduledElementsIfNeeded(allocation));
+        result.addAll(rescheduleAffectedElementsToSatisfyDependencies(allocation, moved));
 
         return result;
     }
 
-    private Collection<? extends LimitingResourceQueueElement> scheduleUnscheduledElementsIfNeeded(
-            AllocationSpec allocation) {
+    /**
+     * After an allocation dependencies might be broken, this method unschedules
+     * elements affected by an allocation and reschedule them again in
+     * topological order, so dependencies are satisfied
+     *
+     * If the allocation was appropriative it also allocates those elements that
+     * might be unscheduled before due to the appropriative allocation
+     *
+     * @param allocation
+     * @param moved
+     * @return
+     */
+    private Collection<? extends LimitingResourceQueueElement> rescheduleAffectedElementsToSatisfyDependencies(
+            AllocationSpec allocation, List<LimitingResourceQueueElement> moved) {
 
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        List<LimitingResourceQueueElement> toReschedule = new ArrayList<LimitingResourceQueueElement>();
 
-        if (allocation.isAppropriative()) {
-            checkAllocationIsAppropriative(false);
-
-            // Assign all unscheduled elements
-            List<LimitingResourceQueueElement> unscheduled = allocation.getUnscheduledElements();
-            for (LimitingResourceQueueElement each: unscheduled) {
-                result.addAll(assignLimitingResourceQueueElement(each));
-            }
-
-            // Only for those originally unscheduled elements, unschedule and
-            // schedule them again to force dependencies are satisfied
-            for (LimitingResourceQueueElement each: unscheduled) {
-                unschedule(each);
-                assignLimitingResourceQueueElement(each);
-            }
-
-            checkAllocationIsAppropriative(true);
+        checkAllocationIsAppropriative(false);
+        for (LimitingResourceQueueElement each: moved) {
+            toReschedule.add(unschedule(each));
         }
+        if (allocation.isAppropriative()) {
+            toReschedule.addAll(allocation.getUnscheduledElements());
+        }
+        for (LimitingResourceQueueElement each: queuesState.inTopologicalOrder(toReschedule)) {
+            result.addAll(assignLimitingResourceQueueElement(each));
+        }
+        checkAllocationIsAppropriative(true);
+
         return result;
     }
 
@@ -652,7 +657,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         if (allocation != null) {
             if (checkAllocationIsAppropriative()
                     && requirements.isAppropiativeAllocation(allocation)) {
-                doAppropriativeAllocation(requirements, allocation);
+                return doAppropriativeAllocation(requirements, allocation);
             }
             return allocation;
         }
@@ -687,10 +692,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         LimitingResourceQueue queue = queuesState.getQueueFor(element
                 .getResource());
 
-        List<LimitingResourceQueueElement> unscheduled = unscheduleElementsFor(
-                queue, requirements);
+        List<LimitingResourceQueueElement> unscheduled = new ArrayList<LimitingResourceQueueElement>();
+        allocation = unscheduleElementsFor(queue, requirements, unscheduled);
         allocation.setUnscheduledElements(queuesState.inTopologicalOrder(unscheduled));
-
         return allocation;
     }
 
@@ -800,8 +804,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueueElement> moved = shift(
                 queuesState.getPotentiallyAffectedByInsertion(element),
                 requirements.getElement(), allocation);
-        result.addAll(moved);
-        result.addAll(scheduleUnscheduledElementsIfNeeded(allocation));
+        result.addAll(rescheduleAffectedElementsToSatisfyDependencies(allocation, moved));
 
         return result;
     }
@@ -1079,9 +1082,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             unschedule(element);
         }
 
-        // Unschedule elements in queue since allocationTime
-        List<LimitingResourceQueueElement> toSchedule = new ArrayList<LimitingResourceQueueElement>(
-                unscheduleElementsFor(queue, requirements));
+        // Unschedule elements in queue since allocationTime and put them in
+        // toSchedule
+        List<LimitingResourceQueueElement> toSchedule = new ArrayList<LimitingResourceQueueElement>();
+        unscheduleElementsFor(queue, requirements, toSchedule);
 
         result.addAll(assignLimitingResourceQueueElementToQueueAt(element,
                 queue, allocationTime, getEndsAfterBecauseOfGantt(element)));
@@ -1106,31 +1110,29 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      * @param requirements
      * @return
      */
-    private List<LimitingResourceQueueElement> unscheduleElementsFor(
-            LimitingResourceQueue queue, InsertionRequirements requirements) {
-
-        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
-
+    private AllocationSpec unscheduleElementsFor(
+            LimitingResourceQueue queue, InsertionRequirements requirements,
+            List<LimitingResourceQueueElement> result) {
         DateAndHour allocationTime = requirements.getEarliestPossibleStart();
         List<GapOnQueueWithQueueElement> gapsWithQueueElements = queuesState
                 .getGapsWithQueueElementsOnQueueSince(queue, allocationTime);
-        unscheduleElementsFor(gapsWithQueueElements, requirements, result);
-        return result;
+
+        return unscheduleElementsFor(gapsWithQueueElements, requirements, result);
     }
 
-    private void unscheduleElementsFor(List<GapOnQueueWithQueueElement> gaps,
+    private AllocationSpec unscheduleElementsFor(List<GapOnQueueWithQueueElement> gaps,
             InsertionRequirements requirements,
             List<LimitingResourceQueueElement> result) {
 
         if (gaps.isEmpty()) {
-            return;
+            return null;
         }
         GapOnQueueWithQueueElement first = gaps.get(0);
         GapOnQueue gapOnQueue = first.getGapOnQueue();
         if (gapOnQueue != null) {
             AllocationSpec allocation = requirements.guessValidity(gapOnQueue);
             if (allocation.isValid()) {
-                return;
+                return allocation;
             }
         }
         result.add(unschedule(first.getQueueElement()));
@@ -1138,9 +1140,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             gaps.set(1, GapOnQueueWithQueueElement.coalesce(first, gaps.get(1)));
         }
         gaps.remove(0);
-        unscheduleElementsFor(gaps, requirements, result);
+        return unscheduleElementsFor(gaps, requirements, result);
     }
-
 
     @SuppressWarnings("unchecked")
     public LimitingResourceQueueElement getFirstElementFrom(LimitingResourceQueue queue, DateAndHour allocationTime) {
