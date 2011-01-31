@@ -252,6 +252,9 @@ public class TaskComponent extends Div implements AfterCompose {
         return cssClass;
     }
 
+    public boolean isLimiting() {
+        return task.isLimiting();
+    }
 
     protected void updateClass() {
         response(null, new AuInvoke(this, "setClass",
