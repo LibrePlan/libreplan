@@ -249,6 +249,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
 
         // Initialize dependencies
         rebuildDependencies();
+        dependencyList.afterCompose();
 
         initializePagination();
     }
@@ -349,6 +350,14 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         getFellow("insertionPointLeftPanel").getChildren().clear();
         getFellow("insertionPointRightPanel").getChildren().clear();
         getFellow("insertionPointTimetracker").getChildren().clear();
+    }
+
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
+    }
+
+    public TimeTracker getTimeTracker() {
+        return timeTrackerComponent.getTimeTracker();
     }
 
     public void unschedule(QueueTask task) {

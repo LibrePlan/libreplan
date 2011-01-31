@@ -21,6 +21,7 @@
 package org.navalplanner.web.limitingresources;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -29,22 +30,66 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
+import org.zkoss.ganttz.timetracker.TimeTracker;
+import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
+import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
 /**
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class LimitingDependencyList extends XulElement {
+public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
     private final LimitingResourcesPanel panel;
 
+    private transient IZoomLevelChangedListener listener;
+
     private Map<LimitingResourceQueueDependency, LimitingDependencyComponent> dependencies = new HashMap<LimitingResourceQueueDependency, LimitingDependencyComponent>();
 
     public LimitingDependencyList(LimitingResourcesPanel panel) {
         this.panel = panel;
+    }
+
+    @Override
+    public void afterCompose() {
+        if (listener == null) {
+            listener = new IZoomLevelChangedListener() {
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    removeDependencyComponents();
+                    createDependencyComponents();
+                }
+
+                private void createDependencyComponents() {
+                    for (LimitingResourceQueueDependency each: dependencies.keySet()) {
+                        LimitingDependencyComponent dependencyComponent = createDependencyComponent(each);
+                        if (dependencyComponent != null) {
+                            addDependencyComponent(dependencyComponent);
+                        }
+                    }
+                }
+
+            };
+            getTimeTracker().addZoomListener(listener);
+        }
+    }
+
+    private void removeDependencyComponents() {
+        List<LimitingDependencyComponent> children = ComponentsFinder
+                .findComponentsOfType(LimitingDependencyComponent.class,
+                        getChildren());
+        for (LimitingDependencyComponent each : children) {
+            removeChild(each);
+        }
+    }
+
+    private TimeTracker getTimeTracker() {
+        return panel.getTimeTracker();
     }
 
     public void addDependenciesFor(LimitingResourceQueueElement queueElement) {
@@ -125,6 +170,7 @@ public class LimitingDependencyList extends XulElement {
     }
 
     public void clear() {
+        removeDependencyComponents();
         dependencies.clear();
     }
 
