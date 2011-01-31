@@ -333,13 +333,14 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
 
                 ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
                 if (resourceAllocation != null) {
-                    if (!resourceAllocation.hasAssignments()) {
-                        task.resizeToHours(resourceAllocation
-                                .getIntendedTotalHours());
-                    }
                     if (resourceAllocation.isNewObject()) {
                         addAssociatedLimitingResourceQueueElement(task,
                                 resourceAllocation);
+                    } else {
+                        if (!resourceAllocation.hasAssignments()) {
+                            task.resizeToHours(resourceAllocation
+                                    .getIntendedTotalHours());
+                        }
                     }
                 }
                 taskDAO.save(task);
