@@ -126,6 +126,7 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     @Override
     @Transactional
     public void save() throws ValidationException {
+        resourceDAO.save(worker);
         if (worker.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(worker.getCalendar());
         }
@@ -133,7 +134,6 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         if(assignedCriterionsModel != null){
             assignedCriterionsModel.confirm();
         }
-        resourceDAO.save(worker);
         localizationsAssigner = null;
     }
 
