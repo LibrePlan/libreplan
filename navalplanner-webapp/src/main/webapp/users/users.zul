@@ -31,14 +31,19 @@
 <zk>
   <script type="text/JavaScript">
     <![CDATA[
-        function showWarningDefaultPasswd()  {
-			var warningDefaultPasswd = document.getElementById ("warningDefaultPasswd");
-			warningDefaultPasswd.style["display"] = "inline";
-        }
+		function showOrHideWarnings(displayA, displayO, user, displayU)  {
+			if(displayA != "null"){
+				var warningAdmin = document.getElementById ("warningDefaultPasswdadmin");
+				warningAdmin.style["display"] = displayA;
+			}
 
-		function hideWarningDefaultPasswd()  {
-			var warningDefaultPasswd = document.getElementById ("warningDefaultPasswd");
-			warningDefaultPasswd.style["display"] = "none";
+			var warningOthers = document.getElementById ("warningDefaultPasswdOthers");
+            warningOthers.style["display"] = displayO;
+
+			if(displayU != "null" && user != "null"){
+				var warningUser = document.getElementById ("warningDefaultPasswd"+user);
+				warningUser.style["display"] = displayU;
+			}
         }
     ]]>
   </script>

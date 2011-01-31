@@ -32,6 +32,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.common.TemplateController;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.IDBPasswordEncoderService;
@@ -44,8 +45,8 @@ import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Model for UI operations related to {@link User}
- *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -63,7 +64,7 @@ public class UserModel implements IUserModel {
     private String clearNewPassword;
 
     @Override
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     public List<User> getUsers() {
         List<User> users = userDAO.list(User.class);
         initializeUsers(users);
@@ -79,52 +80,104 @@ public class UserModel implements IUserModel {
         }
     }
 
+    private UserCRUDController ctlr;
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        this.ctlr = ctlr;
         try {
-            //user.getLoginName() has to be validated before encoding password,
-            //because it must exist to perform the encoding
+            // user.getLoginName() has to be validated before encoding password,
+            // because it must exist to perform the encoding
             Validate.notEmpty(user.getLoginName());
 
             if (getClearNewPassword() != null) {
 
                 /**
-                 * it ckecks if the admin password has changed and if so sets
-                 * true in the field changedDefaultAdminPassword.
+                 * it ckecks if the user password who have admin role has
+                 * changed and if so sets true in the field
+                 * changedDefaultAdminPassword.
                  */
-                if (user.getLoginName().equalsIgnoreCase(
-                        MandatoryUser.ADMIN.getLoginName())) {
-                    checkIfChangeDefaultAdminPasswd();
-                }
+                checkIfChangeDefaultPasswd();
 
-                user.setPassword(dbPasswordEncoderService.
-                        encodePassword(getClearNewPassword(), user.getLoginName()));
+                user.setPassword(dbPasswordEncoderService.encodePassword(
+                        getClearNewPassword(), user.getLoginName()));
             }
+        } catch (IllegalArgumentException e) {
         }
-        catch (IllegalArgumentException e) {}
 
         user.validate();
         userDAO.save(user);
     }
 
-    private void checkIfChangeDefaultAdminPasswd() {
+    private void checkIfChangeDefaultPasswd() {
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.ADMIN.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.ADMIN);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.USER.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.USER);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.WSREADER.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.WSREADER);
+            return;
+        }
+        if (user.getLoginName().equalsIgnoreCase(
+                MandatoryUser.WSWRITER.getLoginName())) {
+            checkIfChangeDefaultPasswd(MandatoryUser.WSWRITER);
+            return;
+        }
+    }
+
+    private void checkIfChangeDefaultPasswd(MandatoryUser user) {
         boolean changedPasswd = true;
         if (getClearNewPassword().isEmpty()
-                || getClearNewPassword().equals(MandatoryUser.ADMIN
-                        .getClearPassword())) {
+                || getClearNewPassword().equals(user.getClearPassword())) {
             changedPasswd = false;
         }
         // save the field changedDefaultAdminPassword in configuration.
-        Registry.getConfigurationDAO().saveChangedDefaultAdminPassword(
-                changedPasswd);
+        Registry.getConfigurationDAO().saveChangedDefaultPassword(
+                user.getLoginName(), changedPasswd);
+
+        String displayA = null;
+        String displayO = null;
+        String displayU = null;
+        String login = null;
 
         // show or hide the warning
-        if (changedPasswd) {
-            Clients.evalJavaScript("hideWarningDefaultPasswd();");
-        } else {
-            Clients.evalJavaScript("showWarningDefaultPasswd();");
+        displayO = isWarningDefaultPasswdOthersVisible();
+        if (user.equals(MandatoryUser.ADMIN)) {
+            displayA = isWarningDefaultPasswdAdminVisible(user,changedPasswd);
+        }else{
+            displayU = isWarningDefaultPasswordOtherUser(changedPasswd,
+                    displayO);
+            login = user.getLoginName();
         }
+        Clients.evalJavaScript("showOrHideWarnings('" + displayA + "', '"
+                + displayO + "', '" + login + "', '" + displayU + "');");
+    }
+
+    private String isWarningDefaultPasswordOtherUser(boolean changedPasswd,
+            String displayO) {
+        if (displayO.equals("inline")) {
+            return changedPasswd ? "none" : "inline";
+        }
+        return null;
+    }
+
+    private String isWarningDefaultPasswdAdminVisible(MandatoryUser user, boolean changedPasswd){
+        if (user.equals(MandatoryUser.ADMIN)) {
+            return changedPasswd ? "none" : "inline";
+        }
+        return null;
+    }
+
+    private String isWarningDefaultPasswdOthersVisible() {
+        return (TemplateController.getCurrent() != null) ? TemplateController
+                .getCurrent().getDefaultPasswdVisible() : "none";
     }
 
     @Override
@@ -162,7 +215,6 @@ public class UserModel implements IUserModel {
 
     /**
      * Load entities that will be needed in the conversation
-     *
      * @param costCategory
      */
     private void forceLoadEntities(User user) {
@@ -215,13 +267,12 @@ public class UserModel implements IUserModel {
 
     @Override
     public void setPassword(String password) {
-        //password is not encrypted right away, because
-        //user.getLoginName must exist to do that, and we're
-        //not sure at this point
-        if(password != "") {
+        // password is not encrypted right away, because
+        // user.getLoginName must exist to do that, and we're
+        // not sure at this point
+        if (password != "") {
             setClearNewPassword(password);
-        }
-        else{
+        } else {
             setClearNewPassword(null);
         }
     }

@@ -41,7 +41,8 @@ public interface IConfigurationDAO extends IGenericDAO<Configuration, Long> {
     Configuration getConfigurationWithReadOnlyTransaction();
 
     /**
-     * It changes the value in the field changedDefaultAdminPassword.
+     * It changes the value in the field changedDefaultAdminPassword of a
+     * specified user.
      */
-    void saveChangedDefaultAdminPassword(boolean change);
+    void saveChangedDefaultPassword(String user, boolean change);
 }

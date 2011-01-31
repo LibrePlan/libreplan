@@ -74,6 +74,12 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultAdminPassword = false;
 
+    private Boolean changedDefaultUserPassword = false;
+
+    private Boolean changedDefaultWsreaderPassword = false;
+
+    private Boolean changedDefaultWswriterPassword = false;
+
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
     private String companyLogoURL = "";
@@ -274,6 +280,35 @@ public class Configuration extends BaseEntity {
     public Boolean getChangedDefaultAdminPassword() {
         return changedDefaultAdminPassword == null ? false
                 : changedDefaultAdminPassword;
+    }
+
+    public void setChangedDefaultUserPassword(Boolean changedDefaultUserPassword) {
+        this.changedDefaultUserPassword = changedDefaultUserPassword;
+    }
+
+    public Boolean getChangedDefaultUserPassword() {
+        return changedDefaultUserPassword != null ? changedDefaultUserPassword
+                : false;
+    }
+
+    public void setChangedDefaultWsreaderPassword(
+            Boolean changedDefaultWsreaderPassword) {
+        this.changedDefaultWsreaderPassword = changedDefaultWsreaderPassword;
+    }
+
+    public Boolean getChangedDefaultWsreaderPassword() {
+        return changedDefaultWsreaderPassword != null ? changedDefaultWsreaderPassword
+                : false;
+    }
+
+    public void setChangedDefaultWswriterPassword(
+            Boolean changedDefaultWswriterPassword) {
+        this.changedDefaultWswriterPassword = changedDefaultWswriterPassword;
+    }
+
+    public Boolean getChangedDefaultWswriterPassword() {
+        return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
+                : false;
     }
 
 }

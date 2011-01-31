@@ -24,6 +24,7 @@ package org.navalplanner.web.common;
 import java.util.List;
 
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 
 /**
  * Contract for {@link TemplateModel}.
@@ -49,8 +50,8 @@ public interface ITemplateModel {
 
     boolean isScenariosVisible();
 
-    boolean isChangedDefaultAdminPassword();
+    boolean isChangedDefaultPassword(MandatoryUser user);
 
-    String getIdAdminUser();
+    String getIdUser(String login);
 
 }

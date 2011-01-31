@@ -33,6 +33,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.ITemplateModel.IOnFinished;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -63,9 +64,16 @@ public class TemplateController extends GenericForwardComposer {
 
     private IMessagesForUser windowMessages;
 
+    private static TemplateController current;
+
+    public static TemplateController getCurrent() {
+        return current;
+    }
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        TemplateController.current = this;
         if (templateModel.isScenariosVisible()) {
             window = (Window) comp.getFellow("changeScenarioWindow");
             windowMessages = new MessagesForUser(window
@@ -129,12 +137,50 @@ public class TemplateController extends GenericForwardComposer {
         return (templateModel != null) && templateModel.isScenariosVisible();
     }
 
+    public String getDefaultPasswdAdminVisible() {
+        return ((templateModel != null) && (!templateModel
+                .isChangedDefaultPassword(MandatoryUser.ADMIN))) ? "inline"
+                : "none";
+    }
+
+    public String getDefaultPasswdUserVisible() {
+        return ((templateModel != null) && (!templateModel
+                .isChangedDefaultPassword(MandatoryUser.USER))) ? "inline"
+                : "none";
+    }
+
+    public String getDefaultPasswdWsreaderVisible() {
+        return ((templateModel != null) && (!templateModel
+                .isChangedDefaultPassword(MandatoryUser.WSREADER))) ? "inline"
+                : "none";
+    }
+
+    public String getDefaultPasswdWswriterVisible() {
+        return ((templateModel != null) && (!templateModel
+                .isChangedDefaultPassword(MandatoryUser.WSWRITER))) ? "inline"
+                : "none";
+    }
+
     public String getDefaultPasswdVisible() {
-        return ((templateModel != null) && (getIdAdminUser() != null) && (!templateModel
-                .isChangedDefaultAdminPassword())) ? "inline" : "none";
+        return (getDefaultPasswdAdminVisible().equals("none") && (getDefaultPasswdUserVisible()
+                .equals("inline")
+                || getDefaultPasswdWsreaderVisible().equals("inline") || getDefaultPasswdWswriterVisible()
+                .equals("inline"))) ? "inline" : "none";
     }
 
     public String getIdAdminUser() {
-        return templateModel.getIdAdminUser();
+        return templateModel.getIdUser(MandatoryUser.ADMIN.getLoginName());
+    }
+
+    public String getIdUser() {
+        return templateModel.getIdUser(MandatoryUser.USER.getLoginName());
+    }
+
+    public String getIdWsreaderUser() {
+        return templateModel.getIdUser(MandatoryUser.WSREADER.getLoginName());
+    }
+
+    public String getIdWswriterUser() {
+        return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
     }
 }

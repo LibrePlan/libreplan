@@ -36,6 +36,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -455,15 +456,26 @@ public class TemplateModel implements ITemplateModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isChangedDefaultAdminPassword() {
+    public boolean isChangedDefaultPassword(MandatoryUser user) {
+        Configuration configuration = configurationDAO.getConfiguration();
+
+        switch (user) {
+        case ADMIN:
+            return configuration.getChangedDefaultAdminPassword();
+        case USER:
+            return configuration.getChangedDefaultUserPassword();
+        case WSREADER:
+            return configuration.getChangedDefaultWsreaderPassword();
+        case WSWRITER:
+            return configuration.getChangedDefaultWswriterPassword();
+        }
         return configurationDAO.getConfiguration()
                 .getChangedDefaultAdminPassword();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public String getIdAdminUser() {
-        String login = MandatoryUser.ADMIN.getLoginName();
+    public String getIdUser(String login) {
         try {
             return Registry.getUserDAO().findByLoginName(login).getId()
                     .toString();
