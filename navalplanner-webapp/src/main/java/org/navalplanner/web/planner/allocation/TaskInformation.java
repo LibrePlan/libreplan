@@ -75,8 +75,9 @@ public class TaskInformation extends HtmlMacroComponent {
         gridTaskRows.setRowRenderer(newTaskRowsRenderer());
     }
 
-    public void onRecomendAllocation(EventListener event) {
-        btnRecommendedAllocation.addEventListener(Events.ON_CLICK, event);
+    public void onRecomendAllocation(EventListener eventListener) {
+        Util.ensureUniqueListener(btnRecommendedAllocation, Events.ON_CLICK,
+                eventListener);
     }
 
     public void showRecomendedAllocationButton() {

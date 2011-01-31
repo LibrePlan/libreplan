@@ -26,6 +26,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.zkoss.ganttz.util.ComponentsFinder;
@@ -576,6 +577,25 @@ public class Util {
             return existent.get(0);
         }
         return ifNotFound.createAt(container);
+    }
+
+    /**
+     * It removes all listeners registered for eventName and adds the new
+     * listener. It's ensured that the only listener left in the component for
+     * events of name eventName is uniqueListener
+     *
+     * @param component
+     * @param eventName
+     * @param uniqueListener
+     */
+    public static void ensureUniqueListener(Component component, String eventName,
+            EventListener uniqueListener) {
+        Iterator<?> listenerIterator = component.getListenerIterator(eventName);
+        while (listenerIterator.hasNext()) {
+            listenerIterator.next();
+            listenerIterator.remove();
+        }
+        component.addEventListener(eventName, uniqueListener);
     }
 
 }
