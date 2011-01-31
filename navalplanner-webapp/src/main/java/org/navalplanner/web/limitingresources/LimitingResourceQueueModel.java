@@ -240,9 +240,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         }
         for (Dependency each: task.getDependenciesWithThisOrigin()) {
             Hibernate.initialize(each);
+            TaskElement destination = each.getDestination();
+            if (destination instanceof Task
+                    && !Hibernate.isInitialized(destination)) {
+                initializeTask((Task) destination);
+            }
         }
         for (Dependency each: task.getDependenciesWithThisDestination()) {
             Hibernate.initialize(each);
+            TaskElement origin = each.getOrigin();
+            if (origin instanceof Task
+                    && !Hibernate.isInitialized(origin)) {
+                initializeTask((Task) origin);
+            }
         }
         initializeTaskSource(task.getTaskSource());
         initializeRootOrder(task);
