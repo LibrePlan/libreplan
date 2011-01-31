@@ -652,7 +652,8 @@ public class FormBinder {
 
     public void setRecommendedAllocation(Button recommendedAllocation) {
         this.btnRecommendedAllocation = recommendedAllocation;
-        btnRecommendedAllocation.addEventListener(Events.ON_CLICK, new EventListener() {
+        Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
+                new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
                 recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
