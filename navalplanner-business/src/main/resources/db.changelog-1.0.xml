@@ -82,4 +82,56 @@
         <dropColumn tableName="resource" columnName="limited_resource"/>
     </changeSet>
 
+	<changeSet id="add-new-column-changed_default_admin_password" author="smontes">
+        <comment>Add new column changed_default_admin_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_admin_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_admin_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+	    columnName="changed_default_admin_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+	<changeSet id="add-new-column-changed_default_user_password" author="smontes">
+        <comment>Add new column changed_default_user_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_user_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_user_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+	    columnName="changed_default_user_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+	<changeSet id="add-new-column-changed_default_wsreader_password" author="smontes">
+        <comment>Add new column changed_default_wsreader_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wsreader_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_wsreader_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+	    columnName="changed_default_wsreader_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+	<changeSet id="add-new-column-changed_default_wswriter_password" author="smontes">
+        <comment>Add new column changed_default_wswriter_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wswriter_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_wswriter_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+	    columnName="changed_default_wswriter_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
 </databaseChangeLog>
