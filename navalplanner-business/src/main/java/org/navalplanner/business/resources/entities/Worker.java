@@ -148,7 +148,7 @@ public class Worker extends Resource implements Comparable {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Fiscal code already used. It has to be be unique")
+    @AssertTrue(message = "ID already used. It has to be be unique")
     public boolean checkConstraintUniqueFiscalCode() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
