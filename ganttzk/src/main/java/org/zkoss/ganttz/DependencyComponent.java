@@ -161,4 +161,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 && destinationTask.equals(dependency.getDestination());
     }
 
+    public boolean hasLimitingTasks() {
+        return (source.isLimiting() || destination.isLimiting());
+    }
+
 }

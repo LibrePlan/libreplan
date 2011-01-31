@@ -126,6 +126,10 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private final FunctionalityExposedForExtensions<?> context;
 
+    private Menupopup contextMenu;
+
+    private Menupopup limitingContextMenu;
+
     public DependencyList(FunctionalityExposedForExtensions<?> context) {
         this.context = context;
     }
@@ -154,7 +158,10 @@ public class DependencyList extends XulElement implements AfterCompose {
     }
 
     private void addContextMenu(DependencyComponent dependencyComponent) {
-        dependencyComponent.setContext(getContextMenu());
+        Menupopup contextMenu = dependencyComponent.hasLimitingTasks() ?
+                getLimitingContextMenu()
+                : getContextMenu();
+        dependencyComponent.setContext(contextMenu);
     }
 
     private GanttPanel getGanttPanel() {
@@ -202,7 +209,24 @@ public class DependencyList extends XulElement implements AfterCompose {
         }
     }
 
-    private Menupopup contextMenu;
+    private Menupopup getLimitingContextMenu() {
+        if (limitingContextMenu == null) {
+            MenuBuilder<DependencyComponent> contextMenuBuilder = MenuBuilder
+                    .on(getPage(), getDependencyComponents()).item(_("Erase"),
+                            "/common/img/ico_borrar.png",
+                            new ItemAction<DependencyComponent>() {
+                                @Override
+                                public void onEvent(
+                                        final DependencyComponent choosen,
+                                        Event event) {
+                                    context
+                                            .removeDependency(choosen.getDependency());
+                                }
+                            });
+            limitingContextMenu = contextMenuBuilder.create();
+        }
+        return limitingContextMenu;
+    }
 
     private Menupopup getContextMenu() {
         if (contextMenu == null) {
@@ -218,6 +242,7 @@ public class DependencyList extends XulElement implements AfterCompose {
                                             .removeDependency(choosen.getDependency());
                                 }
                             });
+
             contextMenuBuilder.item(_("Set End-Start"), null,
                     new ChangeTypeAction(
                     DependencyType.END_START));
