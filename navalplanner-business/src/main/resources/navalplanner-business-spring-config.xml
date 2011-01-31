@@ -136,6 +136,15 @@
         </property>
     </bean>
 
+	<bean id="configuration"
+        class="org.navalplanner.business.common.Configuration"
+        factory-method="getInstance"
+        lazy-init="false">
+        <property name="defaultPasswordsControl">
+			<value>${default.passwords.control}</value>
+        </property>
+    </bean>
+
     <bean id="scenarioManager"
         class="org.navalplanner.business.scenarios.OnlyMainScenarioAwareManager"
         scope="singleton"/>

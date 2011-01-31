@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.Configuration;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -97,7 +98,9 @@ public class UserModel implements IUserModel {
                  * changed and if so sets true in the field
                  * changedDefaultAdminPassword.
                  */
-                checkIfChangeDefaultPasswd();
+                if (Configuration.isDefaultPasswordsControl()) {
+                    checkIfChangeDefaultPasswd();
+                }
 
                 user.setPassword(dbPasswordEncoderService.encodePassword(
                         getClearNewPassword(), user.getLoginName()));
@@ -195,6 +198,7 @@ public class UserModel implements IUserModel {
     public void initEdit(User user) {
         Validate.notNull(user);
         this.user = getFromDB(user);
+        this.setClearNewPassword(null);
     }
 
     @Transactional(readOnly = true)

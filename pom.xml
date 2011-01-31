@@ -34,6 +34,8 @@
         <testDataSource.user>${dataSource.user}</testDataSource.user>
         <testDataSource.password>${dataSource.password}</testDataSource.password>
         <databasetable.prefix>public.</databasetable.prefix>
+
+        <default.passwords.control>true</default.passwords.control>
     </properties>
 
     <!--
