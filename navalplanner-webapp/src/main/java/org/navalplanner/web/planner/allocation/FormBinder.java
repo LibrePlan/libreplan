@@ -285,7 +285,8 @@ public class FormBinder {
     }
 
     private void onChangeEnableApply(InputElement inputElement) {
-        inputElement.addEventListener(Events.ON_CHANGE, onChangeEnableApply);
+        Util.ensureUniqueListener(inputElement, Events.ON_CHANGE,
+                onChangeEnableApply);
     }
 
     public void setWorkableDays(Intbox duration,
@@ -311,28 +312,28 @@ public class FormBinder {
             this.labelTaskStart = labelTaskStart;
             this.labelTaskEnd = labelTaskEnd;
             initializeDateAndDurationFieldsFromTaskOriginalValues();
-            taskWorkableDays.addEventListener(Events.ON_CHANGE,
+            Util.ensureUniqueListener(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
 
-                        @Override
-                        public void onEvent(Event event) throws Exception {
-                            Task task = getTask();
-                            Integer workableDays = taskWorkableDays.getValue();
-                            if (allocationRowsHandler.isForwardsAllocation()) {
-                                LocalDate newEndDate = task
-                                        .calculateEndGivenWorkableDays(workableDays);
-                                taskPropertiesController
-                                        .updateTaskEndDate(newEndDate);
-                                showValueOfDateOn(labelTaskEnd, newEndDate);
-                            } else {
-                                LocalDate newStart = task
-                                        .calculateStartGivenWorkableDays(workableDays);
-                                taskPropertiesController
-                                        .updateTaskStartDate(newStart);
-                                showValueOfDateOn(labelTaskStart, newStart);
-                            }
-                        }
-                    });
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    Task task = getTask();
+                    Integer workableDays = taskWorkableDays.getValue();
+                    if (allocationRowsHandler.isForwardsAllocation()) {
+                        LocalDate newEndDate = task
+                                .calculateEndGivenWorkableDays(workableDays);
+                        taskPropertiesController
+                                .updateTaskEndDate(newEndDate);
+                        showValueOfDateOn(labelTaskEnd, newEndDate);
+                    } else {
+                        LocalDate newStart = task
+                                .calculateStartGivenWorkableDays(workableDays);
+                        taskPropertiesController
+                                .updateTaskStartDate(newStart);
+                        showValueOfDateOn(labelTaskStart, newStart);
+                    }
+                }
+            });
             applyDisabledRules();
             onChangeEnableApply(taskWorkableDays);
         }
@@ -556,7 +557,8 @@ public class FormBinder {
                 FormBinder.this.applyButton.setDisabled(true);
             }
         };
-        this.applyButton.addEventListener(Events.ON_CLICK, applyButtonListener);
+        Util.ensureUniqueListener(this.applyButton, Events.ON_CLICK,
+                applyButtonListener);
     }
 
     public int getAssignedHours() {
