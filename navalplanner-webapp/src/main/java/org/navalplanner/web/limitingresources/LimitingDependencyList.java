@@ -62,22 +62,17 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
             listener = new IZoomLevelChangedListener() {
                 @Override
                 public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    removeDependencyComponents();
-                    createDependencyComponents();
-                }
-
-                private void createDependencyComponents() {
-                    for (LimitingResourceQueueDependency each: dependencies.keySet()) {
-                        LimitingDependencyComponent dependencyComponent = createDependencyComponent(each);
-                        if (dependencyComponent != null) {
-                            addDependencyComponent(dependencyComponent);
-                        }
-                    }
+                    recreateDependencyComponents();
                 }
 
             };
             getTimeTracker().addZoomListener(listener);
         }
+    }
+
+    public void recreateDependencyComponents() {
+        removeDependencyComponents();
+        createDependencyComponents();
     }
 
     private void removeDependencyComponents() {
@@ -86,6 +81,15 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
                         getChildren());
         for (LimitingDependencyComponent each : children) {
             removeChild(each);
+        }
+    }
+
+    private void createDependencyComponents() {
+        for (LimitingResourceQueueDependency each: dependencies.keySet()) {
+            LimitingDependencyComponent dependencyComponent = createDependencyComponent(each);
+            if (dependencyComponent != null) {
+                addDependencyComponent(dependencyComponent);
+            }
         }
     }
 

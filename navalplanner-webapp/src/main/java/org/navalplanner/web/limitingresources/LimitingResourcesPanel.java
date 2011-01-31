@@ -539,6 +539,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                 paginatorEnd = intervalEnd;
             }
             updatePaginationButtons();
+            dependencyList.recreateDependencyComponents();
         }
 
         @Override
