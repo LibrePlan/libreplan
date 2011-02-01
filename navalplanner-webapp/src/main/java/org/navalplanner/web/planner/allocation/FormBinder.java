@@ -174,6 +174,8 @@ public class FormBinder {
 
     private Decimalbox allResourcesPerDay;
 
+    private Button advancedSearchButton;
+
     public FormBinder(Scenario currentScenario,
             AllocationRowsHandler allocationRowsHandler,
             IResourceAllocationModel resourceAllocationModel) {
@@ -723,11 +725,17 @@ public class FormBinder {
     private void disableIfNeededWorkerSearch() {
         workerSearchTab.setDisabled(this.recommendedAllocation);
         newAllocationSelectorCombo.setDisabled(this.recommendedAllocation);
+        advancedSearchButton.setDisabled(this.recommendedAllocation);
     }
 
     public void setWorkerSearchTab(Tab workerSearchTab) {
         this.workerSearchTab = workerSearchTab;
         this.workerSearchTab.setDisabled(recommendedAllocation);
+    }
+
+    public void setAdvancedSearchButton(Button advancedSearchButton) {
+        this.advancedSearchButton = advancedSearchButton;
+        this.advancedSearchButton.setDisabled(recommendedAllocation);
     }
 
     public void setNewAllocationSelectorCombo(
