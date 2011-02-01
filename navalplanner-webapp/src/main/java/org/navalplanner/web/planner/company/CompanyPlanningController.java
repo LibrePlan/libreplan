@@ -57,7 +57,7 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -144,7 +144,8 @@ public class CompanyPlanningController implements Composer {
         if (cbProgressTypes == null) {
             cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
         }
-        cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
+        cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
+
 
         // FIXME: Select default configuration option
         // cbProgressTypes.renderAll();

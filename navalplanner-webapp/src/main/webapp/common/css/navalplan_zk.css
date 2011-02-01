@@ -1507,7 +1507,7 @@ display:none;
     left: -8px;
 }
 
-.progress-types.z-combobox .z-combobox-img {
+.progress-types.z-combobox .z-combobox-btn {
     background-image: url(../img/small-combo-arrow.png);
     border: 0;
 }
