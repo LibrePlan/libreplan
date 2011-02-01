@@ -194,6 +194,7 @@ public class AllocationRowsHandler {
         if (row.isModifying()) {
             requestedToRemove.add(row.getOrigin());
         }
+        formBinder.rowRemoved();
     }
 
     public Set<ResourceAllocation<?>> getAllocationsRequestedToRemove() {

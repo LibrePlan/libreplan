@@ -116,8 +116,6 @@ public class FormBinder {
 
     private Button btnRecommendedAllocation;
 
-    private boolean recommendedAllocationIsPressed = false;
-
     private ProportionalDistributor hoursDistributorForRecommendedAllocation;
 
     private ResourcesPerDay.ResourcesPerDayDistributor resourcesPerDayDistributorForRecommendedAllocation;
@@ -227,6 +225,7 @@ public class FormBinder {
         workableDaysAndDatesBinder.applyDisabledRules();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
+        this.btnRecommendedAllocation.setDisabled(recommendedAllocation);
     }
 
     private void applyDisabledRulesOnRows() {
@@ -660,12 +659,7 @@ public class FormBinder {
                 new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
-                 if (recommendedAllocationIsPressed) {
-                     activatingRecommendedAllocation();
-                 } else {
-                     deactivatingRecommendedAllocation();
-                 }
+                activatingRecommendedAllocation();
             }
         });
     }
@@ -709,6 +703,10 @@ public class FormBinder {
         ResourcesPerDay[] forRows = resourcesPerDayDistributorForRecommendedAllocation
                 .distribute(ResourcesPerDay.amount(total));
         AllocationRow.assignResourcesPerDay(rows, forRows);
+    }
+
+    public void rowRemoved() {
+        deactivatingRecommendedAllocation();
     }
 
     private void deactivatingRecommendedAllocation() {
