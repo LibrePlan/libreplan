@@ -133,6 +133,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private Tab workerSearchTab;
 
+    private Button advancedSearchButton;
+
     private Window editTaskWindow;
 
     public static void registerNeededScripts() {
@@ -245,6 +247,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setWorkerSearchTab(workerSearchTab);
             formBinder
                     .setNewAllocationSelectorCombo(newAllocationSelectorCombo);
+            formBinder.setAdvancedSearchButton(advancedSearchButton);
             formBinder.setRecommendedAllocation(btnRecommendedAllocation);
 
             CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
