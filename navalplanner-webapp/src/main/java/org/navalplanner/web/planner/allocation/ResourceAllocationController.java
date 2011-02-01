@@ -255,8 +255,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private void initializeTaskInformationComponent() {
         taskInformation.initializeGridTaskRows(resourceAllocationModel
                 .getHoursAggregatedByCriterions());
-        taskInformation.onRecomendAllocation(formBinder
-                .getRecommendedAllocationListener());
+        formBinder.setRecommendedAllocation(taskInformation
+                .getBtnRecommendedAllocation());
         taskInformation.onCalculateTotalHours(new ITotalHoursCalculationListener() {
 
             @Override

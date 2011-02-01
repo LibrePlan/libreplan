@@ -29,8 +29,6 @@ import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Footer;
 import org.zkoss.zul.Grid;
@@ -75,9 +73,8 @@ public class TaskInformation extends HtmlMacroComponent {
         gridTaskRows.setRowRenderer(newTaskRowsRenderer());
     }
 
-    public void onRecomendAllocation(EventListener eventListener) {
-        Util.ensureUniqueListener(btnRecommendedAllocation, Events.ON_CLICK,
-                eventListener);
+    public Button getBtnRecommendedAllocation() {
+        return btnRecommendedAllocation;
     }
 
     public void showRecomendedAllocationButton() {

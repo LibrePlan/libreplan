@@ -120,8 +120,6 @@ public class FormBinder {
 
     private Button btnRecommendedAllocation;
 
-    private boolean recommendedAllocationIsPressed = false;
-
     private ProportionalDistributor hoursDistributorForRecommendedAllocation;
 
     private ResourcesPerDay.ResourcesPerDayDistributor resourcesPerDayDistributorForRecommendedAllocation;
@@ -231,6 +229,7 @@ public class FormBinder {
         workableDaysAndDatesBinder.applyDisabledRules();
         allResourcesPerDayVisibilityRule();
         applyDisabledRulesOnRows();
+        this.btnRecommendedAllocation.setDisabled(recommendedAllocation);
     }
 
     private void applyDisabledRulesOnRows() {
@@ -658,16 +657,22 @@ public class FormBinder {
         }
     }
 
+    public void setRecommendedAllocation(Button recommendedAllocation) {
+        this.btnRecommendedAllocation = recommendedAllocation;
+        Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
+                new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                activatingRecommendedAllocation();
+            }
+        });
+    }
+
     public EventListener getRecommendedAllocationListener() {
         return new EventListener() {
             @Override
             public void onEvent(Event event) throws Exception {
-                recommendedAllocationIsPressed = !recommendedAllocationIsPressed;
-                 if (recommendedAllocationIsPressed) {
-                     activatingRecommendedAllocation();
-                 } else {
-                     deactivatingRecommendedAllocation();
-                 }
+                activatingRecommendedAllocation();
             }
         };
     }
@@ -711,6 +716,10 @@ public class FormBinder {
         ResourcesPerDay[] forRows = resourcesPerDayDistributorForRecommendedAllocation
                 .distribute(ResourcesPerDay.amount(total));
         AllocationRow.assignResourcesPerDay(rows, forRows);
+    }
+
+    public void rowRemoved() {
+        deactivatingRecommendedAllocation();
     }
 
     private void deactivatingRecommendedAllocation() {
@@ -846,5 +855,6 @@ public class FormBinder {
     public void setBehaviour(ResourceAllocationBehaviour behaviour) {
         this.behaviour = behaviour;
     }
+
 
 }
