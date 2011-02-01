@@ -22,7 +22,6 @@
 package org.navalplanner.web.planner.company;
 
 import static org.navalplanner.web.I18nHelper._;
-import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -40,6 +39,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -755,6 +755,11 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         return filterFinishDate;
     }
 
+    private AvailabilityTimeLine.Interval getFilterInterval() {
+        return AvailabilityTimeLine.Interval.create(getFilterStartDate(),
+                getFilterFinishDate());
+    }
+
     private class CompanyLoadChartFiller extends ChartFiller {
 
         @Override
@@ -824,8 +829,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Map<TaskElement, SortedMap<LocalDate, BigDecimal>> estimatedCostPerTask =
                 databaseSnapshots.snapshotEstimatedCostPerTask();
             Collection<TaskElement> list = filterTasksByDate(
-                    estimatedCostPerTask.keySet(),
-                    asDate(filterStartDate), asDate(filterFinishDate));
+                    estimatedCostPerTask.keySet(), getFilterInterval());
 
             SortedMap<LocalDate, BigDecimal> estimatedCost = new TreeMap<LocalDate, BigDecimal>();
 
@@ -853,7 +857,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
             Collection<WorkReportLine> workReportLines = filterWorkReportLinesByDate(
                     databaseSnapshots.snapshotWorkReportLines(),
-                    asDate(filterStartDate), asDate(filterFinishDate));
+                    getFilterInterval());
 
             if (workReportLines.isEmpty()) {
                 return result;
@@ -876,8 +880,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             Map<TaskElement, SortedMap<LocalDate, BigDecimal>> advanceCostPerTask =
                 databaseSnapshots.snapshotAdvanceCostPerTask();
             Collection<TaskElement> list = filterTasksByDate(
-                    advanceCostPerTask.keySet(),
-                    asDate(filterStartDate), asDate(filterFinishDate));
+                    advanceCostPerTask.keySet(), getFilterInterval());
 
             SortedMap<LocalDate, BigDecimal> advanceCost = new TreeMap<LocalDate, BigDecimal>();
 
@@ -896,32 +899,30 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             return getEarnedValueSelectedIndicators();
         }
 
-        private Collection<TaskElement> filterTasksByDate(
-                Collection<TaskElement> tasks, Date startDate, Date endDate) {
-            if(startDate == null && endDate == null) {
-                return tasks;
-            }
+        private List<TaskElement> filterTasksByDate(
+                Collection<TaskElement> tasks,
+                AvailabilityTimeLine.Interval interval) {
+            List<TaskElement> result = new ArrayList<TaskElement>();
             for(TaskElement task : tasks) {
-                if((startDate != null && task.getEndDate().compareTo(startDate)<0) ||
-                    (endDate != null && task.getStartDate().compareTo(endDate)>0)) {
-                    tasks.remove(task);
+                if (interval.includes(task.getStartAsLocalDate())
+                        || interval.includes(task.getEndAsLocalDate())) {
+                    result.add(task);
                 }
             }
-            return tasks;
+            return result;
         }
 
-        private Collection<WorkReportLine> filterWorkReportLinesByDate(
-                Collection<WorkReportLine> lines, Date startDate, Date endDate) {
-            if(startDate == null && endDate == null) {
-                return lines;
-            }
+
+        private List<WorkReportLine> filterWorkReportLinesByDate(
+                Collection<WorkReportLine> lines,
+                AvailabilityTimeLine.Interval interval) {
+            List<WorkReportLine> result = new ArrayList<WorkReportLine>();
             for(WorkReportLine line: lines) {
-                if((startDate != null && line.getDate().compareTo(startDate)<0) ||
-                    (endDate != null && line.getDate().compareTo(endDate)>0)) {
-                    lines.remove(line);
+                if (interval.includes(line.getLocalDate())) {
+                    result.add(line);
                 }
             }
-            return lines;
+            return result;
         }
     }
 

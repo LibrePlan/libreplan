@@ -245,9 +245,21 @@ public class AvailabilityTimeLine {
     public static class Interval implements
             Comparable<Interval> {
 
-        static Interval create(LocalDate start, LocalDate end) {
-            return new Interval(new FixedPoint(start), new FixedPoint(
-                    end));
+        /**
+         * Creates an interval. Null values can be provided.
+         *
+         * @param start
+         *            if <code>null</code> is interpreted as start of time.
+         * @param end
+         *            if <code>null</code> is interpreted as end of time
+         * @return an interval from start to end
+         */
+        public static Interval create(LocalDate start, LocalDate end) {
+            DatePoint startPoint = start == null ? new StartOfTime()
+                    : new FixedPoint(start);
+            DatePoint endPoint = end == null ? new EndOfTime()
+                    : new FixedPoint(end);
+            return new Interval(startPoint, endPoint);
         }
 
         static Interval all() {

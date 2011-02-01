@@ -30,6 +30,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.Hours;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
@@ -153,6 +154,13 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
     @NotNull(message = "date not specified")
     public Date getDate() {
         return date;
+    }
+
+    public LocalDate getLocalDate() {
+        if (getDate() == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(getDate());
     }
 
     public void setDate(Date date) {
