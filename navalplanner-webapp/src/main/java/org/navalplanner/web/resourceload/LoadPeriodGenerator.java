@@ -90,19 +90,15 @@ abstract class LoadPeriodGenerator {
 
     public static LoadPeriodGeneratorFactory onCriterion(
             final Criterion criterion, final IResourceDAO resourcesDAO) {
+        final List<Resource> potentialResources = resourcesDAO
+                .findSatisfyingAllCriterionsAtSomePoint(Collections
+                        .singletonList(criterion));
         return new LoadPeriodGeneratorFactory() {
 
             @Override
             public LoadPeriodGenerator create(ResourceAllocation<?> allocation) {
                 return new LoadPeriodGeneratorOnCriterion(criterion,
-                        allocation, findResources(criterion, resourcesDAO));
-            }
-
-            private List<Resource> findResources(final Criterion criterion,
-                    final IResourceDAO resourcesDAO) {
-                return resourcesDAO
-                        .findSatisfyingAllCriterionsAtSomePoint(Collections
-                                .singletonList(criterion));
+                        allocation, potentialResources);
             }
         };
     }
