@@ -411,4 +411,10 @@ public class GenericResourceAllocation extends
         return resourceType != null ? resourceType : inferType(criterions);
     }
 
+    @Override
+    public int getAssignedHours(ICriterion criterion, LocalDate start,
+            LocalDate endExclusive) {
+        return super.getAssignedHours(start, endExclusive);
+    }
+
 }

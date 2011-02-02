@@ -37,6 +37,8 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -44,6 +46,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -345,6 +348,44 @@ public class SpecificResourceAllocation extends
             resetAssignmentsTo(SpecificDayAssignment
                     .copyToAssignmentsWithoutParent(originAssignments));
         }
+    }
+
+    @Override
+    public int getAssignedHours(ICriterion criterion, LocalDate startInclusive,
+            LocalDate endExclusive) {
+        EffortDuration result = EffortDuration.zero();
+        for (Interval each : getIntervalsRelatedWith(criterion, startInclusive,
+                endExclusive)) {
+            FixedPoint intervalStart = (FixedPoint) each.getStart();
+            FixedPoint intervalEnd = (FixedPoint) each.getEnd();
+
+            result = result.plus(getAssignedDuration(intervalStart.getDate(),
+                    intervalEnd.getDate()));
+        }
+        return result.roundToHours();
+    }
+
+    private List<Interval> getIntervalsRelatedWith(ICriterion criterion,
+            LocalDate startInclusive, LocalDate endExclusive) {
+        Interval queryInterval = AvailabilityTimeLine.Interval.create(
+                startInclusive, endExclusive);
+
+        List<Interval> result = new ArrayList<Interval>();
+        for (Interval each : getIntervalsThisAllocationInterferesWith(criterion)) {
+            if (queryInterval.overlaps(each)) {
+                result.add(queryInterval.intersect(each));
+            }
+        }
+        return result;
+    }
+
+    private List<Interval> getIntervalsThisAllocationInterferesWith(ICriterion criterion) {
+        AvailabilityTimeLine availability = AvailabilityCalculator
+                .getCriterionsAvailabilityFor(Collections.singleton(criterion),
+                        resource);
+        availability.invalidUntil(getStartDate());
+        availability.invalidFrom(getEndDate());
+        return availability.getValidPeriods();
     }
 
 }
