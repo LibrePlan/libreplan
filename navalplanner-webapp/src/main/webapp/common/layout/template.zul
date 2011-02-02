@@ -132,26 +132,30 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
         <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
     </n:td>
     <n:td  valign="center">
-        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin" style="display:${templateCtrl.defaultPasswdAdminVisible}">
+        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin"
+            class="footer-messages-area"
+            style="display:${templateCtrl.defaultPasswdAdminVisible}">
             <div>
-                <n:span class="footer-messages-area">${i18n:_('The admin\'s account password remains the default one. This is unsecure')}.</n:span>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}" class="footer-messages-area">[${i18n:_('Change the password')}]</n:a>
+                <n:span>${i18n:_('The admin\'s account password remains the default one. This is unsecure')}.</n:span>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
             </div>
         </n:div>
-        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers" style="display:${templateCtrl.defaultPasswdVisible}">
+        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers"
+            class="footer-messages-area"
+            style="display:${templateCtrl.defaultPasswdVisible}">
             <div>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idUser}"
-                    class="footer-messages-area" id="warningDefaultPasswduser"
+                    id="warningDefaultPasswduser"
                     style="display:${templateCtrl.defaultPasswdUserVisible}">
                     [${i18n:_('user')}]
 				</n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
-                    class="footer-messages-area" id="warningDefaultPasswdwsreader"
+                    id="warningDefaultPasswdwsreader"
                     style="display:${templateCtrl.defaultPasswdWsreaderVisible}">
                     [${i18n:_('wswriter')}]
                 </n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
-                    class="footer-messages-area" id="warningDefaultPasswdwswriter"
+                    id="warningDefaultPasswdwswriter"
                     style="display:${templateCtrl.defaultPasswdWswriterVisible}">
                     [${i18n:_('wsreader')}]
                 </n:a>

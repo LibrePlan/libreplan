@@ -188,7 +188,15 @@ a.sub_menu:hover {
     z-index:2;
 }
 
-.footer-messages-area {
-	color: #CC5013;
-	font-size: 11px;
+.footer-messages-area * {
+  color: #CC5013;
+  font-size: 11px;
+}
+
+.footer-messages-area a {
+  text-decoration: none;
+}
+
+.footer-messages-area a:hover {
+  text-decoration: underline;
 }
