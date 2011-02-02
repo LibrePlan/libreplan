@@ -27,7 +27,6 @@ import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.ge
 import java.util.HashMap;
 import java.util.Map;
 
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
@@ -57,6 +56,7 @@ public class LimitingResourcesTabCreator {
     }
 
     private final Mode mode;
+
     private final LimitingResourcesController limitingResourcesController;
 
     private final LimitingResourcesController limitingResourcesControllerGlobal;
@@ -89,11 +89,8 @@ public class LimitingResourcesTabCreator {
             public org.zkoss.zk.ui.Component create(
                     org.zkoss.zk.ui.Component parent) {
                 Map<String, Object> arguments = new HashMap<String, Object>();
-                // LimitingResourcesController.add(upCommand);
                 arguments.put("LimitingResourcesController",
                         limitingResourcesController);
-                Order currentOrder = mode.getOrder();
-                limitingResourcesController.filterBy(currentOrder);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
@@ -128,7 +125,6 @@ public class LimitingResourcesTabCreator {
                 Map<String, Object> arguments = new HashMap<String, Object>();
                 arguments.put("LimitingResourcesController",
                         limitingResourcesControllerGlobal);
-                limitingResourcesControllerGlobal.filterBy(null);
                 return Executions.createComponents(
                         "/limitingresources/_limitingresources.zul", parent,
                         arguments);
