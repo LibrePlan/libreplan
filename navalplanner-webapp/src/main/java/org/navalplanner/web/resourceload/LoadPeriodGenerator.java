@@ -205,20 +205,21 @@ abstract class LoadPeriodGenerator {
                             + allocationsOnInterval + ". LoadPeriod ignored");
             return null;
         }
-        return new LoadPeriod(start, end, getTotalWorkHours(),
-                getHoursAssigned(), new LoadLevel(
-                calculateLoadPercentage()));
+        int totalWorkHours = getTotalWorkHours();
+        int hoursAssigned = getHoursAssigned();
+        return new LoadPeriod(start, end, totalWorkHours, hoursAssigned,
+                new LoadLevel(calculateLoadPercentage(totalWorkHours,
+                        hoursAssigned)));
     }
 
     protected abstract int getTotalWorkHours();
 
-    private int calculateLoadPercentage() {
-        final int totalResourceWorkHours = getTotalWorkHours();
-        int assigned = getHoursAssigned();
-        if (totalResourceWorkHours == 0) {
-            return assigned == 0 ? 0 : Integer.MAX_VALUE;
+    private static int calculateLoadPercentage(int totalWorkHours,
+            int hoursAssigned) {
+        if (totalWorkHours == 0) {
+            return hoursAssigned == 0 ? 0 : Integer.MAX_VALUE;
         }
-        double proportion = assigned / (double) totalResourceWorkHours;
+        double proportion = hoursAssigned / (double) totalWorkHours;
         return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
     }
 
