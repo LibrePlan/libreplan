@@ -137,7 +137,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
             style="display:${templateCtrl.defaultPasswdAdminVisible}">
             <div>
                 <n:span>${i18n:_('The admin\'s account password remains the default one. This is unsecure')}.</n:span>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
+                <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
             </div>
         </n:div>
         <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers"

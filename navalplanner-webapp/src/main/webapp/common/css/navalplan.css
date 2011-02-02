@@ -197,6 +197,10 @@ a.sub_menu:hover {
   text-decoration: none;
 }
 
+.footer-messages-area .command {
+  font-weight: bold;
+}
+
 .footer-messages-area a:hover {
   text-decoration: underline;
 }
