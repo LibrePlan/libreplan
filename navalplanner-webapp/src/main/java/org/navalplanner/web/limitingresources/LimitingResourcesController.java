@@ -121,11 +121,11 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+        super.doAfterCompose(comp);
         this.parent = comp;
-        reload();
     }
 
-    private void reload() {
+    public void reload() {
         transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
             @Override

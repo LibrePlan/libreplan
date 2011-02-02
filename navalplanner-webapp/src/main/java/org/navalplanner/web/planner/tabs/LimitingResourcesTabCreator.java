@@ -140,6 +140,7 @@ public class LimitingResourcesTabCreator {
                 componentCreator) {
             @Override
             protected void afterShowAction() {
+                limitingResourcesControllerGlobal.reload();
                 if (breadcrumbs.getChildren() != null) {
                     breadcrumbs.getChildren().clear();
                 }
