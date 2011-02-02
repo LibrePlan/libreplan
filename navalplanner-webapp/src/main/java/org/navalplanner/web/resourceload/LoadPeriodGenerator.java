@@ -324,7 +324,7 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     @Override
     protected int getAssignedHoursFor(ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getAssignedHours(start, end);
+        return resourceAllocation.getAssignedHours(criterion, start, end);
     }
 
     @Override

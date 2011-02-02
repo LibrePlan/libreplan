@@ -57,6 +57,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
@@ -1556,7 +1557,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         boolean satisfiedBy(DayAssignment dayAssignment);
     }
 
-
     public int getAssignedHours(final Resource resource, LocalDate start,
             LocalDate endExclusive) {
         return getAssignedDuration(filter(getAssignments(start, endExclusive),
@@ -1576,9 +1576,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
-        return getAssignedDuration(getAssignments(start, endExclusive))
-                .roundToHours();
+        return getAssignedDuration(start, endExclusive).roundToHours();
     }
+
+    public abstract int getAssignedHours(ICriterion criterion, LocalDate start,
+            LocalDate endExclusive);
 
     private List<DayAssignment> filter(List<DayAssignment> assignments,
             PredicateOnDayAssignment predicate) {
@@ -1589,6 +1591,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
         return result;
+    }
+
+    protected EffortDuration getAssignedDuration(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        return getAssignedDuration(getAssignments(startInclusive, endExclusive));
     }
 
     private EffortDuration getAssignedDuration(
