@@ -134,8 +134,8 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
     <n:td  valign="center">
         <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin" style="display:${templateCtrl.defaultPasswdAdminVisible}">
             <div>
-                <n:span class="footer-messages-area">${i18n:_('The admin account default password was not changed')}.</n:span>
-                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}" class="footer-messages-area">[${i18n:_('Click here')}]</n:a>
+                <n:span class="footer-messages-area">${i18n:_('The admin\'s account password remains the default one. This is unsecure')}.</n:span>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idAdminUser}" class="footer-messages-area">[${i18n:_('Change the password')}]</n:a>
             </div>
         </n:div>
         <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers" style="display:${templateCtrl.defaultPasswdVisible}">
