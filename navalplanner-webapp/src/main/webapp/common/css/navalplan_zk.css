@@ -1554,3 +1554,8 @@ display:none;
     background: #ABCDE1;
     color: white;
 }
+
+input.z-spinner-text-disd,
+input.z-datebox-text-disd {
+    color: #000000 !important;
+}
