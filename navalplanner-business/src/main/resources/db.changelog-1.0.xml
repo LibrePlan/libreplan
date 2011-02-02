@@ -5,19 +5,6 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
 
-    <changeSet id="add-new-column-enable_critical_chain_support" author="jaragunde">
-        <comment>Add new column enable_critical_chain_support with default value FALSE to configuration table</comment>
-        <addColumn tableName="configuration">
-            <column name="enable_critical_chain_support" type="BOOLEAN" />
-        </addColumn>
-        <addDefaultValue tableName="configuration" columnName="enable_critical_chain_support"
-            defaultValueBoolean="FALSE" />
-        <addNotNullConstraint tableName="configuration"
-	    columnName="enable_critical_chain_support"
-            defaultNullValue="FALSE"
-            columnDataType="BOOLEAN" />
-    </changeSet>
-
     <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
         <comment>Convert from duration + notAssignable (not over assignable) to capacity property</comment>
         <addColumn tableName="calendar_exception_type">
