@@ -93,8 +93,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
-    private org.zkoss.zk.ui.Component parent;
-
     private LimitingResourcesPanel limitingResourcesPanel;
 
     private TimeTracker timeTracker;
@@ -121,7 +119,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
         super.doAfterCompose(comp);
-        this.parent = comp;
     }
 
     public void reload() {
@@ -137,7 +134,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 // FIXME: Temporary fix, it seems the page was already rendered,
                 // so
                 // clear it all as it's going to be rendered again
-                parent.getChildren().clear();
+                self.getChildren().clear();
 
                 limitingResourceQueueModel.initGlobalView();
 
@@ -145,7 +142,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 timeTracker = buildTimeTracker();
                 limitingResourcesPanel = buildLimitingResourcesPanel();
 
-                parent.appendChild(limitingResourcesPanel);
+                self.appendChild(limitingResourcesPanel);
                 limitingResourcesPanel.afterCompose();
 
                 cbSelectAll = (Checkbox) limitingResourcesPanel
@@ -204,7 +201,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
                 .getViewInterval(), ZoomLevel.DETAIL_THREE,
                 SeveralModificators.create(),
-                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),parent);
+                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),self);
     }
 
     private BaseCalendar getDefaultCalendar() {
@@ -319,9 +316,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
             return getOriginal().getId().compareTo(dto.getOriginal().getId());
         }
 
-    }
-
-    public void filterBy(Order order) {
     }
 
     public void saveQueues() {
