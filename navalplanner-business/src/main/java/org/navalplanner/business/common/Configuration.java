@@ -20,8 +20,9 @@
 package org.navalplanner.business.common;
 
 /**
- * It contains the current version of project and implements of singleton
- * pattern.
+ * It contains the compiling option to disable the warning changing default
+ * password and implements of singleton pattern.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Configuration {
