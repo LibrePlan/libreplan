@@ -30,20 +30,41 @@ import org.zkoss.util.Locales;
 
 public class I18nHelper {
 
+    private static Locale defaultLang = Locale.ENGLISH;
 
     private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
 
     public static I18n getI18n() {
-        if (localesCache.keySet().contains(Locales.getCurrent())) {
-            return localesCache.get(Locales.getCurrent());
+
+        Locale locale = Locales.getCurrent();
+        if (localesCache.keySet().contains(locale)) {
+            return localesCache.get(locale);
         }
 
-        I18n i18n = I18nFactory.getI18n(I18nHelper.class, Locales
-                .getCurrent(),
+        I18n i18n = I18nFactory.getI18n(I18nHelper.class, locale,
                 org.xnap.commons.i18n.I18nFactory.FALLBACK);
+
+        // The language returned is not the same as the requested by the user
+        if (!locale.equals(i18n.getResources().getLocale())) {
+            // Force it to be default language
+            i18n = getDefaultI18n();
+        }
         localesCache.put(Locales.getCurrent(), i18n);
 
         return i18n;
+    }
+
+    private static I18n getDefaultI18n() {
+        I18n i18n = localesCache.get(defaultLang);
+        if (i18n == null) {
+            i18n = I18nFactory.getI18n(I18nHelper.class, defaultLang,
+                    org.xnap.commons.i18n.I18nFactory.FALLBACK);
+        }
+        return i18n;
+    }
+
+    private I18nHelper() {
+
     }
 
     public static String _(String str) {
@@ -71,6 +92,4 @@ public class I18nHelper {
         return getI18n().tr(text, objects);
     }
 
-    private I18nHelper() {
-    }
 }
