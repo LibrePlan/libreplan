@@ -1,9 +1,7 @@
 /*
  * This file is part of NavalPlan
  *
- * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
- *                         Desenvolvemento Tecnolóxico de Galicia
- * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,12 +21,14 @@ package org.navalplanner.web.print;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -55,24 +55,39 @@ import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.ui.Executions;
 
-public class CutyPrint {
+/**
+ * Printing operation handler for wk2img utility based on WebKitGTK+.
+ *
+ * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ */
+public class WKPrint {
 
-    private static final Log LOG = LogFactory.getLog(CutyPrint.class);
+    private static final Log LOG = LogFactory.getLog(WKPrint.class);
 
-    private static final String CUTYCAPT_COMMAND = "CutyCapt ";
-    // Estimated maximum execution time (ms)
+    /**
+     * Utility command name
+     */
+    private static final String PRINT_COMMAND = "wk2img";
 
-    private static final int CUTYCAPT_TIMEOUT = 100000;
+    /**
+     * Estimated maximum execution time (ms). This have to be always greater
+     * than CAPTURE_DELAY.
+     */
+    private static final int TIMEOUT = 30000;
 
+    /**
+     * Delay time (ms) for captures. Time needed to render page.
+     */
     private static final int CAPTURE_DELAY = 10000;
 
-
-    // Taskdetails left padding
+    /**
+     * Taskdetails left padding
+     */
     private static int TASKDETAILS_BASE_WIDTH = 310;
 
     /**
      * Default width in pixels of the task name text field for depth level 1.
-     * <p />
+     *
      * Got from .listdetails .depth_1 input.task_title { width: 121px; } at
      * src/main/webapp/planner/css/ganttzk.css
      */
@@ -80,7 +95,6 @@ public class CutyPrint {
 
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
-
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -132,22 +146,14 @@ public class CutyPrint {
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
 
-        String extension = ".pdf";
-        if (((parameters.get("extension") != null) && !(parameters
-                .get("extension").equals("")))) {
-            extension = parameters.get("extension");
-        }
-
         // Calculate application path and destination file relative route
         String absolutePath = request.getSession().getServletContext()
                 .getRealPath("/");
 
         String filename = "/print/"
                 + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date())
-                + extension;
+                + ".png";
 
-        // Generate capture string
-        String captureString = CUTYCAPT_COMMAND;
         String url = CallbackServlet.registerAndCreateURLFor(request,
                 executeOnOriginalContext(new IServletRequestHandler() {
 
@@ -165,86 +171,90 @@ public class CutyPrint {
                     }
                 }));
 
+        // Generate capture string
+        String captureString = PRINT_COMMAND;
+
         // Add capture destination callback URL
         String hostName = resolveLocalHost(request);
         captureString += " --url=http://" + hostName + ":"
                 + request.getLocalPort() + url;
+
         if (parameters != null) {
             captureString += "?";
             for (String key : parameters.keySet()) {
-                captureString += key + "=" + parameters.get(key) + "&";
+                captureString += key + "=" + parameters.get(key) + "\\&";
             }
             captureString = captureString.substring(0,
-                    (captureString.length() - 1));
+                            (captureString.length() - ((parameters.size() > 0) ? 2
+                                    : 1)));
         }
+
         boolean expanded = Planner
                 .guessContainersExpandedByDefaultGivenPrintParameters(parameters);
         int minWidthForTaskNameColumn = planner
                 .calculateMinimumWidthForTaskNameColumn(expanded);
         int plannerWidth = calculatePlannerWidthForPrintingScreen(planner,
                 minWidthForTaskNameColumn);
-        captureString += " --min-width=" + plannerWidth;
-
-        // Static width and time delay parameters (FIX)
-
+        // FIXME height have to be calculated
+        captureString += " --height=1000";
+        captureString += " --width=" + plannerWidth;
         captureString += " --delay=" + CAPTURE_DELAY;
 
-        String generatedCSSFile = createCSSFile(
-                absolutePath + "/planner/css/print.css",
-                plannerWidth,
- planner, parameters
-                .get("advances"),
- parameters.get("reportedHours"),
-                parameters.get("labels"),
-                parameters.get("resources"),
-                expanded,
+        String generatedCSSFile = createCSSFile(absolutePath
+                + "/planner/css/print.css", plannerWidth, planner, parameters
+                .get("advances"), parameters.get("reportedHours"), parameters
+                .get("labels"), parameters.get("resources"), expanded,
                 minWidthForTaskNameColumn);
 
         // Relative user styles
-        captureString += " --user-style-path=" + generatedCSSFile;
+        captureString += " --css=" + generatedCSSFile;
 
         // Destination complete absolute path
-        captureString += " --out=" + absolutePath + filename;
+        captureString += " --output=" + absolutePath + filename;
 
+        // Command execution
         try {
-            // CutyCapt command execution
-            LOG.warn(captureString);
+            LOG.info(captureString);
 
-            Process printProcess;
-            Process serverProcess = null;
-
-            // If there is a not real X server environment then use Xvfb
-            if ((System.getenv("DISPLAY") == null)
-                    || (System.getenv("DISPLAY").equals(""))) {
-                String[] serverEnvironment = { "PATH=$PATH" };
-                serverProcess = Runtime.getRuntime().exec("env - Xvfb :99",
-                        serverEnvironment);
-                String[] environment = { "DISPLAY=:99.0" };
-                printProcess = Runtime.getRuntime().exec(captureString,
-                        environment);
-            } else {
-                printProcess = Runtime.getRuntime().exec(captureString);
-            }
-            try {
-                // Ensure CutyCapt process finalization
-                CutyCaptTimeout timeoutThread = new CutyCaptTimeout( CUTYCAPT_TIMEOUT );
-                new Thread(timeoutThread).start();
-
-                printProcess.waitFor();
-                printProcess.destroy();
-
-                if ((System.getenv("DISPLAY") == null)
-                        || (System.getenv("DISPLAY").equals(""))) {
-                    serverProcess.destroy();
+            // Ensure printing process finalization
+            new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        sleep(TIMEOUT);
+                        LOG.info("Killing printing process if still alive");
+                        Runtime.getRuntime().exec("killall " + PRINT_COMMAND);
+                    } catch (Exception e) {
+                        LOG.error(_("Timeout thread exception"), e);
+                    }
                 }
-                Executions.getCurrent().sendRedirect(filename, "_blank");
-            } catch (Exception e) {
-                LOG.error(_("Could open generated PDF"), e);
+            }.start();
+
+            Process printProcess = Runtime.getRuntime().exec(captureString);
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    printProcess.getInputStream()));
+            String line = null;
+            while ((line = in.readLine()) != null) {
+                LOG.info("[Out] " + line);
+            }
+            BufferedReader err = new BufferedReader(new InputStreamReader(
+                    printProcess.getErrorStream()));
+            line = null;
+            while ((line = err.readLine()) != null) {
+                LOG.info("[Err] " + line);
             }
 
+            printProcess.waitFor();
+            printProcess.destroy();
+
+        } catch (InterruptedException e) {
+            LOG.error(_("Problems waiting for print command"), e);
         } catch (IOException e) {
             LOG.error(_("Could not execute print command"), e);
         }
+
+        Executions.getCurrent().sendRedirect(filename, "_blank");
     }
 
     private static String resolveLocalHost(HttpServletRequest request) {
@@ -267,7 +277,9 @@ public class CutyPrint {
 
     private static int calculateTaskDetailsWidth(int minWidthForTaskNameColumn) {
         return TASKDETAILS_BASE_WIDTH
-                + Math.max(0, minWidthForTaskNameColumn - BASE_TASK_NAME_PIXELS);
+                + Math
+                        .max(0, minWidthForTaskNameColumn
+                                - BASE_TASK_NAME_PIXELS);
     }
 
     private static IServletRequestHandler executeOnOriginalContext(
@@ -303,8 +315,7 @@ public class CutyPrint {
 
     private static String createCSSFile(String srFile, int width,
             Planner planner, String advances, String reportedHours,
-            String labels, String resources,
-            boolean expanded,
+            String labels, String resources, boolean expanded,
             int minimumWidthForTaskNameColumn) {
         File generatedCSS = null;
         try {
@@ -332,7 +343,6 @@ public class CutyPrint {
                 includeCSSLines += " .completion { display: inline !important;} \n";
             }
 
-
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
             }
@@ -357,11 +367,11 @@ public class CutyPrint {
         }
     }
 
-    private static String widthForTaskNamesColumnCSS(
-            int minWidthPixels) {
+    private static String widthForTaskNamesColumnCSS(int minWidthPixels) {
         String css = "/* ------ Make the area for task names wider ------ */\n";
         css += "th.z-tree-col {width: 76px !important;}\n";
-        css += "th.tree-text {width: " + (24 + minWidthPixels) + "px !important;}\n";
+        css += "th.tree-text {width: " + (24 + minWidthPixels)
+                + "px !important;}\n";
         css += ".taskdetailsContainer, .z-west-body, .z-tree-header, .z-tree-body {";
         css += "width: " + (176 + minWidthPixels) + "px !important;}\n";
         css += ".listdetails .depth_1 input.task_title {";

@@ -95,8 +95,8 @@ import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -106,7 +106,7 @@ import org.navalplanner.web.planner.order.PlanningState.IScenarioInfo;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
-import org.navalplanner.web.print.CutyPrint;
+import org.navalplanner.web.print.WKPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -541,18 +541,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         configuration.setPrintAction(new IPrintAction() {
             @Override
             public void doPrint() {
-                CutyPrint.print(order);
+                WKPrint.print(order);
             }
 
             @Override
             public void doPrint(Map<String, String> parameters) {
-                CutyPrint.print(order, parameters);
+                WKPrint.print(order, parameters);
             }
 
             @Override
             public void doPrint(HashMap<String, String> parameters,
                     Planner planner) {
-                CutyPrint.print(order, parameters, planner);
+                WKPrint.print(order, parameters, planner);
 
             }
 

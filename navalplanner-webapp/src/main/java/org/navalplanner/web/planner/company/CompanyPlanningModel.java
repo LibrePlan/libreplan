@@ -67,12 +67,12 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
-import org.navalplanner.web.print.CutyPrint;
+import org.navalplanner.web.print.WKPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -586,18 +586,18 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         configuration.setPrintAction(new IPrintAction() {
             @Override
             public void doPrint() {
-                CutyPrint.print();
+                WKPrint.print();
             }
 
             @Override
             public void doPrint(Map<String, String> parameters) {
-                CutyPrint.print(parameters);
+                WKPrint.print(parameters);
             }
 
             @Override
             public void doPrint(HashMap<String, String> parameters,
                     Planner planner) {
-                CutyPrint.print(parameters, planner);
+                WKPrint.print(parameters, planner);
             }
 
         });
