@@ -141,7 +141,7 @@
                     <listbox id="exceptionsList"
                         model="@{calendarController.editionController.calendarExceptions}"
                         itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
-                        onSelect="calendarController.editionController.onSelectException(event)" 
+                        onSelect="calendarController.editionController.onSelectException(event)"
                         rows="4" width="100%" >
                         <listhead>
                             <listheader label="${i18n:_('Day')}" />
@@ -259,6 +259,10 @@
         <button onClick="calendarController.editionController.save();"
             label="${arg.save_button_label}"
             sclass="save-button global-action"
+            visible="${arg.save_button_visible}" />
+        <button onClick="calendarController.editionController.saveAndContinue();"
+            label="${arg.saveandcontinue_button_label}"
+            sclass="saveandcontinue-button global-action"
             visible="${arg.save_button_visible}" />
         <button onClick="calendarController.editionController.cancel();"
             label="${arg.cancel_button_label}"

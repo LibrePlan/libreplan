@@ -490,6 +490,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 workerModel.setCapacity(capacity);
             }
 
+            @Override
+            public void saveAndContinue() {
+                save();
+            }
+
         };
 
         editCalendarWindow.setVariable("calendarController", this, true);
