@@ -33,8 +33,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -237,36 +237,49 @@ public class ResourceLoadModel implements IResourceLoadModel {
             // reattaching criterions so the query returns the same criteria as
             // keys
             allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
-            return resourceAllocationDAO.findGenericAllocationsBySomeCriterion(
-                    criteriaToShowList, asDate(initDateFilter),
-                    asDate(endDateFilter));
+            return findAllocationsGroupedByCriteria(criteriaToShowList);
         }
-        Map<Criterion, List<GenericResourceAllocation>> toReturn;
+        Map<Criterion, List<GenericResourceAllocation>> result = allocationsByCriterion();
+        allCriteriaList = Criterion.sortByTypeAndName(result.keySet());
+        if (pageFilterPosition == -1) {
+            return result;
+        }
+        List<Criterion> criteriaReallyShown = allCriteriaList.subList(
+                pageFilterPosition, getEndPositionForCriterionPageFilter());
+        return onlyForThePagesShown(criteriaReallyShown, result);
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> allocationsByCriterion() {
         if (filter()) {
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
-            allCriteriaList = Criterion.sortByTypeAndName(getCriterionsOn(tasks));
-            toReturn = resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(allCriteriaList,
-                            asDate(initDateFilter), asDate(endDateFilter));
+            return findAllocationsGroupedByCriteria(getCriterionsOn(tasks));
         } else {
-            toReturn = resourceAllocationDAO.findGenericAllocationsByCriterion(
-                    asDate(initDateFilter), asDate(endDateFilter));
-            allCriteriaList = Criterion.sortByTypeAndName(toReturn.keySet());
+            return findAllocationsGroupedByCriteria();
         }
-        if(pageFilterPosition == -1) {
-            return toReturn;
-        }
-        //return only the elements in the page filter
-        Map<Criterion, List<GenericResourceAllocation>> toReturnFiltered =
-            new HashMap<Criterion, List<GenericResourceAllocation>>();
-        for(int i = pageFilterPosition; i < getEndPositionForCriterionPageFilter(); i++) {
-            Criterion criterion = allCriteriaList.get(i);
-            if(toReturn.get(criterion) != null) {
-                toReturnFiltered.put(criterion, toReturn.get(criterion));
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria(
+            List<Criterion> relatedWith) {
+        return resourceAllocationDAO.findGenericAllocationsBySomeCriterion(
+                relatedWith, asDate(initDateFilter), asDate(endDateFilter));
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria() {
+        return resourceAllocationDAO.findGenericAllocationsByCriterion(
+                asDate(initDateFilter), asDate(endDateFilter));
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> onlyForThePagesShown(
+            List<Criterion> criteriaReallyShown,
+            Map<Criterion, List<GenericResourceAllocation>> allocationsByCriteria) {
+        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for (Criterion each : criteriaReallyShown) {
+            if (allocationsByCriteria.get(each) != null) {
+                result.put(each, allocationsByCriteria.get(each));
             }
         }
-        return toReturnFiltered;
+        return result;
     }
 
     public static Date asDate(LocalDate date) {
