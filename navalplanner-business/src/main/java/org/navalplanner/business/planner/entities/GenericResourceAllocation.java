@@ -85,27 +85,6 @@ public class GenericResourceAllocation extends
         return result;
     }
 
-    public static Map<Resource, List<GenericResourceAllocation>> byResource(
-            Collection<GenericResourceAllocation> allocations) {
-        Map<Resource, List<GenericResourceAllocation>> result = new HashMap<Resource, List<GenericResourceAllocation>>();
-        for (GenericResourceAllocation resourceAllocation : allocations) {
-            for (Resource resource : resourceAllocation
-                    .getAssociatedResources()) {
-                initializeIfNeeded_(result, resource);
-                result.get(resource).add(resourceAllocation);
-            }
-        }
-        return result;
-    }
-
-    private static void initializeIfNeeded_(
-            Map<Resource, List<GenericResourceAllocation>> result,
-            Resource resource) {
-        if (!result.containsKey(resource)) {
-            result.put(resource, new ArrayList<GenericResourceAllocation>());
-        }
-    }
-
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 

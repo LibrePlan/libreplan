@@ -103,6 +103,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
+    public static <R extends ResourceAllocation<?>> Map<Resource, List<R>> byResource(
+            Collection<? extends R> allocations) {
+        Map<Resource, List<R>> result = new HashMap<Resource, List<R>>();
+        for (R resourceAllocation : allocations) {
+            for (Resource resource : resourceAllocation
+                    .getAssociatedResources()) {
+                if (!result.containsKey(resource)) {
+                    result.put(resource, new ArrayList<R>());
+                }
+                result.get(resource).add(resourceAllocation);
+            }
+        }
+        return result;
+    }
+
     public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(
             Collection<R> allocations) {
         List<R> result = new ArrayList<R>(allocations);
