@@ -64,13 +64,13 @@ public class LoadTimeLine {
                 .unmodifiableList(new ArrayList<LoadTimeLine>());
     }
 
-    public LoadTimeLine(LoadTimeLine principal, List<LoadTimeLine> children) {
-        Validate.notEmpty(principal.getConceptName());
-        Validate.notNull(principal.getLoadPeriods());
-        this.loadPeriods = LoadPeriod.sort(principal.getLoadPeriods());
-        this.conceptName = principal.getConceptName();
-        this.timeLineRole = principal.getRole();
-        this.type = principal.getType();
+    public LoadTimeLine(LoadTimeLine main, List<LoadTimeLine> children) {
+        Validate.notEmpty(main.getConceptName());
+        Validate.notNull(main.getLoadPeriods());
+        this.loadPeriods = LoadPeriod.sort(main.getLoadPeriods());
+        this.conceptName = main.getConceptName();
+        this.timeLineRole = main.getRole();
+        this.type = main.getType();
         Validate.notNull(children);
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>(children));

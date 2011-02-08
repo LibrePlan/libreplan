@@ -439,7 +439,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     .sortedByStartDate(allocationsByCriterion
                             .get(criterion));
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(criterion);
-            LoadTimeLine group = new LoadTimeLine(createPrincipal(criterion,
+            LoadTimeLine group = new LoadTimeLine(createMain(criterion,
                     allocations, role), buildSecondaryLevels(criterion,
                     allocations));
             if (!group.isEmpty()) {
@@ -608,7 +608,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return secondLevel;
     }
 
-    private LoadTimeLine createPrincipal(Criterion criterion,
+    private LoadTimeLine createMain(Criterion criterion,
             List<? extends ResourceAllocation<?>> orderedAllocations,
             TimeLineRole<BaseEntity> role) {
         return new LoadTimeLine(criterion.getType().getName() + ": " + criterion.getName(),
