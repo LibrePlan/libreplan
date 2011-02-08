@@ -683,21 +683,40 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             private final LocalDate end;
 
             AllocateHoursOnInterval(LocalDate start, LocalDate end) {
-                Validate.isTrue(start.compareTo(end) <= 0,
-                        "the end must be equal or posterior than start");
+                checkStartBeforeOrEqualEnd(start, end);
                 this.start = start;
                 this.end = end;
             }
+
 
             public void allocateHours(int hours) {
                 allocateSubintervalWithinTaskBounds(start, end, hours(hours));
             }
         }
 
+        private void checkStartBeforeOrEqualEnd(LocalDate start, LocalDate end) {
+            Validate.isTrue(start.compareTo(end) <= 0,
+                    "the end must be equal or posterior than start");
+        }
+
         @Override
         public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate start,
                 LocalDate end) {
             return new AllocateHoursOnInterval(start, end);
+        }
+
+        @Override
+        public IAllocateHoursOnInterval onInterval(
+                final LocalDate startInclusive, final LocalDate endExclusive) {
+            checkStartBeforeOrEqualEnd(startInclusive, endExclusive);
+            return new IAllocateHoursOnInterval() {
+
+                @Override
+                public void allocateHours(int hours) {
+                    allocateInterval(startInclusive, endExclusive, hours);
+                }
+
+            };
         }
 
         @Override
@@ -743,6 +762,16 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<T> assignmentsCreated = createAssignments(interval,
                     durationToAssign);
             resetAssigmentsForInterval(interval, assignmentsCreated);
+        }
+
+        private void allocateInterval(LocalDate startInclusive,
+                LocalDate endExclusive, int hours) {
+            AllocationInterval interval = new AllocationInterval(
+                    startInclusive, endExclusive);
+            List<T> assignmentsCreated = createAssignments(interval,
+                    hours(hours));
+            resetAssigmentsFittingAllocationDatesToResultingAssignments(
+                    interval, assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -887,6 +916,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             this.end = IntraDayDate.max(this.start, end);
         }
 
+        public AllocationInterval(LocalDate startInclusive,
+                LocalDate endExclusive) {
+            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate
+                    .startOfDay(endExclusive));
+        }
+
         public IntraDayDate getStartInclusive() {
             return this.start;
         }
@@ -924,11 +959,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         IntraDayDate originalStart = getIntraDayStartDate();
         IntraDayDate originalEnd = getIntraDayEndDate();
 
-        removingAssignments(withoutConsolidated(interval
-                .getAssignmentsOnInterval()));
-        addingAssignments(assignmentsCreated);
-        updateOriginalTotalAssigment();
-        updateResourcesPerDay();
+        updateAssignments(interval, assignmentsCreated);
 
         // The resource allocation cannot grow beyond the start of the task.
         // This
@@ -942,6 +973,36 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         // original size, this is guaranteed by originalEnd
         getDayAssignmentsState().setIntraDayEnd(
                 IntraDayDate.max(originalEnd, interval.getEndExclusive()));
+    }
+
+    private void updateAssignments(AllocationInterval interval,
+            List<T> assignmentsCreated) {
+        removingAssignments(withoutConsolidated(interval
+                .getAssignmentsOnInterval()));
+        addingAssignments(assignmentsCreated);
+        updateOriginalTotalAssigment();
+        updateResourcesPerDay();
+    }
+
+    private void resetAssigmentsFittingAllocationDatesToResultingAssignments(
+            AllocationInterval interval, List<T> assignmentsCreated) {
+        updateAssignments(interval, assignmentsCreated);
+
+        LocalDate startConsideringAssignments = getStartConsideringAssignments();
+        IntraDayDate start = IntraDayDate
+                .startOfDay(startConsideringAssignments);
+        if (interval.getStartInclusive()
+                .areSameDay(startConsideringAssignments)) {
+            start = interval.getStartInclusive();
+        }
+        getDayAssignmentsState().setIntraDayStart(start);
+
+        LocalDate endConsideringAssignments = getEndDateGiven(getAssignments());
+        IntraDayDate end = IntraDayDate.startOfDay(endConsideringAssignments);
+        if (interval.getEndExclusive().areSameDay(endConsideringAssignments)) {
+            end = interval.getEndExclusive();
+        }
+        getDayAssignmentsState().setIntraDayEnd(end);
     }
 
     private static <T extends DayAssignment> List<T> withoutConsolidated(

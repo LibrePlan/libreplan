@@ -403,6 +403,54 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void thereIsAWayForAllocatingOutsideTheBoundsOfTheTask() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromStartUntil(start.plusDays(4))
+                .allocateHours(32);
+
+        specificResourceAllocation.onInterval(start.plusDays(5),
+                start.plusDays(6)).allocateHours(8);
+
+        assertThat(specificResourceAllocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(start.plusDays(6))));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8, 8));
+    }
+
+    @Test
+    public void allocatingZeroHoursAtTheEndShrinksTheAllocation() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromStartUntil(start.plusDays(4))
+                .allocateHours(32);
+
+        specificResourceAllocation.onInterval(start.plusDays(3),
+                start.plusDays(4)).allocateHours(0);
+
+        assertThat(specificResourceAllocation.getIntraDayEndDate(),
+                equalTo(IntraDayDate.startOfDay(start.plusDays(3))));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8));
+    }
+
+    @Test
+    public void allocatingZeroHoursAtTheStartShrinksTheAllocation() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.fromStartUntil(start.plusDays(4))
+                .allocateHours(32);
+
+        specificResourceAllocation.onInterval(start, start.plusDays(1))
+                .allocateHours(0);
+
+        assertThat(specificResourceAllocation.getIntraDayStartDate(),
+                equalTo(IntraDayDate.startOfDay(start.plusDays(1))));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8));
+    }
+
+    @Test
     public void canAssignFromStartUntilEnd() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
