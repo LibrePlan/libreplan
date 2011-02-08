@@ -326,10 +326,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
                     Task task = AllocationsSpecified.this.task;
                     if (isForwardScheduling()) {
-                        allocation.resetAssignmentsTo(dayAssignments,
+                        allocation.resetAllAllocationAssignmentsTo(
+                                dayAssignments,
                                 task.getIntraDayStartDate(), resultDate);
                     } else {
-                        allocation.resetAssignmentsTo(dayAssignments,
+                        allocation.resetAllAllocationAssignmentsTo(
+                                dayAssignments,
                                 resultDate, task.getIntraDayEndDate());
                     }
                     allocation.updateResourcesPerDay();
@@ -668,7 +670,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             public void allocate(ResourcesPerDay resourcesPerDay) {
                 List<T> assignmentsCreated = createAssignments(resourcesPerDay,
                         startInclusive, endExclusive);
-                resetAssignmentsTo(assignmentsCreated, startInclusive,
+                resetAllAllocationAssignmentsTo(assignmentsCreated,
+                        startInclusive,
                         endExclusive);
                 updateResourcesPerDay();
             }
@@ -688,7 +691,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
 
             public void allocateHours(int hours) {
-                allocate(start, end, hours(hours));
+                allocateSubintervalWithinTaskBounds(start, end, hours(hours));
             }
         }
 
@@ -704,7 +707,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocate(getStartSpecifiedByTask(),
+                    allocateTheWholeAllocation(getStartSpecifiedByTask(),
                             IntraDayDate.startOfDay(end), hours(hours));
                 }
             };
@@ -716,23 +719,25 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocate(IntraDayDate.startOfDay(start),
+                    allocateTheWholeAllocation(IntraDayDate.startOfDay(start),
                             task.getIntraDayEndDate(), hours(hours));
                 }
             };
         }
 
-        private void allocate(IntraDayDate startInclusive,
+        private void allocateTheWholeAllocation(IntraDayDate startInclusive,
                 IntraDayDate endExclusive, EffortDuration durationToAssign) {
             IntraDayDate afterConsolidated = getStartSpecifiedByTask();
             List<T> assignmentsCreated = createAssignments(
                     IntraDayDate.max(afterConsolidated, startInclusive),
                     endExclusive, durationToAssign);
-            resetAssignmentsTo(assignmentsCreated, startInclusive, endExclusive);
+            resetAllAllocationAssignmentsTo(assignmentsCreated, startInclusive,
+                    endExclusive);
             updateResourcesPerDay();
         }
 
-        private void allocate(LocalDate startInclusive, LocalDate endExclusive,
+        private void allocateSubintervalWithinTaskBounds(
+                LocalDate startInclusive, LocalDate endExclusive,
                 EffortDuration durationToAssign) {
             IntervalInsideTask interval = new IntervalInsideTask(
                     startInclusive, endExclusive);
@@ -852,11 +857,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void copyAssignments(Scenario from, Scenario to);
 
     protected void resetAssignmentsTo(List<T> assignments) {
-        resetAssignmentsTo(assignments, task.getIntraDayStartDate(),
+        resetAllAllocationAssignmentsTo(assignments,
+                task.getIntraDayStartDate(),
                 task.getIntraDayEndDate());
     }
 
-    protected void resetAssignmentsTo(List<T> assignments,
+    protected void resetAllAllocationAssignmentsTo(List<T> assignments,
             IntraDayDate intraDayStart,
             IntraDayDate intraDayEnd) {
         removingAssignments(withoutConsolidated(getAssignments()));
