@@ -456,6 +456,12 @@ div.box.limiting-unassigned {
     background-repeat: repeat-y;
 }
 
+#watermark .timetracker_column_today_deadline {
+    background-image:
+        url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif");
+    background-repeat: repeat-y, repeat-y;
+}
+
 
 #watermark .bankHoliday {
     background-color: #FFEEEE !important;
@@ -1219,6 +1225,13 @@ body .perspectives-column {
 .taskdetailsContainer {
     overflow-x: scroll;
     overflow-y: hidden;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.taskspanel {
+    border-top: 0;
+    border-bottom: 0;
 }
 
 .row .assigned {
