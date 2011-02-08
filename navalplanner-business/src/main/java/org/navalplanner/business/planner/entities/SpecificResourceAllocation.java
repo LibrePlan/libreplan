@@ -203,8 +203,8 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end) {
-        return new SpecificAssignmentsAllocator().onInterval(start, end);
+    public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate start, LocalDate end) {
+        return new SpecificAssignmentsAllocator().onIntervalWithinTask(start, end);
     }
 
     @Override

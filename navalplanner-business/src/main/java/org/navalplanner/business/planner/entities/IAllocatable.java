@@ -50,7 +50,7 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @return an object which can be used to allocate hours on the interval
      *         specified
      */
-    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
+    public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate startInclusive,
             LocalDate endExclusive);
 
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);

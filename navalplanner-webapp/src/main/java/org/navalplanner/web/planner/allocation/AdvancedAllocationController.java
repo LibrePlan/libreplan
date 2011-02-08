@@ -1173,7 +1173,7 @@ class Row {
             @Override
             public void onEvent(Event event) throws Exception {
                 Integer value = intbox.getValue();
-                getAllocation().withPreviousAssociatedResources().onInterval(
+                getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
                         getAllocation().getStartDate(),
                         getAllocation().getEndDate())
                         .allocateHours(value);
@@ -1550,7 +1550,7 @@ class Row {
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
                 getAllocation().withPreviousAssociatedResources()
-                                   .onInterval(startDate, endDate)
+                                   .onIntervalWithinTask(startDate, endDate)
                                    .allocateHours(value);
                 fireCellChanged(item);
                 intbox.setRawValue(getHoursForDetailItem(item));

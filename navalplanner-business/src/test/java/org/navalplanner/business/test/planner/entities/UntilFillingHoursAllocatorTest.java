@@ -288,14 +288,14 @@ public class UntilFillingHoursAllocatorTest {
                 .get(0)
                 .getBeingModified();
         // hours per day: 8, 8, 8, 6
-        allocation.onInterval(startDate.getDate(),
+        allocation.onIntervalWithinTask(startDate.getDate(),
                 startDate.getDate().plusDays(1))
                 .allocateHours(6);
         // hours per day: 6, 8, 8, 6
         assertTrue(allocation.getResourcesPerDay().getAmount()
                 .compareTo(oneResourcePerDay.getAmount()) < 0);
 
-        allocation.onInterval(startDate.getDate().plusDays(3),
+        allocation.onIntervalWithinTask(startDate.getDate().plusDays(3),
                 startDate.getDate().plusDays(4)).allocateHours(8);
         // hours per day: 6, 8, 8, 8
         assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));
@@ -304,7 +304,7 @@ public class UntilFillingHoursAllocatorTest {
         // the user and then the real values. In the meantime doing an effort to
         // keep the original value
 
-        allocation.onInterval(startDate.getDate().plusDays(4),
+        allocation.onIntervalWithinTask(startDate.getDate().plusDays(4),
                 startDate.getDate().plusDays(5))
                 .allocateHours(8);
         // hours per day: 6, 8, 8, 8, 8
@@ -312,7 +312,7 @@ public class UntilFillingHoursAllocatorTest {
                 .compareTo(oneResourcePerDay.getAmount()) < 0);
 
         // hours per day: 6, 8, 8, 8, 10
-        allocation.onInterval(startDate.getDate().plusDays(4),
+        allocation.onIntervalWithinTask(startDate.getDate().plusDays(4),
                 startDate.getDate().plusDays(5))
                 .allocateHours(10);
         assertThat(allocation.getResourcesPerDay(), equalTo(oneResourcePerDay));

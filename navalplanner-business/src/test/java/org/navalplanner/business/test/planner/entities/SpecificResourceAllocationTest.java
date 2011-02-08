@@ -288,7 +288,7 @@ public class SpecificResourceAllocationTest {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
         LocalDate dayBefore = start.plusDays(-1);
-        specificResourceAllocation.onInterval(start, dayBefore).allocateHours(
+        specificResourceAllocation.onIntervalWithinTask(start, dayBefore).allocateHours(
                 10);
     }
 
@@ -296,7 +296,7 @@ public class SpecificResourceAllocationTest {
     public void canAllocateZeroHours() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(0);
     }
 
@@ -304,7 +304,7 @@ public class SpecificResourceAllocationTest {
     public void cantAllocateNegativeHours() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(1))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(1))
                 .allocateHours(-1);
     }
 
@@ -312,7 +312,7 @@ public class SpecificResourceAllocationTest {
     public void someHoursInAnIntervalCanBeAssigned() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5));
     }
@@ -321,7 +321,7 @@ public class SpecificResourceAllocationTest {
     public void thePartOfTheIntervalUsedIsTheOneOverlapping() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start.plusDays(1),
+        specificResourceAllocation.onIntervalWithinTask(start.plusDays(1),
                 start.plusDays(6)).allocateHours(12);
         assertThat(specificResourceAllocation.getAssignments(),
                 haveHours(4, 4, 4));
@@ -331,7 +331,7 @@ public class SpecificResourceAllocationTest {
     public void ifTheProvidedIntervalIsAfterTheTaskDoesntAllocateAnything() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start.plusDays(5),
+        specificResourceAllocation.onIntervalWithinTask(start.plusDays(5),
                 start.plusDays(6)).allocateHours(12);
         assertTrue(specificResourceAllocation.getAssignments().isEmpty());
     }
@@ -340,7 +340,7 @@ public class SpecificResourceAllocationTest {
     public void ifTheProvidedIntervalIsBeforeTheTaskDoesntAllocateAnything() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start.minusDays(5),
+        specificResourceAllocation.onIntervalWithinTask(start.minusDays(5),
                 start.minusDays(2)).allocateHours(12);
         assertTrue(specificResourceAllocation.getAssignments().isEmpty());
     }
@@ -352,7 +352,7 @@ public class SpecificResourceAllocationTest {
 
         specificResourceAllocation.fromStartUntil(start.plusDays(2))
                 .allocateHours(16);
-        specificResourceAllocation.onInterval(start, start.plusDays(6))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(6))
                 .allocateHours(12);
 
         assertThat(specificResourceAllocation.getAssignments(),
@@ -366,7 +366,7 @@ public class SpecificResourceAllocationTest {
         LocalDate end = start.plusDays(4);
 
         specificResourceAllocation.fromStartUntil(end).allocateHours(32);
-        specificResourceAllocation.onInterval(start.plusDays(3), end)
+        specificResourceAllocation.onIntervalWithinTask(start.plusDays(3), end)
                 .allocateHours(0);
 
         assertThat(specificResourceAllocation.getIntraDayEndDate(),
@@ -384,7 +384,7 @@ public class SpecificResourceAllocationTest {
         assertThat(specificResourceAllocation.getIntraDayEndDate(),
                 equalTo(IntraDayDate.startOfDay(end.minusDays(1))));
 
-        specificResourceAllocation.onInterval(start, end).allocateHours(32);
+        specificResourceAllocation.onIntervalWithinTask(start, end).allocateHours(32);
         assertThat(specificResourceAllocation.getAssignments(),
                 haveHours(8, 8, 8, 8));
         assertThat(specificResourceAllocation.getIntraDayEndDate(),
@@ -397,7 +397,7 @@ public class SpecificResourceAllocationTest {
         givenSpecificResourceAllocation(start, 4);
         specificResourceAllocation.fromStartUntil(start.plusDays(4))
                 .allocateHours(32);
-        specificResourceAllocation.onInterval(start, start.plusDays(1))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(1))
                 .allocateHours(0);
         assertThat(specificResourceAllocation.getIntraDayStartDate(),
                 equalTo(IntraDayDate.startOfDay(start)));
@@ -442,7 +442,7 @@ public class SpecificResourceAllocationTest {
     public void canBeNotifiedWhenADayAssignmentIsRemoved() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         List<SpecificDayAssignment> currentAssignments = specificResourceAllocation
                 .getAssignments();
@@ -455,7 +455,7 @@ public class SpecificResourceAllocationTest {
         specificResourceAllocation
                 .setOnDayAssignmentRemoval(dayAssignmentRemovalMock);
         replay(dayAssignmentRemovalMock);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         verify(dayAssignmentRemovalMock);
     }
@@ -464,7 +464,7 @@ public class SpecificResourceAllocationTest {
     public void canAutomaticallyDetachDayAssignmentsWhenRemoved() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         List<SpecificDayAssignment> assignments = specificResourceAllocation
                 .getAssignments();
@@ -474,7 +474,7 @@ public class SpecificResourceAllocationTest {
 
         specificResourceAllocation
                 .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
 
         for (SpecificDayAssignment each : assignments) {
@@ -488,7 +488,7 @@ public class SpecificResourceAllocationTest {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(5, 5,
                 3, 3));
@@ -500,7 +500,7 @@ public class SpecificResourceAllocationTest {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
         specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(0);
         assertThat(specificResourceAllocation.getAssignments(), from(start
                 .plusDays(2)));
@@ -513,7 +513,7 @@ public class SpecificResourceAllocationTest {
         givenSpecificResourceAllocation(start, 4);
         ResourcesPerDay original = ResourcesPerDay.amount(1);
         specificResourceAllocation.allocate(original);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         ResourcesPerDay newResourcesPerDay = specificResourceAllocation
                 .getResourcesPerDay();
@@ -560,7 +560,7 @@ public class SpecificResourceAllocationTest {
             }
         });
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(2))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(2))
                 .allocateHours(10);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 8));
     }
@@ -577,7 +577,7 @@ public class SpecificResourceAllocationTest {
             }
         });
         givenSpecificResourceAllocation(start, 4);
-        specificResourceAllocation.onInterval(start, start.plusDays(4))
+        specificResourceAllocation.onIntervalWithinTask(start, start.plusDays(4))
                 .allocateHours(20);
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 4,
                 8, 6));
