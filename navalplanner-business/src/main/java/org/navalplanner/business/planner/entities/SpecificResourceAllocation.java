@@ -388,4 +388,11 @@ public class SpecificResourceAllocation extends
         return availability.getValidPeriods();
     }
 
+    public boolean interferesWith(ICriterion criterion,
+            LocalDate startInclusive, LocalDate endExclusive) {
+        List<Interval> intervalsRelatedWith = getIntervalsRelatedWith(
+                criterion, startInclusive, endExclusive);
+        return !intervalsRelatedWith.isEmpty();
+    }
+
 }
