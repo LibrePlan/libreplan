@@ -32,7 +32,25 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
 
-    public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end);
+    /**
+     * <p>
+     * It does the allocation in the intersection of the underlying task's
+     * bounds and the interval specified. This ensures it can't modify the start
+     * and end of the task. The start and end of the allocation can grow, but
+     * they can't be shrunk.
+     * </p>
+     * <p>
+     * Putting it in another way: This method can't be used to expand an
+     * allocation beyond the task's bounds.
+     * </p>
+     *
+     * @param startInclusive
+     * @param endExclusive
+     * @return an object which can be used to allocate hours on the interval
+     *         specified
+     */
+    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
+            LocalDate endExclusive);
 
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
 
