@@ -873,11 +873,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public IntervalInsideTask(LocalDate startInclusive,
                 LocalDate endExclusive) {
-            this.start = IntraDayDate.max(IntraDayDate
-                    .startOfDay(startInclusive), getTask()
-                    .getFirstDayNotConsolidated());
-            this.end = IntraDayDate.min(task.getIntraDayEndDate(),
-                    IntraDayDate.startOfDay(endExclusive));
+            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0);
+
+            IntraDayDate taskStart = getTask().getFirstDayNotConsolidated();
+            IntraDayDate taskEnd = task.getIntraDayEndDate();
+
+            this.start = IntraDayDate.min(IntraDayDate.max(IntraDayDate
+                    .startOfDay(startInclusive), taskStart), taskEnd);
+
+            this.end = IntraDayDate.max(
+                    IntraDayDate.min(taskEnd,
+                            IntraDayDate.startOfDay(endExclusive)), taskStart);
         }
 
         public IntraDayDate getStart() {

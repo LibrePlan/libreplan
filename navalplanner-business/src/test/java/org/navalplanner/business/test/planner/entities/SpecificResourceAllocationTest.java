@@ -327,6 +327,24 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void ifTheProvidedIntervalIsAfterTheTaskDoesntAllocateAnything() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start.plusDays(5),
+                start.plusDays(6)).allocateHours(12);
+        assertTrue(specificResourceAllocation.getAssignments().isEmpty());
+    }
+
+    @Test
+    public void ifTheProvidedIntervalIsBeforeTheTaskDoesntAllocateAnything() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(start.minusDays(5),
+                start.minusDays(2)).allocateHours(12);
+        assertTrue(specificResourceAllocation.getAssignments().isEmpty());
+    }
+
+    @Test
     public void thePartOfTheIntervalUsedIsTheOneOverlappingWithTheTask() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
