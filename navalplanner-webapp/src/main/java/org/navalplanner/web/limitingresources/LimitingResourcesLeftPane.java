@@ -82,8 +82,8 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return (Tree) getFellow("loadsTree");
     }
 
-    private Component createFirstLevel(LimitingResourceQueue principal) {
-        Div result = createLabelWithName(principal);
+    private Component createFirstLevel(LimitingResourceQueue main) {
+        Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
         return result;
     }
@@ -94,10 +94,10 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return result;
     }
 
-    private Div createLabelWithName(LimitingResourceQueue principal) {
+    private Div createLabelWithName(LimitingResourceQueue main) {
         Div result = new Div();
         Label label = new Label();
-        final String conceptName = principal.getResource().getName();
+        final String conceptName = main.getResource().getName();
         label.setValue(conceptName);
         result.appendChild(label);
         return result;
