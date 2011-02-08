@@ -309,4 +309,61 @@ public class ResourceAllocationDAO extends
                         Restrictions.between("day", start, end))).list();
     }
 
+    @Override
+    public List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            Criterion criterion, Date intervalFilterStartDate,
+            Date intervalFilterEndDate) {
+        String queryString = "select distinct s from SpecificResourceAllocation s "
+                + "join s.resource r "
+                + "join r.criterionSatisfactions satisfaction "
+                + "join satisfaction.criterion c";
+        if (intervalFilterStartDate != null || intervalFilterEndDate != null) {
+            queryString += " inner join s.task t";
+        }
+        queryString += " where c = :criterion";
+        if (intervalFilterEndDate != null) {
+            queryString += " and t.startDate.date <= :intervalFilterEndDate";
+        }
+        if (intervalFilterStartDate != null) {
+            queryString += " and t.endDate.date >= :intervalFilterStartDate";
+        }
+
+        Query query = getSession().createQuery(queryString);
+        query.setParameter("criterion", criterion);
+
+        if (intervalFilterStartDate != null) {
+            query.setParameter("intervalFilterStartDate",
+                    asLocalDate(intervalFilterStartDate));
+        }
+        if (intervalFilterEndDate != null) {
+            query.setParameter("intervalFilterEndDate",
+                    asLocalDate(intervalFilterEndDate));
+        }
+
+        @SuppressWarnings("unchecked")
+        List<SpecificResourceAllocation> result = query.list();
+        return onlyAllocationsWithActiveCriterion(criterion, result,
+                asLocalDate(intervalFilterStartDate),
+                asLocalDate(intervalFilterEndDate));
+    }
+
+    private static LocalDate asLocalDate(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(date);
+    }
+
+    private List<SpecificResourceAllocation> onlyAllocationsWithActiveCriterion(
+            Criterion criterion, List<SpecificResourceAllocation> allocations,
+            LocalDate startInclusive, LocalDate endExclusive) {
+        List<SpecificResourceAllocation> result = new ArrayList<SpecificResourceAllocation>();
+        for (SpecificResourceAllocation each : allocations) {
+            if (each.interferesWith(criterion, startInclusive, endExclusive)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
 }

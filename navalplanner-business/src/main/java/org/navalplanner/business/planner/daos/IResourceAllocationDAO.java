@@ -30,6 +30,7 @@ import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -71,6 +72,35 @@ public interface IResourceAllocationDAO extends
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions, Date intervalFilterStartDate,
+            Date intervalFilterEndDate);
+
+    /**
+     * <p>
+     * It searches for the {@link SpecificResourceAllocation specific
+     * allocations} that have an assigned resource such that interferes with the
+     * provided criterion. This means that the assigned resource for the
+     * specific allocation satisfies the provided criterion in part or all the
+     * specific allocation.
+     * </p>
+     * <p>
+     * It only returns the allocations for which their tasks overlap
+     * intervalFilterStartDate and intervalFilterEndDate. If any of these
+     * interval parameters is null it's considered that the interval is open
+     * ended. So if you provide both interval filter values as null, all
+     * allocations satisfying the first requirement are returned.
+     * </p>
+     *
+     * @param criterion
+     *            must be not <code>null</code>
+     * @param intervalFilterStartDate
+     *            It can be <code>null</code>
+     * @param intervalFilterEndDate
+     *            It can be <code>null</code>
+     * @return the list of {@link SpecificResourceAllocation specific
+     *         allocations} found
+     */
+    List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            Criterion criterion, Date intervalFilterStartDate,
             Date intervalFilterEndDate);
 
 }
