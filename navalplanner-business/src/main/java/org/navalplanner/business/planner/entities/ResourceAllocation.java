@@ -124,10 +124,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    public static Map<Task, List<ResourceAllocation<?>>> byTask(
-            List<ResourceAllocation<?>> allocations) {
-        Map<Task, List<ResourceAllocation<?>>> result = new HashMap<Task, List<ResourceAllocation<?>>>();
-        for (ResourceAllocation<?> resourceAllocation : allocations) {
+    public static <R extends ResourceAllocation<?>> Map<Task, List<R>> byTask(
+            List<? extends R> allocations) {
+        Map<Task, List<R>> result = new HashMap<Task, List<R>>();
+        for (R resourceAllocation : allocations) {
             if (resourceAllocation.getTask() != null) {
                 Task task = resourceAllocation.getTask();
                 initializeIfNeeded(result, task);
