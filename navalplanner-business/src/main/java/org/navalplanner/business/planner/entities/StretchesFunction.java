@@ -88,7 +88,7 @@ public class StretchesFunction extends AssignmentFunction {
                     LocalDate day = startInclusive.plusDays(i);
                     LocalDate nextDay = day.plusDays(1);
                     allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
+                            .onIntervalWithinTask(day, nextDay)
                             .allocateHours(hoursForEachDay[i]);
                     reallyAssigned[i] = allocation.getAssignedHours(day,
                             nextDay);
@@ -112,7 +112,7 @@ public class StretchesFunction extends AssignmentFunction {
                     LocalDate day = startInclusive.plusDays(i);
                     LocalDate nextDay = day.plusDays(1);
                     allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
+                            .onIntervalWithinTask(day, nextDay)
                             .allocateHours(newHours);
                 }
             }
@@ -257,7 +257,7 @@ public class StretchesFunction extends AssignmentFunction {
                 LocalDate startInclusive, LocalDate endExclusive,
                 int intervalHours) {
             resourceAllocation.withPreviousAssociatedResources()
-                    .onInterval(getStartFor(startInclusive),
+                    .onIntervalWithinTask(getStartFor(startInclusive),
                                 getEnd())
                     .allocateHours(intervalHours);
         }

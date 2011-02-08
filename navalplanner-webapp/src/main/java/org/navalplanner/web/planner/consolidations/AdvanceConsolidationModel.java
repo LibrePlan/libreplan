@@ -257,7 +257,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     .allocateKeepingProportions(startInclusive, endExclusive,
                             pendingHours);
         } else {
-            resourceAllocation.withPreviousAssociatedResources().onInterval(
+            resourceAllocation.withPreviousAssociatedResources().onIntervalWithinTask(
                     startInclusive, endExclusive).allocateHours(pendingHours);
         }
     }

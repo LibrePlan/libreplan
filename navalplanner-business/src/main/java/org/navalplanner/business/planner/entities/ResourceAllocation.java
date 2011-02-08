@@ -695,7 +695,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval onInterval(LocalDate start,
+        public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate start,
                 LocalDate end) {
             return new AllocateHoursOnInterval(start, end);
         }

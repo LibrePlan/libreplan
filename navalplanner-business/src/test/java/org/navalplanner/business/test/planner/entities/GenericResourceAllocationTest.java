@@ -617,7 +617,7 @@ public class GenericResourceAllocationTest {
 
         final int hoursOnSubinterval = 3;
         int daysSubinterval = 2;
-        genericResourceAllocation.forResources(workers).onInterval(start,
+        genericResourceAllocation.forResources(workers).onIntervalWithinTask(start,
                 start.plusDays(daysSubinterval)).allocateHours(
                 hoursOnSubinterval);
         assertThat(genericResourceAllocation.getAssignedHours(),
@@ -660,7 +660,7 @@ public class GenericResourceAllocationTest {
 
         final int hoursOnSubinterval = 3;
         int daysSubinterval = 2;
-        genericResourceAllocation.withPreviousAssociatedResources().onInterval(
+        genericResourceAllocation.withPreviousAssociatedResources().onIntervalWithinTask(
                 start,
                 start.plusDays(daysSubinterval)).allocateHours(
                 hoursOnSubinterval);
@@ -698,7 +698,7 @@ public class GenericResourceAllocationTest {
                 ResourcesPerDay.amount(3));
         ResourcesPerDay original = genericResourceAllocation
                 .getResourcesPerDay();
-        genericResourceAllocation.forResources(workers).onInterval(start,
+        genericResourceAllocation.forResources(workers).onIntervalWithinTask(start,
                 start.plusDays(2)).allocateHours(60);
         ResourcesPerDay current = genericResourceAllocation
                 .getResourcesPerDay();
