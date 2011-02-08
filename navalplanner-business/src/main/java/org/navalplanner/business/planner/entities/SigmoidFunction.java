@@ -138,7 +138,7 @@ public class SigmoidFunction extends AssignmentFunction {
             LocalDate day, int hours) {
         final LocalDate nextDay = day.plusDays(1);
         resourceAllocation.withPreviousAssociatedResources()
-                .onIntervalWithinTask(day, nextDay).allocateHours(hours);
+                .onInterval(day, nextDay).allocateHours(hours);
     }
 
     private BigDecimal[] roundValues(BigDecimal[] allocatedHoursPerDay,
