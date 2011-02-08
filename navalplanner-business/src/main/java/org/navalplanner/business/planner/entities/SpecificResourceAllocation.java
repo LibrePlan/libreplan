@@ -307,8 +307,8 @@ public class SpecificResourceAllocation extends
 
     public void allocateKeepingProportions(LocalDate start,
             LocalDate endExclusive, int newHoursForInterval) {
-        IntervalInsideTask interval = new IntervalInsideTask(start,
-                endExclusive);
+        AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
+                start, endExclusive);
         List<DayAssignment> assignments = interval.getAssignmentsOnInterval();
         ProportionalDistributor distributor = ProportionalDistributor
                 .create(asHours(assignments));

@@ -726,33 +726,34 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private void allocateTheWholeAllocation(IntraDayDate startInclusive,
                 IntraDayDate endExclusive, EffortDuration durationToAssign) {
-            IntraDayDate afterConsolidated = getStartSpecifiedByTask();
-            List<T> assignmentsCreated = createAssignments(
-                    IntraDayDate.max(afterConsolidated, startInclusive),
-                    endExclusive, durationToAssign);
-            resetAllAllocationAssignmentsTo(assignmentsCreated, startInclusive,
-                    endExclusive);
+            AllocationInterval interval = new AllocationInterval(
+                    startInclusive, endExclusive);
+            List<T> assignmentsCreated = createAssignments(interval,
+                    durationToAssign);
+            resetAllAllocationAssignmentsTo(assignmentsCreated,
+                    interval.getStartInclusive(), interval.getEndExclusive());
             updateResourcesPerDay();
         }
 
         private void allocateSubintervalWithinTaskBounds(
                 LocalDate startInclusive, LocalDate endExclusive,
                 EffortDuration durationToAssign) {
-            IntervalInsideTask interval = new IntervalInsideTask(
+            AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
                     startInclusive, endExclusive);
-            List<T> assignmentsCreated = createAssignments(interval.getStart(),
-                    interval.getEnd(), durationToAssign);
+            List<T> assignmentsCreated = createAssignments(interval,
+                    durationToAssign);
             resetAssigmentsForInterval(interval, assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
 
-        private List<T> createAssignments(IntraDayDate startInclusive,
-                IntraDayDate endExclusive, EffortDuration durationToAssign) {
+        private List<T> createAssignments(AllocationInterval interval,
+                EffortDuration durationToAssign) {
             List<T> assignmentsCreated = new ArrayList<T>();
             AvailabilityTimeLine availability = getAvailability();
 
-            List<PartialDay> days = getDays(startInclusive, endExclusive);
+            List<PartialDay> days = getDays(interval.getStartInclusive(),
+                    interval.getEndExclusive());
             EffortDuration[] durationsEachDay = secondsDistribution(
                     availability, days, durationToAssign);
             int i = 0;
@@ -871,32 +872,26 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         getDayAssignmentsState().setIntraDayEnd(intraDayEnd);
     }
 
-    class IntervalInsideTask {
+    class AllocationInterval {
 
         private final IntraDayDate start;
 
         private final IntraDayDate end;
 
-        public IntervalInsideTask(LocalDate startInclusive,
-                LocalDate endExclusive) {
-            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0);
+        private AllocationInterval(IntraDayDate start, IntraDayDate end) {
+            IntraDayDate startConsideringConsolidated = task
+                    .hasConsolidations() ? IntraDayDate
+                    .max(task.getFirstDayNotConsolidated(), start) : start;
 
-            IntraDayDate taskStart = getTask().getFirstDayNotConsolidated();
-            IntraDayDate taskEnd = task.getIntraDayEndDate();
-
-            this.start = IntraDayDate.min(IntraDayDate.max(IntraDayDate
-                    .startOfDay(startInclusive), taskStart), taskEnd);
-
-            this.end = IntraDayDate.max(
-                    IntraDayDate.min(taskEnd,
-                            IntraDayDate.startOfDay(endExclusive)), taskStart);
+            this.start = IntraDayDate.min(startConsideringConsolidated, end);
+            this.end = IntraDayDate.max(this.start, end);
         }
 
-        public IntraDayDate getStart() {
+        public IntraDayDate getStartInclusive() {
             return this.start;
         }
 
-        public IntraDayDate getEnd() {
+        public IntraDayDate getEndExclusive() {
             return this.end;
         }
 
@@ -907,7 +902,24 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    protected void resetAssigmentsForInterval(IntervalInsideTask interval,
+    class AllocationIntervalInsideTask extends AllocationInterval {
+
+        AllocationIntervalInsideTask(LocalDate startInclusive,
+                LocalDate endExclusive) {
+            this(IntraDayDate.startOfDay(startInclusive), IntraDayDate
+                    .startOfDay(endExclusive));
+        }
+
+        AllocationIntervalInsideTask(IntraDayDate startInclusive,
+                IntraDayDate endExclusive) {
+            super(IntraDayDate.max(startInclusive, getTask()
+                    .getFirstDayNotConsolidated()), IntraDayDate.min(
+                    endExclusive, task.getIntraDayEndDate()));
+        }
+    }
+
+    protected void resetAssigmentsForInterval(
+            AllocationIntervalInsideTask interval,
             List<T> assignmentsCreated) {
         IntraDayDate originalStart = getIntraDayStartDate();
         IntraDayDate originalEnd = getIntraDayEndDate();
@@ -923,13 +935,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         // is guaranteed by IntervalInsideTask. It also cannot shrink from the
         // original size, this is guaranteed by originalStart
         getDayAssignmentsState().setIntraDayStart(
-                IntraDayDate.min(originalStart, interval.getStart()));
+                IntraDayDate.min(originalStart, interval.getStartInclusive()));
 
         // The resource allocation cannot grow beyond the end of the task. This
         // is guaranteed by IntervalInsideTask. It also cannot shrink from the
         // original size, this is guaranteed by originalEnd
         getDayAssignmentsState().setIntraDayEnd(
-                IntraDayDate.max(originalEnd, interval.getEnd()));
+                IntraDayDate.max(originalEnd, interval.getEndExclusive()));
     }
 
     private static <T extends DayAssignment> List<T> withoutConsolidated(
