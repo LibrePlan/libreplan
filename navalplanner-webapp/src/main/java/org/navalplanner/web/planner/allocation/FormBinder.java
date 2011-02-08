@@ -659,6 +659,7 @@ public class FormBinder {
 
     public void setRecommendedAllocation(Button recommendedAllocation) {
         this.btnRecommendedAllocation = recommendedAllocation;
+        this.btnRecommendedAllocation.setDisabled(false);
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
             @Override
