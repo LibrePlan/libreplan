@@ -208,6 +208,13 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
+    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        return new SpecificAssignmentsAllocator().onInterval(startInclusive,
+                endExclusive);
+    }
+
+    @Override
     protected ICalendar getCalendarGivenTaskCalendar(ICalendar taskCalendar) {
         return CombinedWorkHours.minOf(taskCalendar, getResource()
                 .getCalendar());

@@ -48,9 +48,21 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @param startInclusive
      * @param endExclusive
      * @return an object which can be used to allocate hours on the interval
-     *         specified
+     *         specified with the considerations noted above
      */
     public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate startInclusive,
+            LocalDate endExclusive);
+
+    /**
+     * It does the allocation in the interval specified with one consideration:
+     * the consolidated part of the allocation is never modified.
+     *
+     * @param startInclusive
+     * @param endExclusive
+     * @return an object which can be used to allocate hours on the interval
+     *         specified with the considerations noted above
+     */
+    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
             LocalDate endExclusive);
 
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
