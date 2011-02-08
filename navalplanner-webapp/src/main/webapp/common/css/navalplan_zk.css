@@ -200,33 +200,35 @@ button.z-button {
 /* Perspective and planner buttons
 --------------------------------------------------- */
 
-.planner-icon, .planner-command {
-   padding: 2px;
+.toolbar-box {
+	border:0;
 }
 
-.planner-icon .z-button-cm {
-   padding: 2px;
-}
-.planner-icon .z-button-cm:active {
-   padding: 2px 1px 1px 2px;
+.toolbar-box .z-button {
+   padding: 1px 2px 2px 2px;
 }
 
 .planner-command .z-button-cm,
+.planner-icon .z-button-cm {
+   padding: 2px;
+}
+
+.toolbar-box .z-button .z-button-cm,
 .advancedallocationlayout .z-north-body .z-button-cm {
     height: 24px;
     padding: 2px;
 }
-.planner-command .z-button-cm:active {
-   padding: 2px 1px 1px 2px;
+
+.toolbar-box .z-button.z-button-clk .z-button-cm {
+    padding-right: 3px;
 }
 
-.planner-command.clicked .z-button-cm {
-    background-color: #A1D586; /* green2 (active background)*/
-    border-right: 0px;
-    border-bottom: 1px solid #439e32;
-    border-top: 2px solid #3f5917;
-    border-left: 2px solid #3f5917;
-    padding: 2px 1px 1px 2px;
+.toolbar-box .clicked .z-button-cm,
+.toolbar-box .z-button-cm:active {
+    background-color: #E6F2F9; /* blue (active background)*/
+    border-top: 1px solid #006699;
+    border-left: 1px solid #006699;
+    padding: 2px;
 }
 
 .sub_menu .z-button-cm {
@@ -1127,12 +1129,6 @@ span.z-dottree-line {
     margin: 0 0 0 0;
 }
 
-.toolbar-box .planner-icon,
-.toolbar-box  .planner-command {
-   padding-top: 1px;
-   padding-right: 1px;
-}
-
 .toolbar-box .z-button-cm  {
     background-color: transparent;
     border-color:transparent;
@@ -1155,14 +1151,10 @@ span.z-dottree-line {
 }
 
 .toolbar-box table.z-button-disd:active  {
-    margin-top: 1px;
-    margin-right: 1px;
-    border-top: 0;
-    border-left: 0;
-    padding-left: 2px;
+    border-color: transparent;
+    padding-left: 3px;
+    padding-right: 3px;
 }
-
-
 
 /* =================================================== */
 
@@ -1473,6 +1465,7 @@ display:none;
 }
 
 .second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column,
 .second_level_ #watermark .bankHoliday {
     height: 99999px;
 }
@@ -1517,7 +1510,7 @@ display:none;
 
 .show-advances img  {
     position:relative;
-    left: -8px;
+    left: -6px;
 }
 
 .progress-types.z-combobox .z-combobox-img {
@@ -1558,4 +1551,8 @@ display:none;
 input.z-spinner-text-disd,
 input.z-datebox-text-disd {
     color: #000000 !important;
+}
+.z-calendar .z-calendar-calmon td.z-calendar-seld,
+.z-calendar .z-calendar-calday td.z-calendar-seld {
+    padding: 0;
 }

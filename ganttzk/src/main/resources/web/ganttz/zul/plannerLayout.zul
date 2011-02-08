@@ -18,99 +18,102 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <borderlayout width="auto" height="100%" class="inner-layout">
-       <north height="30px" border="0" sclass="toolbar-box">
-       <zscript><![CDATA[
+    <north height="32px" border="0" sclass="toolbar-box">
+        <zscript><![CDATA[
 planner = self;
 ]]>
-</zscript>
+        </zscript>
 
-       <hbox align="center" id="toolbar">
+        <hbox align="center" id="toolbar">
 
-        <separator/>
-        <!--  Commands -->
-        <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
+            <separator />
 
-        <button onClick="planner.invalidate()"
-            image="/common/img/ico_refresh.png"
-            tooltiptext="${i18n:_('Refresh')}" visible="false" />
-        <button id="btnPrint" onClick="planner.print()"
-            image="/common/img/ico_print.png"
-            tooltiptext="${i18n:_('Print')}" />
-        <separator/>
+            <!--  Commands -->
+            <templateFinderPopup id="templateFinderPopup"
+                acceptButtonLabel="${i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
+            <button onClick="planner.invalidate()" image="/common/img/ico_refresh.png"
+                tooltiptext="${i18n:_('Refresh')}" visible="false" />
+            <button id="btnPrint" onClick="planner.print()"
+                image="/common/img/ico_print.png" tooltiptext="${i18n:_('Print')}" />
 
-        <!--  Visualization modes -->
-        <label>${i18n:_('Zoom')}:</label>
-        <listbox id="listZoomLevels" mold="select" rows="1"
-            model="${planner.zoomLevels}"
-            onSelect="planner.setZoomLevel(self.selectedItem.value);" >
-        </listbox>
+            <separator />
 
-        <!-- Progress type -->
+            <!--  Visualization modes -->
+            <label>${i18n:_('Zoom')}:</label>
+            <listbox id="listZoomLevels" mold="select" rows="1"
+                model="${planner.zoomLevels}" onSelect="planner.setZoomLevel(self.selectedItem.value);">
+            </listbox>
 
-        <button id="showCriticalPath" onClick="planner.showCriticalPath();"
-            image="/common/img/ico_criticalpath.png"
-            tooltiptext="${i18n:_('Show/Hide Critical path')}" />
-        <button id="showAllLabels" onClick="planner.showAllLabels();"
-            image="/common/img/ico_labels.png"
-            tooltiptext="${i18n:_('Show/Hide labels')}" sclass="planner-command show-labels" />
-        <button id="showAllResources" onClick="planner.showAllResources();"
-            image="/common/img/ico_resources.png"
-            tooltiptext="${i18n:_('Show/Hide resources')}" sclass="planner-command show-resources" />
-        <button id="expandAll" onClick="planner.expandAll();"
-            image="/common/img/ico_expand.png"
-            tooltiptext="${i18n:_('Expand/Collapse all')}"
-            sclass="planner-command" />
-        <button id="flattenTree" onClick="planner.flattenTree();"
-            image="/common/img/ico_flatten.png"
-            tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
-            sclass="planner-command" />
+            <!-- Progress type -->
 
-        <hbox class="show-advances" align="center">
-            <button id="showAdvances" onClick="planner.showAdvances();"
-                image="/common/img/ico_progress.png"
-                style="width:46px"
-                tooltiptext="${i18n:_('Show/Hide Progress')}"
-                sclass="planner-command" />
-            <combobox id="cbProgressTypes" width="1px" visible="false" sclass="progress-types"/>
+            <hbox sclass="view-options">
+                <button id="showCriticalPath" onClick="planner.showCriticalPath();"
+                    image="/common/img/ico_criticalpath.png"
+                    tooltiptext="${i18n:_('Show/Hide Critical path')}"
+                    sclass="planner-command" />
+                <button id="showAllLabels" onClick="planner.showAllLabels();"
+                    image="/common/img/ico_labels.png" tooltiptext="${i18n:_('Show/Hide labels')}"
+                    sclass="planner-command show-labels" />
+                <button id="showAllResources" onClick="planner.showAllResources();"
+                    image="/common/img/ico_resources.png" tooltiptext="${i18n:_('Show/Hide resources')}"
+                    sclass="planner-command show-resources" />
+                <button id="expandAll" onClick="planner.expandAll();"
+                    image="/common/img/ico_expand.png" tooltiptext="${i18n:_('Expand/Collapse all')}"
+                    sclass="planner-command" />
+                <button id="flattenTree" onClick="planner.flattenTree();"
+                    image="/common/img/ico_flatten.png" tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
+                    sclass="planner-command" />
+                <button id="showReportedHours" onClick="planner.showReportedHours();"
+                    image="/common/img/ico_costs.png" tooltiptext="${i18n:_('Show/Hide reported hours')}"
+                    sclass="planner-command" />
+
+            </hbox>
+
+            <hbox class="show-advances" align="center">
+                <button id="showAdvances" onClick="planner.showAdvances();"
+                    image="/common/img/ico_progress.png" style="width:46px"
+                    tooltiptext="${i18n:_('Show/Hide Progress')}"
+                    sclass="planner-command" />
+                <combobox id="cbProgressTypes" width="1px"
+                    visible="false" sclass="progress-types" />
+            </hbox>
+
+            <separator />
+
+            <!--  Filtering -->
+            <vbox id="orderFilter" />
+            <vbox id="orderElementFilter" />
+            <separator />
+
         </hbox>
+    </north>
 
-        <button id="showReportedHours" onClick="planner.showReportedHours();"
-            image="/common/img/ico_costs.png"
-            tooltiptext="${i18n:_('Show/Hide reported hours')}"
-            sclass="planner-command"/>
-        <separator />
+    <center border="0">
+        <borderlayout sclass="plannerlayout_center" height="100%">
+            <west flex="false" collapsible="true" splittable="true"
+                width="300px" id="taskdetailsContainer" sclass="taskdetailsContainer">
+                <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
+            </west>
+            <center id="taskpanel" sclass="taskspanel">
+                <borderlayout>
+                    <north border="0">
+                        <div sclass="timetrackergap" id="insertionPointTimetracker"></div>
+                    </north>
+                    <center id="centerPanel" autoscroll="true"
+                        border="10" sclass="rightpanellayout">
+                        <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
+                    </center>
+                </borderlayout>
 
-        <!--  Filtering -->
-        <vbox id="orderFilter"/>
-        <vbox id="orderElementFilter"/>
-        <separator />
-
-       </hbox>
-       </north>
-
-        <center border="0">
-            <borderlayout sclass="plannerlayout_center" height="100%">
-                <west flex="false" collapsible="true" splittable="true" width="300px"
-                    id="taskdetailsContainer" sclass="taskdetailsContainer">
-                            <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
-                </west>
-                <center id="taskpanel" sclass="taskspanel">
-                    <borderlayout>
-                        <north border="0"><div sclass="timetrackergap" id="insertionPointTimetracker"></div></north>
-                        <center id="centerPanel" autoscroll="true" border="10" sclass="rightpanellayout">
-                            <div id="insertionPointRightPanel" sclass="taskspanelgap"></div>
-                        </center>
-                    </borderlayout>
-
-                </center>
-            </borderlayout>
-        </center>
-        <south collapsible="true" title="${i18n:_('Graphics')}" sclass="scheduling-graphics"
-            id="graphics" onOpen="planner.changeChartVisibility(event.open);" height="200px">
-            <div id="insertionPointChart" />
-        </south>
-    </borderlayout>
+            </center>
+        </borderlayout>
+    </center>
+    <south collapsible="true" title="${i18n:_('Graphics')}"
+        sclass="scheduling-graphics" id="graphics"
+        onOpen="planner.changeChartVisibility(event.open);" height="200px">
+        <div id="insertionPointChart" />
+    </south>
+</borderlayout>
