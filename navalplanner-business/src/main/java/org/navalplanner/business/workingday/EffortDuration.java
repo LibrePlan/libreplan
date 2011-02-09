@@ -28,6 +28,7 @@ import java.util.EnumMap;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.Fraction;
 
 /**
  * <p>
@@ -182,6 +183,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
      */
     public int divideBy(EffortDuration other) {
         return seconds / other.seconds;
+    }
+
+    public Fraction divivedBy(EffortDuration effortAssigned) {
+        return Fraction.getFraction(this.seconds, effortAssigned.seconds);
     }
 
     /**

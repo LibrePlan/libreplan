@@ -358,7 +358,7 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public int getAssignedHours(ICriterion criterion, LocalDate startInclusive,
+    public EffortDuration getAssignedEffort(ICriterion criterion, LocalDate startInclusive,
             LocalDate endExclusive) {
         EffortDuration result = EffortDuration.zero();
         for (Interval each : getIntervalsRelatedWith(criterion, startInclusive,
@@ -369,7 +369,7 @@ public class SpecificResourceAllocation extends
             result = result.plus(getAssignedDuration(intervalStart.getDate(),
                     intervalEnd.getDate()));
         }
-        return result.roundToHours();
+        return result;
     }
 
     private List<Interval> getIntervalsRelatedWith(ICriterion criterion,
