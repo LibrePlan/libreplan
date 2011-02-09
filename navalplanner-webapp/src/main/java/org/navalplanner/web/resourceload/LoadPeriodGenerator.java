@@ -27,16 +27,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
@@ -319,7 +316,6 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
         LoadPeriodGeneratorOnCriterion result = new LoadPeriodGeneratorOnCriterion(
                 criterion, start, end, allocationsOnInterval,
                 resourcesSatisfyingCriterionAtSomePoint);
-        result.specificByResourceCached = specificByResourceCached;
         return result;
     }
 
@@ -343,7 +339,5 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     protected EffortDuration getEffortAssigned() {
         return sumAllocations();
     }
-
-    private Map<Resource, List<SpecificDayAssignment>> specificByResourceCached = new HashMap<Resource, List<SpecificDayAssignment>>();
 
 }
