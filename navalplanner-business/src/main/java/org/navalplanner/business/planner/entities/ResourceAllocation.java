@@ -1659,14 +1659,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public int getAssignedHours(final Resource resource, LocalDate start,
             LocalDate endExclusive) {
-        return getAssignedDuration(filter(getAssignments(start, endExclusive),
-                new PredicateOnDayAssignment() {
+        return getAssignedEffort(resource, start, endExclusive).roundToHours();
+    }
+
+    public EffortDuration getAssignedEffort(final Resource resource,
+            LocalDate start, LocalDate endExclusive) {
+        return getAssignedDuration(
+                filter(getAssignments(start, endExclusive),
+                        new PredicateOnDayAssignment() {
                             @Override
                             public boolean satisfiedBy(
                                     DayAssignment dayAssignment) {
                                 return dayAssignment.isAssignedTo(resource);
                             }
-                        })).roundToHours();
+                }));
     }
 
     public List<DayAssignment> getAssignments(LocalDate start,
@@ -1679,7 +1685,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getAssignedDuration(start, endExclusive).roundToHours();
     }
 
-    public abstract int getAssignedHours(ICriterion criterion, LocalDate start,
+    public abstract EffortDuration getAssignedEffort(ICriterion criterion, LocalDate start,
             LocalDate endExclusive);
 
     private List<DayAssignment> filter(List<DayAssignment> assignments,

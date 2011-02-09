@@ -390,9 +390,9 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public int getAssignedHours(ICriterion criterion, LocalDate start,
-            LocalDate endExclusive) {
-        return super.getAssignedHours(start, endExclusive);
+    public EffortDuration getAssignedEffort(ICriterion criterion,
+            LocalDate start, LocalDate endExclusive) {
+        return super.getAssignedDuration(start, endExclusive);
     }
 
 }

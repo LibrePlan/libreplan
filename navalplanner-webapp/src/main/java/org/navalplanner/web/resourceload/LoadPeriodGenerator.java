@@ -23,7 +23,6 @@ package org.navalplanner.web.resourceload;
 import static org.navalplanner.business.workingday.IntraDayDate.max;
 import static org.navalplanner.business.workingday.IntraDayDate.min;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -199,36 +199,37 @@ abstract class LoadPeriodGenerator {
                             + allocationsOnInterval + ". LoadPeriod ignored");
             return null;
         }
-        int totalWorkHours = getTotalWorkHours();
-        int hoursAssigned = getHoursAssigned();
+        EffortDuration totalEffort = getTotalAvailableEffort();
+        EffortDuration effortAssigned = getEffortAssigned();
         return new LoadPeriod(start.getDate(), end.asExclusiveEnd(),
-                totalWorkHours, hoursAssigned,
-                new LoadLevel(calculateLoadPercentage(totalWorkHours,
-                        hoursAssigned)));
+                totalEffort.roundToHours(), effortAssigned.roundToHours(),
+                new LoadLevel(calculateLoadPercentage(totalEffort,
+                        effortAssigned)));
     }
 
-    protected abstract int getTotalWorkHours();
+    protected abstract EffortDuration getTotalAvailableEffort();
 
-    private static int calculateLoadPercentage(int totalWorkHours,
-            int hoursAssigned) {
-        if (totalWorkHours == 0) {
-            return hoursAssigned == 0 ? 0 : Integer.MAX_VALUE;
+    private static int calculateLoadPercentage(EffortDuration totalEffort,
+            EffortDuration effortAssigned) {
+        if (totalEffort.isZero()) {
+            return effortAssigned.isZero() ? 0 : Integer.MAX_VALUE;
         }
-        double proportion = hoursAssigned / (double) totalWorkHours;
-        return new BigDecimal(proportion).scaleByPowerOfTen(2).intValue();
+        Fraction fraction = totalEffort.divivedBy(effortAssigned);
+        Fraction percentage = fraction.multiplyBy(Fraction.getFraction(100, 1));
+        return percentage.intValue();
     }
 
-    protected abstract int getHoursAssigned();
+    protected abstract EffortDuration getEffortAssigned();
 
-    protected final int sumAllocations() {
-        int sum = 0;
+    protected final EffortDuration sumAllocations() {
+        EffortDuration sum = EffortDuration.zero();
         for (ResourceAllocation<?> resourceAllocation : allocationsOnInterval) {
-            sum += getAssignedHoursFor(resourceAllocation);
+            sum = sum.plus(getAssignedEffortFor(resourceAllocation));
         }
         return sum;
     }
 
-    protected abstract int getAssignedHoursFor(
+    protected abstract EffortDuration getAssignedEffortFor(
             ResourceAllocation<?> resourceAllocation);
 
     public IntraDayDate getStart() {
@@ -271,18 +272,19 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
     }
 
     @Override
-    protected int getTotalWorkHours() {
-        return resource.getTotalEffortFor(start, end, criterion).roundToHours();
+    protected EffortDuration getTotalAvailableEffort() {
+        return resource.getTotalEffortFor(start, end, criterion);
     }
 
     @Override
-    protected int getAssignedHoursFor(ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getAssignedHours(resource, start.getDate(),
+    protected EffortDuration getAssignedEffortFor(
+            ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation.getAssignedEffort(resource, start.getDate(),
                 end.asExclusiveEnd());
     }
 
     @Override
-    protected int getHoursAssigned() {
+    protected EffortDuration getEffortAssigned() {
         return sumAllocations();
     }
 
@@ -322,22 +324,23 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     }
 
     @Override
-    protected int getAssignedHoursFor(ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getAssignedHours(criterion, start.getDate(),
+    protected EffortDuration getAssignedEffortFor(
+            ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation.getAssignedEffort(criterion, start.getDate(),
                 end.asExclusiveEnd());
     }
 
     @Override
-    protected int getTotalWorkHours() {
+    protected EffortDuration getTotalAvailableEffort() {
         EffortDuration sum = EffortDuration.zero();
         for (Resource resource : resourcesSatisfyingCriterionAtSomePoint) {
             sum = sum.plus(resource.getTotalEffortFor(start, end, criterion));
         }
-        return sum.roundToHours();
+        return sum;
     }
 
     @Override
-    protected int getHoursAssigned() {
+    protected EffortDuration getEffortAssigned() {
         return sumAllocations();
     }
 
