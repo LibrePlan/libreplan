@@ -196,8 +196,7 @@ public abstract class ChartFiller implements IChartFiller {
             printLine(writer, finishOfInterval, hours);
         }
 
-        protected DateTime getInitOfInterval(LocalDate day,
- boolean isZoomByDay) {
+        protected DateTime getInitOfInterval(LocalDate day, boolean isZoomByDay) {
             if (isZoomByDay) {
                 return day.toDateTimeAtStartOfDay();
             } else {
