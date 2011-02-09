@@ -876,13 +876,25 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end, null);
+        return getTotalWorkHours(start, end, null);
     }
 
-    public int getTotalWorkHours(LocalDate start, LocalDate end,
+    public int getTotalWorkHours(LocalDate start, LocalDate endExclusive,
             ICriterion criterion) {
-        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end,
-                criterion);
+        return getTotalEffortFor(IntraDayDate.startOfDay(start),
+                IntraDayDate.startOfDay(endExclusive), criterion)
+                .roundToHours();
+    }
+
+    public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
+            IntraDayDate endExclusive) {
+        return getTotalEffortFor(startInclusive, endExclusive, null);
+    }
+
+    public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
+            IntraDayDate endExclusive, ICriterion criterion) {
+        return getTotalEffortFor(getCalendarOrDefault(), startInclusive,
+                endExclusive, criterion);
     }
 
     public ICalendar getCalendarOrDefault() {
@@ -890,11 +902,12 @@ public abstract class Resource extends IntegrationEntity {
                 .getDefaultWorkingDay();
     }
 
-    private int getTotalWorkHoursFor(ICalendar calendar, LocalDate start,
-            LocalDate end, ICriterion criterionToSatisfy) {
+    private EffortDuration getTotalEffortFor(ICalendar calendar,
+            IntraDayDate startInclusive, IntraDayDate endExclusive,
+            ICriterion criterionToSatisfy) {
         EffortDuration sum = zero();
-        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(start)
-                .daysUntil(IntraDayDate.startOfDay(end));
+        Iterable<PartialDay> daysBetween = startInclusive
+                .daysUntil(endExclusive);
         for (PartialDay current : daysBetween) {
             EffortDuration capacityCurrent = calendar.getCapacityOn(current);
             if (capacityCurrent != null
@@ -903,7 +916,7 @@ public abstract class Resource extends IntegrationEntity {
                 sum = sum.plus(capacityCurrent);
             }
         }
-        return sum.roundToHours();
+        return sum;
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
