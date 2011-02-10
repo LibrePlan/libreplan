@@ -149,7 +149,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate firstDay, LocalDate lastDay);
 
         protected LocalDate nextDay(LocalDate date) {
-            if (isZoomByDay()) {
+            if (isZoomByDayOrWeek()) {
                 return date.plusDays(1);
             } else {
                 return date.plusWeeks(1);
@@ -167,7 +167,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private LocalDate convertAsNeededByZoom(LocalDate date) {
-            if (isZoomByDay()) {
+            if (isZoomByDayOrWeek()) {
                 return date;
             } else {
                 return getThursdayOfThisWeek(date);
@@ -196,8 +196,9 @@ public abstract class ChartFiller implements IChartFiller {
             printLine(writer, finishOfInterval, hours);
         }
 
-        protected DateTime getInitOfInterval(LocalDate day, boolean isZoomByDay) {
-            if (isZoomByDay) {
+        protected DateTime getInitOfInterval(LocalDate day,
+                boolean isZoomByDayOrWeek) {
+            if (isZoomByDayOrWeek) {
                 return day.toDateTimeAtStartOfDay();
             } else {
                 return day.minusDays(day.getDayOfWeek() - 1)
@@ -206,8 +207,8 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         protected DateTime getFinishOfInterval(LocalDate day,
-                boolean isZoomByDay) {
-            if (isZoomByDay) {
+                boolean isZoomByDayOrWeek) {
+            if (isZoomByDayOrWeek) {
                 return day.plusDays(1).toDateTimeAtStartOfDay().minusSeconds(1);
             } else {
                 return day.plusDays(8 - day.getDayOfWeek())
@@ -237,7 +238,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private DateTime previousDayToFirstAssignment() {
-            return getInitOfInterval(map.firstKey(), isZoomByDay())
+            return getInitOfInterval(map.firstKey(), isZoomByDayOrWeek())
                     .minusSeconds(1);
         }
 
@@ -264,7 +265,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private DateTime nextDayToLastAssignment() {
-            return this.getFinishOfInterval(map.lastKey(), isZoomByDay())
+            return this.getFinishOfInterval(map.lastKey(), isZoomByDayOrWeek())
                     .plusSeconds(1);
         }
     }
@@ -282,7 +283,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate lastDay) {
             for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
                 BigDecimal hours = getHoursForDay(day);
-                printIntervalLine(writer, day, hours, isZoomByDay());
+                printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
             }
         }
 
@@ -302,7 +303,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate lastDay) {
             for (LocalDate day : getDays()) {
                 BigDecimal hours = getHoursForDay(day);
-                printIntervalLine(writer, day, hours, isZoomByDay());
+                printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
             }
         }
 
@@ -339,8 +340,9 @@ public abstract class ChartFiller implements IChartFiller {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
-    private boolean isZoomByDay() {
-        return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
+    private boolean isZoomByDayOrWeek() {
+        return (zoomLevel.equals(ZoomLevel.DETAIL_FIVE) || zoomLevel
+                .equals(ZoomLevel.DETAIL_FOUR));
     }
 
     protected void resetMinimumAndMaximumValueForChart() {
@@ -380,7 +382,7 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected SortedMap<LocalDate, EffortDuration> groupAsNeededByZoom(
             SortedMap<LocalDate, EffortDuration> map) {
-        if (isZoomByDay()) {
+        if (isZoomByDayOrWeek()) {
             return map;
         }
         return groupByWeekDurations(map);
@@ -419,7 +421,7 @@ public abstract class ChartFiller implements IChartFiller {
 
         TimeGeometry timeGeometry = new DefaultTimeGeometry();
 
-        if (!isZoomByDay()) {
+        if (!isZoomByDayOrWeek()) {
             start = getThursdayOfThisWeek(start);
             finish = getThursdayOfThisWeek(finish);
         }
