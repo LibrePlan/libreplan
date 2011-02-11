@@ -1556,3 +1556,7 @@ input.z-datebox-text-disd {
 .z-calendar .z-calendar-calday td.z-calendar-seld {
     padding: 0;
 }
+
+.add-resources-or-criteria span {
+	white-space: nowrap;
+}

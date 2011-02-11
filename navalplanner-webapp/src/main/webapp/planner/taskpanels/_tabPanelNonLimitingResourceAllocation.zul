@@ -61,7 +61,7 @@
                     <!-- Multiple allocation selector -->
                     <separator spacing="10px"/>
 
-                    <hbox align="bottom" width="100%">
+                    <hbox align="bottom" sclass="add-resources-or-criteria">
                         <newAllocationSelectorCombo id="newAllocationSelectorCombo" behaviour="NON_LIMITING"/>
                         <button label="${i18n:_('Add')}" onClick="allocationController.onSelectWorkers(newAllocationSelectorCombo)" />
                         <button id="advancedSearchButton" label="${i18n:_('Advanced search')}" onClick="allocationController.goToAdvancedSearch()" />
@@ -82,7 +82,7 @@
                             <auxheader label="${i18n:_('Resources Per Day')}" colspan="@{allocationController.colspanResources}" align="center"/>
                             <auxheader label="${i18n:_('Operations')}" colspan="1" align="center"/>
                         </auxhead>
-                        <columns>
+                        <columns sclass="details">
                             <column width="30px"/>
                             <column />
                             <column label="${i18n:_('Original')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
