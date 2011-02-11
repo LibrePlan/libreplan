@@ -212,6 +212,11 @@ abstract class LoadPeriodGenerator {
         if (totalEffort.isZero()) {
             return effortAssigned.isZero() ? 0 : Integer.MAX_VALUE;
         }
+        if (effortAssigned.isZero()) {
+            LOG.warn("total effort is " + totalEffort
+                    + " but effortAssigned is zero");
+            return Integer.MAX_VALUE;
+        }
         Fraction fraction = totalEffort.divivedBy(effortAssigned);
         Fraction percentage = fraction.multiplyBy(Fraction.getFraction(100, 1));
         return percentage.intValue();
