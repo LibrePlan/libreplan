@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -36,10 +38,17 @@ public class OrderElementsOnConversation {
 
     private final IOrderElementDAO orderElementDAO;
 
+    private final IOrderDAO orderDAO;
+
     private List<OrderElement> orderElements = new ArrayList<OrderElement>();
 
-    public OrderElementsOnConversation(IOrderElementDAO orderElementDAO) {
+
+    public OrderElementsOnConversation(IOrderElementDAO orderElementDAO,
+            IOrderDAO orderDAO) {
+        Validate.notNull(orderElementDAO);
+        Validate.notNull(orderDAO);
         this.orderElementDAO = orderElementDAO;
+        this.orderDAO = orderDAO;
     }
 
     public List<OrderElement> getOrderElements() {
@@ -62,13 +71,13 @@ public class OrderElementsOnConversation {
 
     private void initialize(OrderElement orderElement) {
         orderElement.getName();
-        (orderElementDAO.loadOrderAvoidingProxyFor(orderElement)).getName();
+        (orderDAO.loadOrderAvoidingProxyFor(orderElement)).getName();
     }
 
     public void reattach() {
         for (OrderElement each : orderElements) {
             orderElementDAO.reattach(each);
-            (orderElementDAO.loadOrderAvoidingProxyFor(each)).getName();
+            (orderDAO.loadOrderAvoidingProxyFor(each)).getName();
         }
     }
 

@@ -35,6 +35,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -70,6 +71,9 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IOrderElementTemplateDAO dao;
@@ -120,7 +124,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public OrderElementsOnConversation getOrderElementsOnConversation() {
         if (orderElementsOnConversation == null) {
             orderElementsOnConversation = new OrderElementsOnConversation(
-                    orderElementDAO);
+                    orderElementDAO, orderDAO);
         }
         return orderElementsOnConversation;
     }
@@ -160,7 +164,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void createTemplateFrom(OrderElement orderElement) {
         initializeAcompanyingObjectsOnConversation();
-        Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
         order.useSchedulingDataFor(getCurrentScenario());
         OrderElement orderElementOrigin = orderElementDAO
                 .findExistingEntity(orderElement

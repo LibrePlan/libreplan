@@ -170,7 +170,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        Order result = orderElementDAO.loadOrderAvoidingProxyFor(task
+        Order result = orderDAO.loadOrderAvoidingProxyFor(task
                 .getOrderElement());
         result.useSchedulingDataFor(scenarioManager.getCurrent());
         return result;
@@ -739,8 +739,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     && (resourceAllocation.getTask() != null)) {
                 OrderElement orderElement = resourceAllocation.getTask()
                         .getOrderElement();
-                Order order = orderElementDAO
-                        .loadOrderAvoidingProxyFor(orderElement);
+                Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
                 initializeIfNeeded(result, order);
                 result.get(order).add(resourceAllocation);
             }

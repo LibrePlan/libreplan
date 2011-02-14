@@ -192,8 +192,8 @@ public class TimeLineRequiredMaterialModel implements
     private List<TimeLineRequiredMaterialDTO> filterAndCreateMaterialDTOs() {
         List<TimeLineRequiredMaterialDTO> result = new ArrayList<TimeLineRequiredMaterialDTO>();
         for (MaterialAssignment material : listMaterialAssignment) {
-            OrderElement order = orderElementDAO
-                    .loadOrderAvoidingProxyFor(material.getOrderElement());
+            OrderElement order = orderDAO.loadOrderAvoidingProxyFor(material
+                    .getOrderElement());
 
             TaskElement task = findTaskBy(material);
             reloadTask(task);

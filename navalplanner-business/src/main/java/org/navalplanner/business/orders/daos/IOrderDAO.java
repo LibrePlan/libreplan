@@ -92,4 +92,9 @@ public interface IOrderDAO extends IIntegrationEntityDAO<Order> {
 
     List<Task> getFilteredTask(List<OrderElement> orderElements,
             List<Criterion> criterions);
+
+    public Order loadOrderAvoidingProxyFor(OrderElement orderElement);
+
+    public List<Order> loadOrdersAvoidingProxyFor(
+            List<OrderElement> orderElement);
 }

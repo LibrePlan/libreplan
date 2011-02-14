@@ -47,7 +47,7 @@ import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -101,7 +101,7 @@ import org.zkoss.ganttz.util.Interval;
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -368,8 +368,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        return orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        return orderDAO.loadOrderAvoidingProxyFor(task.getOrderElement());
     }
 
     @Override
