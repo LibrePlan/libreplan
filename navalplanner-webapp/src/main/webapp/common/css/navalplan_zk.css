@@ -1555,6 +1555,10 @@ display:none;
     color: white;
 }
 
+.z-datebox-pp {
+	width: auto !important;
+}
+
 input.z-spinner-text-disd,
 input.z-datebox-text-disd {
     color: #000000 !important;
