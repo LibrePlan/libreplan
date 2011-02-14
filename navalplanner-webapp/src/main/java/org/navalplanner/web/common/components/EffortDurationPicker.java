@@ -128,9 +128,11 @@ public class EffortDurationPicker extends Hbox {
         Integer hoursValue = hours.getValue();
         Integer minutesValue = minutes.getValue();
         Integer secondsValue = seconds.getValue();
-        EffortDuration newValue = EffortDuration.hours(hoursValue)
-                .and(minutesValue, Granularity.MINUTES)
-                .and(secondsValue, Granularity.SECONDS);
+        EffortDuration newValue = EffortDuration.hours(
+                hoursValue != null ? hoursValue : 0).and(
+                minutesValue != null ? minutesValue : 0, Granularity.MINUTES)
+                .and(secondsValue != null ? secondsValue : 0,
+                        Granularity.SECONDS);
         return newValue;
     }
 
