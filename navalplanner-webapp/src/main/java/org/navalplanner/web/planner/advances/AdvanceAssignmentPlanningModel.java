@@ -120,8 +120,11 @@ public class AdvanceAssignmentPlanningModel implements
                 .getIndirectAdvanceAssignments()) {
             loadDataAdvance(advance);
             advance.getCalculatedConsolidation().size();
-            forceLoadAdvanceConsolidatedValues(orderElement
-                    .calculateFakeDirectAdvanceAssignment(advance));
+            DirectAdvanceAssignment fakedDirect = orderElement
+                    .calculateFakeDirectAdvanceAssignment(advance);
+            if (fakedDirect != null) {
+                forceLoadAdvanceConsolidatedValues(fakedDirect);
+            }
         }
     }
 
