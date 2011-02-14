@@ -1560,3 +1560,7 @@ input.z-datebox-text-disd {
 .add-resources-or-criteria span {
 	white-space: nowrap;
 }
+
+.z-datebox-pp {
+	width: auto !important;
+}
