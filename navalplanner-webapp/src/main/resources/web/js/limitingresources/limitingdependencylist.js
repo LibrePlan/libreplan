@@ -31,7 +31,8 @@ zkLimitingDependencies.constants = {
     END_END: "END_END"
 };
 
-zkLimitingDependencies.CORNER = 4;
+zkLimitingDependencies.CORNER = 10;
+zkLimitingDependencies.ROW_HEIGHT = 15;
 zkLimitingDependencies.HEIGHT = 12;
 zkLimitingDependencies.ARROW_PADDING = 10;
 zkLimitingDependencies.HALF_ARROW_PADDING = 5;
