@@ -36,6 +36,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
@@ -69,6 +71,9 @@ import org.zkoss.zul.XYModel;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ManageOrderElementAdvancesModel implements
         IManageOrderElementAdvancesModel {
+
+    private static final Log LOG = LogFactory
+            .getLog(ManageOrderElementAdvancesModel.class);
 
     @Autowired
     private final IAdvanceTypeDAO advanceTypeDAO;
@@ -232,8 +237,15 @@ public class ManageOrderElementAdvancesModel implements
                     .getIndirectAdvanceAssignments()) {
             each.getCalculatedConsolidation().size();
             each.getAdvanceType().getUnitName();
-            forceLoadAdvanceConsolidatedValues(orderElement
-                    .calculateFakeDirectAdvanceAssignment(each));
+            DirectAdvanceAssignment fakedDirect = orderElement
+                    .calculateFakeDirectAdvanceAssignment(each);
+            if (fakedDirect != null) {
+                forceLoadAdvanceConsolidatedValues(fakedDirect);
+            } else {
+                LOG
+                        .warn("Fake direct advance assignment shouldn't be NULL for type '"
+                                + each.getAdvanceType().getUnitName() + "'");
+            }
         }
 
     }
