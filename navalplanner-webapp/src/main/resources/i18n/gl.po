@@ -430,6 +430,7 @@ msgstr "Para a interpolación necesítanse alo menos dous tramos"
 msgid "Login name"
 msgstr "Nome de usuario"
 
+#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:43
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:34
 msgid "Current"
 msgstr "Actual"
@@ -2283,7 +2284,6 @@ msgstr "Traballo realizado desde a data de inicio:"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:849
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderFilterEnum.java:31
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:42
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:44
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:158
 #: navalplanner-webapp/src/main/webapp/orders/_list.zul:34
