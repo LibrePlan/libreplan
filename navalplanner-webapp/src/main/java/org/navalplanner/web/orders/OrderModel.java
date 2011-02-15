@@ -496,6 +496,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             dontPoseAsTransientObjectAnymore(directAdvanceAssignment
                     .getAdvanceMeasurements());
         }
+
+        dontPoseAsTransientObjectAnymore(orderElement
+                .getIndirectAdvanceAssignments());
         dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
         dontPoseAsTransientObjectAnymore(orderElement.getLabels());
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
