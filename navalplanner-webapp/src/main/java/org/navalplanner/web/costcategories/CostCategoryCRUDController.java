@@ -373,8 +373,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 if (dateTime != null) {
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
+                } else {
+                    Date now = new Date();
+                    hourCost.setInitDate(new LocalDate(now));
+                    return now;
                 }
-                return null;
             }
 
         }, new Util.Setter<Date>() {
