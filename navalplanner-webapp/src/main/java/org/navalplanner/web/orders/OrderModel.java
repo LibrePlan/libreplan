@@ -490,12 +490,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
-        Set<DirectAdvanceAssignment> directAdvanceAssignments = orderElement.getDirectAdvanceAssignments();
-        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-            directAdvanceAssignment.dontPoseAsTransientObjectAnymore();
-            dontPoseAsTransientObjectAnymore(directAdvanceAssignment
-                    .getAdvanceMeasurements());
-        }
+
+        dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
+        dontPoseAsTransientObjectAnymore(getAllMeasurements(orderElement.getDirectAdvanceAssignments()));
 
         dontPoseAsTransientObjectAnymore(orderElement
                 .getIndirectAdvanceAssignments());
@@ -503,10 +500,20 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         dontPoseAsTransientObjectAnymore(orderElement.getLabels());
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
         dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
+
         for(OrderElement child : orderElement.getAllChildren()) {
             child.dontPoseAsTransientObjectAnymore();
             dontPoseAsTransientObjectAnymore(child);
         }
+    }
+
+    private List<AdvanceMeasurement> getAllMeasurements(
+            Collection<? extends DirectAdvanceAssignment> assignments) {
+        List<AdvanceMeasurement> result = new ArrayList<AdvanceMeasurement>();
+        for (DirectAdvanceAssignment each : assignments) {
+            result.addAll(each.getAdvanceMeasurements());
+        }
+        return result;
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
