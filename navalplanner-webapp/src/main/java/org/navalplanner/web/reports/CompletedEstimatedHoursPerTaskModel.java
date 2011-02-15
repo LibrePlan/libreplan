@@ -123,8 +123,7 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
 
     @Override
     @Transactional(readOnly = true)
-    public JRDataSource getCompletedEstimatedHoursReportPerTask(
-Order order,
+    public JRDataSource getCompletedEstimatedHoursReportPerTask(Order order,
             Date deadline, List<Label> labels, List<Criterion> criterions) {
         reattachmentOrder(order);
         order.useSchedulingDataFor(scenarioManager.getCurrent());
