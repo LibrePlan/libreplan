@@ -822,7 +822,8 @@ public class OrderLineGroup extends OrderElement implements
 
     public void addIndirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        if (!existsIndirectAdvanceAssignmentWithTheSameType(indirectAdvanceAssignment)) {
+        if (!existsIndirectAdvanceAssignmentWithTheSameType(indirectAdvanceAssignment
+                .getAdvanceType())) {
             indirectAdvanceAssignments.add(indirectAdvanceAssignment);
         }
         if (parent != null) {
@@ -860,19 +861,6 @@ public class OrderLineGroup extends OrderElement implements
             // AdvanceType in some children, the IndirectAdvanceAssignment
             // should persist
         }
-    }
-
-    private boolean existsIndirectAdvanceAssignmentWithTheSameType(
-            IndirectAdvanceAssignment newIndirectAdvanceAssignment) {
-        String unitName = newIndirectAdvanceAssignment.getAdvanceType()
-                .getUnitName();
-        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
-            if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
-                    .getUnitName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean existsIndirectAdvanceAssignmentWithTheSameType(
