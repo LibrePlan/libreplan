@@ -249,6 +249,10 @@ public class OrderLineGroup extends OrderElement implements
                 this.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
             }
         }
+
+        if (!indirectAdvanceAssignments.isEmpty()) {
+            addChildrenAdvanceOrderLineGroup();
+        }
     }
 
     private void removeIndirectAdvanceAssignments(OrderElement orderElement) {
