@@ -21,6 +21,8 @@
 package org.navalplanner.web.planner.advances;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -46,6 +48,9 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class AdvanceAssignmentPlanningModel implements
         IAdvanceAssignmentPlanningModel {
+
+    private static final Log LOG = LogFactory
+            .getLog(AdvanceAssignmentPlanningModel.class);
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -123,6 +128,10 @@ public class AdvanceAssignmentPlanningModel implements
                     .calculateFakeDirectAdvanceAssignment(advance);
             if (fakedDirect != null) {
                 forceLoadAdvanceConsolidatedValues(fakedDirect);
+            } else {
+                LOG
+                        .warn("Fake direct advance assignment shouldn't be NULL for type '"
+                                + advance.getAdvanceType().getUnitName() + "'");
             }
         }
     }
