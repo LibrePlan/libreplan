@@ -72,11 +72,10 @@ msgstr "existen múltiples calendarios de recursos co nome {0}"
 #: navalplanner-webapp/src/main/webapp/templates/_advances.zul:38
 #: navalplanner-webapp/src/main/webapp/templates/_list.zul:33
 #: navalplanner-webapp/src/main/webapp/resources/_costCategoryAssignment.zul:37
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:43
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:43
 #: navalplanner-webapp/src/main/webapp/resources/worker/_listVirtualWorkers.zul:36
 #: navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:30
 #: navalplanner-webapp/src/main/webapp/resources/worker/_list.zul:39
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:45
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:35
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:54
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:107
@@ -127,10 +126,6 @@ msgstr "existen múltiples calendarios de recursos co nome {0}"
 #: navalplanner-webapp/src/main/webapp/calendars/_list.zul:27
 msgid "Operations"
 msgstr "Operacións"
-
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:29
-msgid "Add criterion"
-msgstr "Engadir criterio"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/costcategories/impl/CostCategoryConverter.java:134
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/costcategories/impl/CostCategoryConverter.java:194
@@ -430,8 +425,7 @@ msgstr "Para a interpolación necesítanse alo menos dous tramos"
 msgid "Login name"
 msgstr "Nome de usuario"
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:43
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:34
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:43
 msgid "Current"
 msgstr "Actual"
 
@@ -821,11 +815,10 @@ msgstr "É necesario un MessagesContainer"
 msgid "Project element code"
 msgstr "Código da tarefa"
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:41
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:41
 #: navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:28
 #: navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:68
 #: navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:25
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:43
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:60
 msgid "Ending date"
 msgstr "Data de fin"
@@ -2284,7 +2277,6 @@ msgstr "Traballo realizado desde a data de inicio:"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:849
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderFilterEnum.java:31
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:44
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:158
 #: navalplanner-webapp/src/main/webapp/orders/_list.zul:34
 #: navalplanner-webapp/src/main/webapp/subcontract/reportAdvances.zul:49
@@ -2356,7 +2348,6 @@ msgstr "Asignacións de progreso"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/SchedulingProgressPerOrderController.java:181
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/TimeLineRequiredMaterialController.java:204
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadController.java:439
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:33
 #: navalplanner-business/src/main/java/org/navalplanner/business/planner/entities/TaskStatusEnum.java:26
 msgid "All"
 msgstr "Todo"
@@ -2869,8 +2860,7 @@ msgstr "o filtro xa existe"
 msgid "missing code in a calendar data version"
 msgstr "falta código nos datos de versión dun calendario"
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:39
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:41
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:39
 #: navalplanner-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:45
 #: navalplanner-webapp/src/main/webapp/orders/_listHoursGroupCriterionRequirement.zul:26
 msgid "Criterion name"
@@ -5183,7 +5173,7 @@ msgstr ""
 "Outra tarefa na mesma rama xa está informando dun progreso para este "
 "formulario de calidade"
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:31
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:31
 msgid "Show only current satisfied criteria"
 msgstr "Mostrar só os criterios satisfeitos actualmente"
 
@@ -5592,10 +5582,6 @@ msgstr "instancia non atopada"
 msgid "criterion names must be unique inside a criterion type"
 msgstr "o nome do criterio debe ser único dentro dun tipo de criterio"
 
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:30
-msgid "Filters"
-msgstr "Filtros"
-
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/tree/TreeComponent.java:78
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderFilterEnum.java:31
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/TemplateFinder.java:51
@@ -5766,7 +5752,7 @@ msgstr "Probabilidade %"
 msgid "This label type already is assigned to the work report type."
 msgstr "Este tipo de etiqueta xa está asignado ao tipo de parte de traballo."
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:26
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:26
 #: navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:27
 msgid "New criterion"
 msgstr "Criterio novo"
@@ -5877,12 +5863,11 @@ msgstr "Compatible cos navegadores Chrome, Firefox, Safari e Epiphany"
 msgid "Select the calendar"
 msgstr "Seleccionar o calendario"
 
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:40
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:40
 #: navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:27
 #: navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:32
 #: navalplanner-webapp/src/main/webapp/resources/worker/_localizations.zul:67
 #: navalplanner-webapp/src/main/webapp/resources/worker/_editWorkRelationship.zul:24
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:42
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:55
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:93
 #: navalplanner-webapp/src/main/webapp/orders/_projectDetails.zul:43
@@ -6181,7 +6166,7 @@ msgstr ""
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/tree/TreeComponent.java:149
 #: navalplanner-webapp/src/main/webapp/planner/_tabPanelLimitingResourceAllocation.zul:76
 #: navalplanner-webapp/src/main/webapp/planner/_tabPanelNonLimitingResourceAllocation.zul:113
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:28
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:28
 #: navalplanner-webapp/src/main/webapp/resources/criterions/_criterionsTree.zul:29
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:84
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:126
@@ -6400,7 +6385,6 @@ msgid "Help on authentication (opens a new window)"
 msgstr "Axuda sobre a identificación (abre unha ventana nova)"
 
 #: navalplanner-webapp/src/main/webapp/resources/worker/_edition.zul:30
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:23
 #: navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:29
 msgid "Assigned criteria"
 msgstr "Criterios asignados"
@@ -6524,10 +6508,9 @@ msgstr "Prezo total"
 #: navalplanner-webapp/src/main/webapp/labels/_listLabelTypes.zul:41
 #: navalplanner-webapp/src/main/webapp/labels/_editLabelType.zul:90
 #: navalplanner-webapp/src/main/webapp/templates/_materialAssignmentsBox.zul:54
-#: navalplanner-webapp/src/main/webapp/resources/worker/_criterions.zul:87
+#: navalplanner-webapp/src/main/webapp/resources/_criterions.zul:87
 #: navalplanner-webapp/src/main/webapp/resources/worker/_listVirtualWorkers.zul:51
 #: navalplanner-webapp/src/main/webapp/resources/worker/_workRelationships.zul:45
-#: navalplanner-webapp/src/main/webapp/resources/machine/_machineCriterions.zul:89
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:68
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:116
 #: navalplanner-webapp/src/main/webapp/resources/machine/_machineConfigurationUnits.zul:131
