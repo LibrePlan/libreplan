@@ -172,6 +172,31 @@ public class EffortDistributor {
                 ResourceWithDerivedData.resources(resourcesAssignable));
     }
 
+    private List<ShareSource> divisionAt(
+            List<ResourceWithDerivedData> resources, LocalDate day) {
+        List<ShareSource> result = new ArrayList<ShareSource>();
+        for (int i = 0; i < resources.size(); i++) {
+            List<Share> shares = new ArrayList<Share>();
+            Resource resource = resources.get(i).resource;
+            ICalendar calendarForResource = resources.get(i).calendar;
+            EffortDuration alreadyAssigned = assignedHoursForResource
+                    .getAssignedDurationAt(resource, day);
+            final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
+            Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
+                    PartialDay.wholeDay(day), ONE).getSeconds();
+            final int capacityUnits = resources.get(i).capacityUnits;
+            assert capacityUnits >= 1;
+            final int assignedForEach = alreadyAssignedSeconds / capacityUnits;
+            final int remainder = alreadyAssignedSeconds % capacityUnits;
+            for (int j = 0; j < capacityUnits; j++) {
+                int assignedSeconds = assignedForEach + (j < remainder ? 1 : 0);
+                shares.add(new Share(assignedSeconds - capacityEachOneSeconds));
+            }
+            result.add(new ShareSource(shares));
+        }
+        return result;
+    }
+
     private List<ResourceWithDerivedData> resourcesAssignableAt(LocalDate day) {
         List<ResourceWithDerivedData> result = new ArrayList<ResourceWithDerivedData>();
         for (ResourceWithDerivedData each : resources) {
@@ -227,31 +252,6 @@ public class EffortDistributor {
             this.shares = shares;
         }
 
-    }
-
-    public List<ShareSource> divisionAt(
-            List<ResourceWithDerivedData> resources, LocalDate day) {
-        List<ShareSource> result = new ArrayList<ShareSource>();
-        for (int i = 0; i < resources.size(); i++) {
-            List<Share> shares = new ArrayList<Share>();
-            Resource resource = resources.get(i).resource;
-            ICalendar calendarForResource = resources.get(i).calendar;
-            EffortDuration alreadyAssigned = assignedHoursForResource
-                    .getAssignedDurationAt(resource, day);
-            final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
-            Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
-                    PartialDay.wholeDay(day), ONE).getSeconds();
-            final int capacityUnits = resources.get(i).capacityUnits;
-            assert capacityUnits >= 1;
-            final int assignedForEach = alreadyAssignedSeconds / capacityUnits;
-            final int remainder = alreadyAssignedSeconds % capacityUnits;
-            for (int j = 0; j < capacityUnits; j++) {
-                int assignedSeconds = assignedForEach + (j < remainder ? 1 : 0);
-                shares.add(new Share(assignedSeconds - capacityEachOneSeconds));
-            }
-            result.add(new ShareSource(shares));
-        }
-        return result;
     }
 
 }
