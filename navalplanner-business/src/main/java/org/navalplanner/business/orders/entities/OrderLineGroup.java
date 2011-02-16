@@ -36,6 +36,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -1046,6 +1047,19 @@ public class OrderLineGroup extends OrderElement implements
             result.addAll(orderElement.getAllChildren());
         }
         return result;
+    }
+
+    @AssertTrue(message = "indirect advance assignments should have different types")
+    public boolean checkConstraintIndirectAdvanceAssignmentsWithDifferentType() {
+        Set<String> types = new HashSet<String>();
+        for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {
+            String type = each.getAdvanceType().getUnitName();
+            if (types.contains(type)) {
+                return false;
+            }
+            types.add(type);
+        }
+        return true;
     }
 
 }
