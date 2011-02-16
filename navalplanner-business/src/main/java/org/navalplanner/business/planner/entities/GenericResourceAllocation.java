@@ -26,7 +26,6 @@ import static org.navalplanner.business.workingday.EffortDuration.min;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -94,6 +93,7 @@ public class GenericResourceAllocation extends
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
     @Valid
+    @SuppressWarnings("unused")
     private Set<GenericDayAssignmentsContainer> getGenericDayAssignmentsContainers() {
         return new HashSet<GenericDayAssignmentsContainer>(
                 genericDayAssignmentsContainers);
@@ -188,10 +188,6 @@ public class GenericResourceAllocation extends
 
     public Set<Criterion> getCriterions() {
         return Collections.unmodifiableSet(criterions);
-    }
-
-    private static Date toDate(LocalDate day) {
-        return day.toDateTimeAtStartOfDay().toDate();
     }
 
     private final class ResourcesSatisfyingCriterionsSelector implements
