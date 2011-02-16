@@ -1,6 +1,103 @@
 NEWS
 ====
 
+Version 1.0.3 (16 Feb 2011)
+---------------------------
+
+This version include all fixed done since previous release. In the following
+list the most important ones are highlighted.
+
+* Advanced allocation screen. Disable start/end date changes in
+  advance allocation window. Graph dependencies are not travelled in this window
+  yet, so as temporary fix, it will not be allowed to change the start or the
+  end date of a task in this screen.
+* Limiting resources. Several fixes on limiting resources planning window.
+  Moreover fixed Gantt view dependencies using limiting resources tasks.
+* Allocation window. Improvements to avoid misunderstandings using the
+  interface.
+
+Changes
+~~~~~~~
+
+* [Bug #848] Removed repeated method in OrderLineGroup.
+* [Bug #851] fix bug
+* [Bug #852] Fixed bug adding children advance if some indirect advance exists.
+* Refactor
+* [Bug #853] Fix bug
+* [Bug #850] fix bug
+* Added warning log message when fake advance is NULL in
+  ManageOrderElementAdvancesModel.
+* Added warning log message when fake advance is NULL in
+  AdvanceAssignmentPlanningModel.
+* [Bug #849] set the init date in with current date by default in cost category
+  view
+* [Bug #849] fix the behaviour of the dates in the cost category view
+* [Bug #848] Fix bug
+* Removed extra padding appearing next to floating calendars
+* [Bug #814] Fix bug
+* [Bug #843] Fix bug
+* Fixed nullpointer exception on work week date picker
+* [Bug #842] Fix bug
+* Avoid exception if effortAssigned is zero
+* Remove unused field
+* Use EffortDuration instead of hours to increase precision
+* [Bug #840] Fix bug
+* Expose methods to allow to get the EffortDuration elapsed in an interval of
+  IntraDayDates
+* Fixed visibility problems of disabled inputs on Chrome
+* [Bug #805] Fix bug
+* [Bug #838] Fix bug
+* Add method to allow to allocate hours outside the task's bounds
+* Extract superclass and generalize the use of interval
+* Rename onInterval method
+* Rename methods
+* Add documentation for method
+* [Bug #838] Fix bug
+* Replace "principal" by main
+* Add related specific allocations second level
+* Add new query for searching for specific allocations interfering with a
+  criterion
+* Pull up method and do it more generic
+* Refactor genericAllocationsByCriterion
+* Adapt LoadPeriodGeneratorOnCriterion so it can work with specific allocations
+* Avoid executing methods twice
+* Avoid repeating query
+* [Bug #837] Fix bug
+* [Bug #819] Report internazionalization problem in webkit browsers
+* [Bug #836] Fixed using English as default language
+* [Bug #830] Remove unnecessary code
+* [Bug #830] Changing in perspective does not reload data from database
+* [Bug #833] Fix bug
+* [Bug #833] Disable advance search button
+* [Bug #835] Fix bug
+* Some fix on Debian package folder.
+* [Bug #828] Recreate dependencies on chaning horizontal scroll in limiting
+* On changing zoom in limiting resources dependencies are not redrawn
+* Small fix in a message that uses "fiscal code" instead of ID.
+* [Bug #824] Fixed issue checking worker ID prior to criterions.
+* Avoid memory leak
+* [Bug #825] Fix bug
+* [Bug #829] Don't let user change the type of a dependency between a Limiting
+  Task and any other type of Task
+* [Bug #826] Fix bug Validating Exception on allocating a resource to a limiting
+  task the first time
+* [Bug #826] For limiting tasks, update size of the task if the user changes the
+  numbers of hours allocated of the resource allocated in that task
+* [Bug #821] Fix bug
+* Not allow to allocate on intervals beyond a task's bounds
+* The cells after the end of the task are not editable
+* Extract method in order to encapsulate the rule in one place
+* Eliminate code repetition
+* Fixing the condition for isBeforeTaskStartDate
+* [Bug #816] Fix bug
+* Show saving message after the changes have really been done
+* [Bug #807] Revamped cell styles in advanced assignment
+* Graphical issues in taskdetails component
+* Fix javascript error when resizing ganttpanel and chart is not shown
+* [Bug #817] Fix bug
+* Added horizontal line under timetracker header
+
+
 Version 1.0.2 (21 Jan 2011)
 ---------------------------
 
