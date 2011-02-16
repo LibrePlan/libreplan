@@ -119,14 +119,17 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
 
     private void initializeCriterionSatisfactions(
             Set<CriterionSatisfaction> criterionsSatisfaction) {
+        Set<CriterionType> types = new HashSet<CriterionType>();
         for (CriterionSatisfaction criterionSatisfaction : criterionsSatisfaction) {
-            initializeCriterionSatisfaction(criterionSatisfaction);
-        }
-    }
+            Criterion criterion = criterionSatisfaction.getCriterion();
+            initializeCriterion(criterion);
 
-    private void initializeCriterionSatisfaction(
-            CriterionSatisfaction criterionSatisfaction) {
-        initializeCriterion(criterionSatisfaction.getCriterion());
+            if (!types.contains(criterionSatisfaction.getCriterion().getType())) {
+                types.add(criterionSatisfaction.getCriterion().getType());
+                reattachCriterionType(criterionSatisfaction.getCriterion()
+                    .getType());
+            }
+        }
     }
 
     private void initializeCriterion(Criterion criterion) {
@@ -135,7 +138,6 @@ public class AssignedMachineCriterionsModel extends IntegrationEntityModel
         if (criterion.getParent() != null) {
             criterion.getParent().getName();
         }
-        reattachCriterionType(criterion.getType());
     }
 
     private void reattachCriterionType(CriterionType criterionType) {
