@@ -184,14 +184,7 @@ public class CriterionsController extends GenericForwardComposer {
             }
     }
 
-    public void changeStartDate(Component comp,Date value){
-        CriterionSatisfactionDTO criterionSatisfactionDTO =
-            (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
-        validateCriterionWithItsType(criterionSatisfactionDTO,comp);
-        reload();
-    }
-
-    public void changeEndDate(Component comp,Date value){
+    public void changeDate(Component comp) {
         CriterionSatisfactionDTO criterionSatisfactionDTO =
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         validateCriterionWithItsType(criterionSatisfactionDTO,comp);
@@ -234,7 +227,6 @@ public class CriterionsController extends GenericForwardComposer {
                         }
                     };
     }
-
 
     private void validateEndDate(Component comp, Object value){
         CriterionSatisfactionDTO criterionSatisfactionDTO =

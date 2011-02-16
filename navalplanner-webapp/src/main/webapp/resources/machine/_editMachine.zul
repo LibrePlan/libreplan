@@ -18,7 +18,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
+<?component name="criterions" inline="true" macroURI="../_criterions.zul"?>
 <?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <?component name="machineConfigurationUnits" inline="true" macroURI="_machineConfigurationUnits.zul"?>
 <?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>

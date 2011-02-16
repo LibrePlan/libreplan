@@ -74,11 +74,11 @@
 
                     <datebox value="@{criterionSatisfactionDTO.startDate}"
                     constraint="@{assignedCriterionsController.validateStartDate}"
-                    onChange="assignedCriterionsController.changeStartDate(self,self.value);" width="150px"/>
+                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
 
                     <datebox value="@{criterionSatisfactionDTO.endDate}"
                     constraint="@{assignedCriterionsController.validateEndDate}"
-                    onChange="assignedCriterionsController.changeEndDate(self,self.value);" width="150px"/>
+                    onChange="assignedCriterionsController.changeDate(self);" width="150px"/>
 
                     <checkbox checked="@{criterionSatisfactionDTO.current}" disabled="true" />
 
