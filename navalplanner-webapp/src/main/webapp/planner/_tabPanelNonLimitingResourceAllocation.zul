@@ -90,14 +90,14 @@
 
                     <separator orient="horizontal" spacing="10px"/>
 
-                    <radiogroup id="calculationTypeSelector"
-                        onCheck="allocationController.calculationTypeSelected = self.selectedItem.value;">
+                    <radiogroup id="calculationTypeSelector">
                         <grid id="calculationTypesGrid">
                             <columns>
                               <column />
                             </columns>
                         </grid>
                     </radiogroup>
+
                 </groupbox>
 
                 </hbox>

@@ -57,6 +57,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -250,9 +251,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder.setAdvancedSearchButton(advancedSearchButton);
             formBinder.setRecommendedAllocation(btnRecommendedAllocation);
 
-            CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
-                    .from(formBinder.getCalculatedValue());
-            calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+            initializeCalculationTypeRadio();
 
             tbResourceAllocation.setSelected(true);
             orderElementHoursGrid.setModel(new ListModelList(
@@ -265,6 +264,22 @@ public class ResourceAllocationController extends GenericForwardComposer {
             LOG.error("there was a WrongValueException initializing window", e);
             throw e;
         }
+    }
+
+    private void initializeCalculationTypeRadio() {
+        CalculationTypeRadio calculationTypeRadio = CalculationTypeRadio
+            .from(formBinder.getCalculatedValue());
+        calculationTypeRadio.doTheSelectionOn(calculationTypeSelector);
+        calculationTypeSelector.addEventListener(Events.ON_CHECK, new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                Radio radio = (Radio) event.getTarget();
+                taskWorkableDays.clearErrorMessage(true);
+                setCalculationTypeSelected(radio.getValue());
+            }
+        });
+
     }
 
     private Label lbTaskStart;
