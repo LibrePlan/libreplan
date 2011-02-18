@@ -680,18 +680,22 @@ public class FormBinder {
 
     private void activatingRecommendedAllocation() {
         allocationRowsHandler.removeAll();
-        hoursDistributorForRecommendedAllocation = resourceAllocationModel
+        ProportionalDistributor distributor = resourceAllocationModel
                 .addDefaultAllocations();
-        resourcesPerDayDistributorForRecommendedAllocation = ResourcesPerDay
-                .distributor(hoursDistributorForRecommendedAllocation);
-        this.recommendedAllocation = true;
-        disableIfNeededWorkerSearch();
-        applyDisabledRules();
-        allHoursInput.addEventListener(Events.ON_CHANGE,
-                allHoursInputChange);
-        allResourcesPerDay.addEventListener(Events.ON_CHANGE,
-                allResourcesPerDayChange);
-        sumResourcesPerDayOrSetToZero();
+        boolean recommendAllocationSuccessful = distributor != null;
+        if (recommendAllocationSuccessful) {
+            hoursDistributorForRecommendedAllocation = distributor;
+            resourcesPerDayDistributorForRecommendedAllocation = ResourcesPerDay
+                    .distributor(hoursDistributorForRecommendedAllocation);
+            this.recommendedAllocation = true;
+            disableIfNeededWorkerSearch();
+            applyDisabledRules();
+            allHoursInput.addEventListener(Events.ON_CHANGE,
+                    allHoursInputChange);
+            allResourcesPerDay.addEventListener(Events.ON_CHANGE,
+                    allResourcesPerDayChange);
+            sumResourcesPerDayOrSetToZero();
+        }
         Util.reloadBindings(allocationsGrid);
     }
 
