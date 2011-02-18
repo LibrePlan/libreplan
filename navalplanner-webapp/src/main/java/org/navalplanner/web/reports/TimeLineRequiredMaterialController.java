@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,7 +37,7 @@ import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.MaterialStatusEnum;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.JasperreportComponent;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -187,7 +186,7 @@ public class TimeLineRequiredMaterialController extends
         return result;
     }
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         super.showReport(jasperreport);
     }
 

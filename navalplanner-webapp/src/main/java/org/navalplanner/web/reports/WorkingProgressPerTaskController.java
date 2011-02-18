@@ -23,7 +23,6 @@ package org.navalplanner.web.reports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
+import org.navalplanner.web.common.components.JasperreportComponent;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -104,7 +103,7 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
         return result;
     }
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         final Order order = getSelectedOrder();
         if (order == null) {
             throw new WrongValueException(bandboxSelectOrder,
