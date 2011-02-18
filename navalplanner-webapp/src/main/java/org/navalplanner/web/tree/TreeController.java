@@ -290,7 +290,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     protected void remove(T element) {
         List<T> parentNodes = getModel().getParents(element);
         getModel().removeNode(element);
-        getRenderer().refreshHoursValueForThisParents(parentNodes);
+        getRenderer().refreshHoursValueForNodes(parentNodes);
     }
 
     @Override
@@ -797,17 +797,18 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void refreshHoursValueForThisNodeAndParents(T node) {
-            List<T> parentNodes = getModel().getParents(node);
-            refreshHoursValueForThisParents(parentNodes);
+            List<T> nodeAndItsParents = getModel().getParents(node);
+            nodeAndItsParents.add(node);
+            refreshHoursValueForNodes(nodeAndItsParents);
         }
 
-        public void refreshHoursValueForThisParents(List<T> parentNodes) {
-            for (T parent : parentNodes) {
-                Intbox intbox = hoursIntBoxByElement.get(parent);
+        public void refreshHoursValueForNodes(List<T> nodes) {
+            for (T node : nodes) {
+                Intbox intbox = hoursIntBoxByElement.get(node);
                 // For the Order node there is no associated intbox
                 if (intbox != null) {
                     Integer currentHours = getHoursGroupHandler()
-                            .getWorkHoursFor(parent);
+                            .getWorkHoursFor(node);
                     intbox.setValue(currentHours);
                 }
             }
