@@ -1,0 +1,3 @@
+<package name="common.components" language="xul/html">
+    <widget name="JasperreportComponent"/>
+</package>
