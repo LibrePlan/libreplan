@@ -71,6 +71,10 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext);
 
+    /**
+     * Adds the default allocations, also known as recommended allocation. If it
+     * can't be done <code>null</code> is returned
+     */
     ProportionalDistributor addDefaultAllocations();
 
     Date getTaskEnd();
