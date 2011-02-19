@@ -35,6 +35,7 @@ import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 
 /**
@@ -74,6 +75,7 @@ public class AllocationConfiguration extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) throws Exception {
+                taskWorkableDays.clearErrorMessage(true);
                 setCalculationTypeSelected(calculationTypeSelector
                         .getSelectedItem().getValue());
             }
