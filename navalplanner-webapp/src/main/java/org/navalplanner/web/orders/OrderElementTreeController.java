@@ -657,7 +657,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
-        getRenderer().updateHoursFor(currentOrderElement);
+        refreshRow(item);
+    }
+
+    private void refreshRow(Treeitem item) {
+        try {
+            getRenderer().updateHoursFor((OrderElement) item.getValue());
+            getRenderer().render(item, item.getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
