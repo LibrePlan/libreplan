@@ -41,9 +41,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -668,11 +668,15 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void refreshCodeTextboxesOnly() {
-        if(orderElementTreeController != null) {
+        if (orderElementTreeController != null) {
             Map<OrderElement, Textbox> orderElementCodeTextBoxes =
                 orderElementTreeController.getOrderElementCodeTextboxes();
-            for(OrderElement element :orderElementCodeTextBoxes.keySet()) {
-                orderElementCodeTextBoxes.get(element).setValue(element.getCode());
+
+            for (OrderElement element : orderElementCodeTextBoxes.keySet()) {
+                if (element.getId() != null) {
+                    orderElementCodeTextBoxes.get(element).setValue(
+                            element.getCode());
+                }
             }
         }
     }
