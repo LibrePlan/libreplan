@@ -1,3 +1,4 @@
 <package name="common.components" language="xul/html">
+    <script src="ChromePDFBugFix.js" browser="safari"/>
     <widget name="JasperreportComponent"/>
 </package>
