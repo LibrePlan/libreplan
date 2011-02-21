@@ -30,9 +30,14 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
-<window id="${arg.top_id}" title="@{i18n:_('Edit task')}"
-    width="950px" left="50px" top="50px"
-    closable="true" visible="false">
+<window id="${arg.top_id}"
+    title="@{i18n:_('Edit task')}"
+    width="950px"
+    left="50px"
+    top="50px"
+    visible="false"
+    closable="true"
+    onClose="orderElementController.close(event)" >
 
     <tabbox height="620px" id="tabboxOrderElement">
         <tabs>
