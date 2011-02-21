@@ -278,15 +278,16 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         if (getChildren(destination).contains(toBeMoved)) {
             return;// it's already moved
         }
-        if (isGreatInHierarchy(toBeMoved, destination)) {
+        if (isDestinationContainedInTheOneBeingMoved(toBeMoved, destination)) {
             return;
         }
         removeNode(toBeMoved);
         addOrderElementAt(destination, toBeMoved, position);
     }
 
-    private boolean isGreatInHierarchy(T parent, T child) {
-        return find(child, getChildren(parent));
+    private boolean isDestinationContainedInTheOneBeingMoved(T toBeMoved,
+            T destination) {
+        return find(destination, getChildren(toBeMoved));
     }
 
     private boolean find(T child, List<T> children) {
