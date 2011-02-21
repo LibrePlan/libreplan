@@ -45,7 +45,8 @@ public class I18nHelper {
                 org.xnap.commons.i18n.I18nFactory.FALLBACK);
 
         // The language returned is not the same as the requested by the user
-        if (!locale.equals(i18n.getResources().getLocale())) {
+        if (!locale.getLanguage().equals(
+                i18n.getResources().getLocale().getLanguage())) {
             // Force it to be default language
             i18n = getDefaultI18n();
         }
