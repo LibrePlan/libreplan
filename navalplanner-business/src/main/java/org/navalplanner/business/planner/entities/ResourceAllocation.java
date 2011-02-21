@@ -460,6 +460,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private AssignmentFunction assignmentFunction;
 
     @OnCopy(Strategy.SHARE)
+    @NotNull
     private ResourcesPerDay resourcesPerDay;
 
     private Integer intendedTotalHours;
@@ -1551,7 +1552,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
     }
 
-    @NotNull
     public ResourcesPerDay getResourcesPerDay() {
         if (resourcesPerDay == null) {
             return ResourcesPerDay.amount(0);
