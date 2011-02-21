@@ -1171,10 +1171,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected int getIntendedHours() {
-        if (isUnsatisfied()) {
-            return originalTotalAssignment;
-        }
-        return getAssignedHours();
+        return originalTotalAssignment;
     }
 
     @OnCopy(Strategy.IGNORE)
@@ -1537,15 +1534,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     /**
-     * Calculates the intended resources per day for this allocation. If the
-     * allocation is not satisfied cannot be calculated on the current
-     * assignment values and must be retrieved from the value in the field.
+     * Returns the last valid specified resources per day
      */
     protected ResourcesPerDay getIntendedResourcesPerDay() {
-        if (isUnsatisfied()) {
-            return getResourcesPerDay();
-        }
-        return getNonConsolidatedResourcePerDay();
+        return getResourcesPerDay();
     }
 
     public ResourcesPerDay getConsolidatedResourcePerDay() {
