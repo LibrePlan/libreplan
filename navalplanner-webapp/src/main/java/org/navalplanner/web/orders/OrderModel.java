@@ -530,7 +530,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         calculateAndSetTotalHours();
         orderDAO.save(order);
         reattachCurrentTaskSources();
-        deleteOrderElementWithoutParent();
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
@@ -549,6 +548,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         }
         saveDerivedScenarios();
         calculateAdvancePercentageIncludingChildren(order);
+        deleteOrderElementWithoutParent();
     }
 
     private void calculateAdvancePercentageIncludingChildren(OrderElement order) {
