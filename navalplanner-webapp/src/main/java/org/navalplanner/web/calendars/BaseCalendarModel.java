@@ -720,4 +720,14 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.baseCalendar;
     }
+
+    @Override
+    public boolean isLastActivationPeriod(
+            CalendarAvailability calendarAvailability) {
+        if (getBaseCalendar() != null) {
+            return getBaseCalendar().isLastCalendarAvailability(
+                    calendarAvailability);
+        }
+        return false;
+    }
 }

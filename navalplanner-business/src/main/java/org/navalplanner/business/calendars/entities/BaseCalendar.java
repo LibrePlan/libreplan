@@ -42,8 +42,8 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -709,6 +709,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         // not be necessary, doing it for safety
         List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
         return sorted.get(sorted.size() - 1);
+    }
+
+    public boolean isLastCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        return getLastCalendarAvailability() != null ? calendarAvailability
+                .getId() == getLastCalendarAvailability().getId()
+                : false;
     }
 
     public void setStartDate(CalendarAvailability calendarAvailability,
