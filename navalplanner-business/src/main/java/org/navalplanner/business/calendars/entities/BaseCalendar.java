@@ -871,7 +871,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public boolean isLastCalendarAvailability(
             CalendarAvailability calendarAvailability) {
         return getLastCalendarAvailability() != null ? calendarAvailability
-                .getId() == getLastCalendarAvailability().getId()
+                .getId().equals(getLastCalendarAvailability().getId())
                 : false;
     }
 

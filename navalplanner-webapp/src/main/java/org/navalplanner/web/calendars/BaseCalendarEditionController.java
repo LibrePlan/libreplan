@@ -1144,10 +1144,10 @@ public abstract class BaseCalendarEditionController extends
 
         private LocalDate getAppropiateEndDate(
                 CalendarAvailability calendarAvailability, Date endDate) {
-            if(endDate == null){
+            if (endDate == null) {
                 if (baseCalendarModel
                         .isLastActivationPeriod(calendarAvailability)) {
-                                return null;
+                    return null;
                 } else {
                     throw new IllegalArgumentException(
                             _("Only the last activation period allows to delete end date."));
