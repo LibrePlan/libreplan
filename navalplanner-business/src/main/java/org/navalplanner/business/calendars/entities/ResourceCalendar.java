@@ -84,18 +84,8 @@ public class ResourceCalendar extends BaseCalendar {
     }
 
     @Override
-    public EffortDuration getCapacityOn(PartialDay date) {
-        return multiplyByCapacity(super.getCapacityOn(date));
-    }
-
-    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
-        if (duration == null) {
-            return EffortDuration.zero();
-        }
-        if (capacity == null) {
-            return duration;
-        }
-        return duration.multiplyBy(capacity);
+    protected Capacity multiplyByCalendarUnits(Capacity capacity) {
+        return capacity.multiplyBy(getCapacity());
     }
 
     @AssertTrue(message = "Capacity must be a positive integer number")

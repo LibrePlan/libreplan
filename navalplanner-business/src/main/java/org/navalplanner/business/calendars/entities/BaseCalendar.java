@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -42,6 +43,7 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
@@ -265,8 +267,14 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     public EffortDuration getCapacityOn(PartialDay date) {
-        return date.limitDuration(findCapacityAt(date.getDate())
+        return date.limitDuration(getCapacityWithOvertime(date.getDate())
                 .getStandardEffort());
+    }
+
+    @Override
+    public Capacity getCapacityWithOvertime(LocalDate day) {
+        Validate.notNull(day);
+        return multiplyByCalendarUnits(findCapacityAt(day));
     }
 
     private Capacity findCapacityAt(LocalDate date) {
@@ -759,14 +767,22 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                 .getStandardEffort());
         EffortDuration asDuration = amount
                 .asDurationGivenWorkingDayOf(workableDuration);
-        return capacity.limitDuration(asDuration);
+        return multiplyByCalendarUnits(capacity).limitDuration(asDuration);
     }
 
     /**
-     * This method is intended to be overriden
+     * <p>
+     * Calendar units are the number of units this calendar is applied to. For
+     * example a {@link VirtualWorker} composed of ten workers would multiply
+     * the capacity by ten.
+     * </p>
+     * <p>
+     * This method is intended to be overridden
+     * </p>
+     *
      */
-    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
-        return duration;
+    protected Capacity multiplyByCalendarUnits(Capacity capacity) {
+        return capacity;
     }
 
     @Override
@@ -996,4 +1012,5 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public Integer getLastSequenceCode() {
         return lastSequenceCode;
     }
+
 }

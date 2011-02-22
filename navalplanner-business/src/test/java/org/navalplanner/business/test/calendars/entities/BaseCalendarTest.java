@@ -801,6 +801,23 @@ public class BaseCalendarTest {
                 ResourcesPerDay.amount(2)), equalTo(hours(16)));
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void getCapacityWithOvertimeMustNotBeCalledWithANullDate() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.getCapacityWithOvertime(null);
+    }
+
+    @Test
+    public void getCapacityWithOvertimeOnReturnsTheCapacityForThatDay() {
+        BaseCalendar calendar = createBasicCalendar();
+        Capacity capacitySet = Capacity.create(hours(8))
+                .overAssignableWithoutLimit(true);
+
+        calendar.setCapacityAt(Days.MONDAY, capacitySet);
+        assertThat(calendar.getCapacityWithOvertime(MONDAY_LOCAL_DATE),
+                equalTo(capacitySet));
+    }
+
     @Test
     public void asDurationOnRespectsTheNotOverAssignablePropertyOfCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
