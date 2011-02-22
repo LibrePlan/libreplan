@@ -377,7 +377,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     Navigation navigation, Treerow treerow) {
                 List<InputElement> boxes = getNavigableElements(treerow);
                 int position = boxes.indexOf(inputElement);
-
+                if (position > boxes.size() - 1) {
+                    return;
+                }
                 switch (navigation) {
                 case UP:
                     focusGoUp(treerow, position);
@@ -517,11 +519,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             private void focusCorrectBox(Treerow treerow, int position,
                     Navigation whereIfDisabled) {
                 List<InputElement> boxes = getNavigableElements(treerow);
-
-                if (boxes.get(position).isDisabled()) {
-                    moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
-                } else {
-                    boxes.get(position).focus();
+                if (position < boxes.size() - 1) {
+                    if (boxes.get(position).isDisabled()) {
+                        moveFocusTo(boxes.get(position), whereIfDisabled,
+                                treerow);
+                    } else {
+                        boxes.get(position).focus();
+                    }
                 }
             }
 
