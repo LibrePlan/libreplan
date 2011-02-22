@@ -37,6 +37,36 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
  */
 public class Capacity {
 
+    public static Capacity min(Capacity a, Capacity b) {
+        return new Capacity(EffortDuration.min(a.getStandardEffort(),
+                b.getStandardEffort()), minExtraEffort(a, b));
+    }
+
+    private static EffortDuration minExtraEffort(Capacity a, Capacity b) {
+        if (a.isOverAssignableWithoutLimit()) {
+            return b.getAllowedExtraEffort();
+        }
+        if (b.isOverAssignableWithoutLimit()) {
+            return a.getAllowedExtraEffort();
+        }
+        return EffortDuration.min(a.getAllowedExtraEffort(),
+                b.getAllowedExtraEffort());
+    }
+
+    public static Capacity max(Capacity a, Capacity b) {
+        return new Capacity(EffortDuration.max(a.getStandardEffort(),
+                b.getStandardEffort()), maxExtraEffort(a, b));
+    }
+
+    private static EffortDuration maxExtraEffort(Capacity a, Capacity b) {
+        if (a.isOverAssignableWithoutLimit()
+                || b.isOverAssignableWithoutLimit()) {
+            return null;
+        }
+        return EffortDuration.max(a.getAllowedExtraEffort(),
+                b.getAllowedExtraEffort());
+    }
+
     public static Capacity create(EffortDuration standardEffort) {
         return new Capacity(standardEffort, null);
     }

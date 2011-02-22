@@ -136,4 +136,49 @@ public class CapacityTest {
         assertThat(multiplied.getStandardEffort(), equalTo(hours(16)));
         assertThat(multiplied.getAllowedExtraEffort(), equalTo(hours(4)));
     }
+
+    private Capacity a = Capacity.create(hours(8));
+
+    private Capacity b = Capacity.create(hours(4));
+
+    @Test
+    public void theMinOfTwoCapacitiesReturnsTheMinimumStandardEffort() {
+        Capacity min = Capacity.min(a, b);
+        assertThat(min.getStandardEffort(), equalTo(b.getStandardEffort()));
+
+        Capacity max = Capacity.max(a, b);
+        assertThat(max.getStandardEffort(), equalTo(a.getStandardEffort()));
+    }
+
+    @Test
+    public void theMaxOfTwoCapacitiesReturnsTheMaximumStandardEffort() {
+        Capacity max = Capacity.max(a, b);
+        assertThat(max.getStandardEffort(), equalTo(a.getStandardEffort()));
+    }
+
+    @Test
+    public void theExtraEffortIsAlsoMinimized() {
+        assertThat(
+                Capacity.min(a.withAllowedExtraEffort(hours(2)),
+                        b.overAssignableWithoutLimit(true))
+                        .getAllowedExtraEffort(), equalTo(hours(2)));
+
+        assertThat(
+                Capacity.min(a.withAllowedExtraEffort(hours(2)),
+                        a.withAllowedExtraEffort(hours(4)))
+                        .getAllowedExtraEffort(), equalTo(hours(2)));
+    }
+
+    @Test
+    public void theExtraEffortIsMaximized() {
+        assertThat(
+                Capacity.max(a.withAllowedExtraEffort(hours(2)),
+                        b.overAssignableWithoutLimit(true))
+                        .getAllowedExtraEffort(), nullValue());
+
+        assertThat(
+                Capacity.max(a.withAllowedExtraEffort(hours(2)),
+                        a.withAllowedExtraEffort(hours(4)))
+                        .getAllowedExtraEffort(), equalTo(hours(4)));
+    }
 }
