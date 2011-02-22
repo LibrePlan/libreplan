@@ -209,7 +209,7 @@ public class GenericResourceAllocation extends
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
             hoursDistributor = new EffortDistributor(resources,
-                    getAssignedHoursForResource(),
+                    getAssignedEffortForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
         }
 
@@ -233,19 +233,19 @@ public class GenericResourceAllocation extends
 
     }
 
-    private IAssignedHoursForResource assignedHoursCalculatorOverriden = null;
+    private IAssignedEffortForResource assignedEffortCalculatorOverriden = null;
 
     public void overrideAssignedHoursForResource(
             GenericResourceAllocation allocation) {
-        assignedHoursCalculatorOverriden = allocation
-                .getAssignedHoursForResource();
+        assignedEffortCalculatorOverriden = allocation
+                .getAssignedEffortForResource();
     }
 
-    private IAssignedHoursForResource getAssignedHoursForResource() {
-        if (assignedHoursCalculatorOverriden != null) {
-            return assignedHoursCalculatorOverriden;
+    private IAssignedEffortForResource getAssignedEffortForResource() {
+        if (assignedEffortCalculatorOverriden != null) {
+            return assignedEffortCalculatorOverriden;
         }
-        return new AssignedHoursDiscounting(this);
+        return new AssignedEffortDiscounting(this);
     }
 
     @Override
@@ -292,7 +292,7 @@ public class GenericResourceAllocation extends
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
         allocation.criterions = new HashSet<Criterion>(criterions);
-        allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
+        allocation.assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
                 this);
         return allocation;
     }

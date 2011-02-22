@@ -142,20 +142,20 @@ public class EffortDistributor {
 
     private final List<ResourceWithDerivedData> resources;
 
-    private final IAssignedHoursForResource assignedHoursForResource;
+    private final IAssignedEffortForResource assignedEffortForResource;
 
     private final IResourceSelector resourceSelector;
 
     public EffortDistributor(List<Resource> resources,
-            IAssignedHoursForResource assignedHoursForResource) {
+            IAssignedEffortForResource assignedHoursForResource) {
         this(resources, assignedHoursForResource, null);
     }
 
     public EffortDistributor(List<Resource> resources,
-            IAssignedHoursForResource assignedHoursForResource,
+            IAssignedEffortForResource assignedEffortForResource,
             IResourceSelector selector) {
         this.resources = ResourceWithDerivedData.from(resources);
-        this.assignedHoursForResource = assignedHoursForResource;
+        this.assignedEffortForResource = assignedEffortForResource;
         this.resourceSelector = selector != null ? new CompoundSelector(
                 new OnlyCanWork(), selector) : new OnlyCanWork();
     }
@@ -179,7 +179,7 @@ public class EffortDistributor {
             List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i).resource;
             ICalendar calendarForResource = resources.get(i).calendar;
-            EffortDuration alreadyAssigned = assignedHoursForResource
+            EffortDuration alreadyAssigned = assignedEffortForResource
                     .getAssignedDurationAt(resource, day);
             final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
             Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
