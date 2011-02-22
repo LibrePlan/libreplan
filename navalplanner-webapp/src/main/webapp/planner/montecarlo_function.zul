@@ -43,11 +43,11 @@
         <grid>
             <columns>
                 <column width="150px"/>
-                <column />
+                <column hflex="2"/>
+                <column width="150px" />
+                <column hflex="2"/>
                 <column width="150px"/>
-                <column />
-                <column width="150px"/>
-                <column />
+                <column hflex="1"/>
             </columns>
             <rows>
                 <row>
