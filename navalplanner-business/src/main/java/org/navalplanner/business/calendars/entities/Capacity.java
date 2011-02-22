@@ -79,7 +79,7 @@ public class Capacity {
         return allowedExtraEffort == null;
     }
 
-    public Capacity extraEffort(EffortDuration extraEffort) {
+    public Capacity withAllowedExtraEffort(EffortDuration extraEffort) {
         return new Capacity(standardEffort, extraEffort);
     }
 

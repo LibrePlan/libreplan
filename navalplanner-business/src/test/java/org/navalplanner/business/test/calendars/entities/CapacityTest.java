@@ -39,7 +39,7 @@ public class CapacityTest {
 
     @Test
     public void itHasStandardEffortAndAllowedExtraEffort() {
-        Capacity capacity = Capacity.create(hours(8)).extraEffort(hours(2));
+        Capacity capacity = Capacity.create(hours(8)).withAllowedExtraEffort(hours(2));
         assertThat(capacity.getStandardEffort(),
                 equalTo(EffortDuration.hours(8)));
         assertThat(capacity.getAllowedExtraEffort(), equalTo(hours(2)));
@@ -59,14 +59,14 @@ public class CapacityTest {
 
     @Test
     public void ifHasAllowedExtraEffortItsNotOverassignableWithoutLimit() {
-        Capacity capacity = Capacity.create(hours(8)).extraEffort(hours(0));
+        Capacity capacity = Capacity.create(hours(8)).withAllowedExtraEffort(hours(0));
         assertFalse(capacity.isOverAssignableWithoutLimit());
     }
 
     @Test
     public void hasAnEqualsAndHashCodeBasedOnStandardEffortAndExtraHours() {
-        Capacity a1 = Capacity.create(hours(8)).extraEffort(hours(2));
-        Capacity a2 = Capacity.create(hours(8)).extraEffort(hours(2));
+        Capacity a1 = Capacity.create(hours(8)).withAllowedExtraEffort(hours(2));
+        Capacity a2 = Capacity.create(hours(8)).withAllowedExtraEffort(hours(2));
 
         Capacity b1 = Capacity.create(hours(8));
 
@@ -100,7 +100,7 @@ public class CapacityTest {
 
     @Test
     public void aCapacityWithExtraHoursAndZeroEffortAllowsWorking() {
-        Capacity capacity = Capacity.create(EffortDuration.zero()).extraEffort(
+        Capacity capacity = Capacity.create(EffortDuration.zero()).withAllowedExtraEffort(
                 EffortDuration.minutes(1));
         assertTrue(capacity.allowsWorking());
     }
@@ -131,7 +131,7 @@ public class CapacityTest {
 
     @Test
     public void multiplyingMultipliesTheStandardEffortAndTheOverTimeEffort() {
-        Capacity capacity = Capacity.create(hours(8)).extraEffort(hours(2));
+        Capacity capacity = Capacity.create(hours(8)).withAllowedExtraEffort(hours(2));
         Capacity multiplied = capacity.multiplyBy(2);
         assertThat(multiplied.getStandardEffort(), equalTo(hours(16)));
         assertThat(multiplied.getAllowedExtraEffort(), equalTo(hours(4)));

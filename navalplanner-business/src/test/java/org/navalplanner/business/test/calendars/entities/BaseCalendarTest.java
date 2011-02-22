@@ -399,7 +399,7 @@ public class BaseCalendarTest {
 
         CalendarExceptionType type = createCalendarExceptionType();
         calendar.updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1),
-                Capacity.create(hours(8)).extraEffort(
+                Capacity.create(hours(8)).withAllowedExtraEffort(
                         type.getCapacity().getAllowedExtraEffort()), type);
 
         assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE
@@ -819,7 +819,7 @@ public class BaseCalendarTest {
     public void DurationOnRespectsTheExtraEffortPropertyOfCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
-                .extraEffort(hours(2)));
+                .withAllowedExtraEffort(hours(2)));
 
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
@@ -867,7 +867,7 @@ public class BaseCalendarTest {
     public void asDurationOnRespectsCapacityExtraEffort() {
         BaseCalendar calendar = createBasicCalendar();
         addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(2))
-                .extraEffort(hours(3)));
+                .withAllowedExtraEffort(hours(3)));
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
                 ResourcesPerDay.amount(1)), equalTo(hours(2)));
@@ -883,7 +883,7 @@ public class BaseCalendarTest {
     public void canWorkOnRespectsTheCapacityOfTheException() {
         BaseCalendar calendar = createBasicCalendar();
         addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
-                .extraEffort(hours(0)));
+                .withAllowedExtraEffort(hours(0)));
 
         assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
     }

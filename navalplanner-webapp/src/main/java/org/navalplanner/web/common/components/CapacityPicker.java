@@ -96,7 +96,7 @@ public class CapacityPicker {
 
             @Override
             public void set(EffortDuration value) {
-                updateCapacity(currentCapacity.extraEffort(value));
+                updateCapacity(currentCapacity.withAllowedExtraEffort(value));
             }
         });
         Util.bind(overAssignableWithoutLimitCheckbox, new Getter<Boolean>() {
