@@ -1124,8 +1124,10 @@ public abstract class BaseCalendarEditionController extends
 
                         @Override
                         public void set(Date value) {
-                            LocalDate endDate = new LocalDate(value);
                             try {
+                                LocalDate endDate = getAppropiateEndDate(
+                                    calendarAvailability, value);
+
                                 baseCalendarModel.setEndDate(
                                         calendarAvailability, endDate);
                             } catch (IllegalArgumentException e) {
@@ -1138,6 +1140,20 @@ public abstract class BaseCalendarEditionController extends
 
             listcell.appendChild(dateboxExpirationDate);
             item.appendChild(listcell);
+        }
+
+        private LocalDate getAppropiateEndDate(
+                CalendarAvailability calendarAvailability, Date endDate) {
+            if(endDate == null){
+                if (baseCalendarModel
+                        .isLastActivationPeriod(calendarAvailability)) {
+                                return null;
+                } else {
+                    throw new IllegalArgumentException(
+                            "Only the last activation period can have a empty end date.");
+                }
+            }
+            return new LocalDate(endDate);
         }
 
         private void appendAvailabilityCodeListcell(Listitem item,
