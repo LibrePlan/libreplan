@@ -155,4 +155,11 @@ public class Capacity {
                 || !getAllowedExtraEffort().isZero();
     }
 
+    public Capacity multiplyBy(int capacity) {
+        Validate.isTrue(capacity >= 0);
+        return new Capacity(standardEffort.multiplyBy(capacity),
+                allowedExtraEffort == null ? null
+                        : allowedExtraEffort.multiplyBy(capacity));
+    }
+
 }

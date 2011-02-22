@@ -21,10 +21,12 @@ package org.navalplanner.business.test.calendars.entities;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.Capacity;
@@ -107,5 +109,31 @@ public class CapacityTest {
     public void aCapacityWithZeroHoursAndOverAssignableWithoutLimitAllowsWorking() {
         Capacity capacity = Capacity.zero().overAssignableWithoutLimit(true);
         assertTrue(capacity.allowsWorking());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void aCapacityCannotBeMultipliedByANegativeNumber() {
+        Capacity.create(hours(8)).multiplyBy(-1);
+    }
+
+    @Test
+    public void aCapacityMultipliedByZero() {
+        Capacity[] originals = {
+                Capacity.create(hours(8)).overAssignableWithoutLimit(true),
+                Capacity.create(hours(8)).overAssignableWithoutLimit(false) };
+        for (Capacity original : originals) {
+            Capacity multipliedByZero = original.multiplyBy(0);
+            assertThat(multipliedByZero.getStandardEffort(), equalTo(zero()));
+            assertEquals(original.isOverAssignableWithoutLimit(),
+                    multipliedByZero.isOverAssignableWithoutLimit());
+        }
+    }
+
+    @Test
+    public void multiplyingMultipliesTheStandardEffortAndTheOverTimeEffort() {
+        Capacity capacity = Capacity.create(hours(8)).extraEffort(hours(2));
+        Capacity multiplied = capacity.multiplyBy(2);
+        assertThat(multiplied.getStandardEffort(), equalTo(hours(16)));
+        assertThat(multiplied.getAllowedExtraEffort(), equalTo(hours(4)));
     }
 }
