@@ -29,6 +29,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
@@ -713,9 +714,16 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public boolean isLastCalendarAvailability(
             CalendarAvailability calendarAvailability) {
-        return getLastCalendarAvailability() != null ? calendarAvailability
-                .getId() == getLastCalendarAvailability().getId()
-                : false;
+        if (getLastCalendarAvailability() == null
+                || calendarAvailability == null) {
+            return false;
+        }
+        if (getLastCalendarAvailability().getId() == null
+                && calendarAvailability.getId() == null) {
+            return getLastCalendarAvailability() == calendarAvailability;
+        }
+        return ObjectUtils.equals(getLastCalendarAvailability().getId(),
+                calendarAvailability.getId());
     }
 
     public void setStartDate(CalendarAvailability calendarAvailability,
