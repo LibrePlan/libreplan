@@ -21,15 +21,10 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.zero;
-
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Calendar for a {@link Resource}.
@@ -68,19 +63,6 @@ public class ResourceCalendar extends BaseCalendar {
         CalendarAvailability calendarAvailability = CalendarAvailability
                 .create(new LocalDate(), null);
         addNewCalendarAvailability(calendarAvailability);
-    }
-
-    public Integer getCapacity(LocalDate from, LocalDate to) {
-        return getCapacity(IntraDayDate.startOfDay(from),
-                IntraDayDate.startOfDay(to));
-    }
-
-    public Integer getCapacity(IntraDayDate from, IntraDayDate to) {
-        EffortDuration result = zero();
-        for (PartialDay each : from.daysUntil(to)) {
-            result = result.plus(getCapacityOn(each));
-        }
-        return result.roundToHours();
     }
 
     @Override
