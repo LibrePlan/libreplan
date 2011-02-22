@@ -1150,7 +1150,7 @@ public abstract class BaseCalendarEditionController extends
                                 return null;
                 } else {
                     throw new IllegalArgumentException(
-                            "Only the last activation period can have a empty end date.");
+                            _("Only the last activation period allows to delete end date."));
                 }
             }
             return new LocalDate(endDate);
