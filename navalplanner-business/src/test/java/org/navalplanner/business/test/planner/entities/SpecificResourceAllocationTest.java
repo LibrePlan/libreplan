@@ -173,8 +173,6 @@ public class SpecificResourceAllocationTest {
     private void givenWorker() {
         this.worker = createNiceMock(Worker.class);
         expect(this.worker.getCalendar()).andReturn(calendar).anyTimes();
-        expect(this.worker.getAssignedHours(isA(LocalDate.class))).andReturn(
-                assignedHours).anyTimes();
         replay(this.worker);
     }
 

@@ -551,7 +551,7 @@ public class ResourceTest {
     public void workerWithoutAssignmentsGivesNoAssignedHours() {
         givenWorker();
         LocalDate today = new LocalDate();
-        assertThat(worker.getAssignedHours(today), equalTo(0));
+        assertThat(worker.getAssignedEffort(today), equalTo(hours(0)));
     }
 
     @Test
@@ -566,7 +566,7 @@ public class ResourceTest {
                 today.plusDays(1), hours(1), worker);
         givenWorkerWithAssignments(specificDayAssignment, another, atAnotherDay);
 
-        assertThat(worker.getAssignedHours(today), equalTo(13));
+        assertThat(worker.getAssignedEffort(today), equalTo(hours(13)));
     }
 
     @Test
@@ -576,12 +576,11 @@ public class ResourceTest {
         SpecificDayAssignment specificDayAssignment = new SpecificDayAssignment(
                 today, hours(10), worker);
         givenWorkerWithAssignments(specificDayAssignment);
-        worker.getAssignedHours(today);
         SpecificDayAssignment another = new SpecificDayAssignment(today,
                 hours(3), worker);
         worker.addNewAssignments(Arrays.asList(another));
 
-        assertThat(worker.getAssignedHours(today), equalTo(13));
+        assertThat(worker.getAssignedEffort(today), equalTo(hours(13)));
     }
 
     private void givenWorkerWithAssignments(DayAssignment... assignments) {

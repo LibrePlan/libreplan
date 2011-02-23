@@ -834,12 +834,8 @@ public abstract class Resource extends IntegrationEntity {
 
     }
 
-    public int getAssignedHours(LocalDate localDate) {
-        int sum = 0;
-        for (DayAssignment dayAssignment : getAssignmentsForDay(localDate)) {
-            sum += dayAssignment.getHours();
-        }
-        return sum;
+    public EffortDuration getAssignedEffort(LocalDate localDate) {
+        return DayAssignment.sum(getAssignmentsForDay(localDate));
     }
 
     public EffortDuration getAssignedDurationDiscounting(

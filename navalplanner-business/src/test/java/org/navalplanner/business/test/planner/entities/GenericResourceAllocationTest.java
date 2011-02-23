@@ -176,8 +176,6 @@ public class GenericResourceAllocationTest {
             int hours) {
         Worker result = createNiceMock(Worker.class);
         expect(result.getCalendar()).andReturn(resourceCalendar).anyTimes();
-        expect(result.getAssignedHours(isA(LocalDate.class))).andReturn(hours)
-                .anyTimes();
         expect(
                 result.getAssignedDurationDiscounting(isA(Object.class),
                         isA(LocalDate.class))).andReturn(hours(hours)).anyTimes();
@@ -561,8 +559,6 @@ public class GenericResourceAllocationTest {
     private void givenVirtualWorkerWithCapacity(int capacity) {
         VirtualWorker worker = createNiceMock(VirtualWorker.class);
         final int fullLoadForAll = 8 * capacity;
-        expect(worker.getAssignedHours(isA(LocalDate.class))).andReturn(
-                fullLoadForAll).anyTimes();
         expect(
                 worker.getAssignedDurationDiscounting(isA(Object.class),
                         isA(LocalDate.class))).andReturn(hours(fullLoadForAll))
