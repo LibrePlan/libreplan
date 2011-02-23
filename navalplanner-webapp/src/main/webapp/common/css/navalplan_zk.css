@@ -70,15 +70,7 @@ table {
     border: solid 1px #FDBE13;
 }
 
-/* --- START -- Buttons styles ---
-=================================================== */
-
-/* Enabled borders for standard buttons */
-.z-button-tl, .z-button-tm, .z-button-tr,
-.z-button-cl, .z-button-cr,
-.z-button-bl, .z-button-bm, .z-button-br {
-    display: none;
-}
+/* Buttons styles */
 
 .icono .z-button-cm,
 body .z-window-embedded .icono .z-button-cm,
@@ -99,103 +91,6 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 
-/* Bugfix for default clicked z-button center borders */
-.z-button-clk .z-button-cr {
-    background-position: -21px 0;
-}
-.z-button-clk .z-button-cl {
-    background-position: -18px 0;
-}
-
-/* Bugfix for default clicked z-button corners */
-/* 'btn-corner.gif' updated to add the 4th state */
-.z-button-clk .z-button-br {
-    background-position: -21px -3px;
-}
-.z-button-clk .z-button-tr {
-    background-position: -21px 0;
-}
-.z-button-clk .z-button-bl {
-    background-position: -18px -3px;
-}
-.z-button-clk .z-button-tl {
-    background-position: -18px 0px;
-}
-
-/* Global custom styles
---------------------------------------------------- */
-
-table.z-button {
-    table-layout: auto;
-}
-
-button.z-button {
-    position: relative;
-    top: -5px;
-}
-
-/* Disable grey degradation */
-.z-button .z-button-cm {
-    background-image: none;
-}
-
-/*  #E4F3D9; /* green0 (normal background) */
-/*  #C3EAAF; /* green1 (hover background)  */
-/*  #A1D586; /* green2 (active background) */
-/*  #58A758; /* green3 (text color)        */
-/*  #87bd32; /* green4 (border color)      */
-/*  #3F5917; /* green5 (top left shade)    */
-
-.z-button-cm {
-    background-color: #E4F3D9; /* green0 (normal background) */
-    color: #58A758; /* green3 (text) */
-    border: 1px solid #439e32; /* green4 (border) */
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-}
-
-.z-button-cm:hover {
-    background-color: #C3EAAF; /* green1 (hover background) */
-    background-image: none;
-}
-
-.z-button table {
-    -moz-border-radius: 3px;
-    -webkit-border-radius: 3px;
-    border-top: 1px solid transparent;
-    border-left: 1px solid transparent;
-}
-.z-button table:active {
-    border-color: #3f5917;
-}
-
-.z-button-cm:active {
-    background-color: #A1D586; /* green2 (active background)*/
-    border-right: 0 solid #439e32;
-    border-bottom: 1px solid #439e32;
-    border-top: 2px solid #3f5917;
-    border-left: 2px solid #3f5917;
-}
-
-.z-button.z-button-disd .z-button-cm:active {
-    border: inherit;
-}
-
-.z-button.z-button-disd .z-button-cm {
-    background-color: #EAEAEA;
-    color: #A0A0A0;
-    border-color: #A0A0A0;
-}
-
-.z-window-embedded .z-button-cm,
-.z-window-modal .z-button-cm {
-    padding: 2px 18px;
-}
-
-.z-window-embedded .z-button-cm:active,
-.z-window-modal .z-button-cm:active {
-    padding: 2px 17px 1px 18px;
-}
 
 /* Perspective and planner buttons
 --------------------------------------------------- */
@@ -216,17 +111,23 @@ button.z-button {
     height: 24px;
     padding: 2px;
 }
-.planner-command .z-button-cm:active {
-   padding: 2px 1px 1px 2px;
+
+.toolbar-box .z-button-cm {
+    -moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
 }
 
+.planner-command .z-button-cm:active {
+   padding: 2px;
+}
+ 
 .planner-command.clicked .z-button-cm {
-    background-color: #A1D586; /* green2 (active background)*/
-    border-right: 0px;
-    border-bottom: 1px solid #439e32;
-    border-top: 2px solid #3f5917;
-    border-left: 2px solid #3f5917;
-    padding: 2px 1px 1px 2px;
+    background-color: #E6F2F9; /* blue (active background)*/
+    border-right: 0;
+    border-bottom: 0;
+    border-top: 1px solid #3f5917;
+    border-left: 1px solid #3f5917;
+    padding: 2px;
 }
 
 .sub_menu .z-button-cm {
@@ -661,6 +562,9 @@ div.z-grid {
     height: 23px;
     width: 100%;
 }
+
+
+
 
 .listdetails .z-textbox, .listdetails .z-decimalbox,
 .listdetails .z-intbox, .listdetails .z-longbox,
@@ -1571,4 +1475,118 @@ input.z-datebox-text-disd {
 .advanced-assignment-area .z-center-body
 {
 	width: auto !important;
+}
+
+/* Icons and toolbar buttons */
+
+.icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
+.icono .z-button-cl, .icono .z-button-cr,
+.icono .z-button-bl, .icono .z-button-bm, .icono .z-button-br {
+    display: none;
+}
+
+.perspectives-column .z-button-tl, .perspectives-column .z-button-tm, .perspectives-column .z-button-tr,
+.perspectives-column .z-button-cl, .perspectives-column .z-button-cr,
+.perspectives-column .z-button-bl, .perspectives-column .z-button-bm, .perspectives-column .z-button-br {
+    display: none;
+}
+
+.toolbar-box .z-button-tl, .toolbar-box .z-button-tm, .toolbar-box .z-button-tr,
+.toolbar-box .z-button-cl, .toolbar-box .z-button-cr,
+.toolbar-box .z-button-bl, .toolbar-box .z-button-bm, .toolbar-box .z-button-br {
+    display: none;
+}
+
+.toolbar-box .z-button tbody, 
+.toolbar-box .z-button tbody:hover,
+.toolbar-box .z-button tbody:active {
+    background-color: transparent;
+}
+
+.toolbar-box .z-button-cm {
+	border-left: solid 1px transparent;
+	border-top: solid 1px transparent;
+	border-right: solid 1px transparent;
+}
+
+.toolbar-box .z-button-clk .z-button-cm {
+	background-color: #71B0D4;
+}
+
+.perspectives-column .z-button-bl {
+	-moz-border-radius: 2px;
+    -webkit-border-radius: 2px;
+}
+
+.z-button.icono tbody, .z-button.icono tbody:hover, .z-button.icono tbody:active {
+    background-color: transparent;
+}
+
+.planner-command.z-button .z-button-tl, .planner-command.z-button .z-button-tm, .planner-command.z-button .z-button-tr,
+.planner-command.z-button .z-button-cl, .planner-command.z-button .z-button-cr,
+.planner-command.z-button .z-button-bl, .planner-command.z-button .z-button-bm, .planner-command.z-button .z-button-br {
+    display: none;
+}
+
+.planner-command.z-button tbody, .planner-command.z-button tbody:hover, .planner-command.z-button tbody:active {
+    background-color: transparent;
+}
+
+.z-button .z-button-cm {
+	background-image: none;
+}
+
+.z-button tbody {
+    background-color: #E4F3D9; /* green0 (normal background) */
+    color: #58A758; /* green3 (text) */
+}
+
+.z-button tbody:hover {
+    background-color: #C3EAAF; /* green1 (hover background) */
+}
+
+.z-button tbody:active {
+	background-color: #A1D586;
+}
+
+.z-button .z-button-tl, .z-button .z-button-tr, 
+.z-button .z-button-bl, .z-button .z-button-br {
+	background-image: url(../img/btn-corner-green.gif);
+}
+.z-button .z-button-tm, .z-button .z-button-bm {
+	background-image: url(../img/btn-x-green.gif);
+}
+
+.z-button .z-button-cl, .z-button .z-button-cr {
+	background-image: url(../img/btn-y-green.gif);
+}
+
+.z-button .z-button-tl, .z-button .z-button-bl,
+.z-button .z-button-tr, .z-button .z-button-tr {
+	background-color: #FFFFFF;
+}
+
+/* Bugfix for default 3D mold */
+.z-button-clk .z-button-tl {
+	background-position:-18px 0;
+}
+
+.z-button-clk .z-button-bl {
+	background-position:-18px -3px;
+}
+
+.z-button-clk .z-button-tr {
+	background-position:-21px 0;
+}
+
+.z-button-clk .z-button-br {
+	background-position:-21px -3px;
+}
+
+.z-button-clk .z-button-cl {
+	background-position:-18px 0;
+}
+
+.z-button-clk .z-button-cr {
+	background-position:-21px 0;
 }
