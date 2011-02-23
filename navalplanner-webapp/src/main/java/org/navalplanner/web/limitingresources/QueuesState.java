@@ -195,10 +195,6 @@ public class QueuesState {
         unassignedElements.remove(queueElement);
     }
 
-    public LimitingResourceQueue getQueueFor(Resource resource) {
-        return queuesByResourceId.get(resource.getId());
-    }
-
     public List<LimitingResourceQueue> getAssignableQueues(
             LimitingResourceQueueElement element) {
         final ResourceAllocation<?> resourceAllocation = element
@@ -214,6 +210,10 @@ public class QueuesState {
             return findQueuesMatchingCriteria(generic.getCriterions());
         }
         throw new RuntimeException("unexpected type of: " + resourceAllocation);
+    }
+
+    private LimitingResourceQueue getQueueFor(Resource resource) {
+        return queuesByResourceId.get(resource.getId());
     }
 
     public InsertionRequirements getRequirementsFor(

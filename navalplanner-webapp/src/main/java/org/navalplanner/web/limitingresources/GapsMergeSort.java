@@ -101,18 +101,27 @@ public class GapsMergeSort {
 
     public static List<GapOnQueue> sort(
             List<List<GapOnQueue>> orderedListsOfGaps) {
+
+        List<GapOnQueue> result = new ArrayList<GapOnQueue>();
+
+        if (orderedListsOfGaps.isEmpty()) {
+            return result;
+        }
         if (orderedListsOfGaps.size() == 1) {
             return orderedListsOfGaps.get(0);
         }
-        List<GapOnQueue> result = new ArrayList<GapOnQueue>();
+
         List<CurrentGap> currentGaps = CurrentGap.convert(iteratorsFor(orderedListsOfGaps));
-        CurrentGap min = null;
-        do {
-            min = Collections.min(currentGaps);
-            if (!min.hasFinished()) {
-                result.add(min.consume());
+        CurrentGap min = Collections.min(currentGaps);
+        while (!currentGaps.isEmpty() && !min.hasFinished()) {
+            result.add(min.consume());
+            if (min.hasFinished()) {
+                currentGaps.remove(min);
+                if (!currentGaps.isEmpty()) {
+                    min = Collections.min(currentGaps);
+                }
             }
-        } while (!min.hasFinished());
+        }
         return result;
     }
 

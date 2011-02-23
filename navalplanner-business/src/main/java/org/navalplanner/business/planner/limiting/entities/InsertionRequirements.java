@@ -139,15 +139,12 @@ public class InsertionRequirements {
         Task task = element.getTask();
 
         for (Dependency each : task.getDependenciesWithThisOrigin()) {
-            if (each.getType().modifiesDestinationEnd()) {
-                TaskElement destination = each.getDestination();
-                result = (result == null) ? destination.getIntraDayStartDate()
-                        : IntraDayDate.min(result,
-                                destination.getIntraDayStartDate());
-            }
+            TaskElement destination = each.getDestination();
+            result = (result == null) ? destination.getIntraDayStartDate()
+                    : IntraDayDate.min(result,
+                            destination.getIntraDayStartDate());
         }
-        return (result != null) ? DateAndHour.from(result) : DateAndHour.from(new LocalDate(
-                element.getEarliestEndDateBecauseOfGantt()));
+        return (result != null) ? DateAndHour.from(result) : null;
     }
 
     public boolean isPotentiallyValid(Gap gap) {
