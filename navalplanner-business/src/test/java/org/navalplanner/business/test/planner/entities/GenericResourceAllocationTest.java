@@ -153,7 +153,6 @@ public class GenericResourceAllocationTest {
         worker2 = createNiceMock(Worker.class);
         worker3 = createNiceMock(Worker.class);
         mockZeroLoad(worker1, worker2, worker3);
-        setupCalendarIsNull(worker1);
         buildWorkersList();
         replay(worker1, worker2, worker3);
     }
@@ -223,10 +222,6 @@ public class GenericResourceAllocationTest {
         worker2 = createWorkerWithLoad(calendars[1], hours2);
         worker3 = createWorkerWithLoad(calendars[2], hours3);
         buildWorkersList();
-    }
-
-    private void setupCalendarIsNull(Resource resource) {
-        expect(resource.getCalendar()).andReturn(null).anyTimes();
     }
 
     private void givenBaseCalendarWithoutExceptions(int hoursPerDay) {
