@@ -406,7 +406,7 @@ public abstract class BaseCalendarEditionController extends
 
         private void addLabelCell(Listitem item, final Days day) {
             Listcell labelListcell = new Listcell();
-            labelListcell.appendChild(new Label(day.toString()));
+            labelListcell.appendChild(new Label(_(day.getName())));
             item.appendChild(labelListcell);
         }
 
@@ -747,7 +747,7 @@ public abstract class BaseCalendarEditionController extends
                     if (parent == null) {
                         summary.add("0");
                     } else {
-                        summary.add("D");
+                        summary.add(_("D"));
                     }
                 } else {
                     summary.add(asString(calendarData.getCapacityOn(day)));

@@ -32,8 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.WeakHashMap;
+import java.util.Map.Entry;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,15 +45,15 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
-import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
+import org.navalplanner.business.planner.entities.StretchesFunction.Type;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -66,8 +66,8 @@ import org.zkoss.ganttz.timetracker.PairOfLists;
 import org.zkoss.ganttz.timetracker.TimeTrackedTable;
 import org.zkoss.ganttz.timetracker.TimeTrackedTableWithLeftPane;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponentWithoutColumns;
+import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -963,20 +963,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow("Name") {
+        result.add(new ColumnOnRow(_("Name")) {
 
             @Override
             public Component cellFor(Row row) {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow("Hours") {
+        result.add(new ColumnOnRow(_("Hours")) {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllHours();
             }
         });
-        result.add(new ColumnOnRow("Function") {
+        result.add(new ColumnOnRow(_("Function")) {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
