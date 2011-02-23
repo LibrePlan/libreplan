@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.test.planner.entities;
 
+import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
@@ -512,7 +513,7 @@ public class GenericResourceAllocationTest {
     }
 
     @Test
-    public void moreBusyResourcesAreGivenLessLoad() {
+    public void itGivesAllTheLoadItCanToTheLessLoadedResource() {
         final int TASK_DURATION_DAYS = 4;
         givenBaseCalendarWithoutExceptions(8);
         LocalDate start = new LocalDate(2006, 10, 5);
@@ -526,13 +527,65 @@ public class GenericResourceAllocationTest {
 
         List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker1);
-        assertThat(assignmentsWorker1, haveHours(3, 3, 3, 3));
+        assertThat(assignmentsWorker1, haveHours(1, 1, 1, 1));
         List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker2);
-        assertThat(assignmentsWorker2, haveHours(0, 0, 0, 0));
+        assertThat(assignmentsWorker2, haveHours());
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
-        assertThat(assignmentsWorker3, haveHours(5, 5, 5, 5));
+        assertThat(assignmentsWorker3, haveHours(7, 7, 7, 7));
+    }
+
+    @Test
+    public void doesntSurpassTheExtraHours() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+
+        Capacity workingDay = Capacity.create(hours(8));
+        Capacity with2ExtraHours = workingDay
+                .withAllowedExtraEffort(hours(2));
+        givenCalendarsForResources(with2ExtraHours, with2ExtraHours,
+                workingDay.overAssignableWithoutLimit(true));
+        givenWorkersWithLoads(0, 0, 0);
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(4));
+
+        List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(assignmentsWorker1, haveHours(10, 10, 10, 10));
+        List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker2);
+        assertThat(assignmentsWorker2, haveHours(10, 10, 10, 10));
+        List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker3);
+        assertThat(assignmentsWorker3, haveHours(12, 12, 12, 12));
+
+    }
+
+    @Test
+    public void itGivesAllTheLoadItCanToTheLessLoadedResourceAndThenToTheNextOne() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(0, 0, 0);
+
+        genericResourceAllocation.forResources(asList(worker1, worker2))
+                .allocate(ResourcesPerDay.amount(2));
+
+        List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(assignmentsWorker1, haveHours(8, 8, 8, 8));
+        List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker2);
+        assertThat(assignmentsWorker2, haveHours(8, 8, 8, 8));
     }
 
     @Test
@@ -588,7 +641,7 @@ public class GenericResourceAllocationTest {
         assertThat(assignmentsWorker2, haveHours(4, 4, 4, 4));
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
-        assertThat(assignmentsWorker3, haveHours(0, 0, 0, 0));
+        assertThat(assignmentsWorker3, haveHours());
     }
 
     private void givenVirtualWorkerWithCapacityAndLoad(

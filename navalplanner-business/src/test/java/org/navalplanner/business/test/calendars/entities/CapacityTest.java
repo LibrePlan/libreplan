@@ -19,6 +19,7 @@
 package org.navalplanner.business.test.calendars.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertEquals;
@@ -180,5 +181,31 @@ public class CapacityTest {
                 Capacity.max(a.withAllowedExtraEffort(hours(2)),
                         a.withAllowedExtraEffort(hours(4)))
                         .getAllowedExtraEffort(), equalTo(hours(4)));
+    }
+
+    @Test
+    public void testThereIsCapacityForMoreAllocations() {
+        assertThat(Capacity.create(hours(8)).overAssignableWithoutLimit(true)
+                .hasSpareSpaceForMoreAllocations(hours(10)), is(true));
+
+        Capacity notOverassignable = Capacity.create(hours(8))
+                .overAssignableWithoutLimit(false);
+
+        assertFalse(notOverassignable
+                .hasSpareSpaceForMoreAllocations(hours(10)));
+        assertTrue(notOverassignable
+                .hasSpareSpaceForMoreAllocations(hours(7)));
+        assertFalse(notOverassignable
+                .hasSpareSpaceForMoreAllocations(hours(8)));
+
+        Capacity withSomeExtraHours = notOverassignable
+                .withAllowedExtraEffort(hours(2));
+
+        assertFalse(withSomeExtraHours
+                .hasSpareSpaceForMoreAllocations(hours(10)));
+        assertTrue(withSomeExtraHours
+                .hasSpareSpaceForMoreAllocations(hours(7)));
+        assertTrue(withSomeExtraHours
+                .hasSpareSpaceForMoreAllocations(hours(8)));
     }
 }

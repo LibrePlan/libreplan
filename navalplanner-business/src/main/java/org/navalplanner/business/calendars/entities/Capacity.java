@@ -29,6 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
+
 /**
  * This class is intended as a Hibernate component. It's formed by two
  * components, the standard effort and the allowed extra effort. It represents
@@ -178,6 +179,28 @@ public class Capacity {
         }
         return EffortDuration.min(standardEffort.plus(allowedExtraEffort),
                 duration);
+    }
+
+    /**
+     * <p>
+     * Is the provided duration below the allowed duration? In that case there
+     * is still spare space for more allocations.
+     * </p>
+     * <p>
+     * The allowed duration is infinite if this {@link Capacity} is
+     * {@link #overAssignableWithoutLimit(boolean)} or the duration provided is
+     * less than the sum of the standard plus allowed extra effort.
+     * </p>
+     *
+     * @param assignedDuration
+     * @return
+     */
+    public boolean hasSpareSpaceForMoreAllocations(
+            EffortDuration assignedDuration) {
+        Validate.notNull(assignedDuration);
+        return isOverAssignableWithoutLimit()
+                || assignedDuration.compareTo(standardEffort
+                        .plus(allowedExtraEffort)) < 0;
     }
 
     public boolean allowsWorking() {
