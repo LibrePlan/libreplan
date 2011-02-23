@@ -314,7 +314,7 @@ public abstract class BaseCalendarEditionController extends
             final Days day = (Days) data;
 
             Listcell labelListcell = new Listcell();
-            labelListcell.appendChild(new Label(day.toString()));
+            labelListcell.appendChild(new Label(_(day.getName())));
             item.appendChild(labelListcell);
 
             Listcell durationCell = new Listcell();
@@ -675,7 +675,7 @@ public abstract class BaseCalendarEditionController extends
                     if (parent == null) {
                         summary.add("0");
                     } else {
-                        summary.add("D");
+                        summary.add(_("D"));
                     }
                 } else {
                     summary.add(asString(calendarData.getDurationAt(day)));
