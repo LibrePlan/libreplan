@@ -620,6 +620,7 @@
                 <filtering>true</filtering>
             </resource>
 
+            <!-- Report bundle directories -->
             <resource>
                 <directory>../navalplanner-webapp/src/main/jasper/workingArrangementsPerOrder_Bundle/</directory>
             </resource>
