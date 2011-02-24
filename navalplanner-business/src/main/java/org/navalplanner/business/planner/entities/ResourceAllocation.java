@@ -313,13 +313,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     task, allocations) {
 
                 @Override
-                protected List<DayAssignment> createAssignmentsAtDay(
-                        ResourcesPerDayModification allocation, PartialDay day,
-                        EffortDuration limit) {
-                    return allocation.createAssignmentsAtDay(day, limit);
-                }
-
-                @Override
                 protected <T extends DayAssignment> void setNewDataForAllocation(
                         ResourceAllocation<T> allocation,
                         IntraDayDate resultDate,

@@ -233,10 +233,6 @@ public abstract class UntilFillingHoursAllocator {
             ResourceAllocation<T> allocation, IntraDayDate resultDate,
             ResourcesPerDay resourcesPerDay, List<T> dayAssignments);
 
-    protected abstract List<DayAssignment> createAssignmentsAtDay(
-            ResourcesPerDayModification allocation, PartialDay day,
-            EffortDuration limit);
-
     protected abstract CapacityResult thereAreAvailableHoursFrom(
             IntraDayDate dateFromWhichToAllocate,
             ResourcesPerDayModification resourcesPerDayModification,
@@ -260,6 +256,12 @@ public abstract class UntilFillingHoursAllocator {
                 newAssignments);
         return Pair.create(DayAssignment.sum(newAssignments),
                 getMaxAssignment(newAssignments));
+    }
+
+    private List<DayAssignment> createAssignmentsAtDay(
+            ResourcesPerDayModification allocation, PartialDay day,
+            EffortDuration limit) {
+        return allocation.createAssignmentsAtDay(day, limit);
     }
 
     private EffortDuration getMaxAssignment(List<DayAssignment> newAssignments) {
