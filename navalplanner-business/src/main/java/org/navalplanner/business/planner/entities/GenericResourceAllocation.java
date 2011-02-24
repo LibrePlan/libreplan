@@ -21,8 +21,6 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,7 +49,6 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -214,7 +211,7 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        protected List<GenericDayAssignment> distributeForDay(LocalDate day,
+        public List<GenericDayAssignment> distributeForDay(LocalDate day,
                 EffortDuration effort) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
             for (ResourceWithAssignedDuration each : hoursDistributor
@@ -265,16 +262,6 @@ public class GenericResourceAllocation extends
     @Override
     protected Class<GenericDayAssignment> getDayAssignmentType() {
         return GenericDayAssignment.class;
-    }
-
-    public List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
-            PartialDay day, ResourcesPerDay resourcesPerDay,
-            final EffortDuration maxLimit) {
-        final EffortDuration durations = min(
-                calculateTotalToDistribute(day, resourcesPerDay), maxLimit);
-        GenericAllocation genericAllocation = new GenericAllocation(resources);
-        return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
-                day.getDate(), durations));
     }
 
     @Override
@@ -390,6 +377,11 @@ public class GenericResourceAllocation extends
     public EffortDuration getAssignedEffort(ICriterion criterion,
             LocalDate start, LocalDate endExclusive) {
         return super.getAssignedDuration(start, endExclusive);
+    }
+
+    public IEffortDistributor<GenericDayAssignment> createEffortDistributor(
+            List<Resource> resources) {
+        return new GenericAllocation(resources);
     }
 
 }

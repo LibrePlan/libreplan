@@ -110,6 +110,12 @@ public abstract class UntilFillingHoursAllocator {
                         toBeAssigned);
     }
 
+    public interface IAssignmentsCreator {
+
+        List<? extends DayAssignment> createAssignmentsAtDay(PartialDay day,
+                EffortDuration limit);
+    }
+
     /**
      *
      * @param dateFromWhichToAllocate
@@ -123,10 +129,13 @@ public abstract class UntilFillingHoursAllocator {
         EffortDuration taken = zero();
         EffortDuration biggestLastAssignment = zero();
         IntraDayDate current = dateFromWhichToAllocate;
+        IAssignmentsCreator assignmentsCreator = resourcesPerDayModification
+                .createAssignmentsCreator();
         while (effortRemaining.compareTo(zero()) > 0) {
             PartialDay day = calculateDay(current);
             Pair<EffortDuration, EffortDuration> pair = assignForDay(
-                    resourcesPerDayModification, day, effortRemaining);
+                    resourcesPerDayModification, assignmentsCreator, day,
+                    effortRemaining);
             taken = pair.getFirst();
             biggestLastAssignment = pair.getSecond();
             effortRemaining = effortRemaining.minus(taken);
@@ -244,27 +253,24 @@ public abstract class UntilFillingHoursAllocator {
 
     /**
      *
+     * @param resourcesPerDayModification
      * @return a pair composed of the effort assigned and the biggest assignment
      *         done.
      */
     private Pair<EffortDuration, EffortDuration> assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
+            IAssignmentsCreator assignmentsCreator,
             PartialDay day, EffortDuration remaining) {
-        List<DayAssignment> newAssignments = createAssignmentsAtDay(
-                resourcesPerDayModification, day, remaining);
+        List<? extends DayAssignment> newAssignments = assignmentsCreator
+                .createAssignmentsAtDay(day, remaining);
         resultAssignments.get(resourcesPerDayModification).addAll(
                 newAssignments);
         return Pair.create(DayAssignment.sum(newAssignments),
                 getMaxAssignment(newAssignments));
     }
 
-    private List<DayAssignment> createAssignmentsAtDay(
-            ResourcesPerDayModification allocation, PartialDay day,
-            EffortDuration limit) {
-        return allocation.createAssignmentsAtDay(day, limit);
-    }
-
-    private EffortDuration getMaxAssignment(List<DayAssignment> newAssignments) {
+    private EffortDuration getMaxAssignment(
+            List<? extends DayAssignment> newAssignments) {
         if (newAssignments.isEmpty()) {
             return zero();
         }

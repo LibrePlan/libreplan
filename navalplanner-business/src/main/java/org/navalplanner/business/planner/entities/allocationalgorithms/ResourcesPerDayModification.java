@@ -22,6 +22,7 @@
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +39,9 @@ import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.IEffortDistributor;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator.IAssignmentsCreator;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -80,13 +83,6 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-                EffortDuration limit) {
-            return genericAllocation.createAssignmentsAtDay(getResources(),
-                    day, getGoal(), limit);
-        }
-
-        @Override
         public AvailabilityTimeLine getAvailability() {
             return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
                     (Collection<? extends Criterion>) genericAllocation
@@ -118,6 +114,16 @@ public abstract class ResourcesPerDayModification extends
                 calendar.add(calendarFor(each));
             }
             return calendar;
+        }
+
+        @Override
+        protected ResourceAllocation<?> getResourceAllocation() {
+            return genericAllocation;
+        }
+
+        @Override
+        protected IEffortDistributor<?> toEffortDistributor() {
+            return genericAllocation.createEffortDistributor(getResources());
         }
 
     }
@@ -153,13 +159,6 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-                EffortDuration limit) {
-            return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
-                    limit);
-        }
-
-        @Override
         public AvailabilityTimeLine getAvailability() {
             Resource resource = getAssociatedResource();
             return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
@@ -182,6 +181,16 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public ICalendar getResourcesCalendar() {
             return calendarFor(getAssociatedResource());
+        }
+
+        @Override
+        protected ResourceAllocation<?> getResourceAllocation() {
+            return resourceAllocation;
+        }
+
+        @Override
+        protected IEffortDistributor<?> toEffortDistributor() {
+            return resourceAllocation.createEffortDistributor();
         }
 
     }
@@ -249,8 +258,28 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract void applyAllocationFromEndUntil(LocalDate start);
 
-    public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-            EffortDuration limit);
+    public IAssignmentsCreator createAssignmentsCreator() {
+
+        return new IAssignmentsCreator() {
+
+            final IEffortDistributor<?> effortDistributor = toEffortDistributor();
+
+            @Override
+            public List<? extends DayAssignment> createAssignmentsAtDay(
+                    PartialDay day,
+                    EffortDuration limit) {
+                EffortDuration toDistribute = getResourceAllocation()
+                        .calculateTotalToDistribute(day, getGoal());
+                EffortDuration effortLimited = min(limit, toDistribute);
+                return effortDistributor.distributeForDay(day.getDate(),
+                        effortLimited);
+            }
+        };
+    }
+
+    protected abstract ResourceAllocation<?> getResourceAllocation();
+
+    protected abstract IEffortDistributor<?> toEffortDistributor();
 
     public abstract AvailabilityTimeLine getAvailability();
 

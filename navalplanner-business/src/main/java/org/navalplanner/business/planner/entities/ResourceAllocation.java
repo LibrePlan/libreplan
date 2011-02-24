@@ -597,7 +597,17 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public abstract IAllocatable withPreviousAssociatedResources();
 
-    protected abstract class AssignmentsAllocator implements IAllocatable {
+    public interface IEffortDistributor<T extends DayAssignment> {
+        /**
+         * It does not add the created assigments to the underlying allocation.
+         * It just distributes them.
+         *
+         */
+        List<T> distributeForDay(LocalDate day, EffortDuration effort);
+    }
+
+    protected abstract class AssignmentsAllocator implements IAllocatable,
+            IEffortDistributor<T> {
 
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
@@ -845,9 +855,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        protected abstract List<T> distributeForDay(LocalDate day,
-                EffortDuration effort);
-
     }
 
     private void markAsUnsatisfied() {
@@ -1030,7 +1037,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         getDayAssignmentsState().removingAssignments(assignments);
     }
 
-    final EffortDuration calculateTotalToDistribute(PartialDay day,
+    public final EffortDuration calculateTotalToDistribute(PartialDay day,
             ResourcesPerDay resourcesPerDay) {
         return getAllocationCalendar().asDurationOn(day, resourcesPerDay);
     }
