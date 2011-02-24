@@ -39,6 +39,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.util.Pair;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
@@ -120,12 +121,16 @@ public abstract class UntilFillingHoursAllocator {
             ResourcesPerDayModification resourcesPerDayModification,
             EffortDuration effortRemaining) {
         EffortDuration taken = zero();
+        EffortDuration biggestLastAssignment = zero();
         IntraDayDate current = dateFromWhichToAllocate;
         while (effortRemaining.compareTo(zero()) > 0) {
             PartialDay day = calculateDay(current);
-            taken = assignForDay(resourcesPerDayModification, day,
-                    effortRemaining);
+            Pair<EffortDuration, EffortDuration> pair = assignForDay(
+                    resourcesPerDayModification, day, effortRemaining);
+            taken = pair.getFirst();
+            biggestLastAssignment = pair.getSecond();
             effortRemaining = effortRemaining.minus(taken);
+
             if (effortRemaining.compareTo(zero()) > 0) {
                 current = nextDay(current);
             }
@@ -136,6 +141,8 @@ public abstract class UntilFillingHoursAllocator {
             if (!resourcesPerDayModification
                     .thereAreMoreSpaceAvailableAt(result)) {
                 result = nextDay(result);
+            } else {
+                result = plusEffort(current, biggestLastAssignment);
             }
         } else {
             result = minusEffort(current, taken, resourcesPerDayModification);
@@ -239,14 +246,29 @@ public abstract class UntilFillingHoursAllocator {
             ResourcesPerDayModification allocationAttempt,
             CapacityResult capacityResult);
 
-    private EffortDuration assignForDay(
+    /**
+     *
+     * @return a pair composed of the effort assigned and the biggest assignment
+     *         done.
+     */
+    private Pair<EffortDuration, EffortDuration> assignForDay(
             ResourcesPerDayModification resourcesPerDayModification,
             PartialDay day, EffortDuration remaining) {
         List<DayAssignment> newAssignments = createAssignmentsAtDay(
                 resourcesPerDayModification, day, remaining);
         resultAssignments.get(resourcesPerDayModification).addAll(
                 newAssignments);
-        return DayAssignment.sum(newAssignments);
+        return Pair.create(DayAssignment.sum(newAssignments),
+                getMaxAssignment(newAssignments));
+    }
+
+    private EffortDuration getMaxAssignment(List<DayAssignment> newAssignments) {
+        if (newAssignments.isEmpty()) {
+            return zero();
+        }
+        DayAssignment max = Collections.max(newAssignments,
+                DayAssignment.byDurationComparator());
+        return max.getDuration();
     }
 
     private static class EffortPerAllocation {

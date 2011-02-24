@@ -22,6 +22,7 @@
 package org.navalplanner.business.test.planner.entities;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.getCurrentArguments;
 import static org.easymock.EasyMock.isA;
@@ -37,6 +38,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -56,7 +58,9 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.planner.entities.GenericDayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -284,7 +288,7 @@ public class GenericResourceAllocationTest {
 
         if (baseCalendar instanceof ResourceCalendar) {
             ResourceCalendar resourceCalendar = (ResourceCalendar) baseCalendar;
-            expect(resourceCalendar.getCapacity()).andReturn(units);
+            expect(resourceCalendar.getCapacity()).andReturn(units).anyTimes();
         }
         replay(baseCalendar);
         return klass.cast(baseCalendar);
@@ -642,6 +646,43 @@ public class GenericResourceAllocationTest {
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
         assertThat(assignmentsWorker3, haveHours());
+    }
+
+    @Test
+    public void theEndHourOfTheAllocationIsTheBiggestAllocationDoneIfThereIsSpareSpaceLeft() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        givenCalendarsForResources(8, 8, 8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(8, 6, 2);
+        IntraDayDate end = ResourceAllocation.allocating(
+                singletonList(ResourcesPerDayModification.create(
+                        genericResourceAllocation,
+                        ResourcesPerDay.amount(new BigDecimal(1)), workers)))
+                .untilAllocating(12);
+        assertThat(end.getDate(), equalTo(start.plusDays(1)));
+        EffortDuration biggestLastAssignment = hours(4);
+        assertThat(end.getEffortDuration(), equalTo(biggestLastAssignment));
+    }
+
+    @Test
+    public void theEndOfTheAllocationIsTheNextDayIfThereIsNoSpareSpaceLeft() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        givenCalendarsForResources(8, 8, 8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(8, 2, 6);
+        IntraDayDate end = ResourceAllocation.allocating(
+                singletonList(ResourcesPerDayModification.create(
+                        genericResourceAllocation, ResourcesPerDay.amount(1),
+                        workers))).untilAllocating(16);
+        assertThat(end.getDate(), equalTo(start.plusDays(2)));
     }
 
     private void givenVirtualWorkerWithCapacityAndLoad(

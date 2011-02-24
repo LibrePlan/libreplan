@@ -227,6 +227,18 @@ public abstract class DayAssignment extends BaseEntity {
         };
     }
 
+    public static Comparator<DayAssignment> byDurationComparator() {
+        return new Comparator<DayAssignment>() {
+
+            @Override
+            public int compare(DayAssignment assignment1,
+                    DayAssignment assignment2) {
+                return assignment1.getDuration().compareTo(
+                        assignment2.getDuration());
+            }
+        };
+    }
+
     public static <T extends DayAssignment> List<T> orderedByDay(
             Collection<T> dayAssignments) {
         List<T> result = new ArrayList<T>(dayAssignments);

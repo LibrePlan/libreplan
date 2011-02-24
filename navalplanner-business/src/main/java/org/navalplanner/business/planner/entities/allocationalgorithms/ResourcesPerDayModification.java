@@ -188,7 +188,7 @@ public abstract class ResourcesPerDayModification extends
 
     public static ResourcesPerDayModification create(
             GenericResourceAllocation resourceAllocation,
-            ResourcesPerDay resourcesPerDay, List<Resource> resources) {
+            ResourcesPerDay resourcesPerDay, List<? extends Resource> resources) {
         return new OnGenericAllocation(resourceAllocation,
                 resourcesPerDay, resources);
     }
