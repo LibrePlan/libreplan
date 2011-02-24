@@ -42,11 +42,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.easymock.IAnswer;
+import org.easymock.classextension.EasyMock;
 import org.joda.time.Interval;
 import org.joda.time.LocalDate;
 import org.joda.time.Period;
@@ -178,13 +182,60 @@ public class GenericResourceAllocationTest {
         workers.add(worker3);
     }
 
+    private static class LoadSpec {
+
+        public static LoadSpec withHours(int hours) {
+            return new LoadSpec(hours(hours));
+        }
+
+        private final EffortDuration defaultLoad;
+
+        private LoadSpec(EffortDuration defaultLoad) {
+            Validate.notNull(defaultLoad);
+            this.defaultLoad = defaultLoad;
+        }
+
+        private Map<LocalDate, EffortDuration> exceptions = new HashMap<LocalDate, EffortDuration>();
+
+        LoadSpec withException(LocalDate date, EffortDuration loadAtThatDate) {
+            Validate.notNull(date);
+            Validate.notNull(loadAtThatDate);
+            exceptions.put(date, loadAtThatDate);
+            return this;
+        }
+
+        EffortDuration getLoad(LocalDate date) {
+            if (exceptions.containsKey(date)) {
+                return exceptions.get(date);
+            }
+            return defaultLoad;
+        }
+
+    }
+
     private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar,
             int hours) {
+        return createWorkerWithLoad(resourceCalendar,
+                new LoadSpec(hours(hours)));
+    }
+
+    private Worker createWorkerWithLoad(ResourceCalendar resourceCalendar,
+            final LoadSpec loadSpec) {
         Worker result = createNiceMock(Worker.class);
         expect(result.getCalendar()).andReturn(resourceCalendar).anyTimes();
         expect(
                 result.getAssignedDurationDiscounting(isA(Object.class),
-                        isA(LocalDate.class))).andReturn(hours(hours)).anyTimes();
+                        isA(LocalDate.class))).andAnswer(
+                new IAnswer<EffortDuration>() {
+
+                    @Override
+                    public EffortDuration answer() throws Throwable {
+                        Object[] currentArguments = EasyMock
+                                .getCurrentArguments();
+                        LocalDate date = (LocalDate) currentArguments[1];
+                        return loadSpec.getLoad(date);
+                    }
+                }).anyTimes();
         expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
                 satisfactionsForPredefinedCriterions(result)).anyTimes();
         replay(result);
@@ -225,6 +276,12 @@ public class GenericResourceAllocationTest {
     }
 
     private void givenWorkersWithLoads(int hours1, int hours2, int hours3) {
+        givenWorkersWithLoads(LoadSpec.withHours(hours1),
+                LoadSpec.withHours(hours2), LoadSpec.withHours(hours3));
+    }
+
+    private void givenWorkersWithLoads(LoadSpec load1, LoadSpec load2,
+            LoadSpec load3) {
         ResourceCalendar[] calendars;
         if (workerCalendars == null) {
             calendars = new ResourceCalendar[] { null, null, null };
@@ -232,9 +289,9 @@ public class GenericResourceAllocationTest {
             calendars = new ResourceCalendar[] { workerCalendars.get(0),
                     workerCalendars.get(1), workerCalendars.get(2) };
         }
-        worker1 = createWorkerWithLoad(calendars[0], hours1);
-        worker2 = createWorkerWithLoad(calendars[1], hours2);
-        worker3 = createWorkerWithLoad(calendars[2], hours3);
+        worker1 = createWorkerWithLoad(calendars[0], load1);
+        worker2 = createWorkerWithLoad(calendars[1], load2);
+        worker3 = createWorkerWithLoad(calendars[2], load3);
         buildWorkersList();
     }
 
@@ -538,6 +595,66 @@ public class GenericResourceAllocationTest {
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
         assertThat(assignmentsWorker3, haveHours(7, 7, 7, 7));
+    }
+
+    @Test
+    public void itTakesIntoAccountTheLoadForEachDay() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(
+                LoadSpec.withHours(3)
+                        .withException(start.plusDays(1), hours(1))
+                        .withException(start.plusDays(3), hours(8)),
+                LoadSpec.withHours(12).withException(start.plusDays(3), zero()),
+                LoadSpec.withHours(1)
+                        .withException(start.plusDays(1), hours(3))
+                        .withException(start.plusDays(3), hours(8)));
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(1));
+
+        List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(assignmentsWorker1, haveHours(1, 7, 1));
+        List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker2);
+        assertThat(assignmentsWorker2, haveHours(8));
+        List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker3);
+        assertThat(assignmentsWorker3, haveHours(7, 1, 7));
+    }
+
+    @Test
+    public void previouslyPickedResourcesHaveMorePriority() {
+        final int TASK_DURATION_DAYS = 4;
+        givenBaseCalendarWithoutExceptions(8);
+        LocalDate start = new LocalDate(2006, 10, 5);
+        givenTaskWithStartAndEnd(toInterval(start,
+                Period.days(TASK_DURATION_DAYS)));
+        givenGenericResourceAllocationForTask(task);
+        givenWorkersWithLoads(
+                LoadSpec.withHours(0)
+                        .withException(start.plusDays(3), hours(4)),
+                LoadSpec.withHours(12),
+                LoadSpec.withHours(1)
+                        .withException(start.plusDays(3), hours(0)));
+
+        genericResourceAllocation.forResources(workers).allocate(
+                ResourcesPerDay.amount(1));
+
+        List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker3);
+        assertThat(assignmentsWorker3, haveHours(4));
+        List<GenericDayAssignment> assignmentsWorker1 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker1);
+        assertThat(assignmentsWorker1, haveHours(8, 8, 8, 4));
+        List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
+                .getOrderedAssignmentsFor(worker2);
+        assertThat(assignmentsWorker2, haveHours());
     }
 
     @Test

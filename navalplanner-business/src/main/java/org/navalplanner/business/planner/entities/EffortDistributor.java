@@ -26,11 +26,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.Capacity;
@@ -99,6 +103,15 @@ public class EffortDistributor {
             EffortDuration result = EffortDuration.zero();
             for (ResourceWithAssignedDuration each : withoutOvertime) {
                 result = result.plus(each.duration);
+            }
+            return result;
+        }
+
+        static List<Resource> resources(
+                Collection<? extends ResourceWithAssignedDuration> collection) {
+            List<Resource> result = new ArrayList<Resource>();
+            for (ResourceWithAssignedDuration each : collection) {
+                result.add(each.resource);
             }
             return result;
         }
@@ -244,6 +257,30 @@ public class EffortDistributor {
         public int compareTo(ResourceWithAvailableCapacity o) {
             return available.compareTo(o.available);
         }
+
+        @SuppressWarnings("unchecked")
+        static Comparator<ResourceWithAvailableCapacity> getComparatorConsidering(
+                final Set<Resource> lastResourcesUsed) {
+            return ComparatorUtils.chainedComparator(
+                    new Comparator<ResourceWithAvailableCapacity>() {
+
+                        @Override
+                        public int compare(ResourceWithAvailableCapacity o1,
+                                ResourceWithAvailableCapacity o2) {
+                            boolean resource1Used = lastResourcesUsed
+                                    .contains(o1.resource);
+                            boolean resource2Used = lastResourcesUsed
+                                    .contains(o2.resource);
+                            return asInt(resource1Used) - asInt(resource2Used);
+                        }
+
+                        int asInt(boolean b) {
+                            return b ? 1 : 0;
+                        }
+
+                    }, ComparatorUtils.naturalComparator());
+        }
+
     }
 
     private final List<ResourceWithDerivedData> resources;
@@ -251,6 +288,8 @@ public class EffortDistributor {
     private final IAssignedEffortForResource assignedEffortForResource;
 
     private final IResourceSelector resourceSelector;
+
+    private Set<Resource> resourcesAlreadyPicked = new HashSet<Resource>();
 
     public EffortDistributor(List<Resource> resources,
             IAssignedEffortForResource assignedHoursForResource) {
@@ -269,6 +308,19 @@ public class EffortDistributor {
 
     public List<ResourceWithAssignedDuration> distributeForDay(LocalDate date,
             EffortDuration totalDuration) {
+        return withCaptureOfResourcesPicked(distributeForDay_(date,
+                totalDuration));
+    }
+
+    private List<ResourceWithAssignedDuration> withCaptureOfResourcesPicked(
+            List<ResourceWithAssignedDuration> result) {
+        resourcesAlreadyPicked.addAll(ResourceWithAssignedDuration
+                .resources(result));
+        return result;
+    }
+
+    private List<ResourceWithAssignedDuration> distributeForDay_(
+            LocalDate date, EffortDuration totalDuration) {
         List<ResourceWithDerivedData> resourcesAssignable = resourcesAssignableAt(date);
         List<ResourceWithAssignedDuration> withoutOvertime = assignAllPossibleWithoutOvertime(
                 date, totalDuration, resourcesAssignable);
@@ -282,7 +334,8 @@ public class EffortDistributor {
                 date, remaining,
                 ResourceWithAssignedDuration.sumAssignedEffort(withoutOvertime,
                         assignedEffortForResource), resourcesAssignable);
-        return ResourceWithAssignedDuration.join(withoutOvertime, withOvertime);
+        return ResourceWithAssignedDuration
+                .join(withoutOvertime, withOvertime);
     }
 
     private List<ResourceWithDerivedData> resourcesAssignableAt(LocalDate day) {
@@ -298,7 +351,7 @@ public class EffortDistributor {
     private List<ResourceWithAssignedDuration> assignAllPossibleWithoutOvertime(
             LocalDate date, EffortDuration totalDuration,
             List<ResourceWithDerivedData> resourcesAssignable) {
-        List<ResourceWithAvailableCapacity> fromMoreToLessCapacity = resourcesFromMoreToLessCapacityAvailable(
+        List<ResourceWithAvailableCapacity> fromMoreToLessCapacity = resourcesFromMoreDesirableToLess(
                 resourcesAssignable, date);
         EffortDuration remaining = totalDuration;
         List<ResourceWithAssignedDuration> result = new ArrayList<ResourceWithAssignedDuration>();
@@ -315,14 +368,16 @@ public class EffortDistributor {
         return result;
     }
 
-    private List<ResourceWithAvailableCapacity> resourcesFromMoreToLessCapacityAvailable(
+    private List<ResourceWithAvailableCapacity> resourcesFromMoreDesirableToLess(
             List<ResourceWithDerivedData> resourcesAssignable, LocalDate date) {
         List<ResourceWithAvailableCapacity> result = new ArrayList<ResourceWithAvailableCapacity>();
         for (ResourceWithDerivedData each : resourcesAssignable) {
             result.add(each.withAvailableCapacityOn(date,
                     assignedEffortForResource));
         }
-        Collections.sort(result, Collections.reverseOrder());
+        Collections.sort(result, Collections
+                .reverseOrder(ResourceWithAvailableCapacity
+                        .getComparatorConsidering(resourcesAlreadyPicked)));
         return result;
     }
 
