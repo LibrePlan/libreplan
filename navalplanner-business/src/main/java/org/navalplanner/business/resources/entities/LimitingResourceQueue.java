@@ -34,12 +34,10 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 /**
  *
