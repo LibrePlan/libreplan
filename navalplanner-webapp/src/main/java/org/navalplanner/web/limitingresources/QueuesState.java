@@ -284,12 +284,10 @@ public class QueuesState {
         ResourceEnum resourceType = generic.getResourceType();
         Set<Criterion> criteria = generic.getCriterions();
 
-        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                criteria).getResult();
         for (LimitingResourceQueue each : queues) {
             Resource resource = each.getResource();
             if (resource.getType().equals(resourceType)
-                    && compositedCriterion.isSatisfiedBy(resource)) {
+                    && resource.satisfiesCriterionsAtSomePoint(criteria)) {
                 result.add(each);
             }
         }
