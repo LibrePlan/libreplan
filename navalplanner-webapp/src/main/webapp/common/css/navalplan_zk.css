@@ -1534,6 +1534,7 @@ display:none;
 
 .advancedallocationlayout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
     background-color: #F2F2F2;
+    cursor: default;
 }
 
 .advanced-assignment-area td .z-intbox {
@@ -1562,5 +1563,13 @@ input.z-datebox-text-disd {
 }
 
 .z-datebox-pp {
+	width: auto !important;
+}
+
+
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-header,
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-body,
+.advanced-assignment-area .z-center-body
+{
 	width: auto !important;
 }
