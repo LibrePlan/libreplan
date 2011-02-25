@@ -551,4 +551,9 @@ public class CriterionType extends IntegrationEntity implements
                     + EntitySequence.CODE_SEPARATOR_CHILDREN + criterionCode);
         }
     }
+
+    public String toString() {
+        return name;
+    }
+
 }

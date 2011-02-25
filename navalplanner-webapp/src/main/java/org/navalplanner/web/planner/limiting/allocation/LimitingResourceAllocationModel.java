@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
@@ -37,6 +38,7 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
@@ -96,12 +98,38 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     private LimitingResourceAllocationController limitingResourceAllocationController;
 
     @Override
+    @Transactional(readOnly=true)
     public void init(IContextWithPlannerTask<TaskElement> context, Task task,
             PlanningState planningState) {
         this.context = context;
         this.task = task;
         this.planningState = planningState;
+
+        initializeCriteria(task);
         limitingAllocationRows = LimitingAllocationRow.toRows(task);
+    }
+
+    private void initializeCriteria(Task task) {
+        for (ResourceAllocation<?> each: task.getLimitingResourceAllocations()) {
+            if (isGeneric(each)) {
+                initializeCriteria((GenericResourceAllocation) each);
+            }
+        }
+    }
+
+    private boolean isGeneric(ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation instanceof GenericResourceAllocation;
+    }
+
+    private void initializeCriteria(GenericResourceAllocation generic) {
+        for (Criterion each : generic.getCriterions()) {
+            initializeCriterion(each);
+        }
+    }
+
+    private void initializeCriterion(Criterion criterion) {
+        criterionDAO.reattach(criterion);
+        Hibernate.initialize(criterion.getType());
     }
 
     @Override
@@ -118,6 +146,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     public void addGeneric(ResourceEnum resourceType,
             Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
+
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
