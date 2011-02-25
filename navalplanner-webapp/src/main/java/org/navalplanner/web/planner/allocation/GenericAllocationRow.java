@@ -84,7 +84,7 @@ public class GenericAllocationRow extends AllocationRow {
                 .byCriteria(resourceAllocation.getCriterions())
                 .byLimiting(resourceAllocation.isLimiting()).execute());
         result.setName(Criterion
-                .getCaptionForCriterionsFrom(resourceAllocation));
+                .getCaptionFor(resourceAllocation));
         return result;
     }
 

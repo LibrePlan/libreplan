@@ -248,7 +248,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             return (resource != null) ? resource.getName() : "";
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             GenericResourceAllocation genericAllocation = (GenericResourceAllocation) resourceAllocation;
-            return Criterion.getCaptionForCriterionsFrom(genericAllocation);
+            return Criterion.getCaptionFor(genericAllocation);
         }
         return StringUtils.EMPTY;
     }

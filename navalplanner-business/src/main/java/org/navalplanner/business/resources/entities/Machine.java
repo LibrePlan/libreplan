@@ -135,4 +135,10 @@ public class Machine extends Resource {
     public ResourceEnum getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return String.format("MACHINE: %s", name);
+    }
+
 }

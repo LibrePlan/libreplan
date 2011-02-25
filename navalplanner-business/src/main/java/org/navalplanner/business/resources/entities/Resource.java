@@ -54,6 +54,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -111,6 +112,18 @@ public abstract class Resource extends IntegrationEntity {
             }
         });
         return resources;
+    }
+
+    public static String getCaptionFor(ResourceAllocation<?> resourceAllocation) {
+        return getCaptionFor(resourceAllocation.getAssociatedResources());
+    }
+
+    public static String getCaptionFor(List<Resource> resources) {
+        List<String> values = new ArrayList<String>();
+        for (Resource each: resources) {
+            values.add(each.getShortDescription());
+        }
+        return StringUtils.join(values, ", ");
     }
 
     private ResourceCalendar calendar;
