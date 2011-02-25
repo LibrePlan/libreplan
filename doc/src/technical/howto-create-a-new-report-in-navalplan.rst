@@ -108,7 +108,7 @@ Steps:
  <zk>
 
      <window self="@{define(content)}"
-         apply="org.navalplanner.web.reports.ResourcesListController"
+         apply="org.navalplanner.web.reports.ResourcesListReportController"
          title="${i18n:_('Resources List')}"
          border="normal" >
 
@@ -150,7 +150,7 @@ Steps:
 
 This will create a basic interface for report with a combo to select the desired
 output format for it and a button to generate the report. As we can see it uses
-``ResourcesListController`` that will be created in the next point.
+``ResourcesListReportController`` that will be created in the next point.
 
 
 Create a controller for new report
@@ -166,7 +166,7 @@ new reports are going to extend this class and re-implement some methods.
 
 Steps:
 
-* Create a new file ``ResourcesListController.java`` in
+* Create a new file ``ResourcesListReportController.java`` in
   ``navalplanner-webapp/src/main/java/org/navalplanner/web/reports/`` with the
   following content:
 
@@ -203,7 +203,7 @@ Steps:
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
- public class ResourcesListController extends NavalplannerReportController {
+ public class ResourcesListReportController extends NavalplannerReportController {
 
      private static final String REPORT_NAME = "resourcesListReport";
 
@@ -243,7 +243,7 @@ name.
 
 Steps:
 
-* Create a new file ``ResourcesListDTO.java`` in
+* Create a new file ``ResourcesListReportDTO.java`` in
   ``navalplanner-business/src/main/java/org/navalplanner/business/reports/dtos/``
   with the following content:
 
@@ -275,13 +275,13 @@ Steps:
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
- public class ResourcesListDTO {
+ public class ResourcesListReportDTO {
 
      private String code;
 
      private String name;
 
-     public ResourcesListDTO(String code, String name) {
+     public ResourcesListReportDTO(String code, String name) {
          this.code = code;
          this.name = name;
      }
@@ -361,6 +361,8 @@ Steps:
   * ``$R{note1}``
   * Label: ``*``
 
+* Set ``Band height`` in *Title* band to ``80``.
+
 * Remove group *Worker group Group Header 1*.
 
 * Remove group *Date group Group Header 1*.
@@ -391,13 +393,7 @@ something similar to the following content:
    pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20"
    rightMargin="20" topMargin="20" bottomMargin="20"
    resourceBundle="resourcesList">
-     <style name="Title" isDefault="false" fontName="FreeSans" fontSize="26"
-       isBold="true" pdfFontName="Helvetica-Bold"/>
-     <style name="SubTitle" isDefault="false" forecolor="#666666"
-       fontName="FreeSans" fontSize="18"/>
-     <style name="Column header" isDefault="false" forecolor="#666666"
-       fontName="FreeSans" fontSize="12" isBold="true"/>
-     <style name="Detail" isDefault="false" fontName="FreeSans" fontSize="12"/>
+     <reportFont name="FreeSans" isDefault="true" fontName="FreeSans" size="9"/>
      <parameter name="logo" class="java.lang.String"/>
      <field name="code" class="java.lang.String"/>
      <field name="name" class="java.lang.String"/>
@@ -405,15 +401,19 @@ something similar to the following content:
          <band splitType="Stretch"/>
      </background>
      <title>
-         <band height="118" splitType="Stretch">
+         <band height="80" splitType="Stretch">
              <textField>
-                 <reportElement style="Title" x="0" y="13" width="263" height="33"/>
-                 <textElement verticalAlignment="Middle" markup="none"/>
+                 <reportElement x="0" y="13" width="263" height="33"/>
+                 <textElement verticalAlignment="Middle" markup="none">
+                     <font size="23" isBold="true"/>
+                 </textElement>
                  <textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement style="SubTitle" x="23" y="46" width="295" height="22"/>
-                 <textElement markup="none"/>
+                 <reportElement x="23" y="46" width="295" height="22"/>
+                 <textElement markup="none">
+                     <font size="15" isItalic="true"/>
+                 </textElement>
                  <textFieldExpression class="java.lang.String"><![CDATA[$R{subtitle}]]></textFieldExpression>
              </textField>
              <image scaleImage="RetainShape">
@@ -431,12 +431,12 @@ something similar to the following content:
      <detail>
          <band height="15" splitType="Stretch">
              <textField isBlankWhenNull="true">
-                 <reportElement x="197" y="0" width="362" height="15"/>
+                 <reportElement x="145" y="0" width="414" height="15"/>
                  <textElement textAlignment="Center" verticalAlignment="Middle"/>
                  <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
              </textField>
              <textField isBlankWhenNull="true">
-                 <reportElement x="13" y="0" width="184" height="15"/>
+                 <reportElement x="13" y="0" width="132" height="15"/>
                  <textElement textAlignment="Center" verticalAlignment="Middle"/>
                  <textFieldExpression class="java.lang.String"><![CDATA[$F{code}]]></textFieldExpression>
              </textField>
@@ -448,7 +448,7 @@ something similar to the following content:
      <pageFooter>
          <band height="27" splitType="Stretch">
              <textField pattern="EEEEE dd MMMMM yyyy">
-                 <reportElement style="Column header" x="0" y="0" width="197" height="20"/>
+                 <reportElement x="0" y="0" width="197" height="20"/>
                  <textElement>
                      <font size="10" isBold="false"/>
                  </textElement>
@@ -465,14 +465,14 @@ something similar to the following content:
                  <textFieldExpression class="java.lang.String"><![CDATA[$R{of}]]></textFieldExpression>
              </textField>
              <textField evaluationTime="Report">
-                 <reportElement style="Column header" x="515" y="2" width="38" height="20"/>
+                 <reportElement x="515" y="2" width="38" height="20"/>
                  <textElement>
                      <font size="10" isBold="false"/>
                  </textElement>
                  <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
              </textField>
              <textField>
-                 <reportElement style="Column header" x="478" y="2" width="15" height="20"/>
+                 <reportElement x="478" y="2" width="15" height="20"/>
                  <textElement textAlignment="Right">
                      <font size="10" isBold="false"/>
                  </textElement>
@@ -514,10 +514,6 @@ Steps:
  page = page
  of = of
 
-* Copy this file to a new one for English locale::
-
-    cp resourcesList.properties resourcesList_en_US.properties
-
 * Add the following lines in main ``pom.xml`` file at project root folder,
   in ``Report bundle directories`` section::
 
@@ -527,7 +523,7 @@ Steps:
 
 Now jun can run NavalPlan and see the report already working, but as you are not
 sending it any data (currently you are using ``JREmptyDataSource``) the report
-will appear empty but you can see header and footer.
+will appear empty but you can see header with title and footer.
 
 
 Create some example data
@@ -539,19 +535,21 @@ manually created to see the final result.
 
 Steps:
 
-* Modify ``getDataSource`` method in ``ResourcesListController`` created before
-  and use the following content as example:
+* Modify ``getDataSource`` method in ``ResourcesListReportController`` created
+  before and use the following content as example:
 
 ::
 
      @Override
      protected JRDataSource getDataSource() {
          // Example data
-         ResourcesListDTO resource1 = new ResourcesListDTO("1", "Jonh Doe");
-         ResourcesListDTO resource2 = new ResourcesListDTO("2", "Richard Roe");
+         ResourcesListReportDTO resource1 = new ResourcesListReportDTO("1",
+                 "Jonh Doe");
+         ResourcesListReportDTO resource2 = new ResourcesListReportDTO("2",
+                 "Richard Roe");
 
-         List<ResourcesListDTO> resourcesListDTOs = Arrays.asList(resource1,
-                 resource2);
+         List<ResourcesListReportDTO> resourcesListDTOs = Arrays.asList(
+                 resource1, resource2);
 
          return new JRBeanCollectionDataSource(resourcesListDTOs);
      }
@@ -562,6 +560,12 @@ example data. The report still lacks a good design and format, but at least you
 are able to see how the basic functionality of JasperReports in NavalPlan is
 integrated. The next step will be to show real data in the report getting it
 from database.
+
+.. figure:: resources-list-report-example-data-pdf.png
+   :alt: Resources List report with example data in PDF format
+   :width: 100%
+
+   Resources List report with example data in PDF format
 
 
 Show real data from database
@@ -575,15 +579,15 @@ JasperReports in order to generate the report with real data.
 
 Steps:
 
-* Modify ``ResourcesListDTO`` constructor to receive a real ``Resource`` entity
-  and get get information from it::
+* Modify ``ResourcesListReportDTO`` constructor to receive a real ``Resource``
+  entity and get get information from it::
 
-    public ResourcesListDTO(Resource resource) {
+    public ResourcesListReportDTO(Resource resource) {
         this.code = resource.getCode();
         this.name = resource.getName();
     }
 
-* Create a file ``IResourcesListModel.java`` in
+* Create a file ``IResourcesListReportModel.java`` in
   ``navalplanner-webapp/src/main/java/org/navalplanner/web/reports/`` with the
   following content:
 
@@ -612,21 +616,21 @@ Steps:
 
  import java.util.List;
 
- import org.navalplanner.business.reports.dtos.ResourcesListDTO;
+ import org.navalplanner.business.reports.dtos.ResourcesListReportDTO;
 
  /**
-  * Interface for {@link ResourcesListModel}.
+  * Interface for {@link ResourcesListReportModel}.
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
- public interface IResourcesListModel {
+ public interface IResourcesListReportModel {
 
-     List<ResourcesListDTO> getResourcesListDTOs();
+     List<ResourcesListReportDTO> getResourcesListReportDTOs();
 
  }
 
-* Create another file ``ResourcesListModel.java`` in the same directory with the
-  following content:
+* Create another file ``ResourcesListReportModel.java`` in the same directory
+  with the following content:
 
 ::
 
@@ -654,7 +658,7 @@ Steps:
  import java.util.ArrayList;
  import java.util.List;
 
- import org.navalplanner.business.reports.dtos.ResourcesListDTO;
+ import org.navalplanner.business.reports.dtos.ResourcesListReportDTO;
  import org.navalplanner.business.resources.daos.IResourceDAO;
  import org.navalplanner.business.resources.entities.Resource;
  import org.springframework.beans.factory.annotation.Autowired;
@@ -670,18 +674,18 @@ Steps:
   */
  @Service
  @Scope(BeanDefinition.SCOPE_PROTOTYPE)
- public class ResourcesListModel implements IResourcesListModel {
+ public class ResourcesListReportModel implements IResourcesListReportModel {
 
      @Autowired
      private IResourceDAO resourceDAO;
 
      @Override
      @Transactional(readOnly = true)
-     public List<ResourcesListDTO> getResourcesListDTOs() {
-         List<ResourcesListDTO> dtos = new ArrayList<ResourcesListDTO>();
+     public List<ResourcesListReportDTO> getResourcesListReportDTOs() {
+         List<ResourcesListReportDTO> dtos = new ArrayList<ResourcesListReportDTO>();
 
          for (Resource resource : resourceDAO.getResources()) {
-             dtos.add(new ResourcesListDTO(resource));
+             dtos.add(new ResourcesListReportDTO(resource));
          }
 
          return dtos;
@@ -689,19 +693,20 @@ Steps:
 
  }
 
-* Add the following line in ``ResourcesListController``::
+* Add the following line in ``ResourcesListReportController``::
 
-    private IResourcesListModel resourcesListModel;
+    private IResourcesListReportModel resourcesListReportModel;
 
-* Modify ``getDataSource`` method in ``ResourcesListController`` to use the
-  model to get data from database::
+* Modify ``getDataSource`` method in ``ResourcesListReportController`` to use
+  the model to get data from database::
 
     @Override
     protected JRDataSource getDataSource() {
-        return new JRBeanCollectionDataSource(resourcesListModel
-                .getResourcesListDTOs());
+        return new JRBeanCollectionDataSource(resourcesListReportModel
+                .getResourcesListReportDTOs());
 
-        List<ResourcesListDTO> dtos = resourcesListModel.getResourcesListDTOs();
+        List<ResourcesListReportDTO> dtos = resourcesListReportModel
+                .getResourcesListReportDTOs();
         if (dtos.isEmpty()) {
             return new JREmptyDataSource();
         }
