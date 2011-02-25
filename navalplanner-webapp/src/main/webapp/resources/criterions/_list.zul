@@ -29,7 +29,7 @@
         <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>
     </columns>
     <rows>
-        <row self="@{each='criterionType'}" value="@{criterionType}" onDoubleClick="controller.goToEditForm(self.value);">
+        <row self="@{each='criterionType'}" value="@{criterionType}" onClick="controller.goToEditForm(self.value);">
             <label value="@{criterionType.name}" tooltiptext="@{criterionType.description}"/>
             <label value="@{criterionType.code}"/>
             <label value="@{criterionType.resource}"/>

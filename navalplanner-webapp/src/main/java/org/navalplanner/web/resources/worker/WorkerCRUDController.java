@@ -838,7 +838,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 final Worker worker = (Worker) data;
                 row.setValue(worker);
 
-                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
                             public void onEvent(Event event) throws Exception {

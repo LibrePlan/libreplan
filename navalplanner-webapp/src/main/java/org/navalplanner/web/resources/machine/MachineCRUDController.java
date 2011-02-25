@@ -653,7 +653,7 @@ public class MachineCRUDController extends GenericForwardComposer {
                 final Machine machine = (Machine) data;
                 row.setValue(machine);
 
-                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
                             public void onEvent(Event event) throws Exception {
