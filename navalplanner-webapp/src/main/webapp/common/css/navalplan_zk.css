@@ -1224,6 +1224,8 @@ overflow: visible;
 
 .clickable-rows tr.z-row:hover .z-row-inner {
     background-color: #E9F2FB;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .clickable-rows tr.z-row:hover .z-row-cnt {
@@ -1464,7 +1466,6 @@ input.z-datebox-text-disd {
 {
 	width: auto !important;
 }
-
 
 /* Icons and toolbar buttons */
 
