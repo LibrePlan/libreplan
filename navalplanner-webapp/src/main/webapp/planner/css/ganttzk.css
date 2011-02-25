@@ -931,6 +931,7 @@ height: 100%
 .advancedallocationlayout .calculated-hours.z-label {
     font-weight: bold;
     color: #555555;
+    cursor: default;
 }
 .advancedallocationlayout .unmodifiable-hours.z-label {
     color: #555555;
