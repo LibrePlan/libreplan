@@ -12,8 +12,8 @@ During this tutorial you are going to create a report that will show the list of
 resources in NavalPlan.
 
 
-Add entry on NavalPlan menu
----------------------------
+Add an entry on NavalPlan menu
+------------------------------
 
 First of all, you are going to add a new entry on *Reports* menu in NavalPlan,
 this option will link to a new ``.zul`` file inside
@@ -31,6 +31,28 @@ Steps:
 
 You will see the new entry if you run NavalPlan, but the link is not going to
 work as ``.zul`` page still does not exist.
+
+.. TIP::
+
+   If you want to run NavalPlan in development mode you need to follow the next
+   instructions:
+
+   * Create a PostgreSQL database called ``navaldev`` with permissions for a
+     user ``naval`` with    password ``naval`` (see ``INSTALL`` file for other
+     databases and more info).
+
+   * Compile NavalPlan with the following command from project root folder::
+
+       mvn -DskipTests -P-userguide clean install
+
+   * Launch Jetty from ``navalplanner-webapp`` directory::
+
+       cd navalplanner-webapp
+       mvn -P-userguide jetty:run
+
+   * Access with a web browser to the following URL and login with default
+     credentials (user ``admin`` and password ``admin``):
+     http://localhost:8080/navalplanner-webapp/
 
 
 Create basic HTML interface
@@ -83,7 +105,7 @@ Steps:
      class="org.navalplanner.web.common.components.ExtendedJasperreport"
      extends="jasperreport" ?>
 
- <zk id="resourcesList" xmlns:n="http://www.zkoss.org/2005/zk/native">
+ <zk>
 
      <window self="@{define(content)}"
          apply="org.navalplanner.web.reports.ResourcesListController"
@@ -128,7 +150,7 @@ Steps:
 
 This will create a basic interface for report with a combo to select the desired
 output format for it and a button to generate the report. As we can see it uses
-``resourcesListController`` that will be created in the next point.
+``ResourcesListController`` that will be created in the next point.
 
 
 Create a controller for new report
@@ -356,6 +378,113 @@ be something similar to the screenshot.
 
    iReport screenshot for Resources List report
 
+You can even check the XML ``resourcesListReport.jrxml`` that should have
+something similar to the following content:
+
+::
+
+ <?xml version="1.0" encoding="UTF-8"?>
+ <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports
+   http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="resourcesList"
+   pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20"
+   rightMargin="20" topMargin="20" bottomMargin="20"
+   resourceBundle="resourcesList">
+     <style name="Title" isDefault="false" fontName="FreeSans" fontSize="26"
+       isBold="true" pdfFontName="Helvetica-Bold"/>
+     <style name="SubTitle" isDefault="false" forecolor="#666666"
+       fontName="FreeSans" fontSize="18"/>
+     <style name="Column header" isDefault="false" forecolor="#666666"
+       fontName="FreeSans" fontSize="12" isBold="true"/>
+     <style name="Detail" isDefault="false" fontName="FreeSans" fontSize="12"/>
+     <parameter name="logo" class="java.lang.String"/>
+     <field name="code" class="java.lang.String"/>
+     <field name="name" class="java.lang.String"/>
+     <background>
+         <band splitType="Stretch"/>
+     </background>
+     <title>
+         <band height="118" splitType="Stretch">
+             <textField>
+                 <reportElement style="Title" x="0" y="13" width="263" height="33"/>
+                 <textElement verticalAlignment="Middle" markup="none"/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
+             </textField>
+             <textField>
+                 <reportElement style="SubTitle" x="23" y="46" width="295" height="22"/>
+                 <textElement markup="none"/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$R{subtitle}]]></textFieldExpression>
+             </textField>
+             <image scaleImage="RetainShape">
+                 <reportElement x="318" y="0" width="180" height="53"/>
+                 <imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
+             </image>
+         </band>
+     </title>
+     <pageHeader>
+         <band splitType="Stretch"/>
+     </pageHeader>
+     <columnHeader>
+         <band splitType="Stretch"/>
+     </columnHeader>
+     <detail>
+         <band height="15" splitType="Stretch">
+             <textField isBlankWhenNull="true">
+                 <reportElement x="197" y="0" width="362" height="15"/>
+                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+             </textField>
+             <textField isBlankWhenNull="true">
+                 <reportElement x="13" y="0" width="184" height="15"/>
+                 <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$F{code}]]></textFieldExpression>
+             </textField>
+         </band>
+     </detail>
+     <columnFooter>
+         <band height="17" splitType="Stretch"/>
+     </columnFooter>
+     <pageFooter>
+         <band height="27" splitType="Stretch">
+             <textField pattern="EEEEE dd MMMMM yyyy">
+                 <reportElement style="Column header" x="0" y="0" width="197" height="20"/>
+                 <textElement>
+                     <font size="10" isBold="false"/>
+                 </textElement>
+                 <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+             </textField>
+             <textField>
+                 <reportElement x="435" y="2" width="43" height="20"/>
+                 <textElement/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$R{page}]]></textFieldExpression>
+             </textField>
+             <textField>
+                 <reportElement x="498" y="2" width="15" height="20"/>
+                 <textElement/>
+                 <textFieldExpression class="java.lang.String"><![CDATA[$R{of}]]></textFieldExpression>
+             </textField>
+             <textField evaluationTime="Report">
+                 <reportElement style="Column header" x="515" y="2" width="38" height="20"/>
+                 <textElement>
+                     <font size="10" isBold="false"/>
+                 </textElement>
+                 <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+             </textField>
+             <textField>
+                 <reportElement style="Column header" x="478" y="2" width="15" height="20"/>
+                 <textElement textAlignment="Right">
+                     <font size="10" isBold="false"/>
+                 </textElement>
+                 <textFieldExpression class="java.lang.Integer"><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+             </textField>
+         </band>
+     </pageFooter>
+     <summary>
+         <band splitType="Stretch"/>
+     </summary>
+ </jasperReport>
+
 
 Add report bundle for translation strings
 -----------------------------------------
@@ -401,8 +530,8 @@ sending it any data (currently you are using ``JREmptyDataSource``) the report
 will appear empty but you can see header and footer.
 
 
-Create some example data and see your first report
---------------------------------------------------
+Create some example data
+------------------------
 
 At that point you have everything ready to generate your first report, but you
 need to show some data in the report. So, you are going to add some example data
@@ -421,25 +550,167 @@ Steps:
          ResourcesListDTO resource1 = new ResourcesListDTO("1", "Jonh Doe");
          ResourcesListDTO resource2 = new ResourcesListDTO("2", "Richard Roe");
 
-         List<ResourcesListDTO> workersListDTOs = Arrays.asList(resource1,
+         List<ResourcesListDTO> resourcesListDTOs = Arrays.asList(resource1,
                  resource2);
 
-         return new JRBeanCollectionDataSource(workersListDTOs);
+         return new JRBeanCollectionDataSource(resourcesListDTOs);
      }
 
-* Compile NavalPlan with the following command from project root folder::
+Then if you run NavalPlan and go to the new menu entry called *Resources List*
+in *Reports* you will be able to generate a report with the resources added as
+example data. The report still lacks a good design and format, but at least you
+are able to see how the basic functionality of JasperReports in NavalPlan is
+integrated. The next step will be to show real data in the report getting it
+from database.
 
-    mvn -DskipTests -P-userguide clean install
 
-* Launch Jetty from ``navalplanner-webapp`` directory::
+Show real data from database
+----------------------------
 
-    cd navalplanner-webapp
-    mvn -P-userguide jetty:run
+Now you need to query database and get information about resources. In order to
+follow NavalPlan architecture you are going to create a model that will be in
+charge to retrieve information from database, process it if needed and return
+the information to the controller. Then controller will send this information to
+JasperReports in order to generate the report with real data.
 
-  Then if you go to the new menu entry called *Resources List* in *Reports* you
-  will be able to generate a report with the resources added as example data.
-  The report still lacks a good design and format, but at least you are able to
-  see how the basic functionality of JasperReports in NavalPlan is integrated.
+Steps:
+
+* Modify ``ResourcesListDTO`` constructor to receive a real ``Resource`` entity
+  and get get information from it::
+
+    public ResourcesListDTO(Resource resource) {
+        this.code = resource.getCode();
+        this.name = resource.getName();
+    }
+
+* Create a file ``IResourcesListModel.java`` in
+  ``navalplanner-webapp/src/main/java/org/navalplanner/web/reports/`` with the
+  following content:
+
+::
+
+ /*
+  * This file is part of NavalPlan
+  *
+  * Copyright (C) 2011 Igalia, S.L.
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU Affero General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU Affero General Public License for more details.
+  *
+  * You should have received a copy of the GNU Affero General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+
+ package org.navalplanner.web.reports;
+
+ import java.util.List;
+
+ import org.navalplanner.business.reports.dtos.ResourcesListDTO;
+
+ /**
+  * Interface for {@link ResourcesListModel}.
+  *
+  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+  */
+ public interface IResourcesListModel {
+
+     List<ResourcesListDTO> getResourcesListDTOs();
+
+ }
+
+* Create another file ``ResourcesListModel.java`` in the same directory with the
+  following content:
+
+::
+
+ /*
+  * This file is part of NavalPlan
+  *
+  * Copyright (C) 2011 Igalia, S.L.
+  *
+  * This program is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU Affero General Public License as published by
+  * the Free Software Foundation, either version 3 of the License, or
+  * (at your option) any later version.
+  *
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU Affero General Public License for more details.
+  *
+  * You should have received a copy of the GNU Affero General Public License
+  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  */
+
+ package org.navalplanner.web.reports;
+
+ import java.util.ArrayList;
+ import java.util.List;
+
+ import org.navalplanner.business.reports.dtos.ResourcesListDTO;
+ import org.navalplanner.business.resources.daos.IResourceDAO;
+ import org.navalplanner.business.resources.entities.Resource;
+ import org.springframework.beans.factory.annotation.Autowired;
+ import org.springframework.beans.factory.config.BeanDefinition;
+ import org.springframework.context.annotation.Scope;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+
+ /**
+  * Model for Resources List report.
+  *
+  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+  */
+ @Service
+ @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+ public class ResourcesListModel implements IResourcesListModel {
+
+     @Autowired
+     private IResourceDAO resourceDAO;
+
+     @Override
+     @Transactional(readOnly = true)
+     public List<ResourcesListDTO> getResourcesListDTOs() {
+         List<ResourcesListDTO> dtos = new ArrayList<ResourcesListDTO>();
+
+         for (Resource resource : resourceDAO.getResources()) {
+             dtos.add(new ResourcesListDTO(resource));
+         }
+
+         return dtos;
+     }
+
+ }
+
+* Add the following line in ``ResourcesListController``::
+
+    private IResourcesListModel resourcesListModel;
+
+* Modify ``getDataSource`` method in ``ResourcesListController`` to use the
+  model to get data from database::
+
+    @Override
+    protected JRDataSource getDataSource() {
+        return new JRBeanCollectionDataSource(resourcesListModel
+                .getResourcesListDTOs());
+
+        List<ResourcesListDTO> dtos = resourcesListModel.getResourcesListDTOs();
+        if (dtos.isEmpty()) {
+            return new JREmptyDataSource();
+        }
+
+        return new JRBeanCollectionDataSource(dtos);
+    }
+
+At this moment, you are going to be able to generate report with the list of all
+resources currently stored in NavalPlan database.
 
 
 .. [1] http://jasperforge.org/jasperreports
