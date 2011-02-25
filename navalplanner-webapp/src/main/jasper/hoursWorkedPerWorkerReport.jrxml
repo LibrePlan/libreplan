@@ -187,12 +187,16 @@
 		<band height="118" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="13" width="263" height="33"/>
-				<textElement verticalAlignment="Middle" markup="none"/>
+				<textElement verticalAlignment="Middle" markup="none">
+					<font size="23" isBold="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="23" y="46" width="295" height="22"/>
-				<textElement markup="none"/>
+				<textElement markup="none">
+					<font size="15" isItalic="true"/>
+				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{subtitle}]]></textFieldExpression>
 			</textField>
 			<image scaleImage="RetainShape">
@@ -204,7 +208,7 @@
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{startingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
-					<font isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{date.start}]]></textFieldExpression>
 			</textField>
@@ -213,18 +217,22 @@
 					<printWhenExpression><![CDATA[new java.lang.Boolean($P{endingDate} != null)]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
-					<font isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{date.end}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="114" y="80" width="100" height="15"/>
-				<textElement/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{startingDate}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="308" y="80" width="100" height="15"/>
-				<textElement/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
 			</textField>
 			<textField>
