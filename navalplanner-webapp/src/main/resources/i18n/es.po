@@ -257,8 +257,8 @@ msgstr "No se puede borrar ese material porque está asignado a un projecto."
 
 #: navalplanner-webapp/src/main/webapp/planner/_contentOverallProgress.zul:40
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
-msgid "Critical path by duration"
-msgstr "Camino crítico por duración"
+msgid "Critical path by duratios with critical path tasks by duration"
+msgstr "Avance con tareas del camino crítico por duración"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/limitingresources/LimitingResourcesController.java:478
 msgid "Remove limiting resource element"
@@ -1462,8 +1462,8 @@ msgstr "Carga asignada"
 
 #: navalplanner-webapp/src/main/webapp/planner/_contentOverallProgress.zul:30
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:35
-msgid "Spread progress"
-msgstr "Propagar progreso"
+msgid "Progress with all task tasks by hours"
+msgstr "Avance con todas las tareas por horas"
 
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:76
 msgid "Filter by workers"
@@ -2230,8 +2230,8 @@ msgstr "Confirmar el borrado de esta máquina. ¿Está seguro?"
 
 #: navalplanner-webapp/src/main/webapp/planner/_contentOverallProgress.zul:50
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:37
-msgid "Critical path by number of hours"
-msgstr "Camino crítico por número de horas"
+msgid "Progress with critical path tasks by hours"
+msgstr "Avance con tareas del camino crítico por horas"
 
 #: navalplanner-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:160
 msgid "Hours Group"
