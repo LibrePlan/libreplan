@@ -27,8 +27,8 @@
 
         <separator />
 
-        <!-- Advance percentage -->
-        <label style="font-weight: regular; font-size: 11px" value="${i18n:_('Spread progress')}" />
+        <!-- Progress with all task tasks by hours -->
+        <label id="textAdvancePercentage" style="font-weight: regular; font-size: 11px" />
 
         <hbox style="margin-top: 5px">
             <progressmeter id="progressAdvancePercentage" style="margin-right: 5px" width="400px" />
@@ -37,8 +37,8 @@
 
         <separator />
 
-        <!-- Critical path by duration -->
-        <label style="font-weight: regular; font-size: 11px" value="${i18n:_('Critical path by duration')}" />
+        <!-- Progress with critical path tasks by hours -->
+        <label id="textCriticalPathByDuration" style="font-weight: regular; font-size: 11px" />
 
         <hbox style="margin-top: 5px">
             <progressmeter id="progressCriticalPathByDuration" style="margin-right: 5px" width="400px" />
@@ -47,8 +47,8 @@
 
         <separator />
 
-        <!-- Critical path by number of hours -->
-        <label style="font-weight: regular; font-size: 11px" value="${i18n:_('Critical path by number of hours')}" />
+        <!-- Progress with critical path tasks by duration -->
+        <label id="textCriticalPathByNumHours" style="font-weight: regular; font-size: 11px" />
 
         <hbox style="margin-top: 5px">
             <progressmeter id="progressCriticalPathByNumHours" style="margin-right: 5px" width="400px" />

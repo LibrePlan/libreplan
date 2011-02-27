@@ -33,9 +33,9 @@ import java.util.List;
 */
 public enum ProgressType {
 
-    SPREAD_PROGRESS(_("Spread progress")),
-    CRITICAL_PATH_DURATION(_("Critical path by duration")),
-    CRITICAL_PATH_NUMHOURS(_("Critical path by number of hours"));
+    SPREAD_PROGRESS(_("Progress with all task tasks by hours")),
+    CRITICAL_PATH_DURATION(_("Progress with critical path tasks by hours")),
+    CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by duration"));
 
     private String value;
 
