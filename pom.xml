@@ -35,7 +35,7 @@
         <testDataSource.password>${dataSource.password}</testDataSource.password>
         <databasetable.prefix>public.</databasetable.prefix>
 
-        <default.passwords.control>true</default.passwords.control>
+        <default.passwordsControl>true</default.passwordsControl>
     </properties>
 
     <!--
