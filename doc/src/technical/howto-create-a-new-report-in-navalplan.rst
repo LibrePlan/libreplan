@@ -718,5 +718,157 @@ At this moment, you are going to be able to generate report with the list of all
 resources currently stored in NavalPlan database.
 
 
+Filter information on report
+----------------------------
+
+You are going to add a simple filter in interface to allow users to select what
+kind of resources are going to appear in the report: workers or machines.
+
+Steps:
+
+* Modify ``resourcesListReport.zul`` to add the following lines::
+
+     <!-- Select type of resource -->
+     <panel title="${i18n:_('Type of resource')}" border="normal"
+         style="overflow:auto">
+         <panelchildren>
+             <grid width="700px">
+                 <columns>
+                     <column width="200px" />
+                     <column />
+                 </columns>
+                 <rows>
+                     <row>
+                         <label value="${i18n:_('Type:')}" />
+                         <combobox id="resourcesType" autocomplete="true"
+                            autodrop="true" value="${i18n:_('All')}">
+                            <comboitem label="${i18n:_('All')}"
+                                value="all" />
+                            <comboitem label="${i18n:_('Workers')}"
+                                value="workers" />
+                            <comboitem label="${i18n:_('Machines')}"
+                                value="machines" />
+                        </combobox>
+                     </row>
+                 </rows>
+             </grid>
+         </panelchildren>
+     </panel>
+
+* Add following line in ``ResourcesListReportController``::
+
+    private Combobox resourcesType;
+
+* And modify ``getDataSource`` method in the same file::
+
+    @Override
+    protected JRDataSource getDataSource() {
+        Comboitem typeSelected = resourcesType.getSelectedItemApi();
+        String type = (typeSelected == null) ? "all" : (String) typeSelected
+                .getValue();
+
+        List<ResourcesListReportDTO> dtos = resourcesListReportModel
+                .getResourcesListReportDTOs(type);
+        if (dtos.isEmpty()) {
+            return new JREmptyDataSource();
+        }
+
+        return new JRBeanCollectionDataSource(dtos);
+    }
+
+* This would mean that a new parameter appear in model method, so you would need
+  to modify ``IResourcesListReportModel`` to add the new parameter ::
+
+    List<ResourcesListReportDTO> getResourcesListReportDTOs(String type);
+
+  And change ``getResourcesListReportDTOs`` method in
+  ``ResourcesListReportModel`` to get different information depending on the new
+  parameter::
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ResourcesListReportDTO> getResourcesListReportDTOs(String type) {
+        List<ResourcesListReportDTO> dtos = new ArrayList<ResourcesListReportDTO>();
+
+        List<? extends Resource> resources;
+        if (type.equals("workers")) {
+            resources = resourceDAO.getWorkers();
+        } else if (type.equals("machines")) {
+            resources = resourceDAO.getMachines();
+        } else {
+            resources = resourceDAO.getResources();
+        }
+
+        for (Resource resource : resources) {
+            dtos.add(new ResourcesListReportDTO(resource));
+        }
+
+        return dtos;
+    }
+
+After applying these changes you will be able to filter the report depending on
+option selected by users in the interface.
+
+
+Send parameters to report
+-------------------------
+
+Sometimes you need to send parameters to be printed in the report. You are
+already doing it without noticing, for example, you are sending logo path. You
+can check ``getParameters`` method in ``NavalplannerReportController``.
+
+Now you are going to send a parameter to print a message specifying if you are
+printing all the resources or just workers or machines using the filter.
+
+Steps:
+
+* Override ``getParameters`` in ``ResourcesListReportController`` using the
+  following lines::
+
+    @Override
+    protected Map<String, Object> getParameters() {
+        Map<String, Object> result = super.getParameters();
+
+        result.put("type", resourcesType.getValue());
+        return result;
+    }
+
+* Modify report file ``resourcesListReport.jrxml`` with iReport to add the new
+  parameter and show it in some part of the report layout. You could use iReport
+  for this task, or, for example, add the following lines in XML file::
+
+    <parameter name="type" class="java.lang.String"/>
+
+    ...
+
+    <columnHeader>
+        <band height="25" splitType="Stretch">
+            <textField>
+                <reportElement x="0" y="0" width="58" height="18"/>
+                <textElement verticalAlignment="Middle" markup="none">
+                    <font size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String"><![CDATA[$R{type}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="58" y="0" width="328" height="18"/>
+                <textElement verticalAlignment="Middle" markup="none">
+                    <font size="10" isBold="false"/>
+                </textElement>
+                <textFieldExpression class="java.lang.String"><![CDATA[$P{type}]]></textFieldExpression>
+            </textField>
+        </band>
+    </columnHeader>
+
+  It is also needed to add the new label in ``.properties`` file::
+
+    type = Type:
+
+Now if you generate the report you will see the type of report you are
+generating, you can see more examples about how to send parameters in some of
+the other reports already implemented in NavalPlan.
+
+
+
 .. [1] http://jasperforge.org/jasperreports
 .. [2] http://jasperforge.org/projects/ireport
