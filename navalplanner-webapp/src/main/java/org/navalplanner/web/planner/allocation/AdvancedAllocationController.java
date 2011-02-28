@@ -935,10 +935,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGenericRow(
             GenericResourceAllocation genericResourceAllocation,
             Restriction restriction, TaskElement task) {
-        return Row.createRow(messages, restriction, Criterion
-                .getCaptionFor(genericResourceAllocation.getCriterions()), 1, Arrays
-                .asList(genericResourceAllocation), genericResourceAllocation
-                .isLimiting(), task);
+        return Row.createRow(messages, restriction,
+                Criterion.getCaptionFor(genericResourceAllocation), 1,
+                Arrays.asList(genericResourceAllocation),
+                genericResourceAllocation.isLimiting(), task);
     }
 
     private Row buildGroupingRow(AllocationInput allocationInput) {
