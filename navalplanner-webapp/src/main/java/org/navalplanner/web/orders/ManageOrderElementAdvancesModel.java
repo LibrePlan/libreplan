@@ -352,8 +352,9 @@ public class ManageOrderElementAdvancesModel implements
         }
         List<AdvanceType> advanceTypes = new ArrayList<AdvanceType>();
         for (AdvanceType advanceType : this.listAdvanceTypes) {
-            if (advanceType.getUnitName().equals(
-                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+            if ((advanceType.getUnitName()
+                    .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName()))
+                    || (advanceType.isQualityForm())) {
                 continue;
             }
             if (existsAdvanceTypeAlreadyInThisOrderElement(advanceType)) {
