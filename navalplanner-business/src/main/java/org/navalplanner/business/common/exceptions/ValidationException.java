@@ -22,12 +22,45 @@ package org.navalplanner.business.common.exceptions;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * Encapsulates some validation failure <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class ValidationException extends RuntimeException {
+
+    private static String getValidationErrorSummary(
+            InvalidValue... invalidValues) {
+        StringBuilder builder = new StringBuilder();
+        for (InvalidValue each : invalidValues) {
+            builder.append(summaryFor(each));
+            builder.append("; ");
+        }
+        if (invalidValues.length > 0) {
+            builder.delete(builder.length() - 2, builder.length());
+        }
+        return builder.toString();
+    }
+
+    private static String summaryFor(InvalidValue invalidValue) {
+        return "at " + asString(invalidValue.getBean()) + " "
+                + invalidValue.getPropertyPath() + ": "
+                + invalidValue.getMessage();
+    }
+
+    private static String asString(Object bean) {
+        if (bean == null) {
+            // this shouldn't happen, just in case
+            return "null";
+        }
+        if (bean instanceof BaseEntity) {
+            BaseEntity entity = (BaseEntity) bean;
+            return bean.getClass().getSimpleName() + " "
+                    + entity.getExtraInformation();
+        }
+        return bean.toString();
+    }
 
     private InvalidValue[] invalidValues;
 
@@ -36,7 +69,7 @@ public class ValidationException extends RuntimeException {
     }
 
     public ValidationException(InvalidValue invalidValue) {
-        super();
+        super(getValidationErrorSummary(invalidValue));
         storeInvalidValues(toArray(invalidValue));
     }
 
@@ -47,7 +80,7 @@ public class ValidationException extends RuntimeException {
     }
 
     public ValidationException(InvalidValue[] invalidValues) {
-        super();
+        super(getValidationErrorSummary(invalidValues));
         storeInvalidValues(invalidValues);
     }
 
