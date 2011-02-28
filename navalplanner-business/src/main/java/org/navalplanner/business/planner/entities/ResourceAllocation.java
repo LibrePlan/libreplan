@@ -454,7 +454,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private AssignmentFunction assignmentFunction;
 
     @OnCopy(Strategy.SHARE)
-    @NotNull
     private ResourcesPerDay resourcesPerDay;
 
     private Integer intendedTotalHours;
@@ -1543,6 +1542,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public ResourcesPerDay getConsolidatedResourcePerDay() {
         return calculateResourcesPerDayFromAssignments(getConsolidatedAssignments());
+    }
+
+    // just called for validation purposes. It must be public, otherwise if it's
+    // a proxy the call is not intercepted.
+    @NotNull
+    public ResourcesPerDay getRawResourcesPerDay() {
+        return resourcesPerDay;
     }
 
     public ResourcesPerDay getResourcesPerDay() {
