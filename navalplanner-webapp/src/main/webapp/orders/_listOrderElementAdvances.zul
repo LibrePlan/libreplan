@@ -19,7 +19,7 @@
 -->
 
 <vbox id="${arg.id}"
-	apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController" width="100%">
+    apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController" width="100%">
     <panel title="${i18n:_('Progress assignments')}" border="normal">
         <panelchildren>
             <vbox id="messagesContainerAdvances" />
