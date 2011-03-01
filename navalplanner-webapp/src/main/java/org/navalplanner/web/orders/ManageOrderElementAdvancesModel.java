@@ -150,10 +150,12 @@ public class ManageOrderElementAdvancesModel implements
         fillVariables();
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
             if ((!listAdvanceAssignments.contains(advance))
-                    && (advance instanceof DirectAdvanceAssignment)) {
+                    && (advance instanceof DirectAdvanceAssignment)
+                    && (!advance.getAdvanceType().isQualityForm())) {
                 listAdvanceAssignments.add(advance);
             }
         }
+
     }
 
     @Override
@@ -273,7 +275,7 @@ public class ManageOrderElementAdvancesModel implements
         for (IndirectAdvanceAssignment each : orderElement
                 .getIndirectAdvanceAssignments()) {
                 this.listAdvanceAssignments.add(each);
-            }
+        }
     }
 
     @Override

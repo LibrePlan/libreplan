@@ -217,6 +217,13 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     }
 
     public void deleteTaskQualityForm(TaskQualityForm taskQualityForm) {
+        try {
+            assignedTaskQualityFormsToOrderElementModel
+                    .removeAdvanceAssignmentIfNeeded(taskQualityForm);
+        } catch (ValidationException e) {
+            showInformativeMessage(e.getMessage());
+            return;
+        }
         assignedTaskQualityFormsToOrderElementModel
                 .deleteTaskQualityForm(taskQualityForm);
         reloadTaskQualityForms();
@@ -291,10 +298,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                                     assignedTaskQualityFormsToOrderElementModel
                                             .addAdvanceAssignmentIfNeeded(taskQualityForm);
                                 } else {
-                                    assignedTaskQualityFormsToOrderElementModel
+                                    try {
+                                        assignedTaskQualityFormsToOrderElementModel
                                             .removeAdvanceAssignmentIfNeeded(taskQualityForm);
+                                    } catch (ValidationException e) {
+                                        showInformativeMessage(e.getMessage());
+                                        return;
+                                    }
                                 }
-
                                 taskQualityForm.setReportAdvance(value);
                             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                                 throw new RuntimeException(e);
@@ -313,6 +324,15 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             }
 
             row.appendChild(checkbox);
+        }
+    }
+
+    private void showInformativeMessage(String message) {
+        try {
+            Messagebox.show(message, _("Delete"), Messagebox.OK,
+                    Messagebox.ERROR);
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
