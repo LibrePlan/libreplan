@@ -29,10 +29,13 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.GapInterval;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 
@@ -101,10 +104,18 @@ public class LimitingResourceQueue extends BaseEntity {
     private List<GapOnQueue> calculateGaps() {
         List<Gap> result = new ArrayList<Gap>();
         DateAndHour previousEnd = null;
+        ResourceCalendar calendar = resource.getCalendar();
+        List<CalendarAvailability> activationPeriods = calendar.getCalendarAvailabilities();
+
         for (LimitingResourceQueueElement each : limitingResourceQueueElements) {
             DateAndHour startTime = each.getStartTime();
             if (previousEnd == null || startTime.isAfter(previousEnd)) {
-                result.add(Gap.create(resource, previousEnd, startTime));
+                List<GapInterval> gapIntervals = GapInterval.
+                        create(previousEnd, startTime).
+                        delimitByActivationPeriods(activationPeriods);
+                if (!gapIntervals.isEmpty()) {
+                    result.addAll(GapInterval.gapsOn(gapIntervals, resource));
+                }
             }
             previousEnd = each.getEndTime();
         }
