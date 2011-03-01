@@ -3077,7 +3077,7 @@ public class CriticalPathCalculatorTest {
     }
 
     @Test
-    public void examplePairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint() {
+    public void examplePairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint1() {
         givenPairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint(
                 6, START.plusDays(2), 4, START);
         List<ITaskFundamentalProperties> criticalPath = buildCalculator()
@@ -3088,6 +3088,31 @@ public class CriticalPathCalculatorTest {
             assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(6),
                     equalTo(4)));
         }
+    }
+
+    @Test
+    public void examplePairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint2() {
+        givenPairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint(
+                6, START, 4, START.plusDays(5));
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
+                .calculateCriticalPath(diagramGraphExample);
+
+        assertThat(criticalPath.size(), equalTo(2));
+        for (ITaskFundamentalProperties task : criticalPath) {
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(6),
+                    equalTo(4)));
+        }
+    }
+
+    @Test
+    public void examplePairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint3() {
+        givenPairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint(
+                6, START, 4, START.plusDays(10));
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
+                .calculateCriticalPath(diagramGraphExample);
+
+        assertThat(criticalPath.size(), equalTo(1));
+        assertThat(daysBetweenStartAndEnd(criticalPath.get(0)), equalTo(4));
     }
 
 }
