@@ -185,6 +185,12 @@
           <groupId>jasperreports</groupId>
           <artifactId>jasperreports</artifactId>
         </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jasperreportcomponent</artifactId>
+          <version>1.0</version>
+        </dependency>
         <!-- Gettext commons -->
         <dependency>
             <groupId>org.xnap.commons</groupId>

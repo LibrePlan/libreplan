@@ -151,17 +151,5 @@
             <!-- <mold-uri>/limitingresources/limitingdependency.dsp</mold-uri> -->
         </mold>
     </component>
-    
-    <component>
-        <component-name>jasperreportcomponent</component-name>
-        <component-class>org.navalplanner.web.common.components.JasperreportComponent</component-class>
-        <widget-class>common.components.JasperreportComponent</widget-class>
-        <mold>
-            <mold-name>default</mold-name>
-            <mold-uri>mold/jasperreport-component.js</mold-uri>
-        </mold>
-    </component>
-
-
 
 </language-addon>

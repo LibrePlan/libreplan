@@ -36,7 +36,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskStatusEnum;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.JasperreportComponent;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -44,6 +43,8 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>

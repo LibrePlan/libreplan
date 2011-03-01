@@ -32,12 +32,13 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.JasperreportComponent;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>

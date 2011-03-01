@@ -27,13 +27,14 @@ import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.navalplanner.web.common.components.JasperreportComponent;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Toolbarbutton;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  *
