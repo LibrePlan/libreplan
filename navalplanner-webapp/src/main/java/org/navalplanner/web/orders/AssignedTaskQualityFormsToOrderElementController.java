@@ -454,6 +454,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             @Override
             public void set(Date value) {
                 item.setDate(value);
+                updateAdvancesIfNeeded();
             }
         });
 
@@ -479,6 +480,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             @Override
             public void set(Boolean value) {
                 item.setPassed(value);
+                updateAdvancesIfNeeded();
             }
         });
 
@@ -543,10 +545,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     // Operations to confirm and validate
 
     public boolean confirm() {
-        assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
+        updateAdvancesIfNeeded();
         boolean result = validate();
         validateConstraints();
         return result;
+    }
+
+    public void updateAdvancesIfNeeded() {
+        assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
     }
 
     public void validateConstraints() {
