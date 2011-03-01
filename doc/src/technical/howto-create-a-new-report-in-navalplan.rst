@@ -1,16 +1,23 @@
-.. sectnum::
-
 How To Create A New Report In NavalPlan
 =======================================
 
-.. contents::
+.. sectnum::
 
-NavalPlan uses **JasperReports** [1]_ to create reports in the application. This
-document tries to explain how to create a new report in NavalPlan.
+:Author: Manuel Rego Casasnovas
+:Contact: mrego@igalia.com
+:Date: 01/03/2011
+:Copyright:
+  Some rights reserved. This document is distributed under the Creative
+  Commons Attribution-ShareAlike 3.0 licence, available in
+  http://creativecommons.org/licenses/by-sa/3.0/.
+:Abstract:
+  NavalPlan uses **JasperReports** [1]_ to create reports in the application. This
+  document tries to explain how to create a new report in NavalPlan.
 
-During this tutorial you are going to create a report that will show the list of
-resources in NavalPlan.
+  During this tutorial you are going to create a report that will show the list of
+  resources in NavalPlan.
 
+.. contents:: Table of Contents
 
 Add an entry on NavalPlan menu
 ------------------------------
@@ -867,7 +874,6 @@ Steps:
 Now if you generate the report you will see the type of report you are
 generating, you can see more examples about how to send parameters in some of
 the other reports already implemented in NavalPlan.
-
 
 
 .. [1] http://jasperforge.org/jasperreports
