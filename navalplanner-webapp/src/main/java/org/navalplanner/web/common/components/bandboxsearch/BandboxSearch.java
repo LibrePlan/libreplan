@@ -20,6 +20,8 @@
 
 package org.navalplanner.web.common.components.bandboxsearch;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +48,6 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Listbox;
-
 @SuppressWarnings("serial")
 public class BandboxSearch extends HtmlMacroComponent {
 
@@ -200,7 +201,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         clearHeaderIfNecessary();
         final String[] headers = finder.getHeaders();
         for (int i = 0; i < headers.length; i++) {
-            listhead.getChildren().add(new Listheader(headers[i]));
+            listhead.getChildren().add(new Listheader(_(headers[i])));
         }
     }
 

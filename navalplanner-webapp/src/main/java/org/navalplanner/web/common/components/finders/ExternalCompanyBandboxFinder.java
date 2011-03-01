@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
@@ -49,7 +47,7 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private final String headers[] = { _("ID"), _("Name") };
+    private final String headers[] = { "ID", "Name" };
 
     @Override
     @Transactional(readOnly = true)

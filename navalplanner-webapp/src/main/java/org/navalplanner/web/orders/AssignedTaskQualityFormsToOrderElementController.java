@@ -328,10 +328,10 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
     private void showInformativeMessage(String message) {
         try {
-            Messagebox.show(message, _("Delete"), Messagebox.OK,
+            Messagebox.show(_(message), _("Delete"), Messagebox.OK,
                     Messagebox.ERROR);
         } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
+            messagesForUser.showMessage(Level.ERROR, _(e.getMessage()));
         }
     }
 

@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -44,7 +42,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     @Autowired
     private IScenarioDAO scenarioDAO;
 
-    private final String headers[] = { _("Name") };
+    private final String headers[] = { "Name" };
 
     @Override
     @Transactional(readOnly = true)

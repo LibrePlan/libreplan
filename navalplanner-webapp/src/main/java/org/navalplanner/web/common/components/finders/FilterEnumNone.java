@@ -23,7 +23,6 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-import org.navalplanner.business.i18n.I18nHelper;
 
 public enum FilterEnumNone implements IFilterEnum {
 
@@ -36,7 +35,7 @@ public enum FilterEnumNone implements IFilterEnum {
     }
 
     public String toString() {
-        return I18nHelper._(this.description);
+        return this.description;
     }
 
 }

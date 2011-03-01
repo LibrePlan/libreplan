@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -50,7 +48,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Autowired
     private ILabelDAO labelDAO;
 
-    private final String headers[] = { _("Type"), _("Name") };
+    private final String headers[] = { "Type", "Name" };
 
     @Override
     @Transactional(readOnly = true)

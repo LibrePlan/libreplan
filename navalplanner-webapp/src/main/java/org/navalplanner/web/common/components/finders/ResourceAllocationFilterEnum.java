@@ -25,7 +25,7 @@ package org.navalplanner.web.common.components.finders;
 
 public enum ResourceAllocationFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Resource(_("Resource"));
+    Criterion("Criterion"), Resource("Resource");
 
     /**
      * Forces to mark the string as needing translation

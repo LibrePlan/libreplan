@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,7 +36,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     private IFilterEnum workerFilterEnum = new IFilterEnum() {
         @Override
         public String toString() {
-            return _("worker");
+            return "worker";
         }
     };
 
