@@ -3030,4 +3030,64 @@ public class CriticalPathCalculatorTest {
         }
     }
 
+    /**
+     * <pre>
+     * #### T1 ####
+     *       |---- #### T2 ####
+     * </pre>
+     */
+    private void givenPairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint(
+            int daysTask1, LocalDate dateConstraintTask1, int daysTask2,
+            LocalDate dateConstraintTask2) {
+        diagramGraphExample = createNiceMock(ICriticalPathCalculable.class);
+
+        ITaskFundamentalProperties task1 = createTaskWithBiggerOrEqualThanConstraint(
+                START, daysTask1, dateConstraintTask1);
+        ITaskFundamentalProperties task2 = createTaskWithEqualConstraint(START,
+                daysTask2, dateConstraintTask2);
+
+        List<ITaskFundamentalProperties> listOfTasks = Arrays.asList(task1,
+                task2);
+
+        expect(diagramGraphExample.getTasks()).andReturn(listOfTasks)
+                .anyTimes();
+        expect(diagramGraphExample.getInitialTasks()).andReturn(
+                Arrays.asList(task1)).anyTimes();
+        expect(diagramGraphExample.getLatestTasks()).andReturn(
+                Arrays.asList(task2)).anyTimes();
+        expect(
+                diagramGraphExample.getDependencyFrom(
+                        isA(ITaskFundamentalProperties.class),
+                        isA(ITaskFundamentalProperties.class))).andReturn(null)
+                .anyTimes();
+        expect(diagramGraphExample.getIncomingTasksFor(task1)).andReturn(
+                new HashSet<ITaskFundamentalProperties>()).anyTimes();
+        expect(diagramGraphExample.getIncomingTasksFor(task2)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays.asList(task1)))
+                .anyTimes();
+        expect(diagramGraphExample.getOutgoingTasksFor(task1)).andReturn(
+                new HashSet<ITaskFundamentalProperties>(Arrays.asList(task2)))
+                .anyTimes();
+        expect(diagramGraphExample.getOutgoingTasksFor(task2)).andReturn(
+                new HashSet<ITaskFundamentalProperties>()).anyTimes();
+
+        addTaskMethods(listOfTasks);
+
+        replay(diagramGraphExample);
+    }
+
+    @Test
+    public void examplePairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint() {
+        givenPairOfTasksWithDependencyFirstWithBiggerConstraintAndSecondWithEqualConstraint(
+                6, START.plusDays(2), 4, START);
+        List<ITaskFundamentalProperties> criticalPath = buildCalculator()
+                .calculateCriticalPath(diagramGraphExample);
+
+        assertThat(criticalPath.size(), equalTo(2));
+        for (ITaskFundamentalProperties task : criticalPath) {
+            assertThat(daysBetweenStartAndEnd(task), anyOf(equalTo(6),
+                    equalTo(4)));
+        }
+    }
+
 }
