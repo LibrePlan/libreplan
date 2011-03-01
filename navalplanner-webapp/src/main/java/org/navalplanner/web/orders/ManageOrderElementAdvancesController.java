@@ -153,14 +153,14 @@ public class ManageOrderElementAdvancesController extends
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
         manageOrderElementAdvancesModel.initEdit(getOrderElement());
-        selectedAdvances.clear();
+        selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
     }
 
     public void openWindow(OrderElement orderElement) {
         manageOrderElementAdvancesModel.initEdit(orderElement);
-        selectedAdvances.clear();
+        selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
     }
@@ -263,7 +263,9 @@ public class ManageOrderElementAdvancesController extends
         boolean fineResult = manageOrderElementAdvancesModel
                 .addNewLineAdvaceAssignment();
         if (fineResult) {
-            selectAdvanceLine(getAdvanceAssignments().size() - 1);
+            int position = getAdvanceAssignments().size() - 1;
+            selectAdvanceLine(position);
+            selectedAdvances.add(getAdvanceAssignments().get(position));
         } else {
             showMessageNotAddMoreAdvances();
         }
@@ -291,6 +293,7 @@ public class ManageOrderElementAdvancesController extends
         } else {
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advance);
+            selectedAdvances.remove(advance);
             if (indexSelectedItem == editAdvances.getIndexOfItem(listItem)) {
                 selectSpreadAdvanceLine();
             } else {
@@ -636,6 +639,7 @@ public class ManageOrderElementAdvancesController extends
         final AdvanceAssignment advance = (AdvanceAssignment) listItem
                 .getValue();
         final Checkbox chartCheckbox = new Checkbox();
+
         chartCheckbox.setChecked(selectedAdvances.contains(advance));
         chartCheckbox.addEventListener(Events.ON_CHECK, new EventListener() {
             @Override
