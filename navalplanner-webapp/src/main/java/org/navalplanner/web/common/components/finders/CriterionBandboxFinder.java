@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.resources.daos.ICriterionDAO;
@@ -43,7 +41,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private final String headers[] = { _("Type"), _("Criterion Name") };
+    private final String headers[] = { "Type", "Criterion Name" };
 
     @Override
     @Transactional(readOnly = true)

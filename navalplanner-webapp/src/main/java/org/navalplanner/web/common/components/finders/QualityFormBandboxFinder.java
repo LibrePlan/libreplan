@@ -21,8 +21,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
@@ -50,7 +48,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     @Autowired
     private IQualityFormDAO qualityFormDAO;
 
-    private final String headers[] = { _("Name"), _("Type") };
+    private final String headers[] = { "Name", "Type" };
 
     @Override
     @Transactional(readOnly = true)

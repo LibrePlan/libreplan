@@ -21,6 +21,8 @@
 
 package org.navalplanner.web.common.components.finders;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -198,7 +200,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
             item.setValue(data);
 
             final Listcell labelType = new Listcell();
-            labelType.setLabel(filterPair.getType().toString());
+            labelType.setLabel(_(filterPair.getType().toString()));
             labelType.setParent(item);
 
             final Listcell labelPattern = new Listcell();

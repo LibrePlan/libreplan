@@ -75,7 +75,7 @@
                     sort="auto(orderElement.order.name)" sortDirection="ascending"/>
                 <column id="taskCode" label="${i18n:_('Task Code')}" width="130px" align="center"
                     sort="auto(orderElement.code)" sortDirection="ascending"/>
-                <column id="taskName" label="${i18n:_('Task Name')}" width="150px" align="center"
+                <column id="taskName" label="${i18n:_('Task name')}" width="150px" align="center"
                     sort="auto(orderElement.name)" sortDirection="ascending"/>
                 <column id="startHour" label="${i18n:_('Start hour')}" width="80px" align="center"
                     sort="auto(clockStart)" sortDirection="ascending"/>
