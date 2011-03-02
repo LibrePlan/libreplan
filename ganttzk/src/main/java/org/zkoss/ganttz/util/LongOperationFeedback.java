@@ -53,8 +53,19 @@ public class LongOperationFeedback {
         String getName();
     }
 
+    private static final ThreadLocal<Boolean> alreadyInside = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return false;
+        }
+    };
+
     public static void execute(final Component component,
             final ILongOperation longOperation) {
+        if (alreadyInside.get()) {
+            dispatchActionDirectly(longOperation);
+            return;
+        }
         Validate.notNull(component);
         Validate.notNull(longOperation);
         Clients.showBusy(longOperation.getName(), true);
@@ -64,14 +75,26 @@ public class LongOperationFeedback {
             @Override
             public void onEvent(Event event) throws Exception {
                 try {
+                    alreadyInside.set(true);
                     longOperation.doAction();
                 } finally {
+                    alreadyInside.set(false);
                     Clients.showBusy(null, false);
                     component.removeEventListener(eventName, this);
                 }
             }
         });
         Events.echoEvent(eventName, component, null);
+    }
+
+    private static void dispatchActionDirectly(
+            final ILongOperation longOperation) {
+        try {
+            longOperation.doAction();
+            return;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static String generateEventName() {
