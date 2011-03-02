@@ -48,7 +48,14 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     @Autowired
     private IQualityFormDAO qualityFormDAO;
 
-    private final String headers[] = { "Name", "Type" };
+    private final String headers[] = { _("Name"), _("Type") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)

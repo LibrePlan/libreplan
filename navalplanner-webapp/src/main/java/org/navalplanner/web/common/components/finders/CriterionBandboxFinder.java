@@ -41,7 +41,14 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private final String headers[] = { "Type", "Criterion Name" };
+    private final String headers[] = { _("Type"), _("Criterion Name") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)
