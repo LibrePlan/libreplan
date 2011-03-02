@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -78,33 +77,20 @@ public class GapInterval {
     }
 
     private GapInterval delimitByInterval(CalendarAvailability interval) {
-        LocalDate start = this.start != null ? this.start.getDate() : null;
-        LocalDate end = this.end != null ? this.end.getDate() : null;
+        DateAndHour intervalStart = DateAndHour.from(interval.getStartDate());
+        DateAndHour intervalEnd = DateAndHour.from(interval.getEndDate());
 
-        LocalDate newStart = max(start, interval.getStartDate());
-        LocalDate newEnd = min(end, interval.getEndDate());
+        DateAndHour newStart = (start == null || intervalStart == null) ? null
+                : DateAndHour.max(start, intervalStart);
+        DateAndHour newEnd = (end == null || intervalEnd == null) ? null
+                : DateAndHour.min(end, intervalStart);
         if ((newStart == null && newEnd == null)
                 || (newEnd != null && newStart.isAfter(newEnd))) {
             // The period of time is not valid, as it's not an activated period
             // of time according to calendar
             return null;
         }
-        return GapInterval.create(newStart != null ? DateAndHour.from(newStart)
-                : null, newEnd != null ? DateAndHour.from(newEnd) : null);
-    }
-
-    private LocalDate max(LocalDate date1, LocalDate date2) {
-        if (date1 == null || date2 == null) {
-            return null;
-        }
-        return date1.isAfter(date2) ? date1 : date2;
-    }
-
-    private LocalDate min(LocalDate date1, LocalDate date2) {
-        if (date1 == null || date2 == null) {
-            return null;
-        }
-        return date1.isBefore(date2) || date1.isEqual(date2) ? date1 : date2;
+        return GapInterval.create(newStart, newEnd);
     }
 
     public Gap gapOn(Resource resource) {
