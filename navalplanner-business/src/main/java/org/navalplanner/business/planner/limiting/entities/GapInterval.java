@@ -78,42 +78,31 @@ public class GapInterval {
     }
 
     private GapInterval delimitByInterval(CalendarAvailability interval) {
-        LocalDate start = interval.getStartDate();
-        LocalDate end = interval.getEndDate();
+        LocalDate start = this.start != null ? this.start.getDate() : null;
+        LocalDate end = this.end != null ? this.end.getDate() : null;
 
         LocalDate newStart = max(start, interval.getStartDate());
         LocalDate newEnd = min(end, interval.getEndDate());
-        if (newEnd != null && newStart.isAfter(newEnd)) {
-            // The period of time is not valid, as it's not period of time
-            // activated according to calendar
+        if ((newStart == null && newEnd == null)
+                || (newEnd != null && newStart.isAfter(newEnd))) {
+            // The period of time is not valid, as it's not an activated period
+            // of time according to calendar
             return null;
         }
-        return GapInterval.create(DateAndHour.from(newStart),
-                newEnd != null ? DateAndHour.from(newEnd) : null);
+        return GapInterval.create(newStart != null ? DateAndHour.from(newStart)
+                : null, newEnd != null ? DateAndHour.from(newEnd) : null);
     }
 
     private LocalDate max(LocalDate date1, LocalDate date2) {
-        if (date1 == null && date2 == null) {
+        if (date1 == null || date2 == null) {
             return null;
-        }
-        if (date1 != null && date2 == null) {
-            return date1;
-        }
-        if (date1 == null && date2 != null) {
-            return date2;
         }
         return date1.isAfter(date2) ? date1 : date2;
     }
 
     private LocalDate min(LocalDate date1, LocalDate date2) {
-        if (date1 == null && date2 == null) {
+        if (date1 == null || date2 == null) {
             return null;
-        }
-        if (date1 != null && date2 == null) {
-            return date1;
-        }
-        if (date1 == null && date2 != null) {
-            return date2;
         }
         return date1.isBefore(date2) || date1.isEqual(date2) ? date1 : date2;
     }
