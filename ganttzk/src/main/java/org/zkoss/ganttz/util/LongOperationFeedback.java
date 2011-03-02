@@ -63,12 +63,12 @@ public class LongOperationFeedback {
 
     public static void execute(final Component component,
             final ILongOperation longOperation) {
+        Validate.notNull(longOperation);
         if (alreadyInside.get()) {
             dispatchActionDirectly(longOperation);
             return;
         }
         Validate.notNull(component);
-        Validate.notNull(longOperation);
         Clients.showBusy(longOperation.getName(), true);
         final String eventName = generateEventName();
         component.addEventListener(eventName, new EventListener() {
@@ -92,7 +92,6 @@ public class LongOperationFeedback {
             final ILongOperation longOperation) {
         try {
             longOperation.doAction();
-            return;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
