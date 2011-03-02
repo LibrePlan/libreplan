@@ -40,6 +40,13 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         }
     };
 
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
+
     @Override
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();

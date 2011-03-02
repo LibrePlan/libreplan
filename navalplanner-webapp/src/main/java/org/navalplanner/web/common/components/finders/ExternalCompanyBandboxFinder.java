@@ -47,7 +47,14 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
-    private final String headers[] = { "ID", "Name" };
+    private final String headers[] = { _("ID"), _("Name") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)
