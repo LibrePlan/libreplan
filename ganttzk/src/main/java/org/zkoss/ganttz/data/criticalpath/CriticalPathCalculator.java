@@ -81,8 +81,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private LocalDate calculateInitDate() {
-        List<T> initialTasks = graph.getInitialTasks();
-        if (initialTasks.isEmpty()) {
+        if (graph.getTasks().isEmpty()) {
             return null;
         }
         GanttDate ganttDate = Collections.min(getStartDates());
@@ -91,7 +90,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private List<GanttDate> getStartDates() {
         List<GanttDate> result = new ArrayList<GanttDate>();
-        for (T task : graph.getInitialTasks()) {
+        for (T task : graph.getTasks()) {
             result.add(graph.getStartDate(task));
         }
         return result;
