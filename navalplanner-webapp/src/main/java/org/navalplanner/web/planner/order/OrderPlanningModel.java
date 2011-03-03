@@ -1581,7 +1581,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             lbCriticalPathByNumHours = (Label) tabpanel
                     .getFellow("lbCriticalPathByNumHours");
             ((Label) tabpanel.getFellow("textCriticalPathByNumHours"))
-                    .setValue(ProgressType.CRITICAL_PATH_NUMHOURS.toString());
+                    .setValue(_(ProgressType.CRITICAL_PATH_NUMHOURS.toString()));
         }
 
         private void initializeProgressCriticalPathByDuration(Tabpanel tabpanel) {
@@ -1590,7 +1590,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             lbCriticalPathByDuration = (Label) tabpanel
                     .getFellow("lbCriticalPathByDuration");
             ((Label) tabpanel.getFellow("textCriticalPathByDuration"))
-                    .setValue(ProgressType.CRITICAL_PATH_DURATION.toString());
+                    .setValue(_(ProgressType.CRITICAL_PATH_DURATION.toString()));
         }
 
         public void initializeProgressAdvancePercentage(Tabpanel tabpanel) {
@@ -1599,7 +1599,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             lbAdvancePercentage = (Label) tabpanel
                     .getFellow("lbAdvancePercentage");
             ((Label) tabpanel.getFellow("textAdvancePercentage"))
-                    .setValue(ProgressType.SPREAD_PROGRESS.toString());
+                    .setValue(_(ProgressType.SPREAD_PROGRESS.toString()));
         }
 
         public void refresh() {

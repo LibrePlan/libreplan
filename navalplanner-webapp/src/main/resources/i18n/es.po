@@ -257,7 +257,7 @@ msgstr "No se puede borrar ese material porque está asignado a un projecto."
 
 #: navalplanner-webapp/src/main/webapp/planner/_contentOverallProgress.zul:40
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
-msgid "Critical path by duratios with critical path tasks by duration"
+msgid "Progress with critical path tasks by duration"
 msgstr "Avance con tareas del camino crítico por duración"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/limitingresources/LimitingResourcesController.java:478
