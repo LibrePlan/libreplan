@@ -29,8 +29,8 @@ interface for users before generate the report.
 
 Steps:
 
-* Modify ``CustomMenuController.java`` to add a new ``subItem`` inside the
-  ``topItem`` *Reports*::
+* Modify method ``initializeMenu()`` in ``CustomMenuController.java`` to add a
+  new ``subItem`` inside the ``topItem`` *Reports*::
 
     subItem(_("Resources List"),
         "/reports/resourcesListReport.zul",

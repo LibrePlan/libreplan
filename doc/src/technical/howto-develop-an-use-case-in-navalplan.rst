@@ -1,5 +1,6 @@
+---------------------------------------
 How To Develop An Use Case In NavalPlan
-=======================================
+---------------------------------------
 
 .. sectnum::
 
@@ -19,7 +20,7 @@ How To Develop An Use Case In NavalPlan
 
 
 Introduction
-------------
+============
 
 Use case to be developed consists of create a new entity called
 ``StretchesFunctionTemplate`` that will be managed from NavalPlan interface.
@@ -66,7 +67,7 @@ this behaviour and use it in all the tasks they want.
 
 
 Domain entities
----------------
+===============
 
 First of all you need to create the new entity ``StretchesFunctionTemplate`` in
 NavalPlan business layer.
@@ -117,6 +118,9 @@ to impelmement concurrency control method called `Optimistic Locking`_.
 
     Please try it again.
 
+Entities instantiation
+----------------------
+
 In NavalPlan domain entities are never instantiated directly, but entities will
 expose a static method ``create()`` which will be responsible to return a new
 instance. The rest of classes must call ``create()`` method of ``BaseEntity``
@@ -163,6 +167,9 @@ attribute is ``null`` (transient entity).
 
   Detached
     A persistent entity out of Hibernate session.
+
+New entity implementation
+-------------------------
 
 The new entity ``StretchesFunctionTemplate`` will have the following properties:
 
@@ -255,16 +262,16 @@ shown):
 
 
 Model View Controller pattern
------------------------------
+=============================
 
 NavalPlan architecture follows MVC_ pattern, which isolates business logic from
 user interface allowing separation of different layers in the application. View
 and controller will be explained later, now it is time to explain model layer
 that is in charge of implement application business or domain logic.
 
-This model layer is formed by different elements. On the one hand, we have
+This model layer is formed by different elements. On the one hand, there are
 domain entities and DAO_ (Data Access Object) classes which offer methods to
-query and store domain objects. On the other hand we have ``XXXModel.java``
+query and store domain objects. On the other hand there are ``XXXModel.java``
 files, that are always associated to some controller.
 
 .. ADMONITION:: Domain Driven Design
@@ -369,6 +376,9 @@ Therefore, you will not need to use Hibernate API directly in NavalPlan source
 code in order to perform operations like: start transaction, commit
 transaction, rollback, etc.
 
+Database schema
+---------------
+
 Moreover, you need to define Hibernate mapping for the new entity
 ``StretchesFunctionTemplate``. Like this new entity is related with allocations
 you will use ``ResourceAllocations.hbm.xml`` and add the following lines (in
@@ -471,6 +481,213 @@ is to check the result of your changeset against testing database (which is
 created automatically), thus you will be sure that your changes are right.
 
 
+Interface
+=========
+
+Let's move to view layer, now that you already know how is the new entity, which
+attributes it has and so on. You are ready to start developing the interface and
+start to see something working in NavalPlan. NavalPlan uses ZK_ framework for UI
+development.
+
+Menu entry
+----------
+
+First, the new entity ``StretchesFunctionTemplate`` will be a managed by
+application administrator. For that reason, you need to add a new option on
+*Administration / Management* menu.
+
+Class ``CustomMenuController`` is in charge to create options menu which appears
+in top part of NavalPlan. Then you need to modify method ``initializeMenu()`` in
+``CustomMenuController`` to add a new ``subItem`` inside the ``topItem``
+*Administration / Management*::
+
+    subItem(_("Stretches Function Templates"),
+        "/planner/stretchesFunctionTemplate.zul",
+        "")
+
+This option will link to a new ``.zul`` file that will be interface fora
+applicaition users in order to manage ``StretchesFunctionTemplate`` entity. When
+you click the new entry, NavalPlan will the load ``.zul`` file (but the link is
+not going to work as ``.zul`` page does not exist yet).
+
+``.zul`` page
+-------------
+
+Then you will create the file ``stretchesFunctionTemplate.zul`` inside
+``navalplanner-webapp/src/main/webapp/planner/`` folder with the following
+content:
+
+::
+
+ <?page id="exceptionDayTypesList" title="${i18n:_('NavalPlan: Stretches Function Templates')}" ?>
+ <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+ <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+
+ <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
+ <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
+
+ <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+ <?component name="list" inline="true" macroURI="_listStretchesFunctionTemplate.zul"?>
+ <?component name="edit" inline="true" macroURI="_editStretchesFunctionTemplate.zul"?>
+
+ <zk>
+     <window self="@{define(content)}"
+         apply="org.navalplanner.web.planner.allocation.streches.StretchesFunctionTemplateCRUDController">
+         <vbox id="messagesContainer"/>
+         <list id="listWindow"/>
+         <edit id="editWindow"/>
+     </window>
+ </zk>
+
+This file contains a ``.zul`` page which contains a window that has another
+window to list (``list``) elements and another for editing them (``edit``).
+
+::
+
+ <?page id=”” title=”${i18n:_('NavalPlan: Exception Days')}” ?>
+
+This line define that the document is a page.
+
+::
+
+ <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+
+It is needed because of you are going to use bindings in this page.
+
+.. NOTE::
+
+  ``<?init ... ?>`` labels are always the first ones to be evaluated inside a
+  page. And they always receive a class as parameter, they instanciate it and
+  call its ``init()`` method.
+
+.. ADMONITION:: Data Binding
+
+  A binding is the ability to eveluate a data element (for example, a bean) in
+  execution time from a ``.zul`` page. Evaluation, which finally executes a
+  method, could be used to get objects from the object or modify its properties.
+
+  Usually bindings are used in components like ``Listbox``, ``Grid`` and
+  ``Tree``. These components have the possibility to be fed by dynamic data
+  (live-data). Becasue these components receive dynamic data, it is not
+  poassible to determine how many rows are going to be shown before knowing the
+  real data. These componnets allow build a generic row that will be repeated
+  for each element in the collection. When component is rendered, bindings are
+  evaluated in order to get concrete value. For example::
+
+    <list model="@{controller.elements}" >
+        <rows each="" value="">
+            <row>
+                <label value="@{element.name}" />
+            </row>
+        </rows>
+    </list>
+
+  When component is evaluated, ``controller.getElements()`` will be called and
+  a collection of elements will be returned. For each returned element,
+  ``element.getName()`` method will be executed, and then value of name
+  attribute will be printed as a label.
+
+  Symbols marked with ``@{...}`` are bindings. These expressions will be only
+  evaluated if the following directive is included in the ``.zul`` page::
+
+    <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+
+::
+
+ <?init class="org.zkoss.zk.ui.util.Composition"
+     arg0="/common/layout/template.zul"?>
+
+It is a composition component. ``arg0`` attribute makes reference to a `.zul`
+file which is used as layout for current page. In this layout is specified that
+a component defined as ``content`` will be inserted. Your page will define a
+window marked as ``content``, that will be inserted in ``template.zul`` page.
+
+``apply`` attribute
+-------------------
+
+The basis for implementing MVC patter in ZK is ``apply`` attribute.
+
+Your page defines a component ``Window`` with an ``apply`` attribute assigned::
+
+    <window self="@{define(content)}"
+            apply="org.navalplanner.web.planner.allocation.streches.StretchesFunctionTemplateCRUDController">
+
+It links this ``Window`` component with a ``.java`` file, thereby the Java class
+will be able to access and manipulate components defined inside ``window`` tag.
+This class will play controller role for this ``.zul`` page (view).
+
+Communication between view and controller
+-----------------------------------------
+
+If you want that ``.zul`` components will be accessible from controller just use
+the same identifier in ``.zul`` and Java. For example:
+
+::
+
+ package org.navalplanner.web.planner.allocation.streches;
+
+ ...
+
+ /**
+  * CRUD controller for {@link StretchesFunctionTemplate}.
+  *
+  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+  */
+ public class StretchesFunctionCRUDController extends GenericForwardComposer {
+
+     private Window listWindow;
+     private Window editWindow;
+
+ ...
+
+This matching is automacit and is done by ZK. In order that this works it is
+needed that your contoller inherites from ``GenericForwarComposer`` (wich in
+turn extends ``GenericAutowireComposer``, that is the class doing this kind of
+"magic").
+
+Thanks to this you will be able to access view from controller, but not the
+other way around. If you want to do this you need to define a variable inside
+``Window`` component that will contain a reference to controller instance. The
+steps to to this are the following ones:
+
+* Your controller will override method ``doAfterCompose``.
+* This method receives a component which is the window associated to the
+  controller through ``apply`` attribute.
+* In ``Window`` you will use ``setVariable`` method in order to create a
+  variable called ``controller`` that will contain a reference to controller.
+
+::
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        comp.setVariable("controller", this, true);
+    }
+
+After that from ``.zul``, you will make reference to a variable called
+``controller`` (either from a binding or in order to execute any method when an
+event is dispatched. In this way you could see that view can also access to
+controller. For example with the following lines::
+
+    <!-- Call method getStretchesFunctionTemplates from view -->
+    <list model="@{controller.stretchesFunctionTemplates}">
+
+    <!-- When a button is clicked call method goToEditForm() -->
+    <button onClick="controller.goToEditForm()" />
+
+As you can see in last example, when an event is launched is not needed to use
+data binding.
+
+
+
+Testing (JUnit)
+===============
+
+
+Web services
+============
+
 
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 .. _NavalPlan: http://www.navalplan.org/en/
@@ -483,3 +700,4 @@ created automatically), thus you will be sure that your changes are right.
 .. _`Inversion of control`: http://en.wikipedia.org/wiki/Inversion_of_control
 .. _`database refactorings`: http://en.wikipedia.org/wiki/Database_refactoring
 .. _Liquibase: http://www.liquibase.org/
+.. _ZK: http://www.zkoss.org/
