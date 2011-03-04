@@ -65,7 +65,7 @@
                 </vbox>
             </row>
             <row id="resourceAllocationType" visible="@{editController.isTask}">
-                <label value="${i18n:_('Type resource assignation')}" />
+                <label value="${i18n:_('Resource allocation type')}" />
                 <listbox id="lbResourceAllocationType"
                     mold="select"
                     model="@{propertiesController.resourceAllocationTypeOptionList}"
