@@ -10,9 +10,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.0.0\n"
+"Project-Id-Version: 1.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-05 11:51+0100\n"
+"POT-Creation-Date: 2011-03-04 10:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:209
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:214
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:233
 msgid "Erase"
 msgstr ""
 
@@ -66,7 +67,7 @@ msgstr ""
 msgid "The specified dependency is not allowed"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:228
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:253
 msgid "Set End-End"
 msgstr ""
 
@@ -84,6 +85,10 @@ msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
 msgid "Print"
+msgstr ""
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:189
+msgid "total work hours: {0}, assigned hours: {1}"
 msgstr ""
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:70
@@ -163,7 +168,7 @@ msgstr ""
 msgid "Show/Hide resources"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:220
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:245
 msgid "Set End-Start"
 msgstr ""
 
@@ -191,6 +196,10 @@ msgstr ""
 msgid "showing resources"
 msgstr ""
 
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:183
+msgid "Load: {0}%"
+msgstr ""
+
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
 msgid "Show/Hide labels"
 msgstr ""
@@ -204,7 +213,7 @@ msgstr ""
 msgid "Graphics"
 msgstr ""
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:224
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:249
 msgid "Set Start-Start"
 msgstr ""
 
