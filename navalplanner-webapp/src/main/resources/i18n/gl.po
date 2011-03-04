@@ -2040,8 +2040,8 @@ msgid "PDF"
 msgstr "PDF"
 
 #: navalplanner-webapp/src/main/webapp/planner/_tabPanelTaskProperties.zul:68
-msgid "Type resource assignation"
-msgstr "Asignación de tipos de recursos"
+msgid "Resource allocation type"
+msgstr "Tipo de asignación de recursos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/limitingresources/LimitingResourcesController.java:334
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:148
