@@ -310,13 +310,14 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 .getStartConstraintsFor(task);
         List<Constraint<GanttDate>> endConstraints = graph
                 .getEndConstraintsFor(task);
-        if ((startConstraints == null) && (endConstraints == null)) {
+        if ((startConstraints == null || startConstraints.isEmpty())
+                && (endConstraints == null || endConstraints.isEmpty())) {
             return null;
         }
-        if (startConstraints == null) {
+        if (startConstraints == null || startConstraints.isEmpty()) {
             return Constraint.coalesce(endConstraints);
         }
-        if (endConstraints == null) {
+        if (endConstraints == null || endConstraints.isEmpty()) {
             return Constraint.coalesce(startConstraints);
         }
         startConstraints.addAll(endConstraints);
