@@ -152,6 +152,7 @@ public class ManageOrderElementAdvancesController extends
     public void openWindow(IOrderElementModel orderElementModel) {
         setOrderElementModel(orderElementModel);
         manageOrderElementAdvancesModel.initEdit(getOrderElement());
+        selectedAdvances.clear();
         selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
@@ -159,6 +160,7 @@ public class ManageOrderElementAdvancesController extends
 
     public void openWindow(OrderElement orderElement) {
         manageOrderElementAdvancesModel.initEdit(orderElement);
+        selectedAdvances.clear();
         selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
