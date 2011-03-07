@@ -853,6 +853,7 @@ public abstract class BaseCalendarEditionController extends
             appendExceptionTypeListcell(item, calendarException);
             appendDurationListcell(item, calendarException);
             appendCodeListcell(item, calendarException);
+            appendOriginListcell(item, calendarException);
             appendOperationsListcell(item, calendarException);
 
             markAsSelected(item, calendarException);
@@ -947,6 +948,17 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(listcell);
         }
 
+        private void appendOriginListcell(Listitem item,
+                CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            String origin = _("Inherited");
+            if (baseCalendarModel.isOwnException(calendarException)) {
+                origin = _("Direct");
+            }
+            listcell.appendChild(new Label(origin));
+            item.appendChild(listcell);
+        }
+
         private void appendOperationsListcell(Listitem item, CalendarException calendarException) {
             Listcell listcell = new Listcell();
             listcell.appendChild(createRemoveButton(calendarException));
@@ -966,6 +978,11 @@ public abstract class BaseCalendarEditionController extends
                             reloadDayInformation();
                         }
                     });
+            if (!baseCalendarModel.isOwnException(calendarException)) {
+                result.setDisabled(true);
+                result
+                        .setTooltiptext(_("derived exception can not be removed"));
+            }
             return result;
         }
 

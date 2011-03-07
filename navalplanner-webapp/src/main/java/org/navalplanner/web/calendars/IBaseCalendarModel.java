@@ -203,4 +203,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
     void generateCalendarCodes();
 
     boolean isLastActivationPeriod(CalendarAvailability calendarAvailability);
+
+    boolean isOwnException(CalendarException exception);
 }

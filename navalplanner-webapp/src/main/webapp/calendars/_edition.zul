@@ -142,6 +142,7 @@
                             <listheader label="${i18n:_('Exception Type')}" />
                             <listheader label="${i18n:_('Workable Time')}" />
                             <listheader label="${i18n:_('Code')}" visible="@{calendarController.editionController.notResourceCalendar}"/>
+                            <listheader label="${i18n:_('Origin')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>

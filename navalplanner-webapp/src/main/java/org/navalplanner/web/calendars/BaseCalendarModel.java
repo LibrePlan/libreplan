@@ -566,6 +566,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public boolean isOwnException(CalendarException exception) {
+        return getBaseCalendar().getOwnExceptions().contains(exception);
+    }
+
+    @Override
     public void removeException(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().removeExceptionDay(date);
