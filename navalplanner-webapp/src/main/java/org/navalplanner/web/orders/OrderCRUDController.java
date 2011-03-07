@@ -429,7 +429,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (getCurrentTab() != null) {
             // Confirm advances tab.
             if (getCurrentTab().getId().equals("tabAdvances")) {
-                if (!manageOrderElementAdvancesController.save()) {
+                if (manageOrderElementAdvancesController != null
+                        && !manageOrderElementAdvancesController.save()) {
                     resetSelectedTab();
                     selectTab("tabAdvances");
                     return false;
