@@ -149,6 +149,7 @@
                             <listheader label="${i18n:_('Standard Effort')}" />
                             <listheader label="${i18n:_('Extra Effort')}" />
                             <listheader label="${i18n:_('Code')}" visible="@{calendarController.editionController.notResourceCalendar}"/>
+                            <listheader label="${i18n:_('Origin')}" />
                             <listheader label="${i18n:_('Operations')}" />
                         </listhead>
                     </listbox>
