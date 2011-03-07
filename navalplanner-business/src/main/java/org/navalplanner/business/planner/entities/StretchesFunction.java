@@ -255,11 +255,15 @@ public class StretchesFunction extends AssignmentFunction {
         }
 
         private void apply(ResourceAllocation<?> resourceAllocation,
-                LocalDate startInclusive, LocalDate endExclusive,
+                LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
+            // End has to be exclusive on last Stretch
+            LocalDate endDate = getEnd();
+            if (endDate.equals(taskEnd)) {
+                endDate = endDate.plusDays(1);
+            }
             resourceAllocation.withPreviousAssociatedResources()
-                    .onIntervalWithinTask(getStartFor(startInclusive),
-                                getEnd())
+                    .onIntervalWithinTask(getStartFor(startInclusive), endDate)
                     .allocateHours(intervalHours);
         }
 
@@ -279,7 +283,7 @@ public class StretchesFunction extends AssignmentFunction {
                 interval.apply(allocation, allocationStart, allocationEnd,
                         hoursPerInterval[i++]);
             }
-
+            Validate.isTrue(totalHours == allocation.getAssignedHours());
         }
 
         private static int[] getHoursPerInterval(
