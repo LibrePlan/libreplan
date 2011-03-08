@@ -105,7 +105,7 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdOrders" finder="OrderBandboxFinder" model="@{controller.allOrders}"
-                            widthListbox="480px" widthBandbox="450px"/>
+                            widthListbox="680px" widthBandbox="480px"/>
                         <button label="${i18n:_('Add')}"
                             onClick="controller.onSelectOrder()" style="margin-top: -4px" />
                     </hbox>
