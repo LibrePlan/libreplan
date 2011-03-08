@@ -69,8 +69,8 @@
                 <bandboxSearch id="bandboxSelectOrder"
                     finder="OrderBandboxFinder"
                     model="@{controller.orders}"
-                    widthListbox="480px"
-                    widthBandbox="450px"/>
+                    widthListbox="690px"
+                    widthBandbox="480px"/>
             </panelchildren>
         </panel>
 
