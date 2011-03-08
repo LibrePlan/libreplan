@@ -197,7 +197,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                     && (currentAdvance.getDate() != null)
                     && (nextAdvance.getDate() != null)
                     && (currentAdvance.getValue().compareTo(
-                            nextAdvance.getValue()) < 0)) {
+                            nextAdvance.getValue()) > 0)) {
                 return false;
             }
             currentAdvance = nextAdvance;
