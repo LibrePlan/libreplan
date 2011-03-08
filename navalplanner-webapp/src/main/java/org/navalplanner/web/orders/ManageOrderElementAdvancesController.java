@@ -24,6 +24,7 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -106,7 +107,10 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
-        return manageOrderElementAdvancesModel.getAdvanceMeasurements();
+        List<AdvanceMeasurement> measurements = manageOrderElementAdvancesModel
+                .getAdvanceMeasurements();
+        Collections.reverse(measurements);
+        return measurements;
     }
 
     public List<AdvanceAssignment> getAdvanceAssignments() {
