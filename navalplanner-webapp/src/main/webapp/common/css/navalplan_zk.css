@@ -1502,7 +1502,8 @@ input.z-datebox-text-disd {
 	background-color: #71B0D4;
 }
 
-.perspectives-column .z-button-bl {
+.perspectives-column .z-button-cm,
+.toolbar-box .z-button-cm  {
 	-moz-border-radius: 2px;
     -webkit-border-radius: 2px;
 }
