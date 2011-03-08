@@ -522,19 +522,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void setupOverallProgress(final ISaveCommand saveCommand) {
 
         // Refresh progress chart after saving
-        saveCommand.addListener(new IAfterSaveListener() {
-            @Override
-            public void onAfterSave() {
-                transactionService.runOnTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        overallProgressContent.refresh();
-                        return null;
-                    }
-                });
-            }
-        });
-
+        if (saveCommand != null) {
+            saveCommand.addListener(new IAfterSaveListener() {
+                @Override
+                public void onAfterSave() {
+                    transactionService
+                            .runOnTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    overallProgressContent.refresh();
+                                    return null;
+                                }
+                            });
+                }
+            });
+        }
     }
 
     private void addPrintSupport(
