@@ -510,8 +510,8 @@ applicaition users in order to manage ``StretchesFunctionTemplate`` entity. When
 you click the new entry, NavalPlan will the load ``.zul`` file (but the link is
 not going to work as ``.zul`` page does not exist yet).
 
-``.zul`` page
--------------
+Main ``.zul`` page
+------------------
 
 Then you will create the file ``stretchesFunctionTemplate.zul`` inside
 ``navalplanner-webapp/src/main/webapp/planner/`` folder with the following
@@ -526,9 +526,7 @@ content:
  <?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
  <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
 
- <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-
- <?component name="list" inline="true" macroURI="_listStretchesFunctionTemplate.zul"?>
+ <?component name="list" inline="true" macroURI="_listStretchesFunctionTemplates.zul"?>
  <?component name="edit" inline="true" macroURI="_editStretchesFunctionTemplate.zul"?>
 
  <zk>
@@ -634,7 +632,7 @@ the same identifier in ``.zul`` and Java. For example:
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
- public class StretchesFunctionCRUDController extends GenericForwardComposer {
+ public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
 
      private Window listWindow;
      private Window editWindow;
@@ -679,14 +677,856 @@ controller. For example with the following lines::
 As you can see in last example, when an event is launched is not needed to use
 data binding.
 
+ZK macrocomponents
+------------------
+
+Your page ``stretchesFunctionTemplate.zul`` defines 2 macrocomponents: ``list``
+and ``edit``. These macrocomponents implement list view and edit/creation view
+respectively.
+
+::
+
+ <?component name="list" inline="true" macroURI="_listStretchesFunctionTemplates.zul"?>
+
+This line declares a macrocomponent called ``list`` associated to page
+``_listStretchesFunctionTemplates.zul``. ``inline`` attribute indicates that the
+macrocomponent is on the same scope as the component which contains it, i.e.,
+``window`` component could see ``list`` component and the other way around.
+Inside the same scope or namespace there can not be repeated identifiers (``id``
+attributes).
+
+However, ``window`` component creates a new namespace. Inside different
+namespaces identifiers could be repeated. List contains a ``Grid`` called
+``listStretchesFunctionTemplates``.
+
+Another consequence is that from the main window, which is associated with
+controller, you can not access components defined in ``list`` or ``edit``. For
+example::
+
+ public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
+
+     ...
+
+     private NewDataSortableGrid listStretchesFunctionTemplates;
+
+     @Override
+     public void doAfterCompose(Component comp) throws Exception {
+         ...
+         listStretchesFunctionTemplates.getModel();
+     }
+
+     ...
+
+Access to ``listStretchesFunctionTemplates`` will cause a
+``NullPointerException``, because of ``listStretchesFunctionTemplates`` is not
+in main window namespace. But, you could access indirectly to component from
+controller through ``list`` component, because this is accessible from
+controller. For example::
+
+ public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
+
+     private Window listWindow;
+
+     ...
+
+     private NewDataSortableGrid listStretchesFunctionTemplates;
+
+     @Override
+     public void doAfterCompose(Component comp) throws Exception {
+         ...
+         listStretchesFunctionTemplates = (NewDataSortableGrid) listWindow
+                 .getFellowIfAny("listStretchesFunctionTemplates");
+         listStretchesFunctionTemplates.getModel();
+     }
+
+     ...
+
+Another important issue when implementing CRUD use cases is that general view
+contains both ``list`` and ``edit`` component. These components are renderized
+and shown when page is loaded. Class ``OnlyOneVisible`` is used in controller to
+manage which one will be visible at a given time. You can find the following
+pieces of code in all CRUD controllers already working in NavalPlan::
+
+     private OnlyOneVisible visibility;
+
+     ...
+
+     private void showListWindow() {
+         showWindow(listWindow);
+     }
+
+     private void showEditWindow(String title) {
+         editWindow.setTitle(title);
+         showWindow(editWindow);
+     }
+
+     private void showWindow(Window window) {
+         getVisibility().showOnly(window);
+     }
+
+     private OnlyOneVisible getVisibility() {
+         if (visibility == null) {
+             visibility = new OnlyOneVisible(listWindow, editWindow);
+         }
+         return visibility;
+     }
+
+And usually at the end of ``doAfterCompose`` method there will be a call to
+``showListWindow``, that shows the list view and use ``OnlyOneVisible`` class to
+hide edit/creation form.
+
+
+Messages for users
+------------------
+
+::
+
+         <vbox id="messagesContainer"/>
+
+Defines a container to show messages to users. These messages usually appear in
+the top of current window inside a box. There is a default implementation in a
+class called ``MessagesForUser`` which is used in all controllers to show
+messages to users in a similar way in the whole application.
+
+Apart from previous line on ``.zul`` file you will see the following lines
+inside ``doAfterCompose`` method in controller::
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        ...
+        messagesForUser = new MessagesForUser(messagesContainer);
+        comp.setVariable("controller", this, true);
+        ...
+
+These lines instantiate a new object of ``MessagesForUser`` class using the
+container defined at ``.zul`` page. Then when you want to notify or show a
+message to the users you will use some method defined at ``IMessagesForUser``.
+For example::
+
+            messagesForUser.showMessage(Level.INFO,
+                    _("Stretches function template saved"));
+
+
+List view
+---------
+
+For the moment you just have the code needed for the main page
+``stretchesFunctionTemplate.zul``. At this point you are going to create the
+list view interface in a file called ``_listStretchesFunctionTemplates.zul``
+(in the same folder than main page file
+``navalplanner-webapp/src/main/webapp/planner/``). This file will have the
+following content:
+
+::
+
+ <window id="${arg.id}" title="${i18n:_('Stretches Function Templates List')}">
+
+     <newdatasortablegrid id="listStretchesFunctionTemplates"
+         model="@{controller.stretchesFunctionTemplates}"
+         mold="paging" pageSize="10" fixedLayout="true">
+
+         <columns>
+             <newdatasortablecolumn label="${i18n:_('Name')}"
+                 sort="auto(lower(name))" sortDirection="ascending" />
+             <newdatasortablecolumn label="${i18n:_('Operations')}" />
+         </columns>
+         <rows>
+            <row self="@{each='stretchesFunctionTemplate'}"
+                value="@{stretchesFunctionTemplate}">
+                <label value="@{stretchesFunctionTemplate.name}" />
+                 <!-- Operations -->
+                 <hbox>
+                     <button sclass="icono" image="/common/img/ico_editar1.png"
+                         hoverImage="/common/img/ico_editar.png"
+                         tooltiptext="${i18n:_('Edit')}"
+                         onClick="controller.goToEditForm(self.parent.parent.value)"/>
+                     <button sclass="icono" image="/common/img/ico_borrar1.png"
+                         hoverImage="/common/img/ico_borrar.png"
+                         tooltiptext="${i18n:_('Delete')}"
+                         onClick="controller.remove(self.parent.parent.value)"/>
+                 </hbox>
+             </row>
+         </rows>
+     </newdatasortablegrid>
+
+     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
+         sclass="create-button global-action"/>
+
+  </window>
+
+In the next paragraphs different parts of the file will be reviwed.
+
+::
+
+     <newdatasortablegrid id="listStretchesFunctionTemplates"
+         model="@{controller.stretchesFunctionTemplates}"
+
+``NewDataSortableGrid`` is a special component defined in NavalPlan, that
+extends ``Grid`` component adding sorting feature for columns. As you can see
+``model`` attribute is set, which means that a method called
+``getStretchesFunctionTemplates`` in controller will be called. Thise method
+will have the responsibility to communicate with model layer in order to get the
+list of ``StretchesFunctionTemplate`` from database.
+
+::
+
+             <newdatasortablecolumn label="${i18n:_('Name')}"
+                 sort="auto(lower(name))" sortDirection="ascending" />
+
+Thanks to this custom component you are able to define that *Name* column will
+by sorted by default in ascending order.
+
+::
+
+             <row self="@{each='stretchesFunctionTemplate'}"
+                value="@{stretchesFunctionTemplate}">
+
+With this line you are doing 2 different things:
+
+* Define a variable to represent each instance in the collection defined at
+  ``model`` attribute. It uses ``self`` for this and set the name
+  ``stretchesFunctionTemplate`` that will only be seen by this component and its
+  children.
+* Set value for ``Row`` to current ``StretchesFunctionTemplate`` being iterated.
+  This will allow to access associated entity for each row in the list.
+
+::
+
+                 <label value="@{stretchesFunctionTemplate.name}" />
+
+This line will access to ``name`` attribute for entity
+``StretchesFunctionTemplate`` and show it as a label.
+
+::
+
+                     <button sclass="icono" image="/common/img/ico_editar1.png"
+                         hoverImage="/common/img/ico_editar.png"
+                         tooltiptext="${i18n:_('Edit')}"
+                         onClick="controller.goToEditForm(self.parent.parent.value)"/>
+
+An edit button is added for each row, and ``onClick`` event is associated with a
+call to some method in the controller. In this case the method called is
+``goToEditForm`` and argument is the ``StretchesFunctionTemplate`` associated
+with current row. In order to access to the entity go to parent components till
+``Row`` and get value there. There is also a delete button with similar
+implementation.
+
+::
+
+     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
+         sclass="create-button global-action"/>
+
+The last part is another button which will call a different method on controller
+in order to show create form for a new ``StretchesFunctionTemplate`` entity.
+
+To sum up, this ``.zul`` file will create a very simple list with the name of
+each ``StretchesFunctionTemplate`` and buttons to edit or remove items in each
+row. And also adds another button which will allow to create new entities.
+
+
+Edit/Create view
+----------------
+
+Now you are going to create a file called
+``_editStretchesFunctionTemplate.zul``, this file defines the form to create and
+edit ``StretchesFunctionTemplate`` entities. It is used for both creation and
+edition process. The file will have the following content:
+
+::
+
+ <window id="${arg.id}">
+     <tabbox>
+         <tabs>
+             <tab label="${i18n:_('Edit')}" />
+         </tabs>
+         <tabpanels>
+             <tabpanel>
+                 <grid fixedLayout="true">
+                     <columns>
+                         <column width="200px" />
+                         <column />
+                     </columns>
+                     <rows>
+                         <row>
+                             <label value="${i18n:_('Name')}" />
+                             <textbox id="tbName"
+                                 value="@{controller.stretchesFunctionTemplate.name}"
+                                 width="300px" />
+                         </row>
+                     </rows>
+                 </grid>
+
+                 <groupbox closable="false">
+                     <caption label="${i18n:_('Stretches')}" />
+                     <vbox>
+                         <hbox align="center">
+                             <label value="${i18n:_('New stretch:')}" />
+                             <label value="${i18n:_('Duration Percentage')}" />
+                             <intbox id="durationPercentage" width="50px"
+                                 value="0" onOK="controller.addStretchTemplate();" />
+                             <label value="${i18n:_('Progress Percentage')}" />
+                             <intbox id="progressPercentage" width="50px"
+                                 value="0" onOK="controller.addStretchTemplate();" />
+                             <button id="add_new_stretch_template" label="${i18n:_('Add')}"
+                                 onClick="controller.addStretchTemplate();" />
+                         </hbox>
+                     </vbox>
+                     <grid id="stretchTemplates"
+                         model="@{controller.stretchTemplates}"
+                         rowRenderer="@{controller.stretchTemplatesRenderer}"
+                         mold="paging" pageSize="10" fixedLayout="true">
+                         <columns>
+                             <column label="${i18n:_('Duration Percentage')}" />
+                             <column label="${i18n:_('Progress Percentage')}" />
+                             <column label="${i18n:_('Operations')}" />
+                         </columns>
+                     </grid>
+                 </groupbox>
+
+             </tabpanel>
+         </tabpanels>
+     </tabbox>
+
+     <!-- Control buttons -->
+     <button onClick="controller.saveAndExit()"
+         label="${i18n:_('Save')}"
+         sclass="save-button global-action" />
+     <button onClick="controller.saveAndContinue()"
+         label="${i18n:_('Save and Continue')}"
+         sclass="save-button global-action" />
+     <button onClick="controller.cancel()"
+         label="${i18n:_('Cancel')}"
+         sclass="cancel-button global-action" />
+
+ </window>
+
+Now, let's take a look to the most important parts of the file.
+
+::
+
+                             <label value="${i18n:_('Name')}" />
+                             <textbox id="tbName"
+                                 value="@{controller.stretchesFunctionTemplate.name}"
+                                 width="300px" />
+
+This will create a ``Textbox`` field in the form. As you can see, it is using
+data bindings, which means that different methods will be automatically called
+for get and set ``name`` attribute of entity.
+
+In this case, first method ``getStretchesFunctionTemplate`` in controller will
+be called, which will return current entity being edited or created. Then
+method ``getName`` or ``setName`` of entity will be called as appropriate.
+
+::
+
+                             <label value="${i18n:_('New stretch:')}" />
+                             <label value="${i18n:_('Duration Percentage')}" />
+                             <intbox id="durationPercentage" width="50px"
+                                 value="0" onOK="controller.addStretchTemplate();" />
+                             <label value="${i18n:_('Progress Percentage')}" />
+                             <intbox id="progressPercentage" width="50px"
+                                 value="0" onOK="controller.addStretchTemplate();" />
+                             <button id="add_new_stretch_template" label="${i18n:_('Add')}"
+                                 onClick="controller.addStretchTemplate();" />
+
+In order to define new ``StretchTemplate`` for current entity, some fields are
+added. Two ``Intbox`` fields and a button, all of them associated to
+``addStretchTemplate`` method in controller that will be called to perform the
+operation.
+
+::
+
+                    <grid id="stretchTemplates"
+                        model="@{controller.stretchTemplates}"
+                        rowRenderer="@{controller.stretchTemplatesRenderer}"
+                        mold="paging" pageSize="10" fixedLayout="true">
+                        <columns>
+                            <column label="${i18n:_('Duration Percentage')}" />
+                            <column label="${i18n:_('Progress Percentage')}" />
+                            <column label="${i18n:_('Operations')}" />
+                        </columns>
+                    </grid>
+
+List of ``StretchTemplate`` will be shown inside a ``Grid``. You define
+``model`` just like in ``_listStretchesFunctionTemplates.zul`` but for
+``StretchTemplate`` entities in this case, but you are not using ``Row``
+elements. Instead of it, you are setting ``rowRenderer`` attribute, that will
+call to a method in controller. This method will return a ``RowRenderer`` that
+will know how to show information about a ``StretchTemplate``.
+
+
+Conversation model
+==================
+
+Model always contains state variables which are being modified by use case. For
+example, model for CRUD use case, that is going to allow manage
+``StretchesFunctionTemplate`` entities, will have a conversation state with the
+current entity being created or edited. The series of steps that modify entity
+state are called **conversation**.
+
+Every conversation has a starting point and an ending one. Class ``XXXModel`` is
+in charge of implement the conversation. Similar to what happens in DAOs case,
+models will always implement an interface ``IXXXModel``, which will define
+conversation steps. In NavalPlan there are some kind of naming conventions in
+order to implement conversations.
+
+.. ADMONITION:: Conversation naming conventions
+
+  In order to name the steps of a conversation it is recommended to use the
+  following conventions:
+
+  * If there is only one operation which starts the conversation, then name
+    ``init`` should be used (e.g. ``IXXXModel::init``). If conversation can
+    start with different operations, names will be prefixed with ``init`` (e.g.
+    ``IXXXModel::initCreate``, ``IXXXModel::initEdit``, etc.).
+
+  * If there is only one operation to successfully finish conversation, then
+    name ``confirm`` should be used (e.g. ``IXXXModel::confirm``). If it is
+    possible to end conversation successfully with different operations, names
+    will be prefixed with ``confirm`` (e.g. ``IXXXModel::confirmSave``,
+    ``IXXXModel::confirmRemove``, etc.).
+
+  * Operation to cancel changes will be called ``cancel`` (e.g.
+    ``IXXXModel::cancel``).
+
+Usually when defining models you should add documentation about conversation
+protocol:
+
+Conversation state
+  Entity (or entities) being manipulated in the conversation. In some cases
+  other different objects will be kept in memory if needed.
+
+Non conversational steps (or independent steps)
+  Specify operations not involved in conversation.
+
+Conversation protocol
+  * Initial step: Indicates (exclusive) operations which allow start a
+    conversation.
+  * Intermediate steps: Specify methods that are invoked once the conversation
+    is started and before the end step is executed.
+  * End step: Set of (exclusive) operations which finish the conversation.
+
+NavalPlan uses ``session-per-request-with-detached-objects`` pattern, it is a
+way to implement the conversation model. This is usually valid for applications
+that extract data from a database, user make some operations with this data
+(*think-time*), and after that they are stored in database.
+
+In NavalPlan when you start an edition conversation, you will retrieve an entity
+from database (through DAO) and keep it in memory as state variable in model
+(*conversation state*). This variable will be detached (a stored variable that
+is not inside a Hibernate session). Hibernate allows to modify detached entity
+out of a session. But, after that, it should be needed to open a transaction in
+order to store entity on database.
+
+You should be careful working with detached objects because of you could easily
+get errors like: ``ObjectNotBoundInSession``, ``LazyInitializationException``
+(trying to access a entity marked as lazy) or ``DuplicateSessionInObject`` (two
+objects of same instance in the same ssion).
+
+On the contrary, ``session-per-conversation`` pattern always keep Hibernate
+session open, so there will be no objects with detached state. This pattern is
+suitable for applications with low *think-time*.
+
+
+Communication between model and controller
+------------------------------------------
+
+Following the approach explained before, in this our use case you are going to
+have a model ``StretchesFunctionTemplateModel`` and its interface called
+``IStretchesFunctionTemplateModel``. That means that you will have 2 new files
+inside
+``navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/streches/``
+folder:
+
+* ``IStretchesFunctionTemplateModel.java``::
+
+    public interface IStretchesFunctionTemplateModel {
+        ...
+    }
+
+* ``StretchesFunctionTemplateModel.java``::
+
+    @Service
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    @OnConcurrentModification(goToPage = "/planner/stretchesFunctionTemplate.zul")
+    public class StretchesFunctionTemplateModel implements
+            IStretchesFunctionTemplateModel {
+        ...
+    }
+
+As you can see model is a Spring bean, in order that controller communicates
+with model, you need to do 2 different things:
+
+* Add the following line at ``.zul`` page (this is not really needed because of
+  this line is already in ``template.zul``)::
+
+    <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
+* Add a new ``IStretchesFunctionTemplateModel`` type attribute in controller
+  class (``StretchesFunctionTemplateCRUDController``). This attribute must be
+  called ``stretchesFunctionTemplateModel``, because of ``variable-resolver``
+  will get the object from Spring based on name::
+
+    private IStretchesFunctionTemplateModel stretchesFunctionTemplateModel;
+
+This is the way provided by ZK to do something similar to dependency injection,
+in order to use model from controller (which is not inside Spring context). This
+is why ``@Autowired`` is not needed, but on the other hand you need to use a
+specific name for variable.
+
+
+Developing the conversation
+---------------------------
+
+At this point you are going to start to develop controller and model in order to
+implement the use case.
+
+Non conversational step
+.......................
+
+For example you could start to work in the list view, if you review
+``_listStretchesFunctionTemplates.zul`` code you will see that method
+``getStretchesFunctionTemplates`` in controller is going to be called.
+Implementation for this method is usually simple and similar to the next
+example.
+
+* ``StretchesFunctionTemplateCRUDController``::
+
+    public List<StretchesFunctionTemplate> getStretchesFunctionTemplates() {
+        return stretchesFunctionTemplateModel.getStretchesFunctionTemplates();
+    }
+
+* ``IStretchesFunctionTemplateModel``::
+
+    /*
+     * Non conversational steps
+     */
+
+    List<StretchesFunctionTemplate> getStretchesFunctionTemplates();
+
+* ``StretchesFunctionTemplateModel``::
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StretchesFunctionTemplate> getStretchesFunctionTemplates() {
+        return stretchesFunctionTemplateDAO.getAll();
+    }
+
+As you can see method ``getStretchesFunctionTemplates`` in model is not involved
+in conversation protocol. Moreover, you will also need to implement ``getAll``
+method in DAO that would be quite simple::
+
+    @Override
+    public List<StretchesFunctionTemplate> getAll() {
+        return list(StretchesFunctionTemplate.class);
+    }
+
+Conversational steps
+....................
+
+Now you are going to implement the form to create a new
+``StretchesFunctionTemplate``. As you can see in the ``.zul`` page, the method
+called in order to create a new entity is ``goToCreateForm``. This method will
+start the conversation between controller and model::
+
+    public void goToCreateForm() {
+        stretchesFunctionTemplateModel.initCreate();
+        showEditWindow(_("Create Stretches Function Template"));
+        Util.reloadBindings(editWindow);
+    }
+
+.. NOTE::
+
+  Method ``Util::reloadBindings`` forces reload of bindings used in a component.
+  For example, this is needed to refresh a list of items when some of them are
+  added or removed.
+
+This method calls ``initCreate`` in model to start the conversation. Moreover it
+opens ``editWindow`` and then reload information in the form. Then you need to
+add the following lines in model (remember to create method in interface too)::
+
+    /**
+     * Conversation state
+     */
+    private StretchesFunctionTemplate stretchesFunctionTemplate;
+
+    ...
+
+    /*
+     * Initial conversation steps
+     */
+
+    @Override
+    public void initCreate() {
+        this.stretchesFunctionTemplate = StretchesFunctionTemplate.create("");
+    }
+
+
+Thanks to first line, model will keep in memory current entity being created or
+edited. As you can see in the method, a new instance of the entity is created
+and assigned to state variable.
+
+As you are using data bindings for ``StretchesFunctionTemplate`` name, then when
+user modify this field, attribute ``name`` in entity will be automatically set.
+
+In order to allow users add new ``StretchTemplate`` you need to implement method
+``addStretchTemplate`` in controller. As usual this method delegates in model in
+oder to perform the real operation. You need to modify ``doAfterCompose`` in
+order to be able to access input elements in the form and create the new
+method::
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        ...
+        stretchTemplates = (Grid) editWindow.getFellow("stretchTemplates");
+        durationPercentage = (Intbox) stretchTemplates
+                .getFellow("durationPercentage");
+        progressPercentage = (Intbox) stretchTemplates
+                .getFellow("progressPercentage");
+        ...
+    }
+
+    ...
+
+    public void addStretchTemplate() {
+        stretchesFunctionTemplateModel.addStretchTemplate(durationPercentage.getValue(),
+                progressPercentage.getValue());
+        clearStrechTemplateFields();
+        Util.reloadBindings(stretchTemplates);
+    }
+
+    private void clearStrechTemplateFields() {
+        durationPercentage.setValue(0);
+        progressPercentage.setValue(0);
+    }
+
+In model, you will need to create an intermediate conversation step, that will
+modify current ``StretchesFunctionTemplate`` entity adding a new instance of
+``StretchTemplate``::
+
+    public static BigDecimal HUNDRED = BigDecimal.valueOf(100);
+
+    ...
+
+    @Override
+    public void addStretchTemplate(Integer durationPercentage,
+            Integer progressPercentage) {
+        BigDecimal duration = BigDecimal.valueOf(durationPercentage).divide(
+                HUNDRED);
+        BigDecimal progress = BigDecimal.valueOf(progressPercentage).divide(
+                HUNDRED);
+        stretchesFunctionTemplate.addStretch(StretchTemplate.create(duration, progress));
+    }
+
+Then you need to implement a ``RowRenderer`` in controller to be used in order
+to show ``StrechTemplate`` information in the window::
+
+    public RowRenderer getStretchTemplatesRenderer() {
+        return new RowRenderer() {
+            @Override
+            public void render(Row row, Object data) throws Exception {
+                final StretchTemplate stretchTemplate = (StretchTemplate) data;
+
+                row.appendChild(new Label(toStringPercentage(stretchTemplate
+                        .getDurationPercentage())));
+                row.appendChild(new Label(toStringPercentage(stretchTemplate
+                        .getProgressPercentage())));
+
+                row.appendChild(Util.createRemoveButton(new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        confirmRemoveStretchTemplate(stretchTemplate);
+                    }
+                }));
+            }
+
+            private String toStringPercentage(BigDecimal value) {
+                return value.multiply(StretchesFunctionTemplateModel.HUNDRED)
+                        .toBigInteger().toString()
+                        + " %";
+            }
+        };
+    }
+
+You will implement ``RowRenderer`` interface, and add the different components
+for each column in ``Row`` element. Moreover, you will create a remove button,
+associated with a new method in the controller. This method will be in charge to
+ask user if is sure about removing the element, and then it will remove the
+``StretchTemplate``.
+
+The last step is to close the conversation successfully or not. Then you will
+need to implement the following methods in controller::
+
+    private boolean save() {
+        try {
+            stretchesFunctionTemplateModel.confirmSave();
+            messagesForUser.showMessage(Level.INFO,
+                    _("Stretches function template saved"));
+            return true;
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+            return false;
+        }
+    }
+
+    public void saveAndExit() {
+        if (save()) {
+            showListWindow();
+            Util.reloadBindings(listWindow);
+        }
+    }
+
+    public void saveAndContinue() {
+        if (save()) {
+            stretchesFunctionTemplateModel
+                    .initEdit(stretchesFunctionTemplateModel
+                            .getStretchesFunctionTemplate());
+        }
+    }
+
+    public void cancel() {
+        stretchesFunctionTemplateModel.cancel();
+        showListWindow();
+        Util.reloadBindings(listWindow);
+    }
+
+``save`` method will call ``confirmSave`` in model and return true if the
+operation is properly performed. Then depending if user will stay or not in
+current window, a different operation is done. ``cancel`` method again will
+delegate in model calling ``cancel``. Then two new methods will appear in
+model::
+
+    @Override
+    @Transactional
+    public void confirmSave() throws ValidationException {
+        stretchesFunctionTemplateDAO.save(stretchesFunctionTemplate);
+        resetConversationState();
+    }
+
+    @Override
+    public void cancel() {
+        resetConversationState();
+    }
+
+    private void resetConversationState() {
+        stretchesFunctionTemplate = null;
+    }
+
+As you can see you need to use ``@Transactional`` annotation in ``confirmSave``
+method. This is needed in order to access DAO object inside Hibernate session in
+order to store entity on database. If you just need to query data you should
+mark transaction as read only (``@Transactional(readOnly = true)``).
+
+All these steps will carry out a complete conversation in NavalPlan. In this
+case this conversation will allow users to create new
+``StretchesFunctionTemplate`` entities and store them on database (if they do
+not cancel the operation).
+
+
+Solving issues with detached objects
+------------------------------------
+
+As it was already stated, you need to be careful managing detached objects. For
+example, if you think in edit an already stored ``StretchesFunctionTemplate``,
+you will have a very similar method to ``goToCreateForm`` in controller::
+
+    public void goToEditForm(StretchesFunctionTemplate stretchesFunctionTemplate) {
+        stretchesFunctionTemplateModel.initEdit(stretchesFunctionTemplate);
+        showEditWindow(_("Edit Stretches Function Template"));
+        Util.reloadBindings(editWindow);
+    }
+
+Then a new method called ``initEdit`` will appear in model as initial
+conversation step. First you could think in create this method as follows::
+
+    @Override
+    public void initEdit(StretchesFunctionTemplate stretchesFunctionTemplate) {
+        this.stretchesFunctionTemplate = stretchesFunctionTemplate;
+    }
+
+In that case you will get a ``LazyInitializationException`` with the following
+message:
+
+  .. pull-quote::
+
+    Run-time error: failed to lazily initialize a collection of role:
+    org.navalplanner.business.planner.entities.StretchesFunctionTemplate.stretches,
+    no session or session was closed . Error was registered and it will be fixed as
+    soon as possible.
+
+This is because of ``editWindow`` is calling ``getStretchTemplates``, that at
+some point will end up calling ``getStretches`` on entity. This collection is
+a proxy because by default Hibernate relations are lazy. You have two different
+approaches to fix this issue:
+
+a) Add ``@Transactional`` annotation to open Hibernate session, reattach entity
+   (i.e. put on session currently detached entity) and navigate the collection
+   to avoid proxies::
+
+    @Override
+    @Transactional(readOnly = true)
+    public void initEdit(StretchesFunctionTemplate stretchesFunctionTemplate) {
+        this.stretchesFunctionTemplate = stretchesFunctionTemplate;
+        stretchesFunctionTemplateDAO.reattach(this.stretchesFunctionTemplate);
+        this.stretchesFunctionTemplate.getStretches().size();
+    }
+
+b) Modify entity mapping to avoid lazy relation::
+
+    <list name="stretches" table="stretch_template" lazy="false">
+
+The option chosen will depend on each specific case and you should select the
+more convenient way. If every time you load the entity you are going to access
+to relation then changing the mapping will be the best solution. Otherwise, if
+you are just going to retrieve entities and show name information in the listing
+(as you are doing till this moment) you could prefer not load the relation and
+then select the other option.
 
 
 Testing (JUnit)
 ===============
 
+::
+
+ constraint="no empty:${i18n:_('cannot be null or empty')}"
+
 
 Web services
 ============
+
+
+Conclusion
+==========
+
+Proposed exercise, even when not fully resolved, allows navigate through basic
+architecture of NavalPlan and know better different elements involved in each
+layer.
+
+NavalPlan view is implemented with ZK web framework. Views are stored in files
+with ``.zul`` extension. It is possible grouping components into each other and,
+even, create macrocomponents in order to divide views or reuse components.
+
+Every window is associated with a controller class. Controller contains program
+source code needed to interact with user and communicate with business logic
+layer. Every ``XXXController`` class will have access to business logic through
+a ``XXXModel`` class.
+
+Business logic layer is implemented in ``XXXModel`` classes. Domain entities,
+apart from contain data which will be stored, also contain business operations.
+The philosophy is that, as far as possible, every domain entity knows himself
+and offers operations to other entities through its methods.
+
+Model classes do not access directly to database, but do so through a DAO
+(persistence class). There is a DAO for each domain entity. DAO offers different
+operations of retrieval, query and storage entities. Models are not going to
+access to concrete classes, they will use interfaces (dependency injection).
+
+Hibernate is the persistence framework used in NavalPlan. There is two base
+classes ``GenericHibernateDAO`` and ``BaseEntity`` which encapsulate main part
+of Hibernate API. Every DAOs and entities inherit from these two classes
+respectively. Every domain entities must to have Hibernate mapping. Mapping is
+done in ``.hbm.xml`` files.
+
 
 
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
