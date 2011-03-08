@@ -42,12 +42,12 @@ public class AdvanceMeasurementComparator implements Comparator<AdvanceMeasureme
         if (arg0.getDate() == arg1.getDate()) {
             return 0;
         }
-        if (arg1.getDate() == null) {
+        if (arg0.getDate() == null) {
             return -1;
         }
-        if (arg0.getDate() == null) {
+        if (arg1.getDate() == null) {
             return 1;
         }
-        return arg0.getDate().compareTo(arg1.getDate());
+        return arg1.getDate().compareTo(arg0.getDate());
     }
 }
