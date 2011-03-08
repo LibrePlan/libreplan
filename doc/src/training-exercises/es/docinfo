@@ -1,0 +1,24 @@
+#####################################################
+Ejercicios Curso Formativo para usuarios de NavalPlan
+#####################################################
+
+.. image:: images/logo.png
+   :align: left
+
+*NavalPlan* es una aplicación web para la planificación, monitorización y control de proyectos representados mediante *diagramas de Gantt*. Entre sus funcionalidades más importantes se destaca:
+
+  * Que es multiproyecto.
+  * Asignación de recursos por grupos: grupos dinámicos basados en criterios.
+  * Calendarios flexibles.
+  * Descomposición estructurada de trabajo para los proyectos.
+  * Control de la sobrecarga de asignación de recursos.
+  * Análise de costes basado en partes de trabajo.
+  * Integración con otras instancias de *NavalPlan* y software de terceros.
+
+Este guía de formación tiene copyright de Igalia S.L. y se publica con una Licencia Creative Commons Recoñecemento-CompartirIgual 3.0 España.
+
+http://creativecommons.org/licenses/by-sa/3.0/es/
+
+Pontevedra, 8 de marzo de 2011
+
+
