@@ -247,7 +247,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             }
         }
 
-        private static boolean isZero(BigDecimal amount) {
+        public static boolean isZero(BigDecimal amount) {
             return amount.movePointRight(amount.scale()).intValue() == 0;
         }
 
