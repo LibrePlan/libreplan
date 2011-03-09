@@ -38,8 +38,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
 
     public LimitingResourcesLeftPane(
-            MutableTreeModel<LimitingResourceQueue> treeModel,
-            QueueListComponent resourceLoadList) {
+            MutableTreeModel<LimitingResourceQueue> treeModel) {
         this.modelForTree = treeModel;
     }
 

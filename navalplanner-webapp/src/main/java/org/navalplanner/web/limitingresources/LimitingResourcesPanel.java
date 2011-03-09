@@ -37,8 +37,8 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.TimeTracker.IDetailItemFilter;
+import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
@@ -150,7 +150,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         queueListComponent = new QueueListComponent(this, timeTracker,
                 treeModel);
 
-        leftPane = new LimitingResourcesLeftPane(treeModel, queueListComponent);
+        leftPane = new LimitingResourcesLeftPane(treeModel);
     }
 
     public void appendQueueElementToQueue(LimitingResourceQueueElement element) {
@@ -263,6 +263,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
                         "move_scroll", "" + diffDays, "" + pixelPerDay));
             }
 
+            @Override
             protected void updateCurrentDayScroll() {
                 System.out.println("updateCurrentDayScroll");
                 double previousPixelPerDay = getTimeTracker().getMapper()
