@@ -402,7 +402,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return queuesState.getQueues();
+        return queuesState.getQueuesOrderedByResourceName();
     }
 
     @Override
@@ -410,6 +410,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return queuesState.getUnassigned();
     }
 
+    @Override
     public ZoomLevel calculateInitialZoomLevel() {
         Interval interval = getViewInterval();
         return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
