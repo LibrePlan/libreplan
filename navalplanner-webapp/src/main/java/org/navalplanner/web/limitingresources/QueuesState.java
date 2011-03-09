@@ -23,6 +23,7 @@ package org.navalplanner.web.limitingresources;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -51,8 +52,6 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -161,6 +160,31 @@ public class QueuesState {
 
     public List<LimitingResourceQueue> getQueues() {
         return Collections.unmodifiableList(queues);
+    }
+
+    public ArrayList<LimitingResourceQueue> getQueuesOrderedByResourceName() {
+        ArrayList<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>(
+                queues);
+        Collections.sort(result, new Comparator<LimitingResourceQueue>() {
+
+            @Override
+            public int compare(LimitingResourceQueue arg0,
+                    LimitingResourceQueue arg1) {
+
+                if ((arg0 == null) || (arg0.getResource().getName() == null)) {
+                    return -1;
+                }
+
+                if ((arg1 == null) || (arg1.getResource().getName() == null)) {
+                    return 1;
+                }
+                return (arg0.getResource().getName().toLowerCase()
+                        .compareTo(arg1.getResource().getName().toLowerCase()));
+            }
+
+        });
+        return result;
+
     }
 
     public List<LimitingResourceQueueElement> getUnassigned() {
