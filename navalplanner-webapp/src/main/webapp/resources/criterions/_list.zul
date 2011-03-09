@@ -23,6 +23,7 @@
    <columns>
         <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
         <newdatasortablecolumn label="${i18n:_('Code')}" />
+        <newdatasortablecolumn label="${i18n:_('Type')}" />
         <newdatasortablecolumn width="60px" label="${i18n:_('Enabled')}"/>
         <newdatasortablecolumn width="200px" label="${i18n:_('Operations')}"/>
     </columns>
@@ -30,6 +31,7 @@
         <row self="@{each='criterionType'}" value="@{criterionType}" onDoubleClick="controller.goToEditForm(self.value);">
             <label value="@{criterionType.name}" tooltiptext="@{criterionType.description}"/>
             <label value="@{criterionType.code}"/>
+            <label value="@{criterionType.resource}"/>
             <checkbox disabled="true" checked="@{criterionType.enabled}"/>
             <hbox>
                 <button sclass="icono" image="/common/img/ico_editar1.png"
