@@ -45,20 +45,28 @@ public class EffortDurationPicker extends Hbox {
     private Spinner hours;
     private Spinner minutes;
     private Spinner seconds;
+    private boolean withseconds = false;
 
     public EffortDurationPicker() {
+        this(false);
+    }
+
+    public EffortDurationPicker(boolean withseconds) {
         hours = new Spinner();
         hours.setCols(2);
         setMinFor(hours, 0);
         minutes = new Spinner();
         minutes.setCols(2);
         setRangeFor(minutes, 0, 59);
-        seconds = new Spinner();
-        seconds.setCols(2);
-        setRangeFor(seconds, 0, 59);
         appendWithLabel(hours, _("Hours"));
         appendWithLabel(minutes, _("Minutes"));
-        appendWithLabel(seconds, _("Seconds"));
+
+        if (withseconds) {
+            seconds = new Spinner();
+            seconds.setCols(2);
+            setRangeFor(seconds, 0, 59);
+            appendWithLabel(seconds, _("Seconds"));
+        }
     }
 
     private void appendWithLabel(Spinner spinner, String label) {
@@ -84,7 +92,9 @@ public class EffortDurationPicker extends Hbox {
     public void setDisabled(boolean disabled) {
         hours.setDisabled(disabled);
         minutes.setDisabled(disabled);
-        seconds.setDisabled(disabled);
+        if (withseconds) {
+            seconds.setDisabled(disabled);
+        }
     }
 
     public void bind(Getter<EffortDuration> getter) {
@@ -95,13 +105,19 @@ public class EffortDurationPicker extends Hbox {
         EnumMap<Granularity, Integer> values = duration.decompose();
         hours.setValue(values.get(Granularity.HOURS));
         minutes.setValue(values.get(Granularity.MINUTES));
-        seconds.setValue(values.get(Granularity.SECONDS));
+        if (withseconds) {
+            seconds.setValue(values.get(Granularity.SECONDS));
+        }
     }
 
     public void bind(Getter<EffortDuration> getter,
             Setter<EffortDuration> setter) {
         bind(getter);
-        listenChanges(setter, hours, minutes, seconds);
+        if (withseconds) {
+            listenChanges(setter, hours, minutes, seconds);
+        } else {
+            listenChanges(setter, hours, minutes);
+        }
     }
 
     private void listenChanges(final Setter<EffortDuration> setter,
@@ -127,7 +143,10 @@ public class EffortDurationPicker extends Hbox {
     private EffortDuration createDurationFromUIValues() {
         Integer hoursValue = hours.getValue();
         Integer minutesValue = minutes.getValue();
-        Integer secondsValue = seconds.getValue();
+        Integer secondsValue = 0;
+        if (withseconds) {
+            secondsValue = seconds.getValue();
+        }
         EffortDuration newValue = EffortDuration.hours(
                 hoursValue != null ? hoursValue : 0).and(
                 minutesValue != null ? minutesValue : 0, Granularity.MINUTES)
