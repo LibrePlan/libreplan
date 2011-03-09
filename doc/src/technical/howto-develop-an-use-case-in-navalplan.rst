@@ -175,7 +175,9 @@ The new entity ``StretchesFunctionTemplate`` will have the following properties:
 
   * ``name``: A string to identify the template.
   * ``stretches``: A list of ``StretchTemplate`` a new class that will just have
-    two attributes: ``durationPercentage`` and ``progressPercentage``.
+    two attributes: ``durationProportion`` and ``progressProportion``. These
+    would be two percentages defined as ``BigDecimal`` and one based, i.e., 20%
+    will be 0.20.
 
 ``StretchTemplate`` will be a value object as every ``StretchTemplate`` will
 belong just to one ``StretchesFunctionTemplate`` and would not be modified out
@@ -228,20 +230,20 @@ shown):
 
  /**
   * This class is intended as a Hibernate component. It's formed by two
-  * components, the duration percentage and the progress percentage. It
+  * components, the duration proportion and the progress proportion. It
   * represents the different values of a {@link StretchesFunctionTemplate}.
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
  public class StretchTemplate {
 
-     public static StretchTemplate create(BigDecimal durationPercentage,
-             BigDecimal progressPercentage) {
-         return new StretchTemplate(durationPercentage, progressPercentage);
+     public static StretchTemplate create(BigDecimal durationProportion,
+             BigDecimal progressProportion) {
+         return new StretchTemplate(durationProportion, progressProportion);
      }
 
-     private BigDecimal durationPercentage = BigDecimal.ZERO;
-     private BigDecimal progressPercentage = BigDecimal.ZERO;
+     private BigDecimal durationProportion = BigDecimal.ZERO;
+     private BigDecimal progressProportion = BigDecimal.ZERO;
 
      /**
       * Default constructor for Hibernate. Do not use!
@@ -394,16 +396,16 @@ new one if needed)::
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="name" access="property" not-null="true" unique="true"/>
+        <property name="name" access="property" not-null="true" unique="true" />
 
         <list name="stretches" table="stretch_template">
             <key column="stretches_function_template_id" />
             <list-index column="stretch_position" />
 
             <composite-element class="StretchTemplate">
-                <property name="durationPercentage" column="duration_percentage"
+                <property name="durationProportion" column="duration_proportion"
                     not-null="true" />
-                <property name="progressPercentage" column="progress_percentage"
+                <property name="progressProportion" column="progress_proportion"
                     not-null="true" />
             </composite-element>
         </list>
@@ -447,10 +449,10 @@ proper ``db.changelog-XXX.xml`` file::
             <column name="stretches_function_template_id" type="BIGINT">
                 <constraints nullable="false"/>
             </column>
-            <column name="duration_percentage" type="DECIMAL(19,2)">
+            <column name="duration_proportion" type="DECIMAL(19,2)">
                 <constraints nullable="false"/>
             </column>
-            <column name="progress_percentage" type="DECIMAL(19,2)">
+            <column name="progress_proportion" type="DECIMAL(19,2)">
                 <constraints nullable="false"/>
             </column>
             <column name="stretch_position" type="INTEGER">
@@ -1328,9 +1330,9 @@ to show ``StrechTemplate`` information in the window::
                 final StretchTemplate stretchTemplate = (StretchTemplate) data;
 
                 row.appendChild(new Label(toStringPercentage(stretchTemplate
-                        .getDurationPercentage())));
+                        .getDurationProportion())));
                 row.appendChild(new Label(toStringPercentage(stretchTemplate
-                        .getProgressPercentage())));
+                        .getProgressProportion())));
 
                 row.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
@@ -1483,12 +1485,288 @@ you are just going to retrieve entities and show name information in the listing
 then select the other option.
 
 
-Testing (JUnit)
-===============
+Testing
+=======
+
+NavalPlan uses JUnit_ testing framework, as a tool to check application
+behaviour based on unit tests. The main classes tested are: entities, models and
+DAOs. These tests are executed automatically when project is compiled, thus
+allow developers check that their changes do not break other parts of software.
+
+It is strongly recommended to create test for entities and models, in order to
+ensure that business logic is working properly.
+
+.. ADMONITION:: Test Driven Development
+
+  NavalPlan developers usually follow, although not strictly, TDD_ while
+  programming use cases. The main idea behind TDD is:
+
+  * First write a test to define a expected feature in a class. At this moment,
+    this is going to be a failing test.
+  * After that, modify class to fulfill requirements specified by test.
+    Producing code to pass the test.
+
+An example of JUnit test
+------------------------
+
+For example, in order to test that defined mapping is right you can define a
+test for your DAO. Simply create the following file called
+``StretchesFunctionTemplateDAOTest.java`` in
+``navalplanner-business/src/test/java/org/navalplanner/business/test/planner/daos/``:
 
 ::
 
- constraint="no empty:${i18n:_('cannot be null or empty')}"
+ @Transactional
+ @RunWith(SpringJUnit4ClassRunner.class)
+ @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
+         BUSINESS_SPRING_CONFIG_TEST_FILE })
+ public class StretchesFunctionTemplateDAOTest {
+
+     @Autowired
+     private IStretchesFunctionTemplateDAO dao;
+
+     private StretchesFunctionTemplate stretchesFunctionTemplate;
+
+     private void givenValidStretchesFunctionTemplate() {
+         stretchesFunctionTemplate = StretchesFunctionTemplate
+                 .create("stretches-function-template-name-"
+                 + UUID.randomUUID());
+         stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                 new BigDecimal(0.25), new BigDecimal(0.1)));
+         stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                 new BigDecimal(0.75), new BigDecimal(0.9)));
+     }
+
+     @Test
+     public void afterSavingAStretchesFunctionTemplateItExists() {
+         givenValidStretchesFunctionTemplate();
+         dao.save(stretchesFunctionTemplate);
+         assertTrue(dao.exists(stretchesFunctionTemplate.getId()));
+     }
+
+ }
+
+As you can see you need some Spring annotations to run test inside a Spring
+context in order to be able to use ``@Autowired`` for different Spring beans, in
+that case the DAO class.
+
+Methods annotated with ``@Test`` will be the ones executed in order to check
+different things with methods like ``assertTrue``.
+
+
+Validation
+----------
+
+In all applications you usually need to validate different data in several
+situations. In order to avoid duplicate validations in different layers,
+validation logic should take place in domain model. NavalPlan uses `Hibernate
+Validator`_ for this task.
+
+Basic validations
+.................
+
+Entities should be in charge to validate themselves, which means that some
+validations should be done in entities. For example,
+``StretchesFunctionTemplate`` needs to have a name, then you will add following
+annotation::
+
+    @NotEmpty(message = "name not specified or empty")
+    public String getName() {
+        return name;
+    }
+
+Then you could add the following test to check that
+``StretchesFunctionTemplate`` without name are not stored in database::
+
+    @Test(expected = ValidationException.class)
+    public void tryToSaveStretchesFunctionTemplateWithoutName() {
+        stretchesFunctionTemplate = StretchesFunctionTemplate.create("");
+        dao.save(stretchesFunctionTemplate);
+    }
+
+As you can see here it is being checked that a ``ValidationException`` is thrown
+when it is trying to store an entity with empty name.
+
+.. NOTE::
+
+  The different validation annotations like ``@NotNull``, ``@NotEmpty``,
+  ``@Valid``, etc. should be in ``getXXX`` methods, instead of variables, in
+  order to avoid proxies when trying to validate entities, because of lazy
+  initialization in Hibernate.
+
+Validating related entities
+...........................
+
+Let's go a bit further and try to also validate ``StretchTemplate`` entity,
+which is used by ``StretchesFunctionTemplate``, in order to check that values
+for proportions should be between 0 and 1. Then you could think in define the
+following unit test::
+
+    @Test(expected = ValidationException.class)
+    public void tryToSaveStretchesFunctionTemplateWithoutNullStretchTemplate() {
+        stretchesFunctionTemplate = StretchesFunctionTemplate
+                .create("stretches-function-template-name-" + UUID.randomUUID());
+        stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                BigDecimal.TEN, BigDecimal.TEN));
+        dao.save(stretchesFunctionTemplate);
+    }
+
+If you run this test now it is going to fail as not exception is going to be
+thrown. Then you will add ``@Min`` and ``@Max`` annotations to these attributes
+in class ``StretchTemplate``::
+
+    @Min(value = 0, message = "duration proportion is one based percentage so it "
+            + "should be greater than or equal to 0")
+    @Max(value = 1, message = "duration proportion is one based percentage so it "
+            + "should be less than or equal to 1")
+    public BigDecimal getDurationProportion() {
+        return durationProportion;
+    }
+
+    @Min(value = 0, message = "progress proportion is one based percentage so it "
+            + "should be greater than or equal to 0")
+    @Max(value = 1, message = "progress proportion is one based percentage so it "
+            + "should be less than or equal to 1")
+    public BigDecimal getProgressProportion() {
+        return progressProportion;
+    }
+
+Anyway, test is going to keep failing and you are not getting any
+``ValidationException`` yet. This is because of relations are not automatically
+navigated during validation, you need to manually specify ``@Valid`` annotation
+in order to also validate depending entities. So, you just need to modify
+``StretchesFunctionTemplate`` to add the annotation and then test would be
+successfully passed::
+
+    @Valid
+    public List<StretchTemplate> getStretches() {
+        return Collections.unmodifiableList(stretches);
+    }
+
+Complex validations
+...................
+
+Sometimes you need more complex validations than simply check if a field is
+empty or it has some value, in this case you will have to use ``@AssertTrue``
+annotation. There is a convention in NavalPlan for methods annotated with
+``@AssertTrue`` that names should start with ``checkConstraint`` prefix.
+
+For example, if you want to check that inside a ``StretchesFunctionTemplate``
+different ``StretchTemplate`` are correlative. E.g. if you have a stretch with
+duration 20% and progress 50%, next stretch should have a greater or equal
+progress; then a new stretch with duration 40% and progress 30% is not valid it
+should be at least 50% of progress or a greater value.
+
+Then if you follow TDD, you could add a new test to check if this issue is being
+properly validated::
+
+    @Test(expected = ValidationException.class)
+    public void checkStretchesProgressOrder() {
+        stretchesFunctionTemplate = StretchesFunctionTemplate
+                .create("stretches-function-template-name-" + UUID.randomUUID());
+        stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                new BigDecimal(0.20), new BigDecimal(0.50)));
+        stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                new BigDecimal(0.40), new BigDecimal(0.30)));
+        dao.save(stretchesFunctionTemplate);
+    }
+
+In order to implement this behaviour you will add following method in
+``StretchesFunctionTemplate`` entity::
+
+    @AssertTrue(message = "Some stretch has less progress value than the "
+            + "previous stretch")
+    public boolean checkConstraintStretchesProgressOrder() {
+        if (stretches.isEmpty()) {
+            return true;
+        }
+
+        sortStretchesByDuration();
+
+        Iterator<StretchTemplate> iterator = stretches.iterator();
+        StretchTemplate previous = iterator.next();
+        while (iterator.hasNext()) {
+            StretchTemplate current = iterator.next();
+            if (current.getProgressProportion().compareTo(
+                    previous.getProgressProportion()) <= 0) {
+                return false;
+            }
+            previous = current;
+        }
+
+        return true;
+    }
+
+    private void sortStretchesByDuration() {
+        Collections.sort(stretches, new Comparator<StretchTemplate>() {
+            @Override
+            public int compare(StretchTemplate o1, StretchTemplate o2) {
+                return o1.getDurationProportion().compareTo(
+                        o2.getDurationProportion());
+            }
+        });
+    }
+
+At this moment, when a ``StretchesFunctionTemplate`` entity is stored on
+database, this constraint will be checked in order to avoid save wrong data.
+
+.. WARNING::
+
+  NavalPlan uses a special approach for validating objects when saving, it is
+  defined in ``GenericDAOHibernate``::
+
+    /**
+     * It's necessary to save and validate later.
+     *
+     * Validate may retrieve the entity from DB and put it into the Session, which can eventually lead to
+     * a NonUniqueObject exception. Save works here to reattach the object as well as saving.
+     */
+    public void save(E entity) throws ValidationException {
+        getSession().saveOrUpdate(entity);
+        entity.validate();
+    }
+
+  As you can see, before validating the entity NavalPlan saves it and then
+  checks that all validations run successfully. This could lead to some
+  "strange" results while developing test.
+
+  For example, if you are testing that a value could not be ``null`` and it is
+  defined with a ``not-null`` constraint in database mapping. You will add
+  ``@NotNull`` annotation and create a test expecting a ``ValidationException``.
+  However, as NavalPlan is not able to store in database the entity (because of
+  database constraint) you will always get a
+  ``DataIntegrityViolationException``.
+
+Interface validations
+---------------------
+
+Even, when it is already stated that validations have to be done in domain
+entities, in order to check business logic in proper layer and avoid possible
+issues because of wrong data is stored on database. It is also possible to
+replicate some of these validations in view layer, in order to show to users
+better error messages and prevent them to send invalid data to server.
+
+ZK provides an easy way to add constraints to form fields. For example, in
+``StretchesFunctionTemplate`` entity name can not be empty so you could add the
+following validation on ``_editStretchesFunctionTemplate.zul`` file::
+
+                            <label value="${i18n:_('Name')}" />
+                            <textbox id="tbName"
+                                value="@{controller.stretchesFunctionTemplate.name}"
+                                width="300px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
+
+Now, if users set an empty name, they will receive an error in a popup. However,
+if they click *Save* button, the request to sever will be sent and then they
+will get validations errors due to Hibernate constraints.
+
+In order to do not allow users send wrong data to server you should use
+``ConstraintChecker`` utility in ``StretchesFunctionTemplateCRUDController``::
+
+    private boolean save() {
+        ConstraintChecker.isValid(editWindow);
+        ...
+    }
 
 
 Web services
@@ -1522,11 +1800,14 @@ operations of retrieval, query and storage entities. Models are not going to
 access to concrete classes, they will use interfaces (dependency injection).
 
 Hibernate is the persistence framework used in NavalPlan. There is two base
-classes ``GenericHibernateDAO`` and ``BaseEntity`` which encapsulate main part
+classes ``GenericDAOHibernate`` and ``BaseEntity`` which encapsulate main part
 of Hibernate API. Every DAOs and entities inherit from these two classes
 respectively. Every domain entities must to have Hibernate mapping. Mapping is
 done in ``.hbm.xml`` files.
 
+NavalPlan uses testing framework JUnit. Moreover, Hibernate Validator is used to
+validate business logic. Business logic is always tested and validated in model
+layer, where entities are responsible to validate their own data.
 
 
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
@@ -1541,3 +1822,6 @@ done in ``.hbm.xml`` files.
 .. _`database refactorings`: http://en.wikipedia.org/wiki/Database_refactoring
 .. _Liquibase: http://www.liquibase.org/
 .. _ZK: http://www.zkoss.org/
+.. _JUnit: http://junit.sourceforge.net/
+.. _TDD: http://en.wikipedia.org/wiki/Test_driven_development
+.. _`Hibernate Validator`: http://www.hibernate.org/subprojects/validator.html
