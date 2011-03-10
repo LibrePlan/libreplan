@@ -68,4 +68,8 @@ public interface IOrderTemplatesModel {
     Map<CriterionType, List<Criterion>> getMapCriterions();
 
     Scenario getCurrentScenario();
+
+    void confirmDelete(OrderElementTemplate template);
+
+    boolean hasNotApplications(OrderElementTemplate template);
 }

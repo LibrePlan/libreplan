@@ -55,8 +55,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -338,5 +340,34 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 }
             }
         };
+    }
+
+    /**
+     * Pop up confirm remove dialog
+     * @param OrderTemplate
+     */
+    public void confirmDelete(OrderElementTemplate template) {
+        try {
+            if (Messagebox.show(_("Delete order template. Are you sure?"),
+                    _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                if (this.model.hasNotApplications(template)) {
+                    this.model.confirmDelete(template);
+                    Grid gridOrderTemplates = (Grid) listWindow
+                            .getFellowIfAny("listing");
+                    if (gridOrderTemplates != null) {
+                        Util.reloadBindings(gridOrderTemplates);
+                    }
+                } else {
+                    messagesForUser
+                            .showMessage(
+                                    Level.ERROR,
+                                    _("This template can not be removed because it has applications."));
+                }
+            }
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 }
