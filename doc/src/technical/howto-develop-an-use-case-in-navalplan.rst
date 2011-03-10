@@ -6,15 +6,21 @@ How To Develop An Use Case In NavalPlan
 
 :Author: Manuel Rego Casasnovas
 :Contact: mrego@igalia.com
-:Date: 02/03/2011
+:Date: 10/03/2011
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
   http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  The goal of this document is develop a complete CRUD_ (create, read, update
-  and delete) use case in NavalPlan_. Through carrying out this exercise you
-  will see the basic structure of NavalPlan and underlying technology stack.
+  This is a guide about how to develop an use case in NavalPlan_. Following the
+  different sections of this document you will end up developing a complete
+  CRUD_ (create, read, update and delete) use case in the project.
+
+  Thanks to this tutorial you will know the basic structure, different layers of
+  application architecture and underlying technology stack. Summarizing, you
+  will learn how to create a new entity, define an interface to manipulate it,
+  store it on a database, add some kind of validation and integrate it with web
+  services.
 
 .. contents:: Table of Contents
 
@@ -22,15 +28,21 @@ How To Develop An Use Case In NavalPlan
 Introduction
 ============
 
-Use case to be developed consists of create a new entity called
-``StretchesFunctionTemplate`` that will be managed from NavalPlan interface.
-Summarizing, you will learn how to create a new entity, define an interface to
-manipulate it, store it on a database and integrate it with web services.
+This manual is a kind of practical exercise that will be solved throughout the
+different sections. It is required to have basic knowledge about Java software
+platform in order to properly follow the document. Moreover, knowledge in
+different Java frameworks used in NavalPlan like Hibernate, Spring, ZK, JUnit,
+etc. would be a nice addition.
+
+The goal of this document is develop a **complete CRUD use case in NavalPlan**.
+The idea consists of create a new entity called ``StretchesFunctionTemplate``
+that will be managed from application interface, just like any other entity in
+the project.
 
 ``StretchesFunctionTemplate`` will be a class to define templates for different
 ``StretchesFunction`` that are used in advanced allocation window.
-``StretchesFunction`` is a kind of assignment function which allow users define
-different stretches in order to do resource allocations.
+A ``StretchesFunction`` is a kind of assignment function which allow users
+define different stretches in order to do resource allocations.
 
 .. NOTE::
 
@@ -61,35 +73,58 @@ different stretches in order to do resource allocations.
 Thanks to the new class ``StretchesFunctionTemplate`` users will have the chance
 to store repetitive ``StretchesFunction`` that they usually apply while
 scheduling. This will allow users to define some kind of patterns for tasks,
-where for example they know that always start with a lower load and then it is
+where, for example, they know that always start with a lower load and then it is
 increased at the end. They could create a ``StretchesFunctionTemplate`` defining
 this behaviour and use it in all the tasks they want.
+
+.. TIP::
+
+   If you want to run NavalPlan in development mode you need to follow the next
+   instructions:
+
+   * Create a PostgreSQL database called ``navaldev`` with permissions for a
+     user ``naval`` with    password ``naval`` (see ``INSTALL`` file for other
+     databases and more info).
+
+   * Compile NavalPlan with the following command from project root folder::
+
+       mvn -DskipTests -P-userguide clean install
+
+   * Launch Jetty from ``navalplanner-webapp`` directory::
+
+       cd navalplanner-webapp
+       mvn -P-userguide jetty:run
+
+   * Access with a web browser to the following URL and login with default
+     credentials (user ``admin`` and password ``admin``):
+     http://localhost:8080/navalplanner-webapp/
 
 
 Domain entities
 ===============
 
 First of all you need to create the new entity ``StretchesFunctionTemplate`` in
-NavalPlan business layer.
+NavalPlan **business layer**.
 
 Domain entities encapsulate application business data and part of their logic.
-They are Hibernate entities, and therefore are retrieved and stored in a data
+They are Hibernate_ entities, and therefore are retrieved and stored in a data
 warehouse (usually a database). Mapping between Java classes and Hibernate is
 done with ``.hbm.xml`` files. For example, file ``ResourceAllocations.hbm.xml``
 contains ``StretchesFunction`` class mapping.
 
-All NavalPlan domain entities inherit from ``BaseEntity``. ``BaseEntity`` class
-has two attributes: ``id`` and ``version``. ``id`` is mandatory in order to
-entity could be considered as an Hibernate entity. ``version`` attribute is used
-to impelmement concurrency control method called `Optimistic Locking`_.
+All domain entities in the project inherit from ``BaseEntity``. ``BaseEntity``
+class has two attributes: ``id`` and ``version``. ``id`` is mandatory in order
+to entity could be considered as an Hibernate entity. ``version`` attribute is
+used to implement concurrency control method called `Optimistic Locking`_.
 
 .. ADMONITION:: Optimistic Locking
 
   ``version`` field in entities is used to implement the concurrency control
   method in order to detect concurrency problems during execution.
 
-  Let's imagine 2 users go to edit the same exception day type called "HOLIDAY"
-  and both want to modify field ``color``. Currently in database you will have::
+  Let's imagine two users go to edit the same exception day type called
+  "HOLIDAY" and both want to modify field ``color``. Currently in database you
+  will have::
 
     name: HOLIDAY
     version: 1
@@ -122,10 +157,10 @@ Entities instantiation
 ----------------------
 
 In NavalPlan domain entities are never instantiated directly, but entities will
-expose a static method ``create()`` which will be responsible to return a new
-instance. The rest of classes must call ``create()`` method of ``BaseEntity``
-when they want to create a new instance of any entity. This is usually
-implemented with something similar to the following code::
+expose a **static method ``create()``** which will be responsible to return a
+new instance. The rest of classes must call ``create()`` method of
+``BaseEntity`` when they want to create a new instance of any entity. This is
+usually implemented with something similar to the following code::
 
   public class MyNewEntity extends BaseEntity {
 
@@ -141,14 +176,19 @@ implemented with something similar to the following code::
 
   }
 
+As you can see, it is defining a default constructor without parameters with
+``protected`` visibility. Default constructor is mandatory because of Hibernate
+need it, but it is marked with reduced visibility in order to avoid other
+classes use it.
+
 .. WARNING::
 
   In NavalPlan a lot of entities extends ``IntegrationEntity`` instead of
   ``BaseEntity``, anyway ``IntegrationEntity`` also extends ``BaseEntity``.
 
   ``IntegrationEntity`` is a base class for all domain entities that are going
-  to be available via web services in NavalPlan. These entities have a ``code``
-  attribute, which unlike ``id`` is unique among the applications to be
+  to be available via web services in the project. These entities have a
+  ``code`` attribute, which unlike ``id`` is unique among the applications to be
   integrated (``id`` is only unique inside one NavalPlan instance).
 
 In order to know if an object is new or not you will use method
@@ -159,7 +199,8 @@ attribute is ``null`` (transient entity).
 
   Transient
     An object out of Hibernate session instantiated with ``new()``. Actually, in
-    NavalPlan ``create()`` that calls ``new()`` at some point.
+    NavalPlan the method used is ``create()`` that calls ``new()`` at some
+    point.
 
   Persistent
     A persistent entity, already stored on database, which is inside a
@@ -171,7 +212,8 @@ attribute is ``null`` (transient entity).
 New entity implementation
 -------------------------
 
-The new entity ``StretchesFunctionTemplate`` will have the following properties:
+The **new entity ``StretchesFunctionTemplate``** will have the following
+properties:
 
   * ``name``: A string to identify the template.
   * ``stretches``: A list of ``StretchTemplate`` a new class that will just have
@@ -266,10 +308,11 @@ shown):
 Model View Controller pattern
 =============================
 
-NavalPlan architecture follows MVC_ pattern, which isolates business logic from
-user interface allowing separation of different layers in the application. View
-and controller will be explained later, now it is time to explain model layer
-that is in charge of implement application business or domain logic.
+NavalPlan architecture follows MVC_ (Model-view-controller) pattern, which
+isolates business logic from user interface allowing separation of different
+layers in the application. View and controller will be explained later, now it
+is time to explain **model layer** that is in charge of implement application
+business or domain logic.
 
 This model layer is formed by different elements. On the one hand, there are
 domain entities and DAO_ (Data Access Object) classes which offer methods to
@@ -278,29 +321,29 @@ files, that are always associated to some controller.
 
 .. ADMONITION:: Domain Driven Design
 
-   NavalPlan follows approach proposed by DDD_. It tries that business logic
-   remains encapsulated inside domain classes, a as far as possible, otherwise
+   The project follows approach proposed by DDD_. It tries that business logic
+   remains encapsulated inside domain classes, as far as possible, otherwise
    it will be used a model layer.
 
-   The idea is that every domain element will be reposible for itself, which
+   The idea is that every domain element will be responsible for itself, which
    means that it knows its business logic and exposes it to other objects
    through methods. Other operations were, for example, several objects are used
    could be written in model layer.
 
-Actually, model classes do not access directly to database but they do through a
-DAO object. DAO classes are responsible for retrieve, query and store domain
-entities on database, i.e. they implement the persistence layer only accessible
-from model.
+Actually, model classes do not access directly to database but they do it
+through a DAO object. DAO classes are responsible for retrieve, query and store
+domain entities on database, i.e. they implement the persistence layer only
+accessible from model.
 
-However, in NavalPlan domain elements can be used directly from view for reading
-or modifying its content.
+However, in the application domain elements can be used directly from view layer
+for reading or modifying its content.
 
 
 Persistence layer communication
 -------------------------------
 
-In order to access domain entities it will always exist a DAO class for each
-entity type. This DAO class inherites from ``GenericDAOHibernate``, this class
+In order to access domain entities it will always exist a **DAO class** for each
+entity type. This DAO class inherits from ``GenericDAOHibernate``, which
 provides the methods needed to implement common persistence behaviour.
 
 If you want that a model has access to a DAO class, you have to insert an
@@ -313,13 +356,13 @@ attribute in your model, for example, a variable called
 Take into account that this attribute has an interface as type. This interface,
 ``IStretchesFunctionTemplateDAO``, will have associated an implementation class
 called ``StretchesFunctionTemplateDAO``. Spring_ framework is in charge to
-inject this implementation class in the variable. In order to this happens, it
-is needed to mark the attribute with ``@Autowired`` annotation. This will be
-also needed to add some special annotations, interpreted by Spring, at
-implementation class.
+inject this implementation class in the variable. For this to happen, it is
+needed to mark the attribute with ``@Autowired`` annotation. This will be also
+needed to add some special annotations, interpreted by Spring, at implementation
+class.
 
-There also an interface ``IGenericDAOHibernate`` implemented by
-``GenericDAOHibernate``.
+There is also an interface ``IGenericDAOHibernate`` implemented by
+``GenericDAOHibernate``. So, your new interface will extend this one.
 
 Then you will have the following files:
 
@@ -368,7 +411,7 @@ Then you will have the following files:
   oriented programming principle: "develop in terms of interfaces and
   functionality instead of concrete implementation details".
 
-  In NavalPlan for each DAO class exist an interface class `IXXXDAO`. Models
+  In NavalPlan for each DAO class there is an interface class `IXXXDAO`. Models
   always use these interface classes. Spring framework instantiates a class for
   each interface type and injects it in the corresponding variable.
 
@@ -381,11 +424,11 @@ transaction, rollback, etc.
 Database schema
 ---------------
 
-Moreover, you need to define Hibernate mapping for the new entity
+Moreover, you need to define **Hibernate mapping** for the new entity
 ``StretchesFunctionTemplate``. Like this new entity is related with allocations
-you will use ``ResourceAllocations.hbm.xml`` and add the following lines (in
-other cases you should look for the proper ``.hbm.xml`` file or just create a
-new one if needed)::
+you will use ``ResourceAllocations.hbm.xml`` file and, then, add the following
+lines (in other cases you should look for the proper ``.hbm.xml`` file or just
+create a new one if needed)::
 
     <!-- StretchesFunctionTemplate -->
     <class name="StretchesFunctionTemplate" table="stretches_function_template">
@@ -396,7 +439,7 @@ new one if needed)::
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="name" access="property" not-null="true" unique="true" />
+        <property name="name" access="property" not-null="true" />
 
         <list name="stretches" table="stretch_template">
             <key column="stretches_function_template_id" />
@@ -415,15 +458,15 @@ However, this is not enough in order to store the new entity on database,
 because of tables are not created yet. Usually, tables are automatically created
 by Hibernate, but this is disabled in NavalPlan, and Hibernates just validates
 that database structure matches with mapping specifications in ``hbm.xml``
-files. The reason to disable automatic schema creation is in order to have a
-proper control over `database refactorings`_, this allows NavalPlan to manage
+files. The reason to disable automatic schema creation is for having a proper
+control over `database refactorings`_, this allows that application manage
 migrations between databases of different NavalPlan versions. Only testing
-database is created automatically in NavalPlan.
+database is created automatically in the project.
 
-Liquibase_ is the tool used to manage these database refactorings. Developers
-have to specify via a changelog file the changes to be applied on database when
-they modify any mapping. Then you will need to add the following lines in the
-proper ``db.changelog-XXX.xml`` file::
+Liquibase_ is the tool used to manage these **database refactorings**.
+Developers have to specify in a changelog file the changes to be applied on
+database when they modify any mapping. Then you will need to add the following
+lines in the proper ``db.changelog-XXX.xml`` file::
 
     <changeSet author="mrego" id="create-tables-related-to-stretches_function_template">
         <comment>Create new new tables and indexes related with StretchesFunctionTemplate entity</comment>
@@ -439,11 +482,6 @@ proper ``db.changelog-XXX.xml`` file::
                 <constraints nullable="false"/>
             </column>
         </createTable>
-
-        <addUniqueConstraint columnNames="name"
-            constraintName="stretches_function_template_name_key"
-            deferrable="false" disabled="false" initiallyDeferred="false"
-            tableName="stretches_function_template"/>
 
         <createTable tableName="stretch_template">
             <column name="stretches_function_template_id" type="BIGINT">
@@ -480,16 +518,17 @@ As you can see, this specify the different tables to be created on database and
 also some constraints like foreign keys. Usually you can take a look to other
 Liquibase changes to know how to create a table or some field. Also a good idea
 is to check the result of your changeset against testing database (which is
-created automatically), thus you will be sure that your changes are right.
+created automatically), in this way you will be sure that your changes are
+right.
 
 
 Interface
 =========
 
-Let's move to view layer, now that you already know how is the new entity, which
-attributes it has and so on. You are ready to start developing the interface and
-start to see something working in NavalPlan. NavalPlan uses ZK_ framework for UI
-development.
+Let's move to **view layer**, now that you already know how is the new entity,
+which attributes it has and so on. You are ready to start developing the
+interface and start to see something working in the application. NavalPlan uses
+ZK_ framework for UI development.
 
 Menu entry
 ----------
@@ -499,18 +538,18 @@ application administrator. For that reason, you need to add a new option on
 *Administration / Management* menu.
 
 Class ``CustomMenuController`` is in charge to create options menu which appears
-in top part of NavalPlan. Then you need to modify method ``initializeMenu()`` in
-``CustomMenuController`` to add a new ``subItem`` inside the ``topItem``
-*Administration / Management*::
+in top part of the application. Then you need to modify method
+``initializeMenu()`` in ``CustomMenuController`` to add a new ``subItem`` inside
+the ``topItem`` *Administration / Management*::
 
     subItem(_("Stretches Function Templates"),
         "/planner/stretchesFunctionTemplate.zul",
         "")
 
-This option will link to a new ``.zul`` file that will be interface fora
-applicaition users in order to manage ``StretchesFunctionTemplate`` entity. When
-you click the new entry, NavalPlan will the load ``.zul`` file (but the link is
-not going to work as ``.zul`` page does not exist yet).
+This option will link to a new ``.zul`` file that will be interface for
+application users in order to manage ``StretchesFunctionTemplate`` entity. When
+you click the new entry, NavalPlan will the load ``.zul`` file (but, at this
+moment, the link is not going to work as ``.zul`` page does not exist yet).
 
 Main ``.zul`` page
 ------------------
@@ -553,25 +592,25 @@ This line define that the document is a page.
 
  <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
 
-It is needed because of you are going to use bindings in this page.
+It is needed because of you are going to use **bindings** in this page.
 
 .. NOTE::
 
   ``<?init ... ?>`` labels are always the first ones to be evaluated inside a
-  page. And they always receive a class as parameter, they instanciate it and
+  page. And they always receive a class as parameter, they instantiate it and
   call its ``init()`` method.
 
 .. ADMONITION:: Data Binding
 
-  A binding is the ability to eveluate a data element (for example, a bean) in
+  A binding is the ability to evaluate a data element (for example, a bean) in
   execution time from a ``.zul`` page. Evaluation, which finally executes a
-  method, could be used to get objects from the object or modify its properties.
+  method, could be used to get data from the object or modify its properties.
 
   Usually bindings are used in components like ``Listbox``, ``Grid`` and
   ``Tree``. These components have the possibility to be fed by dynamic data
-  (live-data). Becasue these components receive dynamic data, it is not
-  poassible to determine how many rows are going to be shown before knowing the
-  real data. These componnets allow build a generic row that will be repeated
+  (*live-data*). Because these components receive dynamic data, it is not
+  possible to determine how many rows are going to be shown before knowing the
+  real data. These components allow build a generic row that will be repeated
   for each element in the collection. When component is rendered, bindings are
   evaluated in order to get concrete value. For example::
 
@@ -606,7 +645,7 @@ window marked as ``content``, that will be inserted in ``template.zul`` page.
 ``apply`` attribute
 -------------------
 
-The basis for implementing MVC patter in ZK is ``apply`` attribute.
+The basis for implementing MVC pattern in ZK is ``apply`` attribute.
 
 Your page defines a component ``Window`` with an ``apply`` attribute assigned::
 
@@ -641,15 +680,15 @@ the same identifier in ``.zul`` and Java. For example:
 
  ...
 
-This matching is automacit and is done by ZK. In order that this works it is
-needed that your contoller inherites from ``GenericForwarComposer`` (wich in
+This matching is automatic and is done by ZK. In order that this works it is
+needed that your controller inherits from ``GenericForwarComposer`` (which in
 turn extends ``GenericAutowireComposer``, that is the class doing this kind of
 "magic").
 
 Thanks to this you will be able to access view from controller, but not the
 other way around. If you want to do this you need to define a variable inside
 ``Window`` component that will contain a reference to controller instance. The
-steps to to this are the following ones:
+steps to do this are the following ones:
 
 * Your controller will override method ``doAfterCompose``.
 * This method receives a component which is the window associated to the
@@ -667,7 +706,7 @@ steps to to this are the following ones:
 
 After that from ``.zul``, you will make reference to a variable called
 ``controller`` (either from a binding or in order to execute any method when an
-event is dispatched. In this way you could see that view can also access to
+event is dispatched). In this way you could see that view can also access to
 controller. For example with the following lines::
 
     <!-- Call method getStretchesFunctionTemplates from view -->
@@ -679,31 +718,29 @@ controller. For example with the following lines::
 As you can see in last example, when an event is launched is not needed to use
 data binding.
 
-ZK macrocomponents
-------------------
+ZK macro components
+-------------------
 
-Your page ``stretchesFunctionTemplate.zul`` defines 2 macrocomponents: ``list``
-and ``edit``. These macrocomponents implement list view and edit/creation view
-respectively.
+Your page ``stretchesFunctionTemplate.zul`` defines two macro components:
+``list`` and ``edit``. These macro components implement list view and
+edit/creation view respectively.
 
 ::
 
  <?component name="list" inline="true" macroURI="_listStretchesFunctionTemplates.zul"?>
 
-This line declares a macrocomponent called ``list`` associated to page
+This line declares a macro component called ``list`` associated to page
 ``_listStretchesFunctionTemplates.zul``. ``inline`` attribute indicates that the
-macrocomponent is on the same scope as the component which contains it, i.e.,
+macro component is on the same scope as the component which contains it, i.e.,
 ``window`` component could see ``list`` component and the other way around.
 Inside the same scope or namespace there can not be repeated identifiers (``id``
-attributes).
-
-However, ``window`` component creates a new namespace. Inside different
-namespaces identifiers could be repeated. List contains a ``Grid`` called
-``listStretchesFunctionTemplates``.
+attributes). However, ``window`` component creates a new namespace. Inside
+different namespaces identifiers could be repeated.
 
 Another consequence is that from the main window, which is associated with
 controller, you can not access components defined in ``list`` or ``edit``. For
-example::
+example, ``list`` contains a ``Grid`` called
+``listStretchesFunctionTemplates``::
 
  public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
 
@@ -744,7 +781,7 @@ controller. For example::
      ...
 
 Another important issue when implementing CRUD use cases is that general view
-contains both ``list`` and ``edit`` component. These components are renderized
+contains both ``list`` and ``edit`` component. These components are rendered
 and shown when page is loaded. Class ``OnlyOneVisible`` is used in controller to
 manage which one will be visible at a given time. You can find the following
 pieces of code in all CRUD controllers already working in NavalPlan::
@@ -788,10 +825,16 @@ Messages for users
 Defines a container to show messages to users. These messages usually appear in
 the top of current window inside a box. There is a default implementation in a
 class called ``MessagesForUser`` which is used in all controllers to show
-messages to users in a similar way in the whole application.
+messages to users in a similar way for the whole application.
 
 Apart from previous line on ``.zul`` file you will see the following lines
 inside ``doAfterCompose`` method in controller::
+
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
+    ...
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -799,6 +842,7 @@ inside ``doAfterCompose`` method in controller::
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
         ...
+    }
 
 These lines instantiate a new object of ``MessagesForUser`` class using the
 container defined at ``.zul`` page. Then when you want to notify or show a
@@ -856,7 +900,7 @@ following content:
 
   </window>
 
-In the next paragraphs different parts of the file will be reviwed.
+In the next paragraphs different parts of the file will be reviewed.
 
 ::
 
@@ -866,7 +910,7 @@ In the next paragraphs different parts of the file will be reviwed.
 ``NewDataSortableGrid`` is a special component defined in NavalPlan, that
 extends ``Grid`` component adding sorting feature for columns. As you can see,
 ``model`` attribute is set, which means that a method called
-``getStretchesFunctionTemplates`` in controller will be called. Thise method
+``getStretchesFunctionTemplates`` in controller will be called. This method
 will have the responsibility to communicate with model layer in order to get the
 list of ``StretchesFunctionTemplate`` from database.
 
@@ -1051,8 +1095,8 @@ operation.
 
 List of ``StretchTemplate`` will be shown inside a ``Grid``. You define
 ``model`` just like in ``_listStretchesFunctionTemplates.zul`` but for
-``StretchTemplate`` entities in this case, but you are not using ``Row``
-elements. Instead of it, you are setting ``rowRenderer`` attribute, that will
+``StretchTemplate`` entities in this case. However, you are not using ``Row``
+elements, instead,  you are setting ``rowRenderer`` attribute that will
 call to a method in controller. This method will return a ``RowRenderer`` that
 will know how to show information about a ``StretchTemplate``.
 
@@ -1062,9 +1106,9 @@ Conversation model
 
 Model always contains state variables which are being modified by use case. For
 example, model for CRUD use case, that is going to allow manage
-``StretchesFunctionTemplate`` entities, will have a conversation state with the
-current entity being created or edited. The series of steps that modify entity
-state are called **conversation**.
+``StretchesFunctionTemplate`` entities, will have a **conversation state** with
+the current entity being created or edited. The series of steps that modify the
+entity are called **conversation**.
 
 Every conversation has a starting point and an ending one. Class ``XXXModel`` is
 in charge of implement the conversation. Similar to what happens in DAOs case,
@@ -1108,22 +1152,22 @@ Conversation protocol
     is started and before the end step is executed.
   * End step: Set of (exclusive) operations which finish the conversation.
 
-NavalPlan uses ``session-per-request-with-detached-objects`` pattern, it is a
-way to implement the conversation model. This is usually valid for applications
-that extract data from a database, user make some operations with this data
-(*think-time*), and after that they are stored in database.
+The application uses ``session-per-request-with-detached-objects`` pattern, it
+is a way to implement the conversation model. This is usually valid for
+applications that extract data from a database, user make some operations with
+this data (*think-time*), and after that they are stored in database.
 
-In NavalPlan when you start an edition conversation, you will retrieve an entity
-from database (through DAO) and keep it in memory as state variable in model
-(*conversation state*). This variable will be detached (a stored variable that
-is not inside a Hibernate session). Hibernate allows to modify detached entity
-out of a session. But, after that, it should be needed to open a transaction in
-order to store entity on database.
+In the project when you start an edition conversation, you will retrieve an
+entity from database (through DAO) and keep it in memory as state variable in
+model (conversation state). This variable will be detached, i.e., a stored
+variable that is not inside a Hibernate session). Hibernate allows to modify
+detached entity out of a session. But, after that, it should be needed to open a
+transaction in order to store entity on database.
 
 You should be careful working with detached objects because of you could easily
 get errors like: ``ObjectNotBoundInSession``, ``LazyInitializationException``
 (trying to access a entity marked as lazy) or ``DuplicateSessionInObject`` (two
-objects of same instance in the same ssion).
+objects of same instance in the same session).
 
 On the contrary, ``session-per-conversation`` pattern always keep Hibernate
 session open, so there will be no objects with detached state. This pattern is
@@ -1133,9 +1177,9 @@ suitable for applications with low *think-time*.
 Communication between model and controller
 ------------------------------------------
 
-Following the approach explained before, in this our use case you are going to
+Following the approach explained before, in this use case you are going to
 have a model ``StretchesFunctionTemplateModel`` and its interface called
-``IStretchesFunctionTemplateModel``. That means that you will have 2 new files
+``IStretchesFunctionTemplateModel``. That means that you will have two new files
 inside
 ``navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/streches/``
 folder:
@@ -1165,7 +1209,7 @@ folder:
     }
 
 As you can see, model is a Spring bean, in order that controller communicates
-with model, you need to do 2 different things:
+with model, you need to do two different things:
 
 * Add the following line at ``.zul`` page (this is not really needed because of
   this line is already in ``template.zul``)::
@@ -1222,9 +1266,16 @@ example.
         return stretchesFunctionTemplateDAO.getAll();
     }
 
-As you can see, method ``getStretchesFunctionTemplates`` in model is not
-involved in conversation protocol. Moreover, you will also need to implement
-``getAll`` method in DAO that would be quite simple::
+As you can see, you need to use ``@Transactional`` annotation in
+``getStretchesFunctionTemplates`` method. This is needed in order to access DAO
+object inside Hibernate session in order to get entities from database. If you
+just need to query data, like in this case, you should mark transaction as read
+only (``@Transactional(readOnly = true)``). Moreover,  method
+``getStretchesFunctionTemplates`` in model is not involved in conversation
+protocol.
+
+On the other hand, you will also need to implement ``getAll`` method in DAO that
+would be quite simple::
 
     @Override
     public List<StretchesFunctionTemplate> getAll() {
@@ -1270,7 +1321,6 @@ add the following lines in model (remember to create method in interface too)::
     public void initCreate() {
         this.stretchesFunctionTemplate = StretchesFunctionTemplate.create("");
     }
-
 
 Thanks to first line, model will keep in memory current entity being created or
 edited. As you can see in the method, a new instance of the entity is created
@@ -1422,10 +1472,8 @@ model::
         stretchesFunctionTemplate = null;
     }
 
-As you can see, you need to use ``@Transactional`` annotation in ``confirmSave``
-method. This is needed in order to access DAO object inside Hibernate session in
-order to store entity on database. If you just need to query data you should
-mark transaction as read only (``@Transactional(readOnly = true)``).
+As you can see, now ``@Transactional`` is used in ``confirmSave`` method without
+read only attribute as this operation is going to store entity on database.
 
 All these steps will carry out a complete conversation in NavalPlan. In this
 case this conversation will allow users to create new
@@ -1436,9 +1484,10 @@ not cancel the operation).
 Solving issues with detached objects
 ------------------------------------
 
-As it was already stated, you need to be careful managing detached objects. For
-example, if you think in edit an already stored ``StretchesFunctionTemplate``,
-you will have a very similar method to ``goToCreateForm`` in controller::
+As it was already stated, you need to be careful managing **detached objects**.
+For example, if you think in edit an already stored
+``StretchesFunctionTemplate``, you will have a very similar method to
+``goToCreateForm`` in controller::
 
     public void goToEditForm(StretchesFunctionTemplate stretchesFunctionTemplate) {
         stretchesFunctionTemplateModel.initEdit(stretchesFunctionTemplate);
@@ -1481,7 +1530,7 @@ a) Add ``@Transactional`` annotation to open Hibernate session, reattach entity
         this.stretchesFunctionTemplate.getStretches().size();
     }
 
-b) Modify entity mapping to avoid lazy relation::
+b) Or modify entity mapping to avoid lazy relation::
 
     <list name="stretches" table="stretch_template" lazy="false">
 
@@ -1497,16 +1546,17 @@ Testing
 =======
 
 NavalPlan uses JUnit_ testing framework, as a tool to check application
-behaviour based on unit tests. The main classes tested are: entities, models and
-DAOs. These tests are executed automatically when project is compiled, thus
-allow developers check that their changes do not break other parts of software.
+behaviour based on **unit tests**. The main classes tested are: entities, models
+and DAOs. These tests are executed automatically when project is compiled, thus
+allow developers check that their changes do not break other parts of
+application.
 
 It is strongly recommended to create test for entities and models, in order to
 ensure that business logic is working properly.
 
 .. ADMONITION:: Test Driven Development
 
-  NavalPlan developers usually follow, although not strictly, TDD_ while
+  Project developers usually follow, although not strictly, TDD_ while
   programming use cases. The main idea behind TDD is:
 
   * First write a test to define a expected feature in a class. At this moment,
@@ -1514,8 +1564,8 @@ ensure that business logic is working properly.
   * After that, modify class to fulfill requirements specified by test.
     Producing code to pass the test.
 
-An example of JUnit test
-------------------------
+An example of unit test
+-----------------------
 
 For example, in order to test that defined mapping is right you can define a
 test for your DAO. Simply create the following file called
@@ -1587,6 +1637,13 @@ annotation::
         return name;
     }
 
+.. NOTE::
+
+  The different validation annotations like ``@NotNull``, ``@NotEmpty``,
+  ``@Valid``, etc. should be in ``getXXX`` methods, instead of variables, in
+  order to avoid proxies when trying to validate entities, because of lazy
+  initialization in Hibernate.
+
 Then you could add the following test to check that
 ``StretchesFunctionTemplate`` without name are not stored in database::
 
@@ -1598,13 +1655,6 @@ Then you could add the following test to check that
 
 As you can see here, it is being checked that a ``ValidationException`` is
 thrown when it is trying to store an entity with empty name.
-
-.. NOTE::
-
-  The different validation annotations like ``@NotNull``, ``@NotEmpty``,
-  ``@Valid``, etc. should be in ``getXXX`` methods, instead of variables, in
-  order to avoid proxies when trying to validate entities, because of lazy
-  initialization in Hibernate.
 
 Validating related entities
 ...........................
@@ -1663,7 +1713,7 @@ empty or it has some value, in this case you will have to use ``@AssertTrue``
 annotation. There is a convention in NavalPlan for methods annotated with
 ``@AssertTrue`` that names should start with ``checkConstraint`` prefix.
 
-For example, if you want to check that inside a ``StretchesFunctionTemplate``
+For example, maybe you want to check that inside a ``StretchesFunctionTemplate``
 different ``StretchTemplate`` are correlative. E.g. if you have a stretch with
 duration 20% and progress 50%, next stretch should have a greater or equal
 progress; then a new stretch with duration 40% and progress 30% is not valid it
@@ -1724,7 +1774,7 @@ database, this constraint will be checked in order to avoid save wrong data.
 
 .. WARNING::
 
-  NavalPlan uses a special approach for validating objects when saving, it is
+  The project uses a special approach for validating objects when saving, it is
   defined in ``GenericDAOHibernate``::
 
     /**
@@ -1738,7 +1788,7 @@ database, this constraint will be checked in order to avoid save wrong data.
         entity.validate();
     }
 
-  As you can see, before validating the entity NavalPlan saves it and then
+  As you can see, before validating the entity the application saves it and then
   checks that all validations run successfully. This could lead to some
   "strange" results while developing test.
 
@@ -1746,7 +1796,7 @@ database, this constraint will be checked in order to avoid save wrong data.
   defined with a ``not-null`` constraint in database mapping. You will add
   ``@NotNull`` annotation and create a test expecting a ``ValidationException``.
   However, as NavalPlan is not able to store in database the entity (because of
-  database constraint) you will always get a
+  a database constraint) you will always get a
   ``DataIntegrityViolationException``.
 
 Interface validations
@@ -1768,7 +1818,7 @@ following validation on ``_editStretchesFunctionTemplate.zul`` file::
                                 width="300px"
                                 constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
-Now, if users set an empty name, they will receive an error in a popup. However,
+Now, if users set an empty name, they will receive an error in a pop-up. However,
 if they click *Save* button, the request to sever will be sent and then they
 will get validations errors due to Hibernate constraints.
 
@@ -1784,10 +1834,10 @@ In order to do not allow users send wrong data to server you should use
 Web services
 ============
 
-NavalPlan provides web services as integration tool for third party applications
-that want to get/send data from/to NavalPlan. For this task NavalPlan
-implementation is based in REST_ (Representational State Transfer) services with
-the following behaviour:
+NavalPlan provides **web services** as integration tool for third party
+applications that want to get/send data from/to application. Project
+implementation to perform this task is based in REST_ (Representational State
+Transfer) services with the following behaviour:
 
 * All integration entities will have a code that will allow them to be
   identified for both NavalPlan and third party application. It is important to
@@ -1795,35 +1845,37 @@ the following behaviour:
   attribute, which is an internal identifier for the database and could be
   repeated in different instances of NavalPlan.
 
-* When NavalPlan receive an entity via web service, it follows the next steps:
+* When the application receive an entity via web service, it follows the next
+  steps:
 
   * Check if entity already exists on database. Using ``code`` attribute for
     this.
   * If entity does not exist, then it is created the new entity and stored on
     database.
-  * If entity already exists, then it is modified and stored on database.
+  * If entity already exists, then it is modified and changes are stored on
+    database.
 
 * Delete operation is not going to be allowed, because of remove some entity
   could take side effects in other schedules done in NavalPlan. Anyway, it is
   possible that some entities provide an attribute to deactivate them in the
   system, this could be changed with a modification operation.
 
-NavalPlan entities will be represented as XML files in order to be sent or
+Application entities will be represented as XML files in order to be sent or
 received as web service data.
 
 Convert into ``IntegrationEntity``
 ----------------------------------
 
-A lot of entities in NavalPlan can be considered integration entities, e.i.
-suitable entities to be sent/received to/from other applications. As this is a
-common case a new class ``IntegrationEntity`` was defined and all these entities
-extends this class instead of ``BaseEntity``. Actually, ``IntegrationEntity``
-extends in turn ``BaseEntity``.
+A lot of entities in the project can be considered **integration entities**,
+i.e. suitable entities to be sent/received to/from other applications. As this
+is a common case a new class ``IntegrationEntity`` was defined and all these
+entities extends this class instead of ``BaseEntity``. Actually,
+``IntegrationEntity`` extends in turn ``BaseEntity``.
 
 For example, as part of this exercise you are going to become
 ``StretchesFunctionTemplate`` in an integration entity. Even when it could not
-have be really needed for the moment, it is usueflu as a test case in order to
-know how to develop a web service in NavalPlan.
+have be really needed for the moment, it is useful as a test case in order to
+know how to develop a web service in the application.
 
 First of all, you need to make that ``StretchesFunctionTemplate`` inherits from
 ``IntegrationEntity``::
@@ -1859,7 +1911,7 @@ And you will need to add a new changeset to Liquibase changelog in
   ``StretchesFunctionTemplate`` entities stored in database, this changeset is
   setting ``code`` attribute to empty, which is wrong as code should be unique.
   This should be fixed using some kind of custom refactorization provided by
-  Liquibase.
+  Liquibase, that would generate random codes for currently stored entities.
 
 ``IntegrationEntity`` is an abstract class, thus you need to override abstract
 method ``getIntegrationEntityDAO``. This method should return DAO of this
@@ -1867,9 +1919,9 @@ entity, that will be used to check that code is not repeated when entity is
 validated.
 
 However, before implementing this method you need to modify entity DAO to extend
-``IntegrationEntityDAO``. This provides implementation for several methods in
-order to check constraints related with ``code`` field. For this you will need
-to modify both interface and DAO implementation::
+``IntegrationEntityDAO``. This provides a standard implementation for several
+methods in order to check constraints related with ``code`` field. In order to
+do this you will need to modify both interface and DAO implementation::
 
  public interface IStretchesFunctionTemplateDAO extends
          IIntegrationEntityDAO<StretchesFunctionTemplate> {
@@ -1916,14 +1968,14 @@ facilities for this entity.
   sequences are managed in *Configuration* window at NavalPlan.
 
   So, if you want ``StretchesFunctionTemplate`` entity will be a common
-  integration entity in NavalPlan you will need to do something similar to
+  integration entity in the application you will need to do something similar to
   other entities:
 
   * Add your entity in ``EntityNameEnum``.
   * Modify *Configuration* window in order to allow manage the new sequence for
     your entity.
   * Reuse ``IIntegrationEntityModel`` and ``IntegrationEntityModel`` in your
-    model. These will provide standard methods to generate entity sequence.
+    model. Those will provide standard methods to generate entity sequence.
 
   For the moment, as it is not really necessary for this exercise, this part
   will be omitted in this document.
@@ -1931,24 +1983,24 @@ facilities for this entity.
 Implement export web service
 ----------------------------
 
-Now you are going to implement the export service for
+Now you are going to implement the **export service** for
 ``StretchesFunctionTemplate`` entity. Thanks to this service, third party
 applications could access to the list of ``StretchesFunctionTemplate`` defined
-in NavalPlan. Web services classes are under
+in the system. Web services classes are under
 ``navalplanner-webapp/src/main/java/org/navalplanner/ws/`` folder, inside it you
-should create a new directory ``stretchesfunctiontemplates`` with 2
+should create a new directory ``stretchesfunctiontemplates`` with two
 subdirectories ``api`` and ``impl``.
 
 Again, like in previous point, there are some classes already defined which
 provide main functionality needed to implement the web service. You will extends
-those classes throughout the sample.
+these classes throughout the sample.
 
 Defining service interface
 ..........................
 
 First of all, you will create an interface inside ``api`` folder. This interface
 will define a method to export all ``StretchesFunctionTemplate`` entities stored
-in NavalPlan database::
+in application database::
 
  package org.navalplanner.ws.stretchesfunctiontemplates.api;
 
@@ -2137,24 +2189,25 @@ inside ``impl`` folder this time::
  }
 
 Let's split this file in small hunks in order to explain different annotations.
-Take into account that NavalPlan uses JAX-RS_ (Java API for RESTful Web
+Take into account that the project uses JAX-RS_ (Java API for RESTful Web
 Services) to create web services.
 
 ::
 
  @Path("/stretchesfunctiontemplates/")
 
-It is a JAX-RS annotation to indicates the URI for the web service. In NavalPlan
-it usually is the entity name in lowercase and plural.
+It is a JAX-RS annotation to indicates the URI for the web service. In the
+application it is the entity name in lowercase and plural usually.
 
 ::
 
  @Produces("application/xml")
 
 Another JAX-RS annotation which indicates the media type for a method. In this
-case it is used at class level, which means that all methods for this web service
-produce XML results. This is true in NavalPlan, as even methods to import data
-will return an XML with possible errors or a success message.
+case it is used at class level, which means that all methods for this web
+service produce XML results. This is true in NavalPlan, as even methods to
+import data will return an XML with the list of errors during the operation or
+an empty list if it was performed successfully.
 
 ::
 
@@ -2246,7 +2299,7 @@ it from a DTO. Like previous ones, it usually delegates in a converter class.
 
 Finally, this is the implementation for the only method provided by web service
 interface, which will export all ``StretchesFunctionTemplate`` stored in
-NavalPlan. Method is marked with ``@GET`` JAX-RS annotation, which indicates
+the system. Method is marked with ``@GET`` JAX-RS annotation, which indicates
 that current method will respond to HTTP ``GET`` requests. Moreover, it is also
 needed open a transaction, as it is going to use DAO in ``findAll`` method
 implemented by ``GenericRESTService``.
@@ -2291,20 +2344,20 @@ following content::
 
 Now you are ready to test your web service. If you go to this URL
 http://localhost:8080/navalplanner-webapp/ws/rest/stretchesfunctiontemplates/,
-and you login with an user that has permission to access web services (e.g. user
-``wsreader`` with password ``wsreader``) you will get a XML with
-``StretchesFunctionTemplate`` stored in NavalPlan.
+and login with an user that has permission to access web services (e.g. user
+``wsreader`` with password ``wsreader``) you will get a XML with the list of
+``StretchesFunctionTemplate`` stored in the application.
 
 .. NOTE::
 
   It is recommended to define some JUnit test for each web service in order to
-  validate if they are working properly. In this case is even more important as
-  developers could not take into account web services when they are changing
-  some entities in the business logic. Thanks to this tests developers will detect
-  problems in the exactly moment that they are adding the changes.
+  validate if they are working properly. In this case it is even more important
+  as developers could not take into account web services when they are changing
+  some entities in the business logic. Thanks to this tests developers will
+  detect problems at the exact moment in which they are doing the changes.
 
-  You can take a look to other already existent entities in order to create your
-  test for the new one that will be called
+  You can take a look to other already existent services in order to create your
+  test for the new one that, following the convention, will be called
   ``StretchesFunctionTemplateServiceTest``.
 
 Web services scripts
@@ -2313,7 +2366,7 @@ Web services scripts
 Export services are easily tested just accessing URL with any web browser.
 However, in the case of import services you will need to use HTTP ``POST``
 method in order to test them. For this reason some convenient scripts were
-created in NavalPlan repository in ``scripts/rest-clients`` directory.
+created in project repository inside ``scripts/rest-clients`` directory.
 
 .. NOTE::
 
@@ -2325,7 +2378,7 @@ created in NavalPlan repository in ``scripts/rest-clients`` directory.
 
 Then for this example you will create a script called
 ``export-stretches-function-templates.sh``, that will be very similar to the
-rest of export scripts but changing web service path::
+rest of export scripts just changing web service path::
 
  #!/bin/sh
 
@@ -2349,8 +2402,8 @@ rest of export scripts but changing web service path::
  curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
      $baseServiceURL/stretchesfunctiontemplates | tidy -xml -i -q -utf8
 
-Script will request you user and password in order to access to web service, so
-you could use ``wsreader`` user to check that it works properly.
+Script will request user and password in order to access to web service, so you
+could use ``wsreader`` user to check that it works properly.
 
 
 Conclusion
@@ -2360,9 +2413,9 @@ Proposed exercise, even when not fully resolved, allows navigate through basic
 architecture of NavalPlan and know better different elements involved in each
 layer.
 
-NavalPlan view is implemented with ZK web framework. Views are stored in files
-with ``.zul`` extension. It is possible grouping components into each other and,
-even, create macrocomponents in order to divide views or reuse components.
+Project view is implemented with ZK web framework. Views are stored in files
+with ``.zul`` extension. It is possible grouping components into each other
+and, even, create macro components in order to divide views or reuse components.
 
 Every window is associated with a controller class. Controller contains program
 source code needed to interact with user and communicate with business logic
@@ -2376,12 +2429,12 @@ and offers operations to other entities through its methods.
 
 Model classes do not access directly to database, but do so through a DAO
 (persistence class). There is a DAO for each domain entity. DAO offers different
-operations of retrieval, query and storage entities. Models are not going to
+operations for retrieval, query and store entities. Models are not going to
 access to concrete classes, they will use interfaces (dependency injection).
 
-Hibernate is the persistence framework used in NavalPlan. There is two base
-classes ``GenericDAOHibernate`` and ``BaseEntity`` which encapsulate main part
-of Hibernate API. Every DAOs and entities inherit from these two classes
+Hibernate is the persistence framework used in the application. There is two
+base classes ``GenericDAOHibernate`` and ``BaseEntity`` which encapsulate main
+part of Hibernate API. Every DAOs and entities inherit from these two classes
 respectively. Every domain entities must to have Hibernate mapping. Mapping is
 done in ``.hbm.xml`` files.
 
@@ -2389,14 +2442,15 @@ NavalPlan uses testing framework JUnit. Moreover, Hibernate Validator is used to
 validate business logic. Business logic is always tested and validated in model
 layer, where entities are responsible to validate their own data.
 
-Finally, you created an export web service for the new entity. NavalPlan
+Finally, you created an export web service for the new entity. Project
 services uses XML APIs provided by Java (like JAXB and JAX-RS) which make easier
 developing new web services. For each web service, some test scripts are
 provided in order to check implementation.
 
 
-.. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 .. _NavalPlan: http://www.navalplan.org/en/
+.. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
+.. _Hibernate: http://www.hibernate.org/
 .. _`Optimistic Locking`: http://en.wikipedia.org/wiki/Optimistic_locking
 .. _`NavalPlan wiki`: http://wiki.navalplan.org/
 .. _MVC: http://en.wikipedia.org/wiki/Model_view_controller
