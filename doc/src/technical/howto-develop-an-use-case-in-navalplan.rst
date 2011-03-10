@@ -1348,9 +1348,15 @@ method::
 
     ...
 
+    public static BigDecimal HUNDRED = BigDecimal.valueOf(100);
+
     public void addStretchTemplate() {
-        stretchesFunctionTemplateModel.addStretchTemplate(durationPercentage.getValue(),
-                progressPercentage.getValue());
+        BigDecimal duration = BigDecimal.valueOf(durationPercentage.getValue())
+                .divide(HUNDRED);
+        BigDecimal progress = BigDecimal.valueOf(progressPercentage.getValue())
+                .divide(HUNDRED);
+        stretchesFunctionTemplateModel.addStretchTemplate(duration, progress);
+
         clearStrechTemplateFields();
         Util.reloadBindings(stretchTemplates);
     }
@@ -1364,18 +1370,11 @@ In model, you will need to create an intermediate conversation step, that will
 modify current ``StretchesFunctionTemplate`` entity adding a new instance of
 ``StretchTemplate``::
 
-    public static BigDecimal HUNDRED = BigDecimal.valueOf(100);
-
-    ...
-
     @Override
-    public void addStretchTemplate(Integer durationPercentage,
-            Integer progressPercentage) {
-        BigDecimal duration = BigDecimal.valueOf(durationPercentage).divide(
-                HUNDRED);
-        BigDecimal progress = BigDecimal.valueOf(progressPercentage).divide(
-                HUNDRED);
-        stretchesFunctionTemplate.addStretch(StretchTemplate.create(duration, progress));
+    public void addStretchTemplate(BigDecimal durationProportion,
+            BigDecimal progressProportion) {
+        stretchesFunctionTemplate.addStretch(StretchTemplate.create(
+                durationProportion, progressProportion));
     }
 
 Then you need to implement a ``RowRenderer`` in controller to be used in order
@@ -1401,9 +1400,7 @@ to show ``StrechTemplate`` information in the window::
             }
 
             private String toStringPercentage(BigDecimal value) {
-                return value.multiply(StretchesFunctionTemplateModel.HUNDRED)
-                        .toBigInteger().toString()
-                        + " %";
+                return value.multiply(HUNDRED).toBigInteger().toString() + " %";
             }
         };
     }
