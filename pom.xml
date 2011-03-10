@@ -453,11 +453,6 @@
                 <artifactId>jcommon</artifactId>
                 <version>1.0.16</version>
             </dependency>
-            <dependency>
-                <groupId>jfree</groupId>
-                <artifactId>jfreechart-igalia</artifactId>
-                <version>0.0.1</version>
-            </dependency>
             <!-- Joda Time -->
             <dependency>
                 <groupId>joda-time</groupId>
