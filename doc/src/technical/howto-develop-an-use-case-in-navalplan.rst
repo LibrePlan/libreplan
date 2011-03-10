@@ -12,9 +12,9 @@ How To Develop An Use Case In NavalPlan
   Commons Attribution-ShareAlike 3.0 licence, available in
   http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  The goal of this document is develop a CRUD_ (create, read, update and delete)
-  use case in NavalPlan_. Through carrying out this exercise you will see the
-  basic structure of NavalPlan and underlying technology stack.
+  The goal of this document is develop a complete CRUD_ (create, read, update
+  and delete) use case in NavalPlan_. Through carrying out this exercise you
+  will see the basic structure of NavalPlan and underlying technology stack.
 
 .. contents:: Table of Contents
 
@@ -476,7 +476,7 @@ proper ``db.changelog-XXX.xml`` file::
                 referencesUniqueColumn="false"/>
     </changeSet>
 
-As you can see this specify the different tables to be created on database and
+As you can see, this specify the different tables to be created on database and
 also some constraints like foreign keys. Usually you can take a look to other
 Liquibase changes to know how to create a table or some field. Also a good idea
 is to check the result of your changeset against testing database (which is
@@ -864,7 +864,7 @@ In the next paragraphs different parts of the file will be reviwed.
          model="@{controller.stretchesFunctionTemplates}"
 
 ``NewDataSortableGrid`` is a special component defined in NavalPlan, that
-extends ``Grid`` component adding sorting feature for columns. As you can see
+extends ``Grid`` component adding sorting feature for columns. As you can see,
 ``model`` attribute is set, which means that a method called
 ``getStretchesFunctionTemplates`` in controller will be called. Thise method
 will have the responsibility to communicate with model layer in order to get the
@@ -1142,11 +1142,19 @@ folder:
 
 * ``IStretchesFunctionTemplateModel.java``::
 
+    package org.navalplanner.web.planner.allocation.streches;
+
+    ...
+
     public interface IStretchesFunctionTemplateModel {
         ...
     }
 
 * ``StretchesFunctionTemplateModel.java``::
+
+    package org.navalplanner.web.planner.allocation.streches;
+
+    ...
 
     @Service
     @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -1156,7 +1164,7 @@ folder:
         ...
     }
 
-As you can see model is a Spring bean, in order that controller communicates
+As you can see, model is a Spring bean, in order that controller communicates
 with model, you need to do 2 different things:
 
 * Add the following line at ``.zul`` page (this is not really needed because of
@@ -1214,9 +1222,9 @@ example.
         return stretchesFunctionTemplateDAO.getAll();
     }
 
-As you can see method ``getStretchesFunctionTemplates`` in model is not involved
-in conversation protocol. Moreover, you will also need to implement ``getAll``
-method in DAO that would be quite simple::
+As you can see, method ``getStretchesFunctionTemplates`` in model is not
+involved in conversation protocol. Moreover, you will also need to implement
+``getAll`` method in DAO that would be quite simple::
 
     @Override
     public List<StretchesFunctionTemplate> getAll() {
@@ -1414,7 +1422,7 @@ model::
         stretchesFunctionTemplate = null;
     }
 
-As you can see you need to use ``@Transactional`` annotation in ``confirmSave``
+As you can see, you need to use ``@Transactional`` annotation in ``confirmSave``
 method. This is needed in order to access DAO object inside Hibernate session in
 order to store entity on database. If you just need to query data you should
 mark transaction as read only (``@Transactional(readOnly = true)``).
@@ -1516,6 +1524,10 @@ test for your DAO. Simply create the following file called
 
 ::
 
+ package org.navalplanner.business.test.planner.daos;
+
+ ...
+
  @Transactional
  @RunWith(SpringJUnit4ClassRunner.class)
  @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE,
@@ -1546,7 +1558,7 @@ test for your DAO. Simply create the following file called
 
  }
 
-As you can see you need some Spring annotations to run test inside a Spring
+As you can see, you need some Spring annotations to run test inside a Spring
 context in order to be able to use ``@Autowired`` for different Spring beans, in
 that case the DAO class.
 
@@ -1584,8 +1596,8 @@ Then you could add the following test to check that
         dao.save(stretchesFunctionTemplate);
     }
 
-As you can see here it is being checked that a ``ValidationException`` is thrown
-when it is trying to store an entity with empty name.
+As you can see here, it is being checked that a ``ValidationException`` is
+thrown when it is trying to store an entity with empty name.
 
 .. NOTE::
 
@@ -1772,6 +1784,574 @@ In order to do not allow users send wrong data to server you should use
 Web services
 ============
 
+NavalPlan provides web services as integration tool for third party applications
+that want to get/send data from/to NavalPlan. For this task NavalPlan
+implementation is based in REST_ (Representational State Transfer) services with
+the following behaviour:
+
+* All integration entities will have a code that will allow them to be
+  identified for both NavalPlan and third party application. It is important to
+  stress that this ``code`` attribute will be different to Hibernate ``id``
+  attribute, which is an internal identifier for the database and could be
+  repeated in different instances of NavalPlan.
+
+* When NavalPlan receive an entity via web service, it follows the next steps:
+
+  * Check if entity already exists on database. Using ``code`` attribute for
+    this.
+  * If entity does not exist, then it is created the new entity and stored on
+    database.
+  * If entity already exists, then it is modified and stored on database.
+
+* Delete operation is not going to be allowed, because of remove some entity
+  could take side effects in other schedules done in NavalPlan. Anyway, it is
+  possible that some entities provide an attribute to deactivate them in the
+  system, this could be changed with a modification operation.
+
+NavalPlan entities will be represented as XML files in order to be sent or
+received as web service data.
+
+Convert into ``IntegrationEntity``
+----------------------------------
+
+A lot of entities in NavalPlan can be considered integration entities, e.i.
+suitable entities to be sent/received to/from other applications. As this is a
+common case a new class ``IntegrationEntity`` was defined and all these entities
+extends this class instead of ``BaseEntity``. Actually, ``IntegrationEntity``
+extends in turn ``BaseEntity``.
+
+For example, as part of this exercise you are going to become
+``StretchesFunctionTemplate`` in an integration entity. Even when it could not
+have be really needed for the moment, it is usueflu as a test case in order to
+know how to develop a web service in NavalPlan.
+
+First of all, you need to make that ``StretchesFunctionTemplate`` inherits from
+``IntegrationEntity``::
+
+ public class StretchesFunctionTemplate extends IntegrationEntity {
+     ...
+ }
+
+This fact means that ``StretchesFunctionTemplate`` entity has a new attribute
+called ``code``. Thus, you will need to modify Hibernate mapping in
+``ResourceAllocations.hbm.xml`` file in order to add the following line::
+
+        <property name="code" access="property" not-null="true" unique="true"/>
+
+And you will need to add a new changeset to Liquibase changelog in
+``db.changelog-1.0.xml`` file::
+
+    <changeSet id="add-new-column-code-to-stretches_function_template" author="mrego">
+        <comment>Add new column code in table stretches_function_template with not-null constraint</comment>
+        <addColumn tableName="stretches_function_template">
+            <column name="code" type="VARCHAR(255)" />
+        </addColumn>
+        <addNotNullConstraint tableName="stretches_function_template"
+            columnName="code"
+            defaultNullValue=""
+            columnDataType="VARCHAR(255)" />
+    </changeSet>
+
+.. WARNING::
+
+  This Liquibase changeset is just an example and should not be used as is in
+  the real world. The reason is that if there are already
+  ``StretchesFunctionTemplate`` entities stored in database, this changeset is
+  setting ``code`` attribute to empty, which is wrong as code should be unique.
+  This should be fixed using some kind of custom refactorization provided by
+  Liquibase.
+
+``IntegrationEntity`` is an abstract class, thus you need to override abstract
+method ``getIntegrationEntityDAO``. This method should return DAO of this
+entity, that will be used to check that code is not repeated when entity is
+validated.
+
+However, before implementing this method you need to modify entity DAO to extend
+``IntegrationEntityDAO``. This provides implementation for several methods in
+order to check constraints related with ``code`` field. For this you will need
+to modify both interface and DAO implementation::
+
+ public interface IStretchesFunctionTemplateDAO extends
+         IIntegrationEntityDAO<StretchesFunctionTemplate> {
+     ...
+ }
+
+ public class StretchesFunctionTemplateDAO extends
+         IntegrationEntityDAO<StretchesFunctionTemplate> implements
+         IStretchesFunctionTemplateDAO {
+     ...
+ }
+
+It is very convenient to use these common classes as you will have a lot of
+functionalities automatically added to your entity. Now, you are ready to
+implement ``getIntegrationEntityDAO`` in the entity. Just one more problem, you
+need to know how to access DAO from an entity, when entities are not in a Spring
+context. For this purpose a class called ``Registry`` exists in NavalPlan, so
+before modifying entity you will add the following lines to ``Registry``::
+
+    @Autowired
+    private IStretchesFunctionTemplateDAO stretchesFunctionTemplateDAO;
+
+    public static IStretchesFunctionTemplateDAO getStretchesFunctionTemplateDAO() {
+        return getInstance().stretchesFunctionTemplateDAO;
+    }
+
+And then you will override ``getIntegrationEntityDAO`` in
+``StretchesFunctionTemplate``::
+
+    @Override
+    protected IStretchesFunctionTemplateDAO getIntegrationEntityDAO() {
+        return Registry.getStretchesFunctionTemplateDAO();
+    }
+
+At this moment, your entity ``StretchesFunctionTemplate`` is an integration
+entity, so it is valid to implement a web service providing import and export
+facilities for this entity.
+
+.. NOTE::
+
+  Integration entities usually will show ``code`` attribute in the interface, in
+  order that users could uniquely reference to one entity. Moreover, this code
+  usually follows some kind of sequence prefixed with entity name, these
+  sequences are managed in *Configuration* window at NavalPlan.
+
+  So, if you want ``StretchesFunctionTemplate`` entity will be a common
+  integration entity in NavalPlan you will need to do something similar to
+  other entities:
+
+  * Add your entity in ``EntityNameEnum``.
+  * Modify *Configuration* window in order to allow manage the new sequence for
+    your entity.
+  * Reuse ``IIntegrationEntityModel`` and ``IntegrationEntityModel`` in your
+    model. These will provide standard methods to generate entity sequence.
+
+  For the moment, as it is not really necessary for this exercise, this part
+  will be omitted in this document.
+
+Implement export web service
+----------------------------
+
+Now you are going to implement the export service for
+``StretchesFunctionTemplate`` entity. Thanks to this service, third party
+applications could access to the list of ``StretchesFunctionTemplate`` defined
+in NavalPlan. Web services classes are under
+``navalplanner-webapp/src/main/java/org/navalplanner/ws/`` folder, inside it you
+should create a new directory ``stretchesfunctiontemplates`` with 2
+subdirectories ``api`` and ``impl``.
+
+Again, like in previous point, there are some classes already defined which
+provide main functionality needed to implement the web service. You will extends
+those classes throughout the sample.
+
+Defining service interface
+..........................
+
+First of all, you will create an interface inside ``api`` folder. This interface
+will define a method to export all ``StretchesFunctionTemplate`` entities stored
+in NavalPlan database::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.api;
+
+ ...
+
+ public interface IStretchesFunctionTemplateService {
+
+     public StretchesFunctionTemplateListDTO getStretchesFunctionTemplates();
+
+ }
+
+Mapping between entities and XMLs
+.................................
+
+As you can see, web service interface uses a DTO_ (Data Transfer Object) class,
+as you do not need to export all the business logic managed by entities you will
+create lighter classes (DTOs) in order to export and import data associated with
+web services.
+
+Then you are going to define all DTOs (inside ``api`` folder), needed for
+``StretchesFunctionTemplate`` entity. You will need three DTOs:
+
+* ``StretchesFunctionTemplateListDTO``:
+
+::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.api;
+
+ ...
+
+ @XmlRootElement(name = "stretches-function-template-list")
+ public class StretchesFunctionTemplateListDTO {
+
+     @XmlElement(name = "stretches-function-template")
+     public List<StretchesFunctionTemplateDTO> stretchesFunctionTemplateDTOs = new ArrayList<StretchesFunctionTemplateDTO>();
+
+     public StretchesFunctionTemplateListDTO() {
+     }
+
+     public StretchesFunctionTemplateListDTO(
+             List<StretchesFunctionTemplateDTO> stretchesFunctionTemplateDTOs) {
+         this.stretchesFunctionTemplateDTOs = stretchesFunctionTemplateDTOs;
+     }
+
+ }
+
+* ``StretchesFunctionTemplateDTO``:
+
+::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.api;
+
+ ...
+
+ public class StretchesFunctionTemplateDTO extends IntegrationEntityDTO {
+
+     public final static String ENTITY_TYPE = "stretches-function-template";
+
+     @XmlAttribute
+     public String name;
+
+     @XmlElementWrapper(name = "stretches-list")
+     @XmlElement(name = "stretch-template")
+     public List<StretchTemplateDTO> stretches = new ArrayList<StretchTemplateDTO>();
+
+     public StretchesFunctionTemplateDTO() {
+     }
+
+     public StretchesFunctionTemplateDTO(String code, String name,
+             List<StretchTemplateDTO> stretches) {
+         super(code);
+         this.name = name;
+         this.stretches = stretches;
+
+     }
+
+     public StretchesFunctionTemplateDTO(String name,
+             List<StretchTemplateDTO> stretches) {
+         this(generateCode(), name, stretches);
+     }
+
+     @Override
+     public String getEntityType() {
+         return ENTITY_TYPE;
+     }
+
+ }
+
+* ``StretchesFunctionTemplateDTO``:
+
+::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.api;
+
+ ...
+
+ public class StretchTemplateDTO {
+
+     @XmlAttribute(name = "duration-proportion")
+     public BigDecimal durationProportion;
+
+     @XmlAttribute(name = "progress-proportion")
+     public BigDecimal progressProportion;
+
+     public StretchTemplateDTO() {
+     }
+
+     public StretchTemplateDTO(BigDecimal durationProportion,
+             BigDecimal progressProportion) {
+         this.durationProportion = durationProportion;
+         this.progressProportion = progressProportion;
+     }
+
+ }
+
+In these classes you can see that NavalPlan uses JAXB_ for XML bindings. This
+makes really easy mapping between Java classes and XML representations providing
+annotations like ``@XmlAttribute``, ``@XmlElement``, etc.
+
+Moreover, you also need a file called ``package-info.java`` in ``api`` folder in
+order to define namespace for REST service. This file will have the following
+content::
+
+ @javax.xml.bind.annotation.XmlSchema(
+     elementFormDefault=javax.xml.bind.annotation.XmlNsForm.QUALIFIED,
+     namespace=WSCommonGlobalNames.REST_NAMESPACE
+ )
+ package org.navalplanner.ws.stretchesfunctiontemplates.api;
+ import org.navalplanner.ws.common.api.WSCommonGlobalNames;
+
+Extending ``GenericRESTService``
+................................
+
+Then you are going to implement web service interface with a new class which
+will extend ``GenericRESTService``. This class provides generic stuff for
+implementing new REST services. So, you are going to create the following class
+inside ``impl`` folder this time::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.impl;
+
+ ...
+
+ @Path("/stretchesfunctiontemplates/")
+ @Produces("application/xml")
+ @Service("stretchesFunctionTemplateServiceREST")
+ public class StretchesFunctionTemplateServiceREST extends
+         GenericRESTService<StretchesFunctionTemplate, StretchesFunctionTemplateDTO>
+         implements IStretchesFunctionTemplateService {
+
+     @Autowired
+     private IStretchesFunctionTemplateDAO dao;
+
+     @Override
+     protected IIntegrationEntityDAO<StretchesFunctionTemplate> getIntegrationEntityDAO() {
+         return dao;
+     }
+
+     @Override
+     protected StretchesFunctionTemplateDTO toDTO(
+             StretchesFunctionTemplate entity) {
+         return StretchesFunctionTemplateConverter.toDTO(entity);
+     }
+
+     @Override
+     protected StretchesFunctionTemplate toEntity(
+             StretchesFunctionTemplateDTO entityDTO) throws ValidationException,
+             RecoverableErrorException {
+         // Not needed for export service
+         return null;
+     }
+
+     @Override
+     protected void updateEntity(StretchesFunctionTemplate entity,
+             StretchesFunctionTemplateDTO entityDTO) throws ValidationException,
+             RecoverableErrorException {
+         // Not needed for export service
+     }
+
+     @Override
+     @GET
+     @Transactional(readOnly = true)
+     public StretchesFunctionTemplateListDTO getStretchesFunctionTemplates() {
+         return new StretchesFunctionTemplateListDTO(findAll());
+     }
+
+ }
+
+Let's split this file in small hunks in order to explain different annotations.
+Take into account that NavalPlan uses JAX-RS_ (Java API for RESTful Web
+Services) to create web services.
+
+::
+
+ @Path("/stretchesfunctiontemplates/")
+
+It is a JAX-RS annotation to indicates the URI for the web service. In NavalPlan
+it usually is the entity name in lowercase and plural.
+
+::
+
+ @Produces("application/xml")
+
+Another JAX-RS annotation which indicates the media type for a method. In this
+case it is used at class level, which means that all methods for this web service
+produce XML results. This is true in NavalPlan, as even methods to import data
+will return an XML with possible errors or a success message.
+
+::
+
+ @Service("stretchesFunctionTemplateServiceREST")
+
+In this case it is a Spring annotation which indicates that the class is a
+service. Then you will need to add it in
+``navalplanner-webapp-spring-config.xml`` file::
+
+        <jaxrs:serviceBeans>
+            ...
+            <ref bean="stretchesFunctionTemplateServiceREST"/>
+        </jaxrs:serviceBeans>
+
+::
+
+ public class StretchesFunctionTemplateServiceREST extends
+         GenericRESTService<StretchesFunctionTemplate, StretchesFunctionTemplateDTO>
+         implements IStretchesFunctionTemplateService {
+
+As you can see, new class extends ``GenericRESTService`` an abstract class that
+provides common functionality for web services. It also implements web service
+interface, where you indicate methods provided by this web service.
+
+::
+
+     @Autowired
+     private IStretchesFunctionTemplateDAO dao;
+
+Like this class is marked as a Spring service, you could use ``@Autowired``
+annotation to inject DAO class for this entity.
+
+::
+
+     @Override
+     protected IIntegrationEntityDAO<StretchesFunctionTemplate> getIntegrationEntityDAO() {
+         return dao;
+     }
+
+This is an abstract method that you need to implement, it simply returns DAO
+class for ``StretchesFunctionTemplate`` entity.
+
+::
+
+     @Override
+     protected StretchesFunctionTemplateDTO toDTO(
+             StretchesFunctionTemplate entity) {
+         return StretchesFunctionTemplateConverter.toDTO(entity);
+     }
+
+Another abstract method overridden, in this case it should create a DTO from an
+entity. As you can see it delegates the conversion in a special class
+``StretchesFunctionTemplateConverter``.
+
+::
+
+     @Override
+     protected StretchesFunctionTemplate toEntity(
+             StretchesFunctionTemplateDTO entityDTO) throws ValidationException,
+             RecoverableErrorException {
+         // Not needed for export service
+         return null;
+     }
+
+Similar to previous method, but on the other way around. This will create an
+entity from a DTO. This is used when you are implementing an import service and
+you receive new entities. Again, it usually delegates in a converter class.
+
+::
+
+     @Override
+     protected void updateEntity(StretchesFunctionTemplate entity,
+             StretchesFunctionTemplateDTO entityDTO) throws ValidationException,
+             RecoverableErrorException {
+         // Not needed for export service
+     }
+
+This will be used when you receive an already existent entity in order to update
+it from a DTO. Like previous ones, it usually delegates in a converter class.
+
+::
+
+     @Override
+     @GET
+     @Transactional(readOnly = true)
+     public StretchesFunctionTemplateListDTO getStretchesFunctionTemplates() {
+         return new StretchesFunctionTemplateListDTO(findAll());
+     }
+
+Finally, this is the implementation for the only method provided by web service
+interface, which will export all ``StretchesFunctionTemplate`` stored in
+NavalPlan. Method is marked with ``@GET`` JAX-RS annotation, which indicates
+that current method will respond to HTTP ``GET`` requests. Moreover, it is also
+needed open a transaction, as it is going to use DAO in ``findAll`` method
+implemented by ``GenericRESTService``.
+
+Converting entities to/from DTOs
+................................
+
+The last step will be implement the converter class. In this case you will just
+need to implement the method to convert from ``StretchesFunctionTemplate``
+entity to a DTO.
+
+This is a simply class that will be inside ``impl`` folder and will have the
+following content::
+
+ package org.navalplanner.ws.stretchesfunctiontemplates.impl;
+
+ ...
+
+ public final class StretchesFunctionTemplateConverter {
+
+     private StretchesFunctionTemplateConverter() {
+     }
+
+     public final static StretchesFunctionTemplateDTO toDTO(
+             StretchesFunctionTemplate stretchesFunctionTemplate) {
+         // Convert stretches
+         List<StretchTemplateDTO> stretchTemplateDTOs = new ArrayList<StretchTemplateDTO>();
+         for (StretchTemplate each : stretchesFunctionTemplate.getStretches()) {
+             stretchTemplateDTOs.add(toDTO(each));
+         }
+
+         return new StretchesFunctionTemplateDTO(stretchesFunctionTemplate
+                 .getCode(), stretchesFunctionTemplate.getName(), stretchTemplateDTOs);
+     }
+
+     private static StretchTemplateDTO toDTO(StretchTemplate stretchTemplate) {
+         return new StretchTemplateDTO(stretchTemplate.getDurationProportion(),
+                 stretchTemplate.getProgressProportion());
+     }
+
+ }
+
+Now you are ready to test your web service. If you go to this URL
+http://localhost:8080/navalplanner-webapp/ws/rest/stretchesfunctiontemplates/,
+and you login with an user that has permission to access web services (e.g. user
+``wsreader`` with password ``wsreader``) you will get a XML with
+``StretchesFunctionTemplate`` stored in NavalPlan.
+
+.. NOTE::
+
+  It is recommended to define some JUnit test for each web service in order to
+  validate if they are working properly. In this case is even more important as
+  developers could not take into account web services when they are changing
+  some entities in the business logic. Thanks to this tests developers will detect
+  problems in the exactly moment that they are adding the changes.
+
+  You can take a look to other already existent entities in order to create your
+  test for the new one that will be called
+  ``StretchesFunctionTemplateServiceTest``.
+
+Web services scripts
+--------------------
+
+Export services are easily tested just accessing URL with any web browser.
+However, in the case of import services you will need to use HTTP ``POST``
+method in order to test them. For this reason some convenient scripts were
+created in NavalPlan repository in ``scripts/rest-clients`` directory.
+
+.. NOTE::
+
+  Currently these scripts depends on Tidy and Ruby to be installed in your
+  system. You could install them in a Debian based distribution with the
+  following command as root::
+
+    apt-get install tidy ruby
+
+Then for this example you will create a script called
+``export-stretches-function-templates.sh``, that will be very similar to the
+rest of export scripts but changing web service path::
+
+ #!/bin/sh
+
+ . ./rest-common-env.sh
+
+ printf "Login name: "
+ read loginName
+ printf "Password: "
+ read password
+
+ if [ "$1" = "--prod" ]; then
+     baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
+     certificate=$PRODUCTION_CERTIFICATE
+ else
+    baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
+    certificate=$DEVELOPMENT_CERTIFICATE
+ fi
+
+ authorization=`./base64.sh $loginName:$password`
+
+ curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
+     $baseServiceURL/stretchesfunctiontemplates | tidy -xml -i -q -utf8
+
+Script will request you user and password in order to access to web service, so
+you could use ``wsreader`` user to check that it works properly.
+
 
 Conclusion
 ==========
@@ -1809,6 +2389,11 @@ NavalPlan uses testing framework JUnit. Moreover, Hibernate Validator is used to
 validate business logic. Business logic is always tested and validated in model
 layer, where entities are responsible to validate their own data.
 
+Finally, you created an export web service for the new entity. NavalPlan
+services uses XML APIs provided by Java (like JAXB and JAX-RS) which make easier
+developing new web services. For each web service, some test scripts are
+provided in order to check implementation.
+
 
 .. _CRUD: http://en.wikipedia.org/wiki/Create,_read,_update_and_delete
 .. _NavalPlan: http://www.navalplan.org/en/
@@ -1825,3 +2410,7 @@ layer, where entities are responsible to validate their own data.
 .. _JUnit: http://junit.sourceforge.net/
 .. _TDD: http://en.wikipedia.org/wiki/Test_driven_development
 .. _`Hibernate Validator`: http://www.hibernate.org/subprojects/validator.html
+.. _REST: http://en.wikipedia.org/wiki/Representational_State_Transfer
+.. _DTO: http://en.wikipedia.org/wiki/Data_Transfer_Object
+.. _JAXB: http://en.wikipedia.org/wiki/Java_Architecture_for_XML_Binding
+.. _JAX-RS: http://en.wikipedia.org/wiki/Java_API_for_RESTful_Web_Services
