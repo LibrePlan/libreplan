@@ -189,7 +189,11 @@
         <dependency>
           <groupId>com.igalia.java.zk.components</groupId>
           <artifactId>jasperreportcomponent</artifactId>
-          <version>1.0</version>
+        </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jfreechartengine</artifactId>
         </dependency>
         <!-- Gettext commons -->
         <dependency>
