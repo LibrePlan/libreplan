@@ -32,6 +32,7 @@ import java.util.Set;
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
@@ -314,4 +315,20 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         return result;
     }
 
+    @Override
+    @Transactional
+    public void confirmDelete(OrderElementTemplate template) {
+        try {
+            dao.remove(template.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasNotApplications(OrderElementTemplate template) {
+        getOrderElementsOnConversation().initialize(template);
+        return getOrderElementsOnConversation().getOrderElements().isEmpty();
+    }
 }
