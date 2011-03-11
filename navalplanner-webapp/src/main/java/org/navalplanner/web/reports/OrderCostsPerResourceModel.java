@@ -139,6 +139,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         OrderCostsPerResourceDTO emptyDTO = new OrderCostsPerResourceDTO(
                 emptyWorker, wrl);
         emptyDTO.setOrderName(order.getName());
+        emptyDTO.setOrderCode(order.getCode());
         emptyDTO.setCost(new BigDecimal(0));
         return emptyDTO;
     }

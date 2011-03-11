@@ -66,6 +66,9 @@ public class OrderCostsPerResourceDTO implements
     // Attached outside the DTO
     private String orderName;
 
+    // Attached outside the DTO
+    private String orderCode;
+
     private OrderElement orderElement;
 
     private Worker worker;
@@ -74,7 +77,10 @@ public class OrderCostsPerResourceDTO implements
             WorkReportLine workReportLine) {
 
         this.workerName = worker.getName();
-        this.date = workReportLine.getDate();
+        if (workReportLine.getLocalDate() != null) {
+            this.date = workReportLine.getLocalDate().toDateTimeAtStartOfDay()
+                .toDate();
+        }
         this.clockStart = workReportLine.getClockStart();
         this.clockFinish = workReportLine.getClockFinish();
         this.numHours = workReportLine.getNumHours();
@@ -217,9 +223,21 @@ public class OrderCostsPerResourceDTO implements
     }
 
     public int compareTo(OrderCostsPerResourceDTO o) {
-        String comparator = this.orderName + this.orderElementCode;
-        return comparator.compareToIgnoreCase(o.orderName
-                + o.getOrderElementCode());
+        String comparator = this.orderName + this.orderElementCode
+                + this.workerName;
+        int result = comparator.compareToIgnoreCase(o.orderName
+                + o.getOrderElementCode() + o.workerName);
+        if (result == 0) {
+            if ((this.date != null) && (o.getDate() != null)) {
+                if (this.date.compareTo(o.getDate()) == 0) {
+                    return this.hoursType.compareToIgnoreCase(o.getHoursType());
+                }
+                return this.date.compareTo(o.getDate());
+            } else {
+                return -1;
+            }
+        }
+        return result;
     }
 
     public void setHoursTypeCode(String hoursTypeCode) {
@@ -236,6 +254,14 @@ public class OrderCostsPerResourceDTO implements
 
     public String getOrderElementName() {
         return orderElementName;
+    }
+
+    public void setOrderCode(String orderCode) {
+        this.orderCode = orderCode;
+    }
+
+    public String getOrderCode() {
+        return orderCode;
     }
 
 }
