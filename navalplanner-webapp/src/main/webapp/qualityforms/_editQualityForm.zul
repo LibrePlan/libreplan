@@ -61,7 +61,8 @@
                             </row>
                             <row>
                                 <label value="${i18n:_('Report progress')}" />
-                                <checkbox checked="@{controller.qualityForm.reportAdvance}" />
+                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}"
+                                    onCheck="controller.validateReportProgress(self);" />
                             </row>
                         </rows>
                     </grid>
