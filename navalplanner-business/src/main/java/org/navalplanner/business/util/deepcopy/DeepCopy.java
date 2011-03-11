@@ -32,10 +32,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.proxy.HibernateProxy;
@@ -364,7 +364,8 @@ public class DeepCopy {
             throw new RuntimeException(e);
         } catch (NoSuchMethodException e) {
             throw new IllegalArgumentException(
-                    "could not invoke default no-args constructor", e);
+                    "could not invoke default no-args constructor for "
+                            + klass, e);
         }
         try {
             return constructor.newInstance();

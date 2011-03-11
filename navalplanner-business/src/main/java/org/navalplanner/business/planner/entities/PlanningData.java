@@ -50,7 +50,7 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
-    protected PlanningData() {
+    public PlanningData() {
 
     }
 
