@@ -66,7 +66,7 @@ public class CriticalPathCalculatorTest {
     }
 
     private CriticalPathCalculator<ITaskFundamentalProperties, IDependency<ITaskFundamentalProperties>> buildCalculator() {
-        return CriticalPathCalculator.create();
+        return CriticalPathCalculator.create(false);
     }
 
     private ITaskFundamentalProperties createTaskWithBiggerOrEqualThanConstraint(
