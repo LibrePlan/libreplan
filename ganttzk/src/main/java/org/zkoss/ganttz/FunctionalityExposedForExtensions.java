@@ -399,7 +399,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     @Override
     public void showCriticalPath() {
         CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create();
+                .create(configuration.isDependenciesConstraintsHavePriority());
 
         List<Task> criticalPath = criticalPathCalculator
                 .calculateCriticalPath(diagramGraph);
@@ -421,7 +421,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public List<T> getCriticalPath() {
         List<T> result = new ArrayList<T>();
         CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create();
+                .create(configuration.isDependenciesConstraintsHavePriority());
         for (Task each : criticalPathCalculator
                 .calculateCriticalPath(diagramGraph)) {
             result.add(mapper.findAssociatedDomainObject(each));

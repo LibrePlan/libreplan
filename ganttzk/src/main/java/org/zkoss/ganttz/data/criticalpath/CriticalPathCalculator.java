@@ -44,8 +44,16 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
-    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create() {
-        return new CriticalPathCalculator<T, D>();
+    private final boolean dependenciesConstraintsHavePriority;
+
+    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create(
+            boolean dependenciesConstraintsHavePriority) {
+        return new CriticalPathCalculator<T, D>(
+                dependenciesConstraintsHavePriority);
+    }
+
+    private CriticalPathCalculator(boolean dependenciesConstraintsHavePriority) {
+        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
     private ICriticalPathCalculable<T> graph;
@@ -302,7 +310,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private Constraint<GanttDate> getDateConstraints(T task) {
-        if (task == null) {
+        if (dependenciesConstraintsHavePriority || task == null) {
             return null;
         }
 
