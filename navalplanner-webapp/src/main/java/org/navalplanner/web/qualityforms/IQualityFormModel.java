@@ -120,4 +120,14 @@ public interface IQualityFormModel {
      */
     void upQualityFormItem(QualityFormItem qualityFormItem);
 
+    /**
+     * Check if exist any {@link QualityFormItem } of the current quality form with the 100 percentage
+     */
+    boolean hasItemWithTotalPercentage();
+
+    /**
+     * Check if the current {@link QualityFormItem } has a 100 percentage
+     * @param qualityFormItem
+     */
+    Boolean isTotalPercentage(QualityFormItem item);
 }
