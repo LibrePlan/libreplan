@@ -520,6 +520,11 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public boolean isSubcontractedAndWasAlreadySent() {
+        // Just Task could be subcontracted
+        return false;
+    }
+
     public boolean isLimiting() {
         return false;
     }
