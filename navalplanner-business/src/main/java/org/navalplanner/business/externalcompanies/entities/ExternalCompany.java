@@ -121,7 +121,7 @@ public class ExternalCompany extends BaseEntity {
     }
 
     public void setAppURI(String appURI) {
-        this.appURI = appURI;
+        this.appURI = StringUtils.trim(appURI);
     }
 
     public String getAppURI() {
