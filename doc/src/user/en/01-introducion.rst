@@ -9,9 +9,6 @@ NavalPlan is an opensource web application for project planning. Its main goal i
 For any specific information you may need about this software, please contact the development team at http://www.navalplan.org/contact
 
 
-<s>The program for the production management of the naval assistance sector mainly aims to solve planning problems for companies that work in the sector. This is why a series of tools has been developed to solve specific problems that have been identified during the analysis of the project. However, the solutions proposed for these problems are not exclusive to the naval sector, and can be useful for any company that applies the program's basic concepts.</s>
-
-
 .. figure:: images/company_view.png
    :scale: 50
 
