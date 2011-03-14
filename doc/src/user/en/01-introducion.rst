@@ -58,7 +58,7 @@ The program has the following views for an order:
 What makes NavalPlan useful?
 ============================
 
-NavalPlan is an application that has been developed as a general purpose planning tool. It is based on a series of concepts discovered by analysing problems in industrial project planning that were not fully covered by any existing planning tool. Also the motivations for the development of NavalPlan were based on providing a free software alternative, and completely web, for existing privative plannig tools. 
+NavalPlan is an application that has been developed as a general purpose planning tool. It is based on a series of concepts discovered by analysing problems in industrial project planning that were not fully covered by any existing planning tool. Also the motivations for the development of NavalPlan were based on providing a free software alternative, and completely web, for existing privative plannig tools.
 
 The essential concepts used for the program are as follows:
 

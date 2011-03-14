@@ -28,7 +28,7 @@ To carry out either of the two types of resource assignment, the following steps
    * Type of calculation: The system allows users to choose the strategy to be used to calculate assignments:
 
       * Calculate number of hours: This calculates the number of hours required to be devoted to the assigned resources, which are given an end date and a resource number per day.
-      * Calculate end date: This calculates the end date of the task based on the number of task resources and the total number of hours to finish the task. 
+      * Calculate end date: This calculates the end date of the task based on the number of task resources and the total number of hours to finish the task.
       * Calculate number of resources: This calculates the number of resources required to finish the task on a specific date and devotes a known number of hours to them.
 
    * Recommended assignment: This option allows the program to gather criteria that must be fulfilled and the total number of hours from all hour groups, and then recommends a generic assignment. If there was a prior assignment, the system deletes it and replaces it with the new one.
