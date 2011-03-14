@@ -142,15 +142,15 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
         NaiveTrustProvider.setAlwaysTrust(true);
 
-        WebClient client = WebClient.create(externalCompany.getAppURI());
-
-        client.path("ws/rest/subcontract");
-
-        Util.addAuthorizationHeader(client, externalCompany
-                .getOurCompanyLogin(), externalCompany
-                .getOurCompanyPassword());
-
         try {
+            WebClient client = WebClient.create(externalCompany.getAppURI());
+
+            client.path("ws/rest/subcontract");
+
+            Util.addAuthorizationHeader(client, externalCompany
+                    .getOurCompanyLogin(), externalCompany
+                    .getOurCompanyPassword());
+
             InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = client
                     .post(subcontractedTaskDataDTO,
                             InstanceConstraintViolationsListDTO.class);
