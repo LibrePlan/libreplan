@@ -26,10 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -56,7 +57,7 @@ public class AssignedHoursToOrderElementModel implements
 
     private OrderElement orderElement;
 
-    private List<WorkReportLine> listWRL;
+    private List<WorkReportLineDTO> listWRL;
 
     @Autowired
     public AssignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO) {
@@ -67,21 +68,56 @@ public class AssignedHoursToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public List<WorkReportLine> getWorkReportLines() {
+    public List<WorkReportLineDTO> getWorkReportLines() {
         if (orderElement == null) {
-            return new ArrayList<WorkReportLine>();
+            return new ArrayList<WorkReportLineDTO>();
         }
         this.assignedDirectHours = 0;
-        this.listWRL = workReportLineDAO.findByOrderElement(orderElement);
-        Iterator<WorkReportLine> iterador = listWRL.iterator();
+        this.listWRL = workReportLineDAO
+                .findByOrderElementGroupByResourceAndHourTypeAndDate(orderElement);
+
+        this.listWRL = groupByDate(listWRL);
+        Iterator<WorkReportLineDTO> iterador = listWRL.iterator();
         while (iterador.hasNext()) {
-            WorkReportLine w = iterador.next();
+            WorkReportLineDTO w = iterador.next();
             w.getResource().getShortDescription();
-            w.getOrderElement().getWorkHours();
-            w.getWorkReport().getDate();
-            this.assignedDirectHours = this.assignedDirectHours + w.getNumHours();
+            w.getTypeOfWorkHours().getName();
+            this.assignedDirectHours = this.assignedDirectHours
+                    + w.getSumHours();
         }
         return listWRL;
+    }
+
+    private List<WorkReportLineDTO> groupByDate(
+            List<WorkReportLineDTO> listWRL) {
+        List<WorkReportLineDTO> groupedByDateList = new ArrayList<WorkReportLineDTO>();
+
+        if (!listWRL.isEmpty()) {
+            Iterator<WorkReportLineDTO> iterador = listWRL.iterator();
+            WorkReportLineDTO currentWRL = iterador.next();
+            groupedByDateList.add(currentWRL);
+
+            while (iterador.hasNext()) {
+                WorkReportLineDTO nextWRL = iterador.next();
+
+                LocalDate currentDate = currentWRL.getLocalDate();
+                LocalDate nextDate = nextWRL.getLocalDate();
+
+                if ((currentWRL.getResource().getId().equals(nextWRL
+                        .getResource().getId()))
+                        && (currentWRL.getTypeOfWorkHours().getId()
+                                .equals(nextWRL.getTypeOfWorkHours().getId()))
+                        && (currentDate.compareTo(nextDate) == 0)) {
+                    // sum the number of hours to the next WorkReportLineDTO
+                    currentWRL.setSumHours(currentWRL.getSumHours()
+                            + nextWRL.getSumHours());
+                } else {
+                    groupedByDateList.add(nextWRL);
+                    currentWRL = nextWRL;
+                }
+            }
+        }
+        return groupedByDateList;
     }
 
     @Override
