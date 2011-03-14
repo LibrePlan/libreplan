@@ -27,10 +27,11 @@
             <panelchildren>
                 <grid
                     model="@{assignedHoursToOrderElementController.workReportLines}"
-                    mold="paging" pageSize="10">
+                    mold="paging" pageSize="10" fixedLayout="true">
                     <columns>
                         <column label="${i18n:_('Date')}" width="120px" />
                         <column label="${i18n:_('Resource')}" />
+                        <column label="${i18n:_('Hours type')}" />
                         <column label="${i18n:_('Hours')}" width="100px" />
                     </columns>
                     <rows>
@@ -39,7 +40,8 @@
                                 value="@{workReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                             <label
                                 value="@{workReportLine.resource.shortDescription}" />
-                            <label value="@{workReportLine.numHours}" />
+                            <label value="@{workReportLine.typeOfWorkHours.name}" />
+                            <label value="@{workReportLine.sumHours}" />
                         </row>
                     </rows>
                 </grid>

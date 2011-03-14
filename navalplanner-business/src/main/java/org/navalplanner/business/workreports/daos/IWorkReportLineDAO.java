@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -47,5 +48,8 @@ public interface IWorkReportLineDAO extends
     List<WorkReportLine> findFilteredByDate(Date start, Date end);
 
     List<WorkReportLine> findByResources(List<Resource> resourcesList);
+
+    List<WorkReportLineDTO> findByOrderElementGroupByResourceAndHourTypeAndDate(
+            OrderElement orderElement);
 
 }

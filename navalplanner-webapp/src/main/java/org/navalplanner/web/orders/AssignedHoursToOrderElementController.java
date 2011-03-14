@@ -24,7 +24,7 @@ package org.navalplanner.web.orders;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -48,7 +48,7 @@ public class AssignedHoursToOrderElementController extends
         comp.setVariable("assignedHoursToOrderElementController", this, true);
     }
 
-    public List<WorkReportLine> getWorkReportLines() {
+    public List<WorkReportLineDTO> getWorkReportLines() {
         return assignedHoursToOrderElementModel.getWorkReportLines();
     }
 

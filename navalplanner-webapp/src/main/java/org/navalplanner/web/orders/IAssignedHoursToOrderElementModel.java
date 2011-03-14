@@ -24,13 +24,13 @@ package org.navalplanner.web.orders;
 import java.util.List;
 
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.workreports.entities.WorkReportLine;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public interface IAssignedHoursToOrderElementModel{
-    public List<WorkReportLine> getWorkReportLines();
+    public List<WorkReportLineDTO> getWorkReportLines();
     public int getAssignedDirectHours();
     public int getTotalAssignedHours();
     public int getAssignedDirectHoursChildren();

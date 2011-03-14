@@ -62,7 +62,7 @@
             <tabpanel id="tabPanelDetails">
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
-            <tabpanel>
+            <tabpanel style="overflow:auto">
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
             </tabpanel>
             <tabpanel>
