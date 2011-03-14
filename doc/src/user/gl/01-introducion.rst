@@ -3,7 +3,16 @@ Introdución
 
 .. contents::
 
-A aplicación para xestión da produción do sector auxiliar do naval pretende resolver principalmente o problema da planificación nas empresas pertencentes ó sector. Para elo desenvolvéronse unha serie de funcionalidades que dan solución a certos problemas detectados durante a análise do proxecto. Sen embargo, a solucións propostas para as problemáticas xurdidas non deben ser vistas como exclusivas do sector naval, senón que poden ser útiles para calquera empresa á que os conceptos base utilizados lle sexan aplicables.
+O propósito deste documento é describir as características de NavalPlan e
+proporcionar información ós usuarios sobre como configurar e utilizar a
+aplicación.
+
+NavalPlan é unha aplicación web de código aberto para a planificación de
+proxectos. O seu obxectivo principal é proporcionar unha solución completa para a
+xestión dos proxectos da empresa.
+Para calquera información específica que necesites sobre este software, por
+favor ponte en contacto co equipo de desenvolvemento en
+http://www.navalplan.org/contacto
 
 
 .. figure:: images/company_view.png
@@ -47,12 +56,20 @@ Sobre un pedido, a aplicación amosa as seguintes perspectivas:
 * Vista de edición de pedido. Vista na que o usuario pode administrar os datos do pedido. Ver sección de *Pedidos* para máis información..
 * Vista de asignación avanzada de recursos. Vista na que o usuario pode asignar os recursos de xeito avanzado, seleccionando as horas por día ou as funcións de asignación que desexa aplicar. Ver sección de *Asignación de recursos* para máis información.
 
-¿Por que me é útil "NavalPlan"?
-===============================
+¿Por que me é útil NavalPlan?
+=============================
 
-"NavalPlan" é un proxecto desenvolvido co obxectivo de dotar ó usuario dunha ferramenta de planificación. Dita ferramenta baséase nunha serie de conceptos que se detectaron analizando a problemática de planificación do sector naval galego. Os conceptos base implantados sobre a aplicación son os seguintes:
+NavalPlan é unha aplicación desenvolvida como unha ferramenta de
+planificación de propósito xeral. Baséase nunha serie de conceptos
+descubertos mediante o análisis de problemas na planificación de proxectos
+industriais que non estaban completamente cubertos por ningunha ferramenta de
+planificación existente. Outras das motivacións para o desenvolvemento de
+NavalPlan se baseaban en proporcionar unha alternativa de software libre, e
+completamente web, ás ferramentas de planficación privativas existentes.
 
-* Vista global de empresa e multiproxecto: "NavalPlan" é unha aplicación orientada especificamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dispoñer de varias vistas específicas, entre elas a de proxectos individuais.
+Os conceptos esenciais que se utilizan para o programa son os seguintes:
+
+* Vista global de empresa e multiproxecto: NavalPlan é unha aplicación orientada especificamente a dotar de información ós usuarios dos proxectos que se levan a cabo nunha empresa, polo que a base é multiproxecto. Non se determinou que o enfoque do proxecto sexa orientado individualmente a cada proxecto. Sen embargo, tamén será posible dispoñer de varias vistas específicas, entre elas a de proxectos individuais.
 * Xestión de perspectivas: A vista global de empresa ou vista multiproxecto vese complementada coas perspectivas sobre a información que se almacena. Por exemplo, a vista global de empresa permite visualizar os pedidos e contrastar o estado dos mesmos, visualizar a carga xeral de recursos da empresa e administrar os pedidos. Por outro lado, na vista de proxecto, é posible visualizar a planificación, a carga de recursos, a vista de asignación de recursos avanzada e a edición do pedido relacionado.
 * Criterios: Os criterios son unha entidade do sistema que permitirán clasificar os recursos (tanto humanos como máquinas) e as tarefas. Dende o punto de vista dos recursos, estes satisfarán criterios e, dende o punto de vista das tarefas, estas requirirán criterios a ser satisfeitos. Correspóndense con un dos aspectos máis importantes da aplicación, xa que os criterios formarán parte da base das asignacións xenéricas na aplicación, resolvendo un dos problemas máis importantes para o sector, a alta temporalidade dos recursos humanos e a dificultade para ter estimacións de carga da empresa a longo prazo.
 * Recursos: Son de dous tipos diferentes: humanos e máquinas. Os recursos humanos son os traballadores da empresa que se utilizan para planificar, monitorizar e controlar a carga da empresa. E por outro lado, as máquinas, dependentes das persoas que as xestionan, son outros recursos que actúan de xeito similar ós recursos humanos.
