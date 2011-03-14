@@ -792,6 +792,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return (subcontractedTaskData != null);
     }
 
+    public boolean isSubcontractedAndWasAlreadySent() {
+        return (subcontractedTaskData != null)
+                && (!subcontractedTaskData.getState()
+                        .equals(SubcontractState.PENDING));
+    }
+
     public boolean hasSomeSatisfiedAllocation() {
         return !getSatisfiedResourceAllocations().isEmpty();
     }
