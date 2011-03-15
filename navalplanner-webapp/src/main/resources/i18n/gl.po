@@ -6847,7 +6847,7 @@ msgstr "N"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderStatusEnum.java:32
 msgid "OFFERED"
-msgstr "OFRECIDO"
+msgstr "OFERTADO"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderStatusEnum.java:32
 msgid "ACCEPTED"
