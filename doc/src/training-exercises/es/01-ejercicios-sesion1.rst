@@ -35,9 +35,10 @@ Crear 2 tipos de criterios con los criterios  detallados:
 Ejercicio 2. Calendarios
 ========================
 
-2.1 - Cambiar el nombre del calendario por defecto con nombre *Default* y llamarle España.
+2.1 - Cambiar el nombre del calendario por defecto con nombre *Default* y
+llamarle **España**.
 
-2.2 - Crear cada grupo un calendario global en la aplicación con los siguientes datos:
+2.2 - Crear dos calendarios globales en la aplicación con los siguientes datos:
 
 **Calendario 1**:
 
@@ -73,7 +74,7 @@ Ejercicio 2. Calendarios
 
          * Lunes - 8 h
          * Martes - 8 h.
-         * Miercoles - 8 h.
+         * Miércoles - 8 h.
          * Jueves - 8 h.
          * Viernes - 8 h.
 
@@ -110,10 +111,14 @@ Crear los siguientes recursos con los datos siguientes:
          *  Jueves: 8h
          *  Viernes: 4h
 
-      * Nombre: Ana Pérez López. NIF: 22222222B Calendario derivado: Valencia.
-      * Nombre: Felipe Romero Gómez NIF: 33333333C Calendario derivado: Valencia.
-      * Nombre: Vicente Martínez Pino NIF: 44444444C Calendario derivado: Galicia
-      * Nombre: Pablo Requejo Tilve NIF: 5555555G Calendario derivado: España.
+      * Nombre: Ana Pérez López. - NIF: 22222222B - Calendario derivado:
+        Comunidad Valenciana
+      * Nombre: Felipe Romero Gómez - NIF: 33333333C - Calendario derivado:
+        Comunidad Valenciana
+      * Nombre: Vicente Martínez Pino - NIF: 44444444C - Calendario derivado:
+        Galicia
+      * Nombre: Pablo Requejo Tilve - NIF: 5555555G - Calendario derivado:
+        España
 
 Ejercicio 5. Períodos Actividad
 ===============================
@@ -127,7 +132,7 @@ Configurar los siguientes períodos de actividad  para los trabajadores.
 
       * Nombre: Ana Pérez López.
 
-         * Fecha de contratación:  01/03/2011 - 30/04/2011.
+         * Fecha de contratación:  01/03/2011 - 30/06/2011.
 
       * Nombre: Felipe Romero Gómez
 
@@ -167,19 +172,19 @@ Configurar la satisfacción de criterios por parte de los recursos.
       * **Nombre**: Ana Pérez López
       * **Satisfacciones de criterio**:
 
-         * Formación: Programación - Desde 01/03/2011 hasta infinito.
-         * Localización: Valencia - Desde 01/03/2011 hasta infinito.
+         * Formación: Programador - Desde 01/03/2011 hasta infinito.
+         * Localización: Comunidad Valenciana - Desde 01/03/2011 hasta infinito.
 
       * **Nombre**: Felipe Romero Gómez
       * **Satisfacciones de criterio**:
 
-         * Formación: Programación - Desde 01/03/2011 hasta infinito.
-         * Localización: Valencia - Desde 01/03/2011 hasta infinito.
+         * Formación: Programador - Desde 01/03/2011 hasta infinito.
+         * Localización: Comunidad Valenciana - Desde 01/03/2011 hasta infinito.
 
       * **Nombre**: Vicente Martínez Pino
       * **Satisfacciones de criterio**:
 
-         * Formación: Programación - Desde 01/03/2011 hasta infinito.
+         * Formación: Programador - Desde 01/03/2011 hasta infinito.
          * Localización Galicia - Desde 01/03/2011 hasta infinito.
 
       * **Nombre**: Pablo Requejo Tilve
@@ -190,9 +195,8 @@ Configurar la satisfacción de criterios por parte de los recursos.
 Ejercicio  8. Creación de un pedido
 ===================================
 
-Crear un pedido cada grupo con los siguientes datos y ponerle, los puntos de planificación y los criterios indicados:
-
-
+Crear un pedido con los siguientes datos y ponerle, los puntos de planificación
+y los criterios indicados:
 
    * Datos de pedido:
 
@@ -204,7 +208,7 @@ Crear un pedido cada grupo con los siguientes datos y ponerle, los puntos de pla
 
    * Elementos de pedido:
 
-      * 1  Coordinacion - 350h - *Punto de planificación* - Gestor de proyecto
+      * 1  Coordinación - 350h - *Punto de planificación* - Gestor de proyecto
 
       * 2  Análisis  - 160h - *Punto de planificación* - Analista
 
@@ -214,25 +218,25 @@ Crear un pedido cada grupo con los siguientes datos y ponerle, los puntos de pla
          * 3.2 CU2- Registro de usuarios - 80h - *Punto de planificación*
          * 3.3 CU3- Gestión de roles de usuario - 160h - *Punto de planificación*
 
-      * 4 Módulo Facturas - *Punto de planificación*
+      * 4 Módulo Facturas - *Punto de planificación* - Programador & Galicia
 
-         * 4.1 CU4 - Alta de facturas - 100h - *Punto de planificación*
-         * 4.2 CU5 - Listado de facturas - 40h - *Punto de planificación*
-         * 4.3 CU6 - Búsqueda de facturas - 80h - *Punto de planificación*
+         * 4.1 CU4 - Alta de facturas - 100h
+         * 4.2 CU5 - Listado de facturas - 40h
+         * 4.3 CU6 - Búsqueda de facturas - 80h
 
       * 5 Módulo Pruebas - 160h - *Punto de planificación*
 
    * Otros datos del pedido:
-      * Responsable: Nombre de la persona del grupo.
+      * Responsable: Nombre de la persona.
       * Presupuesto: Trabajo: 100.000  Materiales: 0
       * Estado: Ofertado.
 
 Ejercicio  9 - Planificando dependencias
 ========================================
 
-Poner las dependencias siguientes en la planificación de cada pedido:
+Poner las dependencias siguientes en la planificación del pedido:
 
-Poner las siguientes dependencias:
+Añadir las siguientes dependencias:
 
          * Análisis *FIN-INICIO* Módulo del sistema de usuarios
          * CU1 - Alta de usuario *INICIO-INICIO* CU2 - Registro de usuario
@@ -249,9 +253,9 @@ Realizar las siguientes asignaciones
 
       * **Tarea: Coordinación**:
 
-         * *Asignación específica*: Raúl González Alvárez
+         * *Asignación específica*: Raúl González Álvarez
          * *Estrategia*: Calcular días laborables
-         * *Numero de recursos*: 0.5
+         * *Numero de recursos*: 0,5
 
       * **Tarea: Análisis**:
 
@@ -260,90 +264,105 @@ Realizar las siguientes asignaciones
          * *Número de días laborales*: 20
          * *Horas a asignar*: 160h
 
-       * **Tarea: CU1 - Alta de usuarios**:
+      * **Tarea: CU1 - Alta de usuarios**:
 
-         * *Asignación recomendada* Criterios Programador + Valencia
+         * *Asignación recomendada* Criterios Programador + Comunidad Valenciana
          * *Estrategia*: Calcular recursos por día
          * *Número de dias laborales*: 10
          * *Horas asignar*: 80h.
 
-       * **Tarea: CU2 - Registro de usuario**:
+      * **Tarea: CU2 - Registro de usuario**:
 
-         * *Asignación recomendada* Criterios Programador + Valencia
+         * *Asignación recomendada* Criterios Programador + Comunidad Valenciana
          * *Estrategia*: Calcular recursos por día
          * *Número de dias laborales*: 10
          * *Horas asignar*: 80h.
 
-
-      * **Tarea: CU3 - Gestión de roles de usuario** Se asignan 2 recursos especificamente
-
+      * **Tarea: CU3 - Gestión de roles de usuario** Se asignan 2 recursos
+        específicamente
 
          * *Asignación específica*: Felipe Romero Gómez y Ana Pérez López.
          * *Estrategia*: Calcular número de horas
          * *Recursos por día*: 0,25 para Felipe y 0,75 para Ana
          * *Número de días laborales:* 21
-         * *Número de horas:* 160h
 
       * **Tarea: Módulo de facturas**
 
-         * *Asignación recomendada*: Programador Galicia
+         * *Asignación recomendada*: Programador + Galicia
          * *Estrategia*: Calcular días laborales.
          * *Número de horas:* 220
          * *Número de recursos por día:* 1
 
-       * **Tarea: Pruebas**
+      * **Tarea: Pruebas**
 
-         * *Asignación:* una asignación genérica de 1 Gestor de proyecto, una asignación genérica de analista y una asignación específica de Ana Pérez López.
+         * *Asignación:* una asignación genérica de 1 Gestor de proyecto, una
+           asignación genérica de analista y una asignación específica de Ana
+           Pérez López.
          * *Estrategia*: Calcular recursos por día.
-         * *Numero de horas*: 80 horas de perfil gestor de proyecto, 80 horas de perfil analista y 40 horas para Ana.
+         * *Numero de horas*: 80 horas de perfil gestor de proyecto, 80 horas de
+           perfil analista y 40 horas para Ana.
          * *Días laborables:* 21
-
 
 
 Ejercicio 11. Preguntas sobre asignación
 ========================================
 
-**1.- ¿Por qué en la asignación específica de la tarea de coordinación se asignan a Raúl González 2h y de lunes a jueves 4h?**
+**1.- ¿Por qué en la asignación específica de la tarea de coordinación se
+asignan a Raúl González 2h el viernes y de lunes a jueves 4h?**
 
-R. La causa es que se asigna 0,5 recursos por día y el recurso tiene una jornada laboral en la cual los viernes se hace 4h (media jornada).
+  La causa es que se asigna 0,5 recursos por día y el recurso tiene una jornada
+  laboral en la cual los viernes se hace 4h (media jornada).
 
-**2.- ¿Cuántas son las horas asignadas a Raúl González del 1 al 12 de Junio en la tarea de coordinación?¿Por qué ocurre esto?**
+**2.- ¿Cuántas son las horas asignadas a Raúl González del 1 al 12 de Junio en
+la tarea de coordinación?¿Por qué ocurre esto?**
 
-R. Se asignan 0 horas porque Raul en ese período está de vacaciones.
+  Se asignan 0 horas porque Raúl en ese período está de vacaciones.
 
-**3.- ¿Cuántos son los recuros por día que se aplican en la tarea de análisis fruto de la configuración realizada?**
+**3.- ¿Cuántos son los recursos por día que se aplican en la tarea de análisis
+fruto de la configuración realizada?**
 
-R. Se asigna 1 recurso por día.
+  Se asigna 1 recurso por día.
 
-**4.- ¿Cuantos recursos por día suman las tareas CU1- Alta de usuarios y CU2- Registro de usuario que son planificadas simultaneamente?
-¿Por que causan sobreasignación si hay 2 programadores valencianos?**
+**4.- ¿Cuantos recursos por día suman las tareas CU1- Alta de usuarios y CU2-
+Registro de usuario que son planificadas simultáneamente? ¿Por que causan
+sobreasignación si hay 2 programadores valencianos?**
 
-R. Suman 2 recursos por dia y hay dos programadores en valencia. La razón de que causen sobreasignación es que Felipe Romero Gómez, uno
-de los programadores valencianos se encuentra de vacaciones del 1 al 10 de Abril. Por ello solo se puede asignar 4 días de los que dura
-la tarea (32h trabajables). Para cumplir con los 10 días por tanto hay que sobreasignar al otro programador valenciano, a Ana.
+  Suman 2 recursos por día y hay dos programadores en la Comunidad Valenciana.
+  La razón de que causen sobreasignación es que Felipe Romero Gómez, uno de los
+  programadores valencianos se encuentra de vacaciones del 1 al 10 de Abril. Por
+  ello solo se puede asignar 4 días de los que dura la tarea (32h trabajables).
+  Para cumplir con los 10 días por tanto hay que sobreasignar al otro
+  programador valenciano, a Ana.
 
-**5.- ¿Por qué en la tarea CU3- Gestión de roles de usuario para un número de horas de 160h y un numero de recursos asignados de 1 (0,25+0,75) es necesario que se configuraran 21 días laborales?**
+**5.- ¿Por qué en la tarea CU3- Gestión de roles de usuario para un número de
+horas de 160h y un numero de recursos asignados de 1 (0,25+0,75) es necesario
+que se configuraran 21 días laborales?**
 
-R. La razón es que la tarea dura del 12/04/2011 al 11/05/2011 y este primer dia el 12 es festivo para ambas según el calendario de
-valencia del cual derivan.
+  La razón es que la tarea dura del 12/04/2011 al 11/05/2011 y este primer día
+  el 12 es festivo para ambas según el calendario de la Comunidad Valenciana del
+  cual derivan.
 
-**6.- ¿En la tarea de pruebas, por qué practicamente da los mismos recursos por día de análisis y de gestión de proyecto dedicadas a pruebas que a Ana cuando Ana dedica la mitad de horas?**
+**6.- ¿En la tarea de pruebas, por qué prácticamente da los mismos recursos por
+día de análisis y de gestión de proyecto dedicadas a pruebas que a Ana cuando
+Ana dedica la mitad de horas?**
 
-R. La razón de esto es que Ana solo puede trabajar hasta el 30 de Junio, porque después se le agota su contrato de trabajo.
+  La razón de esto es que Ana solo puede trabajar hasta el 30 de Junio, porque
+  después se le agota su contrato de trabajo.
 
-Ejercicio 11. Progresos
+Ejercicio 12. Progresos
 =======================
 
 Realizar las siguientes asignaciones de progreso
 
 
-      * Tarea coordinación - Avance de tipo porcentaje - Valor  máximo 100 - Propaga
+      * Tarea coordinación - Avance de tipo porcentaje - Valor  máximo 100 -
+        Propaga
 
          * Valores: 25% a 1 Abril de 2011.
 
       * Tarea análisis - Avance de tipo unidades - Valor máximo 6 - Propaga
 
-         * Valor: 1 unidad al 4 de Marzo de 2011
-         * Valor: 2 unidades al 11 de Marzo de 2011
-         * Valor: 3 unidades el 25 de Marzo de 2011
+         * Valor: 1 unidad a 4 de Marzo de 2011
+         * Valor: 2 unidades a 11 de Marzo de 2011
+         * Valor: 3 unidades a 25 de Marzo de 2011
 
