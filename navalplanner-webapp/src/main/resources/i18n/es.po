@@ -7035,7 +7035,7 @@ msgstr "Jueves"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarData.java:82
 msgid "Friday"
-msgstr "Friday"
+msgstr "Viernes"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarData.java:82
 msgid "Saturday"
