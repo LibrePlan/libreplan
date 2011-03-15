@@ -67,7 +67,7 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
                 + "LEFT OUTER JOIN wrl.orderElement orderElement "
                 + "WHERE orderElement = :orderElement "
                 + "GROUP BY wrl.resource, wrl.typeOfWorkHours, wrl.date "
-                + "ORDER BY to_char(wrl.date, 'yyyy-mm-dd') , wrl.resource, wrl.typeOfWorkHours";
+                + "ORDER BY wrl.resource, wrl.typeOfWorkHours, wrl.date";
 
         // Set parameters
         Query query = getSession().createQuery(strQuery);
