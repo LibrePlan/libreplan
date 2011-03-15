@@ -863,9 +863,9 @@ msgstr "El progreso calculado no se puede modificar"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
 msgid ""
-"Deleting thi item, it will disable the report progress option. Are you sure?"
+"Deleting this item, it will disable the report progress option. Are you sure?"
 msgstr ""
-"Borrando el elemento, esto deshabilitará la opción de notificar progreso. "
+"Borrando este elemento, esto deshabilitará la opción de notificar progreso. "
 "¿Está seguro?"
 
 #: navalplanner-webapp/src/main/webapp/templates/templates.zul:68
@@ -5213,8 +5213,8 @@ msgstr ""
 "proyectos o recursos"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
-msgid "Delete order template. Are you sure?"
-msgstr "Borrar plantilla de pedido. ¿Está seguro?"
+msgid "Delete project template. Are you sure?"
+msgstr "Borrar plantilla de proyecto. ¿Está seguro?"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:1216
 msgid "All progress types have already been assigned."

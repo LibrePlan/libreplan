@@ -831,7 +831,7 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
 msgid ""
-"Deleting thi item, it will disable the report progress option. Are you sure?"
+"Deleting this item, it will disable the report progress option. Are you sure?"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/templates/templates.zul:68
@@ -5087,7 +5087,7 @@ msgid ""
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
-msgid "Delete order template. Are you sure?"
+msgid "Delete project template. Are you sure?"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:1216
