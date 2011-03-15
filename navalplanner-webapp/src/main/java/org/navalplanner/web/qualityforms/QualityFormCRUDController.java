@@ -340,7 +340,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
             try {
                 if (Messagebox
                         .show(
-                                _("Deleting thi item, it will disable the report progress option. Are you sure?"),
+                                _("Deleting this item, it will disable the report progress option. Are you sure?"),
                                 _("Confirm"),
                                 Messagebox.OK | Messagebox.CANCEL,
                                 Messagebox.QUESTION) == Messagebox.OK) {

@@ -347,7 +347,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
      */
     public void confirmDelete(OrderElementTemplate template) {
         try {
-            if (Messagebox.show(_("Delete order template. Are you sure?"),
+            if (Messagebox.show(_("Delete project template. Are you sure?"),
                     _("Confirm"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
                 if (this.model.hasNotApplications(template)) {
