@@ -23,6 +23,8 @@ package org.navalplanner.web.orders;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -86,6 +88,21 @@ public class AssignedHoursToOrderElementModel implements
             this.assignedDirectHours = this.assignedDirectHours
                     + w.getSumHours();
         }
+        return sortByDate(listWRL);
+    }
+
+    private List<WorkReportLineDTO> sortByDate(List<WorkReportLineDTO> listWRL) {
+        Collections.sort(listWRL, new Comparator<WorkReportLineDTO>() {
+            public int compare(WorkReportLineDTO arg0, WorkReportLineDTO arg1) {
+            if (arg0.getDate() == null) {
+                return -1;
+            }
+            if (arg1.getDate() == null) {
+                return 1;
+            }
+                return arg0.getDate().compareTo(arg1.getDate());
+            }
+        });
         return listWRL;
     }
 
