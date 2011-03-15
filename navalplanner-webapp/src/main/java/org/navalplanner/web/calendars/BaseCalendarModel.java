@@ -567,6 +567,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
 
     @Override
     public boolean isOwnException(CalendarException exception) {
+        if (getBaseCalendar() == null) {
+            return false;
+        }
         return getBaseCalendar().getOwnExceptions().contains(exception);
     }
 
