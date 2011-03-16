@@ -96,17 +96,17 @@ public class OrderElementHistoricalStatisticsComponent extends
                             finishApplications = getFinishedApplicationsNumber()
                                     .toString();
                             averageEstimatedHours = calculateAverageEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             averageWorkedHours = calculateAverageWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             maxEstimatedHours = calculateMaxEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             maxWorkedHours = calculateMaxWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             minEstimatedHours = calculateMinEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             minWorkedHours = calculateMinWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             return null;
                         }
                     });
