@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-15 09:21+0100\n"
+"POT-Creation-Date: 2011-03-16 09:43+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -829,11 +829,6 @@ msgstr ""
 msgid "Calculated progress can not be modified"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
-msgid ""
-"Deleting this item, it will disable the report progress option. Are you sure?"
-msgstr ""
-
 #: navalplanner-webapp/src/main/webapp/templates/templates.zul:68
 msgid "Statistics log"
 msgstr ""
@@ -1069,6 +1064,11 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/common/layout/template.zul:74
 msgid "Change scenario"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
+msgid ""
+"Deleting this item, it will disable the report progress option. Are you sure?"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/montecarlo/MonteCarloModel.java:81
@@ -2341,6 +2341,10 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/resources/search/_resourceFilter.zul:30
 msgid "Personal details"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
+msgid "Delete project template. Are you sure?"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/CriterionRequirementWrapper.java:47
@@ -5086,10 +5090,6 @@ msgid ""
 "or resources"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
-msgid "Delete project template. Are you sure?"
-msgstr ""
-
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:1216
 msgid "All progress types have already been assigned."
 msgstr ""
@@ -6285,6 +6285,11 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/scenarios/ScenarioCRUDController.java:124
 msgid "Scenario \"{0}\" saved"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/workreports/workReport.zul:215
+#: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:173
+msgid "Save & New work report"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/planner/_tabPanelSubcontract.zul:51
