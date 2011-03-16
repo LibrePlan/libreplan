@@ -26,6 +26,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -96,6 +97,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private IURLHandlerRegistry handlerRegistry;
 
     private EditTemplateWindowController editTemplateController;
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderTemplatesController.class);
 
     public List<OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
@@ -365,8 +369,8 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 }
             }
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error(_("Error on showing delete confirm"), e);
         }
+
     }
 }
