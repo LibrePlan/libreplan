@@ -88,7 +88,7 @@
                                 <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
                                     <textbox value="@{qualityFormItem.name}" width="95%"
                                         constraint="@{controller.checkConstraintQualityFormItemName}"/>
-                                    <label value="@{qualityFormItem.position}" width="50px"/>
+                                    <label value="@{qualityFormItem.stringPosition}" width="50px"/>
 
                                     <decimalbox scale = "2" width="100px"
                                         visible="@{controller.byPercentage}"
