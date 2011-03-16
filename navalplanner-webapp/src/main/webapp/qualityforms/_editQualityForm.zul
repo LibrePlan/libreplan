@@ -57,7 +57,8 @@
                                 <listbox id="listQualityFormTypes" mold="select" rows="1"
                                     model="@{controller.qualityFormTypes}"
                                     onSelect="controller.changeQualityFormType();"
-                                    selectedItem="@{controller.qualityForm.qualityFormType}"/>
+                                    selectedItem="@{controller.qualityForm.qualityFormType}"
+                                    itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Report progress')}" />
