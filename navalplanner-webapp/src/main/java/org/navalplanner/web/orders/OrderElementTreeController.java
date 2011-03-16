@@ -331,6 +331,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         // Is already added?
         Button button = (Button) ComponentsFinder.findById("expandAllButton", children);
         if (button != null) {
+            if (button.getSclass().equals("planner-command clicked")) {
+                button.setSclass("planner-command");
+                button.invalidate();
+            }
             return;
         }
 
