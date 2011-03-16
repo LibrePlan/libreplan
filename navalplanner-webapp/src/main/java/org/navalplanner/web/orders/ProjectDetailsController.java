@@ -122,8 +122,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
             if (tabs != null) {
                 tabs.goToOrdersList();
             }
-            orderController.editNewCreatedOrder();
-            close();
+            orderController.editNewCreatedOrder(window);
         }
     }
 

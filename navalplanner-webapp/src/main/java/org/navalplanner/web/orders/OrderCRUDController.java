@@ -40,9 +40,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -1034,11 +1034,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.prepareForCreate();
     }
 
-    public void editNewCreatedOrder() {
+    private void editNewCreatedOrder() {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
         showEditWindow(_("Create project"));
+    }
+
+    public void editNewCreatedOrder(Window detailsWindow) {
+        editNewCreatedOrder();
+        // close project details window
+        detailsWindow.setVisible(false);
+        saveAndContinue();
     }
 
     public ProjectDetailsController getCreationPopup() {
