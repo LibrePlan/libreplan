@@ -170,7 +170,7 @@
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.newWorkReportWithSameType();"
-                label="Save &amp; New work report" sclass="saveandcontinue-button global-action"/>
+                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.cancel();"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
 

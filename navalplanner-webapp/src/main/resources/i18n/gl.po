@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-15 09:21+0100\n"
-"PO-Revision-Date: 2011-03-15 09:33+0100\n"
+"POT-Creation-Date: 2011-03-16 09:43+0100\n"
+"PO-Revision-Date: 2011-03-16 09:47+0100\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "Language: gl\n"
@@ -852,13 +852,6 @@ msgstr "Lista de tarefas subcontratadas"
 msgid "Calculated progress can not be modified"
 msgstr "O progreso calculado non se pode modificar"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
-msgid ""
-"Deleting this item, it will disable the report progress option. Are you sure?"
-msgstr ""
-"Borrando este elemento, isto deshabilitará a opción de notificar progreso. "
-"¿Está seguro?"
-
 #: navalplanner-webapp/src/main/webapp/templates/templates.zul:68
 msgid "Statistics log"
 msgstr "Histórico de estadísticas"
@@ -1101,6 +1094,13 @@ msgstr "Paxinación"
 #: navalplanner-webapp/src/main/webapp/common/layout/template.zul:74
 msgid "Change scenario"
 msgstr "Cambiar escenario"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:343
+msgid ""
+"Deleting this item, it will disable the report progress option. Are you sure?"
+msgstr ""
+"Borrando este elemento, isto deshabilitará a opción de notificar progreso. "
+"¿Está seguro?"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/montecarlo/MonteCarloModel.java:81
 #: navalplanner-webapp/src/main/webapp/montecarlo/_montecarlo.zul:68
@@ -2391,6 +2391,10 @@ msgstr "Lista de traballadores"
 #: navalplanner-webapp/src/main/webapp/resources/search/_resourceFilter.zul:30
 msgid "Personal details"
 msgstr "Detalles persoais"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
+msgid "Delete project template. Are you sure?"
+msgstr "Borrar modelo de proxecto. ¿Está seguro?"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/CriterionRequirementWrapper.java:47
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:954
@@ -5192,10 +5196,6 @@ msgstr ""
 "Este tipo de criterio non se pode borrar porque ten asignacións a proxectos "
 "ou recursos"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/OrderTemplatesController.java:350
-msgid "Delete project template. Are you sure?"
-msgstr "Borrar modelo de proxecto. ¿Está seguro?"
-
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:1216
 msgid "All progress types have already been assigned."
 msgstr "Xa se asignaron todos os tipos de progreso."
@@ -6425,6 +6425,11 @@ msgstr "Configuración de asignación"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/scenarios/ScenarioCRUDController.java:124
 msgid "Scenario \"{0}\" saved"
 msgstr "Escenario \"{0}\" gardado"
+
+#: navalplanner-webapp/src/main/webapp/workreports/workReport.zul:215
+#: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:173
+msgid "Save & New work report"
+msgstr "Gardar e novo parte de traballo"
 
 #: navalplanner-webapp/src/main/webapp/planner/_tabPanelSubcontract.zul:51
 msgid "Subcontract price"
