@@ -2,7 +2,7 @@
 Sesión 1
 --------
 
-.. contents::
+.. contents:: Contenidos
 
 
 Ejercicio  1. Criterios
@@ -200,7 +200,7 @@ y los criterios indicados:
 
    * Datos de pedido:
 
-      * Nombre: Programa de contabilidad.
+      * Nombre: Proyecto 1 - Programa de contabilidad.
       * Fecha inicio: 01/03/2011
       * Fecha limite: 01/08/2011.
       * Cliente: -
@@ -310,44 +310,44 @@ Ejercicio 11. Preguntas sobre asignación
 **1.- ¿Por qué en la asignación específica de la tarea de coordinación se
 asignan a Raúl González 2h el viernes y de lunes a jueves 4h?**
 
-  La causa es que se asigna 0,5 recursos por día y el recurso tiene una jornada
-  laboral en la cual los viernes se hace 4h (media jornada).
+  Respuesta: La causa es que se asigna 0,5 recursos por día y el recurso tiene
+  una jornada laboral en la cual los viernes se hace 4h (media jornada).
 
 **2.- ¿Cuántas son las horas asignadas a Raúl González del 1 al 12 de Junio en
 la tarea de coordinación?¿Por qué ocurre esto?**
 
-  Se asignan 0 horas porque Raúl en ese período está de vacaciones.
+  Respuesta: Se asignan 0 horas porque Raúl en ese período está de vacaciones.
 
 **3.- ¿Cuántos son los recursos por día que se aplican en la tarea de análisis
 fruto de la configuración realizada?**
 
-  Se asigna 1 recurso por día.
+  Respuesta: Se asigna 1 recurso por día.
 
 **4.- ¿Cuantos recursos por día suman las tareas CU1- Alta de usuarios y CU2-
 Registro de usuario que son planificadas simultáneamente? ¿Por que causan
 sobreasignación si hay 2 programadores valencianos?**
 
-  Suman 2 recursos por día y hay dos programadores en la Comunidad Valenciana.
-  La razón de que causen sobreasignación es que Felipe Romero Gómez, uno de los
-  programadores valencianos se encuentra de vacaciones del 1 al 10 de Abril. Por
-  ello solo se puede asignar 4 días de los que dura la tarea (32h trabajables).
-  Para cumplir con los 10 días por tanto hay que sobreasignar al otro
-  programador valenciano, a Ana.
+  Respuesta: Suman 2 recursos por día y hay dos programadores en la Comunidad
+  Valenciana. La razón de que causen sobreasignación es que Felipe Romero Gómez,
+  uno de los programadores valencianos se encuentra de vacaciones del 1 al 10 de
+  Abril. Por ello solo se puede asignar 4 días de los que dura la tarea (32h
+  trabajables). Para cumplir con los 10 días por tanto hay que sobreasignar al
+  otro programador valenciano, a Ana.
 
 **5.- ¿Por qué en la tarea CU3- Gestión de roles de usuario para un número de
 horas de 160h y un numero de recursos asignados de 1 (0,25+0,75) es necesario
 que se configuraran 21 días laborales?**
 
-  La razón es que la tarea dura del 12/04/2011 al 11/05/2011 y este primer día
-  el 12 es festivo para ambas según el calendario de la Comunidad Valenciana del
-  cual derivan.
+  Respuesta: La razón es que la tarea dura del 12/04/2011 al 11/05/2011 y este
+  primer día el 12 es festivo para ambas según el calendario de la Comunidad
+  Valenciana del cual derivan.
 
 **6.- ¿En la tarea de pruebas, por qué prácticamente da los mismos recursos por
 día de análisis y de gestión de proyecto dedicadas a pruebas que a Ana cuando
 Ana dedica la mitad de horas?**
 
-  La razón de esto es que Ana solo puede trabajar hasta el 30 de Junio, porque
-  después se le agota su contrato de trabajo.
+  Respuesta: La razón de esto es que Ana solo puede trabajar hasta el 30 de
+  Junio, porque después se le agota su contrato de trabajo.
 
 Ejercicio 12. Progresos
 =======================
