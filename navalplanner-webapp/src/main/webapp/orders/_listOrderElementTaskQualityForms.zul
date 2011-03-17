@@ -31,7 +31,7 @@
                     <label value="${i18n:_('Assign quality form')}" />
                     <hbox>
                         <bandboxSearch id="bdQualityForms" finder="QualityFormBandboxFinder"
-                            model="@{assignedTaskQualityFormsController.notAssignedQualityForms}" />
+                            model="@{assignedTaskQualityFormsController.notAssignedQualityForms}" widthBandbox="200px" widthListbox="600px" />
                         <button label="${i18n:_('Assign')}"
                             onClick="assignedTaskQualityFormsController.onAssignTaskQualityForm()"
                             style="margin-top: -4px" />
