@@ -40,7 +40,7 @@
     <bandbox id="bandbox" autodrop="true">
         <bandpopup>
             <vbox height="50px">
-               <listbox id="listbox" sclass="bandbox-search" height="100px"
+               <listbox id="listbox" width="200px" sclass="bandbox-search" height="100px"
                       vflex="true" model="${arg.model}"
                       action="onClick: closeBandbox(#{listbox})">
                <listhead id="listhead" />
