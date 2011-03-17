@@ -255,11 +255,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         goToList();
     }
 
+    @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
     }
 
+    @Override
     public void goToEditForm(Worker worker) {
         setEditingWorkes(true);
         getBookmarker().goToEditForm(worker);
@@ -293,6 +295,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         showEditWindow(_("Edit Worker"));
     }
 
+    @Override
     public void goToCreateForm() {
         setEditingWorkes(true);
         getBookmarker().goToCreateForm();
@@ -650,7 +653,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private ResourcePredicate createPredicate() {
-        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
+        List<FilterPair> listFilters = bdFilters
                 .getSelectedElements();
 
         String personalFilter = txtfilter.getValue();
@@ -715,6 +718,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             this.option = option;
         }
 
+        @Override
         public String toString() {
             return _(option);
         }
