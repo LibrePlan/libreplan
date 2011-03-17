@@ -38,6 +38,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -263,12 +264,17 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
 
             @Override
             public void render(Row row, Object data) throws Exception {
-                AdvanceType advanceType = (AdvanceType) data;
-
+                final AdvanceType advanceType = (AdvanceType) data;
                 appendLabelName(row, advanceType);
                 appendCheckboxEnabled(row, advanceType);
                 appendCheckboxPredefined(row, advanceType);
                 appendOperations(row, advanceType);
+                row.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(advanceType);
+                    }
+                });
             }
 
             private void appendLabelName(Row row, AdvanceType advanceType) {

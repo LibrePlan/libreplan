@@ -21,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Unit Measures List')}">
     <newdatasortablegrid id="listing" model="@{controller.unitTypes}" mold="paging"
-        pageSize="10" fixedLayout="true"
+        pageSize="10" fixedLayout="true" sclass="clickable-rows"
         rowRenderer="@{controller.unitTypeRenderer}" >
         <columns>
             <newdatasortablecolumn label="${i18n:_('Unit Measure')}"

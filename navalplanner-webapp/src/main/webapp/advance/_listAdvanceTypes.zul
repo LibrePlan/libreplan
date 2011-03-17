@@ -21,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Progress Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.advanceTypes}" mold="paging"
-        pageSize="10" fixedLayout="true"
+        pageSize="10" fixedLayout="true" sclass="clickable-rows"
         rowRenderer="@{controller.advanceTypeRenderer}" >
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(unitName)"/>

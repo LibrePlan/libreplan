@@ -23,7 +23,7 @@
 
     <newdatasortablegrid id="listExceptionDayTypes"
         model="@{controller.exceptionDayTypes}"
-        mold="paging" pageSize="10"
+        mold="paging" pageSize="10" class="clickable-rows"
         fixedLayout="true">
 
         <columns>
@@ -35,7 +35,7 @@
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}">
+            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}" onClick="controller.goToEditForm(self.value)">
                 <label value="@{exceptionDayType.name}" />
                 <label value="@{exceptionDayType.color}" />
                 <label value="@{exceptionDayType.overAssignableStr}" />

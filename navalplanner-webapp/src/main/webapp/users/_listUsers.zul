@@ -21,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Users List')}">
     <newdatasortablegrid id="listing" model="@{controller.users}" mold="paging"
-        pageSize="10">
+        pageSize="10" sclass="clickable-rows">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('User login name')}" sort="auto(loginName)" />
             <newdatasortablecolumn label="${i18n:_('Disabled')}" />
@@ -29,7 +29,7 @@
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='user'}" value="@{user}">
+            <row self="@{each='user'}" value="@{user}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{user.loginName}" />
                 <checkbox checked="@{user.disabled}" disabled="true" />
                 <checkbox checked="@{user.administrator}" disabled="true" />

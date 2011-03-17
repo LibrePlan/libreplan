@@ -21,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Work Hours Types List')}">
     <newdatasortablegrid id="listing" model="@{controller.typesOfWorkHours}" mold="paging"
-        pageSize="10" fixedLayout="true">
+        pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Code')}" sort="auto(code)" />
             <newdatasortablecolumn label="${i18n:_('Type name')}" sort="auto(name)" />
@@ -30,7 +30,7 @@
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='typeOfWorkHours'}" value="@{typeOfWorkHours}">
+            <row self="@{each='typeOfWorkHours'}" value="@{typeOfWorkHours}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{typeOfWorkHours.code}" />
                 <label value="@{typeOfWorkHours.name}" />
                 <label value="@{typeOfWorkHours.defaultPrice}" />

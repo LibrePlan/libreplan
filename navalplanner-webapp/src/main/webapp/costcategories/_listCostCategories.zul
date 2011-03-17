@@ -21,14 +21,14 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Cost Categories List')}">
     <newdatasortablegrid id="listing" model="@{controller.costCategories}" mold="paging"
-        pageSize="10">
+        pageSize="10" sclass="clickable-rows">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Category name')}" sort="auto(lower(name))" />
             <newdatasortablecolumn label="${i18n:_('Enabled')}" sort="auto(enabled)"/>
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='costCategory'}" value="@{costCategory}">
+            <row self="@{each='costCategory'}" value="@{costCategory}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{costCategory.name}" />
                 <checkbox checked="@{costCategory.enabled}" disabled="true" />
                 <hbox>

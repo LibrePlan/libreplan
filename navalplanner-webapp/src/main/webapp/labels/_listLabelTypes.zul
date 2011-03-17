@@ -21,14 +21,14 @@
 
 <window id="${arg.id}" title="${i18n:_('Label Types List')}">
     <newdatasortablegrid id="labelTypes" model="@{controller.labelTypes}"
-        mold="paging" pageSize="10" fixedLayout="true">
+        mold="paging" pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_('Code')}"/>
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='labelType'}" value="@{labelType}">
+            <row self="@{each='labelType'}" value="@{labelType}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{labelType.name}" />
                 <label value="@{labelType.code}" />
                 <hbox>

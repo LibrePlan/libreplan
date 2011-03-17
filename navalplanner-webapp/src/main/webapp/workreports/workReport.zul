@@ -56,7 +56,7 @@
                 </div>
                 <separator bar="false" spacing="20px" orient="horizontal"/>
                 <grid id="listing"  mold="paging" pageSize="10"
-                model="@{controller.workReportDTOs}"
+                model="@{controller.workReportDTOs}" sclass="clickable-rows"
                 onInitRender ="controller.sortWorkReports();">
                 <columns sizable="true">
                     <column id="columnDateStart" label="${i18n:_('Date Start')}" sort="auto(dateStart, dateFinish)" sortDirection="ascending"/>
@@ -66,7 +66,7 @@
                     <column label="${i18n:_('Actions')}" />
                 </columns>
                 <rows>
-                    <row self="@{each='workReportDTO'}" value="@{workReportDTO}">
+                    <row self="@{each='workReportDTO'}" value="@{workReportDTO}" onClick="controller.goToEditForm(self.value);">
                         <label value="@{workReportDTO.dateStart, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                         <label value="@{workReportDTO.dateFinish, converter='org.navalplanner.web.common.typeconverters.DateConverter'}"/>
                         <label value="@{workReportDTO.type}" />

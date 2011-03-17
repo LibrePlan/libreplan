@@ -20,7 +20,7 @@
 -->
 <window id="${arg.top_id}" title="${i18n:_('Templates List')}">
     <grid id="listing" model="@{templatesForOrdersController.templates}" mold="paging"
-        pageSize="10" fixedLayout="true">
+        pageSize="10" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <column label="${i18n:_('Type')}" sort="auto(type)" />
             <column label="${i18n:_('Code')}" sort="auto(code)" />
@@ -34,7 +34,7 @@
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='template'}" value="@{template}">
+            <row self="@{each='template'}" value="@{template}" onClick="templatesForOrdersController.goToEditForm(self.value);">
                 <label value="@{template.type}" />
                 <label value="@{template.code}" />
                 <label value="@{template.name}" />

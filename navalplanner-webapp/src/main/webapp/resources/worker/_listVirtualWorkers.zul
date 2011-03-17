@@ -37,7 +37,7 @@
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='virtualWorker'}" value="@{virtualWorker}" onDoubleClick="controller.goToEditVirtualWorkerForm(self.value);">
+            <row self="@{each='virtualWorker'}" value="@{virtualWorker}" onClick="controller.goToEditVirtualWorkerForm(self.value);">
                 <label value="@{virtualWorker.firstName}" />
                 <label value="@{virtualWorker.calendar.capacity}" />
                 <label value="@{virtualWorker.observations}" maxlength="40"/>
