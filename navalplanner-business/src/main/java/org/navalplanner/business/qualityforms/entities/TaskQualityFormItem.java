@@ -88,6 +88,10 @@ public class TaskQualityFormItem implements INewObject {
         return position;
     }
 
+    public String getStringPosition() {
+        return position == null ? "" : new Integer(position + 1).toString();
+    }
+
     private void setPosition(Integer position) {
         this.position = position;
     }

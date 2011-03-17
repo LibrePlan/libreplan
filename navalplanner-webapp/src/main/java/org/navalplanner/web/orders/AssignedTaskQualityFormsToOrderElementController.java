@@ -274,8 +274,8 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
             appendDetails(row, taskQualityForm);
             appendNewLabel(row, taskQualityForm.getQualityForm().getName());
-            appendNewLabel(row, taskQualityForm.getQualityForm()
-                    .getQualityFormType().toString());
+            appendNewLabel(row, _(taskQualityForm.getQualityForm()
+                    .getQualityFormType().toString()));
             appendCheckboxReportAdvance(row, taskQualityForm);
             appendOperations(row);
         }
@@ -423,7 +423,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             row.setValue(item);
 
             appendNewLabel(row, item.getName());
-            appendNewLabel(row, item.getPosition().toString());
+            appendNewLabel(row, item.getStringPosition());
             appendNewLabel(row, item.getPercentage().toString());
             appendCheckPassed(row);
             appendDate(row);
