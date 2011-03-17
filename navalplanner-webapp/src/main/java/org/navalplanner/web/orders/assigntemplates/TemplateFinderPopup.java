@@ -92,7 +92,7 @@ public class TemplateFinderPopup extends
         bandboxSearch = new BandboxSearch();
         bandboxSearch.setFinder(finderName);
         bandboxSearch.setWidthBandbox("300px");
-        bandboxSearch.setListboxWidth("400px");
+        bandboxSearch.setWidthListbox("600px");
         finderPlaceholder.appendChild(bandboxSearch);
         bandboxSearch.afterCompose();
         popup.open(ref, position);
