@@ -3,7 +3,7 @@ Introducción
 ------------
 
 El objetivo de este curso formativo es capacitar a los futuros usuarios de
-NavalPlan** para que obtengan el máximo rendimiento de las características del
+NavalPlan para que obtengan el máximo rendimiento de las características del
 software NavalPlan desarrollado por la Fundación para el Fomento de la Calidad
 Industrial y Desarrollo Tecnológico de Galicia para la gestión de la producción
 en el sector naval.
@@ -40,7 +40,7 @@ siguiente secuencia: un recurso es asignado con el criterio "soldador" (es
 decir, satisface el criterio "soldador") y una tarea requiere el criterio
 "soldador" para ser realizada, en consecuencia ante una asignación de recursos a
 tareas los trabajadores con criterio "soldador" son los que se utilicen a la
-hora de asignar xenericamente (no aplica en las asignaciones específicas).
+hora de asignar genéricamente (no aplica en las asignaciones específicas).
 
 Los criterios se organizan en tipos de criterios, las cales reúnen los criterios de una misma categoría.
 
@@ -58,9 +58,9 @@ Para crear un nuevo tipo de criterio debiera seguir la siguiente secuencia de pa
    * MÁQUINA: indica que es aplicable a los recursos máquina.
 
 * Seleccionar si un tipo de criterio permite que un recurso cumpla más de un criterio de este tipo. Se está activado para un tipo de criterio llamado profesión había permitido que cada recurso pida tener simultáneamente más de una profesión activa en el tiempo, por ejemplo Carpintero y Pintor.
-* Seleccionara si el tipo de criterio es jerárquico. Esto permitirá definir una estructura jerárquica que puede ser útil para reflexar una relación entre los criterios de especifidade. Un ejemplo sería la localización donde se pueden definir criterios con relación de pertenencia Europa > España > Galicia > Santiago.
+* Seleccionara si el tipo de criterio es jerárquico. Esto permitirá definir una estructura jerárquica que puede ser útil para reflejar una relación entre los criterios de especificidad. Un ejemplo sería la localización donde se pueden definir criterios con relación de pertenencia Europa > España > Galicia > Santiago.
 * Dejar marcado el campo de activado, ya que su desactivación supondría que no se podrían asignar este tipo de criterio a los recursos.
-* Incorporar el campo descripción informativo sobre el tipo de criterio
+* Incorporar el campo descripción informativo sobre el tipo de criterio.
 * Presionar en la opción en la parte inferior de la venta de *guardar y continuar*. Procediendo la creación de criterios de este tipo de criterio.
 
 
@@ -93,7 +93,7 @@ Administración de etiquetas
 
 Las etiquetas son entidades que se utilizan en la aplicación para la organización conceptualmente de tareas o elementos de proyecto.
 
-Las etiquetas categorizanse según los tipos de etiquetas. Una etiqueta sólo pertenece a un tipo de etiqueta, sin embargo, nada impide crear tantas etiquetas similares que pertenezcan a tipos de etiquetas diferentes.
+Las etiquetas se categorizan según los tipos de etiquetas. Una etiqueta sólo pertenece a un tipo de etiqueta, sin embargo, nada impide crear tantas etiquetas similares que pertenezcan a tipos de etiquetas diferentes.
 
 
 Alta de un nuevo tipo de etiqueta
@@ -142,10 +142,10 @@ Para la creación de un nuevo calendario es necesario:
    * El calendario creado será un calendario sin ningún dato. Se verán todas las fechas del calendario en rojo por lo que esos días no tienen asignación de horas. Es preciso introducir la información relativa a la *semana Laboral* y las *excepciones*.
    * Presionar en la pestaña de *Semana de Trabajo*. Asignar la jornada de trabajo por defecto para cada día de la semana. Por ejemplo, es posible marcar 8 horas de trabajo de lunes a viernes para una jornada laboral de 40 horas. En la parte derecha de la pantalla se podrá ver las horas determinadas para trabajar en una jornada concreta. A lo largo del tiempo se puede ir modificando la semanal laboral por defecto de un calendario. Esto se realiza a través de la creación de nuevas versiones del calendario.
    * Situarse en la pestaña de *Excepción* e introducir aquellos días especiales que tienen una influencia en el calendario laboral de la empresa o en el calendario del grupo de trabajadores que se esté creando. Por ejemplo, se deben señalar los días festivos.
-   * Seleccionar una fecha en el calendario, por ejemplo el 19 de Marzo. Señalar el tipo de excepción como *BANK_HOLIDAY (Día de Vacaciones)*. Finalmente indicar el número de horas a trabajar que, en este caso, será 0. A continuacion, pulsar en el botón *Crear Excepción*.
+   * Seleccionar una fecha en el calendario, por ejemplo el 19 de Marzo. Señalar el tipo de excepción como *BANK_HOLIDAY (Día de Vacaciones)*. Finalmente indicar el número de horas a trabajar que, en este caso, será 0. A continuación, pulsar en el botón *Crear Excepción*.
    * El listado de excepciones se puede ver a la derecha del formulario de creación de excepciones.
    * **La aplicación sólo permite modificaciones del calendario a futuro** para que no se tenga influencia en planificaciones pasadas.
-   * Es posible marcar un conjunto de fechas como excepciones, simplemente se tiene que marcar la fecha de inicio en el calendario y seleccionar en el campo data fin la fecha hasta la que llegua la excepción.
+   * Es posible marcar un conjunto de fechas como excepciones, simplemente se tiene que marcar la fecha de inicio en el calendario y seleccionar en el campo data fin la fecha hasta la que llega la excepción.
    * Para borrar una excepción en el calendario se presionará en el icono de *Borrar* en el listado de excepciones.
    * Finalmente pulsar en *Guardar* y el nuevo calendario aparecerá en el listado de calendarios.
 
@@ -156,7 +156,7 @@ Es posible modificar un calendario para incluir modificaciones en la jornada lab
 
    * Pulsar en el botón *Editar* en las operaciones de un calendario del listado de la administración de calendarios.
    * Es posible modificar o crear nuevos días excepcionales a futuro siguiendo las instrucciones previas de creación de un nuevo calendario.
-   * Para modificar la semana laboral por defecto y es necesario situarse en la pestañá de *Semana de Trabajo* y hacer:
+   * Para modificar la semana laboral por defecto y es necesario situarse en la pestaña de *Semana de Trabajo* y hacer:
 
        * Pulsar en el botón *crear una nueva semana de trabajo*.
        * Indicar la fecha a partir de la que la semana entrará en vigor.
@@ -182,7 +182,7 @@ Para hacer una copia se seguirán los siguientes pasos:
 Creación de un calendario derivado
 ----------------------------------
 
-Se pueden crear calendarios derivados de otros. Un calendario derivado es una especialización del calendario del que deriva. La aplicación típica de calendario derviado son situaciones en las que la empresa o entidad tiene varias localizaciones con múltiples calendarios laborales. Otro ejemplo de utilización es para definir el calendario de trabajadores con media jornada pero que tienen los mismos festivos que el resto de la empresa. La derivación es como crear una copia pero con la salvedad de que los cambios en el calendario origen siguen afectando a los calendarios derivados.
+Se pueden crear calendarios derivados de otros. Un calendario derivado es una especialización del calendario del que deriva. La aplicación típica de calendario derivado son situaciones en las que la empresa o entidad tiene varias localizaciones con múltiples calendarios laborales. Otro ejemplo de utilización es para definir el calendario de trabajadores con media jornada pero que tienen los mismos festivos que el resto de la empresa. La derivación es como crear una copia pero con la salvedad de que los cambios en el calendario origen siguen afectando a los calendarios derivados.
 
 Los pasos para la creación de un calendario derivado son los siguientes:
 
@@ -230,7 +230,7 @@ Los recursos virtuales son, como se explicó, como grupos de trabajadores pero q
 
 Se dotó a *NavalPlan* la posibilidad de usar recursos virtuales debido a dos escenarios de uso:
 
-   * Usar recursos virtuales para simular contrataciones futuras por necesidades de proyectos. Puede ocurrir que para satisfacer proyectos futuros las empresas necesiten contratar trabajadores en un momento futuro del tiempo. Para preveer y simular cuantos trabajadores pueden necesitar los usuarios de la aplicación pueden usar los recursos virtuales.
+   * Usar recursos virtuales para simular contrataciones futuras por necesidades de proyectos. Puede ocurrir que para satisfacer proyectos futuros las empresas necesiten contratar trabajadores en un momento futuro del tiempo. Para prever y simular cuantos trabajadores pueden necesitar los usuarios de la aplicación pueden usar los recursos virtuales.
    * También pueden existir empresas que deseen gestionar las aplicación sin tener que llevar una gestión de los recursos con respeto los datos de los trabajadores reales de la empresa. Para estos casos, los usuario pueden usar también los recursos virtuales.
 
 Alta de recursos
@@ -301,7 +301,7 @@ Adicionalmente existe en la pantalla un *checkbox* para seleccionar que criterio
 
 La asignación de criterios se rige por las reglas dictadas por el tipo de criterio del criterio que se está asignando. Así por ejemplo cabe mencionar dos aspectos:
 
-   * En criterios de cualquier tipo, una asignación de criterio no se puede solapar en el tiempo con otra asignacion del mismo criterio en un el mismo trabajador.
+   * En criterios de cualquier tipo, una asignación de criterio no se puede solapar en el tiempo con otra asignación del mismo criterio en un el mismo trabajador.
    * En criterios que no permiten múltiples valores por recurso, no puede haber dos asignaciones de criterio del mismo tipo de criterio de manera que sus intervalos de validez tenga algún punto en común.
 
 Los criterios que son seleccionables para ser asignados a los trabajadores son los criterios de tipo *TRABAJADOR*.
@@ -348,7 +348,7 @@ Los trabajadores tienen un calendario propio. Sin embargo, no es un calendario q
 
 El hecho de derivar de un calendario significa que, sino se configura, hereda completamente la definiciones del calendario del cual deriva: hereda la definición de la semana de trabajo, los días festivos, etc.
 
-*NavalPlan*, sin embargo, además de hacer que sus recursos deriven del calendario de la empresa, permite la definición de particularidades del calendario. Esto implica que las vacaciones del trabajador o casos especicales de jornada de trabajo como el número de horas de que consta el contrato de trabajo, sea contemplado en la planificación.
+*NavalPlan*, sin embargo, además de hacer que sus recursos deriven del calendario de la empresa, permite la definición de particularidades del calendario. Esto implica que las vacaciones del trabajador o casos especiales de jornada de trabajo como el número de horas de que consta el contrato de trabajo, sea contemplado en la planificación.
 
 Asignación de calendario padre a trabajadores en creación de trabajador
 -----------------------------------------------------------------------
@@ -415,7 +415,7 @@ Los recursos trabajador, máquina o grupo de trabajadores virtuales pueden confi
 
 Los dos primeros conceptos, es decir, la jornada semanal de trabajo y las excepciones de dedicación, se explican en la sección de **Administración de calendario general**
 
-Dicho lo anterior, los calendarios de los recursos tienen una particularidad con respeto al calendario de la empresa. Esta peculariedad son los *períodos de activación*.
+Dicho lo anterior, los calendarios de los recursos tienen una particularidad con respeto al calendario de la empresa. Esta peculiaridad son los *períodos de activación*.
 
 Los *períodos de activación* son intervalos en los cuáles los trabajadores se encuentran disponibles para la planificación. Conceptualmente se corresponden con aquellos períodos en los cuáles el trabajador se encuentra contratado por la empresa. Un trabajador puede ser contratado por un tiempo, después abandonar la entidad a la que pertenece y reincorporarse posteriormente. *NavalPlan* guarda la historia de planificación de todos los recursos y utiliza la información de activación para impedir que se le asigne trabajo cuando no se encuentran contratados.
 
@@ -424,7 +424,7 @@ En el momento de la creación de un trabajador, por defecto, se configura con un
 Configuración de los períodos de activación de un recurso
 ---------------------------------------------------------
 
-Los períodos de activación de un determinado recurso tienen que satisfacer no tener puntos de solapamento en el tiempo. Los pasos para configurarlos son:
+Los períodos de activación de un determinado recurso tienen que satisfacer no tener puntos de solapamiento en el tiempo. Los pasos para configurarlos son:
 
    * Ir la sección correspondiente: *Recursos > Máquinas*, *Recursos >  Trabajadores* o *Recursos > Grupo de trabajadores virtuales*.
    * Seleccionar la fila del recurso que se quiere editar y presionar en el botón de la fila asociada para editar.
@@ -460,7 +460,7 @@ Acceso a vista global de la empresa
 
 La vista global de la empresa es la pantalla inicial de la empresa, la que se entra una vez que el usuario entra en la aplicación.
 
-En ella lo que se puede ver son todos los proyectos que existen en la empresa y se representan a través de un *diagrama de Gantt*. Los datos que seobservan de cada proyecto son:
+En ella lo que se puede ver son todos los proyectos que existen en la empresa y se representan a través de un *diagrama de Gantt*. Los datos que se observan de cada proyecto son:
 
    * Su fecha de inicio y su fecha de fin.
    * Cuál es el progreso en la realización de cada proyecto.
@@ -529,7 +529,7 @@ Edición de un proyecto
 
 Para la edición de un proyecto existen varios caminos posibles:
 
-   * Opcion 1:
+   * Opción 1:
       * Ir a la entrada de menú  *Planificación > Proyectos*.
       * Presionar sobre el icono de edición, lápiz sobre hoja de papel, que se corresponda con el proyecto deseado.
    * Opción 2:
@@ -563,10 +563,10 @@ En caso de que se quiera cambiar la posición de la tarea y situarla en otro lug
    * *Icono flecha arriba*. Pulsándolo se hace que la tarea ascienda en el árbol de tareas.
    * *Icono flecha abajo*. Pulsando en él se hace que la tarea descienda en el árbol de tareas.
 
-A través de lo explicado hasta ahora, lo que se hace es añadir tareas hoja. Ahora bien, también es posible añadir tareas contenedores. Para añadir tareas contedores, el usuario puede seguir varios itinerarios:
+A través de lo explicado hasta ahora, lo que se hace es añadir tareas hoja. Ahora bien, también es posible añadir tareas contenedores. Para añadir tareas contenedores, el usuario puede seguir varios itinerarios:
 
-Creando tareas contedoras mediante arrastrar y soltar
------------------------------------------------------
+Creando tareas contenedoras mediante arrastrar y soltar
+-------------------------------------------------------
 
 Para poder llevar a cabo esta operación es necesario disponer de al menos dos elementos de proyecto hoja creados según el procedimiento explicado en el punto anterior. Se va a partir del supuesto de que se dispone dos elementos de proyecto hoja elemento *Y1* y elemento *Y2*.
 
@@ -577,18 +577,18 @@ Los pasos a dar son los siguientes:
    * Desplazar el ratón manteniendo pulsado el botón izquierdo hasta situarse encima del elemento *Y2*. En ese momento liberar el botón del ratón.
    * Lo que ocurre en este punto es que se crea una tarea contenedor que tiene el nombre de *Y2* y poseerá dos hijos con los nombres *Y2 Copia* y *Y1*. El elemento *Y2 Copia* tendrá la carga de trabajo del anterior elemento *Y2* y, ahora, el elemento *Y2* contendrá la suma de las horas de *Y1* y *Y2 Copia*.
 
-Creando tareas contedoras mediante creación con tarea hoja seleccionada
------------------------------------------------------------------------
+Creando tareas contenedoras mediante creación con tarea hoja seleccionada
+-------------------------------------------------------------------------
 
-Para llevar a cabo esta operación es necesario disponer de una tarea hoja creada, llámemosla *Y1*. A partir de aquí, los pasos para crear un contenedor son:
+Para llevar a cabo esta operación es necesario disponer de una tarea hoja creada, llamémosla *Y1*. A partir de aquí, los pasos para crear un contenedor son:
 
-   * Situar el puntero del ratón en la fila del elemento *Y1* y pulsar el botón izquierdo del ratón en la árela de la fila que va desde lo comienzo hasta el primer icono que sale en la fila (icono de notificación de estado de planificación que se verá más adelante). Tras realizar esta acción la fila aparecerá seleccionada.
+   * Situar el puntero del ratón en la fila del elemento *Y1* y pulsar el botón izquierdo del ratón en la área de la fila que va desde lo comienzo hasta el primer icono que sale en la fila (icono de notificación de estado de planificación que se verá más adelante). Tras realizar esta acción la fila aparecerá seleccionada.
    * Introducir en la línea de edición, situada encima de la tabla del árbol de tareas, la nueva tarea, con nombre *Y2* y un número de horas.
    * Presionar en el botón *Añadir* que está situado a la derecha de la etiqueta *Nueva tarea* y los campos de entrada de nombre y horas.
    * Lo que ocurre en este punto es que se crea una tarea contenedor con nombre de *Y2* y poseerá dos hijos con los nombres *Y2 Copia* y *Y1*. El elemento *Y2 Copia* tendrá la carga de trabajo del anterior elemento *Y2* y, ahora, el elemento *Y2* contendrá la suma de las horas de *Y1* y *Y2 Copia*.
 
-Creando tareas contedoras mediante la pulsación del icono de indentación
-------------------------------------------------------------------------
+Creando tareas contenedoras mediante la pulsación del icono de indentación
+--------------------------------------------------------------------------
 
 Para llevar a cabo esta operación es necesario tener creadas las tareas, *Y1* y *Y2*, situada Y1 antes que Y2. A partir de aquí, hay que llevar a cabo los siguientes pasos:
 
@@ -618,7 +618,7 @@ Una vez los proyectos está introducidos con un conjunto de horas el siguiente p
 
 *NavalPlan* es flexible para determinar la granularidad de lo que se quiere planificar y para ello introduce el concepto de puntos de planificación. Esto permite a los usuarios tener flexibilidad a la hora de decidir si un proyecto interesa planificarlo con mucho detalle o bien se interesa gestionarlo más globalmente.
 
-Los puntos de planificación son marcas que se realizan sobre los árboles de tareas de un proyecto para indicar a que nivel se desea planificar. Si se marca una tarea como punto de planificación significa que se va a crear una actividad de planificación a ese nivel que agrupa el trabajo de todas las tareas situados por debajo de él. Si este punto de planificación se corresponde con una tarea que no es raíz, lo que ocurre con las tareas por encima de éñ, es que estas se convierten en tareas contenedoras en planificación.
+Los puntos de planificación son marcas que se realizan sobre los árboles de tareas de un proyecto para indicar a que nivel se desea planificar. Si se marca una tarea como punto de planificación significa que se va a crear una actividad de planificación a ese nivel que agrupa el trabajo de todas las tareas situados por debajo de él. Si este punto de planificación se corresponde con una tarea que no es raíz, lo que ocurre con las tareas por encima de él, es que estas se convierten en tareas contenedoras en planificación.
 
 Una tarea puede estar en 3 estados de planificación teniendo en cuenta los puntos de planificación:
 
@@ -655,7 +655,7 @@ Para la creación de puntos de planificación hay que realizar los siguientes pa
    * Ir la opción **Planificación > Proyectos**.
    * Identificar la fila que se corresponde con el proyecto que se quiere editar y que tiene que tener elementos de proyecto. Presionar el botón *Editar,* lápiz sobre hoja de papel, y pulsarlo.
    * Seleccionar la pestaña **EDT (tareas)**.
-   * Identificar sobre el árbol a que nivel se desea planificar cada parte y, una vez decidido, donde se desea crear una area de planificación pulsar con el ratón sobre un icono que represente un *diagrama de Gantt* de dos tareas. Esto convierte la tarea en punto de planificación, ponen en verde todos los elementos totalmente planificados y se marcará la fila del punto de planificación y sus descendientes con una con una N.
+   * Identificar sobre el árbol a que nivel se desea planificar cada parte y, una vez decidido, donde se desea crear una área de planificación pulsar con el ratón sobre un icono que represente un *diagrama de Gantt* de dos tareas. Esto convierte la tarea en punto de planificación, ponen en verde todos los elementos totalmente planificados y se marcará la fila del punto de planificación y sus descendientes con una con una N.
    * Pulsar en el icono de **Guardar**, disquete en la barra superior, para confirmar el borrado.
 
 Para desmarcar el punto de planificación y planificar a otro nivel hacer lo siguiente:
@@ -699,8 +699,8 @@ Para dar de alta un criterio en una tarea hoja hay que dar los siguientes pasos:
    * Pulsar en *Atrás*.
    * Presionar sobre el icono de *Guardar* representado por un disquete de la barra de operación ubicada en la parte superior.
 
-Introducción de criterio en una tarea contedor
-----------------------------------------------
+Introducción de criterio en una tarea contenedor
+------------------------------------------------
 
 Para dar de alta un criterio en una tarea contenedora hay que dar los siguientes pasos:
 
@@ -717,9 +717,9 @@ Para dar de alta un criterio en una tarea contenedora hay que dar los siguientes
    * Pulsar en *Atrás*.
    * Presionar sobre el icono de guardar representado por un disquete de la barra de operación ubicada en la parte superior.
 
-Para comprobar cómo se añade el criterio sobre todos los elementos hijos descendentes de la tarea contedor al cual se le requirió el criterio dar los siguientes pasos:
+Para comprobar cómo se añade el criterio sobre todos los elementos hijos descendentes de la tarea contenedor al cual se le requirió el criterio dar los siguientes pasos:
 
-   * Identificar sobre el árbol de tareas del proyecto sobre lo que se está trabajando una tarea hijo de la tarea contedor que requiere un criterio.
+   * Identificar sobre el árbol de tareas del proyecto sobre lo que se está trabajando una tarea hijo de la tarea contenedor que requiere un criterio.
    * Pulsar sobre el botón de edición de la tarea identificado en el punto anterior.
    * Sobre la ventana emergente seleccionar la pestaña **Criterio requerido**
    * En la sección de la parte superior de la ventana titulada **Criterios asignados requeridos** se observará el criterio requerido buscar el nombre del criterio requerido por la tarea padre. Aparecerá mostrado cómo **Indirecto** en la columna de tipo.
@@ -727,7 +727,7 @@ Para comprobar cómo se añade el criterio sobre todos los elementos hijos desce
 Invalidar un requerimiento de criterio en una tarea
 ---------------------------------------------------
 
-Para llevar a cabo a operación descrita en este epígrafe hay que tener una situación al menos de una tarea contedor Y1 que tenga dentro una tarea Y2 y la tarea Y1 haya requerido un criterio C1.
+Para llevar a cabo a operación descrita en este epígrafe hay que tener una situación al menos de una tarea contenedor Y1 que tenga dentro una tarea Y2 y la tarea Y1 haya requerido un criterio C1.
 
 Bajo esta premisa, para invalidar el criterio C1 en el elemento Y2 hay que efectuar los siguientes pasos:
 
@@ -796,8 +796,8 @@ Dentro de cada nivel Empresa o Proyecto es posible cambiar de una perspectiva pu
 
 En la **vista de la empresa** existen tres perspectivas disponibles:
 
-   * *Planificación de proyectos*: muestra la visión de los proyectos en el tiempo con una representación de *diagrama de Gantt*, en esta vista aparecen todos los proyectos planificados con su fecja de inicio y de fin. Graficamente se puede ver en cada caja el grado de progreso, el número de horas trabajadas en el proyecto y las fechas límites de entrega.
-   * *Uso de recursos*: muestra la visión de los recursos de la empresa en el tiempo, representando en un grafico de líneas del tiempo a carga de trabajo de los recursos con el detalle de las tareas las que están asignados.
+   * *Planificación de proyectos*: muestra la visión de los proyectos en el tiempo con una representación de *diagrama de Gantt*, en esta vista aparecen todos los proyectos planificados con su fecha de inicio y de fin. Gráficamente se puede ver en cada caja el grado de progreso, el número de horas trabajadas en el proyecto y las fechas límites de entrega.
+   * *Uso de recursos*: muestra la visión de los recursos de la empresa en el tiempo, representando en un gráfico de líneas del tiempo a carga de trabajo de los recursos con el detalle de las tareas las que están asignados.
    * *Lista de proyectos*: muestra el listado de los proyectos existentes con su información de fechas, presupuesto, horas y estado y permite acceder la edición de los detalles del proyecto.
    * *Planificación de recursos limitantes*: Vista de planificación de los recursos que son limitantes, es decir, actúan como colas, de suerte que tareas de otros proyectos son gestionados en las colas de los recursos limitantes de la empresa.
 
@@ -825,7 +825,7 @@ La vista de planificación dispone de una barra de herramientas en la parte supe
    * *Filtrado de etiquetas y criterios*: permite seleccionar proyectos en base a que cumplan criterios o tengan asociadas etiquetas.
    * *Filtrado por intervalo de fechas*: permite seleccionar fechas de inicio y fin para lo filtrado.
    * *Selector de filtrado en subelementos*: realiza las búsquedas anteriores incluyendo los elementos y tareas que forman el proyecto. Y no únicamente las etiquetas y criterios asociadas al primero nivel del proyecto.
-   * *Acción de filtrado*: ejecuta la búsquera en base a los parametros definidos anteriormente.
+   * *Acción de filtrado*: ejecuta la búsqueda en base a los parámetros definidos anteriormente.
 
 En la parte izquierda están los cambios de perspectivas a nivel de empresa que permitirá ir a la sección de *Carga global de recursos* y *Lista de proyectos*. La perspectiva que se esté visualizando y la *Planificación*.
 
@@ -851,12 +851,12 @@ La vista de planificación de proyecto dispone de una barra de herramientas en l
    * *Mostrar/Ocultar horas asignadas*: oculta o muestra en el *diagrama de
      Gantt* las horas asignadas asociadas la cada una de las tareas.
    * *Mostrar/Ocultar asignaciones*: oculta o muestra en el *diagrama de Gantt* los recursos asignados la cada una de las tareas.
-   * *Expandir tareas hoja*: muestra todas las tareas de último nivel expandiendo todos los niveles de la arbore de tareas.
+   * *Expandir tareas hoja*: muestra todas las tareas de último nivel expandiendo todos los niveles del árbol de tareas.
    * *Filtrado de etiquetas  y criterios*: permite seleccionar proyectos en base a que cumplan  criterios o tengan asociadas etiquetas.
    * *Filtrado por intervalo de fechas*: permite seleccionar fechas de inicio y
      fin para el filtrado.
    * *Filtrado por nombre*: permite indicar el nombre de la tarea.
-   * *Acción de filtrado*:  ejecuta la búsqueda en base a los parametros definidos  anteriormente.
+   * *Acción de filtrado*:  ejecuta la búsqueda en base a los parámetros definidos  anteriormente.
 
 Justo arriba de la barra de tareas encontrara el nombre del proyecto que esta
 detrás del texto *INICIO > Planificación > Planificación de proyectos > NOMBRE
@@ -875,7 +875,7 @@ En la parte inferior se muestra la información de la carga de los recursos en e
 En la vista de planificación de un proyecto se puede hacer las siguientes operaciones de interés:
 
    * Definición de dependencias entre tareas.
-   * Definición de retriccións de tareas.
+   * Definición de restricciones de tareas.
    * Asignación de recursos a tareas
 
 Asignación de dependencias
@@ -986,7 +986,7 @@ texto *vista expandida*. Esta vista es útil para la visualización de datos con
    * *Horas. No consolidado*: Horas que quedan por hacer de la tarea, una vez se consolidaron un porcentaje de las horas en una fecha concreta.
    * *Horas. Total*: Ratio de recursos por día total de la tarea.
    * *Horas. Consolidado*: Ratio de recursos por día de las horas ya consolidadas de la tarea.
-   * *Horas. No consolidado*: Ratio de recursos de las horas nonn consolidadas de la tarea.
+   * *Horas. No consolidado*: Ratio de recursos de las horas no consolidadas de la tarea.
 
 Asignación de recursos específicos
 ==================================
@@ -1014,7 +1014,7 @@ Para realizar la asignación a un recurso específico es preciso centrarse en lo
 Asignación de recursos genérica
 ===============================
 
-La asignación genérica es una de las aportacións de más interesantes de la
+La asignación genérica es una de las aportaciones de más interesantes de la
 aplicación. En una parte importante de los trabajos no es interesante conocer a
 priori quien va a realizar las tareas de un proyecto. En este caso lo único que
 interesa para realizar la asignación es identificar los criterios que tienen que
@@ -1046,7 +1046,7 @@ Asignación recomendada
 
 En la vista de asignación y posible marcar la **Asignación recomendada**. Esta
 opción permite a la aplicación recoger los criterios que deben ser satisfechos y
-las horas totales de cada grupo de horas y hacer una propuesta de asignación genérica recomendada. Esto garantiza que las horas a asignar coinciden con las horas orzamentadas así como el suyo reparto por criterios.
+las horas totales de cada grupo de horas y hacer una propuesta de asignación genérica recomendada. Esto garantiza que las horas a asignar coinciden con las horas presupuestadas así como el suyo reparto por criterios.
 
 Si había  una asignación previa, el sistema elimina dicha asignación sustituyéndola por la nueva. La asignación que se realiza será siempre una asignación genérica sobre los criterios existentes en el proyecto.
 
@@ -1062,7 +1062,7 @@ En esta vista se ve la información de los recursos específicos o genéricos as
 
 En un primero nivel se muestra el nombre del recurso y, a su lado, muestra una
 línea gráfica que indica la carga  del recurso en el tiempo. Si en un intervalo
-la barra está en rojo, el recurso se encuentra sobrecargado por riba del 100%, en naranja si la carga  está al 100% y en verde si la carga es inferior al 100%.  Esta barra marca  con líneas verticales blancas los cambios de asignaciones de tareas.
+la barra está en rojo, el recurso se encuentra sobrecargado por encima del 100%, en naranja si la carga  está al 100% y en verde si la carga es inferior al 100%.  Esta barra marca  con líneas verticales blancas los cambios de asignaciones de tareas.
 
 Al posicionarse con el puntero ratón por encima de la barra y esperar unos segundos aparecerá el detalles de la  carga del recurso en formato numérico.
 
@@ -1152,7 +1152,7 @@ Para incorporar estas restricciones se deben seguir los siguientes pasos:
 La aplicación de restricciones en las tareas puede implicar que no se cumplan
 una serie de dependencias. En caso de que exista alguna incompatibilidad tienen
 preferencia por defecto las restricciones sobre las dependencias, pero esto es
-configurable con el parametro *Las dependencias tienen prioridad*, en las propiedades generales del proyecto.
+configurable con el parámetro *Las dependencias tienen prioridad*, en las propiedades generales del proyecto.
 
 Es posible definir en la vista gráfica dependencias del tipo *COMENZAR NO ANTES
 DE* si se desplaza con el ratón las tareas directamente en la vista de Gantt, y
@@ -1197,7 +1197,7 @@ Por cada línea de recurso se puede expandir la información y consultar las
 tareas y la carga que aporta cada una de ellas. Las tareas del proyecto aparecen
 con la nomenclatura  *Nombre del proyecto::Nombre de la tarea*. También se
 muestran tareas de otros proyectos para poder analizar las causas de las
-sobrecargas debidas a ellos. Cuando la cargal la carga del recurso es debida a
+sobrecargas debidas a ellos. Cuando la carga del recurso es debida a
 una asignación genérica se indica con el nombre de los criterios usados en la
 asignación entre Corchetes [].
 
@@ -1260,7 +1260,7 @@ Esta operación consiste en configurar la medición del progreso de un determina
    * No debe existir ninguna asignación del tipo de progreso deseado en alguno de sus descendientes.
    * No debe existir ninguna asignación del tipo de progreso deseado en alguno de su ancestros.
 
-Lo anterior quiere decir que el tipo de progreso soo puede estar asignado en otra rama del árbol, no en el recorrido que va desde la tarea hasta la raíz y desde la tarea hacia todos sus descendientes.
+Lo anterior quiere decir que el tipo de progreso si puede estar asignado en otra rama del árbol, no en el recorrido que va desde la tarea hasta la raíz y desde la tarea hacia todos sus descendientes.
 
 Para dar de alta el tipo de progreso en una tarea hay dos opciones:
 
@@ -1307,7 +1307,7 @@ Esta operación puede ser llevada a cabo una vez que se configuró previamente u
    * Dentro de la tabla incluida en la área recuadrada como **Asignación de progresos** hay que elegir el tipo de progreso al que se le desea asignar una medida presionando en el botón **Añadir medida**.
    * Con la pulsación anterior se añade una nueva fila en la sección inferior denominada **Medidas de progreso** y se añade al lado de la etiqueta **Medidas de progreso**, el tipo de progreso que se acaba de seleccionar. Además se cargan en la tabla de esa sección todas las lecturas de progreso que hasta ese momento se tienen del tipo de progreso seleccionado. El usuario debe cubrir en ella los datos:
 
-      * *Valor*. Aquí debe introducir la medida de progreso en las unidades que define el tipo de progreso. El valor máximo viene determinado por la configuración de la asignación del tipo de progreso a la tarea y la preción por el valor de precisión determinado por el tipo de progreso.
+      * *Valor*. Aquí debe introducir la medida de progreso en las unidades que define el tipo de progreso. El valor máximo viene determinado por la configuración de la asignación del tipo de progreso a la tarea  por el valor de precisión determinado por el tipo de progreso.
       * *Fecha*. La fecha indica cuál es el día al cual corresponde esta medición de progreso.
       * *Porcentaje*. Esta columna es una columna calculada e informa de que porcentaje representa la medición de progreso considerando que la tarea rematada es un 100%.
 
@@ -1316,12 +1316,12 @@ Esta operación puede ser llevada a cabo una vez que se configuró previamente u
 
 Es importante resaltar que asignando progreso sobre una tarea concreta o sobre una caja de Gantt de una tarea correspondiente, la operación realizada es a misma.
 
-Mostrado de la evolución de lecturas de progreso graficamente
+Mostrado de la evolución de lecturas de progreso gráficamente
 =============================================================
 
-Sobre la pantalla de configuración de medidas de progreso es posible ver la evolución graficamente de uno o más tipos de progreso de los que estén configurados. Para ver esta evolución lo que hay que realizar es:
+Sobre la pantalla de configuración de medidas de progreso es posible ver la evolución gráficamente de uno o más tipos de progreso de los que estén configurados. Para ver esta evolución lo que hay que realizar es:
 
-   * En la pantalla de **Asignación de progresos** (ver secciones anteriores para acceder a esta ventana), seleccionar la columna *Mostrar* de cada uno de los tipos de progreso que se quieran ver graficamente.
+   * En la pantalla de **Asignación de progresos** (ver secciones anteriores para acceder a esta ventana), seleccionar la columna *Mostrar* de cada uno de los tipos de progreso que se quieran ver gráficamente.
    * Observar en la gráfica cuál es la evolución de las lecturas de los tipos de progreso seleccionados en el tiempo.
 
 Configuración de propagación de tipo de progreso
@@ -1350,9 +1350,9 @@ Para configurar el tipo de progreso que propaga en una tarea hay que seguir la s
 Visualización de progresos generales sobre vista de planificación de proyecto
 =============================================================================
 
-En la vista de planificación de proyecto se muestran las tareas marcadas como puntos de planificación y sus ancestros, que aparecen como tareas de planificación contenedoras. Estando en esta vista, para visualizar las informaciones de progreso de las tareas hai que tener pulsado el botón de la barra de herramientas cuya imagen son dos tareas con una barra azul en su interior. Para estar seguros de la correcta identificación de este botón es el que, cuando se sitúa el puntero de ratón sobre el mismo, se muestra como texto emergente *Mostrar/Ocultar progreso*.
+En la vista de planificación de proyecto se muestran las tareas marcadas como puntos de planificación y sus ancestros, que aparecen como tareas de planificación contenedoras. Estando en esta vista, para visualizar las informaciones de progreso de las tareas hay que tener pulsado el botón de la barra de herramientas cuya imagen son dos tareas con una barra azul en su interior. Para estar seguros de la correcta identificación de este botón es el que, cuando se sitúa el puntero de ratón sobre el mismo, se muestra como texto emergente *Mostrar/Ocultar progreso*.
 
-La información de un tipo de progreso de progreso sobre una tarea se muestra graficamente a través de una barra de color azul que se pinta en el interior de las tareas y de los contenedores. Si no existen tipos de progreso configurados no se muestra ninguna información. Esta información de progreso se muestra de la siguiente manera:
+La información de un tipo de progreso de progreso sobre una tarea se muestra gráficamente a través de una barra de color azul que se pinta en el interior de las tareas y de los contenedores. Si no existen tipos de progreso configurados no se muestra ninguna información. Esta información de progreso se muestra de la siguiente manera:
 
    * Se representa la medición de progreso más reciente del tipo de progreso configurado cómo *que propaga* sobre la tarea asociada a la tarea de planificación (tarea contenedora o tarea final).
    * Esta barra tiene una longitud que está relacionada con la lectura de progreso última y con la asignación de trabajo que tiene la tarea a lo largo del tiempo. El algoritmo para lo pintado es el siguiente:
@@ -1443,7 +1443,7 @@ Para entender la consolidación de progreso, es necesario analizar dos supuestos
       * *NavalPlan*, con las horas que quedan por hacer, las últimas 16h, recalcula el ratio de recursos por día que se necesitan para poder finalizar en la fecha inicialmente planificada para el fin de la tarea.
       * Posteriormente, el usuario puede establecer un ratio de recursos por día diferente para el tramo no consolidado. Con ello sí que se recalculan las fechas de finalización. En este ejemplo, si se establece 1 recurso por día lo que resta de la tarea se acabaría con 1 día de adelanto.
 
-   * **Ejemplo 2**: Introducíuse un progreso del 40% en el cuarto día y se consolida:
+   * **Ejemplo 2**: Se introdujo un progreso del 40% en el cuarto día y se consolida:
 
       * *NavalPlan* busca cuantas horas se hicieron hasta el día en el que se introdujo el progreso. En el ejemplo, 32 horas correspondientes a las asignaciones de 4 días de 8 horas cada día.
       * El sistema, a continuación, calcula cuanto quedaría por finalizar (en el ejemplo, quedaría un 60% de la tarea). En consecuencia quedan un 60% de las 40 horas, lo cual se traduce en 24 horas.
