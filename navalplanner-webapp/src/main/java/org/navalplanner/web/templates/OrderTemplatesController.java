@@ -27,6 +27,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -55,8 +56,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -95,6 +98,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private IURLHandlerRegistry handlerRegistry;
 
     private EditTemplateWindowController editTemplateController;
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderTemplatesController.class);
 
     public List<OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
@@ -338,5 +344,34 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 }
             }
         };
+    }
+
+    /**
+     * Pop up confirm remove dialog
+     * @param OrderTemplate
+     */
+    public void confirmDelete(OrderElementTemplate template) {
+        try {
+            if (Messagebox.show(_("Delete project template. Are you sure?"),
+                    _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                if (this.model.hasNotApplications(template)) {
+                    this.model.confirmDelete(template);
+                    Grid gridOrderTemplates = (Grid) listWindow
+                            .getFellowIfAny("listing");
+                    if (gridOrderTemplates != null) {
+                        Util.reloadBindings(gridOrderTemplates);
+                    }
+                } else {
+                    messagesForUser
+                            .showMessage(
+                                    Level.ERROR,
+                                    _("This template can not be removed because it has applications."));
+                }
+            }
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on showing delete confirm"), e);
+        }
+
     }
 }

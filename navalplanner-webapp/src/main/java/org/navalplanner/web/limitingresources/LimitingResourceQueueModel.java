@@ -47,7 +47,7 @@ import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -101,7 +101,7 @@ import org.zkoss.ganttz.util.Interval;
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -238,14 +238,18 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (ResourceAllocation<?> each: task.getAllResourceAllocations()) {
             Hibernate.initialize(each);
         }
-        for (Dependency each: task.getDependenciesWithThisOrigin()) {
-            Hibernate.initialize(each);
-        }
-        for (Dependency each: task.getDependenciesWithThisDestination()) {
-            Hibernate.initialize(each);
-        }
+        initializeDependencies(task);
         initializeTaskSource(task.getTaskSource());
         initializeRootOrder(task);
+    }
+
+    private void initializeDependencies(Task task) {
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            Hibernate.initialize(each.getDestination());
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            Hibernate.initialize(each.getOrigin());
+        }
     }
 
     private boolean hasResourceAllocation(Task task) {
@@ -368,8 +372,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        return orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        return orderDAO.loadOrderAvoidingProxyFor(task.getOrderElement());
     }
 
     @Override
@@ -403,7 +406,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return queuesState.getQueues();
+        return queuesState.getQueuesOrderedByResourceName();
     }
 
     @Override
@@ -411,6 +414,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return queuesState.getUnassigned();
     }
 
+    @Override
     public ZoomLevel calculateInitialZoomLevel() {
         Interval interval = getViewInterval();
         return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
@@ -689,13 +693,39 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             InsertionRequirements requirements, AllocationSpec allocation) {
 
         LimitingResourceQueueElement element = requirements.getElement();
-        LimitingResourceQueue queue = queuesState.getQueueFor(element
-                .getResource());
+        List<LimitingResourceQueue> potentiallyValidQueues = getAssignableQueues(element);
+        LimitingResourceQueue queue = earliestQueue(potentiallyValidQueues);
 
         List<LimitingResourceQueueElement> unscheduled = new ArrayList<LimitingResourceQueueElement>();
         allocation = unscheduleElementsFor(queue, requirements, unscheduled);
         allocation.setUnscheduledElements(queuesState.inTopologicalOrder(unscheduled));
         return allocation;
+    }
+
+    /**
+     * Returns queue which last element is at a earliest date
+     *
+     * @param potentiallyValidQueues
+     * @return
+     */
+    private LimitingResourceQueue earliestQueue(
+            List<LimitingResourceQueue> potentiallyValidQueues) {
+
+        LimitingResourceQueue result = null;
+        LocalDate latestDate = null;
+
+        for (LimitingResourceQueue each : potentiallyValidQueues) {
+            SortedSet<LimitingResourceQueueElement> elements = each
+                    .getLimitingResourceQueueElements();
+            if (!elements.isEmpty()) {
+                LocalDate date = elements.last().getEndDate();
+                if (latestDate == null || date.isAfter(latestDate)) {
+                    latestDate = date;
+                    result = each;
+                }
+            }
+        }
+        return result;
     }
 
     private void checkAllocationIsAppropriative(boolean value) {

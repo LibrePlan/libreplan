@@ -34,14 +34,14 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
@@ -565,6 +565,14 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public boolean isOwnException(CalendarException exception) {
+        if (getBaseCalendar() == null) {
+            return false;
+        }
+        return getBaseCalendar().getOwnExceptions().contains(exception);
+    }
+
+    @Override
     public void removeException(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().removeExceptionDay(date);
@@ -719,5 +727,15 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     public IntegrationEntity getCurrentEntity() {
         return this.baseCalendar;
+    }
+
+    @Override
+    public boolean isLastActivationPeriod(
+            CalendarAvailability calendarAvailability) {
+        if (getBaseCalendar() != null) {
+            return getBaseCalendar().isLastCalendarAvailability(
+                    calendarAvailability);
+        }
+        return false;
     }
 }

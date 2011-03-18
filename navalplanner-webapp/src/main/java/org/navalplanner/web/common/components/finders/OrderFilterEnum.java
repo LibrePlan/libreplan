@@ -24,14 +24,12 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-import org.navalplanner.business.i18n.I18nHelper;
 
 public enum OrderFilterEnum implements IFilterEnum {
 
-    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(
-            _("Customer")), State(_("State")), Code(_("Code")), CustomerReference(
+    Criterion(_("Criterion")), Label(_("Label")), ExternalCompany(_("Customer")), State(
+            _("State")), Code(_("Code")), CustomerReference(
             _("Customer Reference"));
-
     /**
      * Forces to mark the string as needing translation
      */
@@ -46,7 +44,7 @@ public enum OrderFilterEnum implements IFilterEnum {
     }
 
     public String toString() {
-        return I18nHelper._(this.description);
+        return this.description;
     }
 
 }

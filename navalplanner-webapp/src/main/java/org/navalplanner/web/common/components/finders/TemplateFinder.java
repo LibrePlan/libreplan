@@ -20,8 +20,6 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
@@ -49,7 +47,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
 
     @Override
     public String[] getHeaders() {
-        return new String[] { _("Code"), _("Name") };
+        return new String[] { "Code", "Name" };
     }
 
     @Override
@@ -96,10 +94,12 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
         final Listcell codeCell = new Listcell();
         codeCell.setLabel(template.getCode());
         codeCell.setParent(item);
+        codeCell.setStyle("width:200px");
 
         final Listcell nameCell = new Listcell();
         nameCell.setParent(item);
         nameCell.setLabel(template.getName());
+        nameCell.setStyle("width:300px");
     }
 
 }

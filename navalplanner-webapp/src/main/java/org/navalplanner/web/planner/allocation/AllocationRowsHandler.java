@@ -31,11 +31,11 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
-import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -94,12 +94,13 @@ public class AllocationRowsHandler {
         addGeneric(resourceType, criteria, resourcesMatched, null);
     }
 
-    public void addGeneric(ResourceEnum resourceType,
+    public boolean addGeneric(ResourceEnum resourceType,
             Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resourcesMatched, Integer hours) {
         if (resourcesMatched.isEmpty()) {
             formBinder.markNoResourcesMatchedByCriterions(resourceType,
                     criteria);
+            return false;
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
                     .create(resourceType, criteria, resourcesMatched);
@@ -111,9 +112,11 @@ public class AllocationRowsHandler {
             if (alreadyExistsAllocationFor(resourceType, criteria)) {
                 formBinder.markThereisAlreadyAssignmentWith(resourceType,
                         criteria);
+                return false;
             } else {
                 currentRows.add(genericAllocationRow);
                 formBinder.newAllocationAdded();
+                return true;
             }
         }
     }

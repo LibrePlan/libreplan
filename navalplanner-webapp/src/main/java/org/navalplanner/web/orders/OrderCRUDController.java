@@ -429,7 +429,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (getCurrentTab() != null) {
             // Confirm advances tab.
             if (getCurrentTab().getId().equals("tabAdvances")) {
-                if (!manageOrderElementAdvancesController.save()) {
+                if (manageOrderElementAdvancesController != null
+                        && !manageOrderElementAdvancesController.save()) {
                     resetSelectedTab();
                     selectTab("tabAdvances");
                     return false;
@@ -668,11 +669,15 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void refreshCodeTextboxesOnly() {
-        if(orderElementTreeController != null) {
+        if (orderElementTreeController != null) {
             Map<OrderElement, Textbox> orderElementCodeTextBoxes =
                 orderElementTreeController.getOrderElementCodeTextboxes();
-            for(OrderElement element :orderElementCodeTextBoxes.keySet()) {
-                orderElementCodeTextBoxes.get(element).setValue(element.getCode());
+
+            for (OrderElement element : orderElementCodeTextBoxes.keySet()) {
+                if (element.getId() != null) {
+                    orderElementCodeTextBoxes.get(element).setValue(
+                            element.getCode());
+                }
             }
         }
     }
@@ -1030,11 +1035,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.prepareForCreate();
     }
 
-    public void editNewCreatedOrder() {
+    private void editNewCreatedOrder() {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
         showEditWindow(_("Create project"));
+    }
+
+    public void editNewCreatedOrder(Window detailsWindow) {
+        editNewCreatedOrder();
+        // close project details window
+        detailsWindow.setVisible(false);
+        saveAndContinue();
     }
 
     public ProjectDetailsController getCreationPopup() {

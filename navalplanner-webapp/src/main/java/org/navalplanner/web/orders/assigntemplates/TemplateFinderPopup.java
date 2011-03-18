@@ -92,6 +92,8 @@ public class TemplateFinderPopup extends
         }
         bandboxSearch = new BandboxSearch();
         bandboxSearch.setFinder(finderName);
+        bandboxSearch.setWidthBandbox("300px");
+        bandboxSearch.setWidthListbox("600px");
         finderPlaceholder.appendChild(bandboxSearch);
         bandboxSearch.afterCompose();
         popup.open(ref, position);
@@ -156,7 +158,7 @@ public class TemplateFinderPopup extends
                 onCancel();
             }
         });
-        finderPlaceholder = (Component) getFellow("finderPlaceholder");
+        finderPlaceholder = getFellow("finderPlaceholder");
         popup = (Popup) getFellow("finderPopup");
         caption = (Caption) getFellow("finderCaption");
         caption.setLabel(captionLabel);

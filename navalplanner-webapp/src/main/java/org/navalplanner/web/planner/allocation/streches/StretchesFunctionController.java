@@ -311,7 +311,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
         private void appendLengthPercentage(Listitem item, final Stretch stretch) {
             final Decimalbox tempDecimalbox = new Decimalbox();
-            Decimalbox decimalbox = Util.bind(tempDecimalbox,
+            final Decimalbox decimalbox = Util.bind(tempDecimalbox,
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
@@ -324,18 +324,18 @@ public class StretchesFunctionController extends GenericForwardComposer {
                             if (value == null) {
                                 value = BigDecimal.ZERO;
                             }
+                            if (value.toBigInteger().intValue() > 100
+                                    || value.toBigInteger().intValue() < 0) {
+                                throw new WrongValueException(
+                                        tempDecimalbox,
+                                        _("Length percentage should be between 0 and 100"));
+                            }
                             value = value.setScale(2).divide(
                                     new BigDecimal(100), RoundingMode.DOWN);
-                            try {
-                                stretchesFunctionModel
-                                        .setStretchLengthPercentage(stretch,
-                                                value);
-                                focusState.focusOn(stretch, Field.LENGTH);
-                                reloadStretchesListAndCharts();
-                            } catch (IllegalArgumentException e) {
-                                throw new WrongValueException(tempDecimalbox, e
-                                        .getMessage());
-                            }
+                            stretchesFunctionModel.setStretchLengthPercentage(
+                                    stretch, value);
+                            focusState.focusOn(stretch, Field.LENGTH);
+                            reloadStretchesListAndCharts();
                         }
                     });
             appendChild(item, decimalbox);

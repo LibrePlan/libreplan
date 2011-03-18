@@ -24,6 +24,8 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -37,6 +39,8 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class PlanningData extends BaseEntity {
 
+    private static Log LOG = LogFactory.getLog(PlanningData.class);
+
     public static PlanningData create(TaskGroup rootTask) {
         return new PlanningData(rootTask);
     }
@@ -47,7 +51,7 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
-    protected PlanningData() {
+    public PlanningData() {
 
     }
 
@@ -64,6 +68,10 @@ public class PlanningData extends BaseEntity {
     }
 
     public void update(List<Task> criticalPath) {
+        if (criticalPath.isEmpty()) {
+            LOG.warn("it can't be updated because the critical path provided is empty");
+            return;
+        }
         progressByDuration = calculateByDuration(criticalPath);
         progressByNumHours = calculateByNumHours(criticalPath);
     }

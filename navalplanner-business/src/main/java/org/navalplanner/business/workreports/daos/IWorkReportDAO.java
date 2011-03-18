@@ -38,4 +38,6 @@ public interface IWorkReportDAO extends IIntegrationEntityDAO<WorkReport> {
 
     List<WorkReport> getAll();
 
+    List<WorkReport> allWorkReportsWithAssociatedOrdersUnproxied();
+
 }

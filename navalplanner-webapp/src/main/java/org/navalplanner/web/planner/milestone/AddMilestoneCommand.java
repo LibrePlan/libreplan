@@ -60,7 +60,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
         TaskMilestone milestone = TaskMilestone.create(task.getEndDate());
-        milestone.setName("new milestone");
+        milestone.setName(_("new milestone"));
         taskElementDAO.reattach(task);
         InsertionPoint insertionPoint = getInsertionPoint(task);
         insertionPoint.root.addTaskElement(insertionPoint.insertionPosition,
@@ -86,7 +86,7 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
         Validate.isTrue(task.getParent() != null,
                 "the task parent is not null "
                         + "since all shown tasks are children "
-                        + "of the root TaskGroup");
+                        + "of the root Order");
         TaskGroup taskParent = task.getParent();
         if (taskParent.getParent() == null) {
             return new InsertionPoint(taskParent, taskParent.getChildren()

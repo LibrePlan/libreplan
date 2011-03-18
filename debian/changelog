@@ -1,3 +1,17 @@
+navalplan (1.0.4) maverick; urgency=low
+
+  * Added bugs fixed from stable branch.
+  * Released version 1.0.4.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Thu, 17 Mar 2011 12:27:47 +0100
+
+navalplan (1.0.3-1) maverick; urgency=low
+
+  * Added bugs fixed from stable branch.
+  * Released version 1.0.3.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Mon, 14 Feb 2011 07:23:58 +0100
+
 navalplan (1.0.2-1) maverick; urgency=low
 
   * Fixed database installation script.

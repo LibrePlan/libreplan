@@ -132,6 +132,19 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
+    public void saveAndContinue() {
+        try {
+            validateCalendarExceptionCodes();
+            baseCalendarModel.generateCalendarCodes();
+            baseCalendarModel.confirmSave();
+            messagesForUser.showMessage(Level.INFO, _(
+                    "Base calendar \"{0}\" saved", baseCalendarModel
+                            .getBaseCalendar().getName()));
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+    }
+
     public void goToCreateForm() {
         baseCalendarModel.initCreate();
         assignCreateController();
@@ -167,6 +180,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 BaseCalendarCRUDController.this.save();
             }
 
+            @Override
+            public void saveAndContinue() {
+                BaseCalendarCRUDController.this.saveAndContinue();
+            }
+
         };
 
         try {
@@ -192,6 +210,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             @Override
             public void save() {
                 BaseCalendarCRUDController.this.save();
+            }
+
+            @Override
+            public void saveAndContinue() {
+                BaseCalendarCRUDController.this.saveAndContinue();
             }
 
         };

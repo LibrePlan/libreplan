@@ -10,10 +10,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: 1.0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-01-05 11:51+0100\n"
-"PO-Revision-Date: 2011-01-05 12:15+0100\n"
+"POT-Creation-Date: 2011-03-04 10:57+0100\n"
+"PO-Revision-Date: 2011-03-17 12:10+0100\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -22,7 +22,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:209
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:214
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:233
 msgid "Erase"
 msgstr "Borrar"
 
@@ -67,7 +68,7 @@ msgstr "Recursos limitantes"
 msgid "The specified dependency is not allowed"
 msgstr "La dependencia especificada no está permitida"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:228
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:253
 msgid "Set End-End"
 msgstr "Definir Fin-Fin"
 
@@ -86,6 +87,10 @@ msgstr "Criterio"
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
 msgid "Print"
 msgstr "Imprimir"
+
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:189
+msgid "total work hours: {0}, assigned hours: {1}"
+msgstr "total de horas trabajables: {0}, horas asignadas: {1}"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:70
 msgid "Week"
@@ -164,7 +169,7 @@ msgstr "Mes"
 msgid "Show/Hide resources"
 msgstr "Mostrar/ocultar recursos"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:220
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:245
 msgid "Set End-Start"
 msgstr "Definir Fin-Inicio"
 
@@ -192,6 +197,10 @@ msgstr "Mostrar/ocultar camino crítico"
 msgid "showing resources"
 msgstr "mostrando recursos"
 
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:183
+msgid "Load: {0}%"
+msgstr "Carga: {0}%"
+
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
 msgid "Show/Hide labels"
 msgstr "Mostrar/ocultar etiquetas"
@@ -205,7 +214,7 @@ msgstr "Hora"
 msgid "Graphics"
 msgstr "Gráficas"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:224
+#: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:249
 msgid "Set Start-Start"
 msgstr "Definir Inicio-Inicio"
 

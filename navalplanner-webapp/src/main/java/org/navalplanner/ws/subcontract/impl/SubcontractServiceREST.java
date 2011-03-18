@@ -50,6 +50,8 @@ import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
+import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -91,6 +93,9 @@ public class SubcontractServiceREST implements ISubcontractService {
 
     @Autowired
     private IScenarioDAO scenarioDAO;
+
+    @Autowired
+    private ITaskSourceDAO taskSourceDAO;
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;
@@ -215,8 +220,20 @@ public class SubcontractServiceREST implements ISubcontractService {
         order.setCustomerReference(subcontractedTaskDataDTO.subcontractedCode);
         order.setWorkBudget(subcontractedTaskDataDTO.subcontractPrice);
 
+        synchronizeWithSchedule(order, true);
+        order.writeSchedulingDataChanges();
+
         order.validate();
         orderElementDAO.save(order);
+    }
+
+    private void synchronizeWithSchedule(OrderElement orderElement,
+            boolean preexistent) {
+        List<TaskSourceSynchronization> synchronizationsNeeded = orderElement
+                .calculateSynchronizationsNeeded();
+        for (TaskSourceSynchronization each : synchronizationsNeeded) {
+            each.apply(taskSourceDAO, preexistent);
+        }
     }
 
     private void addOrderToDerivedScenarios(Scenario currentScenario,

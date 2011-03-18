@@ -21,13 +21,22 @@
 
 package org.navalplanner.business.workreports.daos;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.workreports.entities.WorkReport;
 import org.navalplanner.business.workreports.entities.WorkReportType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -42,6 +51,12 @@ import org.springframework.stereotype.Repository;
 public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
         implements IWorkReportDAO {
 
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
+
+    @Autowired
+    private IOrderDAO orderDAO;
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
@@ -52,6 +67,40 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @Override
     public List<WorkReport> getAll() {
         return list(WorkReport.class);
+    }
+
+    @Override
+    public List<WorkReport> allWorkReportsWithAssociatedOrdersUnproxied() {
+        forceOrdersUnproxied();
+        return list(WorkReport.class);
+    }
+
+    private void forceOrdersUnproxied() {
+        List<OrderElement> elements = adHocTransactionService
+                .runOnAnotherReadOnlyTransaction(new IOnTransaction<List<OrderElement>>() {
+
+                    @Override
+                    public List<OrderElement> execute() {
+                        return getOrderElementsAssociatedWithWorkReports();
+                    }
+                });
+        orderDAO.loadOrdersAvoidingProxyFor(elements);
+    }
+
+    private List<OrderElement> getOrderElementsAssociatedWithWorkReports() {
+        Set<OrderElement> result = new HashSet<OrderElement>();
+        result.addAll(elementsFrom(getSession().createQuery(
+                "select w.orderElement from WorkReport w")));
+        result
+                .addAll(elementsFrom(getSession()
+                        .createQuery(
+                                "select line.orderElement from WorkReport w JOIN w.workReportLines line")));
+        return new ArrayList<OrderElement>(result);
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<OrderElement> elementsFrom(Query orderElementsQuery) {
+        return orderElementsQuery.list();
     }
 
 }

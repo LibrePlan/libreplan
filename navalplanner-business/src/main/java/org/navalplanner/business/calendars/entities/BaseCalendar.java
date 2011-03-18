@@ -29,7 +29,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -41,9 +43,10 @@ import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -264,8 +267,14 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     public EffortDuration getCapacityOn(PartialDay date) {
-        return date.limitDuration(findCapacityAt(date.getDate())
+        return date.limitDuration(getCapacityWithOvertime(date.getDate())
                 .getStandardEffort());
+    }
+
+    @Override
+    public Capacity getCapacityWithOvertime(LocalDate day) {
+        Validate.notNull(day);
+        return multiplyByCalendarUnits(findCapacityAt(day));
     }
 
     private Capacity findCapacityAt(LocalDate date) {
@@ -711,6 +720,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return sorted.get(sorted.size() - 1);
     }
 
+    public boolean isLastCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        if (getLastCalendarAvailability() == null
+                || calendarAvailability == null) {
+            return false;
+        }
+        if (getLastCalendarAvailability().getId() == null
+                && calendarAvailability.getId() == null) {
+            return getLastCalendarAvailability() == calendarAvailability;
+        }
+        return ObjectUtils.equals(getLastCalendarAvailability().getId(),
+                calendarAvailability.getId());
+    }
+
     public void setStartDate(CalendarAvailability calendarAvailability,
             LocalDate startDate) throws IllegalArgumentException {
         int index = calendarAvailabilities.indexOf(calendarAvailability);
@@ -740,18 +763,28 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     @Override
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
         Capacity capacity = findCapacityAt(day.getDate());
-        EffortDuration workableDuration = day.limitDuration(capacity
-                .getStandardEffort());
-        EffortDuration asDuration = amount
-                .asDurationGivenWorkingDayOf(workableDuration);
-        return capacity.limitDuration(asDuration);
+        EffortDuration oneResourcePerDayWorkingDuration = day
+                .limitDuration(capacity.getStandardEffort());
+        EffortDuration amountRequestedDuration = amount
+                .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
+
+        return multiplyByCalendarUnits(capacity).limitDuration(
+                amountRequestedDuration);
     }
 
     /**
-     * This method is intended to be overriden
+     * <p>
+     * Calendar units are the number of units this calendar is applied to. For
+     * example a {@link VirtualWorker} composed of ten workers would multiply
+     * the capacity by ten.
+     * </p>
+     * <p>
+     * This method is intended to be overridden
+     * </p>
+     *
      */
-    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
-        return duration;
+    protected Capacity multiplyByCalendarUnits(Capacity capacity) {
+        return capacity;
     }
 
     @Override
@@ -981,4 +1014,5 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public Integer getLastSequenceCode() {
         return lastSequenceCode;
     }
+
 }

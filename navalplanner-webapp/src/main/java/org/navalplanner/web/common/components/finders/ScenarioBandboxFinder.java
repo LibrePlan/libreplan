@@ -21,8 +21,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
@@ -46,6 +44,13 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     private IScenarioDAO scenarioDAO;
 
     private final String headers[] = { _("Name") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)

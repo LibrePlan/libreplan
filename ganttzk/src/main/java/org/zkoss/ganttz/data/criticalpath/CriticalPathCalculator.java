@@ -45,8 +45,16 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
-    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create() {
-        return new CriticalPathCalculator<T, D>();
+    private final boolean dependenciesConstraintsHavePriority;
+
+    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create(
+            boolean dependenciesConstraintsHavePriority) {
+        return new CriticalPathCalculator<T, D>(
+                dependenciesConstraintsHavePriority);
+    }
+
+    private CriticalPathCalculator(boolean dependenciesConstraintsHavePriority) {
+        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
     private ICriticalPathCalculable<T> graph;
@@ -81,8 +89,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private LocalDate calculateInitDate() {
-        List<T> initialTasks = graph.getInitialTasks();
-        if (initialTasks.isEmpty()) {
+        if (graph.getTasks().isEmpty()) {
             return null;
         }
         GanttDate ganttDate = Collections.min(getStartDates());
@@ -91,7 +98,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private List<GanttDate> getStartDates() {
         List<GanttDate> result = new ArrayList<GanttDate>();
-        for (T task : graph.getInitialTasks()) {
+        for (T task : graph.getTasks()) {
             result.add(graph.getStartDate(task));
         }
         return result;
@@ -264,7 +271,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
-                Constraint<GanttDate> constraint = getDateStartConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraints(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -303,30 +310,27 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         node.setEarliestStart(earliestStart);
     }
 
-    private Constraint<GanttDate> getDateStartConstraint(T task) {
-        if (task == null) {
+    private Constraint<GanttDate> getDateConstraints(T task) {
+        if (dependenciesConstraintsHavePriority || task == null) {
             return null;
         }
 
-        List<Constraint<GanttDate>> constraints = graph
+        List<Constraint<GanttDate>> startConstraints = graph
                 .getStartConstraintsFor(task);
-        if (constraints == null) {
-            return null;
-        }
-        return Constraint.coalesce(constraints);
-    }
-
-    private Constraint<GanttDate> getDateEndConstraint(T task) {
-        if (task == null) {
-            return null;
-        }
-
-        List<Constraint<GanttDate>> constraints = graph
+        List<Constraint<GanttDate>> endConstraints = graph
                 .getEndConstraintsFor(task);
-        if (constraints == null) {
+        if ((startConstraints == null || startConstraints.isEmpty())
+                && (endConstraints == null || endConstraints.isEmpty())) {
             return null;
         }
-        return Constraint.coalesce(constraints);
+        if (startConstraints == null || startConstraints.isEmpty()) {
+            return Constraint.coalesce(endConstraints);
+        }
+        if (endConstraints == null || endConstraints.isEmpty()) {
+            return Constraint.coalesce(startConstraints);
+        }
+        startConstraints.addAll(endConstraints);
+        return Constraint.coalesce(startConstraints);
     }
 
     private void backward(Node<T, D> currentNode, T nextTask) {
@@ -352,7 +356,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
-                Constraint<GanttDate> constraint = getDateEndConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraints(task);
 
                 switch (dependencyType) {
                 case START_START:

@@ -295,7 +295,7 @@ div.box.limiting-unassigned {
     width: 0%;
     margin-top: 0px;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
-    background-color: #FFCC99;
+    background-color: #F21CFF;
     border: 0px;
     margin-top: -5px;
 }
@@ -454,6 +454,12 @@ div.box.limiting-unassigned {
     background-image:
         url("../../zkau/web/ganttz/img/pixel.gif");
     background-repeat: repeat-y;
+}
+
+#watermark .timetracker_column_today_deadline {
+    background-image:
+        url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif");
+    background-repeat: repeat-y, repeat-y;
 }
 
 
@@ -964,6 +970,7 @@ height: 100%
 .advancedallocationlayout .calculated-hours.z-label {
     font-weight: bold;
     color: #555555;
+    cursor: default;
 }
 .advancedallocationlayout .unmodifiable-hours.z-label {
     color: #555555;
@@ -1219,6 +1226,13 @@ body .perspectives-column {
 .taskdetailsContainer {
     overflow-x: scroll;
     overflow-y: hidden;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.taskspanel {
+    border-top: 0;
+    border-bottom: 0;
 }
 
 .row .assigned {

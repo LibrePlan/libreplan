@@ -21,10 +21,9 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -46,8 +45,18 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
+    @Autowired
+    private IOrderDAO orderDAO;
+
     private final String headers[] = { _("Project"), _("Project code"),
             _("Task"), _("Task code") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -79,7 +88,7 @@ public class OrderElementBandboxFinder extends BandboxFinder implements IBandbox
     @Transactional(readOnly = true)
     public String objectToString(Object obj) {
         OrderElement orderElement = (OrderElement) obj;
-        Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
         return orderElement.getName() + " :: " + order.getName();
     }
 

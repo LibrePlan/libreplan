@@ -54,17 +54,17 @@
              <panelchildren>
                  <grid width="600px">
                      <columns>
-                         <column width="200px" />
+                         <column width="300px" />
                          <column />
                      </columns>
                      <rows>
                          <row>
                              <label value="${i18n:_('Work done from starting date:')}" />
-                             <datebox id="startingDate" constraint = "@{controller.checkConstraintStartingDate}"/>
+                             <datebox id="startingDate" width="200px" constraint = "@{controller.checkConstraintStartingDate}"/>
                          </row>
                          <row>
                              <label value="${i18n:_('Work done until ending date:')}" />
-                             <datebox id="endingDate" constraint = "@{controller.checkConstraintEndingDate}"/>
+                             <datebox id="endingDate" width="200px" constraint = "@{controller.checkConstraintEndingDate}"/>
                          </row>
                      </rows>
                  </grid>
@@ -227,7 +227,7 @@
 
         <separator spacing="10px" orient="horizontal"/>
 
-        <button label="Show" onClick="controller.showReport(report)" />
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
 
         <extendedjasperreport style="display: none" id="report" />
 

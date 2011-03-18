@@ -208,8 +208,8 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return (Tree) getFellow("loadsTree");
     }
 
-    private Component createFirstLevel(LoadTimeLine principal) {
-        Div result = createLabelWithName(principal);
+    private Component createFirstLevel(LoadTimeLine main) {
+        Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
         return result;
     }
@@ -220,10 +220,10 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return result;
     }
 
-    private Div createLabelWithName(LoadTimeLine principal) {
+    private Div createLabelWithName(LoadTimeLine main) {
         Div result = new Div();
         Label label = new Label();
-        final String conceptName = principal.getConceptName();
+        final String conceptName = main.getConceptName();
         label.setValue(conceptName);
         result.appendChild(label);
         return result;

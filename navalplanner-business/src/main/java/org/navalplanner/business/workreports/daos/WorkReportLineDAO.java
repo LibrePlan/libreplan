@@ -27,15 +27,16 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
-
 
 /**
  * Dao for {@link WorkReportLineDAO}
@@ -43,6 +44,7 @@ import org.springframework.stereotype.Repository;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
@@ -54,6 +56,25 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         Criteria c = getSession().createCriteria(WorkReportLine.class).createCriteria("orderElement");
         c.add(Restrictions.idEq(orderElement.getId()));
         return (List<WorkReportLine>) c.list();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<WorkReportLineDTO> findByOrderElementGroupByResourceAndHourTypeAndDate(
+            OrderElement orderElement) {
+
+        String strQuery = "SELECT new org.navalplanner.business.reports.dtos.WorkReportLineDTO(wrl.resource, wrl.typeOfWorkHours, wrl.date, SUM(wrl.numHours)) "
+                + "FROM WorkReportLine wrl "
+                + "LEFT OUTER JOIN wrl.orderElement orderElement "
+                + "WHERE orderElement = :orderElement "
+                + "GROUP BY wrl.resource, wrl.typeOfWorkHours, wrl.date "
+                + "ORDER BY wrl.resource, wrl.typeOfWorkHours, wrl.date";
+
+        // Set parameters
+        Query query = getSession().createQuery(strQuery);
+        query.setParameter("orderElement", orderElement);
+
+        return (List<WorkReportLineDTO>) query.list();
     }
 
     @Override

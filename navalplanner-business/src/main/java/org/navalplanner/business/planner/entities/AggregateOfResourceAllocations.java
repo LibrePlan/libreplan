@@ -113,6 +113,7 @@ public class AggregateOfResourceAllocations {
 
     public IntraDayDate getStart() {
         if (isEmpty()) {
+            // FIXME Review Bug #906
             throw new IllegalStateException("the aggregate is empty");
         }
         return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
@@ -132,6 +133,7 @@ public class AggregateOfResourceAllocations {
      */
     public IntraDayDate getEnd() {
         if (isEmpty()) {
+            // FIXME Review Bug #906
             throw new IllegalStateException("the aggregate is empty");
         }
         IntraDayDate result = null;

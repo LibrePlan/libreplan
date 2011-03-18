@@ -37,8 +37,8 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
+import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -181,14 +181,15 @@ public class ResourceLoadComponent extends XulElement {
         result.setClass(String.format("taskassignmentinterval %s", loadPeriod
                 .getLoadLevel().getCategory()));
 
-        String load = "Load: " + loadPeriod.getLoadLevel().getPercentage()
-                + "% , ";
+        String load = _("Load: {0}%", loadPeriod.getLoadLevel().getPercentage())
+                + ", ";
         if (loadPeriod.getLoadLevel().getPercentage() == Integer.MAX_VALUE) {
             load = "";
         }
         result.setTooltiptext(load
-                + "total work hours: " + loadPeriod.getTotalResourceWorkHours()
-                + " , " + "assigned hours: " + loadPeriod.getAssignedHours());
+                + _("total work hours: {0}, assigned hours: {1}", loadPeriod
+                        .getTotalResourceWorkHours(), loadPeriod
+                        .getAssignedHours()));
 
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));

@@ -36,14 +36,6 @@
 
 <zk id="hoursWorkedPerWorker" xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <n:script>
-        var label = document.getElementById("z_sq_83");
-        if(label.value != ""){
-            alert('holaaaaa');
-            new Label("Hi, JavaScript!").setParent(win);
-        }
-    </n:script>
-
     <window self="@{define(content)}"
         apply="org.navalplanner.web.reports.HoursWorkedPerWorkerController"
         title="${i18n:_('Hours Worked Per Resource')}"
@@ -211,7 +203,7 @@
         </hbox>
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="Show" onClick="controller.showReport(report)" />
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
 
         <extendedjasperreport style="display: none" id="report" />
 

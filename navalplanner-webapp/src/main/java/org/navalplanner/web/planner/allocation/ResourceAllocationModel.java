@@ -39,11 +39,11 @@ import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
-import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -137,9 +137,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             List<? extends Resource> resourcesFound = searchModel
                     .searchBy(each.getResourceType())
                     .byCriteria(each.getCriterions()).execute();
-            allocationRowsHandler.addGeneric(each.getResourceType(),
+            boolean added = allocationRowsHandler.addGeneric(each
+                    .getResourceType(),
                     each.getCriterions(), reloadResources(resourcesFound),
                     each.getHours());
+            if (!added) {
+                return null;
+            }
         }
         return ProportionalDistributor.create(hours);
     }

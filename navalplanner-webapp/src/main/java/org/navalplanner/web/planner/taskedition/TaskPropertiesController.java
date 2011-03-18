@@ -233,7 +233,8 @@ public class TaskPropertiesController extends GenericForwardComposer {
         originalState = getResourceAllocationType(currentTaskElement);
         setOldState(originalState);
 
-        final boolean disabled = currentTaskElement.isSubcontracted()
+        final boolean disabled = currentTaskElement
+                .isSubcontractedAndWasAlreadySent()
                 || currentTaskElement.isLimitingAndHasDayAssignments();
         startConstraintTypes.setDisabled(disabled);
         startConstraintDate.setDisabled(disabled);

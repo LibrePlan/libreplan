@@ -48,6 +48,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -521,19 +522,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private void setupOverallProgress(final ISaveCommand saveCommand) {
 
         // Refresh progress chart after saving
-        saveCommand.addListener(new IAfterSaveListener() {
-            @Override
-            public void onAfterSave() {
-                transactionService.runOnTransaction(new IOnTransaction<Void>() {
-                    @Override
-                    public Void execute() {
-                        overallProgressContent.refresh();
-                        return null;
-                    }
-                });
-            }
-        });
-
+        if (saveCommand != null) {
+            saveCommand.addListener(new IAfterSaveListener() {
+                @Override
+                public void onAfterSave() {
+                    transactionService
+                            .runOnTransaction(new IOnTransaction<Void>() {
+                                @Override
+                                public Void execute() {
+                                    overallProgressContent.refresh();
+                                    return null;
+                                }
+                            });
+                }
+            });
+        }
     }
 
     private void addPrintSupport(
@@ -1548,13 +1551,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
 
         public OverAllProgressContent(Tabpanel tabpanel) {
-            progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellow("progressCriticalPathByDuration");
-            lbCriticalPathByDuration = (Label) tabpanel.getFellow("lbCriticalPathByDuration");
-            progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellow("progressCriticalPathByNumHours");
-            lbCriticalPathByNumHours = (Label) tabpanel.getFellow("lbCriticalPathByNumHours");
-            progressAdvancePercentage = (Progressmeter) tabpanel.getFellow("progressAdvancePercentage");
-            lbAdvancePercentage = (Label) tabpanel.getFellow("lbAdvancePercentage");
+            initializeProgressCriticalPathByDuration(tabpanel);
+            initializeProgressCriticalPathByNumHours(tabpanel);
+            initializeProgressAdvancePercentage(tabpanel);
+
             btnRefresh = (Button) tabpanel.getFellow("btnRefresh");
+            tabpanel.setVariable("overall_progress_content", this, true);
             btnRefresh.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
@@ -1573,6 +1575,33 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     });
                 }
             });
+        }
+
+        private void initializeProgressCriticalPathByNumHours(Tabpanel tabpanel) {
+            progressCriticalPathByNumHours = (Progressmeter) tabpanel
+                    .getFellow("progressCriticalPathByNumHours");
+            lbCriticalPathByNumHours = (Label) tabpanel
+                    .getFellow("lbCriticalPathByNumHours");
+            ((Label) tabpanel.getFellow("textCriticalPathByNumHours"))
+                    .setValue(_(ProgressType.CRITICAL_PATH_NUMHOURS.toString()));
+        }
+
+        private void initializeProgressCriticalPathByDuration(Tabpanel tabpanel) {
+            progressCriticalPathByDuration = (Progressmeter) tabpanel
+                    .getFellow("progressCriticalPathByDuration");
+            lbCriticalPathByDuration = (Label) tabpanel
+                    .getFellow("lbCriticalPathByDuration");
+            ((Label) tabpanel.getFellow("textCriticalPathByDuration"))
+                    .setValue(_(ProgressType.CRITICAL_PATH_DURATION.toString()));
+        }
+
+        public void initializeProgressAdvancePercentage(Tabpanel tabpanel) {
+            progressAdvancePercentage = (Progressmeter) tabpanel
+                    .getFellow("progressAdvancePercentage");
+            lbAdvancePercentage = (Label) tabpanel
+                    .getFellow("lbAdvancePercentage");
+            ((Label) tabpanel.getFellow("textAdvancePercentage"))
+                    .setValue(_(ProgressType.SPREAD_PROGRESS.toString()));
         }
 
         public void refresh() {

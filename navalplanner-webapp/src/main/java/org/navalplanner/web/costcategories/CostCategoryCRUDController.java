@@ -348,7 +348,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             public void onEvent(Event event) throws Exception {
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
-                Datebox endDateBox = (Datebox) row.getChildren().get(3);
+                Datebox endDateBox = (Datebox) row.getChildren().get(4);
                 endDateBox.setConstraint("after " +
                         String.format("%04d", initDate.getYear()) +
                         String.format("%02d", initDate.getMonthOfYear()) +
@@ -373,8 +373,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 if (dateTime != null) {
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
+                } else {
+                    Date now = new Date();
+                    hourCost.setInitDate(new LocalDate(now));
+                    return now;
                 }
-                return null;
             }
 
         }, new Util.Setter<Date>() {

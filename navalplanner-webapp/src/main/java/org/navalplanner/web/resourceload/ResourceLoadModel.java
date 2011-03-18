@@ -33,8 +33,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
@@ -57,7 +57,6 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -171,7 +170,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        Order result = orderElementDAO.loadOrderAvoidingProxyFor(task
+        Order result = orderDAO.loadOrderAvoidingProxyFor(task
                 .getOrderElement());
         result.useSchedulingDataFor(scenarioManager.getCurrent());
         return result;
@@ -222,51 +221,81 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filterByResources) {
             result.addAll(groupsFor(resourcesToShow()));
         } else {
-            calculatedGenericAllocationsByCriterion =
-                genericAllocationsByCriterion();
-            result.addAll(groupsFor(calculatedGenericAllocationsByCriterion));
+            allocationsByCriterion = allocationsByCriterion();
+            result.addAll(groupsFor(allocationsByCriterion));
         }
         return result;
     }
 
-    Map<Criterion, List<GenericResourceAllocation>> calculatedGenericAllocationsByCriterion;
+    private Map<Criterion, List<ResourceAllocation<?>>> allocationsByCriterion;
 
-    private Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion() {
+    private Map<Criterion, List<ResourceAllocation<?>>> allocationsByCriterion() {
         if (!criteriaToShowList.isEmpty()) {
             reattachCriteriaToShow();
             // reattaching criterions so the query returns the same criteria as
             // keys
             allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
-            return resourceAllocationDAO.findGenericAllocationsBySomeCriterion(
-                    criteriaToShowList, asDate(initDateFilter),
-                    asDate(endDateFilter));
+            return withAssociatedSpecific(findAllocationsGroupedByCriteria(criteriaToShowList));
         }
-        Map<Criterion, List<GenericResourceAllocation>> toReturn;
+        Map<Criterion, List<GenericResourceAllocation>> result = findAllocationsByCriterion();
+        allCriteriaList = Criterion.sortByTypeAndName(result.keySet());
+        if (pageFilterPosition == -1) {
+            return withAssociatedSpecific(result);
+        }
+        List<Criterion> criteriaReallyShown = allCriteriaList.subList(
+                pageFilterPosition, getEndPositionForCriterionPageFilter());
+        return withAssociatedSpecific(onlyForThePagesShown(criteriaReallyShown,
+                result));
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> findAllocationsByCriterion() {
         if (filter()) {
             List<Task> tasks = justTasks(filterBy
                     .getAllChildrenAssociatedTaskElements());
-            allCriteriaList = Criterion.sortByTypeAndName(getCriterionsOn(tasks));
-            toReturn = resourceAllocationDAO
-                    .findGenericAllocationsBySomeCriterion(allCriteriaList,
-                            asDate(initDateFilter), asDate(endDateFilter));
+            return findAllocationsGroupedByCriteria(getCriterionsOn(tasks));
         } else {
-            toReturn = resourceAllocationDAO.findGenericAllocationsByCriterion(
-                    asDate(initDateFilter), asDate(endDateFilter));
-            allCriteriaList = Criterion.sortByTypeAndName(toReturn.keySet());
+            return findAllocationsGroupedByCriteria();
         }
-        if(pageFilterPosition == -1) {
-            return toReturn;
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria(
+            List<Criterion> relatedWith) {
+        return resourceAllocationDAO
+                .findGenericAllocationsBySomeCriterion(
+                        relatedWith, asDate(initDateFilter), asDate(endDateFilter));
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria() {
+        return resourceAllocationDAO
+                .findGenericAllocationsByCriterion(
+                asDate(initDateFilter), asDate(endDateFilter));
+    }
+
+    private Map<Criterion, List<ResourceAllocation<?>>> withAssociatedSpecific(
+            Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
+        Map<Criterion, List<ResourceAllocation<?>>> result = new HashMap<Criterion, List<ResourceAllocation<?>>>();
+        for (Entry<Criterion, List<GenericResourceAllocation>> each : genericAllocationsByCriterion
+                .entrySet()) {
+            List<ResourceAllocation<?>> both = new ArrayList<ResourceAllocation<?>>();
+            both.addAll(each.getValue());
+            both.addAll(resourceAllocationDAO.findSpecificAllocationsRelatedTo(
+                    each.getKey(), asDate(initDateFilter),
+                    asDate(endDateFilter)));
+            result.put(each.getKey(), both);
         }
-        //return only the elements in the page filter
-        Map<Criterion, List<GenericResourceAllocation>> toReturnFiltered =
-            new HashMap<Criterion, List<GenericResourceAllocation>>();
-        for(int i = pageFilterPosition; i < getEndPositionForCriterionPageFilter(); i++) {
-            Criterion criterion = allCriteriaList.get(i);
-            if(toReturn.get(criterion) != null) {
-                toReturnFiltered.put(criterion, toReturn.get(criterion));
+        return result;
+    }
+
+    private <R extends ResourceAllocation<?>> Map<Criterion, List<R>> onlyForThePagesShown(
+            List<Criterion> criteriaReallyShown,
+            Map<Criterion, List<R>> allocationsByCriteria) {
+        Map<Criterion, List<R>> result = new HashMap<Criterion, List<R>>();
+        for (Criterion each : criteriaReallyShown) {
+            if (allocationsByCriteria.get(each) != null) {
+                result.put(each, allocationsByCriteria.get(each));
             }
         }
-        return toReturnFiltered;
+        return result;
     }
 
     public static Date asDate(LocalDate date) {
@@ -395,24 +424,24 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     /**
-     * @param genericAllocationsByCriterion
+     * @param allocationsByCriterion
      * @return
      */
     private List<LoadTimeLine> groupsFor(
-            Map<Criterion, List<GenericResourceAllocation>> genericAllocationsByCriterion) {
+            Map<Criterion, List<ResourceAllocation<?>>> allocationsByCriterion) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         for(Criterion criterion : criteriaToShow()) {
-            if (genericAllocationsByCriterion.get(criterion) == null) {
+            if (allocationsByCriterion.get(criterion) == null) {
                 // no allocations found for criterion
                 continue;
             }
-            List<GenericResourceAllocation> allocations = ResourceAllocation
-                    .sortedByStartDate(genericAllocationsByCriterion
+            List<ResourceAllocation<?>> allocations = ResourceAllocation
+                    .sortedByStartDate(allocationsByCriterion
                             .get(criterion));
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(criterion);
-            LoadTimeLine group = new LoadTimeLine(createPrincipal(criterion,
-                    allocations, role),
-                    buildSecondLevel(criterion, allocations));
+            LoadTimeLine group = new LoadTimeLine(createMain(criterion,
+                    allocations, role), buildSecondaryLevels(criterion,
+                    allocations));
             if (!group.isEmpty()) {
                 result.add(group);
             }
@@ -420,8 +449,30 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
-    private List<LoadTimeLine> buildSecondLevel(Criterion criterion,
-            List<GenericResourceAllocation> allocations) {
+    private List<LoadTimeLine> buildSecondaryLevels(Criterion criterion,
+            List<? extends ResourceAllocation<?>> allocations) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        result.addAll(buildSubLevels(criterion, ResourceAllocation.getOfType(
+                GenericResourceAllocation.class, allocations)));
+        result.add(buildRelatedSpecificAllocations(criterion, allocations));
+        return result;
+    }
+
+    private LoadTimeLine buildRelatedSpecificAllocations(Criterion criterion,
+            List<? extends ResourceAllocation<?>> allocations) {
+        List<SpecificResourceAllocation> specific = ResourceAllocation
+                .getOfType(SpecificResourceAllocation.class, allocations);
+
+        LoadTimeLine main = new LoadTimeLine(_("Specific Allocations"),
+                createPeriods(criterion, specific), "related-specific",
+                getCurrentTimeLineRole(criterion));
+        List<LoadTimeLine> children = buildGroupsFor(ResourceAllocation
+                .byResource(new ArrayList<ResourceAllocation<?>>(specific)));
+        return new LoadTimeLine(main, children);
+    }
+
+    private List<LoadTimeLine> buildSubLevels(Criterion criterion,
+            List<? extends ResourceAllocation<?>> allocations) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(new ArrayList<ResourceAllocation<?>>(
                 allocations));
@@ -430,8 +481,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filter()) {
             // build time lines for current order
             if (byOrder.get(filterBy) != null) {
-                result.addAll(buildTimeLinesForOrder(criterion, byOrder
-                        .get(filterBy)));
+                result.addAll(buildTimeLinesForOrder(filterBy, criterion,
+                        byOrder.get(filterBy)));
             }
             byOrder.remove(filterBy);
             // build time lines for other orders
@@ -446,10 +497,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return result;
     }
 
-    private List<LoadTimeLine> buildTimeLinesForOrder(Criterion criterion,
+    private List<LoadTimeLine> buildTimeLinesForOrder(Order order,
+            Criterion criterion,
             List<ResourceAllocation<?>> allocations) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
-        result.addAll(buildTimeLinesForEachTask(criterion, allocations));
+        result.addAll(buildTimeLinesForEachTask(criterion,
+                onlyGeneric(allocations)));
+        result.addAll(buildTimeLinesForEachResource(criterion,
+                onlySpecific(allocations), getCurrentTimeLineRole(order)));
         return result;
     }
 
@@ -477,21 +532,22 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 continue;
             }
             TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(order);
-            result.add(new LoadTimeLine(buildTimeLine(criterion, order
-                    .getName(), "global-generic", byOrder.get(order), role),
-                    buildTimeLinesForOrder(
-                    criterion, byOrder.get(order))));
+            result.add(new LoadTimeLine(
+                    buildTimeLine(criterion, order.getName(), "global-generic",
+                            byOrder.get(order), role), buildTimeLinesForOrder(
+                            order, criterion, byOrder.get(order))));
         }
         return result;
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachTask(Criterion criterion,
-            List<ResourceAllocation<?>> allocations) {
-        Map<Task, List<ResourceAllocation<?>>> byTask = ResourceAllocation
+            List<GenericResourceAllocation> allocations) {
+        Map<Task, List<GenericResourceAllocation>> byTask = ResourceAllocation
                 .byTask(allocations);
 
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
-        for (Entry<Task, List<ResourceAllocation<?>>> entry : byTask.entrySet()) {
+        for (Entry<Task, List<GenericResourceAllocation>> entry : byTask
+                .entrySet()) {
 
             Task task = entry.getKey();
 
@@ -524,24 +580,23 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private Map<Set<Criterion>, List<GenericResourceAllocation>> getAllocationsWithSameCriteria(
-            List<ResourceAllocation<?>> genericAllocations) {
-        return GenericResourceAllocation
-                .byCriterions(onlyGeneric(genericAllocations));
+            List<GenericResourceAllocation> genericAllocations) {
+        return GenericResourceAllocation.byCriterions(genericAllocations);
     }
 
     private List<LoadTimeLine> buildTimeLinesForEachResource(
-            Criterion criterion, List<GenericResourceAllocation> allocations,
+            Criterion criterion,
+            List<? extends ResourceAllocation<?>> allocations,
             TimeLineRole<BaseEntity> role) {
-        Map<Resource, List<GenericResourceAllocation>> byResource = GenericResourceAllocation
+        Map<Resource, List<ResourceAllocation<?>>> byResource = ResourceAllocation
                 .byResource(allocations);
 
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
-        for (Entry<Resource, List<GenericResourceAllocation>> entry : byResource
+        for (Entry<Resource, List<ResourceAllocation<?>>> entry : byResource
                 .entrySet()) {
             Resource resource = entry.getKey();
-            List<GenericResourceAllocation> resourceAllocations = entry
-                    .getValue();
-            String descriptionTimeLine = getDescriptionResourceWithCriterions(resource);
+            List<ResourceAllocation<?>> resourceAllocations = entry.getValue();
+            String descriptionTimeLine = resource.getShortDescription();
 
             LoadTimeLine timeLine = buildTimeLine(resource,
                     descriptionTimeLine, resourceAllocations, "generic", role);
@@ -553,34 +608,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return secondLevel;
     }
 
-    private String getDescriptionResourceWithCriterions(Resource resource) {
-        Set<CriterionSatisfaction> criterionSatisfactions = resource
-                .getCriterionSatisfactions();
-        return resource.getShortDescription();
-    }
-
-    private String getCriterionSatisfactionDescription(
-            Set<CriterionSatisfaction> satisfactions) {
-        if (satisfactions.isEmpty()) {
-            return "";
-        }
-        List<Criterion> criterions = new ArrayList<Criterion>();
-        for (CriterionSatisfaction satisfaction : satisfactions) {
-            criterions.add(satisfaction.getCriterion());
-        }
-        return " :: " + Criterion.getCaptionFor(criterions);
-    }
-
-    private LoadTimeLine createPrincipal(Criterion criterion,
-            List<GenericResourceAllocation> orderedAllocations,
+    private LoadTimeLine createMain(Criterion criterion,
+            List<? extends ResourceAllocation<?>> orderedAllocations,
             TimeLineRole<BaseEntity> role) {
         return new LoadTimeLine(criterion.getType().getName() + ": " + criterion.getName(),
                 createPeriods(criterion, orderedAllocations), "global-generic", role);
     }
 
     private List<LoadPeriod> createPeriods(Criterion criterion,
-            List<GenericResourceAllocation> value) {
-        if(initDateFilter != null || endDateFilter != null) {
+            List<? extends ResourceAllocation<?>> value) {
+        if (initDateFilter != null || endDateFilter != null) {
             return PeriodsBuilder.build(
                     LoadPeriodGenerator.onCriterion(criterion, resourcesDAO),
                     value, asDate(initDateFilter), asDate(endDateFilter));
@@ -591,31 +628,45 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<LoadTimeLine> groupsFor(List<Resource> allResources) {
-        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        return buildGroupsFor(eachWithAllocations(allResources));
+    }
+
+    private Map<Resource, List<ResourceAllocation<?>>> eachWithAllocations(
+            List<Resource> allResources) {
+        Map<Resource, List<ResourceAllocation<?>>> map = new HashMap<Resource, List<ResourceAllocation<?>>>();
         for (Resource resource : allResources) {
-            LoadTimeLine group = buildGroup(resource);
-            if (!group.isEmpty()) {
-                result.add(group);
+            map.put(resource, ResourceAllocation
+                    .sortedByStartDate(resourceAllocationDAO
+                            .findAllocationsRelatedTo(resource, initDateFilter,
+                                    endDateFilter)));
+        }
+        return map;
+    }
+
+    private List<LoadTimeLine> buildGroupsFor(
+            Map<Resource, List<ResourceAllocation<?>>> map) {
+        List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
+        for (Entry<Resource, List<ResourceAllocation<?>>> each : map
+                .entrySet()) {
+            LoadTimeLine l = buildGroupFor(each.getKey(), each.getValue());
+            if (!l.isEmpty()) {
+                result.add(l);
             }
         }
         return result;
     }
 
-    private LoadTimeLine buildGroup(Resource resource) {
-        List<ResourceAllocation<?>> sortedByStartDate = ResourceAllocation
-                .sortedByStartDate(resourceAllocationDAO
-                        .findAllocationsRelatedTo(resource, initDateFilter,
-                                endDateFilter));
+    private LoadTimeLine buildGroupFor(Resource resource,
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
         TimeLineRole<BaseEntity> role = getCurrentTimeLineRole(resource);
         LoadTimeLine result = new LoadTimeLine(buildTimeLine(resource, resource
                 .getName(), sortedByStartDate, "resource", role),
                 buildSecondLevel(resource, sortedByStartDate));
         return result;
-
     }
 
     private List<LoadTimeLine> buildSecondLevel(Resource resource,
-            List<ResourceAllocation<?>> sortedByStartDate) {
+            List<? extends ResourceAllocation<?>> sortedByStartDate) {
         List<LoadTimeLine> result = new ArrayList<LoadTimeLine>();
         Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(sortedByStartDate);
 
@@ -681,15 +732,14 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Transactional(readOnly = true)
     public Map<Order, List<ResourceAllocation<?>>> byOrder(
-            Collection<ResourceAllocation<?>> allocations) {
+            Collection<? extends ResourceAllocation<?>> allocations) {
         Map<Order, List<ResourceAllocation<?>>> result = new HashMap<Order, List<ResourceAllocation<?>>>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             if ((resourceAllocation.isSatisfied())
                     && (resourceAllocation.getTask() != null)) {
                 OrderElement orderElement = resourceAllocation.getTask()
                         .getOrderElement();
-                Order order = orderElementDAO
-                        .loadOrderAvoidingProxyFor(orderElement);
+                Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
                 initializeIfNeeded(result, order);
                 result.get(order).add(resourceAllocation);
             }
@@ -916,10 +966,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
         else {
             List<DayAssignment> dayAssignments = new ArrayList<DayAssignment>();
-            for(Entry<Criterion, List<GenericResourceAllocation>> entry :
-                calculatedGenericAllocationsByCriterion.entrySet()) {
+            for (Entry<Criterion, List<ResourceAllocation<?>>> entry : allocationsByCriterion
+                    .entrySet()) {
 
-                for(GenericResourceAllocation allocation : entry.getValue()) {
+                for (ResourceAllocation<?> allocation : entry.getValue()) {
                     dayAssignments.addAll(allocation.getAssignments());
                 }
             }

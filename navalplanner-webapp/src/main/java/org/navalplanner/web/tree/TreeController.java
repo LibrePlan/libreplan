@@ -288,7 +288,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected void remove(T element) {
+        List<T> parentNodes = getModel().getParents(element);
         getModel().removeNode(element);
+        getRenderer().refreshHoursValueForNodes(parentNodes);
     }
 
     @Override
@@ -376,7 +378,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     Navigation navigation, Treerow treerow) {
                 List<InputElement> boxes = getNavigableElements(treerow);
                 int position = boxes.indexOf(inputElement);
-
+                if (position > boxes.size() - 1) {
+                    return;
+                }
                 switch (navigation) {
                 case UP:
                     focusGoUp(treerow, position);
@@ -516,11 +520,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             private void focusCorrectBox(Treerow treerow, int position,
                     Navigation whereIfDisabled) {
                 List<InputElement> boxes = getNavigableElements(treerow);
-
-                if (boxes.get(position).isDisabled()) {
-                    moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
-                } else {
-                    boxes.get(position).focus();
+                if (position < boxes.size() - 1) {
+                    if (boxes.get(position).isDisabled()) {
+                        moveFocusTo(boxes.get(position), whereIfDisabled,
+                                treerow);
+                    } else {
+                        boxes.get(position).focus();
+                    }
                 }
             }
 
@@ -795,13 +801,18 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void refreshHoursValueForThisNodeAndParents(T node) {
-            List<T> parentNodes = getModel().getParents(node);
-            for (T parent : parentNodes) {
-                Intbox intbox = hoursIntBoxByElement.get(parent);
+            List<T> nodeAndItsParents = getModel().getParents(node);
+            nodeAndItsParents.add(node);
+            refreshHoursValueForNodes(nodeAndItsParents);
+        }
+
+        public void refreshHoursValueForNodes(List<T> nodes) {
+            for (T node : nodes) {
+                Intbox intbox = hoursIntBoxByElement.get(node);
                 // For the Order node there is no associated intbox
                 if (intbox != null) {
                     Integer currentHours = getHoursGroupHandler()
-                            .getWorkHoursFor(parent);
+                            .getWorkHoursFor(node);
                     intbox.setValue(currentHours);
                 }
             }

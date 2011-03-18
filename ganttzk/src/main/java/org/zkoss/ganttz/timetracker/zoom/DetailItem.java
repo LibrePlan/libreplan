@@ -94,8 +94,9 @@ public final class DetailItem {
 
     public void markCurrentDay() {
         if (this.startDate.isBeforeNow() && this.endDate.isAfterNow()) {
-            int offsetInPx = Math.round((((float) Days.daysBetween(
-                    this.startDate, new DateTime()).getDays()) / ((float) Days
+            int offsetInPx = Math
+                    .round(((((float) Days.daysBetween(this.startDate,
+                            new DateTime()).getDays()) + (float) 0.5) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
             this.markCurrentDay(offsetInPx);

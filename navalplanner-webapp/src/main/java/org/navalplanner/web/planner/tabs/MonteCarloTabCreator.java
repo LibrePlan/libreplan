@@ -183,7 +183,8 @@ public class MonteCarloTabCreator {
              */
             public List<TaskElement> getCriticalPathFor(Order order) {
                 CriticalPathCalculator<TaskElement, DependencyWithVisibility> criticalPathCalculator = CriticalPathCalculator
-                        .create();
+                        .create(order
+                                .getDependenciesConstraintsHavePriority());
                 IAdapter<TaskElement, DependencyWithVisibility> adapter = TemplateModelAdapter
                                 .create(getCurrentScenario(),
                                         asLocalDate(order.getInitDate()),

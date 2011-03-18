@@ -52,7 +52,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
@@ -1252,8 +1252,8 @@ public abstract class OrderElement extends IntegrationEntity implements
             }
         }
         // not exist assigned task
-        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
-        return (orderElementDAO.loadOrderAvoidingProxyFor(this))
+        IOrderDAO orderDAO = Registry.getOrderDAO();
+        return (orderDAO.loadOrderAvoidingProxyFor(this))
                 .isFinishedAdvance();
     }
 

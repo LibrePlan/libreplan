@@ -414,6 +414,11 @@ public class MachineCRUDController extends GenericForwardComposer {
                 reloadWindow();
             }
 
+            @Override
+            public void saveAndContinue() {
+                save();
+            }
+
         };
 
         editCalendarWindow.setVariable("calendarController", this, true);

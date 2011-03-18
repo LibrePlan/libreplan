@@ -21,8 +21,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.labels.daos.ILabelDAO;
@@ -52,6 +50,13 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private ILabelDAO labelDAO;
 
     private final String headers[] = { _("Type"), _("Name") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)

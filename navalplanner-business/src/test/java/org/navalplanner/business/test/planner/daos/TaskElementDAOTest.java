@@ -555,7 +555,7 @@ public class TaskElementDAOTest {
                 LocalDate start = task.getStartAsLocalDate();
                 task.setIntraDayEndDate(IntraDayDate.startOfDay(start
                         .plusDays(2)));
-                allocation.onInterval(start, start.plusDays(2)).allocateHours(16);
+                allocation.onIntervalWithinTask(start, start.plusDays(2)).allocateHours(16);
                 assertTrue(allocation.getAssignedHours() > 0);
 
                 task.addResourceAllocation(allocation);

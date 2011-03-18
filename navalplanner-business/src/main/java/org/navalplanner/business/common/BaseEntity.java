@@ -111,13 +111,17 @@ public abstract class BaseEntity implements INewObject {
     @Override
     public String toString() {
         try {
-            return super.toString() + "[ id: " + getId() + ", newObject: "
-                    + isNewObject() + "]";
+            return super.toString() + getExtraInformation();
         } catch (Exception e) {
             final String message = "error doing toString";
             LOG.error(message, e);
             return message;
         }
+    }
+
+    public String getExtraInformation() {
+        return "[ id: " + getId() + ", newObject: "
+                + isNewObject() + "]";
     }
 
 }

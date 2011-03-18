@@ -113,8 +113,7 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
     }
 
     private Order getOrder(OrderElement orderElement) {
-        Order order = (Order) orderElementDAO
-                .loadOrderAvoidingProxyFor(orderElement);
+        Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
         return order;
     }
 

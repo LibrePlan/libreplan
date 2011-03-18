@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.navalplanner</groupId>
         <artifactId>navalplanner</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.4</version>
     </parent>
     <artifactId>navalplanner-webapp</artifactId>
     <packaging>war</packaging>
@@ -228,10 +228,6 @@
         <dependency>
             <groupId>jfree</groupId>
             <artifactId>jcommon</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>jfree</groupId>
-            <artifactId>jfreechart-igalia</artifactId>
         </dependency>
         <!-- Apache Commons Fileupload (required by ZK) -->
         <dependency>

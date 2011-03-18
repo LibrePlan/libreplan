@@ -26,7 +26,14 @@ package org.navalplanner.business.qualityforms.entities;
 
 public enum QualityFormType {
 
-    BY_PERCENTAGE("By Percentage."), BY_ITEMS("By Items.");
+    BY_PERCENTAGE(_("by percentage")), BY_ITEMS(_("by items"));
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     private String description;
 

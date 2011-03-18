@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,14 +40,15 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
 import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.util.Locales;
 
 /**
  * Model for UI operations related to {@link StretchesFunction} configuration.
@@ -212,7 +214,14 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             throws IllegalArgumentException {
         if (date.compareTo(task.getStartDate()) < 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date should be greater or equals than task start date"));
+                    _("Stretch date must not be less than task start date: "
+                            + sameFormatAsDefaultZK(task.getStartDate())));
+        }
+
+        if (date.compareTo(taskEndDate) > 0) {
+            throw new IllegalArgumentException(
+                    _("Stretch date must not be greater than the task's end date: "
+                            + sameFormatAsDefaultZK(taskEndDate)));
         }
 
         stretch.setDate(new LocalDate(date));
@@ -224,6 +233,13 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         } else {
             calculatePercentage(stretch);
         }
+    }
+
+    private String sameFormatAsDefaultZK(Date date) {
+        DateFormat zkDefaultDateFormatter = DateFormat.getDateInstance(
+                DateFormat.DEFAULT, Locales.getCurrent());
+        DateFormat formatter = zkDefaultDateFormatter;
+        return formatter.format(date);
     }
 
     private void recalculateStretchesPercentages() {

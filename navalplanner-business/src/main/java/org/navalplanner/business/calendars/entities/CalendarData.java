@@ -79,7 +79,27 @@ public class CalendarData extends IntegrationEntity {
     private BaseCalendar parent;
 
     public enum Days {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+        MONDAY(_("Monday")), TUESDAY(_("Tuesday")), WEDNESDAY(_("Wednesday")), THURSDAY(
+                _("Thursday")), FRIDAY(_("Friday")), SATURDAY(_("Saturday")), SUNDAY(
+                _("Sunday"));
+
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
+        private String name;
+
+        private Days(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
     }
 
     /**

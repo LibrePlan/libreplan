@@ -29,6 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 
+
 /**
  * This class is intended as a Hibernate component. It's formed by two
  * components, the standard effort and the allowed extra effort. It represents
@@ -36,6 +37,36 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Capacity {
+
+    public static Capacity min(Capacity a, Capacity b) {
+        return new Capacity(EffortDuration.min(a.getStandardEffort(),
+                b.getStandardEffort()), minExtraEffort(a, b));
+    }
+
+    private static EffortDuration minExtraEffort(Capacity a, Capacity b) {
+        if (a.isOverAssignableWithoutLimit()) {
+            return b.getAllowedExtraEffort();
+        }
+        if (b.isOverAssignableWithoutLimit()) {
+            return a.getAllowedExtraEffort();
+        }
+        return EffortDuration.min(a.getAllowedExtraEffort(),
+                b.getAllowedExtraEffort());
+    }
+
+    public static Capacity max(Capacity a, Capacity b) {
+        return new Capacity(EffortDuration.max(a.getStandardEffort(),
+                b.getStandardEffort()), maxExtraEffort(a, b));
+    }
+
+    private static EffortDuration maxExtraEffort(Capacity a, Capacity b) {
+        if (a.isOverAssignableWithoutLimit()
+                || b.isOverAssignableWithoutLimit()) {
+            return null;
+        }
+        return EffortDuration.max(a.getAllowedExtraEffort(),
+                b.getAllowedExtraEffort());
+    }
 
     public static Capacity create(EffortDuration standardEffort) {
         return new Capacity(standardEffort, null);
@@ -79,7 +110,7 @@ public class Capacity {
         return allowedExtraEffort == null;
     }
 
-    public Capacity extraEffort(EffortDuration extraEffort) {
+    public Capacity withAllowedExtraEffort(EffortDuration extraEffort) {
         return new Capacity(standardEffort, extraEffort);
     }
 
@@ -150,9 +181,38 @@ public class Capacity {
                 duration);
     }
 
+    /**
+     * <p>
+     * Is the provided duration below the allowed duration? In that case there
+     * is still spare space for more allocations.
+     * </p>
+     * <p>
+     * The allowed duration is infinite if this {@link Capacity} is
+     * {@link #overAssignableWithoutLimit(boolean)} or the duration provided is
+     * less than the sum of the standard plus allowed extra effort.
+     * </p>
+     *
+     * @param assignedDuration
+     * @return
+     */
+    public boolean hasSpareSpaceForMoreAllocations(
+            EffortDuration assignedDuration) {
+        Validate.notNull(assignedDuration);
+        return isOverAssignableWithoutLimit()
+                || assignedDuration.compareTo(standardEffort
+                        .plus(allowedExtraEffort)) < 0;
+    }
+
     public boolean allowsWorking() {
         return !getStandardEffort().isZero() || isOverAssignableWithoutLimit()
                 || !getAllowedExtraEffort().isZero();
+    }
+
+    public Capacity multiplyBy(int capacity) {
+        Validate.isTrue(capacity >= 0);
+        return new Capacity(standardEffort.multiplyBy(capacity),
+                allowedExtraEffort == null ? null
+                        : allowedExtraEffort.multiplyBy(capacity));
     }
 
 }

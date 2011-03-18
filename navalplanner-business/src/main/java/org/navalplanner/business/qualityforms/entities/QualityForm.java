@@ -405,9 +405,8 @@ public class QualityForm extends BaseEntity {
     public boolean checkConstraintAdvanceTypeIsNotNullIfReportAdvance() {
         if (advanceType == null) {
             return !isReportAdvance();
-        } else {
-            return isReportAdvance();
         }
+        return true;
     }
 
 }

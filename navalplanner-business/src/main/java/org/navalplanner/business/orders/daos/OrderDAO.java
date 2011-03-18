@@ -22,6 +22,7 @@ package org.navalplanner.business.orders.daos;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +31,8 @@ import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.daos.CostCategoryDAO;
@@ -74,6 +76,9 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
 
     @Override
     public List<Order> getOrders() {
@@ -145,8 +150,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         List<OrderCostsPerResourceDTO> filteredList = new ArrayList<OrderCostsPerResourceDTO>();
         for (OrderCostsPerResourceDTO each : list) {
 
-            OrderElement order = Registry.getOrderElementDAO()
-                    .loadOrderAvoidingProxyFor(each
+            OrderElement order = loadOrderAvoidingProxyFor(each
                     .getOrderElement());
 
             // Apply filtering
@@ -348,4 +352,56 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         // Get result
         return query.list();
     }
+
+    @Override
+    public Order loadOrderAvoidingProxyFor(final OrderElement orderElement) {
+        return loadOrdersAvoidingProxyFor(
+                Collections.singletonList(orderElement)).get(0);
+    }
+
+    @Override
+    public List<Order> loadOrdersAvoidingProxyFor(
+            final List<OrderElement> orderElements) {
+        List<OrderElement> orders = transactionService
+                .runOnAnotherTransaction(new IOnTransaction<List<OrderElement>>() {
+
+                    @Override
+                    public List<OrderElement> execute() {
+                        List<OrderElement> result = new ArrayList<OrderElement>();
+                        for (OrderElement each : orderElements) {
+                            result.add(orderFrom(each));
+                        }
+                        return result;
+                    }
+
+                    private OrderElement orderFrom(OrderElement initial) {
+                        OrderElement current = initial;
+                        OrderElement result = current;
+                        while (current != null) {
+                            result = current;
+                            current = findParent(current);
+                        }
+                        return result;
+                    }
+
+                    private OrderElement findParent(OrderElement orderElement) {
+                        Query query = getSession()
+                                .createQuery(
+                                        "select e.parent from OrderElement e where e.id = :id")
+                                .setParameter("id", orderElement.getId());
+                        return (OrderElement) query.uniqueResult();
+                    }
+
+                });
+        List<Order> result = new ArrayList<Order>();
+        for (OrderElement each : orders) {
+            if (each != null) {
+                result.add(findExistingEntity(each.getId()));
+            } else {
+                result.add(null);
+            }
+        }
+        return result;
+    }
+
 }

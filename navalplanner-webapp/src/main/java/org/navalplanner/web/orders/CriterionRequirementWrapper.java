@@ -45,7 +45,7 @@ public class CriterionRequirementWrapper  implements INewObject {
     public final String DIRECT = _("Direct");
 
     public static String getIndirectTypeLabel() {
-        return _("Indirect");
+        return _("Inherited");
     }
 
     private String type;

@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -47,6 +48,17 @@ public interface ICalendar {
      * @return the capacity at which the resource can work at the day specified
      */
     public EffortDuration getCapacityOn(PartialDay partialDay);
+
+    /**
+     * Calculates the capacity information for a given date. It contains
+     * information about the normal effort and the extra effort, i.e., the
+     * overtime effort.
+     *
+     * @param date
+     *            a not null date
+     * @return the capacity for the date provided
+     */
+    public Capacity getCapacityWithOvertime(LocalDate date);
 
     public AvailabilityTimeLine getAvailability();
 

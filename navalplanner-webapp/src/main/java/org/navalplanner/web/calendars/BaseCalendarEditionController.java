@@ -38,14 +38,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -145,6 +145,8 @@ public abstract class BaseCalendarEditionController extends
     public abstract void goToList();
 
     public abstract void save();
+
+    public abstract void saveAndContinue();
 
     public abstract void cancel();
 
@@ -404,7 +406,7 @@ public abstract class BaseCalendarEditionController extends
 
         private void addLabelCell(Listitem item, final Days day) {
             Listcell labelListcell = new Listcell();
-            labelListcell.appendChild(new Label(day.toString()));
+            labelListcell.appendChild(new Label(_(day.getName())));
             item.appendChild(labelListcell);
         }
 
@@ -745,7 +747,7 @@ public abstract class BaseCalendarEditionController extends
                     if (parent == null) {
                         summary.add("0");
                     } else {
-                        summary.add("D");
+                        summary.add(_("D"));
                     }
                 } else {
                     summary.add(asString(calendarData.getCapacityOn(day)));
@@ -932,6 +934,7 @@ public abstract class BaseCalendarEditionController extends
             appendStandardEffortListcell(item, calendarException.getCapacity());
             appendExtraEffortListcell(item, calendarException.getCapacity());
             appendCodeListcell(item, calendarException);
+            appendOriginListcell(item, calendarException);
             appendOperationsListcell(item, calendarException);
 
             markAsSelected(item, calendarException);
@@ -1015,6 +1018,17 @@ public abstract class BaseCalendarEditionController extends
             item.appendChild(listcell);
         }
 
+        private void appendOriginListcell(Listitem item,
+                CalendarException calendarException) {
+            Listcell listcell = new Listcell();
+            String origin = _("Inherited");
+            if (baseCalendarModel.isOwnException(calendarException)) {
+                origin = _("Direct");
+            }
+            listcell.appendChild(new Label(origin));
+            item.appendChild(listcell);
+        }
+
         private void appendOperationsListcell(Listitem item, CalendarException calendarException) {
             Listcell listcell = new Listcell();
             listcell.appendChild(createRemoveButton(calendarException));
@@ -1034,6 +1048,11 @@ public abstract class BaseCalendarEditionController extends
                             reloadDayInformation();
                         }
                     });
+            if (!baseCalendarModel.isOwnException(calendarException)) {
+                result.setDisabled(true);
+                result
+                        .setTooltiptext(_("derived exception can not be removed"));
+            }
             return result;
         }
 
@@ -1194,8 +1213,10 @@ public abstract class BaseCalendarEditionController extends
 
                         @Override
                         public void set(Date value) {
-                            LocalDate endDate = new LocalDate(value);
                             try {
+                                LocalDate endDate = getAppropiateEndDate(
+                                    calendarAvailability, value);
+
                                 baseCalendarModel.setEndDate(
                                         calendarAvailability, endDate);
                             } catch (IllegalArgumentException e) {
@@ -1208,6 +1229,20 @@ public abstract class BaseCalendarEditionController extends
 
             listcell.appendChild(dateboxExpirationDate);
             item.appendChild(listcell);
+        }
+
+        private LocalDate getAppropiateEndDate(
+                CalendarAvailability calendarAvailability, Date endDate) {
+            if (endDate == null) {
+                if (baseCalendarModel
+                        .isLastActivationPeriod(calendarAvailability)) {
+                    return null;
+                } else {
+                    throw new IllegalArgumentException(
+                            _("Only the last activation period allows to delete end date."));
+                }
+            }
+            return new LocalDate(endDate);
         }
 
         private void appendAvailabilityCodeListcell(Listitem item,

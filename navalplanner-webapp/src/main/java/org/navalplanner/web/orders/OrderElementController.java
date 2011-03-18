@@ -263,7 +263,7 @@ public class OrderElementController extends GenericForwardComposer {
         Util.reloadBindings(self.getParent());
     }
 
-    public void onClose(Event event) {
+    public void close(Event event) {
         closeAll();
         event.stopPropagation();
     }

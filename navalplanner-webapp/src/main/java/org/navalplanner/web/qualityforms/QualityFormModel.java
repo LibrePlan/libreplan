@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.qualityforms;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class QualityFormModel implements IQualityFormModel {
     private QualityForm qualityForm;
 
     private List<QualityForm> listQualityForms = new ArrayList<QualityForm>();
+
+    private final BigDecimal totalPercentage = new BigDecimal(100).setScale(2);
 
     public QualityFormModel() {
 
@@ -195,6 +198,27 @@ public class QualityFormModel implements IQualityFormModel {
     public void upQualityFormItem(QualityFormItem qualityFormItem) {
         Integer newPosition = qualityFormItem.getPosition() - 1;
         this.getQualityForm().moveQualityFormItem(qualityFormItem, newPosition);
+    }
+
+    @Override
+    public boolean hasItemWithTotalPercentage() {
+        // Check if the current quality form has any item with 100 percentage to
+        // can report progress
+        if (getQualityForm() != null) {
+            for (QualityFormItem item : this.getQualityForm()
+                    .getQualityFormItems()) {
+                if (isTotalPercentage(item)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Boolean isTotalPercentage(QualityFormItem item) {
+        return (item.getPercentage() != null) ? (item.getPercentage()
+                .equals(totalPercentage)) : false;
     }
 
 }

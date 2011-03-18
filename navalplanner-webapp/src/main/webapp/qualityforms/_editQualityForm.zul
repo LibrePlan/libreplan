@@ -57,11 +57,13 @@
                                 <listbox id="listQualityFormTypes" mold="select" rows="1"
                                     model="@{controller.qualityFormTypes}"
                                     onSelect="controller.changeQualityFormType();"
-                                    selectedItem="@{controller.qualityForm.qualityFormType}"/>
+                                    selectedItem="@{controller.qualityForm.qualityFormType}"
+                                    itemRenderer="org.navalplanner.web.common.EnumsListitemRenderer"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Report progress')}" />
-                                <checkbox checked="@{controller.qualityForm.reportAdvance}" />
+                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}"
+                                    onCheck="controller.validateReportProgress(self);" />
                             </row>
                         </rows>
                     </grid>
@@ -87,7 +89,7 @@
                                 <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
                                     <textbox value="@{qualityFormItem.name}" width="95%"
                                         constraint="@{controller.checkConstraintQualityFormItemName}"/>
-                                    <label value="@{qualityFormItem.position}" width="50px"/>
+                                    <label value="@{qualityFormItem.stringPosition}" width="50px"/>
 
                                     <decimalbox scale = "2" width="100px"
                                         visible="@{controller.byPercentage}"

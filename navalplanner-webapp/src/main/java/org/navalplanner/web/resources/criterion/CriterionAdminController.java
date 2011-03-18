@@ -91,7 +91,7 @@ public class CriterionAdminController extends GenericForwardComposer {
         try {
             criterionsModel.prepareForCreate();
             setupCriterionTreeController(editWindow);
-            showEditWindow(_("Create Criterion type"));
+            showEditWindow(_("Create Criterion Type"));
         } catch (Exception e) {
             messagesForUser.showMessage(Level.ERROR,
                     _("Error setting up creation form."));
@@ -110,7 +110,7 @@ public class CriterionAdminController extends GenericForwardComposer {
         try {
             criterionsModel.prepareForEdit(criterionType);
             setupCriterionTreeController(editWindow);
-            showEditWindow(_("Edit Criterion type"));
+            showEditWindow(_("Edit Criterion Type"));
         } catch (Exception e) {
             messagesForUser.showMessage(Level.ERROR,
                     _("Error setting up edition form."));
@@ -178,7 +178,7 @@ public class CriterionAdminController extends GenericForwardComposer {
         try {
             int status = Messagebox
                     .show(_("Disable hierarchy will cause criteria tree to be flattened. Are you sure?"),
-                            "Question", Messagebox.OK | Messagebox.CANCEL,
+                            _("Question"), Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
             if (Messagebox.OK == status) {
                 disableHierarchy();

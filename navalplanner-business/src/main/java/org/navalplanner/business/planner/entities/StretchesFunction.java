@@ -89,7 +89,7 @@ public class StretchesFunction extends AssignmentFunction {
                     LocalDate day = startInclusive.plusDays(i);
                     LocalDate nextDay = day.plusDays(1);
                     allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
+                            .onIntervalWithinTask(day, nextDay)
                             .allocateHours(hoursForEachDay[i]);
                     reallyAssigned[i] = allocation.getAssignedHours(day,
                             nextDay);
@@ -113,7 +113,7 @@ public class StretchesFunction extends AssignmentFunction {
                     LocalDate day = startInclusive.plusDays(i);
                     LocalDate nextDay = day.plusDays(1);
                     allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
+                            .onIntervalWithinTask(day, nextDay)
                             .allocateHours(newHours);
                 }
             }
@@ -255,11 +255,15 @@ public class StretchesFunction extends AssignmentFunction {
         }
 
         private void apply(ResourceAllocation<?> resourceAllocation,
-                LocalDate startInclusive, LocalDate endExclusive,
+                LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
+            // End has to be exclusive on last Stretch
+            LocalDate endDate = getEnd();
+            if (endDate.equals(taskEnd)) {
+                endDate = endDate.plusDays(1);
+            }
             resourceAllocation.withPreviousAssociatedResources()
-                    .onInterval(getStartFor(startInclusive),
-                                getEnd())
+                    .onIntervalWithinTask(getStartFor(startInclusive), endDate)
                     .allocateHours(intervalHours);
         }
 
@@ -279,7 +283,7 @@ public class StretchesFunction extends AssignmentFunction {
                 interval.apply(allocation, allocationStart, allocationEnd,
                         hoursPerInterval[i++]);
             }
-
+            Validate.isTrue(totalHours == allocation.getAssignedHours());
         }
 
         private static int[] getHoursPerInterval(

@@ -23,6 +23,7 @@ package org.navalplanner.web.limitingresources;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -43,18 +44,17 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
+import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueueWithQueueElement;
-import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency.QueueDependencyType;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.CriterionCompounder;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.resources.entities.ResourceEnum;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -162,6 +162,31 @@ public class QueuesState {
         return Collections.unmodifiableList(queues);
     }
 
+    public ArrayList<LimitingResourceQueue> getQueuesOrderedByResourceName() {
+        ArrayList<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>(
+                queues);
+        Collections.sort(result, new Comparator<LimitingResourceQueue>() {
+
+            @Override
+            public int compare(LimitingResourceQueue arg0,
+                    LimitingResourceQueue arg1) {
+
+                if ((arg0 == null) || (arg0.getResource().getName() == null)) {
+                    return -1;
+                }
+
+                if ((arg1 == null) || (arg1.getResource().getName() == null)) {
+                    return 1;
+                }
+                return (arg0.getResource().getName().toLowerCase()
+                        .compareTo(arg1.getResource().getName().toLowerCase()));
+            }
+
+        });
+        return result;
+
+    }
+
     public List<LimitingResourceQueueElement> getUnassigned() {
         return Collections.unmodifiableList(unassignedElements);
     }
@@ -195,10 +220,6 @@ public class QueuesState {
         unassignedElements.remove(queueElement);
     }
 
-    public LimitingResourceQueue getQueueFor(Resource resource) {
-        return queuesByResourceId.get(resource.getId());
-    }
-
     public List<LimitingResourceQueue> getAssignableQueues(
             LimitingResourceQueueElement element) {
         final ResourceAllocation<?> resourceAllocation = element
@@ -211,9 +232,13 @@ public class QueuesState {
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             final GenericResourceAllocation generic = (GenericResourceAllocation) element
                     .getResourceAllocation();
-            return findQueuesMatchingCriteria(generic.getCriterions());
+            return findQueuesMatchingCriteria(generic);
         }
         throw new RuntimeException("unexpected type of: " + resourceAllocation);
+    }
+
+    private LimitingResourceQueue getQueueFor(Resource resource) {
+        return queuesByResourceId.get(resource.getId());
     }
 
     public InsertionRequirements getRequirementsFor(
@@ -288,13 +313,15 @@ public class QueuesState {
         return result;
     }
 
-    private List<LimitingResourceQueue> findQueuesMatchingCriteria(
-            Set<Criterion> criteria) {
+    private List<LimitingResourceQueue> findQueuesMatchingCriteria(GenericResourceAllocation generic) {
         List<LimitingResourceQueue> result = new ArrayList<LimitingResourceQueue>();
-        final ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                criteria).getResult();
+        ResourceEnum resourceType = generic.getResourceType();
+        Set<Criterion> criteria = generic.getCriterions();
+
         for (LimitingResourceQueue each : queues) {
-            if (compositedCriterion.isSatisfiedBy(each.getResource())) {
+            Resource resource = each.getResource();
+            if (resource.getType().equals(resourceType)
+                    && resource.satisfiesCriterionsAtSomePoint(criteria)) {
                 result.add(each);
             }
         }

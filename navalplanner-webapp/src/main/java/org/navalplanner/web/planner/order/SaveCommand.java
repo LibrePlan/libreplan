@@ -41,6 +41,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
@@ -102,6 +103,9 @@ public class SaveCommand implements ISaveCommand {
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
@@ -382,7 +386,7 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void dontPoseAsTransient(OrderElement orderElement) {
-        OrderElement order = (OrderElement) orderElementDAO
+        OrderElement order = (OrderElement) orderDAO
                 .loadOrderAvoidingProxyFor(orderElement);
         order.dontPoseAsTransientObjectAnymore();
         dontPoseAsTransientAdvances(order.getDirectAdvanceAssignments());

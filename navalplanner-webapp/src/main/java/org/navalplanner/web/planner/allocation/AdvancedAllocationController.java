@@ -531,8 +531,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                     paginatorStart = paginatorStart.plus(intervalIncrease());
                 }
                 paginatorEnd = paginatorStart.plus(intervalIncrease());
-                if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
-                    paginatorEnd = paginatorEnd.plus(intervalIncrease());
+                // Avoid reduced intervals
+                if (!intervalEnd.isAfter(paginatorEnd.plus(intervalIncrease()))) {
+                    paginatorEnd = intervalEnd;
                 }
                 updatePaginationButtons();
             }
@@ -570,7 +571,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             paginatorStart = paginatorStart.plus(intervalIncrease());
             paginatorEnd = paginatorEnd.plus(intervalIncrease());
             // Avoid reduced last intervals
-            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+            if (!intervalEnd.isAfter(paginatorEnd.plus(intervalIncrease()))) {
                 paginatorEnd = paginatorEnd.plus(intervalIncrease());
             }
             updatePaginationButtons();
@@ -963,20 +964,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow("Name") {
+        result.add(new ColumnOnRow(_("Name")) {
 
             @Override
             public Component cellFor(Row row) {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow("Hours") {
+        result.add(new ColumnOnRow(_("Hours")) {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllHours();
             }
         });
-        result.add(new ColumnOnRow("Function") {
+        result.add(new ColumnOnRow(_("Function")) {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1042,7 +1043,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     public Column toColumn() {
         Column column = new org.zkoss.zul.Column();
         column.setLabel(_(columnName));
-        column.setSclass(((String) columnName).toLowerCase());
+        column.setSclass(columnName.toLowerCase());
         return column;
     }
 
@@ -1173,7 +1174,7 @@ class Row {
             @Override
             public void onEvent(Event event) throws Exception {
                 Integer value = intbox.getValue();
-                getAllocation().withPreviousAssociatedResources().onInterval(
+                getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
                         getAllocation().getStartDate(),
                         getAllocation().getEndDate())
                         .allocateHours(value);
@@ -1550,7 +1551,7 @@ class Row {
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
                 getAllocation().withPreviousAssociatedResources()
-                                   .onInterval(startDate, endDate)
+                                   .onIntervalWithinTask(startDate, endDate)
                                    .allocateHours(value);
                 fireCellChanged(item);
                 intbox.setRawValue(getHoursForDetailItem(item));

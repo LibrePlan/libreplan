@@ -24,12 +24,17 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 
-/**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
- *
- */
-public interface IAssignedHoursForResource {
+public class AssignedEffortDiscounting implements
+        IAssignedEffortForResource {
 
-    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day);
+    private final Object allocation;
+
+    AssignedEffortDiscounting(Object discountFrom) {
+        this.allocation = discountFrom;
+    }
+
+    public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
+        return resource.getAssignedDurationDiscounting(allocation, day);
+    }
 
 }

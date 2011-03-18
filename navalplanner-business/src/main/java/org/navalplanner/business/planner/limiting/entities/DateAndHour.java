@@ -40,7 +40,10 @@ import org.navalplanner.business.workingday.IntraDayDate;
 public class DateAndHour implements Comparable<DateAndHour> {
 
     public static DateAndHour from(LocalDate date) {
-        return new DateAndHour(date, 0);
+        if (date != null) {
+            return new DateAndHour(date, 0);
+        }
+        return null;
     }
 
     public static DateAndHour from(IntraDayDate date) {
