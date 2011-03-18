@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -53,12 +54,12 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
+import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBack;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
-import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
@@ -71,6 +72,9 @@ import org.zkoss.zul.Label;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class AdvancedAllocationTabCreator {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(AdvancedAllocationTabCreator.class);
 
     private final class ResultReceiver implements
             IAdvanceAllocationResultReceiver {
@@ -129,11 +133,23 @@ public class AdvancedAllocationTabCreator {
 
                 @Override
                 public LocalDate getStart() {
+                    if (aggregate.isEmpty()) {
+                        // FIXME Review Bug #906
+                        LOG.info("the aggregate for task " + task.getName()
+                                + " is empty");
+                        return task.getStartAsLocalDate();
+                    }
                     return aggregate.getStart().getDate();
                 }
 
                 @Override
                 public LocalDate getEnd() {
+                    if (aggregate.isEmpty()) {
+                        // FIXME Review Bug #906
+                        LOG.info("the aggregate for task " + task.getName()
+                                + " is empty");
+                        return task.getEndAsLocalDate();
+                    }
                     return aggregate.getEnd().asExclusiveEnd();
                 }
 
