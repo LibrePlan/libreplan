@@ -38,6 +38,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
@@ -76,6 +78,8 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
+
+    private static final Log LOG = LogFactory.getLog(ResourceAllocation.class);
 
     public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
             Collection<T> resourceAllocations) {
@@ -240,8 +244,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 List<ResourcesPerDayModification> allocations) {
             for (ResourcesPerDayModification r : allocations) {
                 if (isZero(r.getGoal().getAmount())) {
-                    throw new IllegalArgumentException(
-                            "all resources per day must be no zero");
+                    // FIXME: Temporal fix for bug 943, log error instead of
+                    // launching exception
+                    LOG.error("all resources per day must be no zero");
                 }
             }
         }
