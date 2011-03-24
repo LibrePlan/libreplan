@@ -406,9 +406,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         setupOverallProgress(saveCommand);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
-        // overallProgressContent = new
-        // OverAllProgressContent(overallProgressTab);
-        // overallProgressContent.refresh();
+        overallProgressContent = new OverAllProgressContent(overallProgressTab);
+        overallProgressContent.refresh();
     }
 
     private Tabpanel createOverallProgressTab(
