@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
@@ -63,6 +65,14 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Task extends TaskElement implements ITaskPositionConstrained {
+
+    private static final Log LOG = LogFactory.getLog(Task.class);
+
+    /**
+     * Maximum number of days in order to looking for calendar capacity (defined
+     * to 5 years)
+     */
+    private static int MAX_DAYS_LOOKING_CAPACITY = 360 * 5;
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
@@ -615,13 +625,23 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 EffortDuration remaining) {
             IntraDayDate result = IntraDayDate.startOfDay(start.getDate());
             remaining = remaining.plus(start.getEffortDuration());
-            LocalDate current = start.getDate();
+            EffortDuration originalRemaining = remaining;
+            LocalDate startDate = start.getDate();
+            LocalDate current = startDate;
             while (!remaining.isZero()) {
                 EffortDuration capacity = calendar.getCapacityOn(PartialDay
                         .wholeDay(current));
                 result = IntraDayDate.create(current, remaining);
                 remaining = remaining.minus(min(capacity, remaining));
                 current = current.plusDays(1);
+                if (Days.daysBetween(startDate, current).getDays() > MAX_DAYS_LOOKING_CAPACITY) {
+                    LOG
+                            .warn("Calendar doesn't have enough capacity in 5 years, "
+                                    + "using 8h per day to calculate end date for the task");
+                    return IntraDayDate.create(startDate
+                            .plusDays(originalRemaining.getHours() / 8),
+                            EffortDuration.zero());
+                }
             }
             return result;
         }
