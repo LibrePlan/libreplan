@@ -113,7 +113,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         editing = false;
         boolean codeGenerated = configurationDAO.getConfiguration()
                 .getGenerateCodeForBaseCalendars();
-        this.baseCalendar = BaseCalendar.create("");
+        this.baseCalendar = BaseCalendar.createBasicCalendar();
 
         if (codeGenerated) {
             setDefaultCode();

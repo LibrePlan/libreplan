@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
@@ -66,6 +67,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public static BaseCalendar create(String code) {
         return create(new BaseCalendar(CalendarData.create()), code);
+    }
+
+    public static BaseCalendar createBasicCalendar() {
+        BaseCalendar calendar = create();
+        Capacity eightHours = Capacity.create(hours(8))
+                .overAssignableWithoutLimit(true);
+        calendar.setCapacityAt(Days.MONDAY, eightHours);
+        calendar.setCapacityAt(Days.TUESDAY, eightHours);
+        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
+        calendar.setCapacityAt(Days.THURSDAY, eightHours);
+        calendar.setCapacityAt(Days.FRIDAY, eightHours);
+        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
+        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
+        return calendar;
     }
 
     public static BaseCalendar createUnvalidated(String code, String name,
