@@ -83,10 +83,14 @@ public class BaseCalendarDAOTest {
     private IResourceDAO resourceDAO;
 
     @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
     private IDataBootstrap calendarBootstrap;
 
     @Before
     public void loadRequiredData() {
+        configurationBootstrap.loadRequiredData();
         calendarBootstrap.loadRequiredData();
     }
 
