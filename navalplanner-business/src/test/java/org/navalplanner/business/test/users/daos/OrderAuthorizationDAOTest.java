@@ -108,7 +108,7 @@ public class OrderAuthorizationDAOTest {
 
     private Order createValidOrder() {
         Order order = Order.create();
-        BaseCalendar baseCalendar = BaseCalendar.create();
+        BaseCalendar baseCalendar = BaseCalendar.createBasicCalendar();
         baseCalendar.setName(UUID.randomUUID().toString());
         baseCalendarDAO.save(baseCalendar);
         order.setCalendar(baseCalendar);

@@ -66,7 +66,7 @@ public class CalendarServiceTest {
     private SessionFactory sessionFactory;
 
     private BaseCalendar givenBaseCalendarStored() {
-        BaseCalendar calendar = BaseCalendar.create();
+        BaseCalendar calendar = BaseCalendar.createBasicCalendar();
         calendar.setName("calendar-name");
 
         baseCalendarDAO.save(calendar);

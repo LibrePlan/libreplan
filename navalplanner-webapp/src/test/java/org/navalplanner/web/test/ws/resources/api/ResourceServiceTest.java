@@ -895,7 +895,7 @@ constraintViolations
 
             @Override
             public BaseCalendar execute() {
-                BaseCalendar baseCalendar = BaseCalendar.create();
+                BaseCalendar baseCalendar = BaseCalendar.createBasicCalendar();
                 baseCalendar.setName(getUniqueName());
                 baseCalendarDAO.save(baseCalendar);
                 return baseCalendar;

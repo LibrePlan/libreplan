@@ -29,6 +29,7 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_T
 import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -197,8 +198,11 @@ public class BaseCalendarServiceTest {
 
         /* Build Base Calendar list. */
         BaseCalendarDTO bc1 = new BaseCalendarDTO(getUniqueName(),
-                getUniqueName(), null, calendarExceptions,
-                new ArrayList<CalendarDataDTO>());
+                getUniqueName(), null, calendarExceptions, Arrays
+                        .asList(new CalendarDataDTO(Arrays
+                                .asList(new HoursPerDayDTO(
+                                        CalendarData.Days.MONDAY.name(),
+                                        new Integer(8))), null, null)));
 
         String codeBaseCalendar = getUniqueName();
         BaseCalendarDTO bc2 = new BaseCalendarDTO(codeBaseCalendar,
