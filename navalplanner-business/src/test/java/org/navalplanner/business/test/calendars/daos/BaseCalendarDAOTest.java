@@ -30,6 +30,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -319,6 +320,14 @@ public class BaseCalendarDAOTest {
 
         baseCalendars = baseCalendarDAO.getBaseCalendars();
         assertThat(baseCalendars.size(), equalTo(previous + 2));
+    }
+
+    @Test(expected = ValidationException.class)
+    public void doNotAllowToSaveCalendarWithZeroHours() {
+        BaseCalendar calendar = BaseCalendar.create("calendar-"
+                + UUID.randomUUID());
+        calendar.setName("calendar-name-" + UUID.randomUUID());
+        baseCalendarDAO.save(calendar);
     }
 
 }
