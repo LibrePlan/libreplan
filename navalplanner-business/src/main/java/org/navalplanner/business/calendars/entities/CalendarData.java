@@ -196,8 +196,15 @@ public class CalendarData extends IntegrationEntity {
     }
 
     boolean isEmptyFor(Days day) {
-        return !isDefault(day) && getCapacityOn(day).isZero() || isDefault(day)
-                && hasParent() && getParent().onlyGivesZeroHours(day);
+        if (isDefault(day)) {
+            if (hasParent()) {
+                return getParent().onlyGivesZeroHours(day);
+            } else {
+                return true;
+            }
+        } else {
+            return getCapacityOn(day).isZero();
+        }
     }
 
     private boolean hasParent() {

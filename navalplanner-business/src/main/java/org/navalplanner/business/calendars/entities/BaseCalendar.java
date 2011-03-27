@@ -808,9 +808,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
-    public boolean onlyGivesZeroHours(Days each) {
-        CalendarData last = lastCalendarData();
-        return last.isEmptyFor(each);
+    public boolean onlyGivesZeroHours(Days day) {
+        for (CalendarData each : calendarDataVersions) {
+            if (!each.isEmptyFor(day)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -1013,6 +1017,18 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     @NotNull(message = "last sequence code not specified")
     public Integer getLastSequenceCode() {
         return lastSequenceCode;
+    }
+
+    @AssertTrue(message = "calendars with zero hours are not allowed")
+    public boolean checkConstraintZeroHours() {
+        if ((calendarDataVersions != null) && (!calendarDataVersions.isEmpty())) {
+            for (CalendarData each : calendarDataVersions) {
+                if (!each.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
