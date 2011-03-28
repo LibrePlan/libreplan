@@ -123,9 +123,9 @@ import org.zkoss.zul.Vbox;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
-    public static final String COLOR_CAPABILITY_LINE = "#000000"; // black
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13";
+    public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FF5A11"; // Red
 
     @Autowired
     private IOrderDAO orderDAO;
