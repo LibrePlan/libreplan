@@ -63,6 +63,7 @@
                                 <label value="${i18n:_('Show progress')}" />
                                 <listbox id="lbTypeProgress"
                                     model="@{configurationController.progressTypes}"
+                                    itemRenderer="@{configurationController.progressTypeRenderer}"
                                     selectedItem="@{configurationController.selectedProgressType}"
                                     mold="select" />
                             </row>
