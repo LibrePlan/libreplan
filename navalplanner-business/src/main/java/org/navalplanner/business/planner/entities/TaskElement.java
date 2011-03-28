@@ -646,4 +646,8 @@ public abstract class TaskElement extends BaseEntity {
         return sumOfHoursAllocated;
     }
 
+    public String toString() {
+        return getName();
+    }
+
 }
