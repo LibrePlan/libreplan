@@ -162,11 +162,10 @@ import org.zkoss.zul.Vbox;
 public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
-
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // Orange
-
-    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#AA80d5"; // Violet
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
+                                                                       // green
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
+    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#98D471"; // Green
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
