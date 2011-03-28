@@ -302,10 +302,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         private void fillSchedulingModes() {
-            schedulingMode.appendChild(createCombo(SchedulingMode.FORWARD,
-                    _("Forward"), _("Schedule from start to deadline")));
-            schedulingMode.appendChild(createCombo(SchedulingMode.BACKWARDS,
-                    _("Backwards"), _("Schedule from the deadline to start")));
+            List options = schedulingMode.getChildren();
+            if (options != null && options.isEmpty()) {
+                schedulingMode.appendChild(createCombo(SchedulingMode.FORWARD,
+                        _("Forward"), _("Schedule from start to deadline")));
+                schedulingMode.appendChild(createCombo(
+                        SchedulingMode.BACKWARDS, _("Backwards"),
+                        _("Schedule from the deadline to start")));
+            }
         }
 
         void chooseCurrentSchedulingMode() {
