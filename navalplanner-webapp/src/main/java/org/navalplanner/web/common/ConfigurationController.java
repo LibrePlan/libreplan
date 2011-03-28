@@ -55,6 +55,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
@@ -71,6 +72,8 @@ import org.zkoss.zul.api.Window;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
+
+    private final ProgressTypeRenderer progressTypeRenderer = new ProgressTypeRenderer();
 
     private Window configurationWindow;
 
@@ -427,6 +430,20 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public Boolean isScenariosVisible() {
         return configurationModel.isScenariosVisible();
+    }
+
+    public ProgressTypeRenderer getProgressTypeRenderer() {
+        return progressTypeRenderer;
+    }
+
+    private class ProgressTypeRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            ProgressType progressType = (ProgressType) data;
+            item.setLabel(_(progressType.getValue()));
+        }
+
     }
 
     public class EntitySequenceGroupRenderer implements RowRenderer {
