@@ -55,6 +55,7 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.SimpleListModel;
@@ -145,9 +146,7 @@ public class CompanyPlanningController implements Composer {
             cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
         }
         cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
-
-        // FIXME: Select default configuration option
-        // cbProgressTypes.renderAll();
+        cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
         cbProgressTypes.invalidate();
         Comboitem item = findListitemValue(cbProgressTypes,
                 getProgressTypeFromConfiguration());
@@ -170,6 +169,15 @@ public class CompanyPlanningController implements Composer {
         });
 
         cbProgressTypes.setVisible(true);
+    }
+
+    private class ProgressTypeRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) throws Exception {
+            ProgressType progressType = (ProgressType) data;
+            item.setLabel(_(progressType.getValue()));
+        }
     }
 
     private Comboitem findListitemValue(Combobox listbox, ProgressType value) {
