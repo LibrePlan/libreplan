@@ -708,60 +708,69 @@ div.z-grid {
 }
 
 /* Legend colors:
-    COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
-    COLOR_CAPABILITY_LINE = "#000000"; // black
-    COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // orange
 
-    COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // green
     COLOR_CAPABILITY_LINE = "#000000"; // black
-    COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // orange
 
-    COLOR_ASSIGNED_LOAD_SPECIFIC = "#aa80d5"; // magenta
-    COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // red
+    COLOR_OVERLOAD = "#FF5A11";            // Red
+    COLOR_OVERLOAD_OTHER = "#FFD4C2";      // Soft red
+
+    COLOR_ASSIGNED_LOAD = "#98D471";       // Green
+    COLOR_ASSIGNED_OTHER = "#E0F3D3";      // Soft green
+
 */
 
 .legend .capability {
-    border-top:solid 2px #000000; /* COLOR_CAPABILITY_LINE */
+    border-top:solid 2px #000000;
     height:7px;
     width:25px;
     margin-right:5px;
 }
 
-.legend .load {
-    background-color: #98D471; /* COLOR_ASSIGNED_LOAD_GLOBAL */
-    height: 10px;
-    width: 25px;
-    margin-bottom: 2px;
-    margin-right: 5px;
-}
-
 .legend .overload {
-    background-color: #FDBE13; /* COLOR_OVERLOAD_GLOBAL */
-    height:10px;
-    width:25px;
-    margin-right:5px;
-}
-
-.legend .overload-order {
-    background-color: #FF5A11; /* COLOR_OVERLOAD_SPECIFIC */
+    background-color: #FF5A11;
     height:10px;
     width:25px;
     margin-right:5px;
 }
 
 .legend .overload-other {
-    background-color: #FDBE13; /* COLOR_OVERLOAD_GLOBAL */
+    background-color: #FFD4C2;
     height:10px;
     width:25px;
     margin-right:5px;
 }
 
-.legend .other {
-    background-color: #AA80d5; /* COLOR_ASSIGNED_LOAD_SPECIFIC */
+.legend .load {
+    background-color: #98D471;
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.legend .load-other {
+    background-color: #E0F3D3;
     height:10px;
     width:25px;
     margin-bottom:2px;
     margin-right:5px;
+}
+
+.legend .full-load {
+    background-color: #FDBE13;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+
+.resources-full-load {
+    display: none;
+}
+
+.resourcesloadlayout .resources-full-load {
+    display: block;
 }
 
 .legend .resourceload {
