@@ -75,6 +75,7 @@ public class AssignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return new ArrayList<WorkReportLineDTO>();
         }
+        orderElementDAO.reattach(orderElement);
         this.assignedDirectHours = 0;
         this.listWRL = workReportLineDAO
                 .findByOrderElementGroupByResourceAndHourTypeAndDate(orderElement);
