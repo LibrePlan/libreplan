@@ -30,7 +30,7 @@
     </hbox>
 
     <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Overload due to current project')}">
-        <n:div class="overload-order"/>
+        <n:div class="overload"/>
         <n:label>${i18n:_('Overload')}</n:label>
     </hbox>
 
@@ -40,12 +40,12 @@
     </hbox>
 
     <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to other assignments')}">
-        <n:div class="load"/>
+        <n:div class="load-other"/>
         <n:label>${i18n:_('External load')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row" tooltiptext="${i18n:_('Load due to current project')}">
-        <n:div class="other" />
+        <n:div class="load" />
         <n:label>${i18n:_('Load')}</n:label>
     </hbox>
 
