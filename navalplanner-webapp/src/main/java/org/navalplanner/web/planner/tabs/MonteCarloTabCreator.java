@@ -33,20 +33,29 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
+import org.jfree.util.Log;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
+import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.common.TemplateModelAdapter;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
+import org.navalplanner.web.common.TemplateModelAdapter;
 import org.navalplanner.web.montecarlo.MonteCarloController;
 import org.navalplanner.web.planner.order.OrderPlanningController;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
@@ -131,7 +140,7 @@ public class MonteCarloTabCreator {
             protected void afterShowAction() {
                 List<TaskElement> criticalPath = orderPlanningController.getCriticalPath();
                 if (criticalPath == null) {
-                    criticalPath = getCriticalPathFor(mode.getOrder());
+                    criticalPath = getCriticalPathFor(mode.getOrder().getId());
                 }
                 monteCarloController.setCriticalPath(criticalPath);
 
@@ -144,39 +153,123 @@ public class MonteCarloTabCreator {
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(mode.getOrder().getName()));
             }
+
         };
     }
 
-    public List<TaskElement> getCriticalPathFor(final Order order) {
+    public List<TaskElement> getCriticalPathFor(final Long orderId) {
 
         IAdHocTransactionService transactionService = Registry.getTransactionService();
 
         return transactionService
                 .runOnTransaction(new IOnTransaction<List<TaskElement>>() {
 
+            /**
+             * Retrieve Order from DB and initialize all data that will
+             * be needed for creating MonteCarloTasks
+             *
+             * monteCarloController.setCriticalPath(criticalPath) won't
+             * open a new Session for initializing proxy objects, that's
+             * why is needed to initialize the proxies at this point
+             *
+             * @param orderId
+             * @return
+             */
             @Override
             public List<TaskElement> execute() {
+                Order order = retrieveFromDB(orderId);
                 initializeOrder(order);
                 return getCriticalPathFor(order);
             }
 
-            private void initializeOrder(Order order) {
-                IOrderDAO orderDAO = Registry.getOrderDAO();
-                orderDAO.reattach(order);
-                useSchedulingDataFor(order);
-                for (TaskElement each: order.getTaskElements()) {
-                    each.getName();
+            private Order retrieveFromDB(Long orderId) {
+                try {
+                    IOrderDAO orderDAO = Registry.getOrderDAO();
+                    return orderDAO.find(orderId);
+                } catch (InstanceNotFoundException e) {
+                    Log.error(e.getMessage());
                 }
-                order.getTaskSource().getTask().getName();
+                return null;
+            }
+
+            private void initializeOrder(Order order) {
+                useSchedulingDataFor(order);
+                initializeTasksInOrder(order);
             }
 
             private void useSchedulingDataFor(Order order) {
+                order.useSchedulingDataFor(getCurrentScenario());
+            }
+
+            private Scenario getCurrentScenario() {
                 IScenarioManager scenarioManager = Registry.getScenarioManager();
-                order.useSchedulingDataFor(scenarioManager.getCurrent());
+                return scenarioManager.getCurrent();
+            }
+
+            private void initializeTasksInOrder(Order root) {
+                initializeTask(root);
+                for (OrderElement each: root.getAllChildren()) {
+                    Hibernate.initialize(each);
+                    initializeTask(each);
+                }
+            }
+
+            private void initializeTask(OrderElement orderElement) {
+                TaskElement task = orderElement.getAssociatedTaskElement();
+                if (task != null) {
+                    ITaskElementDAO taskDAO = Registry.getTaskElementDAO();
+                    taskDAO.reattach(task);
+                    initializeCalendarFor(task);
+                    initializeDependenciesFor(task);
+                }
+            }
+
+            private void initializeCalendarFor(TaskElement task) {
+                BaseCalendar calendar = task.getCalendar();
+                Hibernate.initialize(calendar);
+                initializeCalendarAvailabilities(calendar.getCalendarAvailabilities());
+                initializeCalendarExceptions(calendar.getExceptions());
+                initializeCalendarData(calendar.getCalendarDataVersions());
+            }
+
+            private void initializeCalendarAvailabilities(
+                    List<CalendarAvailability> calendarAvailabilities) {
+                for (CalendarAvailability each: calendarAvailabilities) {
+                    Hibernate.initialize(each);
+                }
+            }
+
+            private void initializeCalendarData(
+                    List<CalendarData> calendarDataVersions) {
+                for (CalendarData each: calendarDataVersions) {
+                    Hibernate.initialize(each);
+                    Hibernate.initialize(each.getHoursPerDay());
+                }
+            }
+
+            private void initializeCalendarExceptions(
+                    Set<CalendarException> exceptions) {
+                for (CalendarException each: exceptions) {
+                    Hibernate.initialize(each);
+                }
+            }
+
+            private void initializeDependenciesFor(TaskElement task) {
+                Set<Dependency> dependencies = task
+                        .getDependenciesWithThisDestination();
+                Hibernate.initialize(dependencies);
+                for (Dependency each : dependencies) {
+                    Hibernate.initialize(each.getOrigin());
+                    Hibernate.initialize(each.getDestination());
+                }
             }
 
             /**
              * Calculate critical path tasks in order
+             *
+             * To calculate the tasks that are in the critical path is
+             * necesary to create an empy graph filled with the tasks
+             * and dependencies of this order
              *
              * @param order
              * @return
@@ -200,11 +293,6 @@ public class MonteCarloTabCreator {
             private LocalDate asLocalDate(Date date) {
                 return date != null ? LocalDate.fromDateFields(date)
                         : null;
-            }
-
-            private Scenario getCurrentScenario() {
-                IScenarioManager scenarioManager = Registry.getScenarioManager();
-                return scenarioManager.getCurrent();
             }
 
             private void addDependencies(
