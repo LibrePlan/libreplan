@@ -629,12 +629,16 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
+        saveAndContinue(true);
+    }
+
+    private void saveAndContinue(boolean showSaveMessage) {
 
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
-        final boolean couldSave = save();
+        final boolean couldSave = save(showSaveMessage);
 
         if (couldSave) {
 
@@ -695,6 +699,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
+        return save(true);
+    }
+
+    private boolean save(boolean showSaveMessage) {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
@@ -727,12 +735,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             orderModel.save();
             saveOrderAuthorizations();
-
-            try {
-                Messagebox.show(_("Project saved"), _("Information"),
-                        Messagebox.OK, Messagebox.INFORMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if (showSaveMessage) {
+                try {
+                    Messagebox.show(_("Project saved"), _("Information"),
+                            Messagebox.OK, Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return true;
         } catch (ValidationException e) {
@@ -1050,7 +1059,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         editNewCreatedOrder();
         // close project details window
         detailsWindow.setVisible(false);
-        saveAndContinue();
+        saveAndContinue(false);
     }
 
     public ProjectDetailsController getCreationPopup() {
