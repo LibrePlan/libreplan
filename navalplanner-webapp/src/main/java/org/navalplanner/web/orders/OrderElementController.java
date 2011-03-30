@@ -36,6 +36,7 @@ import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementCont
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Tab;
@@ -235,35 +236,56 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void back() {
-        closeAll();
-    }
-
-    private void closeAll() {
-        if ((manageOrderElementAdvancesController != null)
-                && (!manageOrderElementAdvancesController.close())) {
-            selectTab("tabAdvances");
-            return;
-        }
-        if ((assignedCriterionRequirementController != null)
-                && (!assignedCriterionRequirementController.close())) {
-            selectTab("tabRequirements");
-            return;
-        }
-        selectTab("tabTaskQualityForm");
-        if ((assignedTaskQualityFormsController != null)
-                && (!assignedTaskQualityFormsController.confirm())) {
-            return;
-        }
         close();
     }
 
     private void close() {
+        validateTabs();
         self.setVisible(false);
         Util.reloadBindings(self.getParent());
     }
 
+    private void validateTabs() {
+        validateProgressTab();
+        validateTaskQualityTab();
+        validateCriterionRequirementsTab();
+    }
+
+    private void validateTaskQualityTab() {
+        try {
+            if (assignedTaskQualityFormsController != null) {
+                assignedTaskQualityFormsController.confirm();
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabTaskQualityForm");
+            throw e;
+        }
+    }
+
+    private void validateCriterionRequirementsTab() {
+        try {
+            if (assignedCriterionRequirementController != null) {
+                assignedCriterionRequirementController.close();
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabRequirements");
+            throw e;
+        }
+    }
+
+    private void validateProgressTab() {
+        try {
+            if (manageOrderElementAdvancesController != null) {
+                manageOrderElementAdvancesController.close();
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabAdvances");
+            throw e;
+        }
+    }
+
     public void close(Event event) {
-        closeAll();
+        close();
         event.stopPropagation();
     }
 
