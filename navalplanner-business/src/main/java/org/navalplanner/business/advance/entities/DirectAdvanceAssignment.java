@@ -137,7 +137,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
 
         AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurement(date)
                 : getLastAdvanceMeasurement();
-        if (advanceMeasurement == null) {
+        if (advanceMeasurement == null || advanceMeasurement.getValue() == null) {
             return BigDecimal.ZERO;
         }
         return advanceMeasurement.getValue().divide(maxValue, 4,
