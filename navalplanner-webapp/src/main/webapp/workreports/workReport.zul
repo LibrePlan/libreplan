@@ -170,8 +170,7 @@
                                     <bandboxSearch id="bandboxSelectOrderElementInHead"
                                         finder="OrderElementBandboxFinder"
                                         model="@{controller.orderElements}"
-                                        selectedElement="@{controller.workReport.orderElement}"
-                                        onSelect="controller.setOrderElementInComponent(event)" />
+                                        selectedElement="@{controller.workReport.orderElement}"/>
                                 </row>
                             </rows>
                         </grid>

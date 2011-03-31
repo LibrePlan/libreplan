@@ -651,6 +651,21 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 getWorkReport().setOrderElement(orderElement);
             }
         });
+
+        bandboxSelectOrderElementInHead.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = bandboxSelectOrderElementInHead
+                                .getSelectedItem();
+                        if ((selectedItem != null) && (getWorkReport() != null)) {
+                            getWorkReport().setOrderElement(
+                                    (OrderElement) selectedItem.getValue());
+                        }
+                        bandboxSelectOrderElementInHead.close();
+                    }
+                });
+
     }
 
     private void loadComponentslist(Component window) {
@@ -914,7 +929,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendOrderElementInLines(Row row) {
         final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
 
-        BandboxSearch bandboxSearch = BandboxSearch.create(
+        final BandboxSearch bandboxSearch = BandboxSearch.create(
                 "OrderElementBandboxFinder", getOrderElements());
 
         bandboxSearch.setSelectedElement(workReportLine.getOrderElement());
@@ -924,15 +939,27 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
-                                .getSelectedItems().iterator().next();
-                        OrderElement orderElement = (OrderElement) selectedItem
-                                .getValue();
-                        workReportLine.setOrderElement(orderElement);
+                        Listitem selectedItem = bandboxSearch.getSelectedItem();
+                        setOrderElementInWRL(selectedItem, workReportLine);
+                    }
+                });
+
+        bandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = bandboxSearch.getSelectedItem();
+                        setOrderElementInWRL(selectedItem, workReportLine);
+                        bandboxSearch.close();
                     }
                 });
 
         row.appendChild(bandboxSearch);
+    }
+
+    private void setOrderElementInWRL(Listitem selectedItem, WorkReportLine line) {
+        OrderElement orderElement = (OrderElement) selectedItem.getValue();
+        line.setOrderElement(orderElement);
     }
 
     private void appendFieldsAndLabelsInLines(final Row row){

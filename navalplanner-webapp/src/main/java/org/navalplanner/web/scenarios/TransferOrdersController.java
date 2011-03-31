@@ -78,23 +78,49 @@ public class TransferOrdersController extends GenericForwardComposer {
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch
-                                .getSelectedElement();
-                        transferOrdersModel.setSourceScenario(sourceScenario);
-                        Util.reloadBindings(sourceScenarioOrders);
+                        setSourceScenario();
                     }
                 });
+
+        sourceScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        setSourceScenario();
+                    }
+                });
+
         destinationScenarioBandboxSearch.setListboxEventListener(
                 Events.ON_CLICK, new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch
-                                .getSelectedElement();
-                        transferOrdersModel
-                                .setDestinationScenario(destinationScenario);
-                        Util.reloadBindings(destinationScenarioOrders);
+                        setDestinationScenario();
                     }
                 });
+
+        destinationScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        setDestinationScenario();
+                    }
+                });
+    }
+
+    private void setSourceScenario() {
+        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch
+                .getSelectedElement();
+        transferOrdersModel.setSourceScenario(sourceScenario);
+        Util.reloadBindings(sourceScenarioOrders);
+        sourceScenarioBandboxSearch.close();
+    }
+
+    private void setDestinationScenario() {
+        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch
+                .getSelectedElement();
+        transferOrdersModel.setDestinationScenario(destinationScenario);
+        Util.reloadBindings(destinationScenarioOrders);
+        destinationScenarioBandboxSearch.close();
     }
 
     public List<Scenario> getScenarios() {
