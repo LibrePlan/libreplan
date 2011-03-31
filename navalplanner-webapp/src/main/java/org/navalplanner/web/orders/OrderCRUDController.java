@@ -980,6 +980,17 @@ public class OrderCRUDController extends GenericForwardComposer {
                         orderModel.setExternalCompany((ExternalCompany) object);
                     }
                 });
+        bdExternalCompanies.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        final Object object = bdExternalCompanies
+                                .getSelectedElement();
+                        orderModel.setExternalCompany((ExternalCompany) object);
+                        bdExternalCompanies.close();
+                    }
+                });
+
     }
 
     public void setupOrderDetails() {

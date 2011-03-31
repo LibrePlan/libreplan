@@ -136,14 +136,15 @@ public class BandboxSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                bandbox.close();
+                close();
             }
         });
         listbox.addEventListener(Events.ON_OK, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                bandbox.close();
+                pickElementFromList();
+                close();
             }
         });
 
@@ -211,8 +212,9 @@ public class BandboxSearch extends HtmlMacroComponent {
         }
     }
 
-    private Listitem getSelectedItem() {
-        return (Listitem) listbox.getSelectedItems().iterator().next();
+    public Listitem getSelectedItem() {
+        return listbox == null ? null : (Listitem) listbox.getSelectedItems()
+                .iterator().next();
     }
 
     public String getFinder() {
@@ -324,4 +326,9 @@ public class BandboxSearch extends HtmlMacroComponent {
         }
     }
 
+    public void close() {
+        if (bandbox != null) {
+            bandbox.close();
+        }
+    }
 }
