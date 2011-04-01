@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.api.Rows;
 
 /**
  * Utility methods to find components
@@ -50,6 +53,20 @@ public class ComponentsFinder {
         for (Component child : children) {
             if (child.getId().equals(id)) {
                 return child;
+            }
+        }
+        return null;
+    }
+
+    public static Row findRowByValue(Grid grid, Object needle) {
+        Rows rows = grid.getRows();
+        for (Object each : rows.getChildren()) {
+            if (each instanceof Row) {
+                Row row = (Row) each;
+                Object value = row.getValue();
+                if (needle.equals(value)) {
+                    return row;
+                }
             }
         }
         return null;

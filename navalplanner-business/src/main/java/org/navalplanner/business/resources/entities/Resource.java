@@ -51,6 +51,7 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -1082,14 +1083,11 @@ public abstract class Resource extends IntegrationEntity {
          * Check if time intervals in cost assignments are correct in isolation.
          * If not, it does not make sense to check assignment overlapping.
          */
-        for (ResourcesCostCategoryAssignment i :
-            getResourcesCostCategoryAssignments()) {
-
-            if (!(i.isInitDateSpecified() &&
-                  i.checkConstraintPositiveTimeInterval())) {
+        for (ResourcesCostCategoryAssignment each : getResourcesCostCategoryAssignments()) {
+            if (!(each.isInitDateSpecified() && each
+                    .checkConstraintPositiveTimeInterval())) {
                 return false;
             }
-
         }
 
         /*
@@ -1098,28 +1096,11 @@ public abstract class Resource extends IntegrationEntity {
         List<ResourcesCostCategoryAssignment> assignmentsList =
             new ArrayList<ResourcesCostCategoryAssignment>();
         assignmentsList.addAll(getResourcesCostCategoryAssignments());
-        for(int i=0; i<assignmentsList.size(); i++) {
-            LocalDate initDate = assignmentsList.get(i).getInitDate();
-            LocalDate endDate = assignmentsList.get(i).getEndDate();
-            for(int j=i+1; j<assignmentsList.size(); j++) {
-                ResourcesCostCategoryAssignment listElement = assignmentsList.get(j);
-                if (endDate == null && listElement.getEndDate() == null) {
-                    return true;
-                }
-                else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
-                        (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
-                    return true;
-                }
-                else if((endDate != null && listElement.getEndDate() != null) &&
-                        ((listElement.getEndDate().compareTo(initDate)>=0 && //  (1) listElement.getEndDate() inside [initDate, endDate]
-                          listElement.getEndDate().compareTo(endDate)<=0) ||
-                         (listElement.getInitDate().compareTo(initDate)>=0 && // (2) listElement.getInitDate() inside [initDate, endDate]
-                          listElement.getInitDate().compareTo(endDate)<=0) ||
-                         (listElement.getInitDate().compareTo(initDate)<=0 && // (3) [listElement.getInitDate(), listElement.getEndDate()]
-                          listElement.getEndDate().compareTo(endDate)>=0))) { //     contains [initDate, endDate]
-                    return true;
-                }
-            }
+
+        try {
+            CostCategory.checkOverlapping(assignmentsList);
+        } catch (ValidationException e) {
+            return true;
         }
         return false;
 
