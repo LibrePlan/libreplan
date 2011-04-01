@@ -196,11 +196,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public boolean save() {
         validateConstraints();
+
+        // Validate 'Cost category assignment' tab is correct
+        if (resourcesCostCategoryAssignmentController != null) {
+            if (!resourcesCostCategoryAssignmentController.validate()) {
+                return false;
+            }
+        }
+
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
             }
-            if(criterionsController != null){
+            if (criterionsController != null){
                 if(!criterionsController.validate()){
                     return false;
                 }

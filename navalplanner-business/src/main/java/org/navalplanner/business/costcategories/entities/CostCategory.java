@@ -21,6 +21,8 @@
 
 package org.navalplanner.business.costcategories.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
@@ -37,6 +40,7 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 
 /**
@@ -243,4 +247,50 @@ public class CostCategory extends IntegrationEntity {
     public Integer getLastHourCostSequenceCode() {
         return lastHourCostSequenceCode;
     }
+
+    public static void checkOverlapping(
+            List<ResourcesCostCategoryAssignment> costCategoryAssignments) {
+
+        for (int i = 0; i < costCategoryAssignments.size(); i++) {
+            LocalDate initDate = costCategoryAssignments.get(i).getInitDate();
+            LocalDate endDate = costCategoryAssignments.get(i).getEndDate();
+            for (int j = i + 1; j < costCategoryAssignments.size(); j++) {
+                ResourcesCostCategoryAssignment costCategory = costCategoryAssignments
+                        .get(j);
+                if (endDate == null && costCategory.getEndDate() == null) {
+                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
+                } else if ((endDate == null && costCategory.getEndDate()
+                        .compareTo(initDate) >= 0)
+                        || (costCategory.getEndDate() == null && costCategory
+                                .getInitDate().compareTo(endDate) <= 0)) {
+                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
+                } else if ((endDate != null && costCategory.getEndDate() != null)
+                        && ((costCategory.getEndDate().compareTo(initDate) >= 0 && // (1)
+                                                                                   // listElement.getEndDate()
+                                                                                   // inside
+                                                                                   // [initDate,
+                                                                                   // endDate]
+                        costCategory.getEndDate().compareTo(endDate) <= 0)
+                                || (costCategory.getInitDate().compareTo(
+                                        initDate) >= 0 && // (2)
+                                                          // listElement.getInitDate()
+                                                          // inside [initDate,
+                                                          // endDate]
+                                costCategory.getInitDate().compareTo(endDate) <= 0) || (costCategory
+                                .getInitDate().compareTo(initDate) <= 0 && // (3)
+                                                                           // [listElement.getInitDate(),
+                                                                           // listElement.getEndDate()]
+                        costCategory.getEndDate().compareTo(endDate) >= 0))) { // contains
+                                                                               // [initDate,
+                                                                               // endDate]
+                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
+                }
+            }
+        }
+    }
+
+    private static InvalidValue invalidValue(String message, ResourcesCostCategoryAssignment each) {
+        return new InvalidValue(message, null, "", each, null);
+    }
+
 }

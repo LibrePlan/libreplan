@@ -69,6 +69,10 @@ public class ValidationException extends RuntimeException {
         return invalidValues.clone();
     }
 
+    public InvalidValue getInvalidValue() {
+        return (invalidValues.length > 0) ? invalidValues.clone()[0] : null;
+    }
+
     public ValidationException(InvalidValue invalidValue) {
         super(getValidationErrorSummary(invalidValue));
         storeInvalidValues(toArray(invalidValue));

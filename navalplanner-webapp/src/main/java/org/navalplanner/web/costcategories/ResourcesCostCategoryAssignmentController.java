@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.Resource;
@@ -38,7 +40,9 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -318,4 +322,25 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     public void validateConstraints() {
         ConstraintChecker.isValid(self);
     }
+
+    /**
+     * Check there are not category assignment overlaps
+     *
+     * @return
+     */
+    public boolean validate() {
+        List<ResourcesCostCategoryAssignment> costCategoryAssignments = resourcesCostCategoryAssignmentModel
+                .getCostCategoryAssignments();
+        try {
+            CostCategory.checkOverlapping(costCategoryAssignments);
+        } catch (ValidationException e) {
+            InvalidValue invalidValue = e.getInvalidValue();
+            Component comp = ComponentsFinder.findRowByValue(
+                    listResourcesCostCategoryAssignments,
+                    invalidValue.getValue());
+            throw new WrongValueException(comp, invalidValue.getMessage());
+        }
+        return true;
+    }
+
 }
