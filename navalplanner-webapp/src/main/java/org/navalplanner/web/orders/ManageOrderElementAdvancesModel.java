@@ -147,7 +147,7 @@ public class ManageOrderElementAdvancesModel implements
     public void refreshChangesFromOrderElement() {
         List<AdvanceAssignment> listAdvanceAssignmentsCopy = new ArrayList<AdvanceAssignment>(
                 listAdvanceAssignments);
-        fillVariables();
+        fillAdvanceAssignmentList();
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
             if ((!listAdvanceAssignments.contains(advance))
                     && (advance instanceof DirectAdvanceAssignment)
@@ -224,7 +224,7 @@ public class ManageOrderElementAdvancesModel implements
             loadAdvanceTypes();
             reattachmentOrderElement();
             forceLoadAdvanceAssignmentsAndMeasurements();
-            fillVariables();
+            fillAdvanceAssignmentList();
         }
     }
 
@@ -264,17 +264,16 @@ public class ManageOrderElementAdvancesModel implements
         orderElementDAO.reattach(orderElement);
     }
 
-    private void fillVariables() {
-        this.listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
+    private void fillAdvanceAssignmentList() {
+        listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
 
-        for (DirectAdvanceAssignment each : this.orderElement
+        for (DirectAdvanceAssignment each : orderElement
                 .getDirectAdvanceAssignments()) {
-            this.listAdvanceAssignments.add(each);
+            listAdvanceAssignments.add(each);
         }
-
         for (IndirectAdvanceAssignment each : orderElement
                 .getIndirectAdvanceAssignments()) {
-                this.listAdvanceAssignments.add(each);
+            listAdvanceAssignments.add(each);
         }
     }
 
