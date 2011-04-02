@@ -279,26 +279,28 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public boolean addNewLineAdvaceAssignment() {
+    public boolean addNewLineAdvanceAssignment() {
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
-        newAdvance.setOrderElement(this.orderElement);
+        newAdvance.setOrderElement(orderElement);
 
-        /*
-         * set the first advance type of the list as the default
-         */
+        // Set first advance type of the list as default
         List<AdvanceType> listAdvanceType = getPossibleAdvanceTypes(newAdvance);
-        if (!listAdvanceType.isEmpty()) {
-            newAdvance.setAdvanceType(listAdvanceType.get(0));
-            newAdvance.setMaxValue(getMaxValue(listAdvanceType.get(0)));
-        } else {
+        if (listAdvanceType.isEmpty()) {
             return false;
         }
 
-        if (listAdvanceAssignments.isEmpty()) {
-            newAdvance.setReportGlobalAdvance(true);
-        }
+        // Create new progress type and add it to list
+        final AdvanceType progressType = first(listAdvanceType);
+        newAdvance.setAdvanceType(progressType);
+        newAdvance.setMaxValue(getMaxValue(progressType));
+        newAdvance.setReportGlobalAdvance(listAdvanceAssignments.isEmpty());
         listAdvanceAssignments.add(newAdvance);
+
         return true;
+    }
+
+    private AdvanceType first(List<AdvanceType> listAdvanceType) {
+        return listAdvanceType.get(0);
     }
 
     @Override

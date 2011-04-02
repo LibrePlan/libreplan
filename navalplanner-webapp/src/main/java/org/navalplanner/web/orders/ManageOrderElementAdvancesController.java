@@ -267,7 +267,7 @@ public class ManageOrderElementAdvancesController extends
     public void goToCreateLineAdvanceAssignment() {
         findErrorsInMeasurements();
         boolean fineResult = manageOrderElementAdvancesModel
-                .addNewLineAdvaceAssignment();
+                .addNewLineAdvanceAssignment();
         if (fineResult) {
             int position = getAdvanceAssignments().size() - 1;
             selectAdvanceLine(position);
