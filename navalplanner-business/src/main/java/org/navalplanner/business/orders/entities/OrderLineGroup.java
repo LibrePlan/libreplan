@@ -536,9 +536,9 @@ public class OrderLineGroup extends OrderElement implements
             next2 = null;
         }
 
-        BigDecimal previous1 = new BigDecimal(0);
-        BigDecimal previous2 = new BigDecimal(0);
-        BigDecimal previousResult = new BigDecimal(0);
+        BigDecimal previous1 = BigDecimal.ZERO;
+        BigDecimal previous2 = BigDecimal.ZERO;
+        BigDecimal previousResult = BigDecimal.ZERO;
 
         LocalDate date;
         BigDecimal add;

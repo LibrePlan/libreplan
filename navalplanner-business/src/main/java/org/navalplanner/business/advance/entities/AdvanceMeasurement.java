@@ -94,7 +94,7 @@ public class AdvanceMeasurement extends BaseEntity {
 
     @NotNull(message = "value not specified")
     public BigDecimal getValue() {
-        return this.value;
+        return value != null ? value : BigDecimal.ZERO;
     }
 
     public void setAdvanceAssignment(AdvanceAssignment advanceAssignment) {
