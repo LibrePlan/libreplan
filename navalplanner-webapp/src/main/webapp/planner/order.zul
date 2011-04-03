@@ -55,8 +55,7 @@
             title="${advanceAssignmentController.title}"
             width="950px"
             visible="false"
-            closable="true"
-            onClose="self.visible = false; event.stopPropagation();" >
+            closable="true" >
 
         <vbox id="messagesAdvanceAssignmentContainer" />
 

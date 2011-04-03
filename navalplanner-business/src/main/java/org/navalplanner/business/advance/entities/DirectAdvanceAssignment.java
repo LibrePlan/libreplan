@@ -161,6 +161,15 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
+    public void removeAdvanceMeasurements(
+            Set<AdvanceMeasurement> advanceMeasurements) {
+        for (AdvanceMeasurement each: advanceMeasurements) {
+            each.setAdvanceAssignment(null);
+        }
+        this.advanceMeasurements.removeAll(advanceMeasurements);
+        getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
+    }
+
     public void clearAdvanceMeasurements() {
         this.advanceMeasurements.clear();
         if (getOrderElement() != null) {

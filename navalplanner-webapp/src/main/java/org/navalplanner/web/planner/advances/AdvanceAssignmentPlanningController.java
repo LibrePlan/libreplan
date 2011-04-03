@@ -38,6 +38,7 @@ import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -98,7 +99,13 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         manageOrderElementAdvancesController.openWindow(orderElement);
     }
 
+    public void onClose(Event event) {
+        cancel();
+        event.stopPropagation();
+    }
+
     public void cancel() {
+        manageOrderElementAdvancesController.cancel();
         advanceAssignmentPlanningModel.cancel();
         close();
     }

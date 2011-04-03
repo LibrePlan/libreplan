@@ -118,4 +118,7 @@ public interface IManageOrderElementAdvancesModel {
     void createPercentageAdvances(OrderElement orderElement)
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException;
+
+    void cancel();
+
 }
