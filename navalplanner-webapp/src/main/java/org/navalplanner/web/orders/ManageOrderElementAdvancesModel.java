@@ -278,6 +278,30 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
+    public void cancel() {
+        for (AdvanceAssignment each : listAdvanceAssignments) {
+            if (each instanceof DirectAdvanceAssignment) {
+                DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
+                Set<AdvanceMeasurement> advanceMeasurements = getNewAdvanceMeasurementsFor(directAdvanceAssignment);
+                directAdvanceAssignment
+                        .removeAdvanceMeasurements(advanceMeasurements);
+            }
+        }
+    }
+
+    private Set<AdvanceMeasurement> getNewAdvanceMeasurementsFor(
+            DirectAdvanceAssignment directAdvanceAssignment) {
+        Set<AdvanceMeasurement> result = new HashSet<AdvanceMeasurement>();
+        for (AdvanceMeasurement each : directAdvanceAssignment
+                .getAdvanceMeasurements()) {
+            if (each.getId() == null) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean addNewLineAdvanceAssignment() {
         DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
         newAdvance.setOrderElement(orderElement);
@@ -761,7 +785,6 @@ public class ManageOrderElementAdvancesModel implements
                 types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
             }
 
-            orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
                     orderElement, types);
 
