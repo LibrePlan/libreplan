@@ -176,6 +176,7 @@ public class CompanyPlanningController implements Composer {
         @Override
         public void render(Comboitem item, Object data) throws Exception {
             ProgressType progressType = (ProgressType) data;
+            item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));
         }
     }
