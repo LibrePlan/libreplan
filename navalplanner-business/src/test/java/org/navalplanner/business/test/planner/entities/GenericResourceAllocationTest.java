@@ -505,7 +505,7 @@ public class GenericResourceAllocationTest {
         assertThat(assignmentsWorker1, haveHours(3, 3, 3, 3));
         List<GenericDayAssignment> assignmentsWorker2 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker2);
-        assertThat(assignmentsWorker2, haveHours(0, 0, 0, 0));
+        assertThat(assignmentsWorker2, haveHours());
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
         assertThat(assignmentsWorker3, haveHours(5, 5, 5, 5));
@@ -559,7 +559,7 @@ public class GenericResourceAllocationTest {
         assertThat(assignmentsWorker2, haveHours(4, 4, 4, 4));
         List<GenericDayAssignment> assignmentsWorker3 = genericResourceAllocation
                 .getOrderedAssignmentsFor(worker3);
-        assertThat(assignmentsWorker3, haveHours(0, 0, 0, 0));
+        assertThat(assignmentsWorker3, haveHours());
     }
 
     private void givenVirtualWorkerWithCapacity(int capacity) {
