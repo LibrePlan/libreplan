@@ -788,6 +788,7 @@ public class ManageOrderElementAdvancesModel implements
                 types.add(PredefinedAdvancedTypes.CHILDREN.getTypeName());
             }
 
+            orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
                     orderElement, types);
 
