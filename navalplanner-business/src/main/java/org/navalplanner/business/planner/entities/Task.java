@@ -692,25 +692,30 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private void reassign(Scenario onScenario, Direction direction,
             AllocationModificationStrategy strategy) {
-        this.lastAllocationDirection = direction;
-        if (isLimiting()) {
-            return;
-        }
-        List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                getResourceAlloations());
-        List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
-                .modified(copied);
-        if (toBeModified.isEmpty()) {
-            return;
-        }
-        doAllocation(strategy, direction, toBeModified);
-        updateDerived(copied);
+        try {
+            this.lastAllocationDirection = direction;
+            if (isLimiting()) {
+                return;
+            }
+            List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
+                    getResourceAlloations());
+            List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
+                    .modified(copied);
+            if (toBeModified.isEmpty()) {
+                return;
+            }
+            doAllocation(strategy, direction, toBeModified);
+            updateDerived(copied);
 
-        List<ResourceAllocation<?>> newAllocations = emptyList(),
-        modifiedAllocations = emptyList();
-        mergeAllocation(onScenario, getIntraDayStartDate(),
-                getIntraDayEndDate(), workableDays, calculatedValue,
-                newAllocations, copied, modifiedAllocations);
+            List<ResourceAllocation<?>> newAllocations = emptyList(),
+            modifiedAllocations = emptyList();
+            mergeAllocation(onScenario, getIntraDayStartDate(),
+                    getIntraDayEndDate(), workableDays, calculatedValue,
+                    newAllocations, copied, modifiedAllocations);
+        } catch (Exception e) {
+            LOG.error("reassignment for task: " + this
+                    + " couldn't be completed", e);
+        }
     }
 
     private void doAllocation(AllocationModificationStrategy strategy,
