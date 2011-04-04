@@ -245,9 +245,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 List<ResourcesPerDayModification> allocations) {
             for (ResourcesPerDayModification r : allocations) {
                 if (isZero(r.getGoal().getAmount())) {
-                    // FIXME: Temporal fix for bug 943, log error instead of
-                    // launching exception
-                    LOG.error("all resources per day must be no zero");
+                    throw new IllegalArgumentException(
+                            "all resources per day must be no zero");
                 }
             }
         }
