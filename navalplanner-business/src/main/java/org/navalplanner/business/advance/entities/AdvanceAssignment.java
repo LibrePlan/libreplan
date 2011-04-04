@@ -76,26 +76,19 @@ public abstract class AdvanceAssignment extends BaseEntity {
         return this.advanceType;
     }
 
-    public void changeAdvanceTypeInParents(AdvanceType oldType,
+    public void changeAdvanceTypeInParents(final AdvanceType oldType,
             AdvanceType newType, AdvanceAssignment advance) {
         if (getOrderElement() != null) {
             OrderLineGroup parent = getOrderElement().getParent();
-            while (parent != null) {
-
+            if (parent != null) {
                 IndirectAdvanceAssignment oldIndirect = parent
                         .getIndirectAdvanceAssignment(oldType);
                 if (oldIndirect != null) {
                     parent.removeIndirectAdvanceAssignment(oldType);
-                }
-
-                if (!parent
-                        .existsIndirectAdvanceAssignmentWithTheSameType(newType)) {
                     IndirectAdvanceAssignment newIndirect = advance
                             .createIndirectAdvanceFor(parent);
                     parent.addIndirectAdvanceAssignment(newIndirect);
                 }
-
-                parent = parent.getParent();
             }
         }
     }
