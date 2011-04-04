@@ -1071,11 +1071,11 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: date, value
-        assertThat(constraintViolations.size(), equalTo(2));
+        // Mandatory fields: date
+        assertThat(constraintViolations.size(), equalTo(1));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date"),
-                    mustEnd("value")));
+            System.out.println("### constraintViolationDTO.fieldName: " + constraintViolationDTO.fieldName);
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date")));
         }
 
         try {
