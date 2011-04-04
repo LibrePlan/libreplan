@@ -722,6 +722,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             Direction direction, List<ResourceAllocation<?>> toBeModified) {
         List<ResourcesPerDayModification> allocations = strategy
                 .getResourcesPerDayModified(toBeModified);
+        if (allocations.isEmpty()) {
+            LOG.warn("all allocations for task " + this
+                    + " have no valid data that could be used");
+            return;
+        }
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
             ResourceAllocation.allocating(allocations).allocateOnTaskLength();
