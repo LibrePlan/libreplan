@@ -244,12 +244,6 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public ResourcesPerDayModification asResourcesPerDayModification() {
-        return ResourcesPerDayModification.create(this,
-                getIntendedResourcesPerDay());
-    }
-
-    @Override
     public HoursModification asHoursModification() {
         return HoursModification.create(this, getIntendedHours());
     }

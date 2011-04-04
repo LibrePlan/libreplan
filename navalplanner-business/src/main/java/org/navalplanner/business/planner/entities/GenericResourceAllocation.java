@@ -285,12 +285,6 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public ResourcesPerDayModification asResourcesPerDayModification() {
-        return ResourcesPerDayModification.create(this,
-                getIntendedResourcesPerDay(), getAssociatedResources());
-    }
-
-    @Override
     public HoursModification asHoursModification() {
         return HoursModification.create(this, getIntendedHours(),
                 getAssociatedResources());

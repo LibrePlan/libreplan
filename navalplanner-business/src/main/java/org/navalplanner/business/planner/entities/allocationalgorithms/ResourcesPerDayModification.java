@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -198,8 +199,9 @@ public abstract class ResourcesPerDayModification extends
     public static ResourcesPerDayModification create(
             GenericResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay, List<? extends Resource> resources) {
-        return new OnGenericAllocation(resourceAllocation,
-                resourcesPerDay, resources);
+        Validate.isTrue(!resourcesPerDay.isZero());
+        return new OnGenericAllocation(resourceAllocation, resourcesPerDay,
+                resources);
     }
 
     public static List<ResourcesPerDayModification> withNewResources(
@@ -215,6 +217,7 @@ public abstract class ResourcesPerDayModification extends
     public static ResourcesPerDayModification create(
             SpecificResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay) {
+        Validate.isTrue(!resourcesPerDay.isZero());
         return new OnSpecificAllocation(resourceAllocation,
                 resourcesPerDay, Collections.singletonList(resourceAllocation
                         .getResource()));
@@ -225,7 +228,11 @@ public abstract class ResourcesPerDayModification extends
             IResourceDAO resourcesDAO) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
-            result.add(resourceAllocation.asResourcesPerDayModification());
+            ResourcesPerDayModification modification = resourceAllocation
+                    .asResourcesPerDayModification();
+            if (modification != null) {
+                result.add(modification);
+            }
         }
         return ensureNoOneWithoutAssociatedResources(result, resourcesDAO);
     }

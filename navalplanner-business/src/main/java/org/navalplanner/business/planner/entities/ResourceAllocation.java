@@ -594,7 +594,21 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     public abstract ResourcesPerDayModification withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay);
 
-    public abstract ResourcesPerDayModification asResourcesPerDayModification();
+    public final ResourcesPerDayModification asResourcesPerDayModification() {
+        if (getIntendedResourcesPerDay().isZero()) {
+            return null;
+        }
+        if (this instanceof GenericResourceAllocation) {
+            GenericResourceAllocation generic = (GenericResourceAllocation) this;
+            return ResourcesPerDayModification.create(generic,
+                    getIntendedResourcesPerDay(), getAssociatedResources());
+        } else if (this instanceof SpecificResourceAllocation) {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) this;
+            return ResourcesPerDayModification.create(specific,
+                    getIntendedResourcesPerDay());
+        }
+        throw new RuntimeException("can't handle: " + this.getClass());
+    }
 
     public abstract HoursModification asHoursModification();
 
