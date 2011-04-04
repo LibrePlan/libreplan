@@ -240,18 +240,17 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     private void close() {
-        validateTabs();
-        self.setVisible(false);
-        Util.reloadBindings(self.getParent());
+        if (validateTabs()) {
+            self.setVisible(false);
+            Util.reloadBindings(self.getParent());
+        }
     }
 
-    private void validateTabs() {
-        validateProgressTab();
-        validateTaskQualityTab();
-        validateCriterionRequirementsTab();
+    private boolean validateTabs() {
+        return (validateProgressTab() && validateTaskQualityTab() && validateCriterionRequirementsTab());
     }
 
-    private void validateTaskQualityTab() {
+    private boolean validateTaskQualityTab() {
         try {
             if (assignedTaskQualityFormsController != null) {
                 assignedTaskQualityFormsController.confirm();
@@ -260,9 +259,10 @@ public class OrderElementController extends GenericForwardComposer {
             selectTab("tabTaskQualityForm");
             throw e;
         }
+        return true;
     }
 
-    private void validateCriterionRequirementsTab() {
+    private boolean validateCriterionRequirementsTab() {
         try {
             if (assignedCriterionRequirementController != null) {
                 assignedCriterionRequirementController.close();
@@ -271,17 +271,20 @@ public class OrderElementController extends GenericForwardComposer {
             selectTab("tabRequirements");
             throw e;
         }
+        return true;
     }
 
-    private void validateProgressTab() {
+    private boolean validateProgressTab() {
         try {
-            if (manageOrderElementAdvancesController != null) {
-                manageOrderElementAdvancesController.close();
+            if ((manageOrderElementAdvancesController != null) && (!manageOrderElementAdvancesController.close())){
+                selectTab("tabAdvances");
+                return false;
             }
         } catch (WrongValueException e) {
             selectTab("tabAdvances");
             throw e;
         }
+        return true;
     }
 
     public void close(Event event) {
