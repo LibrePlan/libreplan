@@ -37,7 +37,6 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -282,12 +281,6 @@ public class GenericResourceAllocation extends
         allocation.assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
                 this);
         return allocation;
-    }
-
-    @Override
-    public HoursModification asHoursModification() {
-        return HoursModification.create(this, getIntendedHours(),
-                getAssociatedResources());
     }
 
     @Override

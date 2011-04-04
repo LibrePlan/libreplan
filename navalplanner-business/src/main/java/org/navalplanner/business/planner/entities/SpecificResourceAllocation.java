@@ -40,7 +40,6 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interva
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -241,11 +240,6 @@ public class SpecificResourceAllocation extends
         SpecificResourceAllocation result = create(getTask());
         result.resource = getResource();
         return result;
-    }
-
-    @Override
-    public HoursModification asHoursModification() {
-        return HoursModification.create(this, getIntendedHours());
     }
 
     @Override

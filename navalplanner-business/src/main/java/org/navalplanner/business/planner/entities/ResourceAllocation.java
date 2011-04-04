@@ -601,6 +601,27 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return originalTotalAssignment;
     }
 
+    public interface IVisitor<T> {
+
+        T on(SpecificResourceAllocation specificAllocation);
+
+        T on(GenericResourceAllocation genericAllocation);
+    }
+
+    public static <T> T visit(ResourceAllocation<?> allocation,
+            IVisitor<T> visitor) {
+        Validate.notNull(allocation);
+        Validate.notNull(visitor);
+        if (allocation instanceof GenericResourceAllocation) {
+            GenericResourceAllocation generic = (GenericResourceAllocation) allocation;
+            return visitor.on(generic);
+        } else if (allocation instanceof SpecificResourceAllocation) {
+            SpecificResourceAllocation specific = (SpecificResourceAllocation) allocation;
+            return visitor.on(specific);
+        }
+        throw new RuntimeException("can't handle: " + allocation.getClass());
+    }
+
     public abstract ResourcesPerDayModification withDesiredResourcesPerDay(
             ResourcesPerDay resourcesPerDay);
 
@@ -608,19 +629,40 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         if (getIntendedResourcesPerDay().isZero()) {
             return null;
         }
-        if (this instanceof GenericResourceAllocation) {
-            GenericResourceAllocation generic = (GenericResourceAllocation) this;
-            return ResourcesPerDayModification.create(generic,
-                    getIntendedResourcesPerDay(), getAssociatedResources());
-        } else if (this instanceof SpecificResourceAllocation) {
-            SpecificResourceAllocation specific = (SpecificResourceAllocation) this;
-            return ResourcesPerDayModification.create(specific,
-                    getIntendedResourcesPerDay());
-        }
-        throw new RuntimeException("can't handle: " + this.getClass());
+        return visit(this, new IVisitor<ResourcesPerDayModification>() {
+
+            @Override
+            public ResourcesPerDayModification on(
+                    SpecificResourceAllocation specificAllocation) {
+                return ResourcesPerDayModification.create(specificAllocation,
+                        getIntendedResourcesPerDay());
+            }
+
+            @Override
+            public ResourcesPerDayModification on(
+                    GenericResourceAllocation genericAllocation) {
+                return ResourcesPerDayModification.create(genericAllocation,
+                        getIntendedResourcesPerDay(), getAssociatedResources());
+            }
+        });
     }
 
-    public abstract HoursModification asHoursModification();
+    public final HoursModification asHoursModification(){
+        return visit(this, new IVisitor<HoursModification>() {
+
+            @Override
+            public HoursModification on(GenericResourceAllocation genericAllocation) {
+                return HoursModification.create(genericAllocation, getIntendedHours(),
+                        getAssociatedResources());
+            }
+
+            @Override
+            public HoursModification on(SpecificResourceAllocation specificAllocation) {
+                return HoursModification.create(specificAllocation,
+                        getIntendedHours());
+            }
+        });
+    }
 
     public abstract IAllocatable withPreviousAssociatedResources();
 
