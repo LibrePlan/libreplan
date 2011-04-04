@@ -322,6 +322,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         IntraDayDate resultDate,
                         ResourcesPerDay resourcesPerDay, List<T> dayAssignments) {
                     Task task = AllocationsSpecified.this.task;
+                    allocation.setIntendedResourcesPerDay(resourcesPerDay);
                     if (isForwardScheduling()) {
                         allocation.resetAllAllocationAssignmentsTo(
                                 dayAssignments,
@@ -528,6 +529,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected void updateResourcesPerDay() {
+        if (!isSatisfied()) {
+            return;
+        }
         ResourcesPerDay resourcesPerDay = calculateResourcesPerDayFromAssignments(getAssignments());
         if (resourcesPerDay == null) {
             this.resourcesPerDay = ResourcesPerDay.amount(0);
@@ -538,6 +542,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     protected void setResourcesPerDayToAmount(int amount) {
         this.resourcesPerDay = ResourcesPerDay.amount(amount);
+    }
+
+    private void setIntendedResourcesPerDay(ResourcesPerDay resourcesPerDay) {
+        Validate.notNull(resourcesPerDay);
+        Validate.isTrue(!resourcesPerDay.isZero());
+        this.resourcesPerDay = resourcesPerDay;
     }
 
     public ResourceAllocation(Task task) {
@@ -629,6 +639,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public final void allocate(ResourcesPerDay resourcesPerDay) {
             Task currentTask = getTask();
+            setIntendedResourcesPerDay(resourcesPerDay);
             List<T> assignmentsCreated = createAssignments(resourcesPerDay,
                     currentTask.getIntraDayStartDate(),
                     currentTask.getIntraDayEndDate());
@@ -645,7 +656,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 assignmentsCreated.addAll(distributeForDay(day.getDate(),
                         durationForDay));
             }
-            return assignmentsCreated;
+            return onlyNonZeroHours(assignmentsCreated);
         }
 
         @Override
