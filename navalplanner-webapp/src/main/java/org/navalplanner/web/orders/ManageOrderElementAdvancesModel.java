@@ -362,6 +362,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void removeLineAdvanceAssignment(AdvanceAssignment advance) {
+        advance.setOrderElement(null);
         this.listAdvanceAssignments.remove(advance);
         orderElement.removeAdvanceAssignment(advance);
         this.advanceAssignment = null;
@@ -685,21 +686,24 @@ public class ManageOrderElementAdvancesModel implements
             } else {
                 directAdvanceAssignment = calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) each);
             }
-            String title = getInfoAdvanceAssignment(directAdvanceAssignment);
-            SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment
-                    .getAdvanceMeasurements();
-            if (listAdvanceMeasurements.size() > 1) {
-                for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
-                    BigDecimal value = advanceMeasurement.getValue();
-                    if ((selectedAdvances.size() > 1) && (value != null)) {
-                        BigDecimal maxValue = directAdvanceAssignment
-                                .getMaxValue();
-                        value = value.divide(maxValue, RoundingMode.DOWN);
-                    }
-                    LocalDate date = advanceMeasurement.getDate();
-                    if ((value != null) && (date != null)) {
-                        xymodel.addValue(title, Long.valueOf(date
-                                .toDateTimeAtStartOfDay().getMillis()), value);
+            if (directAdvanceAssignment != null) {
+                String title = getInfoAdvanceAssignment(directAdvanceAssignment);
+                SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment
+                        .getAdvanceMeasurements();
+                if (listAdvanceMeasurements.size() > 1) {
+                    for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
+                        BigDecimal value = advanceMeasurement.getValue();
+                        if ((selectedAdvances.size() > 1) && (value != null)) {
+                            BigDecimal maxValue = directAdvanceAssignment
+                                    .getMaxValue();
+                            value = value.divide(maxValue, RoundingMode.DOWN);
+                        }
+                        LocalDate date = advanceMeasurement.getDate();
+                        if ((value != null) && (date != null)) {
+                            xymodel.addValue(title, Long.valueOf(date
+                                    .toDateTimeAtStartOfDay().getMillis()),
+                                    value);
+                        }
                     }
                 }
             }

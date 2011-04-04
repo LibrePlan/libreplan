@@ -697,15 +697,13 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
-                .getDirectAdvanceAssignments()) {
-            if (AdvanceType.equivalentInDB(directAdvanceAssignment
-                    .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
+        if (orderElement
+                .existsDirectAdvanceAssignmentWithTheSameType(newAdvanceAssignment
+                        .getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
                         _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
-            }
         }
         if (!orderElement.getChildren().isEmpty()) {
             for (OrderElement child : orderElement.getChildren()) {
@@ -713,6 +711,16 @@ public abstract class OrderElement extends IntegrationEntity implements
                         newAdvanceAssignment);
             }
         }
+    }
+
+    public boolean existsDirectAdvanceAssignmentWithTheSameType(AdvanceType type) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (AdvanceType.equivalentInDB(directAdvanceAssignment
+                    .getAdvanceType(), type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public BigDecimal getAdvancePercentage() {
