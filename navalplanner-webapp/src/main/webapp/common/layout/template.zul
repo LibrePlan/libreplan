@@ -104,12 +104,7 @@
     <borderlayout width="auto" height="100%">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
-        <n:div>
-        <vbox pack="center" align="center" width="90px" height="30px">
-            <label class="perspectives-label">${i18n:_('Perspectives')}</label>
-        </vbox>
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
-        </n:div>
     </west>
 
     <center self="@{insert(content)}"  class="main-area"/>

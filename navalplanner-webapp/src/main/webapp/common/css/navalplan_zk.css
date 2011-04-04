@@ -94,6 +94,11 @@ body .advancedallocationlayout .icono .z-button-cm {
 
 /* Perspective and planner buttons
 --------------------------------------------------- */
+.perspectives-column {
+    padding-top:8px;
+    overflow-y: auto;
+    border-right:0;
+}
 
 .planner-icon, .planner-command {
    padding: 2px;
