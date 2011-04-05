@@ -143,6 +143,12 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
                 RoundingMode.DOWN);
     }
 
+    public void addAdvanceMeasurements(Set<AdvanceMeasurement> measurements) {
+        for (AdvanceMeasurement each: measurements) {
+            addAdvanceMeasurements(each);
+        }
+    }
+
     public boolean addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
         boolean result = this.advanceMeasurements.add(advanceMeasurement);
         if (result) {
@@ -155,7 +161,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return result;
     }
 
-    public void removeAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+    public void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement) {
         this.advanceMeasurements.remove(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(null);
         getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
