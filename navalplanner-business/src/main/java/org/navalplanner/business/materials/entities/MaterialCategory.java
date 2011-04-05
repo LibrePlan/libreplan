@@ -145,6 +145,7 @@ public class MaterialCategory extends IntegrationEntity {
     }
 
     public void removeMaterial(Material material) {
+        material.setCategory(null);
         materials.remove(material);
     }
 
