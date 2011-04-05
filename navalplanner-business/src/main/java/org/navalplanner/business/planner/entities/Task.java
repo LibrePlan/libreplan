@@ -39,6 +39,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
@@ -60,6 +61,7 @@ import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -628,6 +630,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             EffortDuration originalRemaining = remaining;
             LocalDate startDate = start.getDate();
             LocalDate current = startDate;
+            if (!canBeFulfilled(start, originalRemaining)) {
+                return roughApproximationDueToNotFullfilingCalendar(startDate,
+                        originalRemaining);
+            }
             while (!remaining.isZero()) {
                 EffortDuration capacity = calendar.getCapacityOn(PartialDay
                         .wholeDay(current));
@@ -635,15 +641,33 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 remaining = remaining.minus(min(capacity, remaining));
                 current = current.plusDays(1);
                 if (Days.daysBetween(startDate, current).getDays() > MAX_DAYS_LOOKING_CAPACITY) {
-                    LOG
-                            .warn("Calendar doesn't have enough capacity in 5 years, "
-                                    + "using 8h per day to calculate end date for the task");
-                    return IntraDayDate.create(startDate
-                            .plusDays(originalRemaining.getHours() / 8),
-                            EffortDuration.zero());
+                    LOG.error("thereAreCapacityFor didn't detect that it didn't"
+                            + " really have enough capacity to fulfill the required hours"
+                            + " or this capacity is more than "
+                            + MAX_DAYS_LOOKING_CAPACITY + " in the future");
+                    return roughApproximationDueToNotFullfilingCalendar(
+                            startDate, originalRemaining);
                 }
             }
             return result;
+        }
+
+        private boolean canBeFulfilled(IntraDayDate start,
+                EffortDuration originalRemaining) {
+            AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+            availability.invalidUntil(start.getDate());
+            return calendar.thereAreCapacityFor(availability,
+                    ResourcesPerDay.amount(1), originalRemaining);
+        }
+
+        private IntraDayDate roughApproximationDueToNotFullfilingCalendar(
+                LocalDate startDate,
+                EffortDuration originalRemaining) {
+            LOG.warn("Calendar " + calendar + " doesn't have enough capacity, "
+                    + "using 8h per day to calculate end date for the task");
+            return IntraDayDate.create(
+                    startDate.plusDays(originalRemaining.getHours() / 8),
+                    EffortDuration.zero());
         }
 
         public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
