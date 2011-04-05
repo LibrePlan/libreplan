@@ -29,9 +29,11 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -64,9 +66,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
+
 /**
  * Service to manage the advance of a selected order element
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -91,6 +96,8 @@ public class ManageOrderElementAdvancesModel implements
     private List<AdvanceAssignment> listAdvanceAssignments;
 
     private List<AdvanceType> listAdvanceTypes;
+
+    private CancelOperation cancelOperation = new CancelOperation();
 
     @Autowired
     public ManageOrderElementAdvancesModel(
@@ -279,26 +286,7 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public void cancel() {
-        for (AdvanceAssignment each : listAdvanceAssignments) {
-            if (each instanceof DirectAdvanceAssignment) {
-                DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
-                Set<AdvanceMeasurement> advanceMeasurements = getNewAdvanceMeasurementsFor(directAdvanceAssignment);
-                directAdvanceAssignment
-                        .removeAdvanceMeasurements(advanceMeasurements);
-            }
-        }
-    }
-
-    private Set<AdvanceMeasurement> getNewAdvanceMeasurementsFor(
-            DirectAdvanceAssignment directAdvanceAssignment) {
-        Set<AdvanceMeasurement> result = new HashSet<AdvanceMeasurement>();
-        for (AdvanceMeasurement each : directAdvanceAssignment
-                .getAdvanceMeasurements()) {
-            if (each.getId() == null) {
-                result.add(each);
-            }
-        }
-        return result;
+        cancelOperation.restoreOriginalState();
     }
 
     @Override
@@ -346,18 +334,27 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public AdvanceMeasurement addNewLineAdvaceMeasurement() {
-        if (this.advanceAssignment != null) {
-            AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
-            newMeasurement.setDate(new LocalDate());
-            newMeasurement.setAdvanceAssignment(this.advanceAssignment);
-            if (!this.advanceAssignment.addAdvanceMeasurements(
-                    newMeasurement)) {
-                newMeasurement.setDate(null);
-                this.advanceAssignment.addAdvanceMeasurements(newMeasurement);
-            }
+        if (advanceAssignment != null) {
+            AdvanceMeasurement newMeasurement = createMeasurement();
+            addMeasurement(advanceAssignment, newMeasurement);
             return newMeasurement;
         }
         return null;
+    }
+
+    private AdvanceMeasurement createMeasurement() {
+        AdvanceMeasurement result = AdvanceMeasurement.create();
+        result.setDate(new LocalDate());
+        result.setAdvanceAssignment(advanceAssignment);
+        return result;
+    }
+
+    private void addMeasurement(AdvanceAssignment assignment, AdvanceMeasurement measurement) {
+        if (!advanceAssignment.addAdvanceMeasurements(measurement)) {
+            measurement.setDate(null);
+            advanceAssignment.addAdvanceMeasurements(measurement);
+        }
+        cancelOperation.markAsAdded(measurement);
     }
 
     @Override
@@ -369,8 +366,9 @@ public class ManageOrderElementAdvancesModel implements
     }
 
     @Override
-    public void removeLineAdvanceMeasurement(AdvanceMeasurement advance) {
-        this.advanceAssignment.removeAdvanceMeasurements(advance);
+    public void removeLineAdvanceMeasurement(AdvanceMeasurement measurement) {
+        cancelOperation.markAsRemoved(measurement);
+        this.advanceAssignment.removeAdvanceMeasurement(measurement);
     }
 
     @Override
@@ -475,6 +473,7 @@ public class ManageOrderElementAdvancesModel implements
         orderElementDAO.checkVersion(orderElement);
         reattachmentOrderElement();
         validateBasicData();
+        cancelOperation.clear();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
@@ -838,6 +837,80 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
         return false;
+    }
+
+    /**
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *      Keeps track of added and removed measurements. When the cancel button is
+     *      pressed, restores the original state of the advance assignments
+     *
+     */
+    private class CancelOperation {
+
+        private Set<AdvanceMeasurement> addedMeasurements = new HashSet<AdvanceMeasurement>();
+
+        private Map<AdvanceAssignment, Set<AdvanceMeasurement>> removedMeasurements = new HashMap<AdvanceAssignment, Set<AdvanceMeasurement>>();
+
+        public void restoreOriginalState() {
+            removeAddedMeasurements();
+            addRemovedMeasurements();
+            clear();
+        }
+
+        private void clear() {
+            addedMeasurements.clear();
+            removedMeasurements.clear();
+        }
+
+        private void removeAddedMeasurements() {
+            for (AdvanceAssignment each : removedMeasurements.keySet()) {
+                if (each instanceof DirectAdvanceAssignment) {
+                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
+                    directAdvanceAssignment
+                            .addAdvanceMeasurements(removedMeasurements
+                                    .get(each));
+                }
+            }
+            removedMeasurements.clear();
+        }
+
+        private void addRemovedMeasurements() {
+            for (AdvanceMeasurement each : addedMeasurements) {
+                AdvanceAssignment assignment = each.getAdvanceAssignment();
+                if (assignment instanceof DirectAdvanceAssignment) {
+                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) assignment;
+                    directAdvanceAssignment.removeAdvanceMeasurement(each);
+                }
+            }
+            addedMeasurements.clear();
+        }
+
+        /**
+         * Keeps track of new measurement added to {@link AdvanceAssignment}. If
+         * the user later clicks cancel these elements will be removed
+         *
+         * @param measurement
+         */
+        public void markAsAdded(AdvanceMeasurement measurement) {
+            addedMeasurements.add(measurement);
+        }
+
+        /**
+         * Keeps track of measurement removed from {@link AdvanceAssignment}. If
+         * the user later clicks cancel these elements will be added back again
+         *
+         * @param measurement
+         */
+        public void markAsRemoved(AdvanceMeasurement measurement) {
+            AdvanceAssignment assignment = measurement.getAdvanceAssignment();
+            if (!removedMeasurements.containsKey(assignment)) {
+                removedMeasurements.put(assignment, new HashSet<AdvanceMeasurement>());
+            }
+            Set<AdvanceMeasurement> measurements = removedMeasurements.get(assignment);
+            measurements.add(measurement);
+        }
+
     }
 
 }
