@@ -35,18 +35,22 @@
                 <label value="@{typeOfWorkHours.name}" />
                 <label value="@{typeOfWorkHours.defaultPrice}" />
                 <checkbox checked="@{typeOfWorkHours.enabled}" disabled="true" />
+                <!-- Buttons for each row -->
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
                         hoverImage="/common/img/ico_editar.png"
                         tooltiptext="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.parent.parent.value);">
-                    </button>
+                        onClick="controller.goToEditForm(self.parent.parent.value);" />
 
+                    <button sclass="icono" image="/common/img/ico_borrar1.png"
+                        hoverImage="/common/img/ico_borrar.png"
+                        tooltiptext="${i18n:_('Delete')}"
+                        onClick="controller.confirmDelete(self.parent.parent.value);" />
                 </hbox>
             </row>
         </rows>
     </newdatasortablegrid>
+
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="${i18n:_('Create')}" sclass="create-button global-action" >
-    </button>
+        label="${i18n:_('Create')}" sclass="create-button global-action" />
 </window>

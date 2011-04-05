@@ -21,15 +21,20 @@
 
 package org.navalplanner.business.costcategories.daos;
 
+import java.util.Collection;
+
+import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -47,4 +52,14 @@ public class HourCostDAO extends IntegrationEntityDAO<HourCost> implements
         }
         super.remove(id);
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Collection<HourCost> hoursCostsByTypeOfWorkHour(
+            TypeOfWorkHours typeOfWorkHours) {
+        return getSession().createCriteria(HourCost.class)
+            .add(Restrictions.eq("type", typeOfWorkHours))
+            .list();
+    }
+
 }

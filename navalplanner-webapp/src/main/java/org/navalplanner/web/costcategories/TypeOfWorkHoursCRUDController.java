@@ -26,6 +26,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -34,10 +35,12 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -48,6 +51,9 @@ import org.zkoss.zul.api.Window;
 @SuppressWarnings("serial")
 public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implements
         ITypeOfWorkHoursCRUDController {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(TypeOfWorkHoursCRUDController.class);
 
     private Window createWindow;
 
@@ -61,11 +67,14 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
 
     private Component messagesContainer;
 
+    private NewDataSortableGrid listing;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        listing = (NewDataSortableGrid) listWindow.getFellowIfAny("listing");
         getVisibility().showOnly(listWindow);
     }
 
@@ -147,6 +156,42 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
             }
         }
         Util.reloadBindings(createWindow);
+    }
+
+    public void confirmDelete(TypeOfWorkHours typeOfWorkHours) {
+        boolean canDelete = existsCostCategoriesUsing(typeOfWorkHours);
+        if (!canDelete) {
+            showCannotDeleteWorkHoursTypeDialog(typeOfWorkHours);
+            return;
+        }
+        int result = showConfirmDeleteWorkHoursType(typeOfWorkHours);
+        if (result == Messagebox.OK) {
+            typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
+            Util.reloadBindings(listing);
+        }
+    }
+
+    private int showConfirmDeleteWorkHoursType(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            return Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
+        }
+        return Messagebox.CANCEL;
+    }
+
+    private boolean existsCostCategoriesUsing(TypeOfWorkHours typeOfWorkHours) {
+        return typeOfWorkHoursModel.existsCostCategoriesUsing(typeOfWorkHours);
+    }
+
+    private void showCannotDeleteWorkHoursTypeDialog(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            Messagebox.show(_("Cannot delete type of work hours. It is being used at this moment in some cost category."),
+                    _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on showing warning message removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
+        }
     }
 
 }
