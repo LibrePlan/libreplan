@@ -31,21 +31,28 @@ import org.navalplanner.web.common.IIntegrationEntityModel;
  * Model for UI operations related to {@link TypeOfWorkHours}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface ITypeOfWorkHoursModel extends IIntegrationEntityModel {
 
-    /**
-     * Makes some operations needed before edit a {@link TypeOfWorkHours}.
-     *
-     * @param typeOfWorkHours
-     *            The object to be edited
-     */
-    void initEdit(TypeOfWorkHours typeOfWorkHours);
+    void confirmRemove(TypeOfWorkHours typeOfWorkHours);
 
     /**
-     * Makes some operations needed before create a new {@link TypeOfWorkHours}.
+     * Stores the current {@link WorkReport}.
+     *
+     * @throws ValidationException
+     *             If validation fails
      */
-    void initCreate();
+    void confirmSave() throws ValidationException;
+
+    boolean existsCostCategoriesUsing(TypeOfWorkHours typeOfWorkHours);
+
+    /**
+     * Gets the current {@link TypeOfWorkHours}.
+     *
+     * @return A {@link TypeOfWorkHours}
+     */
+    TypeOfWorkHours getTypeOfWorkHours();
 
     /**
      * Get all {@link TypeOfWorkHours} elements
@@ -55,18 +62,16 @@ public interface ITypeOfWorkHoursModel extends IIntegrationEntityModel {
     List<TypeOfWorkHours> getTypesOfWorkHours();
 
     /**
-     * Gets the current {@link TypeOfWorkHours}.
-     *
-     * @return A {@link TypeOfWorkHours}
+     * Makes some operations needed before create a new {@link TypeOfWorkHours}.
      */
-    TypeOfWorkHours getTypeOfWorkHours();
+    void initCreate();
 
-	/**
-	 * Stores the current {@link WorkReport}.
-	 *
-	 * @throws ValidationException
-	 *             If validation fails
-	 */
-	void confirmSave() throws ValidationException;
+    /**
+     * Makes some operations needed before edit a {@link TypeOfWorkHours}.
+     *
+     * @param typeOfWorkHours
+     *            The object to be edited
+     */
+    void initEdit(TypeOfWorkHours typeOfWorkHours);
 
 }
