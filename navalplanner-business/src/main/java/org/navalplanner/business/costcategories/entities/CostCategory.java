@@ -31,7 +31,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertFalse;
 import org.hibernate.validator.AssertTrue;
-import org.hibernate.validator.InvalidValue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
@@ -139,6 +138,47 @@ public class CostCategory extends IntegrationEntity {
                                         _("Two hour costs with the same type overlap in time"),
                                         listElement);
                     }
+                }
+            }
+        }
+    }
+
+    public static void checkOverlapping(
+            List<ResourcesCostCategoryAssignment> costCategoryAssignments) {
+
+        for (int i = 0; i < costCategoryAssignments.size(); i++) {
+            LocalDate initDate = costCategoryAssignments.get(i).getInitDate();
+            LocalDate endDate = costCategoryAssignments.get(i).getEndDate();
+            for (int j = i + 1; j < costCategoryAssignments.size(); j++) {
+                ResourcesCostCategoryAssignment costCategory = costCategoryAssignments
+                        .get(j);
+                if (endDate == null && costCategory.getEndDate() == null) {
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
+                } else if ((endDate == null && costCategory.getEndDate()
+                        .compareTo(initDate) >= 0)
+                        || (costCategory.getEndDate() == null && costCategory
+                                .getInitDate().compareTo(endDate) <= 0)) {
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
+                } else if ((endDate != null && costCategory.getEndDate() != null)
+                        && ((costCategory.getEndDate().compareTo(initDate) >= 0 && // (1)
+                                                                                   // listElement.getEndDate()
+                                                                                   // inside
+                                                                                   // [initDate,
+                                                                                   // endDate]
+                        costCategory.getEndDate().compareTo(endDate) <= 0)
+                                || (costCategory.getInitDate().compareTo(
+                                        initDate) >= 0 && // (2)
+                                                          // listElement.getInitDate()
+                                                          // inside [initDate,
+                                                          // endDate]
+                                costCategory.getInitDate().compareTo(endDate) <= 0) || (costCategory
+                                .getInitDate().compareTo(initDate) <= 0 && // (3)
+                                                                           // [listElement.getInitDate(),
+                                                                           // listElement.getEndDate()]
+                        costCategory.getEndDate().compareTo(endDate) >= 0))) { // contains
+                                                                               // [initDate,
+                                                                               // endDate]
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
                 }
             }
         }
@@ -269,51 +309,6 @@ public class CostCategory extends IntegrationEntity {
     @NotNull(message = "last hours cost sequence code not specified")
     public Integer getLastHourCostSequenceCode() {
         return lastHourCostSequenceCode;
-    }
-
-    public static void checkOverlapping(
-            List<ResourcesCostCategoryAssignment> costCategoryAssignments) {
-
-        for (int i = 0; i < costCategoryAssignments.size(); i++) {
-            LocalDate initDate = costCategoryAssignments.get(i).getInitDate();
-            LocalDate endDate = costCategoryAssignments.get(i).getEndDate();
-            for (int j = i + 1; j < costCategoryAssignments.size(); j++) {
-                ResourcesCostCategoryAssignment costCategory = costCategoryAssignments
-                        .get(j);
-                if (endDate == null && costCategory.getEndDate() == null) {
-                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
-                } else if ((endDate == null && costCategory.getEndDate()
-                        .compareTo(initDate) >= 0)
-                        || (costCategory.getEndDate() == null && costCategory
-                                .getInitDate().compareTo(endDate) <= 0)) {
-                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
-                } else if ((endDate != null && costCategory.getEndDate() != null)
-                        && ((costCategory.getEndDate().compareTo(initDate) >= 0 && // (1)
-                                                                                   // listElement.getEndDate()
-                                                                                   // inside
-                                                                                   // [initDate,
-                                                                                   // endDate]
-                        costCategory.getEndDate().compareTo(endDate) <= 0)
-                                || (costCategory.getInitDate().compareTo(
-                                        initDate) >= 0 && // (2)
-                                                          // listElement.getInitDate()
-                                                          // inside [initDate,
-                                                          // endDate]
-                                costCategory.getInitDate().compareTo(endDate) <= 0) || (costCategory
-                                .getInitDate().compareTo(initDate) <= 0 && // (3)
-                                                                           // [listElement.getInitDate(),
-                                                                           // listElement.getEndDate()]
-                        costCategory.getEndDate().compareTo(endDate) >= 0))) { // contains
-                                                                               // [initDate,
-                                                                               // endDate]
-                    throw new ValidationException(invalidValue(_("Some cost category assignments overlap in time"), costCategory));
-                }
-            }
-        }
-    }
-
-    private static InvalidValue invalidValue(String message, ResourcesCostCategoryAssignment each) {
-        return new InvalidValue(message, null, "", each, null);
     }
 
 }
