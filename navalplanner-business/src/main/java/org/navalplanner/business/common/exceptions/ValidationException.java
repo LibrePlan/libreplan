@@ -28,6 +28,7 @@ import org.navalplanner.business.common.BaseEntity;
 /**
  * Encapsulates some validation failure <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class ValidationException extends RuntimeException {
 
@@ -61,6 +62,12 @@ public class ValidationException extends RuntimeException {
                     + entity.getExtraInformation();
         }
         return bean.toString();
+    }
+
+    public static ValidationException invalidValue(String message, Object value) {
+        InvalidValue invalidValue = new InvalidValue(message, null, "", value,
+                null);
+        return new ValidationException(invalidValue);
     }
 
     private InvalidValue[] invalidValues;

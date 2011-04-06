@@ -34,6 +34,7 @@ import org.navalplanner.web.common.IIntegrationEntityModel;
  * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface ICostCategoryModel extends IIntegrationEntityModel {
 
@@ -62,4 +63,7 @@ public interface ICostCategoryModel extends IIntegrationEntityModel {
         throws InstanceNotFoundException;
 
     boolean canRemoveCostCategory(CostCategory category);
+
+    void validateHourCostsOverlap() throws ValidationException;
+
 }
