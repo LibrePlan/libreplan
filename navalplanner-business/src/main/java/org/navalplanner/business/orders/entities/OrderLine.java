@@ -38,7 +38,6 @@ import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
-import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
 public class OrderLine extends OrderElement {
@@ -113,12 +112,6 @@ public class OrderLine extends OrderElement {
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
 
-        // copy the criterion requirements to container
-        copyRequirementToOrderElement(result);
-
-        // removed the direct criterion requirements
-        removeAllDirectCriterionRequirement();
-
         if (getName() != null) {
             this.setName(getName() + " (copy)");
         }
@@ -131,14 +124,6 @@ public class OrderLine extends OrderElement {
         this.setExternalCode(null);
 
         return result;
-    }
-
-    private void removeAllDirectCriterionRequirement() {
-        Set<DirectCriterionRequirement> directRequirements = new HashSet<DirectCriterionRequirement>(
-                getDirectCriterionRequirement());
-        for (DirectCriterionRequirement requirement : directRequirements) {
-            removeDirectCriterionRequirement(requirement);
-        }
     }
 
     @Valid
@@ -247,11 +232,6 @@ public class OrderLine extends OrderElement {
         return criterionRequirementHandler
                 .existSameCriterionRequirementIntoOrderLine(this,
                 newRequirement);
-    }
-
-    protected void copyRequirementToOrderElement(OrderLineGroup container) {
-        criterionRequirementHandler.copyRequirementToOrderLineGroup(this,
-                container);
     }
 
     @Override
