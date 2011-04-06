@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
+import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -44,7 +45,9 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -67,6 +70,7 @@ import org.zkoss.zul.api.Window;
  * Controller for CRUD actions over a {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
 public class CostCategoryCRUDController extends GenericForwardComposer
@@ -163,18 +167,34 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     public boolean save() {
-        if(!ConstraintChecker.isValid(createWindow)) {
+        if (!ConstraintChecker.isValid(createWindow)) {
             return false;
         }
+
+        try {
+            costCategoryModel.validateHourCostsOverlap();
+        } catch (ValidationException e) {
+            showHoursCostsOverlapValidationException(e);
+        }
+
         try {
             costCategoryModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Cost category saved"));
+            messagesForUser.showMessage(Level.INFO, _("Cost category saved"));
             return true;
         } catch (ValidationException e) {
+            e.getInvalidValue().getValue();
             messagesForUser.showInvalidValues(e);
         }
         return false;
+    }
+
+    private void showHoursCostsOverlapValidationException(ValidationException e) {
+        InvalidValue invalid = e.getInvalidValue();
+        Row comp = ComponentsFinder.findRowByValue(listHourCosts,
+                invalid.getValue());
+        if (comp != null) {
+            throw new WrongValueException(comp, invalid.getMessage());
+        }
     }
 
     public CostCategory getCostCategory() {

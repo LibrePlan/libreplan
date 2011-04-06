@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -179,5 +180,10 @@ public class CostCategoryModel extends IntegrationEntityModel implements
 
     public IntegrationEntity getCurrentEntity() {
         return this.costCategory;
+    }
+
+    @Override
+    public void validateHourCostsOverlap() throws ValidationException {
+        CostCategory.validateHourCostsOverlap(getCostCategory().getHourCosts());
     }
 }
