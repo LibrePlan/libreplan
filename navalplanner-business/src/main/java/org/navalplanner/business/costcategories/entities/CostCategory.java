@@ -143,7 +143,7 @@ public class CostCategory extends IntegrationEntity {
         }
     }
 
-    public static void checkOverlapping(
+    public static void validateCostCategoryOverlapping(
             List<ResourcesCostCategoryAssignment> costCategoryAssignments) {
 
         for (int i = 0; i < costCategoryAssignments.size(); i++) {

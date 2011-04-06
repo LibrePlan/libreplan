@@ -1095,7 +1095,7 @@ public abstract class Resource extends IntegrationEntity {
         assignmentsList.addAll(getResourcesCostCategoryAssignments());
 
         try {
-            CostCategory.checkOverlapping(assignmentsList);
+            CostCategory.validateCostCategoryOverlapping(assignmentsList);
         } catch (ValidationException e) {
             return true;
         }
