@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.InvalidValue;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -44,10 +43,9 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.util.ValidationExceptionPrinter;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
-import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -174,7 +172,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         try {
             costCategoryModel.validateHourCostsOverlap();
         } catch (ValidationException e) {
-            showHoursCostsOverlapValidationException(e);
+            ValidationExceptionPrinter.showAt(listHourCosts, e);
         }
 
         try {
@@ -186,15 +184,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             messagesForUser.showInvalidValues(e);
         }
         return false;
-    }
-
-    private void showHoursCostsOverlapValidationException(ValidationException e) {
-        InvalidValue invalid = e.getInvalidValue();
-        Row comp = ComponentsFinder.findRowByValue(listHourCosts,
-                invalid.getValue());
-        if (comp != null) {
-            throw new WrongValueException(comp, invalid.getMessage());
-        }
     }
 
     public CostCategory getCostCategory() {
