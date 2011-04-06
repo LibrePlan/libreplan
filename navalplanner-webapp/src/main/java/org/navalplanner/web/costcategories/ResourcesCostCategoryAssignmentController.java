@@ -331,7 +331,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         List<ResourcesCostCategoryAssignment> costCategoryAssignments = resourcesCostCategoryAssignmentModel
                 .getCostCategoryAssignments();
         try {
-            CostCategory.checkOverlapping(costCategoryAssignments);
+            CostCategory.validateCostCategoryOverlapping(costCategoryAssignments);
         } catch (ValidationException e) {
             InvalidValue invalidValue = e.getInvalidValue();
             Component comp = ComponentsFinder.findRowByValue(
