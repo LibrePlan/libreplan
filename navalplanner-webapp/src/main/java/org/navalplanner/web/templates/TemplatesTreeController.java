@@ -41,7 +41,6 @@ import org.zkoss.zul.Treeitem;
 /**
  * Controller for template element tree <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
- * @author Diego Pino García <dpino@igalia.com>
  */
 public class TemplatesTreeController extends
         TreeController<OrderElementTemplate> {
@@ -59,6 +58,10 @@ public class TemplatesTreeController extends
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {
             addCell(createEditButton(currentElement),
+                    createDownButton(item, currentElement),
+                    createUpButton(item, currentElement),
+                    createUnindentButton(item, currentElement),
+                    createIndentButton(item, currentElement),
                     createRemoveButton(currentElement));
         }
 
@@ -245,52 +248,6 @@ public class TemplatesTreeController extends
                 }
             }
         };
-    }
-
-    /**
-     * Operations for a node
-     */
-
-    public void editSelectedNode() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            orderTemplatesController.showEditionFor(node);
-        }
-    }
-
-    public void moveSelectedNodeDown() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            down(node);
-        }
-    }
-
-    public void moveSelectedNodeUp() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            up(node);
-        }
-    }
-
-    public void unindentSelectedNode() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            unindent(node);
-        }
-    }
-
-    public void indentSelectedNode() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            indent(node);
-        }
-    }
-
-    public void deleteSelectedNode() {
-        OrderElementTemplate node = getSelectedNode();
-        if (node != null) {
-            remove(node);
-        }
     }
 
 }
