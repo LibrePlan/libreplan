@@ -78,6 +78,15 @@ public class TemplatesTreeComponent extends TreeComponent {
         result.add(schedulingStateColumn);
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
+        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addHoursCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(
                 _("Must start after (days since beginning project)"),
                 "estimated_init") {
@@ -86,15 +95,6 @@ public class TemplatesTreeComponent extends TreeComponent {
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addInitCell(currentElement);
-            }
-
-        });
-        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
             }
 
         });
