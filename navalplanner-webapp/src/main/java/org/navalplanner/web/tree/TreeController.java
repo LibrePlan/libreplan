@@ -99,7 +99,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
     }
 
-    protected void indent(T element) {
+    public void indent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
         filterByPredicateIfAny();
@@ -123,7 +123,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
     }
 
-    protected void unindent(T element) {
+    public void unindent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
         filterByPredicateIfAny();
@@ -154,8 +154,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         filterByPredicateIfAny();
     }
 
-    protected T getSelectedNode() {
-        return type.cast(tree.getSelectedItemApi().getValue());
+    public T getSelectedNode() {
+        Treeitem item = tree.getSelectedItem();
+        if (item != null) {
+            Object value = item.getValue();
+            return value != null ? type.cast(value) : null;
+        }
+        return null;
     }
 
     public void move(Component dropedIn, Component dragged) {
@@ -287,7 +292,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         filterByPredicateIfAny();
     }
 
-    protected void remove(T element) {
+    public void remove(T element) {
         List<T> parentNodes = getModel().getParents(element);
         getModel().removeNode(element);
         getRenderer().refreshHoursValueForNodes(parentNodes);
@@ -1018,7 +1023,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected Set<Treecell> cellsMarkedAsModified = new HashSet<Treecell>();
 
-    protected void markModifiedTreeitem(Treerow item) {
+    public void markModifiedTreeitem(Treerow item) {
         Treecell tc = (Treecell) item.getFirstChild();
         // Check if marked label has been previously added
         if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {
