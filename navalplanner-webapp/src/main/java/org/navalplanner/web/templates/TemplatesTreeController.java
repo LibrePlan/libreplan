@@ -31,11 +31,13 @@ import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.Setter;
 import org.navalplanner.web.tree.EntitiesTree;
 import org.navalplanner.web.tree.TreeController;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 
 /**
@@ -48,6 +50,14 @@ public class TemplatesTreeController extends
     private final IOrderTemplatesModel model;
 
     private final OrderTemplatesController orderTemplatesController;
+
+    private TemplateElementOperations operationsForOrderTemplate;
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+        operationsForOrderTemplate.tree(tree);
+    }
 
     final class TemplatesTreeRenderer extends Renderer {
 
@@ -72,11 +82,15 @@ public class TemplatesTreeController extends
                     new EventListener() {
                         @Override
                         public void onEvent(Event event) throws Exception {
-                            orderTemplatesController
-                                    .showEditionFor(currentTemplate);
+                            Treeitem item = getTreeitem(event.getTarget());
+                            operationsForOrderTemplate.showEditElement(item);
                         }
                     });
             return result;
+        }
+
+        private Treeitem getTreeitem(Component comp) {
+            return (Treeitem) comp.getParent().getParent().getParent();
         }
 
         @Override
@@ -176,6 +190,17 @@ public class TemplatesTreeController extends
         super(OrderElementTemplate.class);
         this.model = model;
         this.orderTemplatesController = orderTemplatesController;
+        initializeOperationsForOrderTemplate();
+    }
+
+    /**
+     * Initializes operationsForOrderTemplate. A reference to variable tree is
+     * needed to be added later in doAfterCompose()
+     */
+    private void initializeOperationsForOrderTemplate() {
+        operationsForOrderTemplate = TemplateElementOperations.build()
+            .treeController(this)
+            .orderTemplatesController(this.orderTemplatesController);
     }
 
     @Override
@@ -248,6 +273,45 @@ public class TemplatesTreeController extends
                 }
             }
         };
+    }
+
+    public void refreshRow(Treeitem item) {
+        try {
+            OrderElementTemplate orderElement = (OrderElementTemplate) item
+                    .getValue();
+            getRenderer().updateHoursFor(orderElement);
+            getRenderer().render(item, orderElement);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Operations for a node
+     */
+
+    public void editSelectedElement() {
+        operationsForOrderTemplate.editSelectedElement();
+    }
+
+    public void moveSelectedElementDown() {
+        operationsForOrderTemplate.moveSelectedElementDown();
+    }
+
+    public void moveSelectedElementUp() {
+        operationsForOrderTemplate.moveSelectedElementUp();
+    }
+
+    public void unindentSelectedElement() {
+        operationsForOrderTemplate.unindentSelectedElement();
+    }
+
+    public void indentSelectedElement() {
+        operationsForOrderTemplate.indentSelectedElement();
+    }
+
+    public void deleteSelectedElement() {
+        operationsForOrderTemplate.deleteSelectedElement();
     }
 
 }

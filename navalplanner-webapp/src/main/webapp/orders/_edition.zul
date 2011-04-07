@@ -58,7 +58,7 @@
         </tabs>
         <tabpanels>
             <tabpanel sclass="orderelements-tab">
-                <orderElementTree id="orderElementTree"/>
+                <orderElementTree id="orderElementTree" showCreateTemplateButton="true" />
             </tabpanel>
             <tabpanel id="tabPanelGeneralData" fulfill="tabGeneralData.onSelect">
                 <grid fixedLayout="true">

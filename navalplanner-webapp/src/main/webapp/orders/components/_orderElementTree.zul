@@ -44,31 +44,32 @@
             <label value="${i18n:_('Selected node:')}" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"
-                onClick="treeController.editSelectedOrderElement();" />
+                onClick="treeController.editSelectedElement();" />
             <button id="createTemplateButton" sclass="icono" image="/common/img/ico_derived1.png"
                 hoverImage="/common/img/ico_derived.png"
                 tooltiptext="${i18n:_('Create template from selected task')}"
-                onClick="treeController.createTemplateFromSelectedOrderElement();" />
+                onClick="treeController.createTemplateFromSelectedElement();"
+                if="${arg.showCreateTemplateButton}"/>
             <button id="downButton" sclass="icono" image="/common/img/ico_bajar1.png"
                 hoverImage="/common/img/ico_bajar.png"
                 tooltiptext="${i18n:_('Move selected task down')}"
-                onClick="treeController.moveSelectedOrderElementDown();" />
+                onClick="treeController.moveSelectedElementDown();" />
             <button id="upButton" sclass="icono" image="/common/img/ico_subir1.png"
                 hoverImage="/common/img/ico_subir.png"
                 tooltiptext="${i18n:_('Move selected task up')}"
-                onClick="treeController.moveSelectedOrderElementUp();" />
+                onClick="treeController.moveSelectedElementUp();" />
             <button id="leftButton" sclass="icono" image="/common/img/ico_izq1.png"
                 hoverImage="/common/img/ico_izq.png"
                 tooltiptext="${i18n:_('Unindent selected task')}"
-                onClick="treeController.unindentSelectedOrderElement();" />
+                onClick="treeController.unindentSelectedElement();" />
             <button id="rightButton" sclass="icono" image="/common/img/ico_derecha1.png"
                 hoverImage="/common/img/ico_derecha.png"
                 tooltiptext="${i18n:_('Indent selected task')}"
-                onClick="treeController.indentSelectedOrderElement();" />
+                onClick="treeController.indentSelectedElement();" />
             <button id="deleteOrderElementButton" sclass="icono" image="/common/img/ico_borrar1.png"
                 hoverImage="/common/img/ico_borrar.png"
                 tooltiptext="${i18n:_('Delete selected task')}"
-                onClick="treeController.deleteSelectedOrderElement();" />
+                onClick="treeController.deleteSelectedElement();" />
         </hbox></hbox>
     <vbox width="100%">
         <tree id="tree" height="440px" multiple="false" droppable="true"
