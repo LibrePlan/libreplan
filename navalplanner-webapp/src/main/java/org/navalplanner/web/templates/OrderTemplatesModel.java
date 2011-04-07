@@ -52,6 +52,7 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.QualityFormsOnConversation;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/templates/templates.zul")
 public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
