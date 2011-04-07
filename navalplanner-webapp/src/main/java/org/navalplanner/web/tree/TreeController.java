@@ -155,7 +155,12 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
     }
 
     protected T getSelectedNode() {
-        return type.cast(tree.getSelectedItemApi().getValue());
+        Treeitem item = tree.getSelectedItem();
+        if (item != null) {
+            Object value = item.getValue();
+            return value != null ? type.cast(value) : null;
+        }
+        return null;
     }
 
     public void move(Component dropedIn, Component dragged) {
