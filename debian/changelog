@@ -1,4 +1,11 @@
-navalplan (1.0.4) maverick; urgency=low
+navalplan (1.0.5-1) maverick; urgency=low
+
+  * Added bugs fixed from stable branch.
+  * Released version 1.0.5.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 08 Apr 2011 11:20:46 +0200
+
+navalplan (1.0.4-1) maverick; urgency=low
 
   * Added bugs fixed from stable branch.
   * Released version 1.0.4.

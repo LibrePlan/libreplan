@@ -1,6 +1,94 @@
 NEWS
 ====
 
+Version 1.0.5 (8 Apr 2011)
+--------------------------
+
+Last bugfixing version of NavalPlan for 1.0.x cycle, like in previous releases
+it includes all the fixes done in the stable branch since 1.0.4. Among them we
+would like to highlight:
+
+* Resolved critical issue related to zero hours in resource allocations.
+* Solved an important bug with regard to an infinite loop with zero hours in
+  calendars.
+* Fixed more issues manipulating tasks tree (WBS).
+
+Changes
+~~~~~~~
+
+* [i18n] Updated Spanish and Galician translations
+* [i18n] Updated .pot files
+* [Bug #876] Refactor interface for handling operations in a tree (up, down,
+  indent, unindent, etc)
+* [Bug #877] ValidationException saving several templates at one time with the
+  same name
+* [Bug #876] Swap columns 'Hours' and 'Must start after' in Template view to
+  match view in Orders
+* [Bug #931] Added helper class for printing a ValidatonExcepton as a
+  WrongValidationException, showing up next to a widget
+* [Bug #931] Rename method
+* [Bug #931] Reuse invalidValue() method from ValidationException
+* [Bug #961] Call to dontPoseAsTransientObjectAnymore for each transient object.
+* [Bug #931] Added explicit check hour cost in 'Cost category' don't overlap for
+  the same type of hours
+* [Bug #965] Change field 'Date' to 'Receipt date' in OrderElement's Material
+  tab
+* [Bug #967] Transient instance editing task in WBS after set criterion and save
+* [Bug #955] Perspectives column displays scroll when vertical space is not
+  enough
+* [Bug #962] Cancel action in 'Progress assignment' window leave the Task as it
+  was before editing
+* [Bug #930] Impossible to delete work hours type
+* [Bug #942] Detect it can't fullfil the request duration beforehand
+* Fix CalendarData empty condition
+* [Bug #964] Impossible to delete materials not assigned to an order element
+* [Bug #963] Fixed setting Comboitem value.
+* [Bug #962] It is necessary the reattachment of the orderelement in order to
+  get the consolidate values.
+* [Bug #947] When closing OrderElement window, if there are errors in advance
+  tab, show this tab with the error
+* [Bug #947] check if not exists any indirect or direct advance when it changes
+  advance type.
+* Pull up asHoursModification
+* [Bug #943] Fix bug
+* [Bug #943] Avoid to reassign allocations with zero resources per day
+* The tasks inside a task group are not being validated
+* [Bug #943] Change error handling
+* Fix OrderElementServiceTest
+* [Bug #948] Updated legend colours
+* [Bug #948] Improved graphs colour coherence
+* [Bug #962] Cancel action in "Progress assignment" window leave the Task as it
+  was before editing
+* [Bug #962] Refactor fillVariables
+* [Bug #962] Refactor addNewLineAdvanceAssignment
+* [Bug #962] Avoid nulls in merging process
+* [Bug #932] Check there are not overlapped category assignments, and if there
+  are mark failing criterio assignment in form
+* [Bug #937] Add event ON_OK in bandboxSearch in the correponding controllers.
+* [Bug #960] When closing OrderElement window, if there are errors in other
+  tabs, go to the tab with the error
+* [Bug #958] Fix NullPointerException in progress assignment pop-up
+* [Bug #946] Fixed LazyInitializationException in MonteCarloTab
+* [Bug #883] delete the pop-up with "Project saved" when you create a new
+  project
+* [Bug #957] Fixed bug object references an unsaved transient instance
+* [Bug #951] Change example URL in 'Edit company' window
+* [Bug #954] Handle concurrency support in Configuration window
+* [Bug #952] Show list of resources in 'Resource load view' in order
+* [Bug #950] Planning mode combo filled several times
+* [Bug #949] Translate values of ProgressType in Global Company View
+* [Bug #949] Translate values of ProgressType in listbox of Configuration->'Show
+  Progress'
+* [Bug #946] Fix LazyInitializationException
+* [Bug #942] Logging a warning when it's not calendar capacity in 5 years to
+  calculate end date for a task.
+* [Bug #943] Skipped test while issue is not finally closed.
+* [Bug #943] Temporal fix, LOG error instead of launching exception
+* [Bug #906] Fixed bug avoiding exception and using task dates if aggregate is
+  empty.
+* Fix typos in training guide (spanish version).
+
+
 Version 1.0.4 (17 Mar 2011)
 ---------------------------
 
