@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-04 10:57+0100\n"
-"PO-Revision-Date: 2011-03-17 12:10+0100\n"
+"POT-Creation-Date: 2011-04-08 10:41+0200\n"
+"PO-Revision-Date: 2011-04-08 11:11+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "Language: gl\n"
@@ -47,7 +47,7 @@ msgstr "Mostrar horas reportadas"
 msgid "Show/Hide Progress"
 msgstr "Mostrar/ocultar progreso"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:85
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:88
 msgid "by criteria"
 msgstr "por criterios"
 
@@ -76,7 +76,7 @@ msgstr "Definir Fin-Fin"
 msgid "Task"
 msgstr "Tarefa"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:84
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:87
 msgid "by resources"
 msgstr "por recursos"
 
@@ -100,7 +100,7 @@ msgstr "Semana"
 msgid "See scheduling"
 msgstr "Ver planificación"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:422
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:449
 msgid "filtering by name"
 msgstr "filtrando por nome"
 
@@ -153,7 +153,7 @@ msgstr "Expandir/pregar todo"
 msgid "Create Project"
 msgstr "Crear proxecto"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:138
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:141
 msgid "showing criteria"
 msgstr "mostrando criterios"
 
@@ -193,7 +193,7 @@ msgstr "Día"
 msgid "Show/Hide Critical path"
 msgstr "Ocultar/ocultar camiño crítico"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:135
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:138
 msgid "showing resources"
 msgstr "mostrando recursos"
 
@@ -226,11 +226,11 @@ msgstr "Ver asignación de recursoss"
 msgid "increasing zoom"
 msgstr "aumentando zoom"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:388
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:415
 msgid "Show all elements"
 msgstr "Mostrar tódolos elementos"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:387
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:414
 msgid "All"
 msgstr "Todos"
 
