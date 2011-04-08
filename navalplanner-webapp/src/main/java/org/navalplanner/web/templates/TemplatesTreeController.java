@@ -38,7 +38,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 
 /**
@@ -69,10 +68,6 @@ public class TemplatesTreeController extends
         protected void addOperationsCell(Treeitem item,
                 OrderElementTemplate currentElement) {
             addCell(createEditButton(currentElement),
-                    createDownButton(item, currentElement),
-                    createUpButton(item, currentElement),
-                    createUnindentButton(item, currentElement),
-                    createIndentButton(item, currentElement),
                     createRemoveButton(currentElement));
         }
 
