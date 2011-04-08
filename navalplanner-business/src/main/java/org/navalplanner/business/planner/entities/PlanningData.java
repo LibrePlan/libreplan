@@ -30,10 +30,10 @@ import org.navalplanner.business.common.BaseEntity;
 
 /**
  *
- * @author Diego Pino García<dpino@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  *
- *         This is an object, directly associated with a TaskGroup with no parent
- *         (TaskRoot element), which is used to stored data about the whole
+ *         This is a class, directly associated with a TaskGroup with no parent
+ *         (TaskRoot element), which is used to store data about the whole
  *         scheduling
  *
  */
@@ -88,7 +88,21 @@ public class PlanningData extends BaseEntity {
             totalDuration = totalDuration + duration;
             totalProgress = totalProgress.add(progress);
         }
-        return totalProgress.divide(BigDecimal.valueOf(totalDuration), 8,
+        return divide(totalProgress, totalDuration);
+    }
+
+    /**
+     * Prevents division by zero
+     *
+     * @param numerator
+     * @param denominator
+     * @return
+     */
+    private BigDecimal divide(BigDecimal numerator, Integer denominator) {
+        if (Integer.valueOf(0).equals(denominator)) {
+            return BigDecimal.ZERO;
+        }
+        return numerator.divide(BigDecimal.valueOf(denominator), 8,
                 BigDecimal.ROUND_HALF_EVEN);
     }
 
@@ -107,8 +121,7 @@ public class PlanningData extends BaseEntity {
             totalNumHours += numHours;
             totalProgress = totalProgress.add(progress);
         }
-        return totalProgress.divide(BigDecimal.valueOf(totalNumHours), 8,
-                BigDecimal.ROUND_HALF_EVEN);
+        return divide(totalProgress, totalNumHours);
     }
 
 }
