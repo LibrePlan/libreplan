@@ -549,8 +549,8 @@
             </dependency>
             <!-- ZK Timeplot -->
             <dependency>
-                <groupId>org.zkoss.zkforge.timeplot</groupId>
-                <artifactId>timeplotz</artifactId>
+                <groupId>org.zkoss.zkforge</groupId>
+                <artifactId>timeplotz-modified</artifactId>
                 <version>1.0_2_3</version>
             </dependency>
             <dependency>

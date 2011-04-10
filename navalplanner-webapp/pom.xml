@@ -302,8 +302,8 @@
             <artifactId>timelinez</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.zkoss.zkforge.timeplot</groupId>
-            <artifactId>timeplotz</artifactId>
+            <groupId>org.zkoss.zkforge</groupId>
+            <artifactId>timeplotz-modified</artifactId>
         </dependency>
    </dependencies>
 </project>
