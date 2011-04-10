@@ -1268,6 +1268,9 @@ power--;
 }
 
 var unit=Math.pow(10,power);
+if (unit === 0) {
+    return grid;
+}
 var inc=unit;
 while(true){
 var dy=this.toScreen(this._minValue+inc);
