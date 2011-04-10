@@ -182,11 +182,11 @@ public class WKPrint {
         if (parameters != null) {
             captureString += "?";
             for (String key : parameters.keySet()) {
-                captureString += key + "=" + parameters.get(key) + "\\&";
+                captureString += key + "=" + parameters.get(key) + "&";
             }
             captureString = captureString.substring(0,
-                            (captureString.length() - ((parameters.size() > 0) ? 2
-                                    : 1)));
+                    (captureString.length() - (parameters.size() > 0 ? 1
+                                    : 0)));
         }
 
         boolean expanded = Planner
