@@ -1,0 +1,4 @@
+ZK.forge is distributed under Lesser GPL Version 2.1 in the hope that
+it will be useful, but WITHOUT ANY WARRANTY.
+
+See also http://www.gnu.org/licenses/lgpl.html
