@@ -733,86 +733,93 @@ return null;
 
 
 SimileAjax.DateTime.roundDownToInterval=function(date,intervalUnit,timeZone,multiple,firstDayOfWeek){
-var timeShift=timeZone*
-SimileAjax.DateTime.gregorianUnitLengths[SimileAjax.DateTime.HOUR];
+//var timeShift=timeZone*
+//SimileAjax.DateTime.gregorianUnitLengths[SimileAjax.DateTime.HOUR];
+//
+//var doTimeShifting = function(newDate) {
+//    newDate.setTime(newDate.getTime() - timeShift);
+//    var offsetInMinutesDueToSummerTime = Math.abs(date.getTimezoneOffset() - newDate.getTimezoneOffset());
+//    newDate.setTime(newDate.getTime() + offsetInMinutesDueToSummerTime * 60 * 1000);
+//};
 
-var date2=new Date(date.getTime()+timeShift);
+//var date2=new Date(date.getTime()+timeShift);
+var date2 = new Date(date.getTime());
 var clearInDay=function(d){
-d.setUTCMilliseconds(0);
-d.setUTCSeconds(0);
-d.setUTCMinutes(0);
-d.setUTCHours(0);
+d.setMilliseconds(0);
+d.setSeconds(0);
+d.setMinutes(0);
+d.setHours(0);
 };
 var clearInYear=function(d){
 clearInDay(d);
-d.setUTCDate(1);
-d.setUTCMonth(0);
+d.setDate(1);
+d.setMonth(0);
 };
 
 switch(intervalUnit){
 case SimileAjax.DateTime.MILLISECOND:
-var x=date2.getUTCMilliseconds();
-date2.setUTCMilliseconds(x-(x%multiple));
+var x=date2.getMilliseconds();
+date2.setMilliseconds(x-(x%multiple));
 break;
 case SimileAjax.DateTime.SECOND:
-date2.setUTCMilliseconds(0);
+date2.setMilliseconds(0);
 
-var x=date2.getUTCSeconds();
-date2.setUTCSeconds(x-(x%multiple));
+var x=date2.getSeconds();
+date2.setSeconds(x-(x%multiple));
 break;
 case SimileAjax.DateTime.MINUTE:
-date2.setUTCMilliseconds(0);
-date2.setUTCSeconds(0);
+date2.setMilliseconds(0);
+date2.setSeconds(0);
 
-var x=date2.getUTCMinutes();
+var x=date2.getMinutes();
 date2.setTime(date2.getTime()-
 (x%multiple)*SimileAjax.DateTime.gregorianUnitLengths[SimileAjax.DateTime.MINUTE]);
 break;
 case SimileAjax.DateTime.HOUR:
-date2.setUTCMilliseconds(0);
-date2.setUTCSeconds(0);
-date2.setUTCMinutes(0);
+date2.setMilliseconds(0);
+date2.setSeconds(0);
+date2.setMinutes(0);
 
-var x=date2.getUTCHours();
-date2.setUTCHours(x-(x%multiple));
+var x=date2.getHours();
+date2.setHours(x-(x%multiple));
 break;
 case SimileAjax.DateTime.DAY:
 clearInDay(date2);
 break;
 case SimileAjax.DateTime.WEEK:
 clearInDay(date2);
-var d=(date2.getUTCDay()+7-firstDayOfWeek)%7;
+var d=(date2.getDay()+7-firstDayOfWeek)%7;
 date2.setTime(date2.getTime()-
 d*SimileAjax.DateTime.gregorianUnitLengths[SimileAjax.DateTime.DAY]);
 break;
 case SimileAjax.DateTime.MONTH:
 clearInDay(date2);
-date2.setUTCDate(1);
+date2.setDate(1);
 
-var x=date2.getUTCMonth();
-date2.setUTCMonth(x-(x%multiple));
+var x=date2.getMonth();
+date2.setMonth(x-(x%multiple));
 break;
 case SimileAjax.DateTime.YEAR:
 clearInYear(date2);
 
-var x=date2.getUTCFullYear();
-date2.setUTCFullYear(x-(x%multiple));
+var x=date2.getFullYear();
+date2.setFullYear(x-(x%multiple));
 break;
 case SimileAjax.DateTime.DECADE:
 clearInYear(date2);
-date2.setUTCFullYear(Math.floor(date2.getUTCFullYear()/10)*10);
+date2.setFullYear(Math.floor(date2.getFullYear()/10)*10);
 break;
 case SimileAjax.DateTime.CENTURY:
 clearInYear(date2);
-date2.setUTCFullYear(Math.floor(date2.getUTCFullYear()/100)*100);
+date2.setYear(Math.floor(date2.getFullYear()/100)*100);
 break;
 case SimileAjax.DateTime.MILLENNIUM:
 clearInYear(date2);
-date2.setUTCFullYear(Math.floor(date2.getUTCFullYear()/1000)*1000);
+date2.setFullYear(Math.floor(date2.getFullYear()/1000)*1000);
 break;
 }
-
-date.setTime(date2.getTime()-timeShift);
+//doTimeShifting(date2);
+date.setTime(date2.getTime());
 };
 
 
@@ -843,25 +850,25 @@ date.setTime(date.getTime()+
 SimileAjax.DateTime.gregorianUnitLengths[SimileAjax.DateTime.HOUR]);
 break;
 case SimileAjax.DateTime.DAY:
-date.setUTCDate(date.getUTCDate()+1);
+date.setDate(date.getDate()+1);
 break;
 case SimileAjax.DateTime.WEEK:
-date.setUTCDate(date.getUTCDate()+7);
+date.setDate(date.getDate()+7);
 break;
 case SimileAjax.DateTime.MONTH:
-date.setUTCMonth(date.getUTCMonth()+1);
+date.setMonth(date.getMonth()+1);
 break;
 case SimileAjax.DateTime.YEAR:
-date.setUTCFullYear(date.getUTCFullYear()+1);
+date.setFullYear(date.getFullYear()+1);
 break;
 case SimileAjax.DateTime.DECADE:
-date.setUTCFullYear(date.getUTCFullYear()+10);
+date.setFullYear(date.getFullYear()+10);
 break;
 case SimileAjax.DateTime.CENTURY:
-date.setUTCFullYear(date.getUTCFullYear()+100);
+date.setFullYear(date.getFullYear()+100);
 break;
 case SimileAjax.DateTime.MILLENNIUM:
-date.setUTCFullYear(date.getUTCFullYear()+1000);
+date.setFullYear(date.getFullYear()+1000);
 break;
 }
 };
