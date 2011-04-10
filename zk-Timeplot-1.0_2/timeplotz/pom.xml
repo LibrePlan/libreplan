@@ -3,8 +3,8 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zkoss.zkforge</groupId>
-  <artifactId>timeplotz</artifactId>
-  <version>{version}</version>
+  <artifactId>timeplotz-modified</artifactId>
+  <version>1.0_2_3</version>
   <packaging>jar</packaging>
   <name>The Timeplot Component for ZK</name>
   <url>http://www.zkoss.org</url>
@@ -16,34 +16,6 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
-  <scm>
-    <url>http://zkforge.svn.sourceforge.net/viewvc/zkforge/trunk/timeplotz</url>
-  </scm>
   <dependencies>
-    <dependency>
-      <groupId>org.zkoss.common</groupId>
-      <artifactId>zcommon</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.zkoss.common</groupId>
-      <artifactId>zweb</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.zkoss.zk</groupId>
-      <artifactId>zk</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.zkoss.zk</groupId>
-      <artifactId>zul</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.zkoss.zkforge.timeline</groupId>
-      <artifactId>timelinez</artifactId>
-      <version>1.2_1</version>
-    </dependency>
   </dependencies>
 </project> 
