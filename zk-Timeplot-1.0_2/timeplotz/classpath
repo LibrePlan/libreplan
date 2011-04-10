@@ -1,0 +1,6 @@
+../dist/lib/zcommon.jar
+../dist/lib/zweb.jar
+../dist/lib/zk.jar
+../dist/lib/zul.jar
+../dist/lib/timelinez.jar
+../dist/lib/ext/json_simple.jar
