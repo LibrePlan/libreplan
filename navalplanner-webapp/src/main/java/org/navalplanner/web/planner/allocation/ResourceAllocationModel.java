@@ -46,6 +46,7 @@ import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -55,7 +56,6 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.planner.order.PlanningState;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -80,7 +80,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private IResourceDAO resourceDAO;
 
     @Autowired
-    private IResourceSearchModel searchModel;
+    private IResourcesSearcher searchModel;
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;

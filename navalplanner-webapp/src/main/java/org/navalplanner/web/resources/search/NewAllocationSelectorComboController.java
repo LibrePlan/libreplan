@@ -24,6 +24,7 @@ package org.navalplanner.web.resources.search;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.navalplanner.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -32,7 +33,6 @@ import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearc
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.ResourceAllocationFilterEnum;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.zk.ui.Component;
 
 /**

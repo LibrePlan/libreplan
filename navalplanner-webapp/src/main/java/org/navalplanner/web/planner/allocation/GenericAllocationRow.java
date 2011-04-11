@@ -36,12 +36,12 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -72,7 +72,7 @@ public class GenericAllocationRow extends AllocationRow {
 
     public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation,
-            IResourceSearchModel searchModel) {
+            IResourcesSearcher searchModel) {
         GenericAllocationRow result = createDefault(resourceAllocation
                 .getResourceType());
         result.setOrigin(resourceAllocation);
@@ -105,7 +105,7 @@ public class GenericAllocationRow extends AllocationRow {
 
     public static Collection<GenericAllocationRow> toGenericAllocations(
             Collection<? extends ResourceAllocation<?>> resourceAllocations,
-            IResourceSearchModel searchModel) {
+            IResourcesSearcher searchModel) {
         ArrayList<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {

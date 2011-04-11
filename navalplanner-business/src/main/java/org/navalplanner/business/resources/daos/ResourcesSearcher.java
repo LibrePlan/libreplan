@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.resources.search;
+package org.navalplanner.business.resources.daos;
 
 import static org.hibernate.criterion.Restrictions.eq;
 import static org.hibernate.criterion.Restrictions.ilike;
@@ -43,7 +43,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.classic.Session;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Machine;
@@ -61,9 +60,9 @@ import org.springframework.stereotype.Service;
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class ResourceSearchModel implements IResourceSearchModel {
+public class ResourcesSearcher implements IResourcesSearcher {
 
-    private static final Log LOG = LogFactory.getLog(ResourceSearchModel.class);
+    private static final Log LOG = LogFactory.getLog(ResourcesSearcher.class);
 
     @Autowired
     private IAdHocTransactionService adHocTransactionService;

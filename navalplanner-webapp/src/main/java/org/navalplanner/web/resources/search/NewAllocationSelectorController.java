@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.navalplanner.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.Resource;
@@ -40,7 +41,6 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.zkoss.lang.Objects;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;

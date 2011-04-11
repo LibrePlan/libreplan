@@ -23,6 +23,7 @@ package org.navalplanner.web.resources.search;
 
 import java.util.List;
 
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
@@ -38,7 +39,7 @@ public abstract class AllocationSelectorController extends
         GenericForwardComposer {
 
     @Autowired
-    protected IResourceSearchModel resourceSearchModel;
+    protected IResourcesSearcher resourceSearchModel;
 
     protected ResourceAllocationBehaviour behaviour;
 

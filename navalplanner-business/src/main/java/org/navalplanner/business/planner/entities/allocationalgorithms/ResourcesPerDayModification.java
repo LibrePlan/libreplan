@@ -211,7 +211,7 @@ public abstract class ResourcesPerDayModification extends
         for (ResourcesPerDayModification each : result) {
             each.withNewResources(resourceDAO);
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
     }
 
     public static ResourcesPerDayModification create(

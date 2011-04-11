@@ -35,13 +35,13 @@ import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 
@@ -91,7 +91,7 @@ abstract class LoadPeriodGenerator {
     }
 
     public static LoadPeriodGeneratorFactory onCriterion(
-            final Criterion criterion, final IResourceSearchModel resourceSearch) {
+            final Criterion criterion, final IResourcesSearcher resourceSearch) {
 
         final List<Resource> potentialResources = resourceSearch.searchBoth()
                 .byCriteria(Collections.singletonList(criterion)).execute();

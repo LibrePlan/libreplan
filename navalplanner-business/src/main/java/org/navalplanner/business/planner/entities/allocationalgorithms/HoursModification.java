@@ -115,7 +115,7 @@ public abstract class HoursModification extends AllocationModification {
         for (HoursModification each : result) {
             each.withNewResources(resourceDAO);
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
     }
 
     private final int hours;

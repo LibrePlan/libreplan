@@ -55,6 +55,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
@@ -65,7 +66,6 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -86,7 +86,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private IResourceDAO resourcesDAO;
 
     @Autowired
-    private IResourceSearchModel resourcesSearchModel;
+    private IResourcesSearcher resourcesSearchModel;
 
     @Autowired
     private ICriterionDAO criterionDAO;

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.resources.search;
+package org.navalplanner.business.resources.daos;
 
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +39,7 @@ import org.navalplanner.business.resources.entities.Worker;
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public interface IResourceSearchModel {
+public interface IResourcesSearcher {
 
     public interface IResourcesQuery<T extends Resource> {
 
@@ -84,7 +84,7 @@ public interface IResourceSearchModel {
          * a type compatible for this query.
          * </p>
          * For example if this query has been created by
-         * {@link IResourceSearchModel#searchWorkers()} only the criteria with
+         * {@link IResourcesSearcher#searchWorkers()} only the criteria with
          * criterion type such its resource is {@link ResourceEnum.WORKER}
          * @return HashMap<CriterionType, Set<Criterion>>
          */

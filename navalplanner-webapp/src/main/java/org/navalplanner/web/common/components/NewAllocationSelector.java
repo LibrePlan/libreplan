@@ -23,13 +23,13 @@ package org.navalplanner.web.common.components;
 
 import java.util.List;
 
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
+import org.navalplanner.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
-import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
@@ -59,7 +59,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchWorkers();
             }
 
@@ -81,7 +81,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchMachines();
             }
 
@@ -100,7 +100,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchBoth();
             }
 
@@ -142,7 +142,7 @@ public class NewAllocationSelector extends AllocationSelector {
                 INewAllocationsAdder allocationsAdder);
 
         public abstract IResourcesQuery<?> doQueryOn(
-                IResourceSearchModel resourceSearchModel);
+                IResourcesSearcher resourceSearchModel);
 
         public abstract String asCaption(List<Criterion> criterions);
 
