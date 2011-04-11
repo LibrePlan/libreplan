@@ -927,7 +927,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     }
 
-    private void markAsUnsatisfied() {
+    public void markAsUnsatisfied() {
         removingAssignments(getAssignments());
         assert isUnsatisfied();
     }

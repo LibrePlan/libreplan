@@ -48,6 +48,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
@@ -429,6 +430,41 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return positionConstraint;
     }
 
+    private static class ModificationsResult<T extends AllocationModification> {
+
+        static <T extends AllocationModification> ModificationsResult<T> create(
+                List<ResourceAllocation<?>> original, List<T> canBeModified) {
+
+            List<ResourceAllocation<?>> beingModified = AllocationModification
+                    .getBeingModified(canBeModified);
+            List<ResourceAllocation<?>> noLongerValid = new ArrayList<ResourceAllocation<?>>();
+            for (ResourceAllocation<?> each : original) {
+                if (!beingModified.contains(each)) {
+                    noLongerValid.add(each);
+                }
+            }
+            return new ModificationsResult<T>(canBeModified, noLongerValid);
+        }
+
+        private final List<T> valid;
+
+        private final List<ResourceAllocation<?>> noLongerValid;
+
+        private ModificationsResult(List<T> valid, List<ResourceAllocation<?>> noLongerValid) {
+            this.valid = Collections.unmodifiableList(valid);
+            this.noLongerValid = Collections.unmodifiableList(noLongerValid);
+        }
+
+        public List<T> getBeingModified() {
+            return valid;
+        }
+
+        public List<ResourceAllocation<?>> getNoLongerValid() {
+            return noLongerValid;
+        }
+
+    }
+
     private static abstract class AllocationModificationStrategy {
 
         protected final IResourceDAO resourceDAO;
@@ -438,10 +474,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             this.resourceDAO = resourceDAO;
         }
 
-        public abstract List<ResourcesPerDayModification> getResourcesPerDayModified(
+        public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations);
 
-        public abstract List<HoursModification> getHoursModified(
+        public abstract ModificationsResult<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations);
 
     }
@@ -454,16 +490,19 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         @Override
-        public List<HoursModification> getHoursModified(
+        public ModificationsResult<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.fromExistent(allocations, resourceDAO);
+            List<HoursModification> canBeModified = HoursModification
+                    .fromExistent(allocations, resourceDAO);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
         @Override
-        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.fromExistent(allocations,
-                    resourceDAO);
+            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
+                    .fromExistent(allocations, resourceDAO);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
     }
@@ -476,16 +515,19 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         @Override
-        public List<HoursModification> getHoursModified(
+        public ModificationsResult<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.withNewResources(allocations, resourceDAO);
+            List<HoursModification> canBeModified = HoursModification
+                    .withNewResources(allocations, resourceDAO);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
         @Override
-        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.withNewResources(allocations,
-                    resourceDAO);
+            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
+                    .withNewResources(allocations, resourceDAO);
+            return ModificationsResult.create(allocations, canBeModified);
         }
     }
 
@@ -744,8 +786,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private void doAllocation(AllocationModificationStrategy strategy,
             Direction direction, List<ResourceAllocation<?>> toBeModified) {
-        List<ResourcesPerDayModification> allocations = strategy
+        ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
                 .getResourcesPerDayModified(toBeModified);
+        markAsUnsatisfied(modificationsResult.getNoLongerValid());
+        List<ResourcesPerDayModification> allocations = modificationsResult
+                .getBeingModified();
         if (allocations.isEmpty()) {
             LOG.warn("all allocations for task " + this
                     + " have no valid data that could be used");
@@ -765,8 +810,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
             break;
         case RESOURCES_PER_DAY:
-            List<HoursModification> hoursModified = strategy
+            ModificationsResult<HoursModification> hoursModificationResult = strategy
                     .getHoursModified(toBeModified);
+            markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
+            List<HoursModification> hoursModified = hoursModificationResult
+                    .getBeingModified();
             if (hoursModified.isEmpty()) {
                 LOG.warn("all allocations for task " + this + " can't be used");
                 return;
@@ -776,6 +824,13 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
+        }
+    }
+
+    private void markAsUnsatisfied(
+            Collection<? extends ResourceAllocation<?>> noLongerValid) {
+        for (ResourceAllocation<?> each : noLongerValid) {
+            each.markAsUnsatisfied();
         }
     }
 
