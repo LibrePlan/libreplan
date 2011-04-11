@@ -768,6 +768,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         case RESOURCES_PER_DAY:
             List<HoursModification> hoursModified = strategy
                     .getHoursModified(toBeModified);
+            if (hoursModified.isEmpty()) {
+                LOG.warn("all allocations for task " + this + " can't be used");
+                return;
+            }
             ResourceAllocation.allocatingHours(hoursModified)
                               .allocateUntil(new LocalDate(getEndDate()));
             break;

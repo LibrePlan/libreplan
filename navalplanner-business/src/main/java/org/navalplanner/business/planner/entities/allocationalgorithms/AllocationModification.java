@@ -56,8 +56,9 @@ public abstract class AllocationModification {
             if (each.hasNoResources()) {
                 each.withNewResources(resourceDAO);
             }
-            assert !each.hasNoResources();
-            result.add(each);
+            if (!each.hasNoResources()) {
+                result.add(each);
+            }
         }
         return result;
     }
