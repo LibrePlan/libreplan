@@ -51,7 +51,6 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
@@ -501,19 +500,6 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     @Override
     public void setWorker(Worker worker) {
         this.worker = worker;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion) {
-        List<Resource> resources = resourceDAO.list(Resource.class);
-        HashSet<Resource> result = new HashSet<Resource>();
-        for (Resource resource : resources) {
-            if (criterion.isSatisfiedBy(resource)) {
-                result.add(resource);
-            }
-        }
-        return result;
     }
 
     @Override
