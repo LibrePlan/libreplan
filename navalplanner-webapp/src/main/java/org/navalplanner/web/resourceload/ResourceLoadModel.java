@@ -43,7 +43,6 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IDayAssignmentDAO;
@@ -84,9 +83,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IResourceDAO resourcesDAO;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
 
     @Autowired
     private ICriterionDAO criterionDAO;
