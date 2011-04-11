@@ -1,0 +1,7 @@
+This is a custom version of zk-Timpelot-1.0_2. The original version
+can be downloaded here: http://www.zkoss.org/download/zktimeplot.dsp
+
+If you do further changes call deploy.sh. It will install the
+generated jar in your maven local repository. Then you should be able
+to run the application and see the changes. Once you are happy with
+your changes you should move this jar to a public repository.
