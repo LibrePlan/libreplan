@@ -732,11 +732,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             doAllocation(strategy, direction, toBeModified);
             updateDerived(copied);
 
-            List<ResourceAllocation<?>> newAllocations = emptyList(),
-            modifiedAllocations = emptyList();
+            List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
             mergeAllocation(onScenario, getIntraDayStartDate(),
                     getIntraDayEndDate(), workableDays, calculatedValue,
-                    newAllocations, copied, modifiedAllocations);
+                    newAllocations, copied, removedAllocations);
         } catch (Exception e) {
             LOG.error("reassignment for task: " + this
                     + " couldn't be completed", e);
