@@ -21,7 +21,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -118,12 +117,6 @@ public class Machine extends Resource {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean satisfiesCriterions(Set<Criterion> criterions) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                new ArrayList<ICriterion>(criterions)).getResult();
-        return compositedCriterion.isSatisfiedBy(this);
     }
 
     @Override
