@@ -65,6 +65,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -83,6 +84,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IResourceDAO resourcesDAO;
+
+    @Autowired
+    private IResourceSearchModel resourcesSearchModel;
 
     @Autowired
     private ICriterionDAO criterionDAO;
@@ -614,13 +618,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadPeriod> createPeriods(Criterion criterion,
             List<? extends ResourceAllocation<?>> value) {
         if (initDateFilter != null || endDateFilter != null) {
-            return PeriodsBuilder.build(
-                    LoadPeriodGenerator.onCriterion(criterion, resourcesDAO),
+            return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(
+                    criterion, resourcesSearchModel),
                     value, asDate(initDateFilter), asDate(endDateFilter));
         }
-        return PeriodsBuilder
-            .build(LoadPeriodGenerator.onCriterion(criterion,
-                    resourcesDAO), value);
+        return PeriodsBuilder.build(LoadPeriodGenerator.onCriterion(criterion,
+                resourcesSearchModel), value);
     }
 
     private List<LoadTimeLine> groupsFor(List<Resource> allResources) {
@@ -982,8 +985,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
             resources = resourcesToShow();
         }
         else {
-            resources =resourcesDAO
-                .findSatisfyingAllCriterionsAtSomePoint(criteriaToShow());
+            resources = resourcesSearchModel.searchBoth()
+                                            .byCriteria(criteriaToShow())
+                                            .execute();
         }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);
