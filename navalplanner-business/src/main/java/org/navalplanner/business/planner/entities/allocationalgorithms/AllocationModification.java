@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -50,11 +50,11 @@ public abstract class AllocationModification {
      * unsatisfied generic allocation.
      */
     protected static <T extends AllocationModification> List<T> ensureNoOneWithoutAssociatedResources(
-            Collection<? extends T> modifications, IResourceDAO resourceDAO) {
+            Collection<? extends T> modifications, IResourcesSearcher searcher) {
         List<T> result = new ArrayList<T>();
         for (T each : modifications) {
             if (each.hasNoResources()) {
-                each.withNewResources(resourceDAO);
+                each.withNewResources(searcher);
             }
             if (!each.hasNoResources()) {
                 result.add(each);
@@ -77,9 +77,9 @@ public abstract class AllocationModification {
         return resourcesOnWhichApplyAllocation.isEmpty();
     }
 
-    protected void withNewResources(IResourceDAO resourceDAO) {
+    protected void withNewResources(IResourcesSearcher resourcesSearcher) {
         resourcesOnWhichApplyAllocation = beingModified
-                .querySuitableResources(resourceDAO);
+                .querySuitableResources(resourcesSearcher);
     }
 
     public ResourceAllocation<?> getBeingModified() {

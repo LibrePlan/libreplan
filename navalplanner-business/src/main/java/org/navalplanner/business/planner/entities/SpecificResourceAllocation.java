@@ -42,7 +42,7 @@ import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -249,7 +249,8 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
+    public List<Resource> querySuitableResources(
+            IResourcesSearcher resourcesSearcher) {
         return Collections.singletonList(resource);
     }
 

@@ -33,6 +33,7 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.entrypoints.URLHandler;
@@ -186,6 +187,9 @@ public class MultipleTabsPlannerController implements Composer,
     private IResourceDAO resourceDAO;
 
     @Autowired
+    private IResourcesSearcher resourcesSearcher;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Autowired
@@ -257,7 +261,7 @@ public class MultipleTabsPlannerController implements Composer,
         if (isMontecarloVisible) {
             monteCarloTab = MonteCarloTabCreator.create(mode,
                     monteCarloController, orderPlanningController, breadcrumbs,
-                    resourceDAO);
+                    resourcesSearcher);
         }
 
         final State<Void> typeChanged = typeChangedState();

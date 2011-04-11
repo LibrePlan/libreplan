@@ -59,7 +59,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
@@ -1870,7 +1870,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * that currently match this allocation criterions
      * @return a list of resources that are proper for this allocation
      */
-    public abstract List<Resource> querySuitableResources(IResourceDAO resourceDAO);
+    public abstract List<Resource> querySuitableResources(
+            IResourcesSearcher resourceSearcher);
 
     public abstract void makeAssignmentsContainersDontPoseAsTransientAnyMore();
 

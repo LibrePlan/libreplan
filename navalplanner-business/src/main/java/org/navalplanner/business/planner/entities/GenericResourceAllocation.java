@@ -38,7 +38,7 @@ import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -291,8 +291,10 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
-        return resourceDAO.findSatisfyingAllCriterionsAtSomePoint(getCriterions());
+    public List<Resource> querySuitableResources(
+            IResourcesSearcher resourcesSearcher) {
+        return resourcesSearcher.searchBoth().byCriteria(getCriterions())
+                .execute();
     }
 
     public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(

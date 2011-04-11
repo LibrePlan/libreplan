@@ -36,7 +36,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -71,7 +71,7 @@ public class ReassignCommand implements IReassignCommand {
     private IAdHocTransactionService transactionService;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -286,7 +286,8 @@ public class ReassignCommand implements IReassignCommand {
 
     private void reassign(TaskElement taskElement) {
         org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
-        t.reassignAllocationsWithNewResources(planningState.getCurrentScenario(), resourceDAO);
+        t.reassignAllocationsWithNewResources(
+                planningState.getCurrentScenario(), resourcesSearcher);
     }
 
     @Override

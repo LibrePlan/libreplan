@@ -43,7 +43,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.IEffortDistributor;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator.IAssignmentsCreator;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -205,13 +205,14 @@ public abstract class ResourcesPerDayModification extends
     }
 
     public static List<ResourcesPerDayModification> withNewResources(
-            List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
+            List<ResourceAllocation<?>> allocations,
+            IResourcesSearcher resourcesSearcher) {
         List<ResourcesPerDayModification> result = fromExistent(allocations,
-                resourceDAO);
+                resourcesSearcher);
         for (ResourcesPerDayModification each : result) {
-            each.withNewResources(resourceDAO);
+            each.withNewResources(resourcesSearcher);
         }
-        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
+        return ensureNoOneWithoutAssociatedResources(result, resourcesSearcher);
     }
 
     public static ResourcesPerDayModification create(
@@ -225,7 +226,7 @@ public abstract class ResourcesPerDayModification extends
 
     public static List<ResourcesPerDayModification> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations,
-            IResourceDAO resourcesDAO) {
+            IResourcesSearcher resourcesSearcher) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             ResourcesPerDayModification modification = resourceAllocation
@@ -234,7 +235,7 @@ public abstract class ResourcesPerDayModification extends
                 result.add(modification);
             }
         }
-        return ensureNoOneWithoutAssociatedResources(result, resourcesDAO);
+        return ensureNoOneWithoutAssociatedResources(result, resourcesSearcher);
     }
 
     protected static ICalendar calendarFor(Resource associatedResource) {

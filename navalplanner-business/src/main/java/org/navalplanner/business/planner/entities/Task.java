@@ -53,7 +53,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -467,11 +467,11 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     private static abstract class AllocationModificationStrategy {
 
-        protected final IResourceDAO resourceDAO;
+        protected final IResourcesSearcher searcher;
 
-        public AllocationModificationStrategy(IResourceDAO resourceDAO) {
-            Validate.notNull(resourceDAO);
-            this.resourceDAO = resourceDAO;
+        public AllocationModificationStrategy(IResourcesSearcher searcher) {
+            Validate.notNull(searcher);
+            this.searcher = searcher;
         }
 
         public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
@@ -485,15 +485,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private static class WithTheSameHoursAndResourcesPerDay extends
             AllocationModificationStrategy {
 
-        public WithTheSameHoursAndResourcesPerDay(IResourceDAO resourceDAO) {
-            super(resourceDAO);
+        public WithTheSameHoursAndResourcesPerDay(IResourcesSearcher searcher) {
+            super(searcher);
         }
 
         @Override
         public ModificationsResult<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
             List<HoursModification> canBeModified = HoursModification
-                    .fromExistent(allocations, resourceDAO);
+                    .fromExistent(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
 
@@ -501,7 +501,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
             List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
-                    .fromExistent(allocations, resourceDAO);
+                    .fromExistent(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
 
@@ -510,15 +510,15 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private static class WithAnotherResources extends
             AllocationModificationStrategy {
 
-        public WithAnotherResources(IResourceDAO resourceDAO) {
-            super(resourceDAO);
+        public WithAnotherResources(IResourcesSearcher searcher) {
+            super(searcher);
         }
 
         @Override
         public ModificationsResult<HoursModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
             List<HoursModification> canBeModified = HoursModification
-                    .withNewResources(allocations, resourceDAO);
+                    .withNewResources(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
 
@@ -526,7 +526,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
             List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
-                    .withNewResources(allocations, resourceDAO);
+                    .withNewResources(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
     }
@@ -539,7 +539,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     protected IDatesHandler createDatesHandler(final Scenario scenario,
-            final IResourceDAO resourceDAO) {
+            final IResourcesSearcher searcher) {
         return new IDatesHandler() {
 
             @Override
@@ -555,7 +555,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             private void doReassignment(Direction direction) {
                 reassign(scenario, direction,
-                        new WithTheSameHoursAndResourcesPerDay(resourceDAO));
+                        new WithTheSameHoursAndResourcesPerDay(searcher));
             }
 
             @Override
@@ -752,9 +752,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
-            IResourceDAO resourceDAO) {
-        reassign(scenario, getAllocationDirection(),
-                new WithAnotherResources(resourceDAO));
+            IResourcesSearcher searcher) {
+        reassign(scenario, getAllocationDirection(), new WithAnotherResources(
+                searcher));
     }
 
     private void reassign(Scenario onScenario, Direction direction,

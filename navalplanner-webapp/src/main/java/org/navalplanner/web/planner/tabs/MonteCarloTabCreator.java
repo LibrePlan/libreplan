@@ -51,7 +51,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -81,10 +81,11 @@ public class MonteCarloTabCreator {
     public static ITab create(Mode mode,
             MonteCarloController monteCarloController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs, IResourceDAO resourceDAO) {
+            Component breadcrumbs, IResourcesSearcher resourcesSearcher) {
 
         return new MonteCarloTabCreator(mode, monteCarloController,
-                orderPlanningController, breadcrumbs, resourceDAO).build();
+                orderPlanningController, breadcrumbs, resourcesSearcher)
+                .build();
     }
 
     private final Mode mode;
@@ -95,18 +96,18 @@ public class MonteCarloTabCreator {
 
     private final Component breadcrumbs;
 
-    private final IResourceDAO resourceDAO;
+    private final IResourcesSearcher resourcesSearcher;
 
     private MonteCarloTabCreator(Mode mode,
             MonteCarloController MonteCarloController,
             OrderPlanningController orderPlanningController,
-            Component breadcrumbs, IResourceDAO resourceDAO) {
-        Validate.notNull(resourceDAO);
+            Component breadcrumbs, IResourcesSearcher resourcesSearcher) {
+        Validate.notNull(resourcesSearcher);
         this.mode = mode;
         this.monteCarloController = MonteCarloController;
         this.orderPlanningController = orderPlanningController;
         this.breadcrumbs = breadcrumbs;
-        this.resourceDAO = resourceDAO;
+        this.resourcesSearcher = resourcesSearcher;
     }
 
     private ITab build() {
@@ -282,7 +283,7 @@ public class MonteCarloTabCreator {
                                 .create(getCurrentScenario(),
                                         asLocalDate(order.getInitDate()),
                                         asLocalDate(order.getDeadline()),
-                                        resourceDAO);
+                                        resourcesSearcher);
                 GanttDiagramGraph<TaskElement, DependencyWithVisibility> graph = createFor(
                         order, adapter);
                 graph.addTasks(order.getAllChildrenAssociatedTaskElements());

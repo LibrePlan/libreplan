@@ -30,7 +30,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskElement.IDatesInterceptor;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.TemplateModel.DependencyWithVisibility;
@@ -58,22 +58,23 @@ public class TemplateModelAdapter implements
 
     private final LocalDate deadline;
 
-    private final IResourceDAO resourceDAO;
+    private final IResourcesSearcher resourcesSearcher;
 
     public static TemplateModelAdapter create(Scenario scenario,
-            LocalDate initDate, LocalDate deadline, IResourceDAO resourceDAO) {
+            LocalDate initDate, LocalDate deadline,
+            IResourcesSearcher resourcesSearcher) {
         return new TemplateModelAdapter(scenario, initDate, deadline,
-                resourceDAO);
+                resourcesSearcher);
     }
 
     private TemplateModelAdapter(Scenario scenario, LocalDate orderInitDate,
-            LocalDate deadline, IResourceDAO resourceDAO) {
+            LocalDate deadline, IResourcesSearcher resoucesSearcher) {
         Validate.notNull(scenario);
-        Validate.notNull(resourceDAO);
+        Validate.notNull(resoucesSearcher);
         this.scenario = scenario;
         this.orderInitDate = orderInitDate;
         this.deadline = deadline;
-        this.resourceDAO = resourceDAO;
+        this.resourcesSearcher = resoucesSearcher;
     }
 
     @Override
@@ -168,7 +169,7 @@ public class TemplateModelAdapter implements
     }
 
     private IDatesHandler getDatesHandler(TaskElement taskElement) {
-        return taskElement.getDatesHandler(scenario, resourceDAO);
+        return taskElement.getDatesHandler(scenario, resourcesSearcher);
     }
 
     @Override

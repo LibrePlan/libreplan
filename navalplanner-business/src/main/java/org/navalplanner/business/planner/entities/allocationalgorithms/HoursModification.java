@@ -30,7 +30,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -101,21 +101,21 @@ public abstract class HoursModification extends AllocationModification {
 
     public static List<HoursModification> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations,
-            IResourceDAO resourceDAO) {
+            IResourcesSearcher searcher) {
         List<HoursModification> result = new ArrayList<HoursModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asHoursModification());
         }
-        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
+        return ensureNoOneWithoutAssociatedResources(result, searcher);
     }
 
     public static List<HoursModification> withNewResources(
-            List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
-        List<HoursModification> result = fromExistent(allocations, resourceDAO);
+            List<ResourceAllocation<?>> allocations, IResourcesSearcher searcher) {
+        List<HoursModification> result = fromExistent(allocations, searcher);
         for (HoursModification each : result) {
-            each.withNewResources(resourceDAO);
+            each.withNewResources(searcher);
         }
-        return ensureNoOneWithoutAssociatedResources(result, resourceDAO);
+        return ensureNoOneWithoutAssociatedResources(result, searcher);
     }
 
     private final int hours;
