@@ -22,14 +22,12 @@
 package org.navalplanner.business.resources.daos;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
@@ -91,43 +89,6 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             }
         }
         return list;
-    }
-
-    @Override
-    public List<Resource> findSatisfyingAllCriterionsAtSomePoint(
-            Collection<? extends Criterion> criterions) {
-        Validate.notNull(criterions);
-        Validate.noNullElements(criterions);
-        if (criterions.isEmpty()) {
-            return list(Resource.class);
-        }
-        return selectSatisfiyingAllAtSomePoint(
-                findRelatedWithSomeOfTheCriterions(criterions), criterions);
-    }
-
-    private List<Resource> selectSatisfiyingAllAtSomePoint(
-            List<Resource> resources,
-            Collection<? extends Criterion> criterions) {
-        List<Resource> result = new ArrayList<Resource>();
-        for (Resource each : resources) {
-            if (each.satisfiesCriterionsAtSomePoint(criterions)) {
-                result.add(each);
-            }
-        }
-        return result;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Resource> findRelatedWithSomeOfTheCriterions(
-            Collection<? extends Criterion> criterions) {
-        String strQuery = "SELECT DISTINCT resource "
-                + "FROM Resource resource "
-                + "JOIN resource.criterionSatisfactions criterionSatisfactions "
-                + "JOIN criterionSatisfactions.criterion criterion "
-                + "WHERE criterion IN (:criterions)";
-        Query query = getSession().createQuery(strQuery);
-        query.setParameterList("criterions", criterions);
-        return (List<Resource>) query.list();
     }
 
     @Override

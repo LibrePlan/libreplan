@@ -46,6 +46,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -70,6 +71,9 @@ public class ResourceDAOTest {
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -116,8 +120,8 @@ public class ResourceDAOTest {
     public void testResourceIsRelatedWithAllCriterions() {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
-        List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterionsAtSomePoint(criterions);
+        List<Resource> result = resourcesSearcher.searchBoth()
+                .byCriteria(criterions).execute();
         assertNotNull(result);
         assertEquals(1, result.size());
     }
@@ -167,8 +171,8 @@ public class ResourceDAOTest {
         // Modify criterions collection
         criterions.add(createCriterion("criterion3"));
 
-        List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterionsAtSomePoint(criterions);
+        List<Resource> result = resourcesSearcher.searchBoth()
+                .byCriteria(criterions).execute();
         assertNotNull(result);
         assertThat(result.size(), not(equalTo(1)));
     }
