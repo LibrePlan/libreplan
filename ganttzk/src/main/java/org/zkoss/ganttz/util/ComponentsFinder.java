@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.api.Rows;
 
@@ -68,6 +70,20 @@ public class ComponentsFinder {
                 if (needle.equals(value)) {
                     return row;
                 }
+            }
+        }
+        return null;
+    }
+
+    public static Listitem findItemByValue(Listbox listbox, Object needle) {
+        if (needle == null) {
+            return null;
+        }
+        for (Object each : listbox.getItems()) {
+            Listitem item = (Listitem) each;
+            Object value = item.getValue();
+            if (needle.toString().equals(value.toString())) {
+                return item;
             }
         }
         return null;
