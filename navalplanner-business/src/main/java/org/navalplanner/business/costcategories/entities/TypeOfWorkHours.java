@@ -33,6 +33,7 @@ import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class TypeOfWorkHours extends IntegrationEntity {
 
@@ -137,6 +138,10 @@ public class TypeOfWorkHours extends IntegrationEntity {
         } catch (InstanceNotFoundException e) {
             return true;
         }
+    }
+
+    public String toString() {
+        return name;
     }
 
 }

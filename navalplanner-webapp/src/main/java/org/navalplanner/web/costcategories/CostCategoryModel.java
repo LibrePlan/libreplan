@@ -33,8 +33,10 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +67,9 @@ public class CostCategoryModel extends IntegrationEntityModel implements
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Override
     public List<CostCategory> getCostCategories() {
@@ -129,6 +134,12 @@ public class CostCategoryModel extends IntegrationEntityModel implements
             hourCosts.addAll(costCategory.getHourCosts());
         }
         return hourCosts;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TypeOfWorkHours> getAllHoursType() {
+        return typeOfWorkHoursDAO.hoursTypeByNameAsc();
     }
 
     @Override

@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -125,6 +126,12 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
                     .getName());
         }
         return found;
+    }
+
+    @Override
+    public List<TypeOfWorkHours> hoursTypeByNameAsc() {
+        return getSession().createCriteria(TypeOfWorkHours.class)
+                .addOrder(Order.asc("name")).list();
     }
 
 }

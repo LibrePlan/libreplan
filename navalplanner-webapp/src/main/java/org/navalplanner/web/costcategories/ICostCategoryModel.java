@@ -28,6 +28,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
@@ -65,5 +66,7 @@ public interface ICostCategoryModel extends IIntegrationEntityModel {
     boolean canRemoveCostCategory(CostCategory category);
 
     void validateHourCostsOverlap() throws ValidationException;
+
+    List<TypeOfWorkHours> getAllHoursType();
 
 }

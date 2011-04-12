@@ -43,24 +43,28 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.util.ValidationExceptionPrinter;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.api.Window;
@@ -93,6 +97,8 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
     private Grid listCostCategories;
 
+    private ListModel allHoursType;
+
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
     @Override
@@ -124,6 +130,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 }
             }
         });
+        initializeHoursType();
+    }
+
+    private void initializeHoursType() {
+        allHoursType = new SimpleListModel(costCategoryModel.getAllHoursType());
     }
 
     @Override
@@ -245,41 +256,60 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     /**
-     * Append a Autocomplete @{link TypeOfWorkHours} to row
+     * Append Selectbox of @{link TypeOfWorkHours} to row
+     *
      * @param row
      */
-    private void appendAutocompleteType(final Row row) {
-        final Autocomplete autocomplete = new Autocomplete();
-        autocomplete.setAutodrop(true);
-        autocomplete.applyProperties();
-        autocomplete.setFinder("TypeOfWorkHoursFinder");
-        autocomplete.setConstraint("no empty:" + _("A type must be selected"));
+    private void appendHoursType(final Row row) {
+        final HourCost hourCost = (HourCost) row.getValue();
+        final Listbox lbHoursType = new Listbox();
+        lbHoursType.setMold("select");
+        lbHoursType.setModel(allHoursType);
+        lbHoursType.renderAll();
+        lbHoursType.applyProperties();
 
-        // Getter, show type selected
-        if (getTypeOfWorkHours(row) != null) {
-            autocomplete.setSelectedItem(getTypeOfWorkHours(row));
+        // First time is rendered, select first item
+        TypeOfWorkHours type = hourCost.getType();
+        if (hourCost.isNewObject() && type == null) {
+            Listitem item = lbHoursType.getItemAtIndex(0);
+            item.setSelected(true);
+            setHoursType(hourCost, item);
+        } else {
+            // If hoursCost has a type, select item with that type
+            Listitem item = ComponentsFinder.findItemByValue(lbHoursType, type);
+            if (item != null) {
+                lbHoursType.selectItem(item);
+            }
         }
 
-        // Setter, set type selected to HourCost.type
-        autocomplete.addEventListener("onSelect", new EventListener() {
+        lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                final Comboitem comboitem = autocomplete.getSelectedItem();
-
-                if(comboitem != null) {
-                    // Update hourCost
-                    HourCost hourCost = (HourCost) row.getValue();
-                    hourCost.setType((TypeOfWorkHours) comboitem.getValue());
-                    row.setValue(hourCost);
-
-                    // Update the hourPrice in the hourCost
-                    hourCost.setPriceCost(((TypeOfWorkHours) comboitem.getValue()).getDefaultPrice());
-                    Util.reloadBindings(listHourCosts);
+                Listitem item = lbHoursType.getSelectedItem();
+                if (item != null) {
+                    setHoursType((HourCost) row.getValue(), item);
                 }
             }
+
         });
-        row.appendChild(autocomplete);
+
+        row.appendChild(lbHoursType);
+    }
+
+    private void setHoursType(HourCost hourCost, Listitem item) {
+        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item
+                .getValue() : null;
+        hourCost.setType(value);
+        if (value != null) {
+            // Update the hourPrice in the hourCost
+            hourCost.setPriceCost(value.getDefaultPrice());
+            Util.reloadBindings(listHourCosts);
+        } else {
+            hourCost.setPriceCost(BigDecimal.ZERO);
+            throw new WrongValueException(item.getParent(),
+                    _("Please, select an item"));
+        }
     }
 
     /**
@@ -541,7 +571,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
             // Create boxes
             appendTextboxCode(row);
-            appendAutocompleteType(row);
+            appendHoursType(row);
             appendDecimalboxCost(row);
             appendDateboxInitDate(row);
             appendDateboxEndDate(row);

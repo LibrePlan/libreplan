@@ -53,4 +53,6 @@ public interface ITypeOfWorkHoursDAO extends
 
     TypeOfWorkHours findUniqueByName(String name)
             throws InstanceNotFoundException;
+
+    List<TypeOfWorkHours> hoursTypeByNameAsc();
 }
