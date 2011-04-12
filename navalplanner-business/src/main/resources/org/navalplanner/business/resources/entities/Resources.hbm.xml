@@ -113,7 +113,7 @@
     <property access="field" name="predefinedCriterionInternalName" not-null="false"
         column="predefined_criterion_internal_name" />
     <property access="field" name="active"/>
-    <many-to-one access="field" name="type" column="id_criterion_type" not-null="true" />
+    <many-to-one access="field" name="type" lazy="false" column="id_criterion_type" not-null="true" />
 
     <!--  Indexed. It is probable to navigate from a criterion
     to its children criteria -->

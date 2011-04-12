@@ -53,8 +53,7 @@
                             <label value="${i18n:_('Hierarchy')}" />
                             <checkbox id="cbHierarchy"
                                     checked="@{controller.criterionType.allowHierarchy}"
-                                    onCheck="controller.confirmDisabledHierarchy()"
-                                    disabled="true" />
+                                    onCheck="controller.confirmDisabledHierarchy()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Enabled')}" />

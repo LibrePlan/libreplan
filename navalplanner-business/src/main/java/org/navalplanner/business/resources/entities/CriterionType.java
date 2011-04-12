@@ -146,7 +146,7 @@ public class CriterionType extends IntegrationEntity implements
 
     private String description;
 
-    private Boolean allowHierarchy = false;
+    private Boolean allowHierarchy = true;
 
     private Boolean allowSimultaneousCriterionsPerResource = true;
 
