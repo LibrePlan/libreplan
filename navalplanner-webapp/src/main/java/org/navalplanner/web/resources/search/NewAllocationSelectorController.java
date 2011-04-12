@@ -202,7 +202,7 @@ public class NewAllocationSelectorController extends
     }
 
     private IResourcesQuery<?> query() {
-        return currentAllocationType.doQueryOn(resourceSearchModel);
+        return currentAllocationType.doQueryOn(resourcesSearcher);
     }
 
     private void refreshListBoxResources() {

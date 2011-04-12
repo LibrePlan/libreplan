@@ -80,7 +80,7 @@ public class NewAllocationSelectorComboController extends
     }
 
     private IResourcesQuery<?> query(ResourceEnum resourceEnum) {
-        return resourceSearchModel.searchBy(resourceEnum);
+        return resourcesSearcher.searchBy(resourceEnum);
     }
 
     /**

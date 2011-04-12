@@ -28,7 +28,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 /**
@@ -38,9 +37,10 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 public abstract class AllocationSelectorController extends
         GenericForwardComposer {
 
-    @Autowired
-    protected IResourcesSearcher resourceSearchModel;
+    // injected by name
+    protected IResourcesSearcher resourcesSearcher;
 
+    // injected by name
     protected ResourceAllocationBehaviour behaviour;
 
     public AllocationSelectorController() {
