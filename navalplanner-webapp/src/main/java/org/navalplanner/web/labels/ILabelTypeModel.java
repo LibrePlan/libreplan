@@ -88,4 +88,17 @@ public interface ILabelTypeModel extends IIntegrationEntityModel {
      */
     boolean labelNameIsUnique(String value);
 
+    /**
+     * Check is {@link Label} name is not empty
+     * @param value
+     */
+    void validateNameNotEmpty(String name) throws ValidationException;
+
+    /**
+     * Check is {@link Label} name is unique
+     * @param value
+     */
+    void thereIsOtherWithSameNameAndType(String name)
+            throws ValidationException;
+
 }

@@ -131,7 +131,9 @@ public class CriterionTreeController extends GenericForwardComposer {
                             criterionForThisRow.setName(value);
                         }
                     }));
-
+            String message = _("cannot be null or empty");
+            textboxName
+                    .setConstraint("no empty:"+message);
 
             Treecell cellForActive = new Treecell();
             cellForActive.setStyle("center");
