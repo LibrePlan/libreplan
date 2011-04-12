@@ -29,6 +29,7 @@ import static org.hibernate.criterion.Restrictions.or;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -142,8 +143,18 @@ public class ResourcesSearcher implements IResourcesSearcher {
             if (!criteriaSpecified()) {
                 return;
             }
-            criteria.createCriteria("criterionSatisfactions")
-                    .add(in("criterion", this.criteria));
+            criteria.createCriteria("criterionSatisfactions").add(
+                    in("criterion", withAllDescendants(this.criteria)));
+        }
+
+        private Set<Criterion> withAllDescendants(
+                Collection<? extends Criterion> originalCriteria) {
+            Set<Criterion> result = new HashSet<Criterion>();
+            for (Criterion each : originalCriteria) {
+                result.add(each);
+                result.addAll(withAllDescendants(each.getChildren()));
+            }
+            return result;
         }
 
         private boolean criteriaSpecified() {

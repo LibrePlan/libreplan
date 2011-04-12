@@ -121,7 +121,7 @@
     index="idx_criterion_on_parent"/>
 
     <!-- Indexed the other side -->
-    <set name="children" access="field" lazy="true" cascade="save-update">
+    <set name="children" access="field" lazy="false" cascade="save-update">
         <key column="parent" not-null="false"></key>
         <one-to-many class="Criterion"/>
     </set>
