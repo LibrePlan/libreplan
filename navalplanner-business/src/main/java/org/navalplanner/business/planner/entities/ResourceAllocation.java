@@ -1118,34 +1118,33 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private ResourcesPerDay calculateResourcesPerDayFromAssignments(
             Collection<? extends T> assignments) {
+        if (assignments.isEmpty()) {
+            return ResourcesPerDay.amount(0);
+        }
+
         Map<LocalDate, List<T>> byDay = DayAssignment.byDay(assignments);
+        LocalDate min = Collections.min(byDay.keySet());
+        LocalDate max = Collections.max(byDay.keySet());
+        Iterable<PartialDay> daysToIterate = startFor(min).daysUntil(
+                endFor(max));
+
         EffortDuration sumTotalEffort = zero();
         EffortDuration sumWorkableEffort = zero();
         final ResourcesPerDay ONE_RESOURCE_PER_DAY = ResourcesPerDay.amount(1);
-        for (Entry<LocalDate, List<T>> entry : byDay.entrySet()) {
-            LocalDate dayDate = entry.getKey();
-            PartialDay day = dayFor(dayDate);
+
+        for (PartialDay day : daysToIterate) {
+            List<T> assignmentsAtDay = avoidNull(byDay.get(day.getDate()),
+                    Collections.<T> emptyList());
             EffortDuration incrementWorkable = getAllocationCalendar()
                     .asDurationOn(day, ONE_RESOURCE_PER_DAY);
             sumWorkableEffort = sumWorkableEffort.plus(incrementWorkable);
-            sumTotalEffort = sumTotalEffort.plus(getAssignedDuration(entry
-                    .getValue()));
+            sumTotalEffort = sumTotalEffort
+                    .plus(getAssignedDuration(assignmentsAtDay));
         }
         if (sumWorkableEffort.equals(zero())) {
             return ResourcesPerDay.amount(0);
         }
         return ResourcesPerDay.calculateFrom(sumTotalEffort, sumWorkableEffort);
-    }
-
-    private PartialDay dayFor(LocalDate dayDate) {
-        IntraDayDate startDate = startFor(dayDate);
-
-        IntraDayDate intraDayEnd = getDayAssignmentsState()
-                .getIntraDayEnd();
-        if (intraDayEnd != null && dayDate.equals(intraDayEnd.getDate())) {
-            return new PartialDay(startDate, intraDayEnd);
-        }
-        return new PartialDay(startDate, startDate.nextDayAtStart());
     }
 
     private IntraDayDate startFor(LocalDate dayDate) {
@@ -1154,6 +1153,23 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return start;
         } else {
             return IntraDayDate.startOfDay(dayDate);
+        }
+    }
+
+    private IntraDayDate endFor(LocalDate assignmentDate) {
+        IntraDayDate end = getIntraDayEndDate();
+        if (end.getDate().equals(assignmentDate)) {
+            return end;
+        } else {
+            return IntraDayDate.startOfDay(assignmentDate).nextDayAtStart();
+        }
+    }
+
+    private static <T> T avoidNull(T value, T defaultValue) {
+        if (value != null) {
+            return value;
+        } else {
+            return defaultValue;
         }
     }
 
