@@ -251,7 +251,8 @@ public class CriterionDAOTest {
 
             @Override
             public boolean contains(ICriterion c) {
-                return criterion.isEquivalent(c);
+                return c instanceof Criterion
+                        && criterion.isEquivalent((Criterion) c);
             }
 
             @Override

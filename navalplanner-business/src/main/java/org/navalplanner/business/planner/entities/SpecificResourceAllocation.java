@@ -43,7 +43,7 @@ import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
-import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -338,7 +338,8 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public EffortDuration getAssignedEffort(ICriterion criterion, LocalDate startInclusive,
+    public EffortDuration getAssignedEffort(Criterion criterion,
+            LocalDate startInclusive,
             LocalDate endExclusive) {
         EffortDuration result = EffortDuration.zero();
         for (Interval each : getIntervalsRelatedWith(criterion, startInclusive,
@@ -352,7 +353,7 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
-    private List<Interval> getIntervalsRelatedWith(ICriterion criterion,
+    private List<Interval> getIntervalsRelatedWith(Criterion criterion,
             LocalDate startInclusive, LocalDate endExclusive) {
         Interval queryInterval = AvailabilityTimeLine.Interval.create(
                 startInclusive, endExclusive);
@@ -366,7 +367,8 @@ public class SpecificResourceAllocation extends
         return result;
     }
 
-    private List<Interval> getIntervalsThisAllocationInterferesWith(ICriterion criterion) {
+    private List<Interval> getIntervalsThisAllocationInterferesWith(
+            Criterion criterion) {
         AvailabilityTimeLine availability = AvailabilityCalculator
                 .getCriterionsAvailabilityFor(Collections.singleton(criterion),
                         resource);
@@ -375,7 +377,7 @@ public class SpecificResourceAllocation extends
         return availability.getValidPeriods();
     }
 
-    public boolean interferesWith(ICriterion criterion,
+    public boolean interferesWith(Criterion criterion,
             LocalDate startInclusive, LocalDate endExclusive) {
         List<Interval> intervalsRelatedWith = getIntervalsRelatedWith(
                 criterion, startInclusive, endExclusive);

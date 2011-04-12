@@ -363,7 +363,7 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public EffortDuration getAssignedEffort(ICriterion criterion,
+    public EffortDuration getAssignedEffort(Criterion criterion,
             LocalDate start, LocalDate endExclusive) {
         return super.getAssignedDuration(start, endExclusive);
     }

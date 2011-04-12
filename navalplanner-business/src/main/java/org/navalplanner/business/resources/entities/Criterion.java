@@ -338,25 +338,18 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     }
 
-    public boolean isEquivalent(ICriterion criterion) {
-        if (criterion instanceof Criterion) {
-            Criterion other = (Criterion) criterion;
-            return new EqualsBuilder().append(getName(), other.getName())
-                    .append(getType(), other.getType()).isEquals();
-        }
-        return false;
+    public boolean isEquivalent(Criterion other) {
+        return new EqualsBuilder().append(getName(), other.getName())
+                .append(getType(), other.getType()).isEquals();
     }
 
-    public boolean isEquivalentOrIncludedIn(ICriterion criterion) {
-        if (criterion instanceof Criterion) {
-            Criterion other = (Criterion) criterion;
-            if (isEquivalent(other)) {
+    public boolean isEquivalentOrIncludedIn(Criterion other) {
+        if (isEquivalent(other)) {
+            return true;
+        }
+        for (Criterion each : other.getChildren()) {
+            if (isEquivalentOrIncludedIn(each)) {
                 return true;
-            }
-            for (Criterion each : other.getChildren()) {
-                if (isEquivalentOrIncludedIn(each)) {
-                    return true;
-                }
             }
         }
         return false;

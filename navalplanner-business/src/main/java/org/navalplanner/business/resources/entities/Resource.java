@@ -309,7 +309,7 @@ public abstract class Resource extends IntegrationEntity {
             });
         }
 
-        public Query from(final ICriterion criterion) {
+        public Query from(final Criterion criterion) {
             return withNewPredicate(new IPredicate() {
 
                 @Override
@@ -410,7 +410,7 @@ public abstract class Resource extends IntegrationEntity {
         return query().from(type).result();
     }
 
-    public List<CriterionSatisfaction> getSatisfactionsFor(ICriterion criterion) {
+    public List<CriterionSatisfaction> getSatisfactionsFor(Criterion criterion) {
         return query().from(criterion).result();
     }
 
@@ -424,7 +424,7 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public List<CriterionSatisfaction> getCurrentSatisfactionsFor(
-            ICriterion criterion) {
+            Criterion criterion) {
         return query().from(criterion).current().result();
     }
 

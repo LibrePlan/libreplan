@@ -60,7 +60,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
-import org.navalplanner.business.resources.entities.ICriterion;
+import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
@@ -1771,7 +1771,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return getAssignedDuration(start, endExclusive).roundToHours();
     }
 
-    public abstract EffortDuration getAssignedEffort(ICriterion criterion, LocalDate start,
+    public abstract EffortDuration getAssignedEffort(Criterion criterion,
+            LocalDate start,
             LocalDate endExclusive);
 
     private List<DayAssignment> filter(List<DayAssignment> assignments,

@@ -28,7 +28,6 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
@@ -65,9 +64,9 @@ public class AvailabilityCalculator {
     }
 
     public static AvailabilityTimeLine getCriterionsAvailabilityFor(
-            Collection<? extends ICriterion> criterions, Resource resource) {
+            Collection<? extends Criterion> criterions, Resource resource) {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
-        for (ICriterion each : criterions) {
+        for (Criterion each : criterions) {
             result = result.and(buildTimeline(resource
                     .getSatisfactionsFor(each)));
         }

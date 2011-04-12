@@ -67,7 +67,6 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
@@ -236,7 +235,7 @@ public class GenericResourceAllocationTest {
                         return loadSpec.getLoad(date);
                     }
                 }).anyTimes();
-        expect(result.getSatisfactionsFor(isA(ICriterion.class))).andReturn(
+        expect(result.getSatisfactionsFor(isA(Criterion.class))).andReturn(
                 satisfactionsForPredefinedCriterions(result)).anyTimes();
         replay(result);
         return result;
