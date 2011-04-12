@@ -230,4 +230,27 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.labelType;
     }
+
+    @Override
+    public void thereIsOtherWithSameNameAndType(String name)
+            throws ValidationException {
+        for (Label label : labelType.getLabels()) {
+            if (name.equals(label.getName())) {
+                InvalidValue[] invalidValues = { new InvalidValue(
+                        _("Already exists other " + "label with the same name"),
+                        LabelType.class, "name", name, getLabelType()) };
+                throw new ValidationException(invalidValues);
+            }
+        }
+    }
+
+    @Override
+    public void validateNameNotEmpty(String name) throws ValidationException {
+        if (name.isEmpty()) {
+            InvalidValue[] invalidValues = { new InvalidValue(
+                    _("The name of the label is empty."), LabelType.class,
+                    "name", "", getLabelType()) };
+            throw new ValidationException(invalidValues);
+        }
+    }
 }

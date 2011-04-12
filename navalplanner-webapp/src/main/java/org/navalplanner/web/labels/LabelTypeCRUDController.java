@@ -271,13 +271,29 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     public void createLabel() {
-        validate();
-        labelTypeModel.addLabel(newLabelTextbox.getValue());
-        Util.reloadBindings(gridLabels);
-        // After adding a new row, model might be disordered, so we force it to
-        // sort again respecting previous settings
-        forceSortGridLabels();
-        newLabelTextbox.setValue("");
+        try{
+            validateNewLabel();
+            validate();
+            labelTypeModel.addLabel(newLabelTextbox.getValue());
+            Util.reloadBindings(gridLabels);
+            // After adding a new row, model might be disordered, so we force it
+            // to
+            // sort again respecting previous settings
+            forceSortGridLabels();
+            newLabelTextbox.setValue("");
+        } catch (ValidationException e) {
+            for (InvalidValue invalidValue : e.getInvalidValues()) {
+                messagesForUser.showMessage(Level.ERROR, invalidValue
+                        .getMessage());
+            }
+        }
+    }
+
+    private String validateNewLabel() throws ValidationException {
+        String name = newLabelTextbox.getValue();
+        labelTypeModel.validateNameNotEmpty(name);
+        labelTypeModel.thereIsOtherWithSameNameAndType(name);
+        return name;
     }
 
     /**
