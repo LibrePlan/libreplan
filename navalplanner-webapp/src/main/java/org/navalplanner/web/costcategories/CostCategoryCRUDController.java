@@ -302,9 +302,12 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 .getValue() : null;
         hourCost.setType(value);
         if (value != null) {
-            // Update the hourPrice in the hourCost
-            hourCost.setPriceCost(value.getDefaultPrice());
-            Util.reloadBindings(listHourCosts);
+            final BigDecimal defaultPrice = value.getDefaultPrice();
+            final Decimalbox dbPricePerHour = (Decimalbox) item.getParent().getNextSibling();
+            hourCost.setPriceCost(defaultPrice);
+            if (dbPricePerHour != null) {
+                dbPricePerHour.setValue(defaultPrice);
+            }
         } else {
             hourCost.setPriceCost(BigDecimal.ZERO);
             throw new WrongValueException(item.getParent(),
