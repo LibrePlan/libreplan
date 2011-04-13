@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -242,4 +243,6 @@ public interface IWorkReportModel extends IIntegrationEntityModel {
     List<OrderElement> getOrderElements();
 
     void generateWorkReportLinesIfIsNecessary();
+
+    List<TypeOfWorkHours> getAllHoursType();
 }

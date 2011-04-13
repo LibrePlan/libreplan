@@ -23,6 +23,7 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.math.BigDecimal;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -56,6 +58,7 @@ import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.URLHandler;
 import org.zkoss.ganttz.IPredicate;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -70,8 +73,10 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -124,6 +129,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private BandboxSearch bandboxSelectOrderElementInHead;
 
+    private ListModel allHoursType;
+
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
@@ -175,6 +182,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             //listType is null in reports -> work report lines
             listType.setSelectedIndex(0);
         }
+        initializeHoursType();
+    }
+
+    private void initializeHoursType() {
+        allHoursType = new SimpleListModel(workReportModel.getAllHoursType());
     }
 
     private void initCurrentList() {
@@ -1143,36 +1155,55 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         row.appendChild(intNumHours);
     }
 
+    /**
+     * Append Selectbox of @{link TypeOfWorkHours} to row
+     *
+     * @param row
+     */
     private void appendHoursType(final Row row) {
-        final WorkReportLine line = (WorkReportLine) row.getValue();
-        final Autocomplete hoursType = new Autocomplete();
-        hoursType.setAutodrop(true);
-        hoursType.applyProperties();
-        hoursType.setFinder("TypeOfWorkHoursFinder");
+        final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+        final Listbox lbHoursType = new Listbox();
+        lbHoursType.setMold("select");
+        lbHoursType.setModel(allHoursType);
+        lbHoursType.renderAll();
+        lbHoursType.applyProperties();
 
-         if (line.getTypeOfWorkHours() != null) {
-             hoursType.setSelectedItem(line.getTypeOfWorkHours());
-         }
+        // First time is rendered, select first item
+        TypeOfWorkHours type = workReportLine.getTypeOfWorkHours();
+        if (workReportLine.isNewObject() && type == null) {
+            Listitem item = lbHoursType.getItemAtIndex(0);
+            item.setSelected(true);
+            setHoursType(workReportLine, item);
+        } else {
+            // If workReportLine has a type, select item with that type
+            Listitem item = ComponentsFinder.findItemByValue(lbHoursType, type);
+            if (item != null) {
+                lbHoursType.selectItem(item);
+            }
+        }
 
-        hoursType.addEventListener("onChange", new EventListener() {
+        lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
+
             @Override
             public void onEvent(Event event) throws Exception {
-                changeHoursType(hoursType, row);
+                Listitem item = lbHoursType.getSelectedItem();
+                if (item != null) {
+                    setHoursType((WorkReportLine) row.getValue(), item);
+                }
             }
+
         });
-        row.appendChild(hoursType);
+
+        row.appendChild(lbHoursType);
     }
 
-    private void changeHoursType(final Autocomplete hoursType, final Row row) {
-        final WorkReportLine line = (WorkReportLine) row.getValue();
-        final Comboitem comboitem = hoursType.getSelectedItem();
-        if ((comboitem == null)
-                || ((TypeOfWorkHours) comboitem.getValue() == null)) {
-            line.setTypeOfWorkHours(null);
-            throw new WrongValueException(hoursType,
+    private void setHoursType(WorkReportLine workReportLine, Listitem item) {
+        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item
+                .getValue() : null;
+        workReportLine.setTypeOfWorkHours(value);
+        if (value == null) {
+            throw new WrongValueException(item.getParent(),
                     _("Please, select an item"));
-        } else {
-            line.setTypeOfWorkHours((TypeOfWorkHours) comboitem.getValue());
         }
     }
 

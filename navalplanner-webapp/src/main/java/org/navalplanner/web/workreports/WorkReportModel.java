@@ -38,11 +38,14 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
@@ -100,6 +103,9 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     private WorkReportType workReportType;
 
@@ -612,4 +618,11 @@ public class WorkReportModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.workReport;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TypeOfWorkHours> getAllHoursType() {
+        return typeOfWorkHoursDAO.hoursTypeByNameAsc();
+    }
+
 }
