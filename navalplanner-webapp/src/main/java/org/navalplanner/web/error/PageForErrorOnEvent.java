@@ -20,14 +20,18 @@
 
 package org.navalplanner.web.error;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.Writer;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.web.common.components.I18n;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.api.Textbox;
 
 public class PageForErrorOnEvent extends GenericForwardComposer {
 
@@ -35,15 +39,13 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
 
     private Component modalWindow;
 
+    private Textbox stacktrace;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         logError();
-        modalWindow = comp;
-        I18n i18NMessge = (I18n) modalWindow.getFellowIfAny("message");
-        if (i18NMessge != null) {
-            i18NMessge.forceLoad();
-        }
+        stacktrace.setValue(getStacktrace());
     }
 
     private void logError() {
@@ -67,6 +69,14 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
                 .getCurrent().getNativeRequest();
         nativeRequest.getSession().invalidate();
         Executions.sendRedirect("/");
+    }
+
+    private String getStacktrace() {
+        Throwable exception = (Throwable) Executions.getCurrent().getAttribute(
+                "javax.servlet.error.exception");
+        Writer stacktrace = new StringWriter();
+        exception.printStackTrace(new PrintWriter(stacktrace));
+        return stacktrace.toString();
     }
 
 }

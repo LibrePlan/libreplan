@@ -18,16 +18,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window title="${i18n:__('Error', requestScope['javax.servlet.error.status_code'])}"
-    width="400px" border="normal" mode="modal"
+<window title="${i18n:_('NavalPlan: Runtime Error')}"
+    width="800px" border="normal" mode="modal"
     apply="org.navalplanner.web.error.PageForErrorOnEvent">
-    <vbox>
-        <i18n id="message"
-            value="Run-time error: {0} . Error was registered and it will be fixed as soon as possible." arg0="${requestScope['javax.servlet.error.message']}" />
-        <hbox style="margin-left:auto; margin-right:auto">
-            <button id="continueWorking" label="${i18n:_('Continue')}" />
-            <button id="reload" label="${i18n:_('Reload')}" />
-            <button id="quitSession" label="${i18n:_('Exit session')}"></button>
-        </hbox>
-    </vbox>
+    <panel title="${i18n:__('Message - {0}', requestScope['javax.servlet.error.message'])}"
+        border="normal" style="overflow:auto">
+        <panelchildren>
+            <grid width="700px">
+                <columns>
+                    <column width="100px" />
+                    <column />
+                </columns>
+                <rows>
+                    <row>
+                        <label value="${i18n:_('Exception type:')}" />
+                        <label value="${requestScope['javax.servlet.error.exception_type']}" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Status code:')}" />
+                        <label value="${requestScope['javax.servlet.error.status_code']}" />
+                    </row>
+                    <row>
+                        <label value="${i18n:_('Stacktracke:')}" />
+                        <textbox id="stacktrace" rows="20" width="600px" />
+                    </row>
+                </rows>
+            </grid>
+            <hbox style="margin-left:auto; margin-right:auto">
+                <button id="continueWorking" label="${i18n:_('Continue')}" />
+                <button id="reload" label="${i18n:_('Reload')}" />
+                <button id="quitSession" label="${i18n:_('Exit session')}"></button>
+            </hbox>
+        </panelchildren>
+    </panel>
 </window>
