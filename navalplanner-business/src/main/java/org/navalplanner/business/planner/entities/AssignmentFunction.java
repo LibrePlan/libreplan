@@ -42,7 +42,7 @@ public class AssignmentFunction extends BaseEntity {
 
     /**
      * This method applies the function to the received resourceAllocation
-     * <i>This method is intended to be overrided by subclasses</i>
+     * <i>This method is intended to be overridden by subclasses</i>
      * @param resourceAllocation
      */
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
