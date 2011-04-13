@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
@@ -43,6 +44,7 @@ import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -221,8 +223,21 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private void forceLoadPrincipalDataWorkReportLines(WorkReportLine line) {
         line.getNumHours();
         line.getResource().getShortDescription();
-        line.getOrderElement().getOrder();
         line.getTypeOfWorkHours().getName();
+        initalizeOrderElement(line.getOrderElement());
+    }
+
+    private void initalizeOrderElement(OrderElement orderElement) {
+        Hibernate.initialize(orderElement);
+        initalizeOrder(orderElement);
+    }
+
+    private void initalizeOrder(OrderElement orderElement) {
+        OrderLineGroup parent = orderElement.getParent();
+        while (parent != null) {
+            Hibernate.initialize(parent);
+            parent = parent.getParent();
+        }
     }
 
     private void forceLoadWorkReportTypeFromDB(WorkReportType workReportType) {
