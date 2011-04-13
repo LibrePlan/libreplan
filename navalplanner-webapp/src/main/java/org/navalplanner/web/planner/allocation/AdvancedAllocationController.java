@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.NoneFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -1308,7 +1309,15 @@ class Row {
         public void applyDefaultFunction(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(null);
+            reloadHours();
         }
+
+        private void reloadHours() {
+            reloadHoursSameRowForDetailItems();
+            reloadAllHours();
+            fireCellChanged();
+        }
+
     };
 
     private abstract class CommonStrechesConfiguration extends
