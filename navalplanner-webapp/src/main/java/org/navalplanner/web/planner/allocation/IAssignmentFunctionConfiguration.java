@@ -27,7 +27,7 @@ public interface IAssignmentFunctionConfiguration {
 
     public boolean isTargetedTo(AssignmentFunction function);
 
-    public void applyDefaultFunction(
+    public void applyOn(
             ResourceAllocation<?> resourceAllocation);
 
     public String getName();

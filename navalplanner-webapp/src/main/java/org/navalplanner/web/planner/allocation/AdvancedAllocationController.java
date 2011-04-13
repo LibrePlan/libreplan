@@ -1253,7 +1253,7 @@ class Row {
                         if (showConfirmChangeFunctionDialog() == Messagebox.YES) {
                             IAssignmentFunctionConfiguration function = getSelectedFunction();
                             if (function != null) {
-                                function.applyDefaultFunction(getAllocation());
+                                function.applyOn(getAllocation());
                             }
                         } else {
                             setPreviousValue(currentValue);
@@ -1309,7 +1309,7 @@ class Row {
         }
 
         @Override
-        public void applyDefaultFunction(
+        public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(null);
             reloadHours();
@@ -1413,7 +1413,7 @@ class Row {
         }
 
         @Override
-        public void applyDefaultFunction(
+        public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
             reloadHours();
