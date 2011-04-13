@@ -314,8 +314,7 @@ public abstract class Resource extends IntegrationEntity {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
-                    return satisfaction.getCriterion()
-                            .isEquivalentOrIncludedIn(criterion);
+                    return criterion.includes(satisfaction.getCriterion());
                 }
             });
         }

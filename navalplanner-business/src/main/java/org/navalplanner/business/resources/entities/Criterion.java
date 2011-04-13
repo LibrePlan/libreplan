@@ -355,6 +355,18 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         return false;
     }
 
+    public boolean includes(Criterion other) {
+        if (isEquivalent(other)) {
+            return true;
+        }
+        for (Criterion each : this.getChildren()) {
+            if (each.includes(other)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @AssertTrue(message="a disabled resource has enabled subresources")
     public boolean checkConstraintActive() {
 
