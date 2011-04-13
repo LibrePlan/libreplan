@@ -19,7 +19,10 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -55,32 +58,18 @@ public class SigmoidFunction extends AssignmentFunction {
     @Override
     public void applyTo(ResourceAllocation<?> resourceAllocation) {
         final Task task = resourceAllocation.getTask();
-        int totalHours = resourceAllocation.getAssignedHours();
+        final int totalHours = resourceAllocation.getAssignedHours();
         apply(resourceAllocation, task.getStartAsLocalDate(), task.getEndAsLocalDate(), totalHours);
-    }
-
-    private int labourDaysBetween(BaseCalendar calendar, LocalDate start,
-            LocalDate end) {
-        EffortDuration capacity;
-        int result = 0;
-
-        LocalDate day = new LocalDate(start);
-        while (day.isBefore(end)) {
-            capacity = calendar.getCapacityOn(PartialDay.wholeDay(day));
-            if (!EffortDuration.zero().equals(capacity)) {
-                result += 1;
-            }
-            day = day.plusDays(1);
-        }
-        return result != 0 ? result : 1;
     }
 
     private void apply(ResourceAllocation<?> resourceAllocation,
             LocalDate start, LocalDate end, int totalHours) {
 
+        final LocalDate previousEndDate = resourceAllocation.getEndDate();
+
         EffortDuration capacity;
         BaseCalendar calendar = resourceAllocation.getTask().getCalendar();
-        int daysDuration = labourDaysBetween(calendar, start, end);
+        int daysDuration = daysWithAllocatedHours(resourceAllocation).size();
 
         // Calculate hours per day and round values (take only integer part)
         BigDecimal[] hoursToAllocatePerDay = generateHoursToAllocateFor(daysDuration, totalHours);
@@ -107,8 +96,26 @@ public class SigmoidFunction extends AssignmentFunction {
             }
             day = day.plusDays(1);
         }
+        Validate.isTrue(resourceAllocation.getEndDate().equals(previousEndDate));
+    }
 
-        clearPreviouslyAllocatedDays(resourceAllocation, day, end);
+    private List<BigDecimal> daysWithAllocatedHours(
+            ResourceAllocation<?> resourceAllocation) {
+
+        List<BigDecimal> result = new ArrayList<BigDecimal>();
+        LocalDate day = new LocalDate(resourceAllocation.getStartDate());
+        final LocalDate end = resourceAllocation.getEndDate();
+        int i = 0;
+
+        while (day.isBefore(end)) {
+            int hoursAllocated = resourceAllocation.getAssignedHours(day, day.plusDays(1));
+            if (hoursAllocated != 0) {
+                result.add(new BigDecimal(hoursAllocated));
+                i++;
+            }
+            day = day.plusDays(1);
+        }
+        return result;
     }
 
     /**
@@ -132,16 +139,6 @@ public class SigmoidFunction extends AssignmentFunction {
                 hoursToAllocatePerDay[i + 1] = next.subtract(BigDecimal.ONE);
                 hoursToAllocatePerDay[i] = hours.add(BigDecimal.ONE);
             }
-        }
-    }
-
-    private void clearPreviouslyAllocatedDays(
-            ResourceAllocation<?> resourceAllocation, LocalDate start,
-            LocalDate end) {
-
-        while (start.isBefore(end) || start.isEqual(end)) {
-            allocate(resourceAllocation, start, 0);
-            start = start.plusDays(1);
         }
     }
 
