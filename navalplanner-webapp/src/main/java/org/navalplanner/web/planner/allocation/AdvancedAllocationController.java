@@ -1246,39 +1246,42 @@ class Row {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        ResourceAllocation<?> resourceAllocation = getAllocation();
-                        AssignmentFunction assignmentFunction = resourceAllocation
-                                .getAssignmentFunction();
-                        IAssignmentFunctionConfiguration choosen = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
-                                .getSelectedItem().getValue();
-                        boolean hasChanged = !choosen
-                                .isTargetedTo(assignmentFunction);
-                        boolean noPreviousAllocation = assignmentFunction == null;
-                        if (hasChanged) {
-                            boolean changeConfirmed = false;
-                            if (noPreviousAllocation || (changeConfirmed = isChangeConfirmed()) ) {
-                                choosen.applyDefaultFunction(resourceAllocation);
-                                assignmentFunctionsCombo.setVariable("previousValue", assignmentFunctionsCombo.getValue(), true);
-                                return;
+                        final String currentValue = assignmentFunctionsCombo.getValue();
+                        if (currentValue.equals(getPreviousValue())) {
+                            return;
+                        }
+                        if (showConfirmChangeFunctionDialog() == Messagebox.YES) {
+                            IAssignmentFunctionConfiguration function = getSelectedFunction();
+                            if (function != null) {
+                                function.applyDefaultFunction(getAllocation());
                             }
-
-                            if (!changeConfirmed) {
-                                String previousValue = (String) assignmentFunctionsCombo.getVariable("previousValue", true);
-                                assignmentFunctionsCombo.setValue(previousValue);
-                            }
+                        } else {
+                            setPreviousValue(currentValue);
                         }
                     }
 
-                    private boolean isChangeConfirmed()
+                    private IAssignmentFunctionConfiguration getSelectedFunction() {
+                        Comboitem selectedItem = assignmentFunctionsCombo.getSelectedItem();
+                        return (selectedItem != null) ? (IAssignmentFunctionConfiguration) selectedItem.getValue() : null;
+                    }
+
+                    private String getPreviousValue() {
+                        return (String) assignmentFunctionsCombo.getVariable("previousValue", true);
+                    }
+
+                    private void setPreviousValue(String value) {
+                        assignmentFunctionsCombo.setVariable("previousValue", value, true);
+                    }
+
+                    private int showConfirmChangeFunctionDialog()
                             throws InterruptedException {
-                        int status = Messagebox
-                                .show(
-                                        _("You are going to change the assignment function. Are you sure?"),
+                        return Messagebox
+                                .show(_("You are going to change the assignment function. Are you sure?"),
                                         _("Confirm change"), Messagebox.YES
                                                 | Messagebox.NO,
                                         Messagebox.QUESTION);
-                        return Messagebox.YES == status;
                     }
+
                 });
     }
 
