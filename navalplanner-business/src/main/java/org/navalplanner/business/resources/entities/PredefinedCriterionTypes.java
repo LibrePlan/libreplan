@@ -25,6 +25,8 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import java.util.Arrays;
 import java.util.List;
 
+import org.navalplanner.business.common.Registry;
+
 /**
  * This class defines some criterion types known a priori<br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -155,4 +157,9 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     }
 
     public abstract List<String> getPredefined();
+
+    public CriterionType getCriterionType() {
+        return Registry.getCriterionTypeDAO().findByName(getName());
+    }
+
 }

@@ -48,16 +48,9 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     implements ICriterionTypeDAO {
 
     @Override
-    @SuppressWarnings("unchecked")
-    public List<CriterionType> findByName(CriterionType criterionType) {
-        Criteria criteria = searchByNameCriteria(criterionType.getName());
-        return (List<CriterionType>) criteria.list();
-    }
-
-    private Criteria searchByNameCriteria(String name) {
-        Criteria result = getSession().createCriteria(CriterionType.class);
-        result.add(Restrictions.eq("name", name).ignoreCase());
-        return result;
+    public CriterionType findByName(String name) {
+        return (CriterionType) getSession().createCriteria(CriterionType.class)
+                .add(Restrictions.eq("name", name).ignoreCase()).uniqueResult();
     }
 
     @Override
@@ -70,20 +63,12 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     @Override
     public CriterionType findUniqueByName(String name)
             throws InstanceNotFoundException {
-        CriterionType result = uniqueByName(name);
+        CriterionType result = findByName(name);
         if (result == null) {
               throw new InstanceNotFoundException(name,
                   CriterionType.class.getName());
           }
         return result;
-    }
-
-    /**
-     * @return the single result of null
-     */
-    private CriterionType uniqueByName(String name) {
-        Criteria criteria = searchByNameCriteria(name);
-        return (CriterionType) criteria.uniqueResult();
     }
 
     @Override
@@ -98,7 +83,7 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     @Override
     public boolean existsOtherCriterionTypeByName(CriterionType criterionType) {
         Validate.notNull(criterionType);
-        CriterionType found = uniqueByName(criterionType.getName());
+        CriterionType found = findByName(criterionType.getName());
         return found != null && criterionType != found;
     }
 
@@ -150,7 +135,7 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
     public CriterionType findPredefined(CriterionType criterionType) {
         Validate.notNull(criterionType);
         Validate.notNull(criterionType.getPredefinedTypeInternalName());
-        CriterionType result = uniqueByName(criterionType.getName());
+        CriterionType result = findByName(criterionType.getName());
         if (result != null) {
             return result;
         }

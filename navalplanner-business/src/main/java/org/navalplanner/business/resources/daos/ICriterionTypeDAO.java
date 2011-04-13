@@ -48,7 +48,7 @@ public interface ICriterionTypeDAO
     CriterionType findUniqueByName(CriterionType criterionType)
             throws InstanceNotFoundException;
 
-    List<CriterionType> findByName(CriterionType criterionType);
+    CriterionType findByName(String name);
 
     public boolean existsOtherCriterionTypeByName(CriterionType criterionType);
 
