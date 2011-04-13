@@ -52,19 +52,19 @@
 	<group name="OrderCode">
 		<groupExpression><![CDATA[$F{orderName}]]></groupExpression>
 		<groupHeader>
-			<band height="60">
+			<band height="72">
 				<textField evaluationTime="Group" evaluationGroup="OrderCode" isBlankWhenNull="true">
-					<reportElement x="2" y="15" width="219" height="26"/>
+					<reportElement x="2" y="6" width="551" height="26"/>
 					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderName}]]></textFieldExpression>
 				</textField>
 				<line>
-					<reportElement x="2" y="41" width="553" height="1"/>
+					<reportElement x="2" y="59" width="553" height="1"/>
 				</line>
 				<textField evaluationTime="Group" evaluationGroup="OrderCode" isBlankWhenNull="true">
-					<reportElement x="247" y="15" width="219" height="26"/>
+					<reportElement x="2" y="32" width="551" height="26"/>
 					<textElement verticalAlignment="Middle">
 						<font size="12" isBold="true"/>
 					</textElement>
