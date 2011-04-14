@@ -46,7 +46,7 @@
         column="last_label_sequence_code" />
 
     <!-- Indexed the other side -->
-    <set name="labels" inverse="false" cascade="all">
+    <set name="labels" inverse="false" cascade="all-delete-orphan">
         <cache usage="nonstrict-read-write"/>
         <key column="label_type_id"/>
         <one-to-many class="Label"/>
