@@ -312,7 +312,7 @@
             </list>
             <property name="type">
               <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunction$Type</param>
+                <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum</param>
               </type>
             </property>
         </joined-subclass>

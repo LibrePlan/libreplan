@@ -32,7 +32,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 
 
 
@@ -48,7 +48,8 @@ public interface IStretchesFunctionModel {
      */
 
     void init(StretchesFunction stretchesFunction,
-            ResourceAllocation<?> resourceAllocation, Type type);
+            ResourceAllocation<?> resourceAllocation,
+            StretchesFunctionTypeEnum type);
 
     /*
      * Intermediate conversation steps

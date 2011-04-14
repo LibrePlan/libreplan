@@ -34,7 +34,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -94,7 +94,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public void setResourceAllocation(ResourceAllocation<?> resourceAllocation,
-            Type type) {
+            StretchesFunctionTypeEnum type) {
         AssignmentFunction assignmentFunction = resourceAllocation
                 .getAssignmentFunction();
         stretchesFunctionModel.init((StretchesFunction) assignmentFunction,

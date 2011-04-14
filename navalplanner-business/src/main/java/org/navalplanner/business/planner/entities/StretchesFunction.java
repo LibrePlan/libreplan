@@ -31,160 +31,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.math.FunctionEvaluationException;
-import org.apache.commons.math.analysis.SplineInterpolator;
-import org.apache.commons.math.analysis.UnivariateRealFunction;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.ProportionalDistributor;
 
 /**
  * Assignment function by stretches.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
 public class StretchesFunction extends AssignmentFunction {
-
-    public enum Type {
-        DEFAULT {
-            @Override
-            public void apply(ResourceAllocation<?> allocation,
-                    List<Interval> intervalsDefinedByStreches,
-                    LocalDate startInclusive, LocalDate endExclusive,
-                    int totalHours) {
-                Interval.apply(allocation, intervalsDefinedByStreches,
-                        startInclusive, endExclusive, totalHours);
-
-            }
-        },
-        INTERPOLATED {
-            @Override
-            public void apply(ResourceAllocation<?> allocation,
-                    List<Interval> intervalsDefinedByStreches,
-                    LocalDate startInclusive, LocalDate endExclusive,
-                    int totalHours) {
-                double[] x = Interval.getDayPointsFor(startInclusive,
-                        intervalsDefinedByStreches);
-                assert x.length == 1 + intervalsDefinedByStreches.size();
-                double[] y = Interval.getHoursPointsFor(totalHours,
-                        intervalsDefinedByStreches);
-                assert y.length == 1 + intervalsDefinedByStreches.size();
-                int[] hoursForEachDay = hoursForEachDayUsingSplines(x, y,
-                        startInclusive, endExclusive);
-                int[] reallyAssigned = getReallyAssigned(allocation,
-                        startInclusive, hoursForEachDay);
-                // Because of calendars, really assigned hours can be less than
-                // the hours for each day specified by the interpolation. The
-                // remainder must be distributed.
-                distributeRemainder(allocation, startInclusive, totalHours,
-                        reallyAssigned);
-
-            }
-
-            private int[] getReallyAssigned(ResourceAllocation<?> allocation,
-                    LocalDate startInclusive, int[] hoursForEachDay) {
-                int[] reallyAssigned = new int[hoursForEachDay.length];
-                for (int i = 0; i < hoursForEachDay.length; i++) {
-                    LocalDate day = startInclusive.plusDays(i);
-                    LocalDate nextDay = day.plusDays(1);
-                    allocation.withPreviousAssociatedResources()
-                            .onIntervalWithinTask(day, nextDay)
-                            .allocateHours(hoursForEachDay[i]);
-                    reallyAssigned[i] = allocation.getAssignedHours(day,
-                            nextDay);
-                }
-                return reallyAssigned;
-            }
-
-            private void distributeRemainder(ResourceAllocation<?> allocation,
-                    LocalDate startInclusive, int totalHours,
-                    int[] reallyAssigned) {
-                final int remainder = totalHours - sum(reallyAssigned);
-                if (remainder == 0) {
-                    return;
-                }
-                int[] perDay = distributeRemainder(reallyAssigned, remainder);
-                for (int i = 0; i < perDay.length; i++) {
-                    if (perDay[i] == 0) {
-                        continue;
-                    }
-                    final int newHours = perDay[i] + reallyAssigned[i];
-                    LocalDate day = startInclusive.plusDays(i);
-                    LocalDate nextDay = day.plusDays(1);
-                    allocation.withPreviousAssociatedResources()
-                            .onIntervalWithinTask(day, nextDay)
-                            .allocateHours(newHours);
-                }
-            }
-
-            private int[] distributeRemainder(int[] hoursForEachDay,
-                    int remainder) {
-                ProportionalDistributor remainderDistributor = ProportionalDistributor
-                        .create(hoursForEachDay);
-                return remainderDistributor.distribute(remainder);
-            }
-        };
-
-        public static int[] hoursForEachDayUsingSplines(double[] x, double[] y,
-                LocalDate startInclusive, LocalDate endExclusive) {
-            UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
-                    .interpolate(x, y);
-            int[] extractAccumulated = extractAccumulated(accumulatingFunction,
-                    startInclusive, endExclusive);
-            return extractHoursShouldAssignForEachDay(ValleyFiller
-                    .fillValley(extractAccumulated));
-        }
-
-        private static int[] extractAccumulated(
-                UnivariateRealFunction accumulatedFunction,
-                LocalDate startInclusive, LocalDate endExclusive) {
-            int[] result = new int[Days.daysBetween(startInclusive,
-                    endExclusive).getDays()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = evaluate(accumulatedFunction, i + 1);
-            }
-            return result;
-        }
-
-        private static int[] extractHoursShouldAssignForEachDay(
-                int[] accumulated) {
-            int[] result = new int[accumulated.length];
-            int previous = 0;
-            for (int i = 0; i < result.length; i++) {
-                final int current = accumulated[i];
-                result[i] = current - previous;
-                previous = current;
-            }
-            return result;
-        }
-
-        private static int evaluate(UnivariateRealFunction accumulatedFunction,
-                int x) {
-            try {
-                return (int) accumulatedFunction.value(x);
-            } catch (FunctionEvaluationException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-        public void applyTo(ResourceAllocation<?> resourceAllocation,
-                StretchesFunction stretchesFunction) {
-            List<Interval> intervalsDefinedByStreches = stretchesFunction
-                    .getIntervalsDefinedByStreches();
-            int totalHours = resourceAllocation.getAssignedHours();
-            Task task = resourceAllocation.getTask();
-            LocalDate start = LocalDate.fromDateFields(task.getStartDate());
-            LocalDate end = LocalDate.fromDateFields(task.getEndDate());
-            apply(resourceAllocation, intervalsDefinedByStreches, start, end,
-                    totalHours);
-        }
-
-        protected abstract void apply(ResourceAllocation<?> allocation,
-                List<Interval> intervalsDefinedByStreches,
-                LocalDate startInclusive, LocalDate endExclusive, int totalHours);
-    }
 
     public static class Interval {
 
@@ -306,14 +162,6 @@ public class StretchesFunction extends AssignmentFunction {
 
     }
 
-    private static int sum(int[] array) {
-        int result = 0;
-        for (int each : array) {
-            result += each;
-        }
-        return result;
-    }
-
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
     }
@@ -347,12 +195,12 @@ public class StretchesFunction extends AssignmentFunction {
 
     private List<Stretch> stretches = new ArrayList<Stretch>();
 
-    private Type type;
+    private StretchesFunctionTypeEnum type;
 
     /**
      * This is a transient field. Not stored
      */
-    private Type desiredType;
+    private StretchesFunctionTypeEnum desiredType;
 
     public StretchesFunction copy() {
         StretchesFunction result = StretchesFunction.create();
@@ -393,15 +241,15 @@ public class StretchesFunction extends AssignmentFunction {
         return Collections.unmodifiableList(stretches);
     }
 
-    public Type getType() {
-        return type == null ? Type.DEFAULT : type;
+    public StretchesFunctionTypeEnum getType() {
+        return type == null ? StretchesFunctionTypeEnum.STRETCHES : type;
     }
 
-    public Type getDesiredType() {
+    public StretchesFunctionTypeEnum getDesiredType() {
         return desiredType == null ? getType() : desiredType;
     }
 
-    public void changeTypeTo(Type type) {
+    public void changeTypeTo(StretchesFunctionTypeEnum type) {
         desiredType = type;
     }
 
@@ -481,7 +329,7 @@ public class StretchesFunction extends AssignmentFunction {
 
     @Override
     public String getName() {
-        if (StretchesFunction.Type.INTERPOLATED.equals(type)) {
+        if (StretchesFunctionTypeEnum.INTERPOLATED.equals(type)) {
             return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
         } else {
             return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
@@ -509,7 +357,7 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public boolean ifInterpolatedMustHaveAtLeastTwoStreches() {
-        return getDesiredType() != Type.INTERPOLATED || stretches.size() >= 2;
+        return getDesiredType() != StretchesFunctionTypeEnum.INTERPOLATED || stretches.size() >= 2;
     }
 
 }

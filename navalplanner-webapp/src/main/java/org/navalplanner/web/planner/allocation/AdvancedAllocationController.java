@@ -48,11 +48,10 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
-import org.navalplanner.business.planner.entities.NoneFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -1356,8 +1355,8 @@ class Row {
         }
 
         @Override
-        protected Type getType() {
-            return Type.DEFAULT;
+        protected StretchesFunctionTypeEnum getType() {
+            return StretchesFunctionTypeEnum.STRETCHES;
         }
 
         @Override
@@ -1379,8 +1378,8 @@ class Row {
         }
 
         @Override
-        protected Type getType() {
-            return Type.INTERPOLATED;
+        protected StretchesFunctionTypeEnum getType() {
+            return StretchesFunctionTypeEnum.INTERPOLATED;
         }
 
         @Override

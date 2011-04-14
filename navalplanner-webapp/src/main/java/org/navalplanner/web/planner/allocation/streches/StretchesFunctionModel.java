@@ -41,7 +41,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -96,7 +96,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     public void init(
             StretchesFunction stretchesFunction,
             ResourceAllocation<?> resourceAllocation,
-            org.navalplanner.business.planner.entities.StretchesFunction.Type type) {
+            StretchesFunctionTypeEnum type) {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
             this.originalStretchesFunction = stretchesFunction;
@@ -145,7 +145,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                 throw new ValidationException(
                         _("For interpolation at least two stretches are needed"));
             }
-            if (stretchesFunction.getDesiredType() == Type.INTERPOLATED) {
+            if (stretchesFunction.getDesiredType() == StretchesFunctionTypeEnum.INTERPOLATED) {
                 if (!atLeastTwoStreches(getStretches())) {
                     throw new ValidationException(
                             _("There must be at least 2 stretches for doing interpolation"));

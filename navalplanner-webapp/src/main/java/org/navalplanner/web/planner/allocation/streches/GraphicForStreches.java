@@ -30,7 +30,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
 import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
@@ -41,9 +41,9 @@ import org.zkoss.zul.XYModel;
  */
 public abstract class GraphicForStreches implements IGraphicGenerator {
 
-    public static IGraphicGenerator forType(Type type) {
+    public static IGraphicGenerator forType(StretchesFunctionTypeEnum type) {
         switch (type) {
-        case DEFAULT:
+        case STRETCHES:
             return new ForDefaultStreches();
         case INTERPOLATED:
             return new ForInterpolation();
@@ -204,7 +204,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             double[] hourPoints = Interval.getHoursPointsFor(taskHours
                     .intValue(), intervals);
             final Stretch lastStretch = stretches.get(stretches.size() - 1);
-            return StretchesFunction.Type.hoursForEachDayUsingSplines(
+            return StretchesFunctionTypeEnum.hoursForEachDayUsingSplines(
                     dayPoints, hourPoints, startDate, lastStretch.getDate());
         }
 
