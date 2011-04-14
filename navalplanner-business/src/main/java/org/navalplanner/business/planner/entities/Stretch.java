@@ -110,4 +110,8 @@ public class Stretch {
         return amountWorkPercentage;
     }
 
+    public String toString() {
+        return String.format("(%s, %s, %s) ", date, lengthPercentage, amountWorkPercentage);
+    }
+
 }

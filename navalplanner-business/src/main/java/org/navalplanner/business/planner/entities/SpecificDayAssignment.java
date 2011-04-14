@@ -212,4 +212,9 @@ public class SpecificDayAssignment extends DayAssignment {
     protected void detachFromAllocation() {
         this.parentState = new ContainerNotSpecified();
     }
+
+    public String toString() {
+        return Integer.valueOf(getDuration().getHours()).toString();
+    }
+
 }
