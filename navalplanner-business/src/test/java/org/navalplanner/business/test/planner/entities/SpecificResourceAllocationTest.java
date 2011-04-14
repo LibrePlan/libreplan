@@ -50,6 +50,7 @@ import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.ResourceAllocation.IOnDayAssignmentRemoval;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
@@ -316,6 +317,24 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void theIntervalWithinTaskCanBeMadeOfIntraDayDates() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        IntraDayDate startInterval = IntraDayDate.startOfDay(start);
+        IntraDayDate endInterval = IntraDayDate.create(start.plusDays(2),
+                EffortDuration.hours(4));
+        specificResourceAllocation.onIntervalWithinTask(startInterval,
+                endInterval).allocateHours(12);
+        List<SpecificDayAssignment> assignments = specificResourceAllocation
+                .getAssignments();
+        assertThat(DayAssignment.sum(assignments), equalTo(hours(12)));
+        assertTrue(assignments.get(0).getDuration()
+                .compareTo(assignments.get(2).getDuration()) > 0);
+        assertTrue(assignments.get(1).getDuration()
+                .compareTo(assignments.get(2).getDuration()) > 0);
+    }
+
+    @Test
     public void thePartOfTheIntervalUsedIsTheOneOverlapping() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
@@ -415,6 +434,17 @@ public class SpecificResourceAllocationTest {
                 equalTo(IntraDayDate.startOfDay(start.plusDays(6))));
         assertThat(specificResourceAllocation.getAssignments(),
                 haveHours(8, 8, 8, 8, 8));
+    }
+
+    @Test
+    public void canAllocateOutsideTheBoundsUsingAnIntervalMadeOfIntraDayDates() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(IntraDayDate.startOfDay(start),
+                IntraDayDate.create(start.plusDays(4), hours(4)))
+                .allocateHours(36);
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 8, 8, 8, 4));
     }
 
     @Test

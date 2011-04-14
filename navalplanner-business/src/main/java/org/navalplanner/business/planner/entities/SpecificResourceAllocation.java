@@ -50,6 +50,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -208,10 +209,23 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
+    public IAllocateHoursOnInterval onIntervalWithinTask(IntraDayDate start,
+            IntraDayDate end) {
+        return new SpecificAssignmentsAllocator().onIntervalWithinTask(start,
+                end);
+    }
+
+    @Override
     public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
             LocalDate endExclusive) {
         return new SpecificAssignmentsAllocator().onInterval(startInclusive,
                 endExclusive);
+    }
+
+    @Override
+    public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+            IntraDayDate end) {
+        return new SpecificAssignmentsAllocator().onInterval(start, end);
     }
 
     @Override

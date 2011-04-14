@@ -22,6 +22,7 @@
 package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * This interface represents an object on which an allocation can be done
@@ -32,6 +33,12 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
     public IAllocateResourcesPerDay resourcesPerDayUntil(LocalDate endExclusive);
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
+
+    /**
+     * @see IAllocatable#onIntervalWithinTask(IntraDayDate, IntraDayDate)
+     */
+    public IAllocateHoursOnInterval onIntervalWithinTask(
+            LocalDate startInclusive, LocalDate endExclusive);
 
     /**
      * <p>
@@ -45,12 +52,18 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * allocation beyond the task's bounds.
      * </p>
      *
-     * @param startInclusive
-     * @param endExclusive
+     * @param start
+     * @param end
      * @return an object which can be used to allocate hours on the interval
      *         specified with the considerations noted above
      */
-    public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate startInclusive,
+    public IAllocateHoursOnInterval onIntervalWithinTask(IntraDayDate start,
+            IntraDayDate end);
+
+    /**
+     * @see IAllocatable#onInterval(IntraDayDate, IntraDayDate)
+     */
+    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
             LocalDate endExclusive);
 
     /**
@@ -62,8 +75,8 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @return an object which can be used to allocate hours on the interval
      *         specified with the considerations noted above
      */
-    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
-            LocalDate endExclusive);
+    public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+            IntraDayDate end);
 
     public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
 

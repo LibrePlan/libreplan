@@ -762,6 +762,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
+        public IAllocateHoursOnInterval onIntervalWithinTask(
+                IntraDayDate start, IntraDayDate end) {
+            checkStartBeforeOrEqualEnd(start, end);
+            return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(
+                    start, end));
+        }
+
+        @Override
         public IAllocateHoursOnInterval onInterval(
                 final LocalDate startInclusive, final LocalDate endExclusive) {
             checkStartBeforeOrEqualEnd(startInclusive, endExclusive);
@@ -769,7 +777,22 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     startInclusive, endExclusive));
         }
 
+        @Override
+        public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+                IntraDayDate end) {
+            checkStartBeforeOrEqualEnd(start, end);
+            return new OnSubIntervalAllocator(
+                    new AllocationInterval(start,
+                    end));
+        }
+
         private void checkStartBeforeOrEqualEnd(LocalDate start, LocalDate end) {
+            Validate.isTrue(start.compareTo(end) <= 0,
+                    "the end must be equal or posterior than start");
+        }
+
+        private void checkStartBeforeOrEqualEnd(IntraDayDate start,
+                IntraDayDate end) {
             Validate.isTrue(start.compareTo(end) <= 0,
                     "the end must be equal or posterior than start");
         }
