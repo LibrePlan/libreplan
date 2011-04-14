@@ -19,8 +19,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
 
+package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -162,6 +162,14 @@ public class StretchesFunction extends AssignmentFunction {
 
     }
 
+    private List<Stretch> stretches = new ArrayList<Stretch>();
+
+    private StretchesFunctionTypeEnum type;
+
+    // Transient field. Not stored
+    private StretchesFunctionTypeEnum desiredType;
+
+
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
     }
@@ -192,15 +200,6 @@ public class StretchesFunction extends AssignmentFunction {
     private static <T> T last(List<? extends T> list) {
         return list.get(list.size() - 1);
     }
-
-    private List<Stretch> stretches = new ArrayList<Stretch>();
-
-    private StretchesFunctionTypeEnum type;
-
-    /**
-     * This is a transient field. Not stored
-     */
-    private StretchesFunctionTypeEnum desiredType;
 
     public StretchesFunction copy() {
         StretchesFunction result = StretchesFunction.create();
