@@ -46,6 +46,7 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         logError();
+        modalWindow = comp;
         stacktrace.setValue(getStacktrace());
     }
 
