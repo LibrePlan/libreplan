@@ -47,7 +47,9 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
         super.doAfterCompose(comp);
         logError();
         modalWindow = comp;
-        stacktrace.setValue(getStacktrace());
+        if (stacktrace != null) {
+            stacktrace.setValue(getStacktrace());
+        }
     }
 
     private void logError() {
@@ -76,9 +78,12 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
     private String getStacktrace() {
         Throwable exception = (Throwable) Executions.getCurrent().getAttribute(
                 "javax.servlet.error.exception");
-        Writer stacktrace = new StringWriter();
-        exception.printStackTrace(new PrintWriter(stacktrace));
-        return stacktrace.toString();
+        if (exception != null) {
+            Writer stacktrace = new StringWriter();
+            exception.printStackTrace(new PrintWriter(stacktrace));
+            return stacktrace.toString();
+        }
+        return "";
     }
 
 }
