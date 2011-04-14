@@ -318,6 +318,13 @@ public class StretchesFunction extends AssignmentFunction {
         return (StretchesFunction) create(new StretchesFunction());
     }
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    protected StretchesFunction() {
+
+    }
+
     public static List<Interval> intervalsFor(
             Collection<? extends Stretch> streches) {
         ArrayList<Interval> result = new ArrayList<Interval>();
@@ -336,12 +343,6 @@ public class StretchesFunction extends AssignmentFunction {
 
     private static <T> T last(List<? extends T> list) {
         return list.get(list.size() - 1);
-    }
-
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public StretchesFunction() {
     }
 
     private List<Stretch> stretches = new ArrayList<Stretch>();
