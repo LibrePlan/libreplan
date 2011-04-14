@@ -20,6 +20,31 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.List;
+
+import org.navalplanner.business.workingday.EffortDuration;
+
 public interface IAllocateHoursOnInterval {
+
     void allocateHours(int hours);
+
+    /**
+     * <p>
+     * It tries to allocate the specified durations on the originally specified
+     * interval. It tries to fit them to the interval. If the specified list has
+     * less days than the days required by the interval, the end of the list is
+     * padded with zeroes. If the specified list has more days than the days
+     * required the trailing days are discarded.
+     * </p>
+     * <p>
+     * If the allocation is done within the bounds of the task, the durations
+     * specified outside the task's bounds are discarded.
+     * </p>
+     * <p>
+     * If for some day no allocation can't be done, i.e. the day is considered
+     * unavailable, the real assignment will be zero.
+     * </p>
+     * @param durationsByDay
+     */
+    void allocate(List<EffortDuration> durationsByDay);
 }

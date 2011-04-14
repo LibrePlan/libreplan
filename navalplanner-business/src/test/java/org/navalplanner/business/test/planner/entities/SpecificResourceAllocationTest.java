@@ -39,6 +39,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -317,6 +318,73 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
+    public void theHoursForEachDayCanBeAssigned() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start,
+                start.plusDays(4)).allocate(
+                Arrays.asList(hours(4), hours(8), hours(4), hours(8)));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(4, 8, 4, 8));
+    }
+
+    @Test
+    public void ifLessDaysAreSpecifiedTheInitialDaysAreAllocated() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start,
+                start.plusDays(4)).allocate(
+                Arrays.asList(hours(4), hours(8), hours(4)));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(4, 8, 4));
+    }
+
+    @Test
+    public void ifMoreDaysAreSpecifiedTheInitialDaysAreAllocated() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start,
+                start.plusDays(4))
+                .allocate(
+                        Arrays.asList(hours(4), hours(8), hours(4), hours(4),
+                                hours(3)));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(4, 8, 4, 4));
+    }
+
+    @Test
+    public void theDaysSpecifiedOutsideBoundsAreDiscarded() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start.minusDays(2),
+                start.plusDays(1)).allocate(
+                Arrays.asList(hours(2), hours(3), hours(4)));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(4));
+    }
+
+    @Test
+    public void combineOutsideBoundsAndZeroPadding() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start.minusDays(2),
+                start.plusDays(1)).allocate(Arrays.asList(hours(2), hours(3)));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours());
+    }
+
+    @Test
+    public void theDaysSpecifiedOutsideTheTaskAreDiscarded() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onIntervalWithinTask(start.minusDays(1),
+                start.plusDays(4)).allocate(
+                Arrays.asList(hours(10), hours(4), hours(8), hours(4),
+                        hours(4), hours(3)));
+        List<SpecificDayAssignment> assigments = specificResourceAllocation
+                .getAssignments();
+        assertThat(assigments, haveHours(4, 8, 4, 4));
+    }
+
+    @Test
     public void theIntervalWithinTaskCanBeMadeOfIntraDayDates() {
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 4);
@@ -445,6 +513,19 @@ public class SpecificResourceAllocationTest {
                 .allocateHours(36);
         assertThat(specificResourceAllocation.getAssignments(),
                 haveHours(8, 8, 8, 8, 4));
+    }
+
+    @Test
+    public void canAllocateOutsideTheBoundsSpecifyingTheHoursForEachDay() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        specificResourceAllocation.onInterval(
+                IntraDayDate.startOfDay(start.minusDays(1)),
+                IntraDayDate.create(start.plusDays(4), hours(4))).allocate(
+                Arrays.asList(hours(8), hours(2), hours(8), hours(8), hours(8),
+                        hours(4)));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(8, 2, 8, 8, 8, 4));
     }
 
     @Test

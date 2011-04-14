@@ -840,9 +840,9 @@ public class GenericResourceAllocationTest {
 
         final int hoursOnSubinterval = 3;
         int daysSubinterval = 2;
-        genericResourceAllocation.forResources(workers).onIntervalWithinTask(start,
-                start.plusDays(daysSubinterval)).allocateHours(
-                hoursOnSubinterval);
+        genericResourceAllocation.forResources(workers)
+                .onIntervalWithinTask(start, start.plusDays(daysSubinterval))
+                .allocateHours(hoursOnSubinterval);
         assertThat(genericResourceAllocation.getAssignedHours(),
                 equalTo(hoursOnSubinterval + (days - daysSubinterval)
                         * workableHoursDay));
