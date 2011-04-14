@@ -821,35 +821,40 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         @Override
         public IAllocateHoursOnInterval fromStartUntil(final LocalDate end) {
+            final AllocationInterval interval = new AllocationInterval(
+                    getStartSpecifiedByTask(), IntraDayDate.startOfDay(end));
             return new IAllocateHoursOnInterval() {
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocateTheWholeAllocation(getStartSpecifiedByTask(),
-                            IntraDayDate.startOfDay(end), hours(hours));
+                    allocateTheWholeAllocation(interval, hours(hours));
                 }
             };
         }
 
         @Override
         public IAllocateHoursOnInterval fromEndUntil(final LocalDate start) {
+            final AllocationInterval interval = new AllocationInterval(
+                    IntraDayDate.startOfDay(start), task.getIntraDayEndDate());
             return new IAllocateHoursOnInterval() {
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocateTheWholeAllocation(IntraDayDate.startOfDay(start),
-                            task.getIntraDayEndDate(), hours(hours));
+                    allocateTheWholeAllocation(interval, hours(hours));
                 }
             };
         }
 
-        private void allocateTheWholeAllocation(IntraDayDate startInclusive,
-                IntraDayDate endExclusive, EffortDuration durationToAssign) {
-            AllocationInterval interval = new AllocationInterval(
-                    startInclusive, endExclusive);
+        private void allocateTheWholeAllocation(AllocationInterval interval,
+                EffortDuration durationToAssign) {
             List<T> assignmentsCreated = createAssignments(interval,
                     durationToAssign);
-            resetAllAllocationAssignmentsTo(assignmentsCreated,
+            allocateTheWholeAllocation(interval, assignmentsCreated);
+        }
+
+        private void allocateTheWholeAllocation(AllocationInterval interval,
+                List<T> assignments) {
+            resetAllAllocationAssignmentsTo(assignments,
                     interval.getStartInclusive(), interval.getEndExclusive());
             updateResourcesPerDay();
         }
