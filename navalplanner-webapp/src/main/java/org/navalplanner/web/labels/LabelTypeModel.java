@@ -34,6 +34,7 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -56,6 +57,9 @@ public class LabelTypeModel extends IntegrationEntityModel implements
 
     @Autowired
     private ILabelTypeDAO labelTypeDAO;
+
+    @Autowired
+    private ILabelDAO labelDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -189,7 +193,15 @@ public class LabelTypeModel extends IntegrationEntityModel implements
         // Safe copy
         List<Label> labels = new ArrayList<Label>();
         if (labelType != null) {
-            labels.addAll(labelType.getLabels());
+            labels.addAll(initializeLabels(labelType.getLabels()));
+        }
+        return labels;
+    }
+
+    private Set<Label> initializeLabels(Set<Label> labels) {
+        for (Label each: labels) {
+            labelDAO.reattach(each);
+            each.getOrderElements().size();
         }
         return labels;
     }
@@ -253,4 +265,5 @@ public class LabelTypeModel extends IntegrationEntityModel implements
             throw new ValidationException(invalidValues);
         }
     }
+
 }

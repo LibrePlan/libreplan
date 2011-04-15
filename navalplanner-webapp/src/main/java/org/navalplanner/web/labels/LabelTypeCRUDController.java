@@ -41,8 +41,10 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -51,6 +53,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.api.Rows;
 
 /**
  * CRUD Controller for {@link LabelType}
@@ -90,11 +93,44 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
-        gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
+        initializeLabelsGrid();
         gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
         showListWindow();
         newLabelTextbox = (Textbox) editWindow
                 .getFellowIfAny("newLabelTextbox");
+    }
+
+    private void initializeLabelsGrid() {
+        gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
+        // Renders grid and enables delete button if label is new
+        gridLabels.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                gridLabels.renderAll();
+
+                final Rows rows = gridLabels.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final Label label = (Label) row.getValue();
+                    Button btnDelete = (Button) row.getChildren().get(2);
+                    if (!canRemoveLabel(label)) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete
+                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setTooltiptext("");
+                    }
+                }
+            }
+        });
+    }
+
+    private boolean canRemoveLabel(Label label) {
+        if (label.isNewObject()) {
+            return true;
+        }
+        return label.getOrderElements().isEmpty();
     }
 
     private void showListWindow() {
