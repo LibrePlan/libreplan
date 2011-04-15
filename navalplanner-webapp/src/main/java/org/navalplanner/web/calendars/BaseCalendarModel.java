@@ -317,9 +317,10 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     public void unsetDefault(Days day) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setCapacityAt(day,
-                    Capacity.zero().overAssignableWithoutLimit(true),
-                    selectedDate);
+            Capacity previousCapacity = getBaseCalendar()
+                    .getCapacityConsideringCalendarDatasOn(selectedDate, day);
+            getBaseCalendar()
+                    .setCapacityAt(day, previousCapacity, selectedDate);
         }
     }
 
