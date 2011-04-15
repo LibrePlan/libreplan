@@ -385,7 +385,7 @@ public class EffortDistributor {
             LocalDate day, EffortDuration remainingDuration,
             IAssignedEffortForResource assignedEffortForEachResource,
             List<ResourceWithDerivedData> assignableResources) {
-        List<ResourceWithAssignedDuration> remainingDistribution = suppressOverAssignationBeyondAvailableCapacity(
+        List<ResourceWithAssignedDuration> remainingDistribution = suppressOverAssignedBeyondAvailableCapacity(
                 day,
                 assignedEffortForEachResource,
                 distributeRemaining(day, remainingDuration,
@@ -413,7 +413,7 @@ public class EffortDistributor {
                         resourcesWithAvailableOvertime));
     }
 
-    private List<ResourceWithAssignedDuration> suppressOverAssignationBeyondAvailableCapacity(
+    private List<ResourceWithAssignedDuration> suppressOverAssignedBeyondAvailableCapacity(
             LocalDate date,
             IAssignedEffortForResource assignedEffortForEachResource,
             List<ResourceWithAssignedDuration> resources) {
