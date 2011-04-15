@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -85,15 +84,6 @@ public class Label extends IntegrationEntity {
 
     public Set<OrderElement> getOrderElements() {
         return Collections.unmodifiableSet(orderElements);
-    }
-
-    public void addOrderElement(OrderElement orderElement) {
-        Validate.notNull(orderElement);
-        orderElements.add(orderElement);
-    }
-
-    public void removeOrderElement(OrderElement orderElement) {
-        orderElements.add(orderElement);
     }
 
     public boolean isEqualTo(Label label) {
