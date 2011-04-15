@@ -20,21 +20,31 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 
 public class AssignedEffortDiscounting implements
         IAssignedEffortForResource {
 
-    private final Object allocation;
+    private final Map<Long, Set<BaseEntity>> allocations;
 
-    AssignedEffortDiscounting(Object discountFrom) {
-        this.allocation = discountFrom;
+    public AssignedEffortDiscounting(BaseEntity allocationToDiscountFrom) {
+        this(Collections.singleton(allocationToDiscountFrom));
+    }
+
+    AssignedEffortDiscounting(Collection<? extends BaseEntity> discountFrom) {
+        this.allocations = BaseEntity.byId(discountFrom);
     }
 
     public EffortDuration getAssignedDurationAt(Resource resource, LocalDate day) {
-        return resource.getAssignedDurationDiscounting(allocation, day);
+        return resource.getAssignedDurationDiscounting(allocations, day);
     }
 
 }

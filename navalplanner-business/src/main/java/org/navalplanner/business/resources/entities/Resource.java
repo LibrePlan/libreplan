@@ -47,6 +47,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -845,10 +846,13 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public EffortDuration getAssignedDurationDiscounting(
-            Object alloationFromWhichDiscountHours, LocalDate day) {
+            Map<Long, Set<BaseEntity>> allocationsFromWhichDiscountHours,
+            LocalDate day) {
         EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
-            if (!dayAssignment.belongsTo(alloationFromWhichDiscountHours)) {
+
+            if (!dayAssignment
+                    .belongsToSomeOf(allocationsFromWhichDiscountHours)) {
                 result = result.plus(dayAssignment.getDuration());
             }
         }

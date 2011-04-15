@@ -21,6 +21,12 @@
 
 package org.navalplanner.business.common;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
@@ -40,6 +46,24 @@ import org.navalplanner.business.util.deepcopy.Strategy;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public abstract class BaseEntity implements INewObject {
+
+    /**
+     * Groups the entities by id. Entities with null id are also included.
+     *
+     * @param entities
+     * @return entities grouped by id
+     */
+    public static <T extends BaseEntity> Map<Long, Set<T>> byId(
+            Collection<? extends T> entities) {
+        Map<Long, Set<T>> result = new HashMap<Long, Set<T>>();
+        for (T each : entities) {
+            if (!result.containsKey(each.getId())) {
+                result.put(each.getId(), new HashSet<T>());
+            }
+            result.get(each.getId()).add(each);
+        }
+        return result;
+    }
 
     private static final Log LOG = LogFactory.getLog(BaseEntity.class);
 

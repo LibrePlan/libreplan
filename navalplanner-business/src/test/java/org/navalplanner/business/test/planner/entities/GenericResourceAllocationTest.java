@@ -169,7 +169,7 @@ public class GenericResourceAllocationTest {
     public static void mockZeroLoad(Resource... resources) {
         for (Resource each : resources) {
             expect(
-                    each.getAssignedDurationDiscounting(isA(Object.class),
+                    each.getAssignedDurationDiscounting(isA(Map.class),
                             isA(LocalDate.class))).andReturn(zero()).anyTimes();
         }
     }
@@ -223,7 +223,7 @@ public class GenericResourceAllocationTest {
         Worker result = createNiceMock(Worker.class);
         expect(result.getCalendar()).andReturn(resourceCalendar).anyTimes();
         expect(
-                result.getAssignedDurationDiscounting(isA(Object.class),
+                result.getAssignedDurationDiscounting(isA(Map.class),
                         isA(LocalDate.class))).andAnswer(
                 new IAnswer<EffortDuration>() {
 
@@ -807,7 +807,7 @@ public class GenericResourceAllocationTest {
             EffortDuration load) {
         VirtualWorker worker = createNiceMock(VirtualWorker.class);
         expect(
-                worker.getAssignedDurationDiscounting(isA(Object.class),
+                worker.getAssignedDurationDiscounting(isA(Map.class),
                         isA(LocalDate.class))).andReturn(load)
                 .anyTimes();
         expect(worker.getCalendar()).andReturn(

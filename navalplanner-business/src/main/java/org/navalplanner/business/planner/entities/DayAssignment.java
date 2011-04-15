@@ -267,7 +267,26 @@ public abstract class DayAssignment extends BaseEntity {
 
     protected abstract void detachFromAllocation();
 
-    public abstract boolean belongsTo(Object allocation);
+    public final boolean belongsToSomeOf(Map<Long, Set<BaseEntity>> allocations) {
+        BaseEntity parent = getParent();
+        if (parent.getId() == null) {
+            Set<BaseEntity> entitiesWithNullId = allocations.get(null);
+            return entitiesWithNullId != null
+                    && entitiesWithNullId.contains(parent);
+        }
+        Set<BaseEntity> set = allocations.get(parent.getId());
+        return set != null;
+    }
+
+    protected abstract BaseEntity getParent();
+
+    public final boolean belongsTo(BaseEntity allocation) {
+        if (allocation == null) {
+            return false;
+        }
+        return belongsToSomeOf(BaseEntity.byId(Collections
+                .singleton(allocation)));
+    }
 
     /**
      * @return <code>null</code> if {@link DayAssignment this} day assignment

@@ -30,6 +30,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
@@ -195,9 +196,8 @@ public class GenericDayAssignment extends DayAssignment {
     }
 
     @Override
-    public boolean belongsTo(Object allocation) {
-        return allocation != null
-                && getGenericResourceAllocation().equals(allocation);
+    protected BaseEntity getParent() {
+        return getGenericResourceAllocation();
     }
 
     @Override
