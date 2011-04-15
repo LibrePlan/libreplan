@@ -422,9 +422,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
                 if (workReportLine.getTypeOfWorkHours() == null) {
                     // Locate TextboxOrder
-                    Autocomplete autoTypeOfHours = getTypeOfHours(row);
+                    Listbox autoTypeOfHours = getTypeOfHours(row);
                     if (autoTypeOfHours != null) {
-                        String message = _("The type of hours cannot be null.");
+                        String message = autoTypeOfHours.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
+                                : _("The type of hours cannot be null");
                         showInvalidMessage(autoTypeOfHours, message);
                     }
                     return false;
@@ -501,10 +502,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param row
      * @return
      */
-    private Autocomplete getTypeOfHours(Row row) {
+    private Listbox getTypeOfHours(Row row) {
         try {
             int position = row.getChildren().size() - 3;
-            return (Autocomplete) row.getChildren().get(position);
+            return (Listbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
