@@ -231,10 +231,10 @@ public class GenericResourceAllocation extends
 
     private IAssignedEffortForResource assignedEffortCalculatorOverriden = null;
 
-    public void overrideAssignedHoursForResource(
-            GenericResourceAllocation allocation) {
-        assignedEffortCalculatorOverriden = allocation
-                .getAssignedEffortForResource();
+    public void discountAssignedHoursForResourceFrom(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
+                allocations);
     }
 
     private IAssignedEffortForResource getAssignedEffortForResource() {

@@ -106,7 +106,8 @@ public class SpecificAllocationRow extends AllocationRow {
     private Resource resource;
 
     @Override
-    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         return ResourcesPerDayModification.create(createSpecific(task),
                 getNonConsolidatedResourcesPerDay());
     }
@@ -121,7 +122,8 @@ public class SpecificAllocationRow extends AllocationRow {
     }
 
     @Override
-    public HoursModification toHoursModification(Task task) {
+    public HoursModification toHoursModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         return HoursModification.create(createSpecific(task),
                 getHoursFromInput());
     }

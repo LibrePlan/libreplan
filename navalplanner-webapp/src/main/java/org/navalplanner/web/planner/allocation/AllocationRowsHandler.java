@@ -31,11 +31,11 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
-import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -254,7 +254,7 @@ public class AllocationRowsHandler {
 
     private void calculateNumberOfHoursAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
-                .createAndAssociate(task, currentRows);
+                .createAndAssociate(task, currentRows, requestedToRemove);
         if (isForwardsAllocation()) {
             ResourceAllocation.allocating(allocations).allocateUntil(
                     formBinder.getAllocationEnd());
@@ -270,7 +270,7 @@ public class AllocationRowsHandler {
 
     private void calculateEndDateOrStartDateAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
-                .createAndAssociate(task, currentRows);
+                .createAndAssociate(task, currentRows, requestedToRemove);
         ResourceAllocation.allocating(allocations).untilAllocating(
                 task.getAllocationDirection(),
                 formBinder.getAssignedHours(), notFullfiledReceiver());
@@ -294,7 +294,8 @@ public class AllocationRowsHandler {
 
     private void calculateResourcesPerDayAllocation() {
         List<HoursModification> hours = AllocationRow
-                .createHoursModificationsAndAssociate(task, currentRows);
+                .createHoursModificationsAndAssociate(task, currentRows,
+                        requestedToRemove);
         if (isForwardsAllocation()) {
             ResourceAllocation.allocatingHours(hours).allocateUntil(
                     formBinder.getAllocationEnd());

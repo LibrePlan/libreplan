@@ -104,11 +104,12 @@ public abstract class AllocationRow {
     }
 
     public static List<ResourcesPerDayModification> createAndAssociate(
-            Task task, Collection<? extends AllocationRow> rows) {
+            Task task, Collection<? extends AllocationRow> rows,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (AllocationRow each : rows) {
             ResourcesPerDayModification modification = each
-                    .toResourcesPerDayModification(task);
+                    .toResourcesPerDayModification(task, requestedToRemove);
             result.add(modification);
             each.setTemporal(modification.getBeingModified());
         }
@@ -126,11 +127,12 @@ public abstract class AllocationRow {
     }
 
     public static List<HoursModification> createHoursModificationsAndAssociate(
-            Task task, List<AllocationRow> currentRows) {
+            Task task, List<AllocationRow> currentRows,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         List<HoursModification> result = new ArrayList<HoursModification>();
         for (AllocationRow each : currentRows) {
-            HoursModification hoursModification = each
-                    .toHoursModification(task);
+            HoursModification hoursModification = each.toHoursModification(
+                    task, requestedToRemove);
             result.add(hoursModification);
             each.setTemporal(hoursModification.getBeingModified());
         }
@@ -238,9 +240,11 @@ public abstract class AllocationRow {
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
-            Task task);
+            Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
-    public abstract HoursModification toHoursModification(Task task);
+    public abstract HoursModification toHoursModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
     public boolean isCreating() {
         return origin == null;
