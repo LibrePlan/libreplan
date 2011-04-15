@@ -27,7 +27,7 @@
         </set>
 
         <!-- Assess many-to-many bidireccional -->
-        <set name="labels" table="order_element_label" access="field" cascade="save-update">
+        <set name="labels" table="order_element_label" cascade="save-update">
             <key column="order_element_id" not-null="true"/>
             <many-to-many column="label_id" class="org.navalplanner.business.labels.entities.Label"/>
         </set>
