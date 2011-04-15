@@ -47,6 +47,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
@@ -93,7 +94,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
         initializeLabelsGrid();
-        gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
+        initializeLabelTypesGrid();
         showListWindow();
         newLabelTextbox = (Textbox) editWindow
                 .getFellowIfAny("newLabelTextbox");
@@ -122,14 +123,59 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
                     }
                 }
             }
+
+            private boolean canRemoveLabel(Label label) {
+                if (label.isNewObject()) {
+                    return true;
+                }
+                return label.getOrderElements().isEmpty();
+            }
+
         });
     }
 
-    private boolean canRemoveLabel(Label label) {
-        if (label.isNewObject()) {
-            return true;
-        }
-        return label.getOrderElements().isEmpty();
+    private void initializeLabelTypesGrid() {
+        gridLabelTypes = (Grid) listWindow.getFellowIfAny("labelTypes");
+
+        gridLabelTypes.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                gridLabelTypes.renderAll();
+
+                final Rows rows = gridLabelTypes.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final LabelType labelType = (LabelType) row.getValue();
+                    Hbox hbox = (Hbox) row.getChildren().get(2);
+                    Button btnDelete = (Button) hbox.getChildren().get(1);
+                    if (!canRemoveLabelType(labelType)) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete
+                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setTooltiptext("");
+                    }
+                }
+            }
+
+            private boolean canRemoveLabelType(LabelType labelType) {
+                boolean canRemove = true;
+                if (labelType.isNewObject()) {
+                    return canRemove;
+                }
+                // If at least one of its labels is being used by and
+                // orderelement, cannot remove labelType
+                for (Label each: labelType.getLabels()) {
+                    if (!each.getOrderElements().isEmpty()) {
+                        canRemove = false;
+                        break;
+                    }
+                }
+                return canRemove;
+            }
+
+        });
     }
 
     private void showListWindow() {
