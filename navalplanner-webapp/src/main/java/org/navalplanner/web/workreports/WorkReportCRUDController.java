@@ -1169,6 +1169,11 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         lbHoursType.renderAll();
         lbHoursType.applyProperties();
 
+        if (lbHoursType.getItems().isEmpty()) {
+            row.appendChild(lbHoursType);
+            return;
+        }
+
         // First time is rendered, select first item
         TypeOfWorkHours type = workReportLine.getTypeOfWorkHours();
         if (workReportLine.isNewObject() && type == null) {

@@ -268,6 +268,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         lbHoursType.renderAll();
         lbHoursType.applyProperties();
 
+        if (lbHoursType.getItems().isEmpty()) {
+            row.appendChild(lbHoursType);
+            return;
+        }
+
         // First time is rendered, select first item
         TypeOfWorkHours type = hourCost.getType();
         if (hourCost.isNewObject() && type == null) {
