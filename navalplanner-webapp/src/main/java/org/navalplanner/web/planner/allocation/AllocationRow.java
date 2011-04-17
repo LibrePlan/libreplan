@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -45,6 +46,8 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification.IByType;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
@@ -54,10 +57,12 @@ import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
+import org.zkoss.zk.au.out.AuWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Detail;
@@ -97,9 +102,18 @@ public abstract class AllocationRow {
         }
     }
 
-    public static void loadDataFromLast(Collection<? extends AllocationRow> rows) {
+    public static void loadDataFromLast(List<? extends AllocationRow> rows,
+            List<? extends AllocationModification> modifications) {
+        Validate.isTrue(rows.size() == modifications.size());
+        Iterator<? extends AllocationModification> iterator = modifications
+                .iterator();
         for (AllocationRow each : rows) {
             each.loadDataFromLast();
+
+            AllocationModification modification = iterator.next();
+            if (!modification.satisfiesModificationRequested()) {
+                each.warnObjectiveNotSatisfied(modification);
+            }
         }
     }
 
@@ -374,10 +388,38 @@ public abstract class AllocationRow {
                 : CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
-    public void loadDataFromLast() {
+    private void loadDataFromLast() {
+        Clients.closeErrorBox(hoursInput);
+        Clients.closeErrorBox(resourcesPerDayInput);
+
         hoursInput.setValue(temporal.getAssignedHours());
         resourcesPerDayInput
                 .setValue(temporal.getResourcesPerDay().getAmount());
+    }
+
+    private void warnObjectiveNotSatisfied(AllocationModification modification) {
+        modification.byType(new IByType<Void>() {
+
+            @Override
+            public Void onResourcesPerDay(
+                    ResourcesPerDayModification modification) {
+                ResourcesPerDay goal = modification.getGoal();
+                Clients.response(new AuWrongValue(resourcesPerDayInput, _(
+                        "{0} resources per day cannot be fulfilled", goal
+                                .getAmount().toPlainString())));
+
+                return null;
+            }
+
+            @Override
+            public Void onHours(HoursModification modification) {
+                int goal = modification.getHours();
+                Clients.response(new AuWrongValue(hoursInput, _(
+                        "{0} hours cannot be fulfilled", goal + "")));
+
+                return null;
+            }
+        });
     }
 
     public void addListenerForHoursInputChange(EventListener listener) {

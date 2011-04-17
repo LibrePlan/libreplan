@@ -43,6 +43,8 @@ public abstract class AllocationModification {
         return result;
     }
 
+    public abstract boolean satisfiesModificationRequested();
+
     /**
      * It ensures that the provided allocations have at least one associated
      * resource. A {@link AllocationModification} doesn't have associated
@@ -75,6 +77,24 @@ public abstract class AllocationModification {
 
     private boolean hasNoResources() {
         return resourcesOnWhichApplyAllocation.isEmpty();
+    }
+
+    public interface IByType<T> {
+
+        public T onResourcesPerDay(ResourcesPerDayModification modification);
+
+        public T onHours(HoursModification modification);
+
+    }
+
+    public <T> T byType(IByType<T> visitor) {
+        if (this instanceof ResourcesPerDayModification) {
+            ResourcesPerDayModification r = (ResourcesPerDayModification) this;
+            return visitor.onResourcesPerDay(r);
+        } else {
+            HoursModification h = (HoursModification) this;
+            return visitor.onHours(h);
+        }
     }
 
     protected void withNewResources(IResourcesSearcher resourcesSearcher) {

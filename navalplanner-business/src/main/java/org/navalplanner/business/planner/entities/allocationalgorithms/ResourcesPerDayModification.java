@@ -307,4 +307,9 @@ public abstract class ResourcesPerDayModification extends
                 goal);
     }
 
+    @Override
+    public boolean satisfiesModificationRequested() {
+        return getGoal().equals(getBeingModified().getResourcesPerDay());
+    }
+
 }

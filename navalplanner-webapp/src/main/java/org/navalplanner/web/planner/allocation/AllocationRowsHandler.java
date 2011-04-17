@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -231,28 +232,32 @@ public class AllocationRowsHandler {
     public AllocationResult doAllocation() {
         checkInvalidValues();
         if (!currentRows.isEmpty()) {
-            switch (calculatedValue) {
-            case NUMBER_OF_HOURS:
-                calculateNumberOfHoursAllocation();
-                break;
-            case END_DATE:
-                calculateEndDateOrStartDateAllocation();
-                break;
-            case RESOURCES_PER_DAY:
-                calculateResourcesPerDayAllocation();
-                break;
-            default:
-                throw new RuntimeException("cant handle: " + calculatedValue);
-            }
+            List<? extends AllocationModification> modificationsDone;
+            modificationsDone = doSuitableAllocation();
+
+            AllocationRow.loadDataFromLast(currentRows, modificationsDone);
+
+            createDerived();
         }
-        createDerived();
         AllocationResult result = AllocationResult.create(task,
                 calculatedValue, currentRows, getWorkableDaysIfApplyable());
-        AllocationRow.loadDataFromLast(currentRows);
         return result;
     }
 
-    private void calculateNumberOfHoursAllocation() {
+    private List<? extends AllocationModification> doSuitableAllocation() {
+        switch (calculatedValue) {
+        case NUMBER_OF_HOURS:
+            return calculateNumberOfHoursAllocation();
+        case END_DATE:
+            return calculateEndDateOrStartDateAllocation();
+        case RESOURCES_PER_DAY:
+            return calculateResourcesPerDayAllocation();
+        default:
+            throw new RuntimeException("cant handle: " + calculatedValue);
+        }
+    }
+
+    private List<ResourcesPerDayModification> calculateNumberOfHoursAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows, requestedToRemove);
         if (isForwardsAllocation()) {
@@ -262,18 +267,20 @@ public class AllocationRowsHandler {
             ResourceAllocation.allocating(allocations).allocateFromEndUntil(
                     formBinder.getAllocationStart());
         }
+        return allocations;
     }
 
     public boolean isForwardsAllocation() {
         return Direction.FORWARD.equals(task.getAllocationDirection());
     }
 
-    private void calculateEndDateOrStartDateAllocation() {
+    private List<ResourcesPerDayModification> calculateEndDateOrStartDateAllocation() {
         List<ResourcesPerDayModification> allocations = AllocationRow
                 .createAndAssociate(task, currentRows, requestedToRemove);
         ResourceAllocation.allocating(allocations).untilAllocating(
                 task.getAllocationDirection(),
                 formBinder.getAssignedHours(), notFullfiledReceiver());
+        return allocations;
     }
 
     private INotFulfilledReceiver notFullfiledReceiver() {
@@ -292,7 +299,7 @@ public class AllocationRowsHandler {
         return AllocationRow.find(currentRows, resourceAllocation);
     }
 
-    private void calculateResourcesPerDayAllocation() {
+    private List<HoursModification> calculateResourcesPerDayAllocation() {
         List<HoursModification> hours = AllocationRow
                 .createHoursModificationsAndAssociate(task, currentRows,
                         requestedToRemove);
@@ -303,6 +310,7 @@ public class AllocationRowsHandler {
             ResourceAllocation.allocatingHours(hours).allocateFromEndUntil(
                     formBinder.getAllocationStart());
         }
+        return hours;
     }
 
     private Integer getWorkableDaysIfApplyable() {

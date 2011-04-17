@@ -135,6 +135,11 @@ public abstract class HoursModification extends AllocationModification {
 
     public abstract void allocateFromEndUntil(LocalDate start);
 
+    @Override
+    public boolean satisfiesModificationRequested() {
+        return hours == getBeingModified().getAssignedHours();
+    }
+
     public int getHours() {
         return hours;
     }
