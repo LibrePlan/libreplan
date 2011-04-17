@@ -24,10 +24,12 @@ package org.navalplanner.web.planner.allocation;
 import java.util.Date;
 import java.util.List;
 
+import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
@@ -50,8 +52,10 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
 
     /**
      * Save task
+     *
+     * @return
      */
-    void accept();
+    Flagged<AllocationResult, Warnings> accept();
 
     /**
      * Starts the use case

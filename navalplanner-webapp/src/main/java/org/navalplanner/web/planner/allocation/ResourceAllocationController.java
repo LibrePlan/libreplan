@@ -597,9 +597,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
         allocationsGrid.setModel(new SimpleListModel(Collections.emptyList()));
     }
 
-    public void accept() {
-        resourceAllocationModel.accept();
-        clear();
+    /**
+     *
+     * @return <code>true</code> if it must exist <code>false</code> if exit
+     *         must be prevented
+     */
+    public boolean accept() {
+        boolean mustExit = formBinder.accept();
+        if (mustExit) {
+            clear();
+        }
+        return mustExit;
     }
 
     private class ResourceAllocationRenderer implements RowRenderer {

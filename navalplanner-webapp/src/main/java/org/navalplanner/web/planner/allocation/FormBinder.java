@@ -34,6 +34,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
@@ -48,6 +49,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
+import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
@@ -486,14 +488,35 @@ public class FormBinder {
     }
 
     public void doApply() {
-        lastAllocation = resourceAllocationModel
+        AllocationResult allocationResult = resourceAllocationModel
                 .onAllocationContext(new IResourceAllocationContext<AllocationResult>() {
 
                     @Override
                     public AllocationResult doInsideTransaction() {
-                        return allocationRowsHandler.doAllocation();
+                        return allocationRowsHandler.doAllocation().getValue();
                     }
                 });
+        allocationProduced(allocationResult);
+    }
+
+    /**
+     *
+     * @return <code>true</code> if and only if operation completed and must
+     *         exit the edition form
+     */
+    public boolean accept() {
+        Flagged<AllocationResult, Warnings> result = resourceAllocationModel
+                .accept();
+
+        // result can be null when editing milestones
+        if (result != null && result.isFlagged()) {
+            allocationProduced(result.getValue());
+        }
+        return result == null || !result.isFlagged();
+    }
+
+    private void allocationProduced(AllocationResult allocationResult) {
+        lastAllocation = allocationResult;
         aggregate = lastAllocation.getAggregate();
         allResourcesPerDayVisibilityRule();
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
@@ -860,6 +883,5 @@ public class FormBinder {
     public void setBehaviour(ResourceAllocationBehaviour behaviour) {
         this.behaviour = behaviour;
     }
-
 
 }

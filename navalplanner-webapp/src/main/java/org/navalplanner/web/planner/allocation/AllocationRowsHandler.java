@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
+import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
@@ -229,7 +230,11 @@ public class AllocationRowsHandler {
         return result;
     }
 
-    public AllocationResult doAllocation() {
+    public enum Warnings {
+        SOME_GOALS_NOT_FULFILLED;
+    }
+
+    public Flagged<AllocationResult, Warnings> doAllocation() {
         checkInvalidValues();
         if (!currentRows.isEmpty()) {
             List<? extends AllocationModification> modificationsDone;
@@ -238,10 +243,20 @@ public class AllocationRowsHandler {
             AllocationRow.loadDataFromLast(currentRows, modificationsDone);
 
             createDerived();
+            AllocationResult result = createResult();
+            if (AllocationModification.allFullfiled(modificationsDone)) {
+                return Flagged.justValue(result);
+            } else {
+                return Flagged.withFlags(result,
+                        Warnings.SOME_GOALS_NOT_FULFILLED);
+            }
         }
-        AllocationResult result = AllocationResult.create(task,
+        return Flagged.justValue(createResult());
+    }
+
+    private AllocationResult createResult() {
+        return AllocationResult.create(task,
                 calculatedValue, currentRows, getWorkableDaysIfApplyable());
-        return result;
     }
 
     private List<? extends AllocationModification> doSuitableAllocation() {

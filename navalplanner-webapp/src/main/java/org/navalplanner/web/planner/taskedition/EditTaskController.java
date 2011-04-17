@@ -282,7 +282,10 @@ public class EditTaskController extends GenericForwardComposer {
             ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
             if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
-                resourceAllocationController.accept();
+                boolean mustNotExit = !resourceAllocationController.accept();
+                if (mustNotExit) {
+                    return;
+                }
             } else if (ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
                 subcontractController.accept();
