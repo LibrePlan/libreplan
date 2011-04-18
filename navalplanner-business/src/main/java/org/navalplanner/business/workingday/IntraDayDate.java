@@ -20,8 +20,11 @@
  */
 package org.navalplanner.business.workingday;
 
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -386,6 +389,56 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
      */
     public LocalDate roundDown() {
         return date;
+    }
+
+    /**
+     * Calculates a new {@link IntraDayDate} adding {@link EffortDuration
+     * effort} to {@link IntraDayDate this}. It considers the provided
+     * {@link ResourcesPerDay resourcesPerDay}, so if the resources per day is
+     * big the effort taken will be less. The date will stay the same, i.e. the
+     * returned {@link IntraDayDate} is on the same day.
+     *
+     * @param resourcesPerDay
+     * @param effort
+     * @return a new {@link IntraDayDate}
+     */
+    public IntraDayDate increaseBy(ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+        EffortDuration newEnd = this.getEffortDuration().plus(
+                calculateProportionalDuration(resourcesPerDay,
+                        effort));
+        return IntraDayDate.create(getDate(), newEnd);
+    }
+
+    private EffortDuration calculateProportionalDuration(
+            ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+        int seconds = effort.getSeconds();
+        BigDecimal end = new BigDecimal(seconds).divide(
+                resourcesPerDay.getAmount(),
+                RoundingMode.HALF_UP);
+        return seconds(end.intValue());
+    }
+
+    /**
+     * The same as
+     * {@link IntraDayDate#increaseBy(ResourcesPerDay, EffortDuration)} but
+     * decreasing the effort. The date will stay the same, i.e. the returned
+     * {@link IntraDayDate} is on the same day.
+     *
+     * @see IntraDayDate#increaseBy(ResourcesPerDay, EffortDuration)
+     * @param resourcesPerDay
+     * @param effort
+     * @return a new {@link IntraDayDate}
+     */
+    public IntraDayDate decreaseBy(ResourcesPerDay resourcesPerDay,
+            EffortDuration effort) {
+        EffortDuration proportionalDuration = calculateProportionalDuration(
+                resourcesPerDay, effort);
+        if (getEffortDuration().compareTo(proportionalDuration) > 0) {
+            return IntraDayDate.create(getDate(),
+                    getEffortDuration().minus(proportionalDuration));
+        } else {
+            return IntraDayDate.startOfDay(getDate());
+        }
     }
 
 }
