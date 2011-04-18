@@ -28,6 +28,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -338,14 +339,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
         } else {
             allResourcesList = allResources();
         }
-        if(pageFilterPosition == -1) {
+        return applyPagination(allResourcesList);
+    }
+
+    private List<Resource> applyPagination(List<Resource> allResourcesList) {
+        if (pageFilterPosition == -1) {
             return allResourcesList;
         }
-        int endPosition =
-            (pageFilterPosition + pageSize < allResourcesList.size())?
-                pageFilterPosition + pageSize :
-                allResourcesList.size();
-        return allResourcesList.subList(pageFilterPosition, endPosition);
+        return allResourcesList.subList(pageFilterPosition, Math.min(
+                pageFilterPosition + pageSize, allResourcesList.size()));
     }
 
     private List<Criterion> criteriaToShow() {
@@ -632,7 +634,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private Map<Resource, List<ResourceAllocation<?>>> eachWithAllocations(
             List<Resource> allResources) {
-        Map<Resource, List<ResourceAllocation<?>>> map = new HashMap<Resource, List<ResourceAllocation<?>>>();
+        Map<Resource, List<ResourceAllocation<?>>> map = new LinkedHashMap<Resource, List<ResourceAllocation<?>>>();
         for (Resource resource : allResources) {
             map.put(resource, ResourceAllocation
                     .sortedByStartDate(resourceAllocationDAO
@@ -902,7 +904,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     public void setResourcesToShow(List<Resource> resourcesList) {
         this.resourcesToShowList.clear();
-        this.resourcesToShowList.addAll(resourcesList);
+        this.resourcesToShowList.addAll(Resource.sortByName(resourcesList));
+
     }
 
     @Override
@@ -985,9 +988,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
             resources = resourcesToShow();
         }
         else {
-            resources = resourcesSearchModel.searchBoth()
-                                            .byCriteria(criteriaToShow())
-                                            .execute();
+            resources = Resource.sortByName(resourcesSearchModel.searchBoth()
+                    .byCriteria(criteriaToShow()).execute());
         }
         for (Resource resource : resources) {
             resourcesDAO.reattach(resource);
