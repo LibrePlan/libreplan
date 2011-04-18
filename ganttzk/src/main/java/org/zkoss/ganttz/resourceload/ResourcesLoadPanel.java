@@ -23,10 +23,7 @@ package org.zkoss.ganttz.resourceload;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
@@ -297,33 +294,9 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
             result.addToRoot(loadTimeLine);
             result = addNodes(result, loadTimeLine);
         }
-        return sortModelTree(result);
-    }
-
-    private MutableTreeModel<LoadTimeLine> sortModelTree(MutableTreeModel<LoadTimeLine> modelForTree) {
-        LoadTimeLine root = modelForTree.getRoot();
-        MutableTreeModel<LoadTimeLine> result = MutableTreeModel.create(LoadTimeLine.class, root);
-        sortModelTree(result, modelForTree, root);
         return result;
     }
 
-    private void sortModelTree(MutableTreeModel<LoadTimeLine> result,
-            MutableTreeModel<LoadTimeLine> source, LoadTimeLine parent) {
-        List<LoadTimeLine> children = getChildrenInOrderFor(source, parent);
-        result.add(parent, children);
-        for (LoadTimeLine each: children) {
-            sortModelTree(result, source, each);
-        }
-    }
-
-    private List<LoadTimeLine> getChildrenInOrderFor(
-            MutableTreeModel<LoadTimeLine> modelForTree, LoadTimeLine parent) {
-        SortedSet<LoadTimeLine> result = new TreeSet<LoadTimeLine>();
-        for (int i = 0; i < modelForTree.getChildCount(parent); i++) {
-            result.add(modelForTree.getChild(parent, i));
-        }
-        return new ArrayList<LoadTimeLine>(result);
-    }
 
     private MutableTreeModel<LoadTimeLine> addNodes(
             MutableTreeModel<LoadTimeLine> tree, LoadTimeLine parent) {
