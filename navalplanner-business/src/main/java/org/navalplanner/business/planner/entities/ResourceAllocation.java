@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -130,7 +131,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public static <R extends ResourceAllocation<?>> Map<Task, List<R>> byTask(
             List<? extends R> allocations) {
-        Map<Task, List<R>> result = new HashMap<Task, List<R>>();
+        Map<Task, List<R>> result = new LinkedHashMap<Task, List<R>>();
         for (R resourceAllocation : allocations) {
             if (resourceAllocation.getTask() != null) {
                 Task task = resourceAllocation.getTask();
