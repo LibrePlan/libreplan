@@ -107,22 +107,7 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
-        result.setName(getName());
-        result.setCode(null);
-        result.setInitDate(getInitDate());
-        result.setDeadline(getDeadline());
-
-        if (getName() != null) {
-            this.setName(getName() + " (copy)");
-        }
-        if (getCode() != null) {
-            this.setCode(getCode());
-        }
-
-        // propagate external code to new container
-        result.setExternalCode(getExternalCode());
-        this.setExternalCode(null);
-
+        result.setName("new container");
         return result;
     }
 
@@ -231,7 +216,7 @@ public class OrderLine extends OrderElement {
             CriterionRequirement newRequirement) {
         return criterionRequirementHandler
                 .existSameCriterionRequirementIntoOrderLine(this,
-                newRequirement);
+                        newRequirement);
     }
 
     @Override
@@ -272,7 +257,7 @@ public class OrderLine extends OrderElement {
     }
 
     public void incrementLastHoursGroupSequenceCode() {
-        if(lastHoursGroupSequenceCode==null){
+        if (lastHoursGroupSequenceCode == null) {
             lastHoursGroupSequenceCode = 0;
         }
         lastHoursGroupSequenceCode++;

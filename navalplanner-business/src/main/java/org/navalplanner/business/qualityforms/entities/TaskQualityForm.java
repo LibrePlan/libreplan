@@ -177,4 +177,13 @@ public class TaskQualityForm extends BaseEntity {
         this.reportAdvance = BooleanUtils.toBoolean(reportAdvance);
     }
 
+    public static TaskQualityForm copy(TaskQualityForm origin,
+            OrderElement orderElement) {
+        TaskQualityForm copy = TaskQualityForm.create(orderElement, origin
+                .getQualityForm());
+        copy.setTaskQualityFormItems(origin.getTaskQualityFormItems());
+        copy.setReportAdvance(origin.isReportAdvance());
+        return copy;
+    }
+
 }

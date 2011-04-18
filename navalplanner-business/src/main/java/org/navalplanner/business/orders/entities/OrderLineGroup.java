@@ -48,9 +48,11 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
@@ -285,13 +287,61 @@ public class OrderLineGroup extends OrderElement implements
     public OrderLine toLeaf() {
         OrderLine result = OrderLine.create();
 
-        result.setName(getName());
+        result.infoComponent = getInfoComponent().copy();
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
+
         result.setWorkHours(0);
-        result.directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>(
-                this.directAdvanceAssignments);
+
+        result.directAdvanceAssignments = copyDirectAdvanceAssignments(this,
+                result);
+        result.materialAssignments = copyMaterialAssignments(this, result);
+        result.labels = copyLabels(this, result);
+        result.taskQualityForms = copyTaskQualityForms(this, result);
+
         copyRequirementToOrderElement(result);
+
+        result.initializeTemplate(this.getTemplate());
+
+        result.setExternalCode(getExternalCode());
+
+        return result;
+    }
+
+    private static Set<DirectAdvanceAssignment> copyDirectAdvanceAssignments(
+            OrderElement origin, OrderElement destination) {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+        for (DirectAdvanceAssignment each : origin.directAdvanceAssignments) {
+            result.add(DirectAdvanceAssignment.copy(each, destination));
+        }
+        return result;
+    }
+
+    private static Set<MaterialAssignment> copyMaterialAssignments(
+            OrderElement origin, OrderElement destination) {
+        Set<MaterialAssignment> result = new HashSet<MaterialAssignment>();
+        for (MaterialAssignment each : origin.materialAssignments) {
+            result.add(MaterialAssignment.copy(each, destination));
+        }
+        return result;
+    }
+
+    private static Set<Label> copyLabels(
+            OrderElement origin, OrderElement destination) {
+        Set<Label> result = new HashSet<Label>();
+        for (Label each : origin.labels) {
+            destination.addLabel(each);
+            result.add(each);
+        }
+        return result;
+    }
+
+    private static Set<TaskQualityForm> copyTaskQualityForms(
+            OrderElement origin, OrderElement destination) {
+        Set<TaskQualityForm> result = new HashSet<TaskQualityForm>();
+        for (TaskQualityForm each : origin.taskQualityForms) {
+            result.add(TaskQualityForm.copy(each, destination));
+        }
         return result;
     }
 

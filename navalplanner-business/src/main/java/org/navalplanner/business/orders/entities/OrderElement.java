@@ -72,7 +72,7 @@ import org.navalplanner.business.util.deepcopy.DeepCopy;
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
 
-    private InfoComponent infoComponent = new InfoComponent();
+    protected InfoComponent infoComponent = new InfoComponent();
 
     private Date initDate;
 
@@ -85,11 +85,11 @@ public abstract class OrderElement extends IntegrationEntity implements
     protected Set<MaterialAssignment> materialAssignments = new HashSet<MaterialAssignment>();
 
     @Valid
-    private Set<Label> labels = new HashSet<Label>();
+    protected Set<Label> labels = new HashSet<Label>();
 
-    private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
+    protected Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
 
-    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
+    protected Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
     protected OrderLineGroup parent;
 
@@ -1209,7 +1209,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return this;
     }
 
-    protected void setExternalCode(String externalCode) {
+    public void setExternalCode(String externalCode) {
         this.externalCode = externalCode;
     }
 

@@ -517,4 +517,10 @@ public class Order extends OrderLineGroup {
         return false;
     }
 
+    @Override
+    public OrderLine toLeaf() {
+        throw new UnsupportedOperationException(
+                "Order can not be converted to leaf");
+    }
+
 }

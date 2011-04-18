@@ -150,4 +150,13 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
         return materialAssignment.getMaterial().compareTo(getMaterial());
     }
 
+    public static MaterialAssignment copy(MaterialAssignment origin,
+            OrderElement orderElement) {
+        MaterialAssignment copy = MaterialAssignment.createFrom(
+                origin.materialInfo, orderElement);
+        copy.estimatedAvailability = origin.estimatedAvailability;
+        copy.status = origin.status;
+        return copy;
+    }
+
 }

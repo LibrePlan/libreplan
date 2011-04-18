@@ -249,4 +249,15 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return nonCalculatedConsolidations;
     }
 
+    public static DirectAdvanceAssignment copy(
+            DirectAdvanceAssignment origin,
+            OrderElement orderElement) {
+        DirectAdvanceAssignment copy = DirectAdvanceAssignment.create(origin
+                .getReportGlobalAdvance(), origin.getMaxValue());
+        copy.setAdvanceType(origin.getAdvanceType());
+        copy.setAdvanceMeasurements(origin.getAdvanceMeasurements());
+        copy.setOrderElement(orderElement);
+        return copy;
+    }
+
 }
