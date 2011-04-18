@@ -40,7 +40,7 @@ Timeplot.createPlotInfo = function(params) {
         valueGeometry:     ("valueGeometry" in params) ? params.valueGeometry : new Timeplot.DefaultValueGeometry(),
         timeZone:          ("timeZone" in params) ? params.timeZone : 0,
         fillColor:         ("fillColor" in params) ? ((params.fillColor == "string") ? new Timeplot.Color(params.fillColor) : params.fillColor) : null,
-        fillGradient:      ("fillGradient" in params) ? params.fillGradient : true,
+        fillGradient:      ("fillGradient" in params) ? params.fillGradient : false,
         fillFrom:          ("fillFrom" in params) ? params.fillFrom : Number.NEGATIVE_INFINITY,
         lineColor:         ("lineColor" in params) ? ((params.lineColor == "string") ? new Timeplot.Color(params.lineColor) : params.lineColor) : new Timeplot.Color("#606060"),
         lineWidth:         ("lineWidth" in params) ? params.lineWidth : 1.0,

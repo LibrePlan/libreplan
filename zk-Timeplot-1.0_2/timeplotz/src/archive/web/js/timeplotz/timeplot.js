@@ -9040,12 +9040,19 @@ ctx.lineJoin='miter';
 
 if(this._dataSource){
 if(this._plotInfo.fillColor){
+
+ if (this._plotInfo.fillGradient) {
+
 var gradient=ctx.createLinearGradient(0,this._canvas.height,0,0);
 gradient.addColorStop(0,this._plotInfo.fillColor.toString());
 gradient.addColorStop(0.5,this._plotInfo.fillColor.toString());
 gradient.addColorStop(1,'rgba(255,255,255,0)');
 
 ctx.fillStyle=gradient;
+ } else {
+ctx.fillStyle = this._plotInfo.fillColor.toString();
+}
+
 
 ctx.beginPath();
 ctx.moveTo(0,0);
