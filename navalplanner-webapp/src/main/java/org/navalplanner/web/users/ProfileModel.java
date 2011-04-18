@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link Profile}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -134,6 +135,12 @@ public class ProfileModel implements IProfileModel {
             list.addAll(profile.getRoles());
         }
         return list;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException {
+       profileDAO.checkIsReferencedByOtherEntities(profile);
     }
 
 }
