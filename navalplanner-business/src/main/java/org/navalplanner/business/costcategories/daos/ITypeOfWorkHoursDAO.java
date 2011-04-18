@@ -25,34 +25,46 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface ITypeOfWorkHoursDAO extends
         IIntegrationEntityDAO<TypeOfWorkHours> {
 
-    TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
-        throws InstanceNotFoundException;
+    /**
+     * Checks if type is referenced by other entities examining the entities
+     * that are related with {@link TypeOfWorkHours} via a foreign key
+     *
+     * @param type
+     * @throws ValidationException
+     */
+    void checkIsReferencedByOtherEntities(TypeOfWorkHours type) throws ValidationException;
+
+    boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
+
+    boolean existsTypeWithCodeInAnotherTransaction(String code);
+
+    List<TypeOfWorkHours> findActive();
 
     TypeOfWorkHours findUniqueByCode(String code)
         throws InstanceNotFoundException;
 
-    boolean existsByCode(TypeOfWorkHours typeOfWorkHours);
-
-    List<TypeOfWorkHours> findActive();
-
-    boolean existsTypeWithCodeInAnotherTransaction(String code);
+    TypeOfWorkHours findUniqueByCode(TypeOfWorkHours typeOfWorkHours)
+        throws InstanceNotFoundException;
 
     TypeOfWorkHours findUniqueByCodeInAnotherTransaction(String code)
-            throws InstanceNotFoundException;
-
-    TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name)
             throws InstanceNotFoundException;
 
     TypeOfWorkHours findUniqueByName(String name)
             throws InstanceNotFoundException;
 
+    TypeOfWorkHours findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException;
+
     List<TypeOfWorkHours> hoursTypeByNameAsc();
+
 }

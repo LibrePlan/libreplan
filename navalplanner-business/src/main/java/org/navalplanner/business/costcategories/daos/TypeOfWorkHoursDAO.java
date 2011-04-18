@@ -30,7 +30,10 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -39,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -132,6 +136,35 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public List<TypeOfWorkHours> hoursTypeByNameAsc() {
         return getSession().createCriteria(TypeOfWorkHours.class)
                 .addOrder(Order.asc("name")).list();
+    }
+
+    @Override
+    public void checkIsReferencedByOtherEntities(TypeOfWorkHours type) throws ValidationException {
+        checkHasHourCost(type);
+        checkHasWorkReportLine(type);
+    }
+
+    private void checkHasWorkReportLine(TypeOfWorkHours type) {
+        List workReportLines = getSession()
+                .createCriteria(WorkReportLine.class)
+                .add(Restrictions.eq("typeOfWorkHours", type)).list();
+        if (!workReportLines.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete type of work hours. It is being used at this moment in some work report line.",
+                            type);
+        }
+    }
+
+    private void checkHasHourCost(TypeOfWorkHours type) {
+        List hoursCost = getSession().createCriteria(HourCost.class)
+                .add(Restrictions.eq("type", type)).list();
+        if (!hoursCost.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete type of work hours. It is being used at this moment in some cost category.",
+                            type);
+        }
     }
 
 }
