@@ -491,7 +491,7 @@ public class OrderElementTreeModelTest {
 
         // * infoComponent (code, name, description)
         assertThat(element.getName(), equalTo(name));
-        assertThat(element.getCode(), equalTo(code));
+        assertNull(element.getCode());
         assertThat(element.getDescription(), equalTo(description));
 
         // * initDate

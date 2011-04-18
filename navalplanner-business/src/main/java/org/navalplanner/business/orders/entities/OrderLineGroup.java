@@ -288,6 +288,7 @@ public class OrderLineGroup extends OrderElement implements
         OrderLine result = OrderLine.create();
 
         result.infoComponent = getInfoComponent().copy();
+        result.setCode(null);
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
 
