@@ -151,7 +151,9 @@ public abstract class UntilFillingHoursAllocator {
                     .thereAreMoreSpaceAvailableAt(result)) {
                 result = nextDay(result);
             } else {
-                result = plusEffort(current, biggestLastAssignment);
+                result = current.increaseBy(
+                        resourcesPerDayModification.getGoal(),
+                        biggestLastAssignment);
             }
         } else {
             result = minusEffort(current, taken, resourcesPerDayModification);
@@ -204,13 +206,17 @@ public abstract class UntilFillingHoursAllocator {
             EffortDuration taken,
             ResourcesPerDayModification resourcesPerDayModification) {
         if (!current.isStartOfDay()) {
-            return IntraDayDate.create(current.getDate(), current
-                    .getEffortDuration().minus(taken));
+            return current.decreaseBy(resourcesPerDayModification.getGoal(),
+                    taken);
         } else {
             LocalDate day = current.getDate().minusDays(1);
             EffortDuration effortAtDay = resourcesPerDayModification
-                    .durationAtDay(PartialDay.wholeDay(day));
-            return IntraDayDate.create(day, effortAtDay.minus(taken));
+                    .getBeingModified()
+                    .getAllocationCalendar()
+                    .asDurationOn(PartialDay.wholeDay(day),
+                            ResourcesPerDay.amount(1));
+            return IntraDayDate.create(day, effortAtDay).decreaseBy(
+                    resourcesPerDayModification.getGoal(), taken);
         }
     }
 

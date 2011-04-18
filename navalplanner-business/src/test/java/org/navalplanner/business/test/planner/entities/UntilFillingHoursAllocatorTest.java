@@ -108,11 +108,20 @@ public class UntilFillingHoursAllocatorTest {
 
     @Test
     public void theEndDateIsTheSameDayIfItIsNotCompletelyFilled() {
-        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        givenSpecificAllocations(ResourcesPerDay.amount(1));
         IntraDayDate endDate = ResourceAllocation.allocating(allocations)
                 .untilAllocating(31);
+        assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(3)));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(7)));
+    }
+
+    @Test
+    public void theResourcesPerDayUsedInfluenceTheEndHourWhenLastDayNotCompletelyFilled() {
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(20);
         assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(1)));
-        assertThat(endDate.getEffortDuration(), equalTo(hours(15)));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(2)));
     }
 
     @Test
@@ -156,7 +165,20 @@ public class UntilFillingHoursAllocatorTest {
                 .untilAllocating(Direction.BACKWARD, 10);
         assertThat(newStart,
                 equalTo(IntraDayDate.startOfDay(new LocalDate(2009, 1, 18))));
+    }
 
+    @Test
+    public void theAllocationCanEndOnTheSameDay() {
+        givenStartDate(IntraDayDate
+                .create(new LocalDate(2009, 1, 10), hours(4)));
+        givenEndDate(IntraDayDate.create(new LocalDate(2009, 1, 19), hours(4)));
+        // 4 hours left for a one resource per day assignment, 8 hours left for
+        // two resources per day
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        IntraDayDate newStart = ResourceAllocation.allocating(allocations)
+                .untilAllocating(Direction.BACKWARD, 6);
+        assertThat(newStart, equalTo(IntraDayDate.create(new LocalDate(2009, 1,
+                19), hours(1))));
     }
 
     @Test
@@ -168,6 +190,17 @@ public class UntilFillingHoursAllocatorTest {
                 .untilAllocating(Direction.BACKWARD, 14);
         assertThat(newStart, equalTo(IntraDayDate.create(new LocalDate(2009, 1,
                 18), hours(2))));
+    }
+
+    @Test
+    public void theAllocationCanBeDoneFromTheEndAndResourcesPerDayInfluenceTheEndHour() {
+        givenStartDate(IntraDayDate.startOfDay(new LocalDate(2009, 1, 10)));
+        givenTaskOfDaysLength(10);// so end is day 20
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
+        IntraDayDate newStart = ResourceAllocation.allocating(allocations)
+                .untilAllocating(Direction.BACKWARD, 20);
+        assertThat(newStart, equalTo(IntraDayDate.create(new LocalDate(2009, 1,
+                18), hours(6))));
     }
 
     @Test
@@ -245,12 +278,12 @@ public class UntilFillingHoursAllocatorTest {
 
     @Test
     public void theResourcesPerDayIsCalculatedCorrectlyIfHasEndedInTheMiddleOfTheEnd() {
-        givenSpecificAllocations(ResourcesPerDay.amount(1));
+        givenSpecificAllocations(ResourcesPerDay.amount(2));
         ResourceAllocation.allocating(allocations).untilAllocating(30);
         ResourceAllocation<?> allocation = allocations.get(0)
                 .getBeingModified();
         assertThat(allocation.getResourcesPerDay(),
-                equalTo(ResourcesPerDay.amount(1)));
+                equalTo(ResourcesPerDay.amount(2)));
     }
 
     @Test
