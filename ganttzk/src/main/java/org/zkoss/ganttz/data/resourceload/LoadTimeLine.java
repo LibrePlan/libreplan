@@ -29,7 +29,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.util.Interval;
 
-public class LoadTimeLine implements Comparable<LoadTimeLine>{
+public class LoadTimeLine {
 
     private final String conceptName;
     private final List<LoadPeriod> loadPeriods;
@@ -193,15 +193,6 @@ public class LoadTimeLine implements Comparable<LoadTimeLine>{
             }
         }
         return result;
-    }
-
-    public String toString() {
-        return conceptName;
-    }
-
-    @Override
-    public int compareTo(LoadTimeLine o) {
-        return conceptName.compareTo(o.getConceptName());
     }
 
 }
