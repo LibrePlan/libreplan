@@ -282,6 +282,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(this.order.getCustomer());
         forceLoadLabels(this.order);
+        forceLoadMaterialAssignments(this.order);
+        forceLoadTaskQualityForms(this.order);
         currentScenario = scenarioManager.getCurrent();
         this.order.useSchedulingDataFor(currentScenario);
         loadTasks(this.order);
@@ -310,6 +312,20 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         orderElement.getLabels().size();
         for (OrderElement each : orderElement.getChildren()) {
             forceLoadLabels(each);
+        }
+    }
+
+    private void forceLoadMaterialAssignments(OrderElement orderElement) {
+        orderElement.getMaterialAssignments().size();
+        for (OrderElement each : orderElement.getChildren()) {
+            forceLoadMaterialAssignments(each);
+        }
+    }
+
+    private void forceLoadTaskQualityForms(OrderElement orderElement) {
+        orderElement.getTaskQualityForms().size();
+        for (OrderElement each : orderElement.getChildren()) {
+            forceLoadTaskQualityForms(each);
         }
     }
 
