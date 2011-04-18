@@ -158,15 +158,33 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
     }
 
     public void confirmDelete(TypeOfWorkHours typeOfWorkHours) {
-        boolean canDelete = existsCostCategoriesUsing(typeOfWorkHours);
-        if (!canDelete) {
-            showCannotDeleteWorkHoursTypeDialog(typeOfWorkHours);
-            return;
+        if (!isReferencedByOtherEntities(typeOfWorkHours)) {
+            int result = showConfirmDeleteWorkHoursType(typeOfWorkHours);
+            if (result == Messagebox.OK) {
+                typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
+                Util.reloadBindings(listing);
+            }
         }
-        int result = showConfirmDeleteWorkHoursType(typeOfWorkHours);
-        if (result == Messagebox.OK) {
-            typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
-            Util.reloadBindings(listing);
+    }
+
+    private boolean isReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            typeOfWorkHoursModel.checkIsReferencedByOtherEntities(typeOfWorkHours);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteWorkHoursTypeDialog(e.getInvalidValue()
+                    .getMessage(), typeOfWorkHours);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteWorkHoursTypeDialog(String message,
+            TypeOfWorkHours typeOfWorkHours) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on showing warning message removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
         }
     }
 
@@ -178,19 +196,6 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
             LOG.error(_("Error on removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
         }
         return Messagebox.CANCEL;
-    }
-
-    private boolean existsCostCategoriesUsing(TypeOfWorkHours typeOfWorkHours) {
-        return typeOfWorkHoursModel.existsCostCategoriesUsing(typeOfWorkHours);
-    }
-
-    private void showCannotDeleteWorkHoursTypeDialog(TypeOfWorkHours typeOfWorkHours) {
-        try {
-            Messagebox.show(_("Cannot delete type of work hours. It is being used at this moment in some cost category."),
-                    _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-        } catch (InterruptedException e) {
-            LOG.error(_("Error on showing warning message removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
-        }
     }
 
 }

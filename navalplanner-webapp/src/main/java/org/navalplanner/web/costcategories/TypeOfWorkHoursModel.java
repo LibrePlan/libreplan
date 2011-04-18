@@ -80,6 +80,12 @@ public class TypeOfWorkHoursModel extends IntegrationEntityModel implements
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public void checkIsReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) throws ValidationException {
+        typeOfWorkHoursDAO.checkIsReferencedByOtherEntities(typeOfWorkHours);
+    }
+
+    @Override
     public TypeOfWorkHours getTypeOfWorkHours() {
         return typeOfWorkHours;
     }
@@ -129,12 +135,6 @@ public class TypeOfWorkHoursModel extends IntegrationEntityModel implements
     @Override
     public IntegrationEntity getCurrentEntity() {
         return this.typeOfWorkHours;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean existsCostCategoriesUsing(TypeOfWorkHours typeOfWorkHours) {
-        return hourCostDAO.hoursCostsByTypeOfWorkHour(typeOfWorkHours).isEmpty();
     }
 
 }

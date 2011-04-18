@@ -52,13 +52,4 @@ public class HourCostDAO extends IntegrationEntityDAO<HourCost> implements
         super.remove(id);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public Collection<HourCost> hoursCostsByTypeOfWorkHour(
-            TypeOfWorkHours typeOfWorkHours) {
-        return getSession().createCriteria(HourCost.class)
-            .add(Restrictions.eq("type", typeOfWorkHours))
-            .list();
-    }
-
 }

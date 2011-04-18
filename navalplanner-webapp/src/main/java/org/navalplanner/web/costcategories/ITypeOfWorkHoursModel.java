@@ -35,6 +35,8 @@ import org.navalplanner.web.common.IIntegrationEntityModel;
  */
 public interface ITypeOfWorkHoursModel extends IIntegrationEntityModel {
 
+    void checkIsReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) throws ValidationException;
+
     void confirmRemove(TypeOfWorkHours typeOfWorkHours);
 
     /**
@@ -44,8 +46,6 @@ public interface ITypeOfWorkHoursModel extends IIntegrationEntityModel {
      *             If validation fails
      */
     void confirmSave() throws ValidationException;
-
-    boolean existsCostCategoriesUsing(TypeOfWorkHours typeOfWorkHours);
 
     /**
      * Gets the current {@link TypeOfWorkHours}.
