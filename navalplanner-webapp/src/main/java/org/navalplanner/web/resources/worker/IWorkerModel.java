@@ -144,4 +144,6 @@ public interface IWorkerModel extends IIntegrationEntityModel {
 
     void confirmRemove(Worker worker) throws InstanceNotFoundException;
 
+    void removeCalendar();
+
 }

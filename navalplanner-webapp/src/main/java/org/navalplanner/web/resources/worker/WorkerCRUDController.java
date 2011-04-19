@@ -506,8 +506,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             @Override
             public void cancel() {
+                workerModel.removeCalendar();
                 resourceCalendarModel.cancel();
-                workerModel.setCalendar(null);
                 reloadCurrentWindow();
             }
 
