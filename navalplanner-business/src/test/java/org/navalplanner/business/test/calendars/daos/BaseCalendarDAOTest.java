@@ -330,4 +330,41 @@ public class BaseCalendarDAOTest {
         baseCalendarDAO.save(calendar);
     }
 
+    @Test
+    public void testSaveAndRemoveCalendar() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        try {
+            baseCalendarDAO.remove(calendar.getId());
+        } catch (InstanceNotFoundException e) {
+
+        }
+        assertTrue(!baseCalendarDAO.exists(calendar.getId()));
+    }
+
+    @Test
+    public void testSaveAndRemoveResourceCalendar() {
+        Worker worker = ResourceDAOTest.givenValidWorker();
+        ResourceCalendar resourceCalendar = ResourceCalendar.create();
+        addChristmasAsExceptionDay(resourceCalendar);
+        resourceCalendar.setName("testResourceCalendar");
+        BaseCalendarTest.setHoursForAllDays(resourceCalendar, 8);
+        worker.setCalendar(resourceCalendar);
+
+        // Resource calendar was saved whe worker was saved
+        resourceDAO.save(worker);
+        resourceCalendar = worker.getCalendar();
+        assertTrue(resourceCalendar.getId() != null);
+
+        // Unset calendar from resource and save should remove calendar
+        try {
+            baseCalendarDAO.remove(resourceCalendar.getId());
+            worker.setCalendar(null);
+            resourceDAO.save(worker);
+        } catch (InstanceNotFoundException e) {
+
+        }
+        assertTrue(!baseCalendarDAO.exists(resourceCalendar.getId()));
+    }
+
 }
