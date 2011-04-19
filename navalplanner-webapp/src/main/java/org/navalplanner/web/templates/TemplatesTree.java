@@ -24,8 +24,6 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
-import org.navalplanner.business.trees.ITreeNode;
-import org.navalplanner.business.trees.ITreeParentNode;
 import org.navalplanner.web.tree.EntitiesTree;
 
 /**
@@ -36,13 +34,6 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     public TemplatesTree(OrderElementTemplate root) {
         super(OrderElementTemplate.class, root);
-    }
-
-    @Override
-    protected void added(ITreeNode<OrderElementTemplate> destination,
-            ITreeNode<OrderElementTemplate> added,
-            ITreeParentNode<OrderElementTemplate> turnedIntoContainer) {
-        // do nothing
     }
 
     @Override

@@ -28,8 +28,6 @@ import java.util.List;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
-import org.navalplanner.business.trees.ITreeNode;
-import org.navalplanner.business.trees.ITreeParentNode;
 import org.navalplanner.web.tree.EntitiesTree;
 
 /**
@@ -46,24 +44,6 @@ public class OrderElementTreeModel extends EntitiesTree<OrderElement> {
 
     public OrderElementTreeModel(OrderElement root) {
         super(OrderElement.class, root);
-    }
-
-    private void updateCriterionRequirementsInHierarchy(
-            OrderElement destination, OrderElement origin,
-            OrderElement container) {
-        if (destination instanceof OrderLine) {
-            container.updateCriterionRequirements();
-        } else {
-            origin.updateCriterionRequirements();
-        }
-    }
-
-    @Override
-    protected void added(ITreeNode<OrderElement> destination,
-            ITreeNode<OrderElement> added,
-            ITreeParentNode<OrderElement> turnedIntoContainer) {
-        updateCriterionRequirementsInHierarchy(destination.getThis(), added
-                .getThis(), turnedIntoContainer.getThis());
     }
 
     @Override

@@ -554,13 +554,15 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
     public void updateMyCriterionRequirements(T orderElement) {
         final T parent = getParent(orderElement);
 
-        Set<CriterionRequirement> requirementsParent = getCriterionRequirements(parent);
-        Set<IndirectCriterionRequirement> currentIndirects = getCurrentIndirectRequirements(
-                getIndirectCriterionRequirement(orderElement),
-                requirementsParent);
-        transformDirectToIndirectIfNeeded(orderElement, currentIndirects);
-        removeOldIndirects(orderElement, currentIndirects);
-        addNewsIndirects(orderElement, currentIndirects);
+        if (parent != null) {
+            Set<CriterionRequirement> requirementsParent = getCriterionRequirements(parent);
+            Set<IndirectCriterionRequirement> currentIndirects = getCurrentIndirectRequirements(
+                    getIndirectCriterionRequirement(orderElement),
+                    requirementsParent);
+            transformDirectToIndirectIfNeeded(orderElement, currentIndirects);
+            removeOldIndirects(orderElement, currentIndirects);
+            addNewsIndirects(orderElement, currentIndirects);
+        }
     }
 
     protected abstract T getParent(T orderElement);

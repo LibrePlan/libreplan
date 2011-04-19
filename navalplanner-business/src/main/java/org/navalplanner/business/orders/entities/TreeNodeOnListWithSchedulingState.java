@@ -46,6 +46,15 @@ public abstract class TreeNodeOnListWithSchedulingState<T extends ITreeNode<T>>
     @Override
     protected void onChildAdded(T newChild) {
         updateSchedulingStateGiven(newChild);
+        onChildAddedAdditionalActions(newChild);
+    }
+
+    /**
+     * This method is intended to be overridden
+     *
+     * @param previousChild
+     */
+    protected void onChildAddedAdditionalActions(T newChild) {
     }
 
     @Override
@@ -55,7 +64,7 @@ public abstract class TreeNodeOnListWithSchedulingState<T extends ITreeNode<T>>
     }
 
     /**
-     * This method is intended to be overriden
+     * This method is intended to be overridden
      * @param previousChild
      */
     protected void onChildRemovedAdditionalActions(T previousChild) {

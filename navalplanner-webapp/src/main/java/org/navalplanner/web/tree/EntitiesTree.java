@@ -140,7 +140,6 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         ITreeParentNode<T> container = turnIntoContainerIfNeeded(parent);
         container.add(element.getThis());
         addToTree(container.getThis(), element);
-        added(parent, element, container);
     }
 
     private void addOrderElementAt(ITreeNode<T> destinationNode,
@@ -153,11 +152,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
             // children, so it should be redrawn
             tree.sendContentsChangedEventFor(container.getThis());
         }
-        added(destinationNode, elementToAdd, container);
     }
-
-    protected abstract void added(ITreeNode<T> destination, ITreeNode<T> added,
-            ITreeParentNode<T> turnedIntoContainer);
 
     private ITreeParentNode<T> turnIntoContainerIfNeeded(
             ITreeNode<T> selectedForTurningIntoContainer) {

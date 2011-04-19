@@ -91,10 +91,16 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         @Override
+        protected void onChildAddedAdditionalActions(OrderElement newChild) {
+            updateCriterionRequirements();
+        }
+
+        @Override
         protected void onChildRemovedAdditionalActions(OrderElement removedChild) {
             if (removedChild.isScheduled() && getThis().isScheduled()) {
                 removeChildTask(removedChild);
             }
+            updateCriterionRequirements();
         }
 
         private void removeChildTask(OrderElement removedChild) {
