@@ -369,9 +369,9 @@ public abstract class BaseCalendarEditionController extends
             capacityPicker.setDisabled(baseCalendarModel.isDerived()
                     && baseCalendarModel.isDefault(day));
 
+            Listcell inheritedListcell = new Listcell();
             if (baseCalendarModel.isDerived()) {
-                Listcell defaultListcell = new Listcell();
-                Checkbox defaultCheckbox = Util.bind(new Checkbox(),
+                Checkbox inheritedCheckbox = Util.bind(new Checkbox(),
                         new Util.Getter<Boolean>() {
 
                             @Override
@@ -389,7 +389,7 @@ public abstract class BaseCalendarEditionController extends
                                 }
                             }
                         });
-                defaultCheckbox.addEventListener(Events.ON_CHECK,
+                inheritedCheckbox.addEventListener(Events.ON_CHECK,
                         new EventListener() {
 
                             @Override
@@ -399,9 +399,9 @@ public abstract class BaseCalendarEditionController extends
 
                         });
 
-                defaultListcell.appendChild(defaultCheckbox);
-                item.appendChild(defaultListcell);
+                inheritedListcell.appendChild(inheritedCheckbox);
             }
+            item.appendChild(inheritedListcell);
         }
 
         private void addLabelCell(Listitem item, final Days day) {
