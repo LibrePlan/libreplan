@@ -169,7 +169,7 @@ public abstract class BaseCalendarEditionController extends
 
         EffortDurationPicker normalDuration = findOrCreateDurationPicker(normalEffortRow);
         EffortDurationPicker extraDuration = findOrCreateDurationPicker(extraEffortRow);
-        Checkbox checkbox = findOrCreateOverAssignableCheckbox(extraEffortRow);
+        Checkbox checkbox = findOrCreateUnlimitedCheckbox(extraEffortRow);
         return CapacityPicker.workWith(checkbox, normalDuration, extraDuration,
                 Capacity.create(EffortDuration.zero()));
     }
@@ -187,22 +187,24 @@ public abstract class BaseCalendarEditionController extends
                 });
     }
 
-    private Checkbox findOrCreateOverAssignableCheckbox(Component parent) {
+    private Checkbox findOrCreateUnlimitedCheckbox(Component parent) {
         return findOrCreate(parent, Checkbox.class, new ICreation<Checkbox>() {
 
             @Override
             public Checkbox createAt(Component parent) {
-                Checkbox result = createInfinitelyOverAssignableCheckbox();
+                Checkbox result = createUnlimitedCheckbox();
                 parent.appendChild(result);
                 return result;
             }
+
         });
     }
 
-    private Checkbox createInfinitelyOverAssignableCheckbox() {
-        Checkbox infinitelyOverAssignable = new Checkbox();
-        infinitelyOverAssignable.setLabel(_("Infinitely Over Assignable"));
-        return infinitelyOverAssignable;
+    private Checkbox createUnlimitedCheckbox() {
+        Checkbox unlimited = new Checkbox();
+        unlimited.setLabel(_("Unlimited"));
+        unlimited.setTooltiptext(_("Infinitely Over Assignable"));
+        return unlimited;
     }
 
     private void updateWithCapacityFrom(CalendarExceptionType exceptionType) {
@@ -345,12 +347,12 @@ public abstract class BaseCalendarEditionController extends
 
             EffortDurationPicker normalDurationPicker = new EffortDurationPicker();
             EffortDurationPicker extraDurationPicker = new EffortDurationPicker();
-            Checkbox checkbox = createInfinitelyOverAssignableCheckbox();
+            Checkbox unlimitedCheckbox = createUnlimitedCheckbox();
 
             addNormalDurationCell(item, normalDurationPicker);
-            addExtraEffortCell(item, extraDurationPicker, checkbox);
+            addExtraEffortCell(item, extraDurationPicker, unlimitedCheckbox);
 
-            CapacityPicker capacityPicker = CapacityPicker.workWith(checkbox,
+            CapacityPicker capacityPicker = CapacityPicker.workWith(unlimitedCheckbox,
                     normalDurationPicker,
                     extraDurationPicker, new Getter<Capacity>() {
 
