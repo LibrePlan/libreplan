@@ -110,6 +110,26 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return date;
     }
 
+    /**
+     * <p>
+     * The duration elapsed projected to a day allocated with one resource per
+     * day.
+     * </p>
+     * <p>
+     * So, for example, if 8 hours are elapsed and the resources per day are 2,
+     * this value should be 4. If 4 hours are elapsed and the resources per day
+     * are 0.5, this value should be 8.
+     * <p>
+     * More generally, this value is the effort applied on {@link #date} divided
+     * by the resources per day being applied.
+     * </p>
+     * <p>
+     * This amount is useful in order to determine how much spare room for work
+     * is left on {@link #date}.
+     * </p>
+     *
+     * @return that duration
+     */
     public EffortDuration getEffortDuration() {
         return effortDuration == null ? EffortDuration.zero() : effortDuration;
     }
