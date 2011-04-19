@@ -315,7 +315,7 @@ public class GenericResourceAllocationTest {
                     @Override
                     public EffortDuration answer() throws Throwable {
                         PartialDay day = (PartialDay) getCurrentArguments()[0];
-                        return day.limitDuration(capacityMultipliedByUnits
+                        return day.limitWorkingDay(capacityMultipliedByUnits
                                 .getStandardEffort());
                     }
                 }).anyTimes();
@@ -331,7 +331,7 @@ public class GenericResourceAllocationTest {
                 PartialDay day = (PartialDay) getCurrentArguments()[0];
                 ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
                 return capacityMultipliedByUnits.limitDuration(resourcesPerDay
-                        .asDurationGivenWorkingDayOf(day.limitDuration(capacity
+                        .asDurationGivenWorkingDayOf(day.limitWorkingDay(capacity
                                 .getStandardEffort())));
             }
         };

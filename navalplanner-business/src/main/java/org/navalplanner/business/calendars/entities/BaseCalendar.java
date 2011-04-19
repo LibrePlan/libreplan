@@ -282,7 +282,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     public EffortDuration getCapacityOn(PartialDay date) {
-        return date.limitDuration(getCapacityWithOvertime(date.getDate())
+        return date.limitWorkingDay(getCapacityWithOvertime(date.getDate())
                 .getStandardEffort());
     }
 
@@ -779,7 +779,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
         Capacity capacity = findCapacityAt(day.getDate());
         EffortDuration oneResourcePerDayWorkingDuration = day
-                .limitDuration(capacity.getStandardEffort());
+                .limitWorkingDay(capacity.getStandardEffort());
         EffortDuration amountRequestedDuration = amount
                 .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
 

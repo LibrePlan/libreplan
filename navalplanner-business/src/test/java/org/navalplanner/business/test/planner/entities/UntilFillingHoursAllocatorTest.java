@@ -565,7 +565,7 @@ public class UntilFillingHoursAllocatorTest {
                     public EffortDuration answer() throws Throwable {
                         PartialDay day = (PartialDay) getCurrentArguments()[0];
                         if (availability.isValid(day.getDate())) {
-                            return day.limitDuration(workingDay);
+                            return day.limitWorkingDay(workingDay);
                         } else {
                             return zero();
                         }
@@ -581,7 +581,7 @@ public class UntilFillingHoursAllocatorTest {
                         PartialDay day = (PartialDay) getCurrentArguments()[0];
                         ResourcesPerDay resourcesPerDay = (ResourcesPerDay) getCurrentArguments()[1];
                         if (availability.isValid(day.getDate())) {
-                            return day.limitDuration(resourcesPerDay
+                            return day.limitWorkingDay(resourcesPerDay
                                     .asDurationGivenWorkingDayOf(workingDay));
                         } else {
                             return zero();

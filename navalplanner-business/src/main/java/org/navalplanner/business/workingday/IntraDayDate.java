@@ -235,8 +235,8 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
         /**
          * <p>
-         * Limits the duration that can be worked in a day taking into account
-         * this day duration.
+         * Limits the standard duration that can be worked in a day taking into
+         * account this day duration.
          * </p>
          * <ul>
          * <li>
@@ -247,22 +247,24 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
          * duration</li>
          * <li>If the day has an end, the duration must not surpass this end</li>
          * </ul>
-         * @param duration
+         *
+         * @param standardWorkingDayDuration
          * @return a duration that can be employed taking into consideration
          *         this day
          */
-        public EffortDuration limitDuration(EffortDuration duration) {
+        public EffortDuration limitWorkingDay(
+                EffortDuration standardWorkingDayDuration) {
             if (isWholeDay()) {
-                return duration;
+                return standardWorkingDayDuration;
             }
             EffortDuration alreadyElapsedInDay = start.getEffortDuration();
-            if (alreadyElapsedInDay.compareTo(duration) >= 0) {
+            if (alreadyElapsedInDay.compareTo(standardWorkingDayDuration) >= 0) {
                 return zero();
             }
-            EffortDuration durationLimitedByEnd = duration;
+            EffortDuration durationLimitedByEnd = standardWorkingDayDuration;
             if (!end.getEffortDuration().isZero()) {
-                durationLimitedByEnd = EffortDuration
-                        .min(end.getEffortDuration(), duration);
+                durationLimitedByEnd = EffortDuration.min(
+                        end.getEffortDuration(), standardWorkingDayDuration);
             }
             return durationLimitedByEnd.minus(alreadyElapsedInDay);
         }

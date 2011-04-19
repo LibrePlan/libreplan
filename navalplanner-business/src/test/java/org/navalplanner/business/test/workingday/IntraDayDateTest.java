@@ -211,31 +211,31 @@ public class IntraDayDateTest {
     }
 
     @Test
-    public void aPartialDayCanLimitAnEffortDuration() {
+    public void aPartialDayCanLimitAWorkingDayDuration() {
         PartialDay day = new PartialDay(IntraDayDate.create(today,
                 halfHour), IntraDayDate.create(today, oneHour));
-        assertThat(day.limitDuration(hours(10)), equalTo(minutes(30)));
-        assertThat(day.limitDuration(minutes(40)), equalTo(minutes(10)));
+        assertThat(day.limitWorkingDay(hours(10)), equalTo(minutes(30)));
+        assertThat(day.limitWorkingDay(minutes(40)), equalTo(minutes(10)));
         PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today),
                 IntraDayDate.startOfDay(tomorrow));
-        assertThat(completeDay.limitDuration(hours(10)), equalTo(hours(10)));
+        assertThat(completeDay.limitWorkingDay(hours(10)), equalTo(hours(10)));
         PartialDay startsInTheMiddle = new PartialDay(IntraDayDate.create(
                 today, EffortDuration.hours(3)),
                 IntraDayDate.startOfDay(tomorrow));
-        assertThat(startsInTheMiddle.limitDuration(hours(10)),
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(10)),
                 equalTo(hours(7)));
-        assertThat(startsInTheMiddle.limitDuration(hours(3)), equalTo(zero()));
-        assertThat(startsInTheMiddle.limitDuration(hours(2)), equalTo(zero()));
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(3)), equalTo(zero()));
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(2)), equalTo(zero()));
         PartialDay startAndEndInSameDay = new PartialDay(IntraDayDate.create(
                 today, EffortDuration.hours(3)), IntraDayDate.create(today,
                 EffortDuration.hours(6)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(4)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(4)),
                 equalTo(hours(1)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(5)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(5)),
                 equalTo(hours(2)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(6)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(6)),
                 equalTo(hours(3)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(10)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(10)),
                 equalTo(hours(3)));
     }
 
