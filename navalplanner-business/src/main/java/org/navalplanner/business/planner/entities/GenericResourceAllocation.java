@@ -48,6 +48,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -210,13 +211,13 @@ public class GenericResourceAllocation extends
         }
 
         @Override
-        public List<GenericDayAssignment> distributeForDay(LocalDate day,
+        public List<GenericDayAssignment> distributeForDay(PartialDay day,
                 EffortDuration effort) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
             for (ResourceWithAssignedDuration each : hoursDistributor
                     .distributeForDay(day, effort)) {
-                result.add(GenericDayAssignment.create(day, each.duration,
-                        each.resource));
+                result.add(GenericDayAssignment.create(day.getDate(),
+                        each.duration, each.resource));
             }
             return result;
         }

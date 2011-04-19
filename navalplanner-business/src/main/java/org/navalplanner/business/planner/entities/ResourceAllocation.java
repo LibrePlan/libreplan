@@ -675,7 +675,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
          * It just distributes them.
          *
          */
-        List<T> distributeForDay(LocalDate day, EffortDuration effort);
+        List<T> distributeForDay(PartialDay day, EffortDuration effort);
     }
 
     protected abstract class AssignmentsAllocator implements IAllocatable,
@@ -698,8 +698,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             for (PartialDay day : getDays(startInclusive, endExclusive)) {
                 EffortDuration durationForDay = calculateTotalToDistribute(day,
                         resourcesPerDay);
-                assignmentsCreated.addAll(distributeForDay(day.getDate(),
-                        durationForDay));
+                assignmentsCreated
+                        .addAll(distributeForDay(day, durationForDay));
             }
             return onlyNonZeroHours(assignmentsCreated);
         }
@@ -912,8 +912,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 // if all days are not available, it would try to assign
                 // them anyway, preventing it with a check
                 if (availability.isValid(day.getDate())) {
-                    result.addAll(distributeForDay(day.getDate(),
-                            durationsEachDay[i]));
+                    result.addAll(distributeForDay(day, durationsEachDay[i]));
                 }
                 i++;
             }

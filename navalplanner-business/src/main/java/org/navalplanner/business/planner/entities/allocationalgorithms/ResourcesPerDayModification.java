@@ -274,12 +274,18 @@ public abstract class ResourcesPerDayModification extends
 
             @Override
             public List<? extends DayAssignment> createAssignmentsAtDay(
-                    PartialDay day,
-                    EffortDuration limit) {
+                    PartialDay day, EffortDuration limit,
+                    ResourcesPerDay resourcesPerDay) {
                 EffortDuration toDistribute = getResourceAllocation()
                         .calculateTotalToDistribute(day, getGoal());
                 EffortDuration effortLimited = min(limit, toDistribute);
-                return effortDistributor.distributeForDay(day.getDate(),
+                PartialDay distributeOn = day;
+                if (effortLimited.equals(limit)) {
+                    IntraDayDate start = day.getStart();
+                    distributeOn = new PartialDay(start, start.increaseBy(
+                            resourcesPerDay, effortLimited));
+                }
+                return effortDistributor.distributeForDay(distributeOn,
                         effortLimited);
             }
         };

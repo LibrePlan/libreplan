@@ -20,6 +20,7 @@
  */
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.seconds;
 
 import java.util.ArrayList;
@@ -218,15 +219,22 @@ public class EffortDistributor {
             this.calendar = generateCalendarFor(resource);
         }
 
-        ResourceWithAvailableCapacity withAvailableCapacityOn(LocalDate date,
+        ResourceWithAvailableCapacity withAvailableCapacityOn(PartialDay day,
                 IAssignedEffortForResource assignedEffort) {
-            EffortDuration capacity = calendar.getCapacityOn(PartialDay
-                    .wholeDay(date));
+            EffortDuration allCapacityForDay = calendar
+                    .getCapacityOn(PartialDay.wholeDay(day.getDate()));
+            EffortDuration capacity = calendar.getCapacityOn(day);
+
+            EffortDuration capacityForAlreadyAssigned = allCapacityForDay
+                    .minus(capacity);
+
             EffortDuration assigned = assignedEffort.getAssignedDurationAt(
-                    resource, date);
-            EffortDuration available = capacity.compareTo(assigned) > 0 ? capacity
-                    .minus(assigned)
-                    : EffortDuration.zero();
+                    resource, day.getDate());
+            EffortDuration assignedInterfering = assigned.minus(min(assigned,
+                    capacityForAlreadyAssigned));
+
+            EffortDuration available = capacity.minus(min(assignedInterfering,
+                    capacity));
             return new ResourceWithAvailableCapacity(resource, available);
         }
 
@@ -306,9 +314,9 @@ public class EffortDistributor {
     }
 
 
-    public List<ResourceWithAssignedDuration> distributeForDay(LocalDate date,
+    public List<ResourceWithAssignedDuration> distributeForDay(PartialDay day,
             EffortDuration totalDuration) {
-        return withCaptureOfResourcesPicked(distributeForDay_(date,
+        return withCaptureOfResourcesPicked(distributeForDay_(day,
                 totalDuration));
     }
 
@@ -320,10 +328,11 @@ public class EffortDistributor {
     }
 
     private List<ResourceWithAssignedDuration> distributeForDay_(
-            LocalDate date, EffortDuration totalDuration) {
-        List<ResourceWithDerivedData> resourcesAssignable = resourcesAssignableAt(date);
+            PartialDay day, EffortDuration totalDuration) {
+        List<ResourceWithDerivedData> resourcesAssignable = resourcesAssignableAt(day
+                .getDate());
         List<ResourceWithAssignedDuration> withoutOvertime = assignAllPossibleWithoutOvertime(
-                date, totalDuration, resourcesAssignable);
+                day, totalDuration, resourcesAssignable);
         EffortDuration remaining = totalDuration
                 .minus(ResourceWithAssignedDuration
                         .sumDurations(withoutOvertime));
@@ -331,9 +340,10 @@ public class EffortDistributor {
             return withoutOvertime;
         }
         List<ResourceWithAssignedDuration> withOvertime = distributeInOvertimeForDayRemainingEffort(
-                date, remaining,
+                day.getDate(), remaining,
                 ResourceWithAssignedDuration.sumAssignedEffort(withoutOvertime,
-                        assignedEffortForResource), resourcesAssignable);
+                        assignedEffortForResource),
+                resourcesAssignable);
         return ResourceWithAssignedDuration
                 .join(withoutOvertime, withOvertime);
     }
@@ -349,10 +359,11 @@ public class EffortDistributor {
     }
 
     private List<ResourceWithAssignedDuration> assignAllPossibleWithoutOvertime(
-            LocalDate date, EffortDuration totalDuration,
+            PartialDay day, EffortDuration totalDuration,
             List<ResourceWithDerivedData> resourcesAssignable) {
+
         List<ResourceWithAvailableCapacity> fromMoreToLessCapacity = resourcesFromMoreDesirableToLess(
-                resourcesAssignable, date);
+                resourcesAssignable, day);
         EffortDuration remaining = totalDuration;
         List<ResourceWithAssignedDuration> result = new ArrayList<ResourceWithAssignedDuration>();
         for (ResourceWithAvailableCapacity each : fromMoreToLessCapacity) {
@@ -369,10 +380,10 @@ public class EffortDistributor {
     }
 
     private List<ResourceWithAvailableCapacity> resourcesFromMoreDesirableToLess(
-            List<ResourceWithDerivedData> resourcesAssignable, LocalDate date) {
+            List<ResourceWithDerivedData> resourcesAssignable, PartialDay day) {
         List<ResourceWithAvailableCapacity> result = new ArrayList<ResourceWithAvailableCapacity>();
         for (ResourceWithDerivedData each : resourcesAssignable) {
-            result.add(each.withAvailableCapacityOn(date,
+            result.add(each.withAvailableCapacityOn(day,
                     assignedEffortForResource));
         }
         Collections.sort(result, Collections
@@ -468,11 +479,11 @@ public class EffortDistributor {
     }
 
     private List<ResourceWithAssignedDuration> distributeRemaining(
-            LocalDate day, EffortDuration remainingDuration,
+            LocalDate date, EffortDuration remainingDuration,
             IAssignedEffortForResource assignedEffortForEachResource,
             List<ResourceWithDerivedData> resourcesWithAvailableOvertime) {
         List<ShareSource> shares = divisionAt(resourcesWithAvailableOvertime,
-                assignedEffortForEachResource, day);
+                assignedEffortForEachResource, date);
         ShareDivision currentDivision = ShareSource.all(shares);
         ShareDivision newDivison = currentDivision.plus(remainingDuration
                 .getSeconds());
@@ -485,17 +496,17 @@ public class EffortDistributor {
     private List<ShareSource> divisionAt(
             List<ResourceWithDerivedData> resources,
             IAssignedEffortForResource assignedEffortForEachResource,
-            LocalDate day) {
+            LocalDate date) {
         List<ShareSource> result = new ArrayList<ShareSource>();
         for (int i = 0; i < resources.size(); i++) {
             List<Share> shares = new ArrayList<Share>();
             Resource resource = resources.get(i).resource;
             ICalendar calendarForResource = resources.get(i).calendar;
             EffortDuration alreadyAssigned = assignedEffortForEachResource
-                    .getAssignedDurationAt(resource, day);
+                    .getAssignedDurationAt(resource, date);
             final int alreadyAssignedSeconds = alreadyAssigned.getSeconds();
             Integer capacityEachOneSeconds = calendarForResource.asDurationOn(
-                    PartialDay.wholeDay(day), ONE).getSeconds();
+                    PartialDay.wholeDay(date), ONE).getSeconds();
             final int capacityUnits = resources.get(i).capacityUnits;
             assert capacityUnits >= 1;
             final int assignedForEach = alreadyAssignedSeconds / capacityUnits;

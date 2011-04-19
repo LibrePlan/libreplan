@@ -93,7 +93,7 @@ public abstract class DayAssignment extends BaseEntity {
     }
 
     public static <T extends DayAssignment> Map<Resource, List<T>> byResourceAndOrdered(
-            Collection<T> assignments) {
+            Collection<? extends T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
         for (T assignment : assignments) {
             Resource resource = assignment.getResource();

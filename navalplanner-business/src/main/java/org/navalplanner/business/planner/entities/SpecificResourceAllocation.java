@@ -51,6 +51,7 @@ import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
@@ -187,10 +188,10 @@ public class SpecificResourceAllocation extends
             AssignmentsAllocator {
 
         @Override
-        public List<SpecificDayAssignment> distributeForDay(LocalDate day,
+        public List<SpecificDayAssignment> distributeForDay(PartialDay day,
                 EffortDuration effort) {
-            return Arrays.asList(SpecificDayAssignment.create(day, effort,
-                    resource));
+            return Arrays.asList(SpecificDayAssignment.create(day.getDate(),
+                    effort, resource));
         }
 
         @Override

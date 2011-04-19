@@ -39,6 +39,7 @@ import org.navalplanner.business.resources.entities.MachineWorkerAssignment;
 import org.navalplanner.business.resources.entities.MachineWorkersConfigurationUnit;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -109,7 +110,8 @@ public class DerivedAllocationGenerator {
                     new BigDecimal(each.getDuration().getSeconds())).intValue();
             LocalDate day = each.getDay();
             List<ResourceWithAssignedDuration> distributeForDay = distributor
-                    .distributeForDay(day, seconds(durationInSeconds));
+                    .distributeForDay(PartialDay.wholeDay(day),
+                            seconds(durationInSeconds));
             result.addAll(asDerived(parent, day, distributeForDay));
         }
         return result;

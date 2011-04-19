@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -113,7 +114,7 @@ public abstract class UntilFillingHoursAllocator {
     public interface IAssignmentsCreator {
 
         List<? extends DayAssignment> createAssignmentsAtDay(PartialDay day,
-                EffortDuration limit);
+                EffortDuration limit, ResourcesPerDay resourcesPerDay);
     }
 
     /**
@@ -144,19 +145,31 @@ public abstract class UntilFillingHoursAllocator {
                 current = nextDay(current);
             }
         }
+        return adjustFinish(resourcesPerDayModification, taken,
+                biggestLastAssignment, current);
+    }
+
+    private IntraDayDate adjustFinish(
+            ResourcesPerDayModification resourcesPerDayModification,
+            EffortDuration allocatedLastDay,
+            EffortDuration biggestLastAssignment,
+            IntraDayDate end) {
         IntraDayDate result;
+        ResourcesPerDay adjustBy = allocatedLastDay
+                .equals(biggestLastAssignment) ? resourcesPerDayModification
+                .getGoal() : ResourcesPerDay.amount(1);
         if (isForwardScheduling()) {
-            result = plusEffort(current, taken);
+            result = plusEffort(end, allocatedLastDay);
             if (!resourcesPerDayModification
                     .thereAreMoreSpaceAvailableAt(result)) {
                 result = nextDay(result);
             } else {
-                result = current.increaseBy(
-                        resourcesPerDayModification.getGoal(),
-                        biggestLastAssignment);
+                result = end.increaseBy(adjustBy, biggestLastAssignment);
             }
         } else {
-            result = minusEffort(current, taken, resourcesPerDayModification);
+            result = minusEffort(end, allocatedLastDay,
+                    resourcesPerDayModification
+                    .getBeingModified().getAllocationCalendar(), adjustBy);
         }
         return result;
     }
@@ -203,20 +216,17 @@ public abstract class UntilFillingHoursAllocator {
     }
 
     private IntraDayDate minusEffort(IntraDayDate current,
-            EffortDuration taken,
-            ResourcesPerDayModification resourcesPerDayModification) {
+            EffortDuration taken, ICalendar calendar, ResourcesPerDay adjustBy) {
         if (!current.isStartOfDay()) {
-            return current.decreaseBy(resourcesPerDayModification.getGoal(),
+            return current.decreaseBy(adjustBy,
                     taken);
         } else {
             LocalDate day = current.getDate().minusDays(1);
-            EffortDuration effortAtDay = resourcesPerDayModification
-                    .getBeingModified()
-                    .getAllocationCalendar()
+            EffortDuration effortAtDay = calendar
                     .asDurationOn(PartialDay.wholeDay(day),
                             ResourcesPerDay.amount(1));
-            return IntraDayDate.create(day, effortAtDay).decreaseBy(
-                    resourcesPerDayModification.getGoal(), taken);
+            return IntraDayDate.create(day, effortAtDay).decreaseBy(adjustBy,
+                    taken);
         }
     }
 
@@ -268,7 +278,8 @@ public abstract class UntilFillingHoursAllocator {
             IAssignmentsCreator assignmentsCreator,
             PartialDay day, EffortDuration remaining) {
         List<? extends DayAssignment> newAssignments = assignmentsCreator
-                .createAssignmentsAtDay(day, remaining);
+                .createAssignmentsAtDay(day, remaining,
+                        resourcesPerDayModification.getGoal());
         resultAssignments.get(resourcesPerDayModification).addAll(
                 newAssignments);
         return Pair.create(DayAssignment.sum(newAssignments),

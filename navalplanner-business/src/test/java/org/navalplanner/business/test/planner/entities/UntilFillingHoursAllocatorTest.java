@@ -40,6 +40,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.easymock.IAnswer;
 import org.joda.time.LocalDate;
@@ -48,6 +50,7 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified.INotFulfilledReceiver;
@@ -406,6 +409,35 @@ public class UntilFillingHoursAllocatorTest {
         assertThat(generic.getAssignments(), haveHours(16, 16));
         assertThat(firstSpecific.getAssignments(), haveHours(8, 8));
         assertThat(secondSpecific.getAssignments(), haveHours(8, 8));
+    }
+
+    @Test
+    public void theResourcesPerDayInfuenceTheEndHourWhenUsingGenericAllocationOnOneWorkerForLastDay() {
+        givenWorkers(1);
+        givenGenericAllocation(ResourcesPerDay.amount(2));
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(20);
+        assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(1)));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(2)));
+    }
+
+    @Test
+    public void theHoursInLastDayAreDistributedConsideringResourcesPerDay() {
+        givenWorkers(2);
+        givenGenericAllocation(ResourcesPerDay.amount(2));
+        IntraDayDate endDate = ResourceAllocation.allocating(allocations)
+                .untilAllocating(26);
+        assertThat(endDate.getDate(), equalTo(startDate.getDate().plusDays(1)));
+        assertThat(endDate.getEffortDuration(), equalTo(hours(5)));
+
+        Map<Resource, List<DayAssignment>> byResource = DayAssignment
+                .byResourceAndOrdered(allocations.get(0)
+                .getBeingModified().getAssignments());
+        for (Entry<Resource, List<DayAssignment>> each : byResource.entrySet()) {
+            List<DayAssignment> assignments = each.getValue();
+            assertThat(assignments.get(0).getDuration(), equalTo(hours(8)));
+            assertThat(assignments.get(1).getDuration(), equalTo(hours(5)));
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)
