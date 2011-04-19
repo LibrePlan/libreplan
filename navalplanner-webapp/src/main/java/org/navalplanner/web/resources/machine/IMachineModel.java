@@ -105,4 +105,7 @@ public interface IMachineModel extends IIntegrationEntityModel {
     boolean canRemove(Machine machine);
 
     void confirmRemove(Machine machine) throws InstanceNotFoundException;
+
+    void removeCalendar();
+
 }

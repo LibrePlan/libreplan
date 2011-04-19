@@ -397,8 +397,8 @@ public class MachineCRUDController extends GenericForwardComposer {
 
             @Override
             public void cancel() {
+                machineModel.removeCalendar();
                 resourceCalendarModel.cancel();
-                machineModel.setCalendarOfMachine(null);
                 reloadWindow();
             }
 

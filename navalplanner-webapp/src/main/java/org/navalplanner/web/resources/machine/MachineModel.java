@@ -86,6 +86,7 @@ public class MachineModel extends IntegrationEntityModel implements
      *
      */
     private Machine machine;
+    private ResourceCalendar calendarToRemove = null;
     private Map<Long, Criterion> criterions = new HashMap<Long, Criterion>();
     private Map<Long, Worker> workers = new HashMap<Long, Worker>();
     private List<Machine> machineList = new ArrayList<Machine>();
@@ -259,7 +260,20 @@ public class MachineModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        removeCalendarIfNeeded();
         resourceDAO.save(machine);
+    }
+
+    private void removeCalendarIfNeeded() {
+        if (calendarToRemove != null) {
+            try {
+                resourceDAO.reattach(machine);
+                baseCalendarDAO.remove(calendarToRemove.getId());
+                calendarToRemove = null;
+            } catch (InstanceNotFoundException e) {
+                LOG.error("Couldn't remove calendar");
+            }
+        }
     }
 
     @Override
@@ -377,4 +391,11 @@ public class MachineModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.machine;
     }
+
+    @Override
+    public void removeCalendar() {
+        calendarToRemove = machine.getCalendar();
+        machine.setCalendar(null);
+    }
+
 }
