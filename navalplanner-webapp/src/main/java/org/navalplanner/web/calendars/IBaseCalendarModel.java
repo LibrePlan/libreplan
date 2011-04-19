@@ -194,6 +194,8 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     void confirmSave() throws ValidationException;
 
+    void confirmSaveAndContinue() throws ValidationException;
+
     void confirmRemove(BaseCalendar calendar);
 
     void cancel();
@@ -207,4 +209,5 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
     boolean isLastActivationPeriod(CalendarAvailability calendarAvailability);
 
     boolean isOwnException(CalendarException exception);
+
 }

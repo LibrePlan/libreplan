@@ -136,7 +136,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         try {
             validateCalendarExceptionCodes();
             baseCalendarModel.generateCalendarCodes();
-            baseCalendarModel.confirmSave();
+            baseCalendarModel.confirmSaveAndContinue();
             messagesForUser.showMessage(Level.INFO, _(
                     "Base calendar \"{0}\" saved", baseCalendarModel
                             .getBaseCalendar().getName()));
