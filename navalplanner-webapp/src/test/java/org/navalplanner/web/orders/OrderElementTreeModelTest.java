@@ -544,7 +544,7 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
-    public void checkIndentOnOrderLineWithCriteriaAndAdvances()
+    public void checkIndentOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         model.addElement("element", 100);
@@ -589,7 +589,92 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
-    public void checkUnindentOnOrderLineWithCriteriaAndAdvances()
+    public void checkIndentOnOrderLineWithCriteriaAndAdvances()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElement("element2", 50);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        addCriterionRequirement(element);
+        addDirectAdvanceAssignment(element);
+
+        model.indent(element2);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(order.getCriterionRequirements().isEmpty());
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        assertTrue(container.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(container.getCriterionRequirements().isEmpty());
+
+        assertNotNull(element
+                .getAdvanceAssignmentByType(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertThat(element.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(element.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+
+        assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
+        assertTrue(element2.getCriterionRequirements().isEmpty());
+    }
+
+    @Test
+    public void checkIndentOnOrderLineGroupWithCriteriaAndAdvances()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+        model.addElement("element3", 30);
+
+        OrderLineGroup container = null;
+        OrderLine element3 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("new container")) {
+                container = (OrderLineGroup) each;
+            } else if (each.getName().equals("element3")) {
+                element3 = (OrderLine) each;
+            }
+        }
+
+        addCriterionRequirement(container);
+        addDirectAdvanceAssignment(container);
+
+        model.indent(element3);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(order.getCriterionRequirements().isEmpty());
+
+        assertNotNull(container
+                .getAdvanceAssignmentByType(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertThat(container.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(container.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+
+        assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
+        assertThat(element3.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(element3.getCriterionRequirements().iterator().next() instanceof IndirectCriterionRequirement);
+    }
+
+    @Test
+    public void checkUnindentOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         model.addElement("element", 100);
