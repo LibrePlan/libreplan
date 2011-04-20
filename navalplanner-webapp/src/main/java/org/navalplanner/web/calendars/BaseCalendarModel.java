@@ -506,9 +506,21 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         dontPoseAsTransientObjectAnymore(baseCalendar);
     }
 
-    private void dontPoseAsTransientObjectAnymore(BaseCalendar baseCalendar) {
-        baseCalendar.dontPoseAsTransientObjectAnymore();
-        for (CalendarData each: baseCalendar.getCalendarDataVersions()) {
+    /**
+     * Don't pose as transient anymore calendar and all data hanging from
+     * calendar (data versions, availabilities and exceptions)
+     *
+     * @param calendar
+     */
+    private void dontPoseAsTransientObjectAnymore(BaseCalendar calendar) {
+        calendar.dontPoseAsTransientObjectAnymore();
+        for (CalendarData each: calendar.getCalendarDataVersions()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+        for (CalendarAvailability each : calendar.getCalendarAvailabilities()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+        for (CalendarException each : calendar.getExceptions()) {
             each.dontPoseAsTransientObjectAnymore();
         }
     }
