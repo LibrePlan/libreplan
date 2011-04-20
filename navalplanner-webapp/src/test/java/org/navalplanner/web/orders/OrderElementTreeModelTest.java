@@ -550,9 +550,12 @@ public class OrderElementTreeModelTest {
         model.addElement("element", 100);
         model.addElement("element2", 50);
 
+        OrderLine element = null;
         OrderLine element2 = null;
         for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("element2")) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
                 element2 = (OrderLine) each;
             }
         }
@@ -574,6 +577,15 @@ public class OrderElementTreeModelTest {
                 .getIndirectAdvanceAssignment(directAdvanceAssignment
                         .getAdvanceType()));
         assertTrue(container.getCriterionRequirements().isEmpty());
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertTrue(element.getCriterionRequirements().isEmpty());
+
+        assertNotNull(element2
+                .getAdvanceAssignmentByType(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertThat(element2.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
     }
 
 }
