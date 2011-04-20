@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
@@ -1027,39 +1026,6 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         return orderLine;
-    }
-
-    @Override
-    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements() {
-        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
-
-        if (!StringUtils.isBlank(getExternalCode())) {
-            for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-                if (directAdvanceAssignment.getAdvanceType().getUnitName()
-                        .equals(advanceType.getUnitName())) {
-                    result.add(directAdvanceAssignment);
-                    return result;
-                }
-            }
-        }
-
-        for (OrderElement orderElement : children) {
-            result.addAll(orderElement
-                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements());
-        }
-
-        if (!StringUtils.isBlank(getExternalCode())) {
-            if (result.isEmpty()) {
-                DirectAdvanceAssignment advanceAssignment = getAdvanceAssignmentByType(advanceType);
-                if (advanceAssignment != null) {
-                    result.add(advanceAssignment);
-                }
-            }
-        }
-
-        return result;
     }
 
     public OrderVersion getCurrentOrderVersion() {

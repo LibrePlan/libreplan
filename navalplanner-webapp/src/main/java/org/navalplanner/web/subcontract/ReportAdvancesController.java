@@ -24,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -104,11 +103,12 @@ public class ReportAdvancesController extends GenericForwardComposer {
             appendLabel(row, toString(order.getCustomerReference()));
             appendLabel(row, order.getName());
 
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments = order
-                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
+            DirectAdvanceAssignment directAdvanceAssignment = order
+                    .getDirectAdvanceAssignmentOfSubcontractedOrderElements();
 
             AdvanceMeasurement lastAdvanceMeasurementReported = reportAdvancesModel
-                    .getLastAdvanceMeasurementReported(allDirectAdvanceAssignments);
+                    .getLastAdvanceMeasurementReported(directAdvanceAssignment);
+
             if (lastAdvanceMeasurementReported != null) {
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getValue()));
@@ -118,7 +118,8 @@ public class ReportAdvancesController extends GenericForwardComposer {
             }
 
             AdvanceMeasurement lastAdvanceMeasurement = reportAdvancesModel
-                    .getLastAdvanceMeasurement(allDirectAdvanceAssignments);
+                    .getLastAdvanceMeasurement(directAdvanceAssignment);
+
             if (lastAdvanceMeasurement != null) {
                 appendLabel(row, toString(lastAdvanceMeasurement.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurement.getValue()));
@@ -128,7 +129,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
             }
 
             if (reportAdvancesModel
-                    .isAnyAdvanceMeasurementNotReported(allDirectAdvanceAssignments)) {
+                    .isAnyAdvanceMeasurementNotReported(directAdvanceAssignment)) {
                 appendLabel(row, _("Pending update"));
                 appendOperations(row, order, false);
             } else {

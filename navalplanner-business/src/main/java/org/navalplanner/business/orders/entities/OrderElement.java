@@ -543,8 +543,6 @@ public abstract class OrderElement extends IntegrationEntity implements
     public abstract Set<IndirectAdvanceAssignment> getAllIndirectAdvanceAssignments(
             AdvanceType advanceType);
 
-    public abstract Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
-
     protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal();
 
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
@@ -1211,15 +1209,6 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public String getExternalCode() {
         return externalCode;
-    }
-
-    public void moveCodeToExternalCode() {
-        setExternalCode(getCode());
-        setCode(null);
-
-        for (OrderElement child : getChildren()) {
-            child.moveCodeToExternalCode();
-        }
     }
 
     public abstract OrderLine calculateOrderLineForSubcontract();

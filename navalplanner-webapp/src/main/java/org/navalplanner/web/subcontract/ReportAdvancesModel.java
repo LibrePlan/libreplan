@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -112,51 +111,33 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     }
 
     private void forceLoadAdvanceAssignments(Order order) {
-        for (DirectAdvanceAssignment directAdvanceAssignment : order
-                .getDirectAdvanceAssignmentsOfSubcontractedOrderElements()) {
-            directAdvanceAssignment.getAdvanceMeasurements().size();
-        }
+        order.getDirectAdvanceAssignmentOfTypeSubcontractor();
+        order.getDirectAdvanceAssignmentOfTypeSubcontractor()
+                .getAdvanceMeasurements().size();
     }
 
     @Override
     @Transactional(readOnly = true)
     public AdvanceMeasurement getLastAdvanceMeasurement(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments) {
-        if (allDirectAdvanceAssignments.isEmpty()) {
+            DirectAdvanceAssignment directAdvanceAssignment) {
+        if (directAdvanceAssignment == null) {
             return null;
         }
 
-        Iterator<DirectAdvanceAssignment> iterator = allDirectAdvanceAssignments
-                .iterator();
-        DirectAdvanceAssignment advanceAssignment = iterator.next();
-
-        AdvanceMeasurement lastAdvanceMeasurement = advanceAssignment
-                .getLastAdvanceMeasurement();
-        while (iterator.hasNext()) {
-            advanceAssignment = iterator.next();
-            AdvanceMeasurement advanceMeasurement = advanceAssignment
-                    .getLastAdvanceMeasurement();
-            if (advanceMeasurement.getDate().compareTo(
-                    lastAdvanceMeasurement.getDate()) > 0) {
-                lastAdvanceMeasurement = advanceMeasurement;
-            }
-        }
-
-        return lastAdvanceMeasurement;
+        return directAdvanceAssignment.getLastAdvanceMeasurement();
     }
 
     @Override
     @Transactional(readOnly = true)
     public AdvanceMeasurement getLastAdvanceMeasurementReported(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments) {
-        if (allDirectAdvanceAssignments.isEmpty()) {
+            DirectAdvanceAssignment directAdvanceAssignment) {
+        if (directAdvanceAssignment == null) {
             return null;
         }
 
         AdvanceMeasurement lastAdvanceMeasurementReported = null;
-
-        for (DirectAdvanceAssignment advanceAssignment : allDirectAdvanceAssignments) {
-            for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
+        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                .getAdvanceMeasurements()) {
                 if (advanceMeasurement.getCommunicationDate() != null) {
                     if (lastAdvanceMeasurementReported == null) {
                         lastAdvanceMeasurementReported = advanceMeasurement;
@@ -170,7 +151,6 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
                     }
                 }
             }
-        }
 
         return lastAdvanceMeasurementReported;
     }
@@ -178,19 +158,17 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     @Override
     @Transactional(readOnly = true)
     public boolean isAnyAdvanceMeasurementNotReported(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments) {
-        if (allDirectAdvanceAssignments.isEmpty()) {
+            DirectAdvanceAssignment directAdvanceAssignment) {
+        if (directAdvanceAssignment == null) {
             return false;
         }
 
-        for (DirectAdvanceAssignment advanceAssignment : allDirectAdvanceAssignments) {
-            for (AdvanceMeasurement advanceMeasurement : advanceAssignment.getAdvanceMeasurements()) {
-                if (advanceMeasurement.getCommunicationDate() == null) {
-                    return true;
-                }
+        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                .getAdvanceMeasurements()) {
+            if (advanceMeasurement.getCommunicationDate() == null) {
+                return true;
             }
         }
-
         return false;
     }
 
@@ -200,7 +178,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
     public void sendAdvanceMeasurements(Order order)
             throws UnrecoverableErrorServiceException,
             ConnectionProblemsException {
-        orderElementDAO.save(order);
+        orderDAO.save(order);
 
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = getOrderElementWithAdvanceMeasurementsListDTO(order);
         ExternalCompany externalCompany = order.getCustomer();
@@ -247,30 +225,26 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
             Order order) {
         List<OrderElementWithAdvanceMeasurementsDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
 
-        Set<DirectAdvanceAssignment> directAdvanceAssignments = order
-                .getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
+        DirectAdvanceAssignment directAdvanceAssignment = order
+                .getDirectAdvanceAssignmentOfSubcontractedOrderElements();
+        Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
 
-        for (DirectAdvanceAssignment advanceAssignment : directAdvanceAssignments) {
-            Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
-
-            for (AdvanceMeasurement advanceMeasurement : advanceAssignment
-                    .getAdvanceMeasurements()) {
-                if (advanceMeasurement.getCommunicationDate() == null) {
-                    AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
-                            .toDTO(advanceMeasurement);
-                    advanceMeasurement.updateCommunicationDate(new Date());
-                    advanceMeasurementDTOs.add(advanceMeasurementDTO);
-                }
-
+        for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment
+                .getAdvanceMeasurements()) {
+            if (advanceMeasurement.getCommunicationDate() == null) {
+                AdvanceMeasurementDTO advanceMeasurementDTO = OrderElementConverter
+                        .toDTO(advanceMeasurement);
+                advanceMeasurement.updateCommunicationDate(new Date());
+                advanceMeasurementDTOs.add(advanceMeasurementDTO);
             }
+        }
 
-            if (!advanceMeasurementDTOs.isEmpty()) {
-                OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO(
-                        advanceAssignment.getOrderElement().getExternalCode(),
-                        advanceMeasurementDTOs);
-                orderElementWithAdvanceMeasurementsDTOs
-                        .add(orderElementWithAdvanceMeasurementsDTO);
-            }
+        if (!advanceMeasurementDTOs.isEmpty()) {
+            OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO(
+                    directAdvanceAssignment.getOrderElement().getExternalCode(),
+                    advanceMeasurementDTOs);
+            orderElementWithAdvanceMeasurementsDTOs
+                    .add(orderElementWithAdvanceMeasurementsDTO);
         }
 
         return new OrderElementWithAdvanceMeasurementsListDTO(getCompanyCode(),

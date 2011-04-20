@@ -28,12 +28,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -306,18 +304,6 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLine calculateOrderLineForSubcontract() {
         return this;
-    }
-
-    @Override
-    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements() {
-        if (StringUtils.isBlank(getExternalCode())) {
-            return Collections.emptySet();
-        }
-
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
-
-        return getAllDirectAdvanceAssignments(advanceType);
     }
 
     @Override

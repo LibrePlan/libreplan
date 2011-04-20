@@ -30,9 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -521,6 +525,17 @@ public class Order extends OrderLineGroup {
     public OrderLine toLeaf() {
         throw new UnsupportedOperationException(
                 "Order can not be converted to leaf");
+    }
+
+    public DirectAdvanceAssignment getDirectAdvanceAssignmentOfSubcontractedOrderElements() {
+        if (StringUtils.isBlank(getExternalCode())) {
+            return null;
+        }
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
+                .getType();
+
+        return getAdvanceAssignmentByType(advanceType);
     }
 
 }
