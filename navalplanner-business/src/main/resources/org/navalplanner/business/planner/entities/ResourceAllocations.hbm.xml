@@ -15,6 +15,9 @@
         <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
             column="resources_per_day" />
 
+        <property name="intendedResourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
+            column="intended_resources_per_day" />
+
         <property name="intendedTotalHours" column="intended_total_hours" />
 
         <property name="originalTotalAssignment" access="field"

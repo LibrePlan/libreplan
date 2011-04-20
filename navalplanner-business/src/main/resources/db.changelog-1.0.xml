@@ -121,4 +121,12 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-intended_resources_per_day-column-to-resource-allocation" author="ogonzalez">
+        <comment>add intended_resources_per_day column to resource-allocation</comment>
+        <addColumn tableName="resource_allocation">
+            <column name="intended_resources_per_day" type="DECIMAL(19,2)" />
+        </addColumn>
+        <sql>update resource_allocation SET intended_resources_per_day = resources_per_day</sql>
+    </changeSet>
+
 </databaseChangeLog>
