@@ -588,4 +588,51 @@ public class OrderElementTreeModelTest {
         assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
     }
 
+    @Test
+    public void checkUnindentOnOrderLineWithCriteriaAndAdvances()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElement("element2", 50);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.indent(element2);
+
+        addCriterionRequirement(element2);
+        addDirectAdvanceAssignment(element2);
+
+        model.unindent(element2);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(order.getCriterionRequirements().isEmpty());
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        assertTrue(container.getDirectAdvanceAssignments().isEmpty());
+        assertNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(container.getCriterionRequirements().isEmpty());
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertTrue(element.getCriterionRequirements().isEmpty());
+
+        assertNotNull(element2
+                .getAdvanceAssignmentByType(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertThat(element2.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+    }
+
 }
