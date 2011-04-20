@@ -110,6 +110,18 @@ public class UntilFillingHoursAllocatorTest {
     }
 
     @Test
+    public void whenAllocatingUntilEndTheIntendedResourcesPerDayAreUpdated() {
+        ResourcesPerDay specifiedAmount = ResourcesPerDay.amount(2);
+        givenSpecificAllocations(specifiedAmount);
+
+        ResourceAllocation.allocating(allocations).untilAllocating(32);
+
+        ResourcesPerDay intendedResourcesPerDay = allocations.get(0)
+                .getBeingModified().getIntendedResourcesPerDay();
+        assertThat(intendedResourcesPerDay, equalTo(specifiedAmount));
+    }
+
+    @Test
     public void theEndDateIsTheSameDayIfItIsNotCompletelyFilled() {
         givenSpecificAllocations(ResourcesPerDay.amount(1));
         IntraDayDate endDate = ResourceAllocation.allocating(allocations)

@@ -39,6 +39,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.test.planner.entities.DayAssignmentMatchers.haveResourceAllocation;
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -242,6 +243,44 @@ public class SpecificResourceAllocationTest {
                 .allocate(ResourcesPerDay.amount(1));
         assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8,
                 8));
+    }
+
+    @Test
+    public void initiallyTheIntendedResourcesPerDayAreNull() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        assertThat(specificResourceAllocation.getIntendedResourcesPerDay(),
+                nullValue());
+    }
+
+    @Test
+    public void afterAllocatingSomeResourcesPerDayTheIntendedResourcesPerDayAreNotNull() {
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+        ResourcesPerDay specified = ResourcesPerDay.amount(1);
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(3))
+                .allocate(specified);
+        assertThat(specificResourceAllocation.getIntendedResourcesPerDay(),
+                equalTo(specified));
+    }
+
+    @Test
+    public void theIntendedAndTheRealResourcesPerDayCanBeDifferent() {
+        givenResourceCalendar(
+                Capacity.create(hours(8)).withAllowedExtraEffort(hours(2)),
+                Collections.<LocalDate, Capacity> emptyMap());
+
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 4);
+
+        specificResourceAllocation.resourcesPerDayUntil(start.plusDays(3))
+                .allocate(ResourcesPerDay.amount(2));
+
+        BigDecimal intentededAmount = specificResourceAllocation
+                .getIntendedResourcesPerDay().getAmount();
+        BigDecimal realAmount = specificResourceAllocation.getResourcesPerDay()
+                .getAmount();
+        assertTrue(intentededAmount.compareTo(realAmount) > 0);
     }
 
     @Test
