@@ -759,4 +759,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         }
         return false;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException {
+        baseCalendarDAO.checkIsReferencedByOtherEntities(calendar);
+    }
+
 }

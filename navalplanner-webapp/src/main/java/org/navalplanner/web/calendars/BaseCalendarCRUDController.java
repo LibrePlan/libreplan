@@ -23,6 +23,7 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -54,6 +55,8 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class BaseCalendarCRUDController extends GenericForwardComposer {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(BaseCalendarCRUDController.class);
 
     private IBaseCalendarModel baseCalendarModel;
 
@@ -393,27 +396,56 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                                     + "Please, change the default calendar in the Configuration window before."));
             return;
         }
+        removeCalendar(calendar);
+    }
 
-        try {
-            int status = Messagebox
-                    .show(_("Confirm deleting {0}. Are you sure?",
-                            calendar.getName()), _("Delete"), Messagebox.OK
-                            | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                remove(calendar);
+    private void removeCalendar(BaseCalendar calendar) {
+        if (!isReferencedByOtherEntities(calendar)) {
+            int result = showConfirmDeleteCalendar(calendar);
+            if (result == Messagebox.OK) {
+                final String calendarName = calendar.getName();
+                baseCalendarModel.confirmRemove(calendar);
+                messagesForUser.showMessage(Level.INFO,
+                        _("Removed calendar \"{0}\"", calendarName));
+                Util.reloadBindings(listWindow);
             }
-
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
-    private void remove(BaseCalendar calendar) {
-        final String name = calendar.getName();
-        baseCalendarModel.confirmRemove(calendar);
-        messagesForUser.showMessage(Level.INFO,
-                _("Removed calendar \"{0}\"", name));
-        Util.reloadBindings(listWindow);
+    private int showConfirmDeleteCalendar(BaseCalendar calendar) {
+        try {
+            return Messagebox
+                    .show(_("Confirm deleting {0}. Are you sure?",
+                            calendar.getName()), _("Delete"), Messagebox.OK
+                            | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing removing element: ", calendar.getId()),
+                    e);
+        }
+        return Messagebox.CANCEL;
+    }
+
+    private boolean isReferencedByOtherEntities(BaseCalendar calendar) {
+        try {
+            baseCalendarModel.checkIsReferencedByOtherEntities(calendar);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteCalendarDialog(e.getInvalidValue().getMessage(),
+                    calendar);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteCalendarDialog(String message, BaseCalendar calendar) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing warning message removing calendar: ",
+                            calendar.getId()), e);
+        }
     }
 
     public boolean isDefault(BaseCalendar calendar) {

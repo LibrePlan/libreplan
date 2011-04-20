@@ -25,11 +25,13 @@ import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
  * Contract for {@link BaseCalendarDAO}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface IBaseCalendarDAO extends
         IIntegrationEntityDAO<BaseCalendar> {
@@ -43,5 +45,7 @@ public interface IBaseCalendarDAO extends
     List<BaseCalendar> findByName(String name);
 
     boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+
+    void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
 
 }

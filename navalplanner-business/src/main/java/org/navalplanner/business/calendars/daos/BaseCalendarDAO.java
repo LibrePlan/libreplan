@@ -29,8 +29,14 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -42,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 @Scope(BeanDefinition.SCOPE_SINGLETON)
@@ -122,6 +129,64 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
             return true;
         }
         return !one.getId().equals(other.getId());
+    }
+
+    @Override
+    public void checkIsReferencedByOtherEntities(BaseCalendar calendar) {
+        checkHasResources(calendar);
+        checkHasOrders(calendar);
+        checkHasTasks(calendar);
+        checkHasTemplates(calendar);
+    }
+
+    /**
+     * A {@link BaseCalendar} is being used by a {@link Resource} if there is
+     * {@link CalendarData} that has as a parent the parameter calendar
+     *
+     * @param calendar
+     */
+    private void checkHasResources(BaseCalendar calendar) {
+        List calendarData = getSession().createCriteria(CalendarData.class)
+                .add(Restrictions.eq("parent", calendar)).list();
+        if (!calendarData.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete calendar. It is being used at this moment by some resources.",
+                            calendar);
+        }
+    }
+
+    private void checkHasOrders(BaseCalendar calendar) {
+        List orders = getSession().createCriteria(Order.class)
+                .add(Restrictions.eq("calendar", calendar)).list();
+        if (!orders.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete calendar. It is being used at this moment by some orders.",
+                            calendar);
+        }
+    }
+
+    private void checkHasTasks(BaseCalendar calendar) {
+        List tasks = getSession().createCriteria(TaskElement.class)
+                .add(Restrictions.eq("calendar", calendar)).list();
+        if (!tasks.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete calendar. It is being used at this moment by some tasks.",
+                            calendar);
+        }
+    }
+
+    private void checkHasTemplates(BaseCalendar calendar) {
+        List templates = getSession().createCriteria(OrderTemplate.class)
+                .add(Restrictions.eq("calendar", calendar)).list();
+        if (!templates.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete calendar. It is being used at this moment by some templates.",
+                            calendar);
+        }
     }
 
 }

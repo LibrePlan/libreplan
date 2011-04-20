@@ -210,4 +210,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     boolean isOwnException(CalendarException exception);
 
+    void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
+
 }
