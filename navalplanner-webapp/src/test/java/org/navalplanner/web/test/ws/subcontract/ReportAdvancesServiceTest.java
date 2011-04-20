@@ -34,9 +34,12 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -150,10 +153,11 @@ public class ReportAdvancesServiceTest {
         Order order = givenOrder();
         String orderElementCode = order.getChildren().get(0).getCode();
 
-        Date date = new Date();
-        BigDecimal value = new BigDecimal(20);
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(1, 0,
+                BigDecimal.ZERO);
+
         OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
-                orderElementCode, date, value);
+                orderElementCode, values);
         reportAdvancesService
                 .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
 
@@ -172,22 +176,62 @@ public class ReportAdvancesServiceTest {
         assertThat(directAdvanceAssignmentSubcontractor
                 .getAdvanceMeasurements().size(), equalTo(1));
 
-        AdvanceMeasurement advanceMeasurement = directAdvanceAssignmentSubcontractor
-                .getAdvanceMeasurements().first();
-        assertThat(advanceMeasurement.getDate(), equalTo(LocalDate
-                .fromDateFields(date)));
-        assertThat(advanceMeasurement.getValue(), equalTo(value));
+        for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
+            AdvanceMeasurement advanceMeasurement = directAdvanceAssignmentSubcontractor
+                    .getAdvanceMeasurements().first();
+            assertThat(advanceMeasurement.getDate(), equalTo(entry.getKey()));
+            assertThat(advanceMeasurement.getValue(), equalTo(entry.getValue()));
+        }
+    }
+
+    @Test
+    public void validAdvancesReportWithSeveralDates() {
+        Order order = givenOrder();
+        String orderElementCode = order.getChildren().get(0).getCode();
+
+        int numMeasures = 3;
+        Map<LocalDate, BigDecimal> values = givenValidMapValues(numMeasures, 5,
+                BigDecimal.TEN);
+        assertThat(values.size(), equalTo(numMeasures));
+
+        OrderElementWithAdvanceMeasurementsListDTO orderElementWithAdvanceMeasurementsListDTO = givenOrderElementWithAdvanceMeasurementsListDTO(
+                orderElementCode, values);
+        reportAdvancesService
+                .updateAdvances(orderElementWithAdvanceMeasurementsListDTO);
+
+        Order foundOrder = orderDAO.findExistingEntity(order.getId());
+        assertNotNull(foundOrder);
+        assertThat(foundOrder.getChildren().size(), equalTo(1));
+
+        OrderElement orderElement = foundOrder.getChildren().get(0);
+        assertNotNull(orderElement);
+
+        DirectAdvanceAssignment directAdvanceAssignmentSubcontractor = orderElement
+                .getDirectAdvanceAssignmentSubcontractor();
+        assertNotNull(directAdvanceAssignmentSubcontractor);
+        assertTrue(directAdvanceAssignmentSubcontractor
+                .getReportGlobalAdvance());
+        assertThat(directAdvanceAssignmentSubcontractor
+                .getAdvanceMeasurements().size(), equalTo(numMeasures));
+
+        assertThat(directAdvanceAssignmentSubcontractor
+                .getAdvanceMeasurements().size(), equalTo(values.size()));
+
+        for (AdvanceMeasurement measure : directAdvanceAssignmentSubcontractor
+                .getAdvanceMeasurements()) {
+            assertTrue(values.containsKey(measure.getDate()));
+            assertTrue(values.containsValue(measure.getValue()));
+            assertThat(values.get(measure.getDate()), equalTo(measure
+                    .getValue()));
+        }
     }
 
     private OrderElementWithAdvanceMeasurementsListDTO givenOrderElementWithAdvanceMeasurementsListDTO(
-            String orderElementCode, Date date, BigDecimal value) {
+            String orderElementCode, Map<LocalDate, BigDecimal> values) {
         OrderElementWithAdvanceMeasurementsDTO orderElementWithAdvanceMeasurementsDTO = new OrderElementWithAdvanceMeasurementsDTO();
         orderElementWithAdvanceMeasurementsDTO.code = orderElementCode;
 
-        Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
-        advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(DateConverter
-                .toXMLGregorianCalendar(date), value));
-        orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = advanceMeasurementDTOs;
+        orderElementWithAdvanceMeasurementsDTO.advanceMeasurements = givenAdvanceMeasurementDTOs(values);
 
         ExternalCompany externalCompany = getSubcontractorExternalCompanySaved(
                 "Company", "company-nif");
@@ -195,6 +239,34 @@ public class ReportAdvancesServiceTest {
         return new OrderElementWithAdvanceMeasurementsListDTO(externalCompany
                 .getNif(), Arrays
                 .asList(orderElementWithAdvanceMeasurementsDTO));
+    }
+
+    private Set<AdvanceMeasurementDTO> givenAdvanceMeasurementDTOs(
+            Map<LocalDate, BigDecimal> values) {
+        Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
+        for (Entry<LocalDate, BigDecimal> entry : values.entrySet()) {
+            advanceMeasurementDTOs.add(new AdvanceMeasurementDTO(DateConverter
+                    .toXMLGregorianCalendar(entry.getKey()), entry.getValue()));
+        }
+        return advanceMeasurementDTOs;
+    }
+
+    private Map<LocalDate, BigDecimal> givenValidMapValues(int iterations,
+            int separatorDay, BigDecimal separatorPercentage) {
+        Map<LocalDate, BigDecimal> values = new HashMap<LocalDate, BigDecimal>();
+        LocalDate currentDate = new LocalDate();
+        BigDecimal currentValue = new BigDecimal(10);
+
+        for (int i = 0; i < iterations; i++) {
+            values.put(currentDate, currentValue);
+            currentDate = currentDate.plusDays(separatorDay);
+            currentValue = currentValue.add(separatorPercentage);
+            if (currentValue.compareTo(new BigDecimal(100)) >= 0) {
+                break;
+            }
+        }
+
+        return values;
     }
 
     private Order givenOrder() {

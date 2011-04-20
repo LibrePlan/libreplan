@@ -159,7 +159,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : orderElementWithAdvanceMeasurementsDTO.advanceMeasurements) {
                     AdvanceMeasurement advanceMeasurement = advanceAssignmentSubcontractor
-                            .getAdvanceMeasurement(DateConverter
+                            .getAdvanceMeasurementAtExactDate(DateConverter
                                     .toLocalDate(advanceMeasurementDTO.date));
                     if (advanceMeasurement == null) {
                         advanceAssignmentSubcontractor
