@@ -50,6 +50,7 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
@@ -95,17 +96,6 @@ public class SpecificResourceAllocationTest {
         replay(this.calendar);
     }
 
-    private IAnswer<Integer> toHoursAnswer(final int hours) {
-        final IAnswer<? extends EffortDuration> durationOnAnswer = asDurationOnAnswer(hours(hours));
-        return new IAnswer<Integer>() {
-
-            @Override
-            public Integer answer() throws Throwable {
-                return durationOnAnswer.answer().roundToHours();
-            }
-        };
-    }
-
     private IAnswer<? extends EffortDuration> asDurationOnAnswer(
             final EffortDuration duration) {
         return new IAnswer<EffortDuration>() {
@@ -119,7 +109,8 @@ public class SpecificResourceAllocationTest {
         };
     }
 
-    private void givenResourceCalendar(final int defaultAnswer, final Map<LocalDate, Integer> answersForDates){
+    private void givenResourceCalendar(final Capacity defaultAnswer,
+            final Map<LocalDate, Capacity> answersForDates) {
         this.calendar = createNiceMock(ResourceCalendar.class);
         expect(this.calendar.getCapacityOn(isA(PartialDay.class)))
                 .andAnswer(new IAnswer<EffortDuration>() {
@@ -130,37 +121,31 @@ public class SpecificResourceAllocationTest {
                                 .getCurrentArguments()[0];
                         LocalDate date = day.getDate();
                         if (answersForDates.containsKey(date)) {
-                            return EffortDuration.hours(answersForDates
-                                    .get(date));
+                            return day.limitWorkingDay(answersForDates
+                                    .get(date).getStandardEffort());
                         }
-                        return EffortDuration.hours(defaultAnswer);
+                        return day.limitWorkingDay(defaultAnswer
+                                .getStandardEffort());
                     }
                 }).anyTimes();
-        final IAnswer<Integer> toHoursAnswer = new IAnswer<Integer>() {
+        final IAnswer<EffortDuration> effortAnswer = new IAnswer<EffortDuration>() {
 
             @Override
-            public Integer answer() throws Throwable {
-                Object argument = EasyMock
-                        .getCurrentArguments()[0];
-                LocalDate date;
-                if (argument instanceof LocalDate) {
-                    date = (LocalDate) argument;
-                }else{
-                    date = ((PartialDay) argument).getDate();
-                }
-                int hours;
-                if (answersForDates.containsKey(date)) {
-                    hours = answersForDates.get(date);
-                } else {
-                    hours = defaultAnswer;
-                }
-                return toHoursAnswer(hours).answer();
-            }
-        };
-        IAnswer<EffortDuration> effortAnswer = new IAnswer<EffortDuration>() {
-            @Override
             public EffortDuration answer() throws Throwable {
-                return hours(toHoursAnswer.answer());
+                PartialDay day = (PartialDay) EasyMock
+                        .getCurrentArguments()[0];
+                ResourcesPerDay resourcesPerDay = (ResourcesPerDay) EasyMock
+                        .getCurrentArguments()[1];
+
+                LocalDate date = day.getDate();
+                Capacity capacity = answersForDates.containsKey(date) ? answersForDates
+                        .get(date) : defaultAnswer;
+
+                EffortDuration oneResourcePerDayWorkingDuration = day
+                        .limitWorkingDay(capacity.getStandardEffort());
+                EffortDuration amountRequestedDuration = resourcesPerDay
+                        .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
+                return capacity.limitDuration(amountRequestedDuration);
             }
         };
         expect(
@@ -683,9 +668,12 @@ public class SpecificResourceAllocationTest {
     @SuppressWarnings("serial")
     public void theResourcesPerDayAreTheOnesSpecifiedEvenIfInTheLastDayNoAllocationCanBeDone() {
         final LocalDate start = new LocalDate(2000, 2, 4);
-        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+        givenResourceCalendar(Capacity.create(hours(8))
+                .overAssignableWithoutLimit(),
+                new HashMap<LocalDate, Capacity>() {
             {
-                put(start.plusDays(3), 0);
+                        put(start.plusDays(3), Capacity.create(hours(8))
+                                .notOverAssignableWithoutLimit());
             }
         });
         givenSpecificResourceAllocation(start, 4);
@@ -711,9 +699,12 @@ public class SpecificResourceAllocationTest {
     @Test
     public void theHoursAreDistributedTakingIntoAccountTheWorkableHours() {
         final LocalDate start = new LocalDate(2000, 2, 4);
-        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+        givenResourceCalendar(Capacity.create(hours(8))
+                .overAssignableWithoutLimit(),
+                new HashMap<LocalDate, Capacity>() {
             {
-                put(start, 2);
+                        put(start, Capacity.create(hours(2))
+                                .notOverAssignableWithoutLimit());
             }
         });
         givenSpecificResourceAllocation(start, 4);
@@ -726,11 +717,16 @@ public class SpecificResourceAllocationTest {
     @Test
     public void youCanAllocateHoursPreservingTheCurrentShape() {
         final LocalDate start = new LocalDate(2000, 2, 4);
-        givenResourceCalendar(8, new HashMap<LocalDate, Integer>() {
+        givenResourceCalendar(Capacity.create(hours(8))
+                .overAssignableWithoutLimit(),
+                new HashMap<LocalDate, Capacity>() {
             {
-                put(start, 2);
-                put(start.plusDays(1), 4);
-                put(start.plusDays(3), 6);
+                        put(start, Capacity.create(hours(2))
+                                .notOverAssignableWithoutLimit());
+                        put(start.plusDays(1), Capacity.create(hours(4))
+                                .notOverAssignableWithoutLimit());
+                        put(start.plusDays(3), Capacity.create(hours(6))
+                                .notOverAssignableWithoutLimit());
             }
         });
         givenSpecificResourceAllocation(start, 4);
