@@ -68,7 +68,7 @@ public class SameWorkHoursEveryDay implements ICalendar {
     @Override
     public Capacity getCapacityWithOvertime(LocalDate day) {
         return Capacity.create(EffortDuration.hours(hours))
-                .overAssignableWithoutLimit(true);
+                .overAssignableWithoutLimit();
     }
 
 }

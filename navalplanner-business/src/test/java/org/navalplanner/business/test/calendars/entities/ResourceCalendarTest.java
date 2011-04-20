@@ -48,7 +48,7 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
 public class ResourceCalendarTest {
 
     private static final Capacity capacityForEveryDay = Capacity.create(
-            EffortDuration.hours(8)).overAssignableWithoutLimit(true);
+            EffortDuration.hours(8)).overAssignableWithoutLimit();
 
     public static ResourceCalendar createBasicResourceCalendar(int capacity) {
         ResourceCalendar calendar = ResourceCalendar.create();

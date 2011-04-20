@@ -46,8 +46,8 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -59,7 +59,7 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private static final Capacity DEFAULT_VALUE = Capacity.zero()
-            .overAssignableWithoutLimit(true);
+            .overAssignableWithoutLimit();
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
@@ -72,7 +72,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = create();
         Capacity eightHours = Capacity.create(hours(8))
-                .overAssignableWithoutLimit(true);
+                .overAssignableWithoutLimit();
         calendar.setCapacityAt(Days.MONDAY, eightHours);
         calendar.setCapacityAt(Days.TUESDAY, eightHours);
         calendar.setCapacityAt(Days.WEDNESDAY, eightHours);

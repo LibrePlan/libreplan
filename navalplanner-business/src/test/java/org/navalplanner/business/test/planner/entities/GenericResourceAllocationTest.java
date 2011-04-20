@@ -263,7 +263,7 @@ public class GenericResourceAllocationTest {
     }
 
     private Capacity fromHours(int hours) {
-        return Capacity.create(hours(hours)).overAssignableWithoutLimit(true);
+        return Capacity.create(hours(hours)).overAssignableWithoutLimit();
     }
 
     private void givenCalendarsForResources(Capacity capacity1,
@@ -296,7 +296,7 @@ public class GenericResourceAllocationTest {
 
     private void givenBaseCalendarWithoutExceptions(int hoursPerDay) {
         BaseCalendar baseCalendar = createCalendar(BaseCalendar.class, Capacity
-                .create(hours(hoursPerDay)).overAssignableWithoutLimit(true));
+                .create(hours(hoursPerDay)).overAssignableWithoutLimit());
         this.baseCalendar = baseCalendar;
     }
 
@@ -669,7 +669,7 @@ public class GenericResourceAllocationTest {
         Capacity with2ExtraHours = workingDay
                 .withAllowedExtraEffort(hours(2));
         givenCalendarsForResources(with2ExtraHours, with2ExtraHours,
-                workingDay.overAssignableWithoutLimit(true));
+                workingDay.overAssignableWithoutLimit());
         givenWorkersWithLoads(0, 0, 0);
 
         genericResourceAllocation.forResources(workers).allocate(
@@ -718,7 +718,7 @@ public class GenericResourceAllocationTest {
         givenGenericResourceAllocationForTask(task);
         givenWorkersWithLoads(8, 8, 8);
         givenVirtualWorkerWithCapacityAndLoad(Capacity.create(hours(8))
-                .overAssignableWithoutLimit(true), 5, hours(40));
+                .overAssignableWithoutLimit(), 5, hours(40));
 
         genericResourceAllocation.forResources(workers).allocate(
                 ResourcesPerDay.amount(1));

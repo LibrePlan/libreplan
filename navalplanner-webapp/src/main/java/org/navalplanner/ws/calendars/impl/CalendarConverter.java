@@ -301,7 +301,7 @@ public final class CalendarConverter {
                         .ordinal();
                     Capacity capacity = Capacity.create(
                             EffortDuration.hours(hoursPerDayDTO.hours))
-                            .overAssignableWithoutLimit(true);
+                            .overAssignableWithoutLimit();
                     result.put(day, capacity);
                 } catch (IllegalArgumentException e) {
                     throw new ValidationException(_("a day is not valid"));

@@ -118,6 +118,14 @@ public class Capacity {
         return new Capacity(standardEffort, allowedExtraEffort);
     }
 
+    public Capacity overAssignableWithoutLimit() {
+        return overAssignableWithoutLimit(true);
+    }
+
+    public Capacity notOverAssignableWithoutLimit() {
+        return overAssignableWithoutLimit(false);
+    }
+
     public Capacity overAssignableWithoutLimit(
             boolean overAssignableWithoutLimit) {
         if (overAssignableWithoutLimit) {

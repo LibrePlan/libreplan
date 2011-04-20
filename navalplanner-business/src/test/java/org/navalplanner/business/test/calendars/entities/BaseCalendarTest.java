@@ -103,7 +103,7 @@ public class BaseCalendarTest {
      * @return
      */
     private static Capacity withNormalDuration(EffortDuration effort) {
-        return Capacity.create(effort).overAssignableWithoutLimit(true);
+        return Capacity.create(effort).overAssignableWithoutLimit();
     }
 
     private BaseCalendar calendarFixture;
@@ -791,7 +791,7 @@ public class BaseCalendarTest {
     public void asDurationOnRespectsTheOverAssignablePropertyOfCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
-                .overAssignableWithoutLimit(true));
+                .overAssignableWithoutLimit());
 
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
@@ -811,7 +811,7 @@ public class BaseCalendarTest {
     public void getCapacityWithOvertimeOnReturnsTheCapacityForThatDay() {
         BaseCalendar calendar = createBasicCalendar();
         Capacity capacitySet = Capacity.create(hours(8))
-                .overAssignableWithoutLimit(true);
+                .overAssignableWithoutLimit();
 
         calendar.setCapacityAt(Days.MONDAY, capacitySet);
         assertThat(calendar.getCapacityWithOvertime(MONDAY_LOCAL_DATE),
@@ -822,7 +822,7 @@ public class BaseCalendarTest {
     public void asDurationOnRespectsTheNotOverAssignablePropertyOfCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
-                .overAssignableWithoutLimit(false));
+                .notOverAssignableWithoutLimit());
 
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
@@ -857,7 +857,7 @@ public class BaseCalendarTest {
     public void asDurationOnRespectsAnOverAssignableCalendarException() {
         BaseCalendar calendar = createBasicCalendar();
         addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
-                .overAssignableWithoutLimit(true));
+                .overAssignableWithoutLimit());
 
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
@@ -871,7 +871,7 @@ public class BaseCalendarTest {
     public void asDurationOnRespectsANotOverAssignableCalendarException() {
         BaseCalendar calendar = createBasicCalendar();
         addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
-                .overAssignableWithoutLimit(false));
+                .notOverAssignableWithoutLimit());
         assertThat(calendar.asDurationOn(
                 PartialDay.wholeDay(MONDAY_LOCAL_DATE),
                 ResourcesPerDay.amount(1)), equalTo(hours(1)));
@@ -909,7 +909,7 @@ public class BaseCalendarTest {
     public void canWorkOnRespectsIsOverAssignable() {
         BaseCalendar calendar = createBasicCalendar();
         addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
-                .overAssignableWithoutLimit(true));
+                .overAssignableWithoutLimit());
 
         assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
     }
@@ -918,12 +918,12 @@ public class BaseCalendarTest {
     public void canWorkOnRespectsCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
-                .overAssignableWithoutLimit(true));
+                .overAssignableWithoutLimit());
 
         assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
 
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
-                .overAssignableWithoutLimit(false));
+                .notOverAssignableWithoutLimit());
         assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
     }
 
@@ -931,7 +931,7 @@ public class BaseCalendarTest {
     public void theAvailabilityTimeLineTakesIntoAccountTheDaysItCannotWorkDueToCalendarData() {
         BaseCalendar calendar = createBasicCalendar();
         calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
-                .overAssignableWithoutLimit(false));
+                .notOverAssignableWithoutLimit());
 
         AvailabilityTimeLine availability = calendar.getAvailability();
         assertFalse(availability.isValid(MONDAY_LOCAL_DATE));

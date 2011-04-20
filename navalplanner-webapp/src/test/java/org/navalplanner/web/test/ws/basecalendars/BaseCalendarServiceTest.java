@@ -223,7 +223,7 @@ public class BaseCalendarServiceTest {
 
         CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
         assertEquals(Capacity.create(EffortDuration.hours(4))
-                .overAssignableWithoutLimit(true),
+                .overAssignableWithoutLimit(),
                 data.getCapacityOn(CalendarData.Days.FRIDAY));
         assertEquals(Capacity.create(EffortDuration.hours(4))
                 .overAssignableWithoutLimit(true),

@@ -108,7 +108,7 @@ public class CapacityTest {
 
     @Test
     public void aCapacityWithZeroHoursAndOverAssignableWithoutLimitAllowsWorking() {
-        Capacity capacity = Capacity.zero().overAssignableWithoutLimit(true);
+        Capacity capacity = Capacity.zero().overAssignableWithoutLimit();
         assertTrue(capacity.allowsWorking());
     }
 
@@ -120,8 +120,8 @@ public class CapacityTest {
     @Test
     public void aCapacityMultipliedByZero() {
         Capacity[] originals = {
-                Capacity.create(hours(8)).overAssignableWithoutLimit(true),
-                Capacity.create(hours(8)).overAssignableWithoutLimit(false) };
+                Capacity.create(hours(8)).overAssignableWithoutLimit(),
+                Capacity.create(hours(8)).notOverAssignableWithoutLimit() };
         for (Capacity original : originals) {
             Capacity multipliedByZero = original.multiplyBy(0);
             assertThat(multipliedByZero.getStandardEffort(), equalTo(zero()));
@@ -161,7 +161,7 @@ public class CapacityTest {
     public void theExtraEffortIsAlsoMinimized() {
         assertThat(
                 Capacity.min(a.withAllowedExtraEffort(hours(2)),
-                        b.overAssignableWithoutLimit(true))
+                        b.overAssignableWithoutLimit())
                         .getAllowedExtraEffort(), equalTo(hours(2)));
 
         assertThat(
@@ -174,7 +174,7 @@ public class CapacityTest {
     public void theExtraEffortIsMaximized() {
         assertThat(
                 Capacity.max(a.withAllowedExtraEffort(hours(2)),
-                        b.overAssignableWithoutLimit(true))
+                        b.overAssignableWithoutLimit())
                         .getAllowedExtraEffort(), nullValue());
 
         assertThat(
@@ -185,11 +185,11 @@ public class CapacityTest {
 
     @Test
     public void testThereIsCapacityForMoreAllocations() {
-        assertThat(Capacity.create(hours(8)).overAssignableWithoutLimit(true)
+        assertThat(Capacity.create(hours(8)).overAssignableWithoutLimit()
                 .hasSpareSpaceForMoreAllocations(hours(10)), is(true));
 
         Capacity notOverassignable = Capacity.create(hours(8))
-                .overAssignableWithoutLimit(false);
+                .notOverAssignableWithoutLimit();
 
         assertFalse(notOverassignable
                 .hasSpareSpaceForMoreAllocations(hours(10)));
