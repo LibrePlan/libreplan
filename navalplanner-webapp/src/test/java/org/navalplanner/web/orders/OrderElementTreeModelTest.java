@@ -543,4 +543,37 @@ public class OrderElementTreeModelTest {
         assertThat(element.getExternalCode(), equalTo(externalCode));
     }
 
+    @Test
+    public void checkIndentOnOrderLineWithCriteriaAndAdvances()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElement("element2", 50);
+
+        OrderLine element2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        addCriterionRequirement(element2);
+        addDirectAdvanceAssignment(element2);
+
+        model.indent(element2);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(order.getCriterionRequirements().isEmpty());
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        assertTrue(container.getDirectAdvanceAssignments().isEmpty());
+        assertNotNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertTrue(container.getCriterionRequirements().isEmpty());
+    }
+
 }
