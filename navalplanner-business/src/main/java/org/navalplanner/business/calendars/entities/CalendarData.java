@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -134,6 +135,10 @@ public class CalendarData extends IntegrationEntity {
 
     public Capacity getCapacityOn(Days day) {
         return capacityPerDay.get(day.ordinal());
+    }
+
+    public Map<Integer, Capacity> getCapacityPerDay() {
+        return Collections.unmodifiableMap(capacityPerDay);
     }
 
     public void setCapacityAt(Days day, Capacity capacity) {
