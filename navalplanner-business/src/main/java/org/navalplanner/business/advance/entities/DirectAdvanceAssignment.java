@@ -112,7 +112,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return advanceMeasurements.first();
     }
 
-    public AdvanceMeasurement getAdvanceMeasurement(LocalDate date) {
+    public AdvanceMeasurement getAdvanceMeasurementAtDateOrPrevious(LocalDate date) {
         if (advanceMeasurements.isEmpty()) {
             return null;
         }
@@ -135,7 +135,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
             return BigDecimal.ZERO;
         }
 
-        AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurement(date)
+        AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurementAtDateOrPrevious(date)
                 : getLastAdvanceMeasurement();
         if (advanceMeasurement == null || advanceMeasurement.getValue() == null) {
             return BigDecimal.ZERO;
