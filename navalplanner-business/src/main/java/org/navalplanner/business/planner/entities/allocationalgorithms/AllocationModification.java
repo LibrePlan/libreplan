@@ -34,6 +34,19 @@ import org.navalplanner.business.resources.entities.Resource;
  */
 public abstract class AllocationModification {
 
+    public static <T extends AllocationModification> List<T> ofType(
+            Class<T> type,
+            Collection<? extends AllocationModification> modifications) {
+
+        List<T> result = new ArrayList<T>();
+        for (AllocationModification each : modifications) {
+            if (type.isInstance(each)) {
+                result.add(type.cast(each));
+            }
+        }
+        return result;
+    }
+
     public static boolean allFullfiled(
             Collection<? extends AllocationModification> modificationsDone) {
         for (AllocationModification each : modificationsDone) {

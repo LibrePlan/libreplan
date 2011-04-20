@@ -244,7 +244,8 @@ public class AllocationRowsHandler {
 
             createDerived();
             AllocationResult result = createResult();
-            if (AllocationModification.allFullfiled(modificationsDone)) {
+            if (AllocationModification.allFullfiled(AllocationModification
+                    .ofType(HoursModification.class, modificationsDone))) {
                 return Flagged.justValue(result);
             } else {
                 return Flagged.withFlags(result,
