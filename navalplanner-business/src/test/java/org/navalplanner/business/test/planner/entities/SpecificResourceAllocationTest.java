@@ -40,6 +40,7 @@ import static org.navalplanner.business.test.planner.entities.DayAssignmentMatch
 import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,12 +76,6 @@ public class SpecificResourceAllocationTest {
     private Worker worker;
 
     private ResourceCalendar calendar;
-
-    private int assignedHours = 0;
-
-    private void givenAssignedHours(int assignedHours) {
-        this.assignedHours = assignedHours;
-    }
 
     private void givenResourceCalendarAlwaysReturning(final int hours) {
         this.calendar = createNiceMock(ResourceCalendar.class);
@@ -218,12 +213,25 @@ public class SpecificResourceAllocationTest {
     }
 
     @Test
-    public void theAllocationIsDoneEvenIfThereisOvertime() {
-        givenAssignedHours(4);
+    public void theAllocationIsDoneEvenIfThereisOvertimeIfCapacitiesAreOverAssignable() {
+        givenResourceCalendar(Capacity.create(hours(4))
+                .overAssignableWithoutLimit(),
+                Collections.<LocalDate, Capacity> emptyMap());
         LocalDate start = new LocalDate(2000, 2, 4);
         givenSpecificResourceAllocation(start, 2);
-        specificResourceAllocation.allocate(ResourcesPerDay.amount(1));
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(2));
         assertThat(specificResourceAllocation.getAssignments(), haveHours(8, 8));
+    }
+
+    @Test
+    public void ifNotOverassignableItOnlyDoesExtraEffortSpecified() {
+        givenResourceCalendar(
+                Capacity.create(hours(4)).withAllowedExtraEffort(hours(2)),
+                Collections.<LocalDate, Capacity> emptyMap());
+        LocalDate start = new LocalDate(2000, 2, 4);
+        givenSpecificResourceAllocation(start, 2);
+        specificResourceAllocation.allocate(ResourcesPerDay.amount(2));
+        assertThat(specificResourceAllocation.getAssignments(), haveHours(6, 6));
     }
 
     @Test
