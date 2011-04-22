@@ -210,9 +210,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void addStretch() {
         if (stretchesFunction != null) {
-            Stretch stretch = new Stretch();
-            stretch.setDate(new LocalDate(task.getStartDate()));
-            stretchesFunction.addStretch(stretch);
+            stretchesFunction.addStretch(Stretch.create(
+                    task.getStartAsLocalDate(), BigDecimal.ZERO,
+                    BigDecimal.ZERO));
         }
     }
 
