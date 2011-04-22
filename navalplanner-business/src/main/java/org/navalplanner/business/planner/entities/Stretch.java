@@ -22,6 +22,9 @@
 package org.navalplanner.business.planner.entities;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
@@ -41,6 +44,21 @@ public class Stretch {
 
     public static Stretch copy(Stretch stretch) {
         return create(stretch.date, stretch.lengthPercentage, stretch.amountWorkPercentage);
+    }
+
+    public static Stretch buildFromConsolidatedProgress(ResourceAllocation<? extends DayAssignment> resourceAllocation) {
+        return ConsolidatedStretch.fromConsolidatedProgress(resourceAllocation);
+    }
+
+    public static List<Stretch> sortByDate(
+            List<Stretch> stretches) {
+        Collections.sort(stretches, new Comparator<Stretch>() {
+            @Override
+            public int compare(Stretch o1, Stretch o2) {
+                return o1.getDate().compareTo(o2.getDate());
+            }
+        });
+        return stretches;
     }
 
     @NotNull
