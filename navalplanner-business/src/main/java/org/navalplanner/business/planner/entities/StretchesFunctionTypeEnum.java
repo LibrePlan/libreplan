@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.math.FunctionEvaluationException;
@@ -171,17 +172,16 @@ public enum StretchesFunctionTypeEnum {
         }
     }
 
-
     public void applyTo(ResourceAllocation<?> resourceAllocation,
             StretchesFunction stretchesFunction) {
-        List<Interval> intervalsDefinedByStreches = stretchesFunction
-                .getIntervalsDefinedByStreches();
-        int totalHours = resourceAllocation.getAssignedHours();
-        Task task = resourceAllocation.getTask();
-        LocalDate start = LocalDate.fromDateFields(task.getStartDate());
-        LocalDate end = LocalDate.fromDateFields(task.getEndDate());
-        apply(resourceAllocation, intervalsDefinedByStreches, start, end,
-                totalHours);
+
+        List<Interval> intervals = new ArrayList<Interval>();
+        intervals.addAll(stretchesFunction.getIntervalsDefinedByStreches());
+
+        LocalDate start = resourceAllocation.getFirstNonConsolidatedDate();
+        LocalDate end = resourceAllocation.getTask().getEndAsLocalDate();
+        int totalHours = resourceAllocation.getNonConsolidatedHours();
+        apply(resourceAllocation, intervals, start, end, totalHours);
     }
 
     protected abstract void apply(ResourceAllocation<?> allocation,

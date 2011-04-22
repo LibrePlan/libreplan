@@ -76,8 +76,10 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
- * Resources are allocated to planner tasks.
+ * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ *
+ *         Resources are allocated to planner tasks.
  */
 public abstract class ResourceAllocation<T extends DayAssignment> extends
         BaseEntity {
@@ -2009,5 +2011,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected abstract void removeContainersFor(Scenario scenario);
+
+    /*
+     * Returns first non consolidated day, if there are not consolidations
+     * returns first day of task
+     */
+    public LocalDate getFirstNonConsolidatedDate() {
+        List<T> nonConsolidated = getNonConsolidatedAssignments();
+        return (!nonConsolidated.isEmpty()) ? nonConsolidated.get(0).getDay()
+                : null;
+    }
 
 }

@@ -21,6 +21,9 @@
 
 
 package org.navalplanner.business.planner.entities;
+
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -37,8 +40,11 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
- * Assignment function by stretches.
+ * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ *
+ *         Assignment function by stretches.
+ *
  */
 public class StretchesFunction extends AssignmentFunction {
 
@@ -49,6 +55,20 @@ public class StretchesFunction extends AssignmentFunction {
         private LocalDate end;
 
         private final BigDecimal loadProportion;
+
+        private boolean readOnly = false;
+
+        public static Interval create(BigDecimal loadProportion, LocalDate start,
+                LocalDate end, boolean readOnly) {
+            Interval result = create(loadProportion, start, end);
+            result.readOnly(readOnly);
+            return result;
+        }
+
+        public static Interval create(BigDecimal loadProportion, LocalDate start,
+                LocalDate end) {
+            return new Interval(loadProportion, start, end);
+        }
 
         public Interval(BigDecimal loadProportion, LocalDate start,
                 LocalDate end) {
@@ -113,6 +133,8 @@ public class StretchesFunction extends AssignmentFunction {
         private void apply(ResourceAllocation<?> resourceAllocation,
                 LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
+            Validate.isTrue(!isReadOnly());
+
             // End has to be exclusive on last Stretch
             LocalDate endDate = getEnd();
             if (endDate.equals(taskEnd)) {
@@ -130,6 +152,8 @@ public class StretchesFunction extends AssignmentFunction {
             if (intervalsDefinedByStreches.isEmpty()) {
                 return;
             }
+            Validate.isTrue(totalHours == allocation.getNonConsolidatedHours());
+
             int[] hoursPerInterval = getHoursPerInterval(
                     intervalsDefinedByStreches, totalHours);
             int remainder = totalHours - sum(hoursPerInterval);
@@ -139,7 +163,6 @@ public class StretchesFunction extends AssignmentFunction {
                 interval.apply(allocation, allocationStart, allocationEnd,
                         hoursPerInterval[i++]);
             }
-            Validate.isTrue(totalHours == allocation.getAssignedHours());
         }
 
         private static int[] getHoursPerInterval(
@@ -160,6 +183,18 @@ public class StretchesFunction extends AssignmentFunction {
             return result;
         }
 
+        public String toString() {
+            return String.format("[%s, %s]: %s ", start, end, loadProportion);
+        }
+
+        public boolean isReadOnly() {
+            return readOnly;
+        }
+
+        public void readOnly(boolean value) {
+            readOnly = value;
+        }
+
     }
 
     private List<Stretch> stretches = new ArrayList<Stretch>();
@@ -169,6 +204,8 @@ public class StretchesFunction extends AssignmentFunction {
     // Transient field. Not stored
     private StretchesFunctionTypeEnum desiredType;
 
+    // Transient. Calculated from resourceAllocation
+    private Stretch consolidatedStretch;
 
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
@@ -184,15 +221,17 @@ public class StretchesFunction extends AssignmentFunction {
     public static List<Interval> intervalsFor(
             Collection<? extends Stretch> streches) {
         ArrayList<Interval> result = new ArrayList<Interval>();
-        LocalDate previous = null;
-        BigDecimal sumOfProportions = new BigDecimal(0);
+        LocalDate previous = null, stretchDate = null;
+        BigDecimal sumOfProportions = BigDecimal.ZERO, loadedProportion = BigDecimal.ZERO;
+
         for (Stretch each : streches) {
-            LocalDate strechDate = each.getDate();
-            result.add(new Interval(each.getAmountWorkPercentage().subtract(
-                    sumOfProportions), previous,
-                    strechDate));
+            stretchDate = each.getDate();
+            loadedProportion = each.getAmountWorkPercentage().subtract(
+                    sumOfProportions);
+            result.add(Interval.create(loadedProportion, previous,
+                    stretchDate, each.isReadOnly()));
             sumOfProportions = each.getAmountWorkPercentage();
-            previous = strechDate;
+            previous = stretchDate;
         }
         return result;
     }
@@ -206,6 +245,7 @@ public class StretchesFunction extends AssignmentFunction {
         result.resetToStrechesFrom(this);
         result.type = type;
         result.desiredType = desiredType;
+        result.consolidatedStretch = consolidatedStretch;
         return result;
     }
 
@@ -214,6 +254,7 @@ public class StretchesFunction extends AssignmentFunction {
         for (Stretch each : from.getStretches()) {
             this.addStretch(Stretch.copy(each));
         }
+        this.consolidatedStretch = from.consolidatedStretch;
     }
 
     public void setStretches(List<Stretch> stretches) {
@@ -261,19 +302,18 @@ public class StretchesFunction extends AssignmentFunction {
 
     @AssertTrue(message = "At least one stretch is needed")
     public boolean checkNoEmpty() {
-        return !stretches.isEmpty();
+        return !getStrechesPlusConsolidated().isEmpty();
     }
 
     @AssertTrue(message = "Some stretch has higher or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
-        if (stretches.isEmpty()) {
+        List<Stretch> stretchesPlusConsolidated = getStrechesPlusConsolidated();
+        if (stretchesPlusConsolidated.isEmpty()) {
             return false;
         }
 
-        sortStretches();
-
-        Iterator<Stretch> iterator = stretches.iterator();
+        Iterator<Stretch> iterator = stretchesPlusConsolidated.iterator();
         Stretch previous = iterator.next();
         while (iterator.hasNext()) {
             Stretch current = iterator.next();
@@ -291,6 +331,15 @@ public class StretchesFunction extends AssignmentFunction {
             previous = current;
         }
         return true;
+    }
+
+    public List<Stretch> getStrechesPlusConsolidated() {
+        List<Stretch> result = new ArrayList<Stretch>();
+        result.addAll(stretches);
+        if (consolidatedStretch != null) {
+            result.add(consolidatedStretch);
+        }
+        return Collections.unmodifiableList(Stretch.sortByDate(result));
     }
 
     @AssertTrue(message = "Last stretch should have one hundred percent for "
@@ -334,14 +383,17 @@ public class StretchesFunction extends AssignmentFunction {
         if (stretches.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Interval> result = intervalsFor(stretches);
+        checkStretchesSumOneHundredPercent();
+        return intervalsFor(stretches);
+    }
+
+    private void checkStretchesSumOneHundredPercent() {
         BigDecimal sumOfProportions = stretches.isEmpty() ? BigDecimal.ZERO
                 : last(stretches).getAmountWorkPercentage();
         BigDecimal left = calculateLeftFor(sumOfProportions);
         if (!left.equals(BigDecimal.ZERO)) {
-            throw new IllegalStateException("the streches must sum the 100%");
+            throw new IllegalStateException(_("Stretches must sum 100%"));
         }
-        return result;
     }
 
     private BigDecimal calculateLeftFor(BigDecimal sumOfProportions) {
@@ -352,6 +404,14 @@ public class StretchesFunction extends AssignmentFunction {
 
     public boolean ifInterpolatedMustHaveAtLeastTwoStreches() {
         return getDesiredType() != StretchesFunctionTypeEnum.INTERPOLATED || stretches.size() >= 2;
+    }
+
+    public void setConsolidatedStretch(Stretch stretch) {
+        consolidatedStretch = stretch;
+    }
+
+    public Stretch getConsolidatedStretch() {
+        return consolidatedStretch;
     }
 
 }

@@ -52,21 +52,21 @@ import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.Locales;
 
 /**
- * Model for UI operations related to {@link StretchesFunction} configuration.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ *
+ *         Model for UI operations related to {@link StretchesFunction}
+ *         configuration.
+ *
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
 
-    public static StretchesFunction createDefaultStretchesFunction(Date endDate) {
+    public static StretchesFunction createDefaultStretchesFunction(LocalDate endDate) {
         StretchesFunction stretchesFunction = StretchesFunction.create();
-        Stretch stretch = new Stretch();
-        stretch.setDate(new LocalDate(endDate));
-        stretch.setLengthPercentage(BigDecimal.ONE);
-        stretch.setAmountWorkPercentage(BigDecimal.ONE);
-        stretchesFunction.addStretch(stretch);
+        stretchesFunction.addStretch(Stretch.create(endDate, BigDecimal.ONE,
+                BigDecimal.ONE));
         return stretchesFunction;
     }
 
@@ -100,14 +100,30 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             StretchesFunctionTypeEnum type) {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
-            this.originalStretchesFunction = stretchesFunction;
-            this.stretchesFunction = stretchesFunction.copy();
-            this.stretchesFunction.changeTypeTo(type);
+
+            // Initialize resourceAllocation and task
             this.resourceAllocation = resourceAllocation;
             this.task = resourceAllocation.getTask();
             forceLoadData();
             this.taskEndDate = task.getEndDate();
+
+            // Initialize stretchesFunction
+            this.originalStretchesFunction = stretchesFunction;
+            this.stretchesFunction = stretchesFunction.copy();
+            this.stretchesFunction.changeTypeTo(type);
+            addConsolidatedStretchIfAny();
         }
+    }
+
+    private void addConsolidatedStretchIfAny() {
+        Stretch consolidated = consolidatedStretchFor(resourceAllocation);
+        if (consolidated != null) {
+            stretchesFunction.setConsolidatedStretch(consolidated);
+        }
+    }
+
+    private Stretch consolidatedStretchFor(ResourceAllocation<?> resourceAllocation) {
+        return Stretch.buildFromConsolidatedProgress(resourceAllocation);
     }
 
     private void forceLoadData() {
@@ -126,19 +142,26 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     /**
-     * Returns an empty stretch plus the stretches from stretchesFunction
+     * Returns an empty stretch plus the stretches from stretchesFunction and
+     * the consolidated stretch if any
      *
      * @return
      */
     private List<Stretch> allStretches() {
         List<Stretch> result = new ArrayList<Stretch>();
         result.add(firstStretch());
-        result.addAll(stretchesFunction.getStretches());
+        result.addAll(stretchesFunction.getStrechesPlusConsolidated());
         return result;
     }
 
+    /**
+     * Defines an initial read-only stretch with 0% hours worked and 0% progress
+     *
+     * @return
+     */
     private Stretch firstStretch() {
-        Stretch result = Stretch.create(task.getStartAsLocalDate(), BigDecimal.ZERO, BigDecimal.ZERO);
+        Stretch result = Stretch.create(task.getStartAsLocalDate(),
+                BigDecimal.ZERO, BigDecimal.ZERO);
         result.readOnly(true);
         return result;
     }

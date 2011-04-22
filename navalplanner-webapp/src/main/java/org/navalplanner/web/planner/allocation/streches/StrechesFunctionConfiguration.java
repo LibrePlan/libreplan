@@ -96,7 +96,7 @@ public abstract class StrechesFunctionConfiguration implements
     public void applyOn(ResourceAllocation<?> resourceAllocation) {
         StretchesFunction stretchesFunction = StretchesFunctionModel
                 .createDefaultStretchesFunction(resourceAllocation.getTask()
-                        .getEndDate());
+                        .getEndAsLocalDate());
         resourceAllocation.setAssignmentFunction(stretchesFunction);
     }
 
