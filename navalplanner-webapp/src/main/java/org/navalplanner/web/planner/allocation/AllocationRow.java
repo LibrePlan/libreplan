@@ -210,7 +210,9 @@ public abstract class AllocationRow {
         return result;
     }
 
-    private ResourceAllocation<?> origin;
+    private final ResourceAllocation<?> origin;
+
+    private CalculatedValue currentCalculatedValue;
 
     private ResourceAllocation<?> temporal;
 
@@ -245,12 +247,24 @@ public abstract class AllocationRow {
         });
     }
 
-    public AllocationRow() {
+    public AllocationRow(CalculatedValue calculatedValue) {
+        this.currentCalculatedValue = calculatedValue;
+        this.origin = null;
+        initialize();
+    }
+
+    public AllocationRow(ResourceAllocation<?> origin) {
+        this.origin = origin;
+        this.currentCalculatedValue = origin.getTask().getCalculatedValue();
+        initialize();
+    }
+
+    private void initialize() {
         setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         initializeResourcesPerDayInput();
-        hoursInput.setValue(0);
         hoursInput.setWidth("80px");
         hoursInput.setConstraint(constraintForHoursInput());
+        loadHours();
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
@@ -270,11 +284,6 @@ public abstract class AllocationRow {
 
     public ResourceAllocation<?> getOrigin() {
         return origin;
-    }
-
-    protected void setOrigin(ResourceAllocation<?> allocation) {
-        this.origin = allocation;
-        loadHours();
     }
 
     public boolean hasDerivedAllocations() {
@@ -369,6 +378,7 @@ public abstract class AllocationRow {
 
     public void applyDisabledRules(CalculatedValue calculatedValue,
             boolean recommendedAllocation) {
+        this.currentCalculatedValue = calculatedValue;
         hoursInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);

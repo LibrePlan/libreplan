@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -49,21 +50,24 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
  */
 public class GenericAllocationRow extends AllocationRow {
 
-    private static GenericAllocationRow createDefault(ResourceEnum resourceType) {
+    private static GenericAllocationRow initializeDefault(
+            GenericAllocationRow result, ResourceEnum resourceType) {
         Validate.notNull(resourceType);
-        GenericAllocationRow result = new GenericAllocationRow();
         result.setName(_("Generic"));
         result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         result.resourceType = resourceType;
         return result;
     }
 
-    public static GenericAllocationRow create(ResourceEnum resourceType,
+    public static GenericAllocationRow create(CalculatedValue calculatedValue,
+            ResourceEnum resourceType,
             Collection<? extends Criterion> criterions,
             Collection<? extends Resource> resources) {
+
+        GenericAllocationRow result = new GenericAllocationRow(calculatedValue);
         Validate.isTrue(!resources.isEmpty());
         Validate.notNull(criterions);
-        GenericAllocationRow result = createDefault(resourceType);
+        initializeDefault(result, resourceType);
         result.criterions = new HashSet<Criterion>(criterions);
         result.resources = new ArrayList<Resource>(resources);
         result.setName(Criterion.getCaptionFor(resourceType, criterions));
@@ -73,9 +77,9 @@ public class GenericAllocationRow extends AllocationRow {
     public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation,
             IResourcesSearcher searchModel) {
-        GenericAllocationRow result = createDefault(resourceAllocation
-                .getResourceType());
-        result.setOrigin(resourceAllocation);
+        GenericAllocationRow result = initializeDefault(
+                new GenericAllocationRow(resourceAllocation),
+                resourceAllocation.getResourceType());
 
         result.setNonConsolidatedResourcesPerDay(resourceAllocation
                 .getNonConsolidatedResourcePerDay());
@@ -97,6 +101,14 @@ public class GenericAllocationRow extends AllocationRow {
     private ResourceEnum resourceType;
     private Set<Criterion> criterions;
     private List<Resource> resources;
+
+    private GenericAllocationRow(CalculatedValue calculatedValue) {
+        super(calculatedValue);
+    }
+
+    private GenericAllocationRow(GenericResourceAllocation origin) {
+        super(origin);
+    }
 
     @Override
     public boolean isGeneric() {

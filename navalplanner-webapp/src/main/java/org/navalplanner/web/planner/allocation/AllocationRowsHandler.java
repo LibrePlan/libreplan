@@ -79,7 +79,7 @@ public class AllocationRowsHandler {
                 alreadyPresent.add(each);
             } else {
                 SpecificAllocationRow specificAllocationRow = SpecificAllocationRow
-                        .forResource(each);
+                        .forResource(getCalculatedValue(), each);
                 setupInitialHours(specificAllocationRow);
                 currentRows.add(specificAllocationRow);
                 formBinder.newAllocationAdded();
@@ -105,7 +105,8 @@ public class AllocationRowsHandler {
             return false;
         } else {
             GenericAllocationRow genericAllocationRow = GenericAllocationRow
-                    .create(resourceType, criteria, resourcesMatched);
+                    .create(getCalculatedValue(), resourceType, criteria,
+                            resourcesMatched);
             if (hours != null) {
                 genericAllocationRow.setHoursToInput(hours);
             } else {

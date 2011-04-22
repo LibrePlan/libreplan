@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -86,8 +87,8 @@ public class SpecificAllocationRow extends AllocationRow {
     }
 
     public static SpecificAllocationRow from(SpecificResourceAllocation specific) {
-        SpecificAllocationRow result = forResource(specific.getResource());
-        result.setOrigin(specific);
+        SpecificAllocationRow result = new SpecificAllocationRow(specific);
+        setupResource(result, specific.getResource());
 
         result.setNonConsolidatedResourcesPerDay(specific
                 .getNonConsolidatedResourcePerDay());
@@ -95,15 +96,31 @@ public class SpecificAllocationRow extends AllocationRow {
         return result;
     }
 
-    public static SpecificAllocationRow forResource(Resource resource) {
-        SpecificAllocationRow result = new SpecificAllocationRow();
-        result.setName(resource.getShortDescription());
-        result.setResource(resource);
-        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(1));
+    public static SpecificAllocationRow forResource(
+            CalculatedValue calculatedValue, Resource resource) {
+        SpecificAllocationRow result = new SpecificAllocationRow(
+                calculatedValue);
+        setupResource(result, resource);
         return result;
     }
 
+    private static void setupResource(SpecificAllocationRow specificRow,
+            Resource resource) {
+        specificRow.setName(resource.getShortDescription());
+        specificRow.setResource(resource);
+        specificRow
+                .setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(1));
+    }
+
     private Resource resource;
+
+    private SpecificAllocationRow(CalculatedValue calculatedValue) {
+        super(calculatedValue);
+    }
+
+    private SpecificAllocationRow(SpecificResourceAllocation origin) {
+        super(origin);
+    }
 
     @Override
     public ResourcesPerDayModification toResourcesPerDayModification(Task task,
