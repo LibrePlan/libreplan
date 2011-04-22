@@ -52,6 +52,9 @@ public class Stretch {
     @NotNull
     private BigDecimal amountWorkPercentage = BigDecimal.ZERO;
 
+    // Transient value
+    private boolean readOnly = false;
+
     private Stretch(LocalDate date, BigDecimal lengthPercent, BigDecimal progressPercent) {
         this.date = date;
         this.lengthPercentage = lengthPercent;
@@ -112,6 +115,14 @@ public class Stretch {
 
     public String toString() {
         return String.format("(%s, %s, %s) ", date, lengthPercentage, amountWorkPercentage);
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void readOnly(boolean value) {
+        readOnly = value;
     }
 
 }

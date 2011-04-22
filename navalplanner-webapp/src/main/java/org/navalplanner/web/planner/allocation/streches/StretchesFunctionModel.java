@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -119,9 +120,27 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public List<Stretch> getStretches() {
         if (stretchesFunction == null) {
-            return new ArrayList<Stretch>();
+            return Collections.emptyList();
         }
-        return stretchesFunction.getStretches();
+        return allStretches();
+    }
+
+    /**
+     * Returns an empty stretch plus the stretches from stretchesFunction
+     *
+     * @return
+     */
+    private List<Stretch> allStretches() {
+        List<Stretch> result = new ArrayList<Stretch>();
+        result.add(firstStretch());
+        result.addAll(stretchesFunction.getStretches());
+        return result;
+    }
+
+    private Stretch firstStretch() {
+        Stretch result = Stretch.create(task.getStartAsLocalDate(), BigDecimal.ZERO, BigDecimal.ZERO);
+        result.readOnly(true);
+        return result;
     }
 
     @Override

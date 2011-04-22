@@ -270,7 +270,9 @@ public class StretchesFunctionController extends GenericForwardComposer {
         @Override
         public void render(Listitem item, Object data) throws Exception {
             Stretch stretch = (Stretch) data;
+
             item.setValue(stretch);
+            item.setDisabled(stretch.isReadOnly());
 
             appendDate(item, stretch);
             appendLengthPercentage(item, stretch);
@@ -376,19 +378,26 @@ public class StretchesFunctionController extends GenericForwardComposer {
         }
 
         private void appendOperations(Listitem item, final Stretch stretch) {
-            Button button = new Button("", "/common/img/ico_borrar1.png");
-            button.setHoverImage("/common/img/ico_borrar.png");
-            button.setSclass("icono");
-            button.setTooltiptext(_("Delete"));
+            Button button;
+            if (item.isDisabled()) {
+                button = new Button("", "/common/img/ico_borrar_out.png");
+                button.setHoverImage("/common/img/ico_borrar_out.png");
+                button.setSclass("icono");
+                button.setDisabled(true);
+            } else {
+                button = new Button("", "/common/img/ico_borrar1.png");
+                button.setHoverImage("/common/img/ico_borrar.png");
+                button.setSclass("icono");
+                button.setTooltiptext(_("Delete"));
 
-            button.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    stretchesFunctionModel.removeStretch(stretch);
-                    reloadStretchesListAndCharts();
-                }
-            });
-
+                button.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        stretchesFunctionModel.removeStretch(stretch);
+                        reloadStretchesListAndCharts();
+                    }
+                });
+            }
             appendChild(item, button);
         }
 
