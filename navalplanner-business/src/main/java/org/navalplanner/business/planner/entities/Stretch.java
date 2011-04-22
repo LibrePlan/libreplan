@@ -27,11 +27,21 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 
 /**
- * Stretch for the assignment function.
- *
+ * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ *
+ *         Stretch for the assignment function.
+ *
  */
 public class Stretch {
+
+    public static Stretch create(LocalDate date, BigDecimal lengthPercent, BigDecimal progressPercent) {
+        return new Stretch(date, lengthPercent, progressPercent);
+    }
+
+    public static Stretch copy(Stretch stretch) {
+        return create(stretch.date, stretch.lengthPercentage, stretch.amountWorkPercentage);
+    }
 
     @NotNull
     private LocalDate date = new LocalDate();
@@ -41,6 +51,16 @@ public class Stretch {
 
     @NotNull
     private BigDecimal amountWorkPercentage = BigDecimal.ZERO;
+
+    private Stretch(LocalDate date, BigDecimal lengthPercent, BigDecimal progressPercent) {
+        this.date = date;
+        this.lengthPercentage = lengthPercent;
+        this.amountWorkPercentage = progressPercent;
+    }
+
+    public Stretch() {
+
+    }
 
     public void setDate(LocalDate date) {
         this.date = date;
