@@ -137,7 +137,7 @@ public abstract class HoursModification extends AllocationModification {
 
     @Override
     public boolean satisfiesModificationRequested() {
-        return hours == getBeingModified().getAssignedHours();
+        return hours == getBeingModified().getNonConsolidatedHours();
     }
 
     public int getHours() {
