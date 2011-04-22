@@ -42,7 +42,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.ResourceType;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -54,7 +53,6 @@ public class GenericAllocationRow extends AllocationRow {
             GenericAllocationRow result, ResourceEnum resourceType) {
         Validate.notNull(resourceType);
         result.setName(_("Generic"));
-        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         result.resourceType = resourceType;
         return result;
     }
@@ -80,9 +78,6 @@ public class GenericAllocationRow extends AllocationRow {
         GenericAllocationRow result = initializeDefault(
                 new GenericAllocationRow(resourceAllocation),
                 resourceAllocation.getResourceType());
-
-        result.setNonConsolidatedResourcesPerDay(resourceAllocation
-                .getNonConsolidatedResourcePerDay());
 
         ResourceType type = resourceAllocation.isLimiting() ?
                 ResourceType.LIMITING_RESOURCE :
@@ -134,7 +129,7 @@ public class GenericAllocationRow extends AllocationRow {
         GenericResourceAllocation newGeneric = createGenericAllocation(task,
                 requestedToRemove);
         return ResourcesPerDayModification
-                .create(newGeneric, getNonConsolidatedResourcesPerDay(), this.resources);
+                .create(newGeneric, getResourcesPerDayEditedValue(), this.resources);
     }
 
     private GenericResourceAllocation createGenericAllocation(Task task,

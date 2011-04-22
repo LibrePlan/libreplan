@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -565,6 +566,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return null;
         }
         return intendedResourcesPerDay;
+    }
+
+    public boolean areIntendedResourcesPerDaySatisfied() {
+        CalculatedValue calculatedValue = getTask().getCalculatedValue();
+        return calculatedValue == CalculatedValue.RESOURCES_PER_DAY
+                || ObjectUtils.equals(getNonConsolidatedResourcePerDay(),
+                        getIntendedResourcesPerDay());
     }
 
     public ResourceAllocation(Task task) {

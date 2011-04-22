@@ -66,6 +66,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
@@ -636,7 +637,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     .toString()));
             append(row, new Label(data.getConsolidatedResourcesPerDay()
                     .getAmount().toString()));
-            append(row, data.getResourcesPerDayInput());
+
+            Div resourcesPerDayContainer = append(row, new Div());
+            append(resourcesPerDayContainer,
+                    data.getIntendedResourcesPerDayInput());
+            Label realResourcesPerDay = append(resourcesPerDayContainer,
+                    data.getRealResourcesPerDay());
+            realResourcesPerDay.setStyle("float: right; padding-right: 1em;");
+
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
             formBinder.setDeleteButtonFor(data, deleteButton);
@@ -685,8 +693,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
             return append(row, button);
         }
 
-        private <T extends Component> T append(Row row, T component) {
-            row.appendChild(component);
+        private <T extends Component> T append(Component parent, T component) {
+            parent.appendChild(component);
             return component;
         }
     }

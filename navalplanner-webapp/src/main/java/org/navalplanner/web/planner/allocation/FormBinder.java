@@ -654,7 +654,7 @@ public class FormBinder {
         final String message = _("resources per day must be not empty and bigger than zero");
         if (!recommendedAllocation) {
             AllocationRow first = rows.get(0);
-            throw new WrongValueException(first.getResourcesPerDayInput(),
+            throw new WrongValueException(first.getIntendedResourcesPerDayInput(),
                     message);
         } else {
             throw new WrongValueException(allResourcesPerDay, message);
@@ -790,7 +790,7 @@ public class FormBinder {
     private BigDecimal sumResourcesPerDayFromInputs() {
         BigDecimal sum = BigDecimal.ZERO;
         for (AllocationRow each : rows) {
-            if (each.getResourcesPerDayInput().isValid()) {
+            if (each.getIntendedResourcesPerDayInput().isValid()) {
                 sum = sum.add(each.getResourcesPerDayFromInput().getAmount());
             }
         }

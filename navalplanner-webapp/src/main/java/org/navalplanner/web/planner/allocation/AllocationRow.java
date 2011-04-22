@@ -79,6 +79,9 @@ import org.zkoss.zul.SimpleListModel;
  */
 public abstract class AllocationRow {
 
+    private static final ResourcesPerDay RESOURCES_PER_DAY_DEFAULT_VALUE = ResourcesPerDay
+            .amount(1);
+
     public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
             SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
@@ -98,7 +101,8 @@ public abstract class AllocationRow {
             ResourcesPerDay[] resourcesPerDay) {
         int i = 0;
         for (AllocationRow each : rows) {
-            each.setNonConsolidatedResourcesPerDay(resourcesPerDay[i++]);
+            each.setResourcesPerDayEditedValue(resourcesPerDay[i++]);
+            each.clearRealResourcesPerDay();
         }
     }
 
@@ -109,6 +113,7 @@ public abstract class AllocationRow {
                 .iterator();
         for (AllocationRow each : rows) {
             each.loadDataFromLast();
+            each.clearRealResourcesPerDay();
 
             AllocationModification modification = iterator.next();
             if (!modification.satisfiesModificationRequested()) {
@@ -218,22 +223,53 @@ public abstract class AllocationRow {
 
     private String name;
 
-    private ResourcesPerDay nonConsolidatedResourcesPerDay;
-
     private Intbox hoursInput = new Intbox();
 
-    private final Decimalbox resourcesPerDayInput = new Decimalbox();
+    private final Decimalbox intendedResourcesPerDayInput = new Decimalbox();
+
+    private ResourcesPerDay editedValue;
+
+    private final Label realResourcesPerDay = new Label();
 
     private Grid derivedAllocationsGrid;
 
+    public AllocationRow(CalculatedValue calculatedValue) {
+        this.currentCalculatedValue = calculatedValue;
+        this.origin = null;
+        setResourcesPerDayEditedValue(RESOURCES_PER_DAY_DEFAULT_VALUE);
+        initialize();
+    }
+
+    public AllocationRow(ResourceAllocation<?> origin) {
+        this.origin = origin;
+        this.currentCalculatedValue = origin.getTask().getCalculatedValue();
+        setResourcesPerDayEditedValue(resourcesPerDayForInputFrom(origin));
+        if (origin != null && !origin.areIntendedResourcesPerDaySatisfied()) {
+            onDifferentRealResourcesPerDay(origin
+                    .getNonConsolidatedResourcePerDay());
+        }
+        loadHours();
+        initialize();
+    }
+
+    private static ResourcesPerDay resourcesPerDayForInputFrom(
+            ResourceAllocation<?> resourceAllocation) {
+        CalculatedValue calculatedValue = resourceAllocation.getTask()
+                .getCalculatedValue();
+        return calculatedValue == CalculatedValue.RESOURCES_PER_DAY ? resourceAllocation
+                .getNonConsolidatedResourcePerDay() : resourceAllocation
+                .getIntendedResourcesPerDay();
+    }
+
     private void initializeResourcesPerDayInput() {
-        resourcesPerDayInput.setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
-        resourcesPerDayInput.setWidth("80px");
-        Util.bind(resourcesPerDayInput, new Util.Getter<BigDecimal>() {
+        intendedResourcesPerDayInput
+                .setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
+        intendedResourcesPerDayInput.setWidth("80px");
+        Util.bind(intendedResourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
             @Override
             public BigDecimal get() {
-                return getNonConsolidatedResourcesPerDay().getAmount();
+                return getResourcesPerDayEditedValue().getAmount();
             }
 
         }, new Util.Setter<BigDecimal>() {
@@ -241,26 +277,13 @@ public abstract class AllocationRow {
             @Override
             public void set(BigDecimal value) {
                 BigDecimal amount = value == null ? new BigDecimal(0) : value;
-                setNonConsolidatedResourcesPerDay(ResourcesPerDay
+                setResourcesPerDayEditedValue(ResourcesPerDay
                         .amount(amount));
             }
         });
     }
 
-    public AllocationRow(CalculatedValue calculatedValue) {
-        this.currentCalculatedValue = calculatedValue;
-        this.origin = null;
-        initialize();
-    }
-
-    public AllocationRow(ResourceAllocation<?> origin) {
-        this.origin = origin;
-        this.currentCalculatedValue = origin.getTask().getCalculatedValue();
-        initialize();
-    }
-
     private void initialize() {
-        setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         initializeResourcesPerDayInput();
         hoursInput.setWidth("80px");
         hoursInput.setConstraint(constraintForHoursInput());
@@ -284,6 +307,18 @@ public abstract class AllocationRow {
 
     public ResourceAllocation<?> getOrigin() {
         return origin;
+    }
+
+    private void onDifferentRealResourcesPerDay(
+            ResourcesPerDay realResourcesPerDay) {
+        this.realResourcesPerDay
+                .setTooltiptext(_("It can't allocate the intended resources per day"));
+        this.realResourcesPerDay.setValue(_("(achieved: {0})",
+                realResourcesPerDay.getAmount().toPlainString()));
+    }
+
+    private void clearRealResourcesPerDay() {
+        this.realResourcesPerDay.setValue("");
     }
 
     public boolean hasDerivedAllocations() {
@@ -310,20 +345,19 @@ public abstract class AllocationRow {
         this.name = name;
     }
 
-    public ResourcesPerDay getNonConsolidatedResourcesPerDay() {
-        return this.nonConsolidatedResourcesPerDay;
+    public ResourcesPerDay getResourcesPerDayEditedValue() {
+        return this.editedValue;
     }
 
     public ResourcesPerDay getResourcesPerDayFromInput() {
-        BigDecimal value = resourcesPerDayInput.getValue();
+        BigDecimal value = intendedResourcesPerDayInput.getValue();
         value = value != null ? value : BigDecimal.ZERO;
         return ResourcesPerDay.amount(value);
     }
 
-    public void setNonConsolidatedResourcesPerDay(
-            ResourcesPerDay resourcesPerDay) {
-        this.nonConsolidatedResourcesPerDay = resourcesPerDay;
-        resourcesPerDayInput.setValue(getAmount(resourcesPerDay));
+    private void setResourcesPerDayEditedValue(ResourcesPerDay resourcesPerDay) {
+        this.editedValue = resourcesPerDay;
+        intendedResourcesPerDayInput.setValue(getAmount(resourcesPerDay));
     }
 
     private BigDecimal getAmount(ResourcesPerDay resourcesPerDay) {
@@ -339,7 +373,7 @@ public abstract class AllocationRow {
     public abstract boolean isGeneric();
 
     public boolean isEmptyResourcesPerDay() {
-        return getNonConsolidatedResourcesPerDay().isZero();
+        return getResourcesPerDayEditedValue().isZero();
     }
 
     public abstract List<Resource> getAssociatedResources();
@@ -348,13 +382,17 @@ public abstract class AllocationRow {
         return hoursInput;
     }
 
-    public Decimalbox getResourcesPerDayInput() {
-        return resourcesPerDayInput;
+    public Decimalbox getIntendedResourcesPerDayInput() {
+        return intendedResourcesPerDayInput;
+    }
+
+    public Label getRealResourcesPerDay() {
+        return realResourcesPerDay;
     }
 
     public void addListenerForInputChange(EventListener onChangeListener) {
         getHoursInput().addEventListener(Events.ON_CHANGE, onChangeListener);
-        getResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
+        getIntendedResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
                 onChangeListener);
     }
 
@@ -383,10 +421,14 @@ public abstract class AllocationRow {
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
         hoursInput.setConstraint(constraintForHoursInput());
-        resourcesPerDayInput
+        intendedResourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
-        resourcesPerDayInput.setConstraint(constraintForResourcesPerDayInput());
+        if (intendedResourcesPerDayInput.isDisabled()) {
+            clearRealResourcesPerDay();
+        }
+        intendedResourcesPerDayInput
+                .setConstraint(constraintForResourcesPerDayInput());
     }
 
     private Constraint constraintForHoursInput() {
@@ -394,17 +436,16 @@ public abstract class AllocationRow {
     }
 
     private Constraint constraintForResourcesPerDayInput() {
-        return (resourcesPerDayInput.isDisabled()) ? null
+        return (intendedResourcesPerDayInput.isDisabled()) ? null
                 : CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
     private void loadDataFromLast() {
         Clients.closeErrorBox(hoursInput);
-        Clients.closeErrorBox(resourcesPerDayInput);
+        Clients.closeErrorBox(intendedResourcesPerDayInput);
 
         hoursInput.setValue(temporal.getAssignedHours());
-        resourcesPerDayInput
-                .setValue(temporal.getResourcesPerDay().getAmount());
+        loadResourcesPerDayFrom(temporal);
     }
 
     private void warnObjectiveNotSatisfied(AllocationModification modification) {
@@ -413,10 +454,10 @@ public abstract class AllocationRow {
             @Override
             public Void onResourcesPerDay(
                     ResourcesPerDayModification modification) {
-                ResourcesPerDay goal = modification.getGoal();
-                Clients.response(new AuWrongValue(resourcesPerDayInput, _(
-                        "{0} resources per day cannot be fulfilled", goal
-                                .getAmount().toPlainString())));
+
+                ResourcesPerDay realResourcesPerDay = modification
+                        .getBeingModified().getNonConsolidatedResourcePerDay();
+                onDifferentRealResourcesPerDay(realResourcesPerDay);
 
                 return null;
             }
@@ -442,7 +483,7 @@ public abstract class AllocationRow {
 
     public void addListenerForResourcesPerDayInputChange(
             EventListener resourcesPerDayRowInputChange) {
-        resourcesPerDayInput.addEventListener(Events.ON_CHANGE,
+        intendedResourcesPerDayInput.addEventListener(Events.ON_CHANGE,
                 resourcesPerDayRowInputChange);
     }
 
@@ -560,19 +601,17 @@ public abstract class AllocationRow {
     }
 
     public void loadResourcesPerDay() {
-        if (temporal != null) {
-            nonConsolidatedResourcesPerDay = temporal.getNonConsolidatedResourcePerDay();
-        } else {
-            if (origin != null) {
-                nonConsolidatedResourcesPerDay = origin
-                        .getNonConsolidatedResourcePerDay();
-            } else {
-                nonConsolidatedResourcesPerDay = ResourcesPerDay.amount(0);
-            }
-        }
+        loadResourcesPerDayFrom(temporal != null ? temporal : origin);
+    }
 
-        resourcesPerDayInput.setValue(nonConsolidatedResourcesPerDay
-                .getAmount());
+    private void loadResourcesPerDayFrom(ResourceAllocation<?> allocation) {
+        if (allocation == null) {
+            setResourcesPerDayEditedValue(ResourcesPerDay.amount(0));
+        }
+        boolean useIntention = currentCalculatedValue != CalculatedValue.RESOURCES_PER_DAY;
+        setResourcesPerDayEditedValue(useIntention ? allocation
+                .getIntendedResourcesPerDay() : allocation
+                .getNonConsolidatedResourcePerDay());
     }
 
     public abstract ResourceEnum getType();
@@ -631,7 +670,7 @@ public abstract class AllocationRow {
 
             @Override
             public Void on(ResourcesPerDayIsZero result) {
-                throw new WrongValueException(resourcesPerDayInput,
+                throw new WrongValueException(intendedResourcesPerDayInput,
                         _("Resources per day are zero"));
             }
         });

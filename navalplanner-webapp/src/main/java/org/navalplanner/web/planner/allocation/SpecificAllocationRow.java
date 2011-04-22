@@ -34,7 +34,6 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModi
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * The information required for creating a {@link SpecificResourceAllocation}
@@ -89,10 +88,6 @@ public class SpecificAllocationRow extends AllocationRow {
     public static SpecificAllocationRow from(SpecificResourceAllocation specific) {
         SpecificAllocationRow result = new SpecificAllocationRow(specific);
         setupResource(result, specific.getResource());
-
-        result.setNonConsolidatedResourcesPerDay(specific
-                .getNonConsolidatedResourcePerDay());
-
         return result;
     }
 
@@ -108,8 +103,6 @@ public class SpecificAllocationRow extends AllocationRow {
             Resource resource) {
         specificRow.setName(resource.getShortDescription());
         specificRow.setResource(resource);
-        specificRow
-                .setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(1));
     }
 
     private Resource resource;
@@ -126,7 +119,7 @@ public class SpecificAllocationRow extends AllocationRow {
     public ResourcesPerDayModification toResourcesPerDayModification(Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         return ResourcesPerDayModification.create(createSpecific(task),
-                getNonConsolidatedResourcesPerDay());
+                getResourcesPerDayEditedValue());
     }
 
     private SpecificResourceAllocation createSpecific(Task task) {
