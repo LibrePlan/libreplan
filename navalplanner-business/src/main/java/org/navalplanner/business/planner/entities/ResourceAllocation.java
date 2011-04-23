@@ -2013,8 +2013,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     protected abstract void removeContainersFor(Scenario scenario);
 
     /*
-     * Returns first non consolidated day, if there are not consolidations
-     * returns first day of task
+     * Returns first non consolidated day
      */
     public LocalDate getFirstNonConsolidatedDate() {
         List<T> nonConsolidated = getNonConsolidatedAssignments();

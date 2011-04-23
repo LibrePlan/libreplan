@@ -366,6 +366,10 @@ public class StretchesFunction extends AssignmentFunction {
         if (!resourceAllocation.hasAssignments()) {
             return;
         }
+        // Is 100% consolidated
+        if (resourceAllocation.getFirstNonConsolidatedDate() == null) {
+            return;
+        }
         getDesiredType().applyTo(resourceAllocation, this);
         type = getDesiredType();
     }
