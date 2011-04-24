@@ -1581,6 +1581,7 @@ class Row {
             intbox.setValue(getHoursForDetailItem(item));
             if (isLimiting) {
                 intbox.setDisabled(true);
+                intbox.setSclass(" limiting");
             }
         }
     }
