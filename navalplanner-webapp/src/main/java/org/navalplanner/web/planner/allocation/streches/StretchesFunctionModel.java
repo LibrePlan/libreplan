@@ -150,7 +150,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     private List<Stretch> allStretches() {
         List<Stretch> result = new ArrayList<Stretch>();
         result.add(firstStretch());
-        result.addAll(stretchesFunction.getStrechesPlusConsolidated());
+        result.addAll(stretchesFunction.getStretchesPlusConsolidated());
         return result;
     }
 

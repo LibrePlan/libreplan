@@ -302,13 +302,13 @@ public class StretchesFunction extends AssignmentFunction {
 
     @AssertTrue(message = "At least one stretch is needed")
     public boolean checkNoEmpty() {
-        return !getStrechesPlusConsolidated().isEmpty();
+        return !getStretchesPlusConsolidated().isEmpty();
     }
 
     @AssertTrue(message = "Some stretch has higher or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
-        List<Stretch> stretchesPlusConsolidated = getStrechesPlusConsolidated();
+        List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();
         if (stretchesPlusConsolidated.isEmpty()) {
             return false;
         }
@@ -333,7 +333,7 @@ public class StretchesFunction extends AssignmentFunction {
         return true;
     }
 
-    public List<Stretch> getStrechesPlusConsolidated() {
+    public List<Stretch> getStretchesPlusConsolidated() {
         List<Stretch> result = new ArrayList<Stretch>();
         result.addAll(stretches);
         if (consolidatedStretch != null) {
