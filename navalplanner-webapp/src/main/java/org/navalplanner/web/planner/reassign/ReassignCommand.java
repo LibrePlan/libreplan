@@ -254,7 +254,6 @@ public class ReassignCommand implements IReassignCommand {
                             Messagebox.show(resolve(message),
                                     _("Reassignation"),
                                     Messagebox.OK, Messagebox.INFORMATION);
-                            Messagebox.show(resolve(message));
                         } catch (InterruptedException e) {
                             throw new RuntimeException(e);
                         }
