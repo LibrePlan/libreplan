@@ -29,6 +29,7 @@ import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
@@ -132,7 +133,7 @@ public interface IContext<T> {
 
     public void reloadCharts();
 
-    public GanttDiagramGraph getGanttDiagramGraph();
+    public GanttDiagramGraph<Task, Dependency> getGanttDiagramGraph();
 
     /**
      * Shows the advances in the planner.

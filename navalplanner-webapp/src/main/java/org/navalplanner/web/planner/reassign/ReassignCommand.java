@@ -45,9 +45,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.IAction;
@@ -112,9 +112,10 @@ public class ReassignCommand implements IReassignCommand {
             public void doOperation(
                     final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
                 updater.doUpdate(showStart(reassignations.size()));
-                DeferedNotifier notifications = null;
+                GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifications = null;
                 try {
-                    GanttDiagramGraph ganttDiagramGraph = context.getGanttDiagramGraph();
+                    GanttDiagramGraph<Task, Dependency> ganttDiagramGraph = context
+                            .getGanttDiagramGraph();
                     notifications = ganttDiagramGraph
                             .manualNotificationOn(doReassignations(
                                     ganttDiagramGraph, reassignations, updater));
@@ -132,7 +133,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IAction doReassignations(final GanttDiagramGraph diagramGraph,
+    private IAction doReassignations(final GanttDiagramGraph<Task, Dependency> diagramGraph,
             final List<WithAssociatedEntity> reassignations,
             final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
         return new IAction() {
@@ -187,7 +188,8 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate doNotifications(final DeferedNotifier notifier) {
+    private IDesktopUpdate doNotifications(
+            final GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifier) {
         return new IDesktopUpdate() {
             @Override
             public void doUpdate() {

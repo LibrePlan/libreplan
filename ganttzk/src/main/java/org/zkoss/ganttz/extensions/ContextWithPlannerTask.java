@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
@@ -120,7 +121,7 @@ public class ContextWithPlannerTask<T> implements IContextWithPlannerTask<T> {
     }
 
     @Override
-    public GanttDiagramGraph getGanttDiagramGraph() {
+    public GanttDiagramGraph<Task, Dependency> getGanttDiagramGraph() {
         return context.getGanttDiagramGraph();
     }
 
