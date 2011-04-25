@@ -233,10 +233,29 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void addStretch() {
         if (stretchesFunction != null) {
-            stretchesFunction.addStretch(Stretch.create(
-                    task.getStartAsLocalDate(), BigDecimal.ZERO,
-                    BigDecimal.ZERO));
+            stretchesFunction.addStretch(newStretch());
         }
+    }
+
+    private Stretch newStretch() {
+        LocalDate startDate = getTaskStartDate();
+        BigDecimal amountWorkPercent = BigDecimal.ZERO;
+
+        Stretch consolidatedStretch = stretchesFunction
+                .getConsolidatedStretch();
+        if (consolidatedStretch != null) {
+            startDate = consolidatedStretch.getDate().plusDays(1);
+            amountWorkPercent = consolidatedStretch.getAmountWorkPercentage().add(BigDecimal.ONE.divide(BigDecimal.valueOf(100)));
+        }
+        return Stretch.create(startDate, task, amountWorkPercent);
+    }
+
+    @Override
+    public LocalDate getTaskStartDate() {
+        if (task == null) {
+            return null;
+        }
+        return task.getStartAsLocalDate();
     }
 
     @Override
@@ -318,14 +337,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         long stretchDate = startDate + lengthPercentage.multiply(
                 new BigDecimal(endDate - startDate)).longValue();
         stretch.setDate(new LocalDate(stretchDate));
-    }
-
-    @Override
-    public LocalDate getTaskStartDate() {
-        if (task == null) {
-            return null;
-        }
-        return new LocalDate(task.getStartDate());
     }
 
     @Override

@@ -43,6 +43,42 @@ public class Stretch {
         return new Stretch(date, datePercent, workPercent);
     }
 
+    /**
+     * Infers the datePercent based on duration of task and the date of the
+     * Stretch
+     *
+     * @param date
+     * @param task
+     * @param workPercent
+     * @return
+     */
+    public static Stretch create(LocalDate date, Task task,
+            BigDecimal workPercent) {
+        LocalDate start = task.getStartAsLocalDate();
+        LocalDate end = task.getEndAsLocalDate();
+
+        Days taskDuration = Days.daysBetween(start, end);
+        Days daysDuration = Days.daysBetween(start, date);
+        BigDecimal daysPercent = daysPercent(daysDuration, taskDuration);
+        return new Stretch(date, daysPercent, workPercent);
+    }
+
+    protected static BigDecimal daysPercent(Days daysPartial, Days daysTotal) {
+        return percentWorked(daysPartial.getDays(), daysTotal.getDays());
+    }
+
+    private static BigDecimal percentWorked(int daysPartial, int daysTotal) {
+        return divide(BigDecimal.valueOf(daysPartial), Integer.valueOf(daysTotal));
+    }
+
+    private static BigDecimal divide(BigDecimal numerator, Integer denominator) {
+        if (Integer.valueOf(0).equals(denominator)) {
+            return BigDecimal.ZERO;
+        }
+        return numerator.divide(BigDecimal.valueOf(denominator), 8,
+                BigDecimal.ROUND_HALF_EVEN);
+    }
+
     public static Stretch copy(Stretch stretch) {
         return create(stretch.date, stretch.lengthPercentage, stretch.amountWorkPercentage);
     }
@@ -71,7 +107,7 @@ public class Stretch {
     @NotNull
     private BigDecimal amountWorkPercentage = BigDecimal.ZERO;
 
-    // Trasient value, a stretch is readOnly if it's a consolidated stretch 
+    // Trasient value, a stretch is readOnly if it's a consolidated stretch
     // or if it is a stretch user cannot edit
     private boolean readOnly = false;
 
@@ -165,42 +201,20 @@ class ConsolidatedStretch {
         }
 
         final Task task = resourceAllocation.getTask();
-        final LocalDate start = task.getStartAsLocalDate();
-        final LocalDate taskEnd = task.getEndAsLocalDate();
         final LocalDate consolidatedEnd = lastDay(consolidated);
 
-        Days daysDuration = Days.daysBetween(start, taskEnd);
-        Days daysWorked = Days.daysBetween(start, consolidatedEnd);
-        BigDecimal daysPercent = daysPercent(daysWorked, daysDuration);
-
-        return create(consolidatedEnd.plusDays(1), daysPercent, task.getAdvancePercentage());
+        return create(consolidatedEnd.plusDays(1), task.getAdvancePercentage(), task);
     }
 
-    private static Stretch create(LocalDate consolidatedEnd,
-            BigDecimal advancePercentage, BigDecimal percentWorked) {
-        Stretch result = Stretch.create(consolidatedEnd, advancePercentage, percentWorked);
+    private static Stretch create(LocalDate date, BigDecimal advancePercentage,
+            Task task) {
+        Stretch result = Stretch.create(date, task, advancePercentage);
         result.readOnly(true);
         return result;
     }
 
     private ConsolidatedStretch() {
 
-    }
-
-    private static BigDecimal daysPercent(Days daysPartial, Days daysTotal) {
-        return percentWorked(daysPartial.getDays(), daysTotal.getDays());
-    }
-
-    private static BigDecimal percentWorked(int daysPartial, int daysTotal) {
-        return divide(BigDecimal.valueOf(daysPartial), Integer.valueOf(daysTotal));
-    }
-
-    private static BigDecimal divide(BigDecimal numerator, Integer denominator) {
-        if (Integer.valueOf(0).equals(denominator)) {
-            return BigDecimal.ZERO;
-        }
-        return numerator.divide(BigDecimal.valueOf(denominator), 8,
-                BigDecimal.ROUND_HALF_EVEN);
     }
 
     private static LocalDate lastDay(List<? extends DayAssignment> days) {
