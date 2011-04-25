@@ -679,14 +679,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
             @Override
             public HoursModification on(GenericResourceAllocation genericAllocation) {
-                return HoursModification.create(genericAllocation, getIntendedHours(),
+                return HoursModification.create(genericAllocation,
+                        getEffortForReassignation().roundToHours(),
                         getAssociatedResources());
             }
 
             @Override
             public HoursModification on(SpecificResourceAllocation specificAllocation) {
                 return HoursModification.create(specificAllocation,
-                        getIntendedHours());
+                        getEffortForReassignation().roundToHours());
             }
         });
     }
@@ -1694,8 +1695,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getNonConsolidatedHours() {
-        return DayAssignment.sum(getNonConsolidatedAssignments())
-                .roundToHours();
+        return getNonConsolidatedEffort().roundToHours();
+    }
+
+    public EffortDuration getEffortForReassignation() {
+        if (isSatisfied()) {
+            return getNonConsolidatedEffort();
+        } else {
+            return hours(getIntendedHours());
+        }
+    }
+
+    public EffortDuration getNonConsolidatedEffort() {
+        return DayAssignment.sum(getNonConsolidatedAssignments());
     }
 
     /**

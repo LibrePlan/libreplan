@@ -21,6 +21,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -70,6 +73,14 @@ public class AggregateOfResourceAllocations {
             sum += resourceAllocation.getAssignedHours();
         }
         return sum;
+    }
+
+    public int getNonConsolidatedHours() {
+        EffortDuration sum = zero();
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            sum = sum.plus(each.getEffortForReassignation());
+        }
+        return sum.roundToHours();
     }
 
     public int getIntendedHours() {
