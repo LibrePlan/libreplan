@@ -31,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -69,42 +70,49 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     }
 
-    public static List<Criterion> sortByName(Collection<Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result, new Comparator<Criterion>() {
+    public static final Comparator<Criterion> byName = new Comparator<Criterion>() {
 
-            @Override
-            public int compare(Criterion o1, Criterion o2) {
-                if (o1.getName() == null) {
-                    return 1;
-                }
-                if (o2.getName() == null) {
-                    return -1;
-                }
-                return o1.getName().toLowerCase().compareTo(
-                        o2.getName().toLowerCase());
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.getName() == null) {
+                return 1;
             }
-        });
+            if (o2.getName() == null) {
+                return -1;
+            }
+            return o1.getName().toLowerCase()
+                    .compareTo(o2.getName().toLowerCase());
+        }
+    };
+
+    public static final Comparator<Criterion> byType = new Comparator<Criterion>() {
+
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.getType().getName() == null) {
+                return 1;
+            }
+            if (o2.getType().getName() == null) {
+                return -1;
+            }
+            return o1.getType().getName().toLowerCase()
+                    .compareTo(o2.getType().getName().toLowerCase());
+        }
+    };
+
+    public static List<Criterion> sortByName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result, byName);
         return result;
     }
 
-    public static List<Criterion> sortByTypeAndName(Collection<Criterion> criterions) {
+    @SuppressWarnings("unchecked")
+    public static List<Criterion> sortByTypeAndName(
+            Collection<? extends Criterion> criterions) {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result, new Comparator<Criterion>() {
-
-            @Override
-            public int compare(Criterion o1, Criterion o2) {
-                if (o1.getName() == null || o1.getType().getName() == null) {
-                    return 1;
-                }
-                if (o2.getName() == null || o2.getType().getName() == null) {
-                    return -1;
-                }
-                String name1 = o1.getType().getName() + " " + o1.getName();
-                String name2 = o2.getType().getName() + " " + o2.getName();
-                return name1.compareTo(name2);
-            }
-        });
+        Collections.sort(result,
+                ComparatorUtils.chainedComparator(byType, byName));
         return result;
     }
 
