@@ -315,7 +315,7 @@ public class FormBinder {
             this.labelTaskStart = labelTaskStart;
             this.labelTaskEnd = labelTaskEnd;
             initializeDateAndDurationFieldsFromTaskOriginalValues();
-            Util.ensureUniqueListener(taskWorkableDays, Events.ON_CHANGE,
+            Util.ensureUniqueListeners(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
 
                 @Override
@@ -336,9 +336,8 @@ public class FormBinder {
                         showValueOfDateOn(labelTaskStart, newStart);
                     }
                 }
-            });
+                    }, onChangeEnableApply);
             applyDisabledRules();
-            onChangeEnableApply(taskWorkableDays);
         }
 
         void applyDisabledRules() {

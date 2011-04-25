@@ -590,12 +590,29 @@ public class Util {
      */
     public static void ensureUniqueListener(Component component, String eventName,
             EventListener uniqueListener) {
+        ensureUniqueListeners(component, eventName, uniqueListener);
+    }
+
+    /**
+     * It removes all listeners registered for eventName and adds the new
+     * listeners. It's ensured that the only listeners left in the component for
+     * events of name eventName is uniqueListeners
+     *
+     * @param component
+     * @param eventName
+     * @param uniqueListeners
+     *            new listeners to add
+     */
+    public static void ensureUniqueListeners(Component component,
+            String eventName, EventListener... uniqueListeners) {
         Iterator<?> listenerIterator = component.getListenerIterator(eventName);
         while (listenerIterator.hasNext()) {
             listenerIterator.next();
             listenerIterator.remove();
         }
-        component.addEventListener(eventName, uniqueListener);
+        for (EventListener each : uniqueListeners) {
+            component.addEventListener(eventName, each);
+        }
     }
 
 }
