@@ -100,6 +100,21 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         }
     };
 
+    public static final Comparator<Criterion> byInclusion = new Comparator<Criterion>() {
+
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.isEquivalent(o2)) {
+                return 0;
+            }
+            if (o1.includes(o2)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    };
+
     public static List<Criterion> sortByName(
             Collection<? extends Criterion> criterions) {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
@@ -113,6 +128,17 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         List<Criterion> result = new ArrayList<Criterion>(criterions);
         Collections.sort(result,
                 ComparatorUtils.chainedComparator(byType, byName));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Criterion> sortByInclusionTypeAndName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(
+                result,
+                ComparatorUtils.chainedComparator(new Comparator[] {
+                        byInclusion, byType, byName }));
         return result;
     }
 

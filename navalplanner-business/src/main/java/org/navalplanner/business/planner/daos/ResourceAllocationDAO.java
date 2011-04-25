@@ -164,19 +164,16 @@ public class ResourceAllocationDAO extends
         return result;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion() {
-        List<Object> results = getSession()
+        Query query = getSession()
                 .createQuery(
                 "select generic, criterion "
                         + "from GenericResourceAllocation as generic "
-                        + "join generic.criterions as criterion")
-                .list();
-        return stripAllocationsWithoutAssignations(byCriterion(results));
+                        + "join generic.criterions as criterion");
+        return toCriterionMapFrom(query);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
             Date intervalFilterStartDate, Date intervalFilterEndDate) {
@@ -207,42 +204,39 @@ public class ResourceAllocationDAO extends
             q.setParameter("intervalFilterEndDate",
                     LocalDate.fromDateFields(intervalFilterEndDate));
         }
-        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
+        return toCriterionMapFrom(q);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
             List<Task> tasks) {
         if (tasks.isEmpty()) {
             return new HashMap<Criterion, List<GenericResourceAllocation>>();
         }
-        List<Object> list = getSession().createQuery(
+        Query query = getSession().createQuery(
                 "select generic, criterion "
                         + "from GenericResourceAllocation as generic "
                         + "join generic.criterions as criterion "
                         + "join generic.task task where task in(:tasks)")
-                .setParameterList("tasks", tasks).list();
-        return stripAllocationsWithoutAssignations(byCriterion(list));
+                .setParameterList("tasks", tasks);
+        return toCriterionMapFrom(query);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions) {
         if (criterions.isEmpty()) {
             return new HashMap<Criterion, List<GenericResourceAllocation>>();
         }
-        List<Object> list = getSession().createQuery(
+        Query query = getSession().createQuery(
                 "select generic, criterion "
                         + "from GenericResourceAllocation as generic "
                         + "join generic.criterions as criterion "
                         + "where criterion in(:criterions)").setParameterList(
-                "criterions", criterions).list();
-        return stripAllocationsWithoutAssignations(byCriterion(list));
+                "criterions", criterions);
+        return toCriterionMapFrom(query);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions, Date intervalFilterStartDate, Date intervalFilterEndDate) {
@@ -273,7 +267,13 @@ public class ResourceAllocationDAO extends
             q.setParameter("intervalFilterEndDate",
                     LocalDate.fromDateFields(intervalFilterEndDate));
         }
-        return stripAllocationsWithoutAssignations(byCriterion(q.list()));
+        return toCriterionMapFrom(q);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<Criterion, List<GenericResourceAllocation>> toCriterionMapFrom(Query query){
+        return addParents(stripAllocationsWithoutAssignations(byCriterion(query
+                .list())));
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> byCriterion(
@@ -300,6 +300,52 @@ public class ResourceAllocationDAO extends
     private Criterion getCriterion(Object row) {
         Object[] elements = (Object[]) row;
         return (Criterion) elements[1];
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> addParents(
+            Map<Criterion, List<GenericResourceAllocation>> byCriterion) {
+        Map<Criterion, List<GenericResourceAllocation>> toBeMerged = new HashMap<Criterion, List<GenericResourceAllocation>>();
+
+        for (Entry<Criterion, List<GenericResourceAllocation>> each : byCriterion
+                .entrySet()) {
+            Criterion criterion = each.getKey();
+            for (Criterion parent : getParentsFrom(criterion)) {
+                List<GenericResourceAllocation> childAllocations = each
+                        .getValue();
+                addToCriterion(toBeMerged, parent, childAllocations);
+            }
+        }
+        return mergeTo(byCriterion, toBeMerged);
+    }
+
+    private void addToCriterion(
+            Map<Criterion, List<GenericResourceAllocation>> map,
+            Criterion criterion, List<GenericResourceAllocation> toAdd) {
+        if (!map.containsKey(criterion)) {
+            map.put(criterion,
+                    new ArrayList<GenericResourceAllocation>());
+        }
+        map.get(criterion).addAll(toAdd);
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> mergeTo(
+            Map<Criterion, List<GenericResourceAllocation>> byCriterion,
+            Map<Criterion, List<GenericResourceAllocation>> toMerge) {
+        for (Entry<Criterion, List<GenericResourceAllocation>> each : toMerge
+                .entrySet()) {
+            addToCriterion(byCriterion, each.getKey(), each.getValue());
+        }
+        return byCriterion;
+    }
+
+    private List<Criterion> getParentsFrom(Criterion criterion) {
+        List<Criterion> result = new ArrayList<Criterion>();
+        Criterion current = criterion.getParent();
+        while (current != null) {
+            result.add(current);
+            current = current.getParent();
+        }
+        return result;
     }
 
     @Override

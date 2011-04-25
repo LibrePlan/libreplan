@@ -239,7 +239,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             return withAssociatedSpecific(findAllocationsGroupedByCriteria(criteriaToShowList));
         }
         Map<Criterion, List<GenericResourceAllocation>> result = findAllocationsByCriterion();
-        allCriteriaList = Criterion.sortByTypeAndName(result.keySet());
+        allCriteriaList = Criterion.sortByInclusionTypeAndName(result.keySet());
         if (pageFilterPosition == -1) {
             return withAssociatedSpecific(result);
         }
