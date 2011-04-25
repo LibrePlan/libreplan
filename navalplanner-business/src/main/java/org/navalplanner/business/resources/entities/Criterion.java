@@ -70,6 +70,16 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     }
 
+    public static Set<Criterion> withAllDescendants(
+            Collection<? extends Criterion> originalCriteria) {
+        Set<Criterion> result = new HashSet<Criterion>();
+        for (Criterion each : originalCriteria) {
+            result.add(each);
+            result.addAll(withAllDescendants(each.getChildren()));
+        }
+        return result;
+    }
+
     public static final Comparator<Criterion> byName = new Comparator<Criterion>() {
 
         @Override

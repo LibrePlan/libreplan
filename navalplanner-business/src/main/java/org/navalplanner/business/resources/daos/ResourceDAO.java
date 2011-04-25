@@ -231,7 +231,8 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
             query.setParameterList("labels", labels);
         }
         if (criterions != null && !criterions.isEmpty()) {
-            query.setParameterList("criterions", criterions);
+            query.setParameterList("criterions",
+                    Criterion.withAllDescendants(criterions));
         }
 
         // Get result
