@@ -134,11 +134,19 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     @Override
+    public List<Stretch> getStretchesDefinedByUser() {
+        if (stretchesFunction == null) {
+            return Collections.emptyList();
+        }
+        return stretchesFunction.getStretches();
+    }
+
+    @Override
     public List<Stretch> getStretches() {
         if (stretchesFunction == null) {
             return Collections.emptyList();
         }
-        return allStretches();
+        return Collections.unmodifiableList(allStretches());
     }
 
     /**
@@ -188,11 +196,12 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                         _("For interpolation at least two stretches are needed"));
             }
             if (stretchesFunction.getDesiredType() == StretchesFunctionTypeEnum.INTERPOLATED) {
-                if (!atLeastTwoStreches(getStretches())) {
+                final List<Stretch> stretchesDefinedByUser = getStretchesDefinedByUser();
+                if (!atLeastTwoStreches(stretchesDefinedByUser)) {
                     throw new ValidationException(
                             _("There must be at least 2 stretches for doing interpolation"));
                 }
-                if (!theFirstIntervalIsPosteriorToFirstDay(getStretches(),
+                if (!theFirstIntervalIsPosteriorToFirstDay(stretchesDefinedByUser,
                         getTaskStartDate())) {
                     throw new ValidationException(
                             _("The first stretch must be after the first day for doing interpolation"));
