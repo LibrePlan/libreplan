@@ -79,6 +79,8 @@ public class CalendarData extends IntegrationEntity {
 
     private BaseCalendar parent;
 
+    private BaseCalendar calendar;
+
     public enum Days {
         MONDAY(_("Monday")), TUESDAY(_("Tuesday")), WEDNESDAY(_("Wednesday")), THURSDAY(
                 _("Thursday")), FRIDAY(_("Friday")), SATURDAY(_("Saturday")), SUNDAY(
@@ -219,6 +221,10 @@ public class CalendarData extends IntegrationEntity {
     @Override
     protected ICalendarDataDAO getIntegrationEntityDAO() {
         return Registry.getCalendarDataDAO();
+    }
+
+    public BaseCalendar getCalendar() {
+        return calendar;
     }
 
 }

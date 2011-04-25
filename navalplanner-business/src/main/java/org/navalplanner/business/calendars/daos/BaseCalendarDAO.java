@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
@@ -141,14 +142,18 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
 
     /**
      * A {@link BaseCalendar} is being used by a {@link Resource} if there is
-     * {@link CalendarData} that has as a parent the parameter calendar
+     * some {@link CalendarData} which belongs to a {@link ResourceCalendar} and
+     * has as a parent the parameter calendar
      *
      * @param calendar
      */
     private void checkHasResources(BaseCalendar calendar) {
-        List calendarData = getSession().createCriteria(CalendarData.class)
-                .add(Restrictions.eq("parent", calendar)).list();
-        if (!calendarData.isEmpty()) {
+        Query query = getSession().createQuery(
+                "FROM CalendarData "
+                        + "WHERE calendar IN (FROM ResourceCalendar) "
+                        + "AND parent = :parent");
+        query.setParameter("parent", calendar);
+        if (!query.list().isEmpty()) {
             throw ValidationException
                     .invalidValue(
                             "Cannot delete calendar. It is being used at this moment by some resources.",
