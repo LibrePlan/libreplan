@@ -570,6 +570,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return intendedResourcesPerDay;
     }
 
+    private ResourcesPerDay getReassignationResourcesPerDay() {
+        ResourcesPerDay intended = getIntendedResourcesPerDay();
+        if (intended != null) {
+            return intended;
+        }
+        return getResourcesPerDay();
+    }
+
     public boolean areIntendedResourcesPerDaySatisfied() {
         CalculatedValue calculatedValue = getTask().getCalculatedValue();
         return calculatedValue == CalculatedValue.RESOURCES_PER_DAY
@@ -653,7 +661,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             ResourcesPerDay resourcesPerDay);
 
     public final ResourcesPerDayModification asResourcesPerDayModification() {
-        if (getIntendedResourcesPerDay().isZero()) {
+        if (getReassignationResourcesPerDay().isZero()) {
             return null;
         }
         return visit(this, new IVisitor<ResourcesPerDayModification>() {
@@ -662,14 +670,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             public ResourcesPerDayModification on(
                     SpecificResourceAllocation specificAllocation) {
                 return ResourcesPerDayModification.create(specificAllocation,
-                        getIntendedResourcesPerDay());
+                        getReassignationResourcesPerDay());
             }
 
             @Override
             public ResourcesPerDayModification on(
                     GenericResourceAllocation genericAllocation) {
                 return ResourcesPerDayModification.create(genericAllocation,
-                        getIntendedResourcesPerDay(), getAssociatedResources());
+                        getReassignationResourcesPerDay(),
+                        getAssociatedResources());
             }
         });
     }
