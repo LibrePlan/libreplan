@@ -127,8 +127,6 @@
         <!-- Not indexed -->
         <many-to-one name="parent" class="BaseCalendar" access="field" />
 
-        <many-to-one name="calendar" class="BaseCalendar" column="base_calendar_id" />
-
         <property name="expiringDate" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"
             column="expiring_date" />

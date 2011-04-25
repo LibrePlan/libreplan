@@ -148,12 +148,10 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar>
      * @param calendar
      */
     private void checkHasResources(BaseCalendar calendar) {
-        Query query = getSession().createQuery(
-                "FROM CalendarData "
-                        + "WHERE calendar IN (FROM ResourceCalendar) "
-                        + "AND parent = :parent");
-        query.setParameter("parent", calendar);
-        if (!query.list().isEmpty()) {
+        List calendars = getSession().createCriteria(ResourceCalendar.class)
+                .createCriteria("calendarDataVersions", "calendarData")
+                .add(Restrictions.eq("calendarData.parent", calendar)).list();
+        if (!calendars.isEmpty()) {
             throw ValidationException
                     .invalidValue(
                             "Cannot delete calendar. It is being used at this moment by some resources.",
