@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -56,7 +57,11 @@ import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Messagebox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -111,7 +116,7 @@ public class ReassignCommand implements IReassignCommand {
             @Override
             public void doOperation(
                     final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
-                updater.doUpdate(showStart(reassignations.size()));
+                updater.doUpdate(busyStart(reassignations.size()));
                 GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifications = null;
                 try {
                     GanttDiagramGraph<Task, Dependency> ganttDiagramGraph = context
@@ -123,9 +128,26 @@ public class ReassignCommand implements IReassignCommand {
                     if (notifications != null) {
                         // null if error
                         updater.doUpdate(and(doNotifications(notifications),
-                                reloadCharts(context), showEnd()));
+                                reloadCharts(context), busyEnd(),
+                                tellUserOnEnd(context, Messagebox.INFORMATION,
+                                        new Callable<String>() {
+
+                                    @Override
+                                    public String call() throws Exception {
+                                        return _("{0} reassignations finished",
+                                                reassignations.size());
+                                    }
+                                })));
                     } else {
-                        updater.doUpdate(showEnd());
+                        updater.doUpdate(and(busyEnd(),
+                                tellUserOnEnd(context, Messagebox.EXCLAMATION,
+                                        new Callable<String>() {
+
+                                    @Override
+                                    public String call() throws Exception {
+                                        return _("It couldn't complete all the reassignations");
+                                    }
+                                })));
                     }
                 }
             }
@@ -160,7 +182,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate showStart(final int total) {
+    private IDesktopUpdate busyStart(final int total) {
         return new IDesktopUpdate() {
             @Override
             public void doUpdate() {
@@ -198,7 +220,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate showEnd() {
+    private IDesktopUpdate busyEnd() {
         return new IDesktopUpdate() {
 
             @Override
@@ -206,6 +228,48 @@ public class ReassignCommand implements IReassignCommand {
                 Clients.showBusy(null, false);
             }
         };
+    }
+
+    private IDesktopUpdate tellUserOnEnd(final IContext<TaskElement> context,
+            String icon, final Callable<String> message) {
+        // using callable so the message is built inside a zk execution and the
+        // locale is correctly retrieved
+
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                final org.zkoss.zk.ui.Component relativeTo = context
+                        .getRelativeTo();
+                final String eventName = "onLater";
+
+                Events.echoEvent(eventName, relativeTo, null);
+
+                relativeTo.addEventListener(eventName, new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        relativeTo.removeEventListener(eventName, this);
+                        try {
+                            Messagebox.show(resolve(message),
+                                    _("Reassignation"),
+                                    Messagebox.OK, Messagebox.INFORMATION);
+                            Messagebox.show(resolve(message));
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    private <T> T resolve(Callable<T> callable) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static class WithAssociatedEntity {
