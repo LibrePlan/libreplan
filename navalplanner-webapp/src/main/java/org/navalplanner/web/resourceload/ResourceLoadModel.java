@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -456,6 +457,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         result.addAll(buildSubLevels(criterion, ResourceAllocation.getOfType(
                 GenericResourceAllocation.class, allocations)));
         result.add(buildRelatedSpecificAllocations(criterion, allocations));
+        Collections.sort(result, LoadTimeLine.byStartAndEndDate());
         return result;
     }
 
@@ -506,6 +508,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 onlyGeneric(allocations)));
         result.addAll(buildTimeLinesForEachResource(criterion,
                 onlySpecific(allocations), getCurrentTimeLineRole(order)));
+        Collections.sort(result, LoadTimeLine.byStartAndEndDate());
         return result;
     }
 
@@ -756,6 +759,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 onlySpecific(sortedByStartDate)));
         result.addAll(buildTimeLinesForEachCriterion(resource,
                 onlyGeneric(sortedByStartDate)));
+        Collections.sort(result, LoadTimeLine.byStartAndEndDate());
         return result;
     }
 

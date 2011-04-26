@@ -22,14 +22,37 @@ package org.zkoss.ganttz.data.resourceload;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.util.Interval;
 
 public class LoadTimeLine {
+
+    @SuppressWarnings("unchecked")
+    private static final Comparator<LocalDate> nullSafeComparator = ComparatorUtils
+            .nullLowComparator(ComparatorUtils.naturalComparator());
+
+    public static Comparator<LoadTimeLine> byStartAndEndDate() {
+        return new Comparator<LoadTimeLine>() {
+
+            @Override
+            public int compare(LoadTimeLine o1, LoadTimeLine o2) {
+                int result = nullSafeComparator.compare(o1.getStartPeriod(),
+                        o2.getStartPeriod());
+                if (result == 0) {
+                    return nullSafeComparator.compare(o1.getEndPeriod(),
+                            o2.getEndPeriod());
+                }
+                return result;
+
+            }
+        };
+    }
 
     private final String conceptName;
     private final List<LoadPeriod> loadPeriods;
