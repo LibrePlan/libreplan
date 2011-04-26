@@ -139,7 +139,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -402,7 +401,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         setupLoadChart(chartLoadTimeplot, planner, configuration, saveCommand);
         setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, configuration, saveCommand);
-        setupOverallProgress(saveCommand);
+        setupOverallProgress(planner, configuration, saveCommand);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
         overallProgressContent = new OverAllProgressContent(overallProgressTab);
@@ -518,8 +517,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
-    private void setupOverallProgress(final ISaveCommand saveCommand) {
-
+    private void setupOverallProgress(final Planner planner,
+            PlannerConfiguration<TaskElement> configuration,
+            final ISaveCommand saveCommand) {
         // Refresh progress chart after saving
         if (saveCommand != null) {
             saveCommand.addListener(new IAfterSaveListener() {
@@ -529,13 +529,39 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                             .runOnTransaction(new IOnTransaction<Void>() {
                                 @Override
                                 public Void execute() {
-                                    overallProgressContent.refresh();
+                                    overallProgressContent.updateAndRefresh();
                                     return null;
                                 }
                             });
                 }
             });
         }
+        configuration.addReloadChartListener(readOnlyProxy(transactionService,
+                IReloadChartListener.class, new IReloadChartListener() {
+
+                    @Override
+                    public void reloadChart() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
+                        if (planner.isVisibleChart()) {
+                            overallProgressContent.updateAndRefresh();
+                        }
+                    }
+                }));
+        configuration.addPostGraphChangeListener(readOnlyProxy(
+                transactionService, IGraphChangeListener.class,
+                new IGraphChangeListener() {
+                    @Override
+                    public void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
+                        if (planner.isVisibleChart()) {
+                            overallProgressContent.updateAndRefresh();
+                        }
+                    }
+                }));
     }
 
     private void addPrintSupport(
@@ -1546,34 +1572,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private Label lbAdvancePercentage;
 
-        private Button btnRefresh;
-
-
         public OverAllProgressContent(Tabpanel tabpanel) {
             initializeProgressCriticalPathByDuration(tabpanel);
             initializeProgressCriticalPathByNumHours(tabpanel);
             initializeProgressAdvancePercentage(tabpanel);
 
-            btnRefresh = (Button) tabpanel.getFellow("btnRefresh");
             tabpanel.setVariable("overall_progress_content", this, true);
-            btnRefresh.addEventListener(Events.ON_CLICK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    if (planningState.isEmpty()) {
-                        return;
-                    }
-                    transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                        @Override
-                        public Void execute() {
-                            update();
-                            refresh();
-                            return null;
-                        }
-                    });
-                }
-            });
         }
 
         private void initializeProgressCriticalPathByNumHours(Tabpanel tabpanel) {
@@ -1614,6 +1618,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     .getCriticalPathProgressByDuration());
             setCriticalPathByNumHours(rootTask
                     .getCriticalPathProgressByNumHours());
+        }
+
+        private void updateAndRefresh() {
+            update();
+            refresh();
         }
 
         private void update() {

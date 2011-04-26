@@ -55,10 +55,6 @@
             <label id="lbCriticalPathByNumHours" style="font-weight: regular; font-size: 11px" />
         </hbox>
 
-        <separator />
-
-        <button id="btnRefresh" label="${i18n:_('Refresh')}" />
-
     </vbox>
 
 </div>
