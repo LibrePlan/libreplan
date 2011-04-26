@@ -94,24 +94,14 @@ public class LoadPeriod {
                     throw new IllegalArgumentException(o1 + " overlaps with "
                             + o2);
                 }
-                int comparison = compareLocalDates(o1.start, o2.start);
+                int comparison = o1.start.compareTo(o2.start);
                 if (comparison != 0) {
                     return comparison;
                 }
-                return compareLocalDates(o1.end, o2.end);
+                return o1.end.compareTo(o2.end);
             }
         });
         return result;
-    }
-
-    private static int compareLocalDates(LocalDate l1, LocalDate l2) {
-        if (l1.isBefore(l2)) {
-            return -1;
-        }
-        if (l1.isAfter(l2)) {
-            return 1;
-        }
-        return 0;
     }
 
     @Override
