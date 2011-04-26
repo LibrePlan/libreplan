@@ -1,6 +1,48 @@
 NEWS
 ====
 
+Version 1.0.6 (26 Apr 2011)
+---------------------------
+
+New minor version in stable branch due to several important bugs detected during
+1.1 stabilization. The most important ones:
+
+* Fix problems when tasks with zero hours are in critical path.
+* Improve feedback to user when some error happens (add
+  exception stacktrace).
+* Solved issues removing entities related with others.
+* Fixed sorting problems in resources load chart.
+* Avoid creation of duplicate quality forms in tasks.
+
+Changes
+~~~~~~~
+
+* [Bug #1026] Fix bug
+* Inline silly method
+* [Bug #952] Fix bug
+* [Bug #992] Fix bug
+* [Bug #990] When removing a profile check is not referenced by order
+  authorizations
+* [Bug #990] When removing a profile check is not referenced by other users
+* [Bug #992] Fix bug
+* [Bug #991] When removing an hours type check is not referenced by other
+  entities
+* [Bug #986] Prevent removing a label type that is being used by and
+  orderelement
+* [Bug #986] Prevent removing a label that is being used by an orderelement
+* [Bug #986] Set cascade to none in mapping between Labels and OrderElements
+* [Bug #986] Remove unused code
+* [Bug #985] Fixed changing lables mapping to all-delete-orphan.
+* [Bug #941] fixing bug :  Quality forms are not duplicated now in the same
+  task.
+* Fixed NullPointerException in PageForErrorOnEvent.
+* Improved design of errors and fixed NullPointerException when clicking in
+  continue.
+* Improved information showed when some runtime error happens.
+* [Bug #873] Show warning before add an empty label.
+* [Bug #] Fix division by zero in Gantt
+
+
 Version 1.0.5 (8 Apr 2011)
 --------------------------
 
