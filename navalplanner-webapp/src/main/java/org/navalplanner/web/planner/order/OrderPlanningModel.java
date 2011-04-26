@@ -529,7 +529,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                             return;
                         }
                         if (planner.isVisibleChart()) {
-                            overallProgressContent.updateAndRefresh();
+                            overallProgressContent.refresh();
                         }
                     }
       });
