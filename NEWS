@@ -1,7 +1,7 @@
 NEWS
 ====
 
-Version 1.0.6 (26 Apr 2011)
+Version 1.0.6 (27 Apr 2011)
 ---------------------------
 
 New minor version in stable branch due to several important bugs detected during
@@ -17,6 +17,7 @@ New minor version in stable branch due to several important bugs detected during
 Changes
 ~~~~~~~
 
+* [Bug #1030] Fixed opening read-only transaction in removeMaterialAssignment.
 * [Bug #1026] Fix bug
 * Inline silly method
 * [Bug #952] Fix bug
