@@ -3,7 +3,7 @@ navalplan (1.0.6-1) maverick; urgency=low
   * Several important bugs fixed during 1.1 stabilization.
   * Released version 1.0.6.
 
- -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 26 Apr 2011 11:35:00 +0200
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Tue, 27 Apr 2011 11:49:00 +0200
 
 navalplan (1.0.5-1) maverick; urgency=low
 
