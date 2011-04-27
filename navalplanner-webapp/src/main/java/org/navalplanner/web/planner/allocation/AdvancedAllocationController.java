@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -214,7 +216,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public abstract static class Restriction {
 
         public interface IRestrictionSource {
-            int getTotalHours();
+
+            EffortDuration getTotalEffort();
 
             LocalDate getStart();
 
@@ -227,8 +230,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
             case END_DATE:
-                return Restriction.fixedHours(restrictionSource.getStart(),
-                        restrictionSource.getTotalHours());
+                return Restriction.fixedEffort(restrictionSource.getStart(),
+                        restrictionSource.getTotalEffort());
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
@@ -249,8 +252,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return new OnlyOnIntervalRestriction(start, end);
         }
 
-        private static Restriction fixedHours(LocalDate start, int hours) {
-            return new FixedHoursRestriction(start, hours);
+        private static Restriction fixedEffort(LocalDate start,
+                EffortDuration effort) {
+            return new FixedEffortRestriction(start, effort);
         }
 
         abstract LocalDate limitStartDate(LocalDate startDate);
@@ -259,13 +263,13 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         abstract boolean isDisabledEditionOn(DetailItem item);
 
-        public abstract boolean isInvalidTotalHours(int totalHours);
+        public abstract boolean isInvalidTotalEffort(EffortDuration totalEffort);
 
-        public abstract void showInvalidHours(IMessagesForUser messages,
-                int totalHours);
+        public abstract void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort);
 
-        public abstract void markInvalidTotalHours(Row groupingRow,
-                int currentHours);
+        public abstract void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -292,7 +296,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
             return false;
         }
 
@@ -307,23 +311,27 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
         }
     }
 
-    private static class FixedHoursRestriction extends Restriction {
-        private final int hours;
+    private static class FixedEffortRestriction extends Restriction {
+
+        private final EffortDuration effort;
+
         private final LocalDate start;
 
-        private FixedHoursRestriction(LocalDate start, int hours) {
+        private FixedEffortRestriction(LocalDate start, EffortDuration effort) {
             this.start = start;
-            this.hours = hours;
+            this.effort = effort;
         }
 
         @Override
@@ -342,24 +350,25 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
-            return this.hours != totalHours;
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
+            return this.effort.compareTo(totalEffort) != 0;
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
-            messages.showMessage(Level.WARNING,
-                    getMessage(totalHours));
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
+            messages.showMessage(Level.WARNING, getMessage(totalEffort));
         }
 
-        private String getMessage(int totalHours) {
-            return _("there must be {0} hours instead of {1}", hours,
-                    totalHours);
+        private String getMessage(EffortDuration totalEffort) {
+            return _("there must be {0} effort instead of {1}",
+                    effort.toFormattedString(), totalEffort.toFormattedString());
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int totalHours) {
-            groupingRow.markErrorOnTotal(getMessage(totalHours));
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration totalEffort) {
+            groupingRow.markErrorOnTotal(getMessage(totalEffort));
         }
     }
 
@@ -371,7 +380,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
             return false;
         }
 
@@ -386,12 +395,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
             throw new UnsupportedOperationException();
         }
     }
@@ -718,9 +729,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             int totalHours = allocationInput.getTotalHours();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalHours(totalHours)) {
+            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidTotalHours(groupingRow, totalHours);
+                restriction.markInvalidEffort(groupingRow, hours(totalHours));
             }
         }
         back.goBack();
@@ -735,9 +746,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             int totalHours = allocationInput.getTotalHours();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalHours(totalHours)) {
+            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidTotalHours(groupingRow, totalHours);
+                restriction.markInvalidEffort(groupingRow, hours(totalHours));
             }
         }
         for (AllocationInput allocationInput : allocationInputs) {
@@ -1200,8 +1211,8 @@ class Row {
                 label.setValue(totalHours + "");
                 Clients.closeErrorBox(label);
             }
-            if (restriction.isInvalidTotalHours(totalHours)) {
-                restriction.showInvalidHours(messages, totalHours);
+            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
+                restriction.showInvalidEffort(messages, hours(totalHours));
             }
         } else {
             Intbox intbox = (Intbox) allHoursInput;

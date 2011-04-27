@@ -31,7 +31,9 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -399,7 +401,8 @@ public class EditTaskController extends GenericForwardComposer {
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             Validate.isTrue(!allocation.getAggregate().isEmpty());
             this.allocation = allocation;
-            final int totalHours = allocation.getAggregate().getTotalHours();
+            final EffortDuration totalEffort = allocation.getAggregate()
+                    .getTotalEffort();
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
@@ -407,8 +410,8 @@ public class EditTaskController extends GenericForwardComposer {
             restrictionSource = new IRestrictionSource() {
 
                 @Override
-                public int getTotalHours() {
-                    return totalHours;
+                public EffortDuration getTotalEffort() {
+                    return totalEffort;
                 }
 
                 @Override
