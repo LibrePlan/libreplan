@@ -28,6 +28,8 @@ public interface IAllocateHoursOnInterval {
 
     void allocateHours(int hours);
 
+    void allocate(EffortDuration effortDuration);
+
     /**
      * <p>
      * It tries to allocate the specified durations on the originally specified

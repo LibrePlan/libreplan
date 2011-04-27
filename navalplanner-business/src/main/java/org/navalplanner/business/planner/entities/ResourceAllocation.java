@@ -843,10 +843,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
             @Override
             public void allocateHours(int hours) {
-                allocateDuration(hours(hours));
+                allocate(hours(hours));
             }
 
-            private void allocateDuration(EffortDuration duration) {
+            @Override
+            public void allocate(EffortDuration duration) {
                 List<T> assignmentsCreated = createAssignments(
                         allocationInterval, duration);
                 allocationInterval.resetAssignments(assignmentsCreated);
@@ -856,6 +857,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             public void allocate(List<EffortDuration> durationsByDay) {
                 allocateDurationsByDay(allocationInterval, durationsByDay);
             }
+
         }
 
         private void allocateDurationsByDay(AllocationInterval interval,
@@ -876,7 +878,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocateTheWholeAllocation(interval, hours(hours));
+                    allocate(hours(hours));
+                }
+
+                @Override
+                public void allocate(EffortDuration effortDuration) {
+                    allocateTheWholeAllocation(interval, effortDuration);
                 }
 
                 @Override
@@ -887,6 +894,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     createAssignments(interval, availability,
                             rightSlice.toArray(new EffortDuration[0]));
                 }
+
             };
         }
 
@@ -898,13 +906,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
                 @Override
                 public void allocateHours(int hours) {
-                    allocateTheWholeAllocation(interval, hours(hours));
+                    allocate(hours(hours));
+                }
+
+                @Override
+                public void allocate(EffortDuration effortDuration) {
+                    allocateTheWholeAllocation(interval, effortDuration);
                 }
 
                 @Override
                 public void allocate(List<EffortDuration> durationsByDay) {
                     allocateDurationsByDay(interval, durationsByDay);
                 }
+
             };
         }
 
