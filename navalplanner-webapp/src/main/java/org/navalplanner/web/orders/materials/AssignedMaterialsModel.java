@@ -202,6 +202,7 @@ public abstract class AssignedMaterialsModel<T, A> implements
 
     protected abstract MaterialCategory removeAssignment(A materialAssignment);
 
+    @Transactional(readOnly = true)
     public void removeMaterialAssignment(A materialAssignment) {
         MaterialCategory materialCategory = removeAssignment(materialAssignment);
         removeCategory(materialCategories, materialCategory);
