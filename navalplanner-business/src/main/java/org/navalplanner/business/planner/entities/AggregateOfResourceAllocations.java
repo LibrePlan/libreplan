@@ -75,6 +75,14 @@ public class AggregateOfResourceAllocations {
         return sum;
     }
 
+    public EffortDuration getTotalEffort() {
+        EffortDuration sum = zero();
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            sum = sum.plus(each.getAssignedEffort());
+        }
+        return sum;
+    }
+
     public int getNonConsolidatedHours() {
         EffortDuration sum = zero();
         for (ResourceAllocation<?> each : resourceAllocations) {

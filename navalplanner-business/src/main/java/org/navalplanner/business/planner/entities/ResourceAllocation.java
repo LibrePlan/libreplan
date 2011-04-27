@@ -1386,7 +1386,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours() {
-        return DayAssignment.sum(getAssignments()).roundToHours();
+        return getAssignedEffort().roundToHours();
+    }
+
+    public EffortDuration getAssignedEffort() {
+        return DayAssignment.sum(getAssignments());
     }
 
     protected int getIntendedHours() {
