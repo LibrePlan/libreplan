@@ -37,7 +37,7 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
     /**
      * @see IAllocatable#onIntervalWithinTask(IntraDayDate, IntraDayDate)
      */
-    public IAllocateHoursOnInterval onIntervalWithinTask(
+    public IAllocateEffortOnInterval onIntervalWithinTask(
             LocalDate startInclusive, LocalDate endExclusive);
 
     /**
@@ -57,13 +57,13 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @return an object which can be used to allocate hours on the interval
      *         specified with the considerations noted above
      */
-    public IAllocateHoursOnInterval onIntervalWithinTask(IntraDayDate start,
+    public IAllocateEffortOnInterval onIntervalWithinTask(IntraDayDate start,
             IntraDayDate end);
 
     /**
      * @see IAllocatable#onInterval(IntraDayDate, IntraDayDate)
      */
-    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
+    public IAllocateEffortOnInterval onInterval(LocalDate startInclusive,
             LocalDate endExclusive);
 
     /**
@@ -75,11 +75,11 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
      * @return an object which can be used to allocate hours on the interval
      *         specified with the considerations noted above
      */
-    public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+    public IAllocateEffortOnInterval onInterval(IntraDayDate start,
             IntraDayDate end);
 
-    public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
+    public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive);
 
-    public IAllocateHoursOnInterval fromEndUntil(LocalDate start);
+    public IAllocateEffortOnInterval fromEndUntil(LocalDate start);
 
 }

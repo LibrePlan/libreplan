@@ -24,7 +24,7 @@ import java.util.List;
 
 import org.navalplanner.business.workingday.EffortDuration;
 
-public interface IAllocateHoursOnInterval {
+public interface IAllocateEffortOnInterval {
 
     void allocateHours(int hours);
 

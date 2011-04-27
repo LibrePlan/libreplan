@@ -788,7 +788,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval onIntervalWithinTask(
+        public IAllocateEffortOnInterval onIntervalWithinTask(
                 final LocalDate start, final LocalDate end) {
             checkStartBeforeOrEqualEnd(start, end);
             return new OnSubIntervalAllocator(
@@ -796,7 +796,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval onIntervalWithinTask(
+        public IAllocateEffortOnInterval onIntervalWithinTask(
                 IntraDayDate start, IntraDayDate end) {
             checkStartBeforeOrEqualEnd(start, end);
             return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(
@@ -804,7 +804,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval onInterval(
+        public IAllocateEffortOnInterval onInterval(
                 final LocalDate startInclusive, final LocalDate endExclusive) {
             checkStartBeforeOrEqualEnd(startInclusive, endExclusive);
             return new OnSubIntervalAllocator(new AllocationInterval(
@@ -812,7 +812,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+        public IAllocateEffortOnInterval onInterval(IntraDayDate start,
                 IntraDayDate end) {
             checkStartBeforeOrEqualEnd(start, end);
             return new OnSubIntervalAllocator(
@@ -832,7 +832,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         private class OnSubIntervalAllocator implements
-                IAllocateHoursOnInterval {
+                IAllocateEffortOnInterval {
 
             private final AllocationInterval allocationInterval;
 
@@ -871,10 +871,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval fromStartUntil(final LocalDate end) {
+        public IAllocateEffortOnInterval fromStartUntil(final LocalDate end) {
             final AllocationInterval interval = new AllocationInterval(
                     getStartSpecifiedByTask(), IntraDayDate.startOfDay(end));
-            return new IAllocateHoursOnInterval() {
+            return new IAllocateEffortOnInterval() {
 
                 @Override
                 public void allocateHours(int hours) {
@@ -899,10 +899,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         @Override
-        public IAllocateHoursOnInterval fromEndUntil(final LocalDate start) {
+        public IAllocateEffortOnInterval fromEndUntil(final LocalDate start) {
             final AllocationInterval interval = new AllocationInterval(
                     IntraDayDate.startOfDay(start), task.getIntraDayEndDate());
-            return new IAllocateHoursOnInterval() {
+            return new IAllocateEffortOnInterval() {
 
                 @Override
                 public void allocateHours(int hours) {

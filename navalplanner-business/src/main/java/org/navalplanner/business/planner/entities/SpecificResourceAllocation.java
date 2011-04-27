@@ -175,12 +175,12 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive) {
+    public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive) {
         return new SpecificAssignmentsAllocator().fromStartUntil(endExclusive);
     }
 
     @Override
-    public IAllocateHoursOnInterval fromEndUntil(LocalDate start) {
+    public IAllocateEffortOnInterval fromEndUntil(LocalDate start) {
         return new SpecificAssignmentsAllocator().fromEndUntil(start);
     }
 
@@ -205,26 +205,26 @@ public class SpecificResourceAllocation extends
     }
 
     @Override
-    public IAllocateHoursOnInterval onIntervalWithinTask(LocalDate start, LocalDate end) {
+    public IAllocateEffortOnInterval onIntervalWithinTask(LocalDate start, LocalDate end) {
         return new SpecificAssignmentsAllocator().onIntervalWithinTask(start, end);
     }
 
     @Override
-    public IAllocateHoursOnInterval onIntervalWithinTask(IntraDayDate start,
+    public IAllocateEffortOnInterval onIntervalWithinTask(IntraDayDate start,
             IntraDayDate end) {
         return new SpecificAssignmentsAllocator().onIntervalWithinTask(start,
                 end);
     }
 
     @Override
-    public IAllocateHoursOnInterval onInterval(LocalDate startInclusive,
+    public IAllocateEffortOnInterval onInterval(LocalDate startInclusive,
             LocalDate endExclusive) {
         return new SpecificAssignmentsAllocator().onInterval(startInclusive,
                 endExclusive);
     }
 
     @Override
-    public IAllocateHoursOnInterval onInterval(IntraDayDate start,
+    public IAllocateEffortOnInterval onInterval(IntraDayDate start,
             IntraDayDate end) {
         return new SpecificAssignmentsAllocator().onInterval(start, end);
     }
