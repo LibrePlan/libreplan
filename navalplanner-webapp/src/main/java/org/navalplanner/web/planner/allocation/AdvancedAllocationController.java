@@ -21,7 +21,6 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
@@ -57,6 +56,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -88,7 +88,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
@@ -128,8 +127,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return getAggregate().getAllocationsSortedByStartDate();
         }
 
-        int getTotalHours() {
-            return getAggregate().getTotalHours();
+        EffortDuration getTotalEffort() {
+            return getAggregate().getTotalEffort();
         }
 
         AggregateOfResourceAllocations getAggregate() {
@@ -726,12 +725,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$acceptButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.getTotalHours();
+            EffortDuration totalEffort = allocationInput.getTotalEffort();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
+            if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidEffort(groupingRow, hours(totalHours));
+                restriction.markInvalidEffort(groupingRow, totalEffort);
             }
         }
         back.goBack();
@@ -743,12 +742,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$saveButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.getTotalHours();
+            EffortDuration totalEffort = allocationInput.getTotalEffort();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
+            if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidEffort(groupingRow, hours(totalHours));
+                restriction.markInvalidEffort(groupingRow, totalEffort);
             }
         }
         for (AllocationInput allocationInput : allocationInputs) {
@@ -982,10 +981,10 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow(_("Hours")) {
+        result.add(new ColumnOnRow(_("Efforts")) {
             @Override
             public Component cellFor(Row row) {
-                return row.getAllHours();
+                return row.getAllEffort();
             }
         });
         result.add(new ColumnOnRow(_("Function")) {
@@ -1014,7 +1013,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(DetailItem item, Row data) {
-                return data.hoursOnInterval(item);
+                return data.effortOnInterval(item);
             }
         };
     }
@@ -1091,10 +1090,10 @@ class Row {
     }
 
     public void markErrorOnTotal(String message) {
-        throw new WrongValueException(allHoursInput, message);
+        throw new WrongValueException(allEffortInput, message);
     }
 
-    private Component allHoursInput;
+    private EffortDurationBox allEffortInput;
 
     private Label nameLabel;
 
@@ -1129,8 +1128,8 @@ class Row {
 
             @Override
             public void changeOnGlobal() {
-                reloadAllHours();
-                reloadHoursSameRowForDetailItems();
+                reloadAllEffort();
+                reloadEffortsSameRowForDetailItems();
             }
 
             @Override
@@ -1139,8 +1138,8 @@ class Row {
                 if (component == null) {
                     return;
                 }
-                reloadHoursOnInterval(component, detailItem);
-                reloadAllHours();
+                reloadEffortOnInterval(component, detailItem);
+                reloadAllEffort();
             }
         });
     }
@@ -1161,65 +1160,63 @@ class Row {
         }
     }
 
-    Component getAllHours() {
-        if (allHoursInput == null) {
-            allHoursInput = buildAllHours();
-            reloadAllHours();
-            addListenerIfNeeded(allHoursInput);
+    Component getAllEffort() {
+        if (allEffortInput == null) {
+            allEffortInput = buildSumAllEffort();
+            reloadAllEffort();
+            addListenerIfNeeded(allEffortInput);
         }
-        return allHoursInput;
+        return allEffortInput;
     }
 
-    private Component buildAllHours() {
-        return (isGroupingRow() || isLimiting) ? new Label()
-                : noNegativeIntbox();
+    private EffortDurationBox buildSumAllEffort() {
+        return (isGroupingRow() || isLimiting) ? EffortDurationBox
+                .notEditable() : new EffortDurationBox();
     }
 
-    private void addListenerIfNeeded(Component allHoursComponent) {
+    private void addListenerIfNeeded(Component allEffortComponent) {
         if (isGroupingRow() || isLimiting) {
             return;
         }
-        final Intbox intbox = (Intbox) allHoursComponent;
-        intbox.addEventListener(Events.ON_CHANGE, new EventListener() {
+        final EffortDurationBox effortDurationBox = (EffortDurationBox) allEffortComponent;
+        effortDurationBox.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Integer value = intbox.getValue();
+                        EffortDuration value = effortDurationBox
+                                .getEffortDurationValue();
+
                 getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
                         getAllocation().getStartDate(),
                         getAllocation().getEndDate())
-                        .allocateHours(value);
+                        .allocate(value);
                 fireCellChanged();
-                reloadHoursSameRowForDetailItems();
-                reloadAllHours();
+                        reloadEffortsSameRowForDetailItems();
+                        reloadAllEffort();
             }
         });
     }
 
-    private void reloadHoursSameRowForDetailItems() {
+    private void reloadEffortsSameRowForDetailItems() {
         for (Entry<DetailItem, Component> entry : componentsByDetailItem
                 .entrySet()) {
-            reloadHoursOnInterval(entry.getValue(), entry.getKey());
+            reloadEffortOnInterval(entry.getValue(), entry.getKey());
         }
     }
 
-    private void reloadAllHours() {
-        if (isGroupingRow() || isLimiting) {
-            Label label = (Label) allHoursInput;
-            int totalHours = aggregate.getTotalHours();
-            if (label != null) {
-                label.setValue(totalHours + "");
-                Clients.closeErrorBox(label);
-            }
-            if (restriction.isInvalidTotalEffort(hours(totalHours))) {
-                restriction.showInvalidEffort(messages, hours(totalHours));
-            }
-        } else {
-            Intbox intbox = (Intbox) allHoursInput;
-            intbox.setValue(aggregate.getTotalHours());
-            if (isLimiting) {
-                intbox.setDisabled(true);
-            }
+    private void reloadAllEffort() {
+        if (allEffortInput == null) {
+            return;
+        }
+        EffortDuration allEffort = aggregate.getTotalEffort();
+        allEffortInput.setValue(allEffort);
+        Clients.closeErrorBox(allEffortInput);
+        if (isLimiting) {
+            allEffortInput.setDisabled(true);
+        }
+        if (restriction.isInvalidTotalEffort(allEffort)) {
+            restriction.showInvalidEffort(messages, allEffort);
         }
     }
 
@@ -1322,12 +1319,12 @@ class Row {
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(null);
-            reloadHours();
+            reloadEfforts();
         }
 
-        private void reloadHours() {
-            reloadHoursSameRowForDetailItems();
-            reloadAllHours();
+        private void reloadEfforts() {
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
             fireCellChanged();
         }
 
@@ -1337,8 +1334,8 @@ class Row {
             StrechesFunctionConfiguration {
         @Override
         protected void assignmentFunctionChanged() {
-            reloadHoursSameRowForDetailItems();
-            reloadAllHours();
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
             fireCellChanged();
         }
 
@@ -1349,7 +1346,7 @@ class Row {
 
         @Override
         protected Component getParentOnWhichOpenWindow() {
-            return allHoursInput.getParent();
+            return allEffortInput.getParent();
         }
     }
 
@@ -1426,12 +1423,12 @@ class Row {
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
-            reloadHours();
+            reloadEfforts();
         }
 
-        private void reloadHours() {
-            reloadHoursSameRowForDetailItems();
-            reloadAllHours();
+        private void reloadEfforts() {
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
             fireCellChanged();
         }
 
@@ -1525,17 +1522,17 @@ class Row {
         return null;
     }
 
-    private Integer getHoursForDetailItem(DetailItem item) {
+    private EffortDuration getEffortForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
-        return this.aggregate.hoursBetween(startDate.toLocalDate(), endDate
+        return this.aggregate.effortBetween(startDate.toLocalDate(), endDate
                 .toLocalDate());
     }
 
-    Component hoursOnInterval(DetailItem item) {
+    Component effortOnInterval(DetailItem item) {
         Component result = cannotBeEdited(item) ? new Label()
-                : disableIfNeeded(item, noNegativeIntbox());
-        reloadHoursOnInterval(result, item);
+                : disableIfNeeded(item, new EffortDurationBox());
+        reloadEffortOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
         return result;
@@ -1546,15 +1543,10 @@ class Row {
                 || isBeforeLatestConsolidation(item);
     }
 
-    private Intbox disableIfNeeded(DetailItem item, Intbox intBox) {
-        intBox.setDisabled(restriction.isDisabledEditionOn(item));
-        return intBox;
-    }
-
-    private Intbox noNegativeIntbox() {
-        Intbox result = new Intbox();
-        result.setConstraint("no negative, no empty");
-        return result;
+    private EffortDurationBox disableIfNeeded(DetailItem item,
+            EffortDurationBox effortDurationBox) {
+        effortDurationBox.setDisabled(restriction.isDisabledEditionOn(item));
+        return effortDurationBox;
     }
 
     private void addListenerIfNeeded(final DetailItem item,
@@ -1562,37 +1554,37 @@ class Row {
         if (cannotBeEdited(item)) {
             return;
         }
-        final Intbox intbox = (Intbox) component;
+        final EffortDurationBox effortBox = (EffortDurationBox) component;
         component.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Integer value = intbox.getValue();
+                EffortDuration value = effortBox.getEffortDurationValue();
                 LocalDate startDate = restriction.limitStartDate(item
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
                 getAllocation().withPreviousAssociatedResources()
                                    .onIntervalWithinTask(startDate, endDate)
-                                   .allocateHours(value);
+                                   .allocate(value);
                 fireCellChanged(item);
-                intbox.setRawValue(getHoursForDetailItem(item));
-                reloadAllHours();
+                effortBox.setRawValue(getEffortForDetailItem(item));
+                reloadAllEffort();
             }
         });
     }
 
-    private void reloadHoursOnInterval(Component component, DetailItem item) {
+    private void reloadEffortOnInterval(Component component, DetailItem item) {
         if (cannotBeEdited(item)) {
             Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
+            label.setValue(getEffortForDetailItem(item).toFormattedString());
             label.setClass(getLabelClassFor(item));
         } else {
-            Intbox intbox = (Intbox) component;
-            intbox.setValue(getHoursForDetailItem(item));
+            EffortDurationBox effortDurationBox = (EffortDurationBox) component;
+            effortDurationBox.setValue(getEffortForDetailItem(item));
             if (isLimiting) {
-                intbox.setDisabled(true);
-                intbox.setSclass(" limiting");
+                effortDurationBox.setDisabled(true);
+                effortDurationBox.setSclass(" limiting");
             }
         }
     }

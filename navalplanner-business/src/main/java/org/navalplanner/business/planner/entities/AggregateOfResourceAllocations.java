@@ -117,10 +117,12 @@ public class AggregateOfResourceAllocations {
         return ResourceAllocation.sortedByStartDate(result);
     }
 
-    public int hoursBetween(LocalDate startDate, LocalDate endDate) {
-        int sum = 0;
-        for (ResourceAllocation<?> r : resourceAllocations) {
-            sum += r.getAssignedHours(startDate, endDate);
+    public EffortDuration effortBetween(LocalDate startInclusive,
+            LocalDate endExclusive) {
+        EffortDuration sum = zero();
+        for (ResourceAllocation<?> each : resourceAllocations) {
+            sum = sum.plus(each.getAssignedDuration(startInclusive,
+                    endExclusive));
         }
         return sum;
     }
