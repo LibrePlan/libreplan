@@ -91,14 +91,6 @@ public class AggregateOfResourceAllocations {
         return sum.roundToHours();
     }
 
-    public int getIntendedHours() {
-        int sum = 0;
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            sum += resourceAllocation.getIntendedHours();
-        }
-        return sum;
-    }
-
     public Map<ResourceAllocation<?>, ResourcesPerDay> getResourcesPerDay() {
         HashMap<ResourceAllocation<?>, ResourcesPerDay> result = new HashMap<ResourceAllocation<?>, ResourcesPerDay>();
         for (ResourceAllocation<?> r : resourceAllocations) {
