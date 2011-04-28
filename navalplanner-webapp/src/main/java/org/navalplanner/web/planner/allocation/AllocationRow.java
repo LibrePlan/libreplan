@@ -21,6 +21,8 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -54,6 +56,7 @@ import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
@@ -89,6 +92,50 @@ public abstract class AllocationRow {
             SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
     private static final Log LOG = LogFactory.getLog(AllocationRow.class);
+
+    public static EffortDuration sumAllConsolidatedEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getConsolidatedEffort();
+            }
+        });
+    }
+
+    public static EffortDuration sumAllTotalEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getTotalEffort();
+            }
+
+        });
+    }
+
+    public static EffortDuration sumAllOriginalEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getOriginalEffort();
+            }
+        });
+    }
+
+    public static EffortDuration sumAllEffortFromInputs(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getEffortFromInput();
+            }
+        });
+    }
 
     public static void assignHours(List<AllocationRow> rows, int[] hours) {
         int i = 0;
@@ -400,8 +447,9 @@ public abstract class AllocationRow {
         hoursInput.setValue(getHours());
     }
 
-    protected int getHoursFromInput() {
-        return hoursInput.getValue() != null ? hoursInput.getValue() : 0;
+    protected EffortDuration getEffortFromInput() {
+        return hoursInput.getValue() != null ? hours(hoursInput.getValue())
+                : zero();
     }
 
     private Integer getHours() {
@@ -540,34 +588,34 @@ public abstract class AllocationRow {
         }
     }
 
-    public int getOriginalHours() {
+    public EffortDuration getOriginalEffort() {
         if (temporal != null) {
-            return temporal.getOriginalTotalAssigment();
+            return hours(temporal.getOriginalTotalAssigment());
         }
         if (origin != null) {
-            return origin.getOriginalTotalAssigment();
+            return hours(origin.getOriginalTotalAssigment());
         }
-        return 0;
+        return zero();
     }
 
-    public int getTotalHours() {
+    public EffortDuration getTotalEffort() {
         if (temporal != null) {
-            return temporal.getAssignedHours();
+            return temporal.getAssignedEffort();
         }
         if (origin != null) {
-            return origin.getAssignedHours();
+            return origin.getAssignedEffort();
         }
-        return 0;
+        return zero();
     }
 
-    public int getConsolidatedHours() {
+    public EffortDuration getConsolidatedEffort() {
         if (temporal != null) {
-            return temporal.getConsolidatedHours();
+            return temporal.getConsolidatedEffort();
         }
         if (origin != null) {
-            return origin.getConsolidatedHours();
+            return origin.getConsolidatedEffort();
         }
-        return 0;
+        return zero();
     }
 
     public int getNonConsolidatedHours() {

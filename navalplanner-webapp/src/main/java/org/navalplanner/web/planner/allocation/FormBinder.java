@@ -131,7 +131,8 @@ public class FormBinder {
         @Override
         public void onEvent(Event event) throws Exception {
             if (allHoursInput.isDisabled()) {
-                allHoursInput.setValue(sumAllHoursFromHoursInputs());
+                allHoursInput.setValue(AllocationRow.sumAllEffortFromInputs(
+                        rows).getHours());
             }
         }
     };
@@ -243,44 +244,10 @@ public class FormBinder {
     }
 
     private void bindTotalHoursToHoursInputs() {
-        int sum = 0;
         for (AllocationRow each : rows) {
             each.addListenerForHoursInputChange(hoursRowInputChange);
-            sum += each.getHoursFromInput();
         }
-        allHoursInput.setValue(sum);
-    }
-
-    private int sumAllHoursFromHoursInputs() {
-        int result = 0;
-        for (AllocationRow each : rows) {
-            result += each.getHoursFromInput();
-        }
-        return result;
-    }
-
-    private int sumAllOriginalHours() {
-        int result = 0;
-        for (AllocationRow each : rows) {
-            result += each.getOriginalHours();
-        }
-        return result;
-    }
-
-    private int sumAllTotalHours() {
-        int result = 0;
-        for (AllocationRow each : rows) {
-            result += each.getTotalHours();
-        }
-        return result;
-    }
-
-    private int sumAllConsolidatedHours() {
-        int result = 0;
-        for (AllocationRow each : rows) {
-            result += each.getConsolidatedHours();
-        }
-        return result;
+        allHoursInput.setValue(AllocationRow.sumAllEffortFromInputs(this.rows).getHours());
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -856,10 +823,12 @@ public class FormBinder {
     public void loadAggregatedCalculations() {
         // Calculate aggregated values
         if (behaviour.allowMultipleSelection()) {
-            allOriginalHours.setValue(Integer.toString(sumAllOriginalHours()));
-            allTotalHours.setValue(Integer.toString(sumAllTotalHours()));
+            allOriginalHours.setValue(Integer.toString(AllocationRow.sumAllOriginalEffort(this.rows)
+                    .getHours()));
+            allTotalHours.setValue(Integer.toString(AllocationRow.sumAllTotalEffort(this.rows)
+                    .getHours()));
             allConsolidatedHours.setValue(Integer
-                    .toString(sumAllConsolidatedHours()));
+                    .toString(AllocationRow.sumAllConsolidatedEffort(this.rows).getHours()));
             allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
                     .toString());
             allConsolidatedResourcesPerDay

@@ -628,10 +628,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
             row.setValue(data);
             append(row, data.createDetail());
             append(row, new Label(data.getName()));
-            append(row, new Label(Integer.toString(data.getOriginalHours())));
-            append(row, new Label(Integer.toString(data.getTotalHours())));
             append(row,
-                    new Label(Integer.toString(data.getConsolidatedHours())));
+                    new Label(Integer.toString(data.getOriginalEffort()
+                            .getHours())));
+            append(row,
+                    new Label(Integer
+                            .toString(data.getTotalEffort().getHours())));
+            append(row,
+                    new Label(Integer.toString(data.getConsolidatedEffort()
+                            .getHours())));
             append(row, data.getHoursInput());
             append(row, new Label(data.getTotalResourcesPerDay().getAmount()
                     .toString()));
