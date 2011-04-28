@@ -952,6 +952,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
                 SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return true;
         }
+        if (order.isNewObject()
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            return true;
+        }
         try {
             User user = userDAO.findByLoginName(loginName);
             for(OrderAuthorization authorization :
@@ -975,6 +979,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional(readOnly = true)
     public boolean userCanWrite(Order order, String loginName) {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        if (order.isNewObject()
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
             return true;
         }
         try {
