@@ -225,6 +225,10 @@ public class OrderElementTreeModelTest {
         assertTrue(criterionRequirement instanceof IndirectCriterionRequirement);
         assertThat(criterionRequirement.getCriterion().getName(),
                 equalTo(criterion.getName()));
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
     }
 
     @Test
@@ -282,6 +286,10 @@ public class OrderElementTreeModelTest {
                 .getCriterionRequirements().iterator().next();
         assertTrue(criterionRequirement instanceof DirectCriterionRequirement);
         assertTrue(criterionRequirement.getCriterion().isEquivalent(criterion));
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
     }
 
     @Test
@@ -304,6 +312,10 @@ public class OrderElementTreeModelTest {
                 .next();
         assertTrue(criterionRequirement instanceof IndirectCriterionRequirement);
         assertTrue(criterionRequirement.getCriterion().isEquivalent(criterion));
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
     }
 
     @Test
@@ -378,11 +390,17 @@ public class OrderElementTreeModelTest {
                         .getDirectAdvanceAssignmentByType(directAdvanceAssignment
                                 .getAdvanceType()));
                 assertThat(each.getWorkHours(), equalTo(100));
+                assertThat(element.getHoursGroups().get(0)
+                        .getCriterionRequirements().size(), equalTo(2));
             } else if (each.getName().equals("element2")) {
                 assertThat(each.getCriterionRequirements().size(), equalTo(1));
                 assertTrue(each.getCriterionRequirements().iterator().next() instanceof IndirectCriterionRequirement);
                 assertTrue(each.getDirectAdvanceAssignments().isEmpty());
                 assertThat(each.getWorkHours(), equalTo(50));
+                assertThat(each.getHoursGroups().get(0)
+                        .getCriterionRequirements().size(), equalTo(1));
+                assertTrue(each.getHoursGroups().get(0)
+                        .getCriterionRequirements().iterator().next() instanceof IndirectCriterionRequirement);
             } else {
                 fail("Unexpected OrderElment name: " + each.getName());
             }
@@ -419,6 +437,8 @@ public class OrderElementTreeModelTest {
                 }
                 assertTrue(each.getDirectAdvanceAssignments().isEmpty());
                 assertThat(each.getWorkHours(), equalTo(150));
+                assertThat(element.getHoursGroups().get(0)
+                        .getCriterionRequirements().size(), equalTo(2));
             }
         }
     }
@@ -534,6 +554,10 @@ public class OrderElementTreeModelTest {
                 .getCriterion().isEquivalent(criterion2));
         assertThat(element.getCriterionRequirements().iterator().next()
                 .getOrderElement(), equalTo((OrderElement) element));
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
 
         // * template
         assertNotNull(element.getTemplate());
@@ -580,12 +604,18 @@ public class OrderElementTreeModelTest {
 
         assertTrue(element.getDirectAdvanceAssignments().isEmpty());
         assertTrue(element.getCriterionRequirements().isEmpty());
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .isEmpty());
 
         assertNotNull(element2
                 .getAdvanceAssignmentByType(directAdvanceAssignment
                         .getAdvanceType()));
         assertThat(element2.getCriterionRequirements().size(), equalTo(1));
         assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
     }
 
     @Test
@@ -628,9 +658,15 @@ public class OrderElementTreeModelTest {
                         .getAdvanceType()));
         assertThat(element.getCriterionRequirements().size(), equalTo(1));
         assertTrue(element.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
 
         assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
         assertTrue(element2.getCriterionRequirements().isEmpty());
+        assertTrue(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .isEmpty());
     }
 
     @Test
@@ -671,6 +707,11 @@ public class OrderElementTreeModelTest {
         assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
         assertThat(element3.getCriterionRequirements().size(), equalTo(1));
         assertTrue(element3.getCriterionRequirements().iterator().next() instanceof IndirectCriterionRequirement);
+        assertThat(element3.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element3.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
+
     }
 
     @Test
@@ -712,12 +753,19 @@ public class OrderElementTreeModelTest {
 
         assertTrue(element.getDirectAdvanceAssignments().isEmpty());
         assertTrue(element.getCriterionRequirements().isEmpty());
+        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
+                .isEmpty());
 
         assertNotNull(element2
                 .getAdvanceAssignmentByType(directAdvanceAssignment
                         .getAdvanceType()));
         assertThat(element2.getCriterionRequirements().size(), equalTo(1));
         assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertTrue(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next() instanceof IndirectCriterionRequirement);
+
     }
 
 }
