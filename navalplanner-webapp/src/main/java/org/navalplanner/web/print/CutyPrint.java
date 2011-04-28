@@ -329,15 +329,8 @@ public class CutyPrint {
             }
             String includeCSSLines = " body { width: " + width + "px; } \n";
             if ((labels != null) && (labels.equals("all"))) {
-                includeCSSLines += " .task-labels { display: inline !important;} \n";
+                includeCSSLines += " .task-labels { display: inline !important;} \n ";
             }
-            if ((advances != null) && (advances.equals("all"))) {
-                includeCSSLines += " .completion2 { display: inline !important;} \n";
-            }
-            if ((reportedHours != null) && (reportedHours.equals("all"))) {
-                includeCSSLines += " .completion { display: inline !important;} \n";
-            }
-
 
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";
