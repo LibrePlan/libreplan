@@ -22,7 +22,6 @@
 package org.navalplanner.business.calendars.entities;
 
 import static org.navalplanner.business.workingday.EffortDuration.hours;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +45,8 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -337,14 +338,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * Returns the workable duration for a specific period depending on the
      * calendar restrictions.
      */
-    public EffortDuration getWorkableDuration(LocalDate init, LocalDate end) {
-        EffortDuration result = zero();
-        for (LocalDate current = init; current.compareTo(end) <= 0; current = current
-                .plusDays(1)) {
-            result = result.plus(getCapacityOn(PartialDay.wholeDay(current)));
-            init = init.plusDays(1);
-        }
-        return result;
+    public EffortDuration getWorkableDuration(LocalDate init,
+            LocalDate endInclusive) {
+        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(init)
+                .daysUntil(
+                        IntraDayDate.startOfDay(endInclusive).nextDayAtStart());
+
+        return EffortDuration.sum(daysBetween, new IEffortFrom<PartialDay>() {
+
+            @Override
+            public EffortDuration from(PartialDay each) {
+                return getCapacityOn(each);
+            }
+
+        });
     }
 
     /**

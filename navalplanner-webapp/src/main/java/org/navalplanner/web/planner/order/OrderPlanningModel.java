@@ -86,6 +86,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -1426,13 +1427,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         private EffortDuration getSumCapacities(
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
                 LocalDate date) {
-            PartialDay day = PartialDay.wholeDay(date);
-            EffortDuration result = zero();
-            for (Resource resource : orderDayAssignmentsGrouped.get(date)
-                    .keySet()) {
-                result = result.plus(calendarCapacityFor(resource, day));
-            }
-            return result;
+
+            final PartialDay day = PartialDay.wholeDay(date);
+
+            return EffortDuration.sum(orderDayAssignmentsGrouped.get(date)
+                    .keySet(), new IEffortFrom<Resource>() {
+
+                @Override
+                public EffortDuration from(Resource resource) {
+                    return calendarCapacityFor(resource, day);
+                }
+            });
         }
 
         private EffortDuration retrieveTotalDurationForResource(

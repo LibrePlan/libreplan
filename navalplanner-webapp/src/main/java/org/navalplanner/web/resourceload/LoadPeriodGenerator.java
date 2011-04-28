@@ -41,6 +41,7 @@ import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
@@ -225,11 +226,14 @@ abstract class LoadPeriodGenerator {
     protected abstract EffortDuration getEffortAssigned();
 
     protected final EffortDuration sumAllocations() {
-        EffortDuration sum = EffortDuration.zero();
-        for (ResourceAllocation<?> resourceAllocation : allocationsOnInterval) {
-            sum = sum.plus(getAssignedEffortFor(resourceAllocation));
-        }
-        return sum;
+        return EffortDuration.sum(allocationsOnInterval,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> each) {
+                        return getAssignedEffortFor(each);
+                    }
+                });
     }
 
     protected abstract EffortDuration getAssignedEffortFor(
@@ -334,11 +338,15 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
 
     @Override
     protected EffortDuration getTotalAvailableEffort() {
-        EffortDuration sum = EffortDuration.zero();
-        for (Resource resource : resourcesSatisfyingCriterionAtSomePoint) {
-            sum = sum.plus(resource.getTotalEffortFor(start, end, criterion));
-        }
-        return sum;
+        return EffortDuration.sum(resourcesSatisfyingCriterionAtSomePoint,
+                new IEffortFrom<Resource>() {
+
+                    @Override
+                    public EffortDuration from(Resource resource) {
+                        return resource
+                                .getTotalEffortFor(start, end, criterion);
+                    }
+                });
     }
 
     @Override

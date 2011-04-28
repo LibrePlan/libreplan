@@ -61,6 +61,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
@@ -908,21 +909,27 @@ public abstract class Resource extends IntegrationEntity {
                 .getDefaultWorkingDay();
     }
 
-    private EffortDuration getTotalEffortFor(ICalendar calendar,
+    private EffortDuration getTotalEffortFor(final ICalendar calendar,
             IntraDayDate startInclusive, IntraDayDate endExclusive,
-            ICriterion criterionToSatisfy) {
-        EffortDuration sum = zero();
+            final ICriterion criterionToSatisfy) {
+
         Iterable<PartialDay> daysBetween = startInclusive
                 .daysUntil(endExclusive);
-        for (PartialDay current : daysBetween) {
-            EffortDuration capacityCurrent = calendar.getCapacityOn(current);
-            if (capacityCurrent != null
-                    && (criterionToSatisfy == null || satisfiesCriterionAt(
-                            criterionToSatisfy, current.getDate()))) {
-                sum = sum.plus(capacityCurrent);
+
+        return EffortDuration.sum(daysBetween, new IEffortFrom<PartialDay>() {
+
+            @Override
+            public EffortDuration from(PartialDay current) {
+                EffortDuration capacityCurrent = calendar
+                        .getCapacityOn(current);
+                if (capacityCurrent != null
+                        && (criterionToSatisfy == null || satisfiesCriterionAt(
+                                criterionToSatisfy, current.getDate()))) {
+                    return capacityCurrent;
+                }
+                return zero();
             }
-        }
-        return sum;
+        });
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,

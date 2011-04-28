@@ -83,6 +83,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -604,12 +605,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 BigDecimal advancePercentage) {
             IntraDayDate start = taskElement.getIntraDayStartDate();
             IntraDayDate end = taskElement.getIntraDayEndDate();
-            BaseCalendar calendar = taskElement.getCalendar();
+            final BaseCalendar calendar = taskElement.getCalendar();
             Iterable<PartialDay> daysUntil = start.daysUntil(end);
-            EffortDuration total = zero();
-            for (PartialDay each : daysUntil) {
-                total = total.plus(calendar.getCapacityOn(each));
-            }
+
+            EffortDuration total = EffortDuration.sum(daysUntil,
+                    new IEffortFrom<PartialDay>() {
+                        @Override
+                        public EffortDuration from(PartialDay each) {
+                            return calendar.getCapacityOn(each);
+                        }
+                    });
+
             BigDecimal totalAsSeconds = new BigDecimal(total
                     .getSeconds());
             EffortDuration advanceLeft = seconds(advancePercentage.multiply(

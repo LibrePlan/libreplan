@@ -21,8 +21,6 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.zero;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,6 +33,7 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -76,19 +75,25 @@ public class AggregateOfResourceAllocations {
     }
 
     public EffortDuration getTotalEffort() {
-        EffortDuration sum = zero();
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            sum = sum.plus(each.getAssignedEffort());
-        }
-        return sum;
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> each) {
+                        return each.getAssignedEffort();
+                    }
+                });
     }
 
     public int getNonConsolidatedHours() {
-        EffortDuration sum = zero();
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            sum = sum.plus(each.getEffortForReassignation());
-        }
-        return sum.roundToHours();
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> each) {
+                        return each.getEffortForReassignation();
+                    }
+                }).roundToHours();
     }
 
     public Map<ResourceAllocation<?>, ResourcesPerDay> getResourcesPerDay() {
@@ -109,14 +114,17 @@ public class AggregateOfResourceAllocations {
         return ResourceAllocation.sortedByStartDate(result);
     }
 
-    public EffortDuration effortBetween(LocalDate startInclusive,
-            LocalDate endExclusive) {
-        EffortDuration sum = zero();
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            sum = sum.plus(each.getAssignedDuration(startInclusive,
-                    endExclusive));
-        }
-        return sum;
+    public EffortDuration effortBetween(final LocalDate startInclusive,
+            final LocalDate endExclusive) {
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> value) {
+                        return value.getAssignedDuration(startInclusive,
+                                endExclusive);
+                    }
+                });
     }
 
     private LocalDate getStartAsLocalDate() {

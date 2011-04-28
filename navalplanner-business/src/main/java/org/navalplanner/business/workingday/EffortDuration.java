@@ -116,6 +116,20 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return Integer.parseInt(parts.get(i));
     }
 
+    public interface IEffortFrom<T> {
+
+        public EffortDuration from(T each);
+    }
+
+    public static <T> EffortDuration sum(Iterable<? extends T> collection,
+            IEffortFrom<T> effortFrom) {
+        EffortDuration result = zero();
+        for (T each : collection) {
+            result = result.plus(effortFrom.from(each));
+        }
+        return result;
+    }
+
     public static EffortDuration zero() {
         return elapsing(0, Granularity.SECONDS);
     }

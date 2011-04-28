@@ -71,6 +71,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -1933,11 +1934,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private EffortDuration getAssignedDuration(
             List<? extends DayAssignment> assignments) {
-        EffortDuration result = zero();
-        for (DayAssignment dayAssignment : assignments) {
-            result = result.plus(dayAssignment.getDuration());
-        }
-        return result;
+        return EffortDuration.sum(assignments,
+                new IEffortFrom<DayAssignment>() {
+
+                    @Override
+                    public EffortDuration from(DayAssignment value) {
+                        return value.getDuration();
+                    }
+                });
     }
 
     public void mergeAssignmentsAndResourcesPerDay(Scenario scenario,

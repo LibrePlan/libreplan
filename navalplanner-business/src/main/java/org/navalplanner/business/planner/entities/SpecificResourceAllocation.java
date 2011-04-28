@@ -50,6 +50,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -356,16 +357,18 @@ public class SpecificResourceAllocation extends
     public EffortDuration getAssignedEffort(Criterion criterion,
             LocalDate startInclusive,
             LocalDate endExclusive) {
-        EffortDuration result = EffortDuration.zero();
-        for (Interval each : getIntervalsRelatedWith(criterion, startInclusive,
-                endExclusive)) {
-            FixedPoint intervalStart = (FixedPoint) each.getStart();
-            FixedPoint intervalEnd = (FixedPoint) each.getEnd();
+        return EffortDuration
+                .sum(getIntervalsRelatedWith(criterion, startInclusive,
+                        endExclusive), new IEffortFrom<Interval>() {
 
-            result = result.plus(getAssignedDuration(intervalStart.getDate(),
-                    intervalEnd.getDate()));
-        }
-        return result;
+                    @Override
+                    public EffortDuration from(Interval each) {
+                        FixedPoint intervalStart = (FixedPoint) each.getStart();
+                        FixedPoint intervalEnd = (FixedPoint) each.getEnd();
+                        return getAssignedDuration(intervalStart.getDate(),
+                                intervalEnd.getDate());
+                    }
+                });
     }
 
     private List<Interval> getIntervalsRelatedWith(Criterion criterion,

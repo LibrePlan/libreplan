@@ -28,15 +28,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ICalendar;
+import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
@@ -174,16 +176,20 @@ public class ResourceLoadChartData {
             @Override
             protected EffortDuration getDurationFor(
                     Entry<LocalDate, Map<Resource, EffortDuration>> element) {
-                EffortDuration result = zero();
-                PartialDay day = PartialDay.wholeDay(element.getKey());
-                for (Entry<Resource, EffortDuration> each : element.getValue()
-                        .entrySet()) {
-                    EffortDuration overlad = getOverloadAt(day,
-                            each.getKey(),
-                                    each.getValue());
-                    result = result.plus(overlad);
-                }
-                return result;
+
+                final PartialDay day = PartialDay.wholeDay(element.getKey());
+
+                return EffortDuration.sum(element.getValue().entrySet(),
+                        new IEffortFrom<Entry<Resource, EffortDuration>>() {
+
+                            @Override
+                            public EffortDuration from(
+                                    Entry<Resource, EffortDuration> each) {
+                                EffortDuration overload = getOverloadAt(day,
+                                        each.getKey(), each.getValue());
+                                return overload;
+                            }
+                        });
             }
 
             private EffortDuration getOverloadAt(PartialDay day,
@@ -221,13 +227,15 @@ public class ResourceLoadChartData {
 
     protected static EffortDuration sumCalendarCapacitiesForDay(
             Collection<? extends Resource> resources, LocalDate day) {
-        PartialDay wholeDay = PartialDay.wholeDay(day);
-        EffortDuration sum = zero();
-        for (Resource resource : resources) {
-            sum = sum.plus(calendarCapacityFor(resource,
-                    wholeDay));
-        }
-        return sum;
+
+        final PartialDay wholeDay = PartialDay.wholeDay(day);
+
+        return EffortDuration.sum(resources, new IEffortFrom<Resource>() {
+            @Override
+            public EffortDuration from(Resource each) {
+                return calendarCapacityFor(each, wholeDay);
+            }
+        });
     }
 
     protected static EffortDuration calendarCapacityFor(Resource resource,
