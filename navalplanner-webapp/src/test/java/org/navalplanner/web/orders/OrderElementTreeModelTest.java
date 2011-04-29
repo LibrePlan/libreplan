@@ -568,6 +568,60 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    public void checkPreservationOfInvalidatedIndirectCriterionRequirementInToLeaf()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        addCriterionRequirement(order);
+
+        model.addElement("element", 100);
+        OrderLine element = (OrderLine) order.getChildren().get(0);
+        model.addElementAt(element, "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        model.removeNode(container.getChildren().iterator().next());
+
+        IndirectCriterionRequirement indirectCriterionRequirement = (IndirectCriterionRequirement) container
+                .getCriterionRequirements().iterator().next();
+        assertTrue(indirectCriterionRequirement.getCriterion().isEquivalent(
+                criterion));
+        indirectCriterionRequirement.setValid(false);
+
+        addAnotherCriterionRequirement(container);
+
+        // This calls toLeaf in the container
+        model.removeNode(container.getChildren().get(0));
+
+        element = (OrderLine) order.getChildren().get(0);
+
+        assertThat(element.getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element.getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+                assertFalse(each.isValid());
+            } else if (each.getCriterion().isEquivalent(criterion2)) {
+                assertTrue(each instanceof DirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(2));
+        for (CriterionRequirement each : element.getHoursGroups().get(0)
+                .getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+                assertFalse(each.isValid());
+            } else if (each.getCriterion().isEquivalent(criterion2)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+                assertTrue(each.isValid());
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+    }
+
+    @Test
     public void checkIndentOrderLineWithCriteriaAndAdvances()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {

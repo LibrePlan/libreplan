@@ -468,6 +468,7 @@ public abstract class CriterionRequirementHandler<T, S, R> implements
             DirectCriterionRequirement parent = requirement.getParent();
             IndirectCriterionRequirement newRequirement = IndirectCriterionRequirement
                     .create(parent, requirement.getCriterion());
+            newRequirement.setValid(requirement.isValid());
             result.add(newRequirement);
         }
         return result;
