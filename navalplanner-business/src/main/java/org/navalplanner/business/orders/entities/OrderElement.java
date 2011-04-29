@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
@@ -761,11 +761,6 @@ public abstract class OrderElement extends IntegrationEntity implements
     public Set<CriterionRequirement> getCriterionRequirements() {
         return Collections.unmodifiableSet(criterionRequirements);
     }
-
-    protected Set<CriterionRequirement> myCriterionRequirements() {
-        return criterionRequirements;
-    }
-
 
     /*
      * Operations to manage the criterion requirements of a orderElement
