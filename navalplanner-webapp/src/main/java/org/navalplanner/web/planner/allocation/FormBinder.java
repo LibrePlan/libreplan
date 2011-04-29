@@ -245,9 +245,7 @@ public class FormBinder {
 
     private void applyDisabledRulesOnRows() {
         for (AllocationRow each : rows) {
-            each
-                    .applyDisabledRules(getCalculatedValue(),
-                            recommendedAllocation);
+            each.applyDisabledRules(getCalculatedValue(), recommendedAllocation);
         }
     }
 
@@ -293,24 +291,24 @@ public class FormBinder {
             Util.ensureUniqueListeners(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
 
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    Task task = getTask();
-                    Integer workableDays = taskWorkableDays.getValue();
-                    if (allocationRowsHandler.isForwardsAllocation()) {
-                        LocalDate newEndDate = task
-                                .calculateEndGivenWorkableDays(workableDays);
-                        taskPropertiesController
-                                .updateTaskEndDate(newEndDate);
-                        showValueOfDateOn(labelTaskEnd, newEndDate);
-                    } else {
-                        LocalDate newStart = task
-                                .calculateStartGivenWorkableDays(workableDays);
-                        taskPropertiesController
-                                .updateTaskStartDate(newStart);
-                        showValueOfDateOn(labelTaskStart, newStart);
-                    }
-                }
+                        @Override
+                        public void onEvent(Event event) throws Exception {
+                            Task task = getTask();
+                            Integer workableDays = taskWorkableDays.getValue();
+                            if (allocationRowsHandler.isForwardsAllocation()) {
+                                LocalDate newEndDate = task
+                                        .calculateEndGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskEndDate(newEndDate);
+                                showValueOfDateOn(labelTaskEnd, newEndDate);
+                            } else {
+                                LocalDate newStart = task
+                                        .calculateStartGivenWorkableDays(workableDays);
+                                taskPropertiesController
+                                        .updateTaskStartDate(newStart);
+                                showValueOfDateOn(labelTaskStart, newStart);
+                            }
+                        }
                     }, onChangeEnableApply);
             applyDisabledRules();
         }
@@ -416,8 +414,7 @@ public class FormBinder {
     }
 
     private void allResourcesPerDayVisibilityRule() {
-        CalculatedValue c = allocationRowsHandler
-            .getCalculatedValue();
+        CalculatedValue c = allocationRowsHandler.getCalculatedValue();
         this.allResourcesPerDay.setDisabled(rows.isEmpty()
                 || c == CalculatedValue.RESOURCES_PER_DAY
                 || !recommendedAllocation);
@@ -445,12 +442,10 @@ public class FormBinder {
         return result;
     }
 
-
     private void bindAllResourcesPerDayToRows() {
         sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
         for (AllocationRow each : rows) {
-            each
-                    .addListenerForResourcesPerDayInputChange(resourcesPerDayRowInputChange);
+            each.addListenerForResourcesPerDayInputChange(resourcesPerDayRowInputChange);
         }
     }
 
@@ -571,8 +566,7 @@ public class FormBinder {
         return workableDaysAndDatesBinder.getValue();
     }
 
-    public void setDeleteButtonFor(AllocationRow row,
-            Button deleteButton) {
+    public void setDeleteButtonFor(AllocationRow row, Button deleteButton) {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
@@ -592,9 +586,11 @@ public class FormBinder {
     }
 
     public void markRepeatedResources(List<Resource> resources) {
-        messagesForUser.showMessage(Level.ERROR, _(
-                "{0} already assigned to resource allocation list", StringUtils
-                        .join(getResourcesDescriptions(resources), ", ")));
+        messagesForUser.showMessage(
+                Level.ERROR,
+                _("{0} already assigned to resource allocation list",
+                        StringUtils.join(getResourcesDescriptions(resources),
+                                ", ")));
     }
 
     private List<String> getResourcesDescriptions(List<Resource> resources) {
@@ -610,16 +606,16 @@ public class FormBinder {
         messagesForUser
                 .showMessage(
                         Level.ERROR,
-                        _(
-                                "there are no resources for required criteria: {0}. So the generic allocation can't be added",
+                        _("there are no resources for required criteria: {0}. So the generic allocation can't be added",
                                 Criterion.getCaptionFor(resourceType,
                                         criterions)));
     }
 
     public void markThereisAlreadyAssignmentWith(ResourceEnum resourceType,
             Collection<? extends Criterion> criterions) {
-        messagesForUser.showMessage(Level.ERROR, _(
-                "already exists an allocation for criteria {0}",
+        messagesForUser.showMessage(
+                Level.ERROR,
+                _("already exists an allocation for criteria {0}",
                         Criterion.getCaptionFor(resourceType, criterions)));
     }
 
@@ -628,8 +624,8 @@ public class FormBinder {
         final String message = _("resources per day must be not empty and bigger than zero");
         if (!recommendedAllocation) {
             AllocationRow first = rows.get(0);
-            throw new WrongValueException(first.getIntendedResourcesPerDayInput(),
-                    message);
+            throw new WrongValueException(
+                    first.getIntendedResourcesPerDayInput(), message);
         } else {
             throw new WrongValueException(allResourcesPerDay, message);
         }
@@ -659,11 +655,11 @@ public class FormBinder {
         this.btnRecommendedAllocation.setDisabled(false);
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
-            @Override
-            public void onEvent(Event event) throws Exception {
-                activatingRecommendedAllocation();
-            }
-        });
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        activatingRecommendedAllocation();
+                    }
+                });
     }
 
     public EventListener getRecommendedAllocationListener() {
@@ -687,8 +683,7 @@ public class FormBinder {
             this.recommendedAllocation = true;
             disableIfNeededWorkerSearch();
             applyDisabledRules();
-            effortInput.addEventListener(Events.ON_CHANGE,
-                    allHoursInputChange);
+            effortInput.addEventListener(Events.ON_CHANGE, allHoursInputChange);
             allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                     allResourcesPerDayChange);
             sumResourcesPerDayOrSetToZero();
@@ -734,8 +729,7 @@ public class FormBinder {
 
     private void deactivatingRecommendedAllocation() {
         this.recommendedAllocation = false;
-        effortInput
-                .removeEventListener(Events.ON_CHANGE, allHoursInputChange);
+        effortInput.removeEventListener(Events.ON_CHANGE, allHoursInputChange);
         applyDisabledRules();
         disableIfNeededWorkerSearch();
     }
@@ -838,8 +832,8 @@ public class FormBinder {
     public void loadAggregatedCalculations() {
         // Calculate aggregated values
         if (behaviour.allowMultipleSelection()) {
-            allOriginalEffort.setValue(sumAllOriginalEffort(
-                    this.rows).toFormattedString());
+            allOriginalEffort.setValue(sumAllOriginalEffort(this.rows)
+                    .toFormattedString());
             allTotalEffort.setValue(sumAllTotalEffort(this.rows)
                     .toFormattedString());
             allConsolidatedEffort.setValue(AllocationRow
