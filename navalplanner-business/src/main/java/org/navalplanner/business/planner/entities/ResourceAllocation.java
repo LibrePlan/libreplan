@@ -620,21 +620,31 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
             intendedTotalAssignment = intendedNonConsolidatedEffort;
         } else {
-            BigDecimal lastConslidation = task.getConsolidation()
-                    .getConsolidatedValues().last().getValue();
-            BigDecimal unconsolitedPercentage = BigDecimal.ONE
-                    .subtract(lastConslidation.setScale(2).divide(
-                            new BigDecimal(100), RoundingMode.DOWN));
-            if (unconsolitedPercentage.setScale(2).equals(
-                    BigDecimal.ZERO.setScale(2))) {
+            if (isCompletelyConsolidated()) {
                 intendedTotalAssignment = getConsolidatedEffort();
             } else {
                 intendedTotalAssignment = EffortDuration
                         .seconds(new BigDecimal(getNonConsolidatedEffort()
-                                .getSeconds()).divide(unconsolitedPercentage,
+                                .getSeconds()).divide(
+                                getUnconsolidatedPercentage(),
                                 RoundingMode.DOWN).intValue());
             }
         }
+    }
+
+    private boolean isCompletelyConsolidated() {
+        return task.getConsolidation() != null
+                && getUnconsolidatedPercentage().setScale(2).equals(
+                BigDecimal.ZERO.setScale(2));
+    }
+
+    private BigDecimal getUnconsolidatedPercentage() {
+        BigDecimal lastConslidation = task.getConsolidation()
+                .getConsolidatedValues().last().getValue();
+        BigDecimal unconsolitedPercentage = BigDecimal.ONE
+                .subtract(lastConslidation.setScale(2).divide(
+                        new BigDecimal(100), RoundingMode.DOWN));
+        return unconsolitedPercentage;
     }
 
     @NotNull
@@ -1040,7 +1050,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public boolean isSatisfied() {
-        return hasAssignments();
+        if (isCompletelyConsolidated()) {
+            return hasAssignments();
+        } else {
+            return !getNonConsolidatedAssignments().isEmpty();
+        }
     }
 
     public boolean isUnsatisfied() {
