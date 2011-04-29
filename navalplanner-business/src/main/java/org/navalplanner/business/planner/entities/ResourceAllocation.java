@@ -56,7 +56,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
@@ -405,7 +405,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static HoursAllocationSpecified allocatingHours(
-            List<HoursModification> hoursModifications) {
+            List<EffortModification> hoursModifications) {
         return new HoursAllocationSpecified(hoursModifications);
     }
 
@@ -425,11 +425,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      */
     public static class HoursAllocationSpecified {
 
-        private final List<HoursModification> hoursModifications;
+        private final List<EffortModification> hoursModifications;
 
         private Task task;
 
-        public HoursAllocationSpecified(List<HoursModification> hoursModifications) {
+        public HoursAllocationSpecified(List<EffortModification> hoursModifications) {
             Validate.noNullElements(hoursModifications);
             Validate.isTrue(!hoursModifications.isEmpty());
             this.hoursModifications = hoursModifications;
@@ -444,7 +444,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         public void allocateUntil(LocalDate end) {
             Validate.notNull(end);
             Validate.isTrue(!end.isBefore(new LocalDate(task.getStartDate())));
-            for (HoursModification each : hoursModifications) {
+            for (EffortModification each : hoursModifications) {
                 each.allocateUntil(end);
             }
         }
@@ -452,7 +452,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         public void allocateFromEndUntil(LocalDate start) {
             Validate.notNull(start);
             Validate.isTrue(start.isBefore(task.getEndAsLocalDate()));
-            for (HoursModification each : hoursModifications) {
+            for (EffortModification each : hoursModifications) {
                 each.allocateFromEndUntil(start);
             }
 
@@ -699,20 +699,20 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         });
     }
 
-    public final HoursModification asHoursModification(){
-        return visit(this, new IVisitor<HoursModification>() {
+    public final EffortModification asHoursModification(){
+        return visit(this, new IVisitor<EffortModification>() {
 
             @Override
-            public HoursModification on(GenericResourceAllocation genericAllocation) {
-                return HoursModification.create(genericAllocation,
-                        getEffortForReassignation().roundToHours(),
+            public EffortModification on(GenericResourceAllocation genericAllocation) {
+                return EffortModification.create(genericAllocation,
+                        getEffortForReassignation(),
                         getAssociatedResources());
             }
 
             @Override
-            public HoursModification on(SpecificResourceAllocation specificAllocation) {
-                return HoursModification.create(specificAllocation,
-                        getEffortForReassignation().roundToHours());
+            public EffortModification on(SpecificResourceAllocation specificAllocation) {
+                return EffortModification.create(specificAllocation,
+                        getEffortForReassignation());
             }
         });
     }

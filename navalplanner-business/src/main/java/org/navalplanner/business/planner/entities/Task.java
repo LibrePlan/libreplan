@@ -49,7 +49,7 @@ import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
@@ -477,7 +477,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations);
 
-        public abstract ModificationsResult<HoursModification> getHoursModified(
+        public abstract ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations);
 
     }
@@ -490,9 +490,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         @Override
-        public ModificationsResult<HoursModification> getHoursModified(
+        public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            List<HoursModification> canBeModified = HoursModification
+            List<EffortModification> canBeModified = EffortModification
                     .fromExistent(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
@@ -515,9 +515,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
 
         @Override
-        public ModificationsResult<HoursModification> getHoursModified(
+        public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            List<HoursModification> canBeModified = HoursModification
+            List<EffortModification> canBeModified = EffortModification
                     .withNewResources(allocations, searcher);
             return ModificationsResult.create(allocations, canBeModified);
         }
@@ -810,10 +810,10 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
             break;
         case RESOURCES_PER_DAY:
-            ModificationsResult<HoursModification> hoursModificationResult = strategy
+            ModificationsResult<EffortModification> hoursModificationResult = strategy
                     .getHoursModified(toBeModified);
             markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
-            List<HoursModification> hoursModified = hoursModificationResult
+            List<EffortModification> hoursModified = hoursModificationResult
                     .getBeingModified();
             if (hoursModified.isEmpty()) {
                 LOG.warn("all allocations for task " + this + " can't be used");

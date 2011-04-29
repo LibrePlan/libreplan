@@ -41,7 +41,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation.Allocations
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
@@ -256,7 +256,7 @@ public class AllocationRowsHandler {
             createDerived();
             AllocationResult result = createResult();
             if (AllocationModification.allFullfiled(AllocationModification
-                    .ofType(HoursModification.class, modificationsDone))) {
+                    .ofType(EffortModification.class, modificationsDone))) {
                 return Flagged.justValue(result);
             } else {
                 return Flagged.withFlags(result,
@@ -327,8 +327,8 @@ public class AllocationRowsHandler {
         return AllocationRow.find(currentRows, resourceAllocation);
     }
 
-    private List<HoursModification> calculateResourcesPerDayAllocation() {
-        List<HoursModification> hours = AllocationRow
+    private List<EffortModification> calculateResourcesPerDayAllocation() {
+        List<EffortModification> hours = AllocationRow
                 .createHoursModificationsAndAssociate(task, currentRows,
                         requestedToRemove);
         if (isForwardsAllocation()) {

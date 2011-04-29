@@ -106,7 +106,7 @@ public abstract class AllocationModification {
 
         public T onResourcesPerDay(ResourcesPerDayModification modification);
 
-        public T onHours(HoursModification modification);
+        public T onHours(EffortModification modification);
 
     }
 
@@ -115,7 +115,7 @@ public abstract class AllocationModification {
             ResourcesPerDayModification r = (ResourcesPerDayModification) this;
             return visitor.onResourcesPerDay(r);
         } else {
-            HoursModification h = (HoursModification) this;
+            EffortModification h = (EffortModification) this;
             return visitor.onHours(h);
         }
     }

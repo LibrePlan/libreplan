@@ -35,7 +35,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -148,11 +148,11 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     @Override
-    public HoursModification toHoursModification(Task task,
+    public EffortModification toHoursModification(Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        return HoursModification.create(
+        return EffortModification.create(
                 createGenericAllocation(task, requestedToRemove),
-                getEffortFromInput().roundToHours(), resources);
+                getEffortFromInput(), resources);
     }
 
     public boolean hasSameCriterionsAndType(Set<Criterion> criterions,

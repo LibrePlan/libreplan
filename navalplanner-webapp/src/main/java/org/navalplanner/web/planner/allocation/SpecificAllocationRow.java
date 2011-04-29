@@ -30,7 +30,7 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -132,9 +132,10 @@ public class SpecificAllocationRow extends AllocationRow {
     }
 
     @Override
-    public HoursModification toHoursModification(Task task,
+    public EffortModification toHoursModification(Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        return HoursModification.create(createSpecific(task), getEffortFromInput().getHours());
+        return EffortModification.create(createSpecific(task),
+                getEffortFromInput());
     }
 
     public Resource getResource() {

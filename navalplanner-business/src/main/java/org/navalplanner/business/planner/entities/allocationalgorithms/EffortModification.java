@@ -32,20 +32,21 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
  */
-public abstract class HoursModification extends AllocationModification {
+public abstract class EffortModification extends AllocationModification {
 
-    private static class OnGenericAllocation extends HoursModification {
+    private static class OnGenericAllocation extends EffortModification {
 
         private final GenericResourceAllocation genericAllocation;
 
         private OnGenericAllocation(GenericResourceAllocation beingModified,
-                Collection<? extends Resource> resources, int hours) {
-            super(beingModified, resources, hours);
+                Collection<? extends Resource> resources, EffortDuration effort) {
+            super(beingModified, resources, effort);
             genericAllocation = beingModified;
         }
 
@@ -53,78 +54,78 @@ public abstract class HoursModification extends AllocationModification {
         public void allocateUntil(LocalDate end) {
             genericAllocation.forResources(getResources())
                              .fromStartUntil(end)
-                             .allocateHours(getHours());
+                             .allocate(getEffort());
         }
 
         @Override
         public void allocateFromEndUntil(LocalDate start) {
             genericAllocation.forResources(getResources())
                              .fromEndUntil(start)
-                             .allocateHours(getHours());
+                             .allocate(getEffort());
         }
     }
 
-    private static class OnSpecificAllocation extends HoursModification {
+    private static class OnSpecificAllocation extends EffortModification {
 
         private final SpecificResourceAllocation specific;
 
         private OnSpecificAllocation(SpecificResourceAllocation beingModified,
-                Collection<? extends Resource> resources, int hours) {
-            super(beingModified, resources, hours);
+                Collection<? extends Resource> resources, EffortDuration effort) {
+            super(beingModified, resources, effort);
             specific = beingModified;
         }
 
         @Override
         public void allocateUntil(LocalDate end) {
-            specific.fromStartUntil(end)
-                    .allocateHours(getHours());
+            specific.fromStartUntil(end).allocate(getEffort());
         }
 
         @Override
         public void allocateFromEndUntil(LocalDate start) {
-            specific.fromEndUntil(start)
-                    .allocateHours(getHours());
+            specific.fromEndUntil(start).allocate(getEffort());
         }
     }
 
-    public static HoursModification create(
-            GenericResourceAllocation resourceAllocation, int hours,
+    public static EffortModification create(
+            GenericResourceAllocation resourceAllocation,
+            EffortDuration effort,
             List<Resource> resources) {
-        return new OnGenericAllocation(resourceAllocation, resources, hours);
+        return new OnGenericAllocation(resourceAllocation, resources, effort);
     }
 
-    public static HoursModification create(
-            SpecificResourceAllocation resourceAllocation, int hours) {
-        return new OnSpecificAllocation(resourceAllocation, Collections
-                .singletonList(resourceAllocation.getResource()), hours);
+    public static EffortModification create(
+            SpecificResourceAllocation resourceAllocation, EffortDuration effort) {
+        return new OnSpecificAllocation(resourceAllocation,
+                Collections.singletonList(resourceAllocation.getResource()),
+                effort);
     }
 
-    public static List<HoursModification> fromExistent(
+    public static List<EffortModification> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations,
             IResourcesSearcher searcher) {
-        List<HoursModification> result = new ArrayList<HoursModification>();
+        List<EffortModification> result = new ArrayList<EffortModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
             result.add(resourceAllocation.asHoursModification());
         }
         return ensureNoOneWithoutAssociatedResources(result, searcher);
     }
 
-    public static List<HoursModification> withNewResources(
+    public static List<EffortModification> withNewResources(
             List<ResourceAllocation<?>> allocations, IResourcesSearcher searcher) {
-        List<HoursModification> result = fromExistent(allocations, searcher);
-        for (HoursModification each : result) {
+        List<EffortModification> result = fromExistent(allocations, searcher);
+        for (EffortModification each : result) {
             each.withNewResources(searcher);
         }
         return ensureNoOneWithoutAssociatedResources(result, searcher);
     }
 
-    private final int hours;
+    private final EffortDuration effort;
 
-    private HoursModification(ResourceAllocation<?> beingModified,
-            Collection<? extends Resource> resources, int hours) {
+    private EffortModification(ResourceAllocation<?> beingModified,
+            Collection<? extends Resource> resources, EffortDuration effort) {
         super(beingModified, resources);
-        Validate.isTrue(hours >= 0);
-        this.hours = hours;
+        Validate.notNull(effort);
+        this.effort = effort;
     }
 
     protected LocalDate getTaskStart() {
@@ -137,11 +138,11 @@ public abstract class HoursModification extends AllocationModification {
 
     @Override
     public boolean satisfiesModificationRequested() {
-        return hours == getBeingModified().getNonConsolidatedHours();
+        return effort.compareTo(getBeingModified().getNonConsolidatedEffort()) == 0;
     }
 
-    public int getHours() {
-        return hours;
+    public EffortDuration getEffort() {
+        return effort;
     }
 
 }

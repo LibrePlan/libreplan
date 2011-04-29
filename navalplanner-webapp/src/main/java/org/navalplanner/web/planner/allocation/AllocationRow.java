@@ -49,7 +49,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification.IByType;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
@@ -192,12 +192,12 @@ public abstract class AllocationRow {
         return null;
     }
 
-    public static List<HoursModification> createHoursModificationsAndAssociate(
+    public static List<EffortModification> createHoursModificationsAndAssociate(
             Task task, List<AllocationRow> currentRows,
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        List<HoursModification> result = new ArrayList<HoursModification>();
+        List<EffortModification> result = new ArrayList<EffortModification>();
         for (AllocationRow each : currentRows) {
-            HoursModification hoursModification = each.toHoursModification(
+            EffortModification hoursModification = each.toHoursModification(
                     task, requestedToRemove);
             result.add(hoursModification);
             each.setTemporal(hoursModification.getBeingModified());
@@ -341,7 +341,7 @@ public abstract class AllocationRow {
             Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
-    public abstract HoursModification toHoursModification(Task task,
+    public abstract EffortModification toHoursModification(Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
     public boolean isCreating() {
@@ -512,10 +512,10 @@ public abstract class AllocationRow {
             }
 
             @Override
-            public Void onHours(HoursModification modification) {
-                int goal = modification.getHours();
+            public Void onHours(EffortModification modification) {
+                EffortDuration goal = modification.getEffort();
                 Clients.response(new AuWrongValue(effortInput, _(
-                        "{0} hours cannot be fulfilled", goal + "")));
+                        "{0} cannot be fulfilled", goal.toFormattedString())));
 
                 return null;
             }
