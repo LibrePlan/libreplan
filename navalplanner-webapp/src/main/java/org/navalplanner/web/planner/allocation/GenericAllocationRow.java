@@ -152,7 +152,7 @@ public class GenericAllocationRow extends AllocationRow {
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         return HoursModification.create(
                 createGenericAllocation(task, requestedToRemove),
-                getHoursFromInput(), resources);
+                getEffortFromInput().roundToHours(), resources);
     }
 
     public boolean hasSameCriterionsAndType(Set<Criterion> criterions,

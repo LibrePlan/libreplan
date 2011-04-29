@@ -58,6 +58,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
 import org.zkoss.zk.au.out.AuWrongValue;
@@ -70,7 +71,6 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.SimpleListModel;
@@ -137,10 +137,11 @@ public abstract class AllocationRow {
         });
     }
 
-    public static void assignHours(List<AllocationRow> rows, int[] hours) {
+    public static void assignEfforts(List<AllocationRow> rows,
+            EffortDuration[] efforts) {
         int i = 0;
         for (AllocationRow each : rows) {
-            each.hoursInput.setValue(hours[i++]);
+            each.effortInput.setValue(efforts[i++]);
         }
     }
 
@@ -270,7 +271,7 @@ public abstract class AllocationRow {
 
     private String name;
 
-    private Intbox hoursInput = new Intbox();
+    private EffortDurationBox effortInput = new EffortDurationBox();
 
     private final Decimalbox intendedResourcesPerDayInput = new Decimalbox();
 
@@ -295,7 +296,7 @@ public abstract class AllocationRow {
             onDifferentRealResourcesPerDay(origin
                     .getNonConsolidatedResourcePerDay());
         }
-        loadHours();
+        loadEffort();
         initialize();
     }
 
@@ -332,9 +333,9 @@ public abstract class AllocationRow {
 
     private void initialize() {
         initializeResourcesPerDayInput();
-        hoursInput.setWidth("80px");
-        hoursInput.setConstraint(constraintForHoursInput());
-        loadHours();
+        effortInput.setWidth("80px");
+        effortInput.setConstraint(constraintForHoursInput());
+        loadEffort();
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
@@ -425,8 +426,8 @@ public abstract class AllocationRow {
 
     public abstract List<Resource> getAssociatedResources();
 
-    public Intbox getHoursInput() {
-        return hoursInput;
+    public EffortDurationBox getEffortInput() {
+        return effortInput;
     }
 
     public Decimalbox getIntendedResourcesPerDayInput() {
@@ -438,37 +439,38 @@ public abstract class AllocationRow {
     }
 
     public void addListenerForInputChange(EventListener onChangeListener) {
-        getHoursInput().addEventListener(Events.ON_CHANGE, onChangeListener);
+        getEffortInput().addEventListener(Events.ON_CHANGE, onChangeListener);
         getIntendedResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
                 onChangeListener);
     }
 
-    public void loadHours() {
-        hoursInput.setValue(getHours());
+    public void loadEffort() {
+        effortInput.setValue(getEffort());
     }
 
     protected EffortDuration getEffortFromInput() {
-        return hoursInput.getValue() != null ? hours(hoursInput.getValue())
+        return effortInput.getValue() != null ? effortInput
+                .getEffortDurationValue()
                 : zero();
     }
 
-    private Integer getHours() {
+    private EffortDuration getEffort() {
         if (temporal != null) {
-            return temporal.getNonConsolidatedHours();
+            return temporal.getNonConsolidatedEffort();
         }
         if (origin != null) {
-            return origin.getNonConsolidatedHours();
+            return origin.getNonConsolidatedEffort();
         }
-        return 0;
+        return zero();
     }
 
     public void applyDisabledRules(CalculatedValue calculatedValue,
             boolean recommendedAllocation) {
         this.currentCalculatedValue = calculatedValue;
-        hoursInput
+        effortInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
-        hoursInput.setConstraint(constraintForHoursInput());
+        effortInput.setConstraint(constraintForHoursInput());
         intendedResourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
@@ -480,7 +482,7 @@ public abstract class AllocationRow {
     }
 
     private Constraint constraintForHoursInput() {
-        return (hoursInput.isDisabled()) ? null : CONSTRAINT_FOR_HOURS_INPUT;
+        return (effortInput.isDisabled()) ? null : CONSTRAINT_FOR_HOURS_INPUT;
     }
 
     private Constraint constraintForResourcesPerDayInput() {
@@ -489,10 +491,10 @@ public abstract class AllocationRow {
     }
 
     private void loadDataFromLast() {
-        Clients.closeErrorBox(hoursInput);
+        Clients.closeErrorBox(effortInput);
         Clients.closeErrorBox(intendedResourcesPerDayInput);
 
-        hoursInput.setValue(temporal.getAssignedHours());
+        effortInput.setValue(temporal.getAssignedEffort());
         loadResourcesPerDayFrom(temporal);
     }
 
@@ -513,7 +515,7 @@ public abstract class AllocationRow {
             @Override
             public Void onHours(HoursModification modification) {
                 int goal = modification.getHours();
-                Clients.response(new AuWrongValue(hoursInput, _(
+                Clients.response(new AuWrongValue(effortInput, _(
                         "{0} hours cannot be fulfilled", goal + "")));
 
                 return null;
@@ -522,11 +524,11 @@ public abstract class AllocationRow {
     }
 
     public void addListenerForHoursInputChange(EventListener listener) {
-        hoursInput.addEventListener(Events.ON_CHANGE, listener);
+        effortInput.addEventListener(Events.ON_CHANGE, listener);
     }
 
-    public void setHoursToInput(Integer hours) {
-        hoursInput.setValue(hours);
+    public void setEffortToInput(EffortDuration effort) {
+        effortInput.setValue(effort);
     }
 
     public void addListenerForResourcesPerDayInputChange(
@@ -667,7 +669,7 @@ public abstract class AllocationRow {
     private org.zkoss.zul.Row findRow() {
         Component current = null;
         do {
-            current = hoursInput.getParent();
+            current = effortInput.getParent();
         } while (!(current instanceof org.zkoss.zul.Row));
         return (org.zkoss.zul.Row) current;
     }
@@ -712,7 +714,7 @@ public abstract class AllocationRow {
                         validPeriods, sumReached.getHours());
                 String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criterions by the resources and their calendars.")
                         : _("The periods available depend on the resource's calendar.");
-                throw new WrongValueException(hoursInput, firstLine + "\n"
+                throw new WrongValueException(effortInput, firstLine + "\n"
                         + secondLine);
             }
 

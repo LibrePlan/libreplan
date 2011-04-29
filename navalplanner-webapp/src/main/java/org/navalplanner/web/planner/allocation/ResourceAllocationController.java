@@ -38,6 +38,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.I18nHelper;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
@@ -106,15 +107,15 @@ public class ResourceAllocationController extends GenericForwardComposer {
 
     private AllocationRowsHandler allocationRows;
 
-    private Intbox assignedHoursComponent;
+    private EffortDurationBox assignedEffortComponent;
 
     private Checkbox extendedViewCheckbox;
 
     private Decimalbox allResourcesPerDay;
 
-    private Label allOriginalHours;
-    private Label allTotalHours;
-    private Label allConsolidatedHours;
+    private Label allOriginalEffort;
+    private Label allTotalEffort;
+    private Label allConsolidatedEffort;
 
     private Label allTotalResourcesPerDay;
     private Label allConsolidatedResourcesPerDay;
@@ -160,17 +161,17 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     private void initAllocationLabels() {
-        allOriginalHours = new Label();
-        allTotalHours = new Label();
-        allConsolidatedHours = new Label();
+        allOriginalEffort = new Label();
+        allTotalEffort = new Label();
+        allConsolidatedEffort = new Label();
 
         allTotalResourcesPerDay = new Label();
         allConsolidatedResourcesPerDay = new Label();
     }
 
     private void makeReadyInputsForCalculationTypes() {
-        assignedHoursComponent = new Intbox();
-        assignedHoursComponent.setWidth("80px");
+        assignedEffortComponent = new EffortDurationBox();
+        assignedEffortComponent.setWidth("80px");
     }
 
     public ResourceAllocationController getController() {
@@ -196,10 +197,10 @@ public class ResourceAllocationController extends GenericForwardComposer {
             formBinder = allocationRows.createFormBinder(planningState
                     .getCurrentScenario(), resourceAllocationModel);
             formBinder.setBehaviour(ResourceAllocationBehaviour.NON_LIMITING);
-            formBinder.setAllOriginalHours(allOriginalHours);
-            formBinder.setAllTotalHours(allTotalHours);
-            formBinder.setAllConsolidatedHours(allConsolidatedHours);
-            formBinder.setAssignedHoursComponent(assignedHoursComponent);
+            formBinder.setAllOriginalEffort(allOriginalEffort);
+            formBinder.setAllTotalEffort(allTotalEffort);
+            formBinder.setAllConsolidatedEffort(allConsolidatedEffort);
+            formBinder.setAssignedEffortComponent(assignedEffortComponent);
 
             formBinder.setAllTotalResourcesPerDay(allTotalResourcesPerDay);
             formBinder
@@ -400,7 +401,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             @Override
             public Component input(
                     ResourceAllocationController resourceAllocationController) {
-                return resourceAllocationController.assignedHoursComponent;
+                return resourceAllocationController.assignedEffortComponent;
             }
         },
         RESOURCES_PER_DAY(CalculatedValue.RESOURCES_PER_DAY) {
@@ -628,16 +629,11 @@ public class ResourceAllocationController extends GenericForwardComposer {
             row.setValue(data);
             append(row, data.createDetail());
             append(row, new Label(data.getName()));
-            append(row,
-                    new Label(Integer.toString(data.getOriginalEffort()
-                            .getHours())));
-            append(row,
-                    new Label(Integer
-                            .toString(data.getTotalEffort().getHours())));
-            append(row,
-                    new Label(Integer.toString(data.getConsolidatedEffort()
-                            .getHours())));
-            append(row, data.getHoursInput());
+            append(row, new Label(data.getOriginalEffort().toFormattedString()));
+            append(row, new Label(data.getTotalEffort().toFormattedString()));
+            append(row, new Label(data.getConsolidatedEffort()
+                    .toFormattedString()));
+            append(row, data.getEffortInput());
             append(row, new Label(data.getTotalResourcesPerDay().getAmount()
                     .toString()));
             append(row, new Label(data.getConsolidatedResourcesPerDay()
@@ -672,9 +668,9 @@ public class ResourceAllocationController extends GenericForwardComposer {
             ResourceAllocationController controller = ResourceAllocationController.this;
             append(row, new Label());
             append(row, new Label(_("Sum of all rows")));
-            append(row, allOriginalHours);
-            append(row, allTotalHours);
-            append(row, allConsolidatedHours);
+            append(row, allOriginalEffort);
+            append(row, allTotalEffort);
+            append(row, allConsolidatedEffort);
             append(row, CalculationTypeRadio.NUMBER_OF_HOURS
                         .input(controller));
             append(row, allTotalResourcesPerDay);

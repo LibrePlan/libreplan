@@ -21,6 +21,9 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,6 +47,8 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 
 public class AllocationRowsHandler {
 
@@ -108,7 +113,7 @@ public class AllocationRowsHandler {
                     .create(getCalculatedValue(), resourceType, criteria,
                             resourcesMatched);
             if (hours != null) {
-                genericAllocationRow.setHoursToInput(hours);
+                genericAllocationRow.setEffortToInput(hours(hours));
             } else {
                 setupInitialHours(genericAllocationRow);
             }
@@ -125,16 +130,16 @@ public class AllocationRowsHandler {
     }
 
     private void setupInitialHours(AllocationRow allocationRow) {
-        Integer hoursCalculated = calculateHours(allocationRow);
-        if (hoursCalculated != null) {
-            allocationRow.setHoursToInput(hoursCalculated);
+        EffortDuration effortCalculated = calculateEffort(allocationRow);
+        if (effortCalculated != null) {
+            allocationRow.setEffortToInput(effortCalculated);
         }
     }
 
-    private Integer calculateHours(AllocationRow allocationRow) {
+    private EffortDuration calculateEffort(AllocationRow allocationRow) {
         ResourceEnum type = allocationRow.getType();
         if (notStillExistAnotherAllocation(type)) {
-            return calculateHoursByCalculatedValue(type);
+            return calculateEffortByCalculatedValue(type);
         }
         return null;
     }
@@ -148,25 +153,29 @@ public class AllocationRowsHandler {
         return true;
     }
 
-    private Integer calculateHoursByCalculatedValue(ResourceEnum type) {
+    private EffortDuration calculateEffortByCalculatedValue(ResourceEnum type) {
         switch (calculatedValue) {
             case NUMBER_OF_HOURS:
                 break;
             case END_DATE:
             case RESOURCES_PER_DAY:
-            return calculateHoursGroupByResourceType(type);
+            return calculateEffortByResourceType(type);
         }
         return null;
     }
 
-    private Integer calculateHoursGroupByResourceType(ResourceEnum type) {
-        int result = 0;
-        for(HoursGroup hourGroup : task.getTaskSource().getHoursGroups()){
-            if (type.equals(hourGroup.getResourceType())) {
-                result += hourGroup.getWorkingHours();
-            }
-        }
-        return result;
+    private EffortDuration calculateEffortByResourceType(final ResourceEnum type) {
+        return EffortDuration.sum(task.getTaskSource().getHoursGroups(),
+                new IEffortFrom<HoursGroup>() {
+
+                    @Override
+                    public EffortDuration from(HoursGroup each) {
+                        if (type.equals(each.getResourceType())) {
+                            return hours(each.getWorkingHours());
+                        }
+                        return zero();
+                    }
+                });
     }
 
     public List<AllocationRow> getCurrentRows() {
@@ -210,7 +219,8 @@ public class AllocationRowsHandler {
 
     public void checkInvalidValues() {
         if (calculatedValue != CalculatedValue.NUMBER_OF_HOURS
-                && !currentRows.isEmpty() && formBinder.getAssignedHours() <= 0) {
+                && !currentRows.isEmpty()
+                && formBinder.getAssignedEffort().compareTo(zero()) <= 0) {
             formBinder.markAssignedHoursMustBePositive();
         }
         if (calculatedValue != CalculatedValue.RESOURCES_PER_DAY) {
@@ -296,7 +306,8 @@ public class AllocationRowsHandler {
                 .createAndAssociate(task, currentRows, requestedToRemove);
         ResourceAllocation.allocating(allocations).untilAllocating(
                 task.getAllocationDirection(),
-                formBinder.getAssignedHours(), notFullfiledReceiver());
+                formBinder.getAssignedEffort().roundToHours(),
+                notFullfiledReceiver());
         return allocations;
     }
 

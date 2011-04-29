@@ -134,8 +134,7 @@ public class SpecificAllocationRow extends AllocationRow {
     @Override
     public HoursModification toHoursModification(Task task,
             Collection<? extends ResourceAllocation<?>> requestedToRemove) {
-        return HoursModification.create(createSpecific(task),
-                getHoursFromInput());
+        return HoursModification.create(createSpecific(task), getEffortFromInput().getHours());
     }
 
     public Resource getResource() {

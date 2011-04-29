@@ -21,7 +21,13 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.allocation.AllocationRow.assignEfforts;
+import static org.navalplanner.web.planner.allocation.AllocationRow.sumAllEffortFromInputs;
+import static org.navalplanner.web.planner.allocation.AllocationRow.sumAllOriginalEffort;
+import static org.navalplanner.web.planner.allocation.AllocationRow.sumAllTotalEffort;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -43,7 +49,9 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
@@ -71,11 +79,11 @@ import org.zkoss.zul.impl.api.InputElement;
 
 public class FormBinder {
 
-    private Intbox allHoursInput;
+    private EffortDurationBox effortInput;
 
-    private Label allOriginalHours;
-    private Label allTotalHours;
-    private Label allConsolidatedHours;
+    private Label allOriginalEffort;
+    private Label allTotalEffort;
+    private Label allConsolidatedEffort;
 
     private Label allTotalResourcesPerDay;
     private Label allConsolidatedResourcesPerDay;
@@ -130,9 +138,8 @@ public class FormBinder {
 
         @Override
         public void onEvent(Event event) throws Exception {
-            if (allHoursInput.isDisabled()) {
-                allHoursInput.setValue(AllocationRow.sumAllEffortFromInputs(
-                        rows).getHours());
+            if (effortInput.isDisabled()) {
+                effortInput.setValue(sumAllEffortFromInputs(rows));
             }
         }
     };
@@ -151,7 +158,7 @@ public class FormBinder {
 
         @Override
         public void onEvent(Event event) throws Exception {
-            if (!allHoursInput.isDisabled()) {
+            if (!effortInput.isDisabled()) {
                 distributeHoursFromTotalToRows();
             }
         }
@@ -187,18 +194,19 @@ public class FormBinder {
         this.aggregate = this.lastAllocation.getAggregate();
     }
 
-    public void setAssignedHoursComponent(Intbox assignedHoursComponent) {
-        this.allHoursInput = assignedHoursComponent;
-        this.allHoursInput.setConstraint(positiveValueRequired());
+    public void setAssignedEffortComponent(
+            EffortDurationBox assignedEffortComponent) {
+        this.effortInput = assignedEffortComponent;
+        this.effortInput.setConstraint(positiveValueRequired());
         allHoursInputComponentDisabilityRule();
-        loadValueForAssignedHoursComponent();
-        onChangeEnableApply(assignedHoursComponent);
+        loadValueForEffortInput();
+        onChangeEnableApply(assignedEffortComponent);
     }
 
-    private void loadValueForAssignedHoursComponent() {
-        this.allHoursInput
-                .setValue(aggregate.isEmpty() ? allocationRowsHandler
-                        .getTask().getWorkHours() : aggregate.getTotalHours());
+    private void loadValueForEffortInput() {
+        this.effortInput
+                .setValue(aggregate.isEmpty() ? hours(allocationRowsHandler
+                        .getTask().getWorkHours()) : aggregate.getTotalEffort());
     }
 
     private void allHoursInputComponentDisabilityRule() {
@@ -206,7 +214,7 @@ public class FormBinder {
         boolean disabled = rows.isEmpty()
                 || (CalculatedValue.NUMBER_OF_HOURS == c)
                 || (c == CalculatedValue.RESOURCES_PER_DAY && !recommendedAllocation);
-        this.allHoursInput.setDisabled(disabled);
+        this.effortInput.setDisabled(disabled);
     }
 
     public AllocationResult getLastAllocation() {
@@ -247,7 +255,7 @@ public class FormBinder {
         for (AllocationRow each : rows) {
             each.addListenerForHoursInputChange(hoursRowInputChange);
         }
-        allHoursInput.setValue(AllocationRow.sumAllEffortFromInputs(this.rows).getHours());
+        effortInput.setValue(sumAllEffortFromInputs(this.rows));
     }
 
     public CalculatedValue getCalculatedValue() {
@@ -491,8 +499,8 @@ public class FormBinder {
 
     private void reloadValues() {
         loadResourcesPerDay();
-        loadHoursValues();
-        loadValueForAssignedHoursComponent();
+        loadEffortValues();
+        loadValueForEffortInput();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
         workableDaysAndDatesBinder.afterApplicationReloadValues();
@@ -518,9 +526,9 @@ public class FormBinder {
         }
     }
 
-    private void loadHoursValues() {
+    private void loadEffortValues() {
         for (AllocationRow each : rows) {
-            each.loadHours();
+            each.loadEffort();
         }
     }
 
@@ -551,8 +559,8 @@ public class FormBinder {
                 applyButtonListener);
     }
 
-    public int getAssignedHours() {
-        Integer result = allHoursInput.getValue();
+    public EffortDuration getAssignedEffort() {
+        EffortDuration result = effortInput.getEffortDurationValue();
         if (result == null) {
             throw new RuntimeException("assignedHoursComponent returns null");
         }
@@ -579,7 +587,7 @@ public class FormBinder {
     }
 
     public void markAssignedHoursMustBePositive() {
-        throw new WrongValueException(allHoursInput,
+        throw new WrongValueException(effortInput,
                 _("it must be greater than zero"));
     }
 
@@ -679,7 +687,7 @@ public class FormBinder {
             this.recommendedAllocation = true;
             disableIfNeededWorkerSearch();
             applyDisabledRules();
-            allHoursInput.addEventListener(Events.ON_CHANGE,
+            effortInput.addEventListener(Events.ON_CHANGE,
                     allHoursInputChange);
             allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                     allResourcesPerDayChange);
@@ -697,11 +705,19 @@ public class FormBinder {
     }
 
     private void distributeHoursFromTotalToRows() {
-        Integer value = allHoursInput.getValue();
-        value = value != null ? value : 0;
-        int[] hours = hoursDistributorForRecommendedAllocation
-                .distribute(value);
-        AllocationRow.assignHours(rows, hours);
+        EffortDuration value = effortInput.getEffortDurationValue();
+        value = value != null ? value : zero();
+        int[] seconds = hoursDistributorForRecommendedAllocation
+                .distribute(value.getSeconds());
+        assignEfforts(rows, asEfforts(seconds));
+    }
+
+    private EffortDuration[] asEfforts(int[] seconds) {
+        EffortDuration[] result = new EffortDuration[seconds.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = EffortDuration.seconds(seconds[i]);
+        }
+        return result;
     }
 
     private void distributeResourcesPerDayToRows() {
@@ -718,9 +734,8 @@ public class FormBinder {
 
     private void deactivatingRecommendedAllocation() {
         this.recommendedAllocation = false;
-        allHoursInput
-                .removeEventListener(Events.ON_CHANGE,
-                allHoursInputChange);
+        effortInput
+                .removeEventListener(Events.ON_CHANGE, allHoursInputChange);
         applyDisabledRules();
         disableIfNeededWorkerSearch();
     }
@@ -779,28 +794,28 @@ public class FormBinder {
         return sum;
     }
 
-    public void setAllOriginalHours(Label allOriginalHours) {
-        this.allOriginalHours = allOriginalHours;
+    public void setAllOriginalEffort(Label allOriginalEffort) {
+        this.allOriginalEffort = allOriginalEffort;
     }
 
-    public Label getAllOriginalHours() {
-        return allOriginalHours;
+    public Label getAllOriginalEffort() {
+        return allOriginalEffort;
     }
 
-    public void setAllTotalHours(Label allTotalHours) {
-        this.allTotalHours = allTotalHours;
+    public void setAllTotalEffort(Label allTotalHours) {
+        this.allTotalEffort = allTotalHours;
     }
 
-    public Label getAllTotalHours() {
-        return allTotalHours;
+    public Label getAllTotalEffort() {
+        return allTotalEffort;
     }
 
-    public void setAllConsolidatedHours(Label alCo1nsolidatedHours) {
-        this.allConsolidatedHours = alCo1nsolidatedHours;
+    public void setAllConsolidatedEffort(Label allConsolidatedEffort) {
+        this.allConsolidatedEffort = allConsolidatedEffort;
     }
 
-    public Label getAllConsolidatedHours() {
-        return allConsolidatedHours;
+    public Label getAllConsolidatedEffort() {
+        return allConsolidatedEffort;
     }
 
     public void setAllTotalResourcesPerDay(Label allTotalResourcesPerDay) {
@@ -823,12 +838,12 @@ public class FormBinder {
     public void loadAggregatedCalculations() {
         // Calculate aggregated values
         if (behaviour.allowMultipleSelection()) {
-            allOriginalHours.setValue(Integer.toString(AllocationRow.sumAllOriginalEffort(this.rows)
-                    .getHours()));
-            allTotalHours.setValue(Integer.toString(AllocationRow.sumAllTotalEffort(this.rows)
-                    .getHours()));
-            allConsolidatedHours.setValue(Integer
-                    .toString(AllocationRow.sumAllConsolidatedEffort(this.rows).getHours()));
+            allOriginalEffort.setValue(sumAllOriginalEffort(
+                    this.rows).toFormattedString());
+            allTotalEffort.setValue(sumAllTotalEffort(this.rows)
+                    .toFormattedString());
+            allConsolidatedEffort.setValue(AllocationRow
+                    .sumAllConsolidatedEffort(this.rows).toFormattedString());
             allTotalResourcesPerDay.setValue(sumAllTotalResourcesPerDay()
                     .toString());
             allConsolidatedResourcesPerDay
