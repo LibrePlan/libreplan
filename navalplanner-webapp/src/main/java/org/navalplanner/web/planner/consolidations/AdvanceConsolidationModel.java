@@ -40,17 +40,18 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
-import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -226,14 +227,17 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 LocalDate endExclusive = LocalDate.fromDateFields(task
                         .getEndDate());
 
-                Integer pendingHours = BigDecimal.ONE.subtract(
+                int pendingSeconds = BigDecimal.ONE
+                        .subtract(
                         value.getValue().setScale(2).divide(
                                 new BigDecimal(100), RoundingMode.DOWN))
                         .multiply(
                                 new BigDecimal(resourceAllocation
-                                        .getOriginalTotalAssigment()))
+                                        .getIntendedTotalAssigment()
+                                        .getSeconds()))
                         .intValue();
-
+                int pendingHours = EffortDuration.seconds(pendingSeconds)
+                        .roundToHours();
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
@@ -329,8 +333,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
                     resourceAllocation
                             .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                    Integer pendingHours = resourceAllocation
-                            .getOriginalTotalAssigment();
+                    int pendingHours = resourceAllocation
+                            .getIntendedTotalAssigment().roundToHours();
                     if (!consolidation.getConsolidatedValues().isEmpty()) {
                         BigDecimal lastConslidation = task.getConsolidation()
                                 .getConsolidatedValues().last().getValue();

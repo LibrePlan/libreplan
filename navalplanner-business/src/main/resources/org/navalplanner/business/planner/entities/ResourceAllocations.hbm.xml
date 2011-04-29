@@ -20,8 +20,9 @@
 
         <property name="intendedTotalHours" column="intended_total_hours" />
 
-        <property name="originalTotalAssignment" access="field"
-            column="original_total_assignment" />
+        <property name="intendedTotalAssignment" access="field"
+            column="intended_total_assignment"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
 
         <!-- Indexed -->
         <many-to-one class="Task" name="task" column="task" index="idx_resource_allocation_on_task"/>

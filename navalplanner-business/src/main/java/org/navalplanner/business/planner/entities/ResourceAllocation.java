@@ -43,7 +43,6 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.validator.Min;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
@@ -478,7 +477,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<LimitingResourceQueueElement> limitingResourceQueueElements = new HashSet<LimitingResourceQueueElement>();
 
-    private int originalTotalAssignment = 0;
+    @OnCopy(Strategy.SHARE)
+    private EffortDuration intendedTotalAssignment = zero();
 
     private IOnDayAssignmentRemoval dayAssignmenteRemoval = new DoNothing();
 
@@ -614,7 +614,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
         if ((task.getConsolidation() == null)
                 || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
-            originalTotalAssignment = getNonConsolidatedHours();
+            intendedTotalAssignment = getNonConsolidatedEffort();
         } else {
             BigDecimal lastConslidation = task.getConsolidation()
                     .getConsolidatedValues().last().getValue();
@@ -623,18 +623,19 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             new BigDecimal(100), RoundingMode.DOWN));
             if (unconsolitedPercentage.setScale(2).equals(
                     BigDecimal.ZERO.setScale(2))) {
-                originalTotalAssignment = getConsolidatedHours();
+                intendedTotalAssignment = getConsolidatedEffort();
             } else {
-                originalTotalAssignment = new BigDecimal(
-                        getNonConsolidatedHours()).divide(
-                        unconsolitedPercentage, RoundingMode.DOWN).intValue();
+                intendedTotalAssignment = EffortDuration
+                        .seconds(new BigDecimal(getNonConsolidatedEffort()
+                                .getSeconds()).divide(unconsolitedPercentage,
+                                RoundingMode.DOWN).intValue());
             }
         }
     }
 
-    @Min(0)
-    public int getOriginalTotalAssigment() {
-        return originalTotalAssignment;
+    @NotNull
+    public EffortDuration getIntendedTotalAssigment() {
+        return intendedTotalAssignment;
     }
 
     public interface IVisitor<T> {
@@ -1325,7 +1326,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 getUnorderedFor(scenario), getIntraDayStartDateFor(scenario),
                 getIntraDayEndFor(scenario));
         copy.resourcesPerDay = resourcesPerDay;
-        copy.originalTotalAssignment = originalTotalAssignment;
+        copy.intendedTotalAssignment = intendedTotalAssignment;
         copy.task = task;
         copy.assignmentFunction = assignmentFunction;
         copy.intendedResourcesPerDay = intendedResourcesPerDay;
@@ -1394,8 +1395,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return DayAssignment.sum(getAssignments());
     }
 
-    protected int getIntendedHours() {
-        return originalTotalAssignment;
+    protected EffortDuration getIntendedEffort() {
+        return intendedTotalAssignment;
     }
 
     @OnCopy(Strategy.IGNORE)
@@ -1734,7 +1735,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         if (isSatisfied()) {
             return getNonConsolidatedEffort();
         } else {
-            return hours(getIntendedHours());
+            return getIntendedEffort();
         }
     }
 

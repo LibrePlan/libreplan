@@ -21,7 +21,6 @@
 
 package org.navalplanner.web.planner.allocation;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 
@@ -592,10 +591,10 @@ public abstract class AllocationRow {
 
     public EffortDuration getOriginalEffort() {
         if (temporal != null) {
-            return hours(temporal.getOriginalTotalAssigment());
+            return temporal.getIntendedTotalAssigment();
         }
         if (origin != null) {
-            return hours(origin.getOriginalTotalAssigment());
+            return origin.getIntendedTotalAssigment();
         }
         return zero();
     }

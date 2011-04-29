@@ -129,4 +129,15 @@
         <sql>update resource_allocation SET intended_resources_per_day = resources_per_day</sql>
     </changeSet>
 
+    <changeSet id="change-original-total-assignment-to-use-effort-duration" author="ogonzalez">
+        <comment>rename original_total_assignment to intended_total_assignment and now it's interpreted as an EffortDuration</comment>
+        <addColumn tableName="resource_allocation">
+            <column name="intended_total_assignment" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="resource_allocation" columnName="intended_total_assignment"
+            defaultValueNumeric="0" />
+        <sql>UPDATE resource_allocation SET intended_total_assignment = 3600 * original_total_assignment WHERE original_total_assignment IS NOT NULL</sql>
+        <dropColumn tableName="resource_allocation" columnName="original_total_assignment"/>
+    </changeSet>
+
 </databaseChangeLog>
