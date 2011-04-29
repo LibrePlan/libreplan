@@ -1609,3 +1609,25 @@ input.z-datebox-text-disd {
 .z-button-clk .z-button-cr {
 	background-position:-21px 0;
 }
+
+.assigned-hours-input {
+    width: 60px
+}
+
+.assigned-resources-input  {
+    width:40px;
+    float: left;
+    margin-left: 20px;
+}
+
+.assigned-resources-label {
+    cursor: default;
+}
+
+.assignedresources .details div.z-column-cnt {
+    font-weight: normal;
+}
+
+.assignedresources .z-auxheader-cnt  {
+    font-weight: bold;
+}

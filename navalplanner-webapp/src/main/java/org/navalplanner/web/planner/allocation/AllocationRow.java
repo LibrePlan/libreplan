@@ -318,7 +318,7 @@ public abstract class AllocationRow {
     private void initializeResourcesPerDayInput() {
         intendedResourcesPerDayInput
                 .setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
-        intendedResourcesPerDayInput.setWidth("80px");
+        intendedResourcesPerDayInput.setSclass("assigned-resources-input");
         Util.bind(intendedResourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
             @Override
@@ -339,7 +339,7 @@ public abstract class AllocationRow {
 
     private void initialize() {
         initializeResourcesPerDayInput();
-        effortInput.setWidth("80px");
+        effortInput.setSclass("assigned-hours-input");
         effortInput.setConstraint(constraintForHoursInput());
         loadEffort();
     }
@@ -365,9 +365,12 @@ public abstract class AllocationRow {
 
     private void onDifferentRealResourcesPerDay(
             ResourcesPerDay realResourcesPerDay) {
+        this.realResourcesPerDay.setSclass("assigned-resources-label");
         this.realResourcesPerDay
-                .setTooltiptext(_("It can't allocate the intended resources per day"));
-        this.realResourcesPerDay.setValue(_("(achieved: {0})",
+                .setTooltiptext(_(
+                        "Only {0} resources per day were achieved for current allocation",
+                        realResourcesPerDay.getAmount().toPlainString()));
+        this.realResourcesPerDay.setValue(_("[{0}]",
                 realResourcesPerDay.getAmount().toPlainString()));
     }
 

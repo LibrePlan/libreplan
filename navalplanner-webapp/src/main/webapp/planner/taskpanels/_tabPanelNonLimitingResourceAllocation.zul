@@ -80,19 +80,19 @@
                             <auxheader label="${i18n:_('Name')}" colspan="1" align="center"/>
                             <auxheader label="${i18n:_('Hours')}" colspan="@{allocationController.colspanHours}" align="center"/>
                             <auxheader label="${i18n:_('Resources Per Day')}" colspan="@{allocationController.colspanResources}" align="center"/>
-                            <auxheader label="${i18n:_('Operations')}" colspan="1" align="center"/>
+                            <auxheader label="${i18n:_('Op.')}" colspan="1" align="center"/>
                         </auxhead>
                         <columns sclass="details">
-                            <column width="30px"/>
+                            <column width="20px"/>
                             <column />
-                            <column label="${i18n:_('Original')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
-                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
-                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
-                            <column label="${i18n:_('Non Consolidated')}" align="center"/>
-                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
-                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="80px"/>
-                            <column label="${i18n:_('Non Consolidated')}" align="center"/>
-                            <column label="" align="center" width="80px"/>
+                            <column label="${i18n:_('Original')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+                            <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
+                            <column label="${i18n:_('Total')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+                            <column label="${i18n:_('Consolidated')}" align="center" visible="@{allocationController.extendedView}" width="70px"/>
+                            <column label="${i18n:_('Non Consolidated')}" align="center" width="120px"/>
+                            <column label="" align="center" width="40px"/>
                         </columns>
                     </grid>
                 </groupbox>
