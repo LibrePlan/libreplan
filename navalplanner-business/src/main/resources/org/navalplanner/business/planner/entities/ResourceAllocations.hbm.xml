@@ -24,6 +24,10 @@
             column="intended_total_assignment"
             type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
 
+        <property name="intendedNonConsolidatedEffort" access="field"
+            column="intended_non_consolidated_effort"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+
         <!-- Indexed -->
         <many-to-one class="Task" name="task" column="task" index="idx_resource_allocation_on_task"/>
 

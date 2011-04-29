@@ -140,4 +140,13 @@
         <dropColumn tableName="resource_allocation" columnName="original_total_assignment"/>
     </changeSet>
 
+     <changeSet id="add-intended_non_consolidated_effort" author="ogonzalez">
+        <addColumn tableName="resource_allocation">
+            <column name="intended_non_consolidated_effort" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="resource_allocation" columnName="intended_non_consolidated_effort"
+            defaultValueNumeric="0" />
+        <sql>UPDATE resource_allocation SET intended_non_consolidated_effort = intended_total_assignment</sql>
+    </changeSet>
+
 </databaseChangeLog>

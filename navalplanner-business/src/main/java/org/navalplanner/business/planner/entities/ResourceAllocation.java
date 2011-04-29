@@ -480,6 +480,9 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     @OnCopy(Strategy.SHARE)
     private EffortDuration intendedTotalAssignment = zero();
 
+    @OnCopy(Strategy.SHARE)
+    private EffortDuration intendedNonConsolidatedEffort = zero();
+
     private IOnDayAssignmentRemoval dayAssignmenteRemoval = new DoNothing();
 
     public interface IOnDayAssignmentRemoval {
@@ -612,9 +615,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         if (!isSatisfied()) {
             return;
         }
+        intendedNonConsolidatedEffort = getNonConsolidatedEffort();
         if ((task.getConsolidation() == null)
                 || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
-            intendedTotalAssignment = getNonConsolidatedEffort();
+            intendedTotalAssignment = intendedNonConsolidatedEffort;
         } else {
             BigDecimal lastConslidation = task.getConsolidation()
                     .getConsolidatedValues().last().getValue();
@@ -1395,8 +1399,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return DayAssignment.sum(getAssignments());
     }
 
-    protected EffortDuration getIntendedEffort() {
-        return intendedTotalAssignment;
+    protected EffortDuration getIntendedNonConsolidatedEffort() {
+        return intendedNonConsolidatedEffort;
     }
 
     @OnCopy(Strategy.IGNORE)
@@ -1735,7 +1739,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         if (isSatisfied()) {
             return getNonConsolidatedEffort();
         } else {
-            return getIntendedEffort();
+            return getIntendedNonConsolidatedEffort();
         }
     }
 
