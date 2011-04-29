@@ -44,8 +44,7 @@ import org.navalplanner.business.templates.entities.OrderElementTemplate;
  */
 
 // <OrderElement, OrderLine, OrderLineGroup>
-public abstract class CriterionRequirementHandler<T, S, R> implements
-        ICriterionRequirementHandler {
+public abstract class CriterionRequirementHandler<T, S, R> {
 
     // Operations to add a criterionRequirement
     public void propagateDirectCriterionRequirementAddition(T orderElement,
