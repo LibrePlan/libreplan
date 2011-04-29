@@ -292,13 +292,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     CapacityResult capacityResult);
         }
 
-        public IntraDayDate untilAllocating(int hoursToAllocate) {
-            return untilAllocating(Direction.FORWARD, hoursToAllocate);
+        public IntraDayDate untilAllocating(EffortDuration effort) {
+            return untilAllocating(Direction.FORWARD, effort);
         }
 
         public IntraDayDate untilAllocating(Direction direction,
-                int hoursToAllocate) {
-            return untilAllocating(direction, hoursToAllocate, doNothing());
+                EffortDuration effort) {
+            return untilAllocating(direction, effort, doNothing());
         }
 
         private static INotFulfilledReceiver doNothing() {
@@ -311,13 +311,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             };
         }
 
-        public IntraDayDate untilAllocating(int hoursToAllocate,
+        public IntraDayDate untilAllocating(EffortDuration effort,
                 final INotFulfilledReceiver receiver) {
-            return untilAllocating(Direction.FORWARD, hoursToAllocate, receiver);
+            return untilAllocating(Direction.FORWARD, effort, receiver);
         }
 
         public IntraDayDate untilAllocating(Direction direction,
-                int hoursToAllocate, final INotFulfilledReceiver receiver) {
+                EffortDuration toAllocate, final INotFulfilledReceiver receiver) {
             UntilFillingHoursAllocator allocator = new UntilFillingHoursAllocator(
                     direction,
                     task, allocations) {
@@ -375,8 +375,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 }
 
             };
-            IntraDayDate result = allocator
-                    .untilAllocating(hours(hoursToAllocate));
+            IntraDayDate result = allocator.untilAllocating(toAllocate);
             if (result == null) {
                 // allocation could not be done
                 return direction == Direction.FORWARD ? task

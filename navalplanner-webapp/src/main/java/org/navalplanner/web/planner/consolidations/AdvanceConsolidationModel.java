@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.planner.consolidations;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -248,7 +249,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         IntraDayDate date = ResourceAllocation.allocating(
                                 Arrays.asList(resourceAllocation
                                         .asResourcesPerDayModification()))
-                                .untilAllocating(pendingHours);
+                                .untilAllocating(hours(pendingHours));
                         task.setIntraDayEndDate(date);
                     }
                 } else {

@@ -180,9 +180,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 .getTotalHours();
     }
 
-    private int getTotalNonConsolidatedHours() {
+    private EffortDuration getTotalNonConsolidatedEffort() {
         return AggregateOfResourceAllocations
-                .createFromAll(resourceAllocations).getNonConsolidatedHours();
+                .createFromAll(resourceAllocations).getNonConsolidatedEffort();
     }
 
     public int getTotalHours() {
@@ -802,7 +802,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             break;
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(direction, getTotalNonConsolidatedHours());
+                    .untilAllocating(direction, getTotalNonConsolidatedEffort());
             if (direction == Direction.FORWARD) {
                 setIntraDayEndDate(date);
             } else {

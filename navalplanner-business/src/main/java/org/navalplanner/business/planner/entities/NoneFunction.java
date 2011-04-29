@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  *
@@ -61,7 +62,7 @@ public class NoneFunction extends AssignmentFunction {
 
         ResourceAllocation
             .allocating(resourcesPerDayModification)
-            .untilAllocating(hours);
+            .untilAllocating(EffortDuration.hours(hours));
     }
 
 }

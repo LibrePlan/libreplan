@@ -778,7 +778,7 @@ public class GenericResourceAllocationTest {
                 singletonList(ResourcesPerDayModification.create(
                         genericResourceAllocation,
                         ResourcesPerDay.amount(new BigDecimal(1)), workers)))
-                .untilAllocating(12);
+                .untilAllocating(hours(12));
         assertThat(end.getDate(), equalTo(start.plusDays(1)));
         EffortDuration biggestLastAssignment = hours(4);
         assertThat(end.getEffortDuration(), equalTo(biggestLastAssignment));
@@ -797,7 +797,7 @@ public class GenericResourceAllocationTest {
         IntraDayDate end = ResourceAllocation.allocating(
                 singletonList(ResourcesPerDayModification.create(
                         genericResourceAllocation, ResourcesPerDay.amount(1),
-                        workers))).untilAllocating(16);
+                        workers))).untilAllocating(hours(16));
         assertThat(end.getDate(), equalTo(start.plusDays(2)));
     }
 

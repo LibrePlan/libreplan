@@ -306,7 +306,7 @@ public class AllocationRowsHandler {
                 .createAndAssociate(task, currentRows, requestedToRemove);
         ResourceAllocation.allocating(allocations).untilAllocating(
                 task.getAllocationDirection(),
-                formBinder.getAssignedEffort().roundToHours(),
+                formBinder.getAssignedEffort(),
                 notFullfiledReceiver());
         return allocations;
     }

@@ -85,7 +85,7 @@ public class AggregateOfResourceAllocations {
                 });
     }
 
-    public int getNonConsolidatedHours() {
+    public EffortDuration getNonConsolidatedEffort() {
         return EffortDuration.sum(resourceAllocations,
                 new IEffortFrom<ResourceAllocation<?>>() {
 
@@ -93,7 +93,7 @@ public class AggregateOfResourceAllocations {
                     public EffortDuration from(ResourceAllocation<?> each) {
                         return each.getEffortForReassignation();
                     }
-                }).roundToHours();
+                });
     }
 
     public Map<ResourceAllocation<?>, ResourcesPerDay> getResourcesPerDay() {
