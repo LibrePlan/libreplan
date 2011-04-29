@@ -279,7 +279,7 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
         return true;
     }
 
-
+    @Override
     public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {

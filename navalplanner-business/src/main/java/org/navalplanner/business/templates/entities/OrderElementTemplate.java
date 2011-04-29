@@ -519,13 +519,15 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     }
 
-    protected void removeCriterionRequirement(CriterionRequirement requirement) {
+    @Override
+    public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().
                     getChildren().remove((IndirectCriterionRequirement)requirement);
         }
     }
+
     @Override
     public void addCriterionRequirement(
             CriterionRequirement criterionRequirement) {

@@ -786,7 +786,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     }
 
-    protected void removeCriterionRequirement(CriterionRequirement requirement) {
+    @Override
+    public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().

@@ -35,4 +35,6 @@ public interface ICriterionRequirable {
 
     void addCriterionRequirement(CriterionRequirement requirement);
 
+    void removeCriterionRequirement(CriterionRequirement requirement);
+
 }
