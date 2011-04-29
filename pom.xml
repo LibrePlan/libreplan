@@ -551,7 +551,7 @@
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timeplotz-modified</artifactId>
-                <version>1.0_2_3</version>
+                <version>1.0_2_4</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zkforge.timeline</groupId>

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zkoss.zkforge</groupId>
   <artifactId>timeplotz-modified</artifactId>
-  <version>1.0_2_3</version>
+  <version>1.0_2_4</version>
   <packaging>jar</packaging>
   <name>The Timeplot Component for ZK</name>
   <url>http://www.zkoss.org</url>
