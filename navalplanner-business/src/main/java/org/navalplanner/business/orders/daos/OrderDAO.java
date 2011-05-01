@@ -346,7 +346,8 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
         }
 
         if (criterions != null && !criterions.isEmpty()) {
-            query.setParameterList("criterions", criterions);
+            query.setParameterList("criterions",
+                    Criterion.withAllDescendants(criterions));
         }
 
         // Get result
