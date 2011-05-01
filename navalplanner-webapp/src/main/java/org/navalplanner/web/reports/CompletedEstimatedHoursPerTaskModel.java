@@ -70,6 +70,9 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
     ITaskElementDAO taskDAO;
 
     @Autowired
+    private ICommonQueries commonQueries;
+
+    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
@@ -130,7 +133,9 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
         order.useSchedulingDataFor(scenarioManager.getCurrent());
         LocalDate deadlineLocalDate = new LocalDate(deadline);
 
-        final List<Task> tasks = filteredTaskElements(order, labels, criterions);
+        reattachLabels();
+        final List<Task> tasks = commonQueries.filteredTaskElements(order,
+                labels, criterions);
         final List<CompletedEstimatedHoursPerTaskDTO> completedEstimatedHoursPerTaskList =
             new ArrayList<CompletedEstimatedHoursPerTaskDTO>();
         for (TaskElement task: tasks) {
@@ -142,56 +147,6 @@ public class CompletedEstimatedHoursPerTaskModel implements ICompletedEstimatedH
         } else {
             return new JREmptyDataSource();
         }
-    }
-
-    @Transactional(readOnly = true)
-    private List<Task> filteredTaskElements(Order order,
-            List<Label> labels, List<Criterion> criterions) {
-        List<OrderElement> orderElements = order.getAllChildren();
-        // Filter by labels
-        List<OrderElement> filteredOrderElements = filteredOrderElementsByLabels(
-                orderElements, labels);
-        return orderDAO.getFilteredTask(filteredOrderElements, criterions);
-    }
-
-    private List<OrderElement> filteredOrderElementsByLabels(
-            List<OrderElement> orderElements, List<Label> labels) {
-        if (labels != null && !labels.isEmpty()) {
-            List<OrderElement> filteredOrderElements = new ArrayList<OrderElement>();
-            for (OrderElement orderElement : orderElements) {
-                List<Label> inheritedLabels = getInheritedLabels(orderElement);
-                if (containsAny(labels, inheritedLabels)) {
-                    filteredOrderElements.add(orderElement);
-                }
-            }
-            return filteredOrderElements;
-        } else {
-            return orderElements;
-        }
-    }
-
-    private boolean containsAny(List<Label> labelsA, List<Label> labelsB) {
-        for (Label label : labelsB) {
-            if (labelsA.contains(label)) {
-                    return true;
-            }
-        }
-        return false;
-    }
-
-    @Transactional(readOnly = true)
-    public List<Label> getInheritedLabels(OrderElement orderElement) {
-        List<Label> result = new ArrayList<Label>();
-        if (orderElement != null) {
-            reattachLabels();
-            result.addAll(orderElement.getLabels());
-            OrderElement parent = orderElement.getParent();
-            while (parent != null) {
-                result.addAll(parent.getLabels());
-                parent = parent.getParent();
-            }
-        }
-        return result;
     }
 
     private void reattachLabels() {
