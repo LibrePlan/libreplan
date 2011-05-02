@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
@@ -879,6 +880,23 @@ public class OrderCRUDController extends GenericForwardComposer {
                                     "You can not remove the project \"{0}\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario",
                                     order.getName()));
         } else {
+            if (!StringUtils.isBlank(order.getExternalCode())) {
+                try {
+                    if (Messagebox
+                            .show(
+                                    _("Deleting this subcontrated order, you is going to lose the relation to report advances. Are you sure?"),
+                                    _("Confirm"), Messagebox.OK
+                                            | Messagebox.CANCEL,
+                                    Messagebox.QUESTION) == Messagebox.CANCEL) {
+                        return;
+                    }
+                } catch (InterruptedException e) {
+                    messagesForUser.showMessage(Level.ERROR, e.getMessage());
+                    LOG.error(_("Error on showing removing element: ", order
+                            .getId()), e);
+                }
+            }
+
             orderModel.remove(order);
             Util.reloadBindings(self);
             messagesForUser.showMessage(Level.INFO, _("Removed {0}", order
