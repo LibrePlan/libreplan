@@ -104,7 +104,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
             appendLabel(row, order.getName());
 
             DirectAdvanceAssignment directAdvanceAssignment = order
-                    .getDirectAdvanceAssignmentOfSubcontractedOrderElements();
+                    .getDirectAdvanceAssignmentOfTypeSubcontractor();
 
             AdvanceMeasurement lastAdvanceMeasurementReported = reportAdvancesModel
                     .getLastAdvanceMeasurementReported(directAdvanceAssignment);

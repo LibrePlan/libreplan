@@ -226,7 +226,7 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
         List<OrderElementWithAdvanceMeasurementsDTO> orderElementWithAdvanceMeasurementsDTOs = new ArrayList<OrderElementWithAdvanceMeasurementsDTO>();
 
         DirectAdvanceAssignment directAdvanceAssignment = order
-                .getDirectAdvanceAssignmentOfSubcontractedOrderElements();
+                .getDirectAdvanceAssignmentOfTypeSubcontractor();
         Set<AdvanceMeasurementDTO> advanceMeasurementDTOs = new HashSet<AdvanceMeasurementDTO>();
 
         for (AdvanceMeasurement advanceMeasurement : directAdvanceAssignment

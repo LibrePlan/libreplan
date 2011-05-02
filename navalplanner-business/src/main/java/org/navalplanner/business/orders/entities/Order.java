@@ -527,7 +527,7 @@ public class Order extends OrderLineGroup {
                 "Order can not be converted to leaf");
     }
 
-    public DirectAdvanceAssignment getDirectAdvanceAssignmentOfSubcontractedOrderElements() {
+    public DirectAdvanceAssignment getDirectAdvanceAssignmentOfTypeSubcontractor() {
         if (StringUtils.isBlank(getExternalCode())) {
             return null;
         }
