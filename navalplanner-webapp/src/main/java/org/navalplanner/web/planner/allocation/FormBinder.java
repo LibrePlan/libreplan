@@ -281,12 +281,15 @@ public class FormBinder {
 
         private Label labelTaskEnd;
 
+        private final TaskPropertiesController taskPropertiesController;
+
         WorkableDaysAndDatesBinder(final Intbox taskWorkableDays,
                 final Label labelTaskStart, final Label labelTaskEnd,
                 final TaskPropertiesController taskPropertiesController) {
             this.taskWorkableDays = taskWorkableDays;
             this.labelTaskStart = labelTaskStart;
             this.labelTaskEnd = labelTaskEnd;
+            this.taskPropertiesController = taskPropertiesController;
             initializeDateAndDurationFieldsFromTaskOriginalValues();
             Util.ensureUniqueListeners(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
@@ -373,6 +376,8 @@ public class FormBinder {
             }
             LocalDate start = aggregate.getStart().getDate();
             LocalDate end = aggregate.getEnd().asExclusiveEnd();
+            taskPropertiesController.updateTaskStartDate(start);
+            taskPropertiesController.updateTaskEndDate(end);
             showValueOfDateOn(labelTaskStart, start);
             showValueOfDateOn(labelTaskEnd, end);
             taskWorkableDays
