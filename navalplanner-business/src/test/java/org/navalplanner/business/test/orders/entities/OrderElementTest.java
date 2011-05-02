@@ -22,7 +22,9 @@
 package org.navalplanner.business.test.orders.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
@@ -60,11 +62,13 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -1093,6 +1097,50 @@ public class OrderElementTest {
                 break;
             }
         }
+    }
+
+    @Test
+    public  void checkChangeIndirectCriterionToInvalid() {
+        Order order = Order.create();
+        order.useSchedulingDataFor(mockedOrderVersion);
+        OrderLineGroup container1 = OrderLineGroup.create();
+        container1.useSchedulingDataFor(mockedOrderVersion);
+        order.add(container1);
+        OrderLineGroup container2 = OrderLineGroup.create();
+        container2.useSchedulingDataFor(mockedOrderVersion);
+        container1.add(container2);
+        OrderLine line = OrderLine.createOrderLineWithUnfixedPercentage(100);
+        line.useSchedulingDataFor(mockedOrderVersion);
+        container2.add(line);
+
+        CriterionType type = CriterionType.create("", "");
+        type.setResource(ResourceEnum.WORKER);
+        CriterionRequirement requirement = DirectCriterionRequirement
+                .create(Criterion.create(type));
+        order.addDirectCriterionRequirement(requirement);
+
+        assertThat(container2.getCriterionRequirements().size(), equalTo(1));
+        IndirectCriterionRequirement requirementAtContainer = (IndirectCriterionRequirement) container2
+                .getCriterionRequirements().iterator().next();
+
+        container2.setValidCriterionRequirement(requirementAtContainer, false);
+
+        assertThat(container1.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(container1.getCriterionRequirements().iterator().next()
+                .isValid());
+
+        assertThat(container2.getCriterionRequirements().size(), equalTo(1));
+        assertFalse(container2.getCriterionRequirements().iterator().next()
+                .isValid());
+
+        assertThat(line.getCriterionRequirements().size(), equalTo(1));
+        assertFalse(line.getCriterionRequirements().iterator().next().isValid());
+
+        assertThat(line.getHoursGroups().size(), equalTo(1));
+        assertThat(line.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertFalse(line.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next().isValid());
     }
 
 }
