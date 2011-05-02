@@ -632,12 +632,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     private boolean isCompletelyConsolidated() {
-        return task.getConsolidation() != null
+        return hasConsolidationValues()
                 && getUnconsolidatedPercentage().setScale(2).equals(
-                BigDecimal.ZERO.setScale(2));
+                        BigDecimal.ZERO.setScale(2));
+    }
+
+    private boolean hasConsolidationValues() {
+        return task.getConsolidation() != null
+                && !task.getConsolidation().getConsolidatedValues().isEmpty();
     }
 
     private BigDecimal getUnconsolidatedPercentage() {
+        assert hasConsolidationValues();
         BigDecimal lastConslidation = task.getConsolidation()
                 .getConsolidatedValues().last().getValue();
         BigDecimal unconsolitedPercentage = BigDecimal.ONE
