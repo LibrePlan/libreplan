@@ -174,7 +174,7 @@ public class OrderElementTreeModelTest {
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
         DirectAdvanceAssignment directAdvanceAssignment = DirectAdvanceAssignment
-                .create(true, HUNDRED);
+                .create(false, HUNDRED);
         advanceType = PredefinedAdvancedTypes.PERCENTAGE.getType();
         directAdvanceAssignment.setAdvanceType(advanceType);
         orderElement.addAdvanceAssignment(directAdvanceAssignment);
@@ -1039,6 +1039,48 @@ public class OrderElementTreeModelTest {
                 fail("Unexpected criterion: " + each.getCriterion());
             }
         }
+    }
+
+    @Test
+    public void checkMoveOrderLineWithAdvanceToOrderLineGroupWithSameAdvanceType()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(element2);
+
+        model.move(element2, container);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertFalse(order.getIndirectAdvanceAssignments().isEmpty());
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertFalse(container.getIndirectAdvanceAssignments().isEmpty());
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+
+        assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
     }
 
 }

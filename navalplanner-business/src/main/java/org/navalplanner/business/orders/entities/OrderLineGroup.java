@@ -243,13 +243,25 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     private void addIndirectAdvanceAssignments(OrderElement orderElement) {
+        Set<AdvanceAssignment> toRemove = new HashSet<AdvanceAssignment>();
+
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
-            IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
-                    .create();
-            indirectAdvanceAssignment.setAdvanceType(directAdvanceAssignment
-                    .getAdvanceType());
-            indirectAdvanceAssignment.setOrderElement(this);
-            this.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            if (getDirectAdvanceAssignmentByType(directAdvanceAssignment
+                    .getAdvanceType()) != null) {
+                toRemove.add(directAdvanceAssignment);
+            } else {
+                IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
+                        .create();
+                indirectAdvanceAssignment
+                        .setAdvanceType(directAdvanceAssignment
+                                .getAdvanceType());
+                indirectAdvanceAssignment.setOrderElement(this);
+                this.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
+            }
+        }
+
+        for (AdvanceAssignment each : toRemove) {
+            orderElement.removeAdvanceAssignment(each);
         }
 
         if (orderElement instanceof OrderLineGroup) {
@@ -259,7 +271,7 @@ public class OrderLineGroup extends OrderElement implements
             }
         }
 
-        if (!indirectAdvanceAssignments.isEmpty()) {
+        if (indirectAdvanceAssignments.isEmpty()) {
             addChildrenAdvanceOrderLineGroup();
         }
     }
