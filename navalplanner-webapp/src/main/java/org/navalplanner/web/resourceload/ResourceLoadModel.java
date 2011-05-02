@@ -715,6 +715,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
                     order.getName(), byOrder.get(order), "resource", role),
                     buildTimeLinesForOrder(resource, byOrder.get(order))));
         }
+        Collections.sort(result, LoadTimeLine.byStartAndEndDate());
         return result;
     }
 
