@@ -789,6 +789,11 @@ public class OrderElementTreeModelTest {
 
         addCriterionRequirement(element2);
         addDirectAdvanceAssignment(element2);
+        addAnotherDirectAdvanceAssignment(element2);
+
+        addAnotherDirectAdvanceAssignment(element);
+
+        addAnotherCriterionRequirement(order);
 
         model.unindent(element2);
 
@@ -796,30 +801,55 @@ public class OrderElementTreeModelTest {
         assertNotNull(order
                 .getIndirectAdvanceAssignment(directAdvanceAssignment
                         .getAdvanceType()));
-        assertTrue(order.getCriterionRequirements().isEmpty());
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(order.getCriterionRequirements().size(), equalTo(1));
 
         OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
         assertTrue(container.getDirectAdvanceAssignments().isEmpty());
         assertNull(container
                 .getIndirectAdvanceAssignment(directAdvanceAssignment
                         .getAdvanceType()));
-        assertTrue(container.getCriterionRequirements().isEmpty());
+        assertNotNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(container.getCriterionRequirements().size(), equalTo(1));
 
-        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
-        assertTrue(element.getCriterionRequirements().isEmpty());
-        assertTrue(element.getHoursGroups().get(0).getCriterionRequirements()
-                .isEmpty());
+        assertThat(element.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNotNull(element
+                .getAdvanceAssignmentByType(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(element.getCriterionRequirements().size(), equalTo(1));
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
 
         assertNotNull(element2
                 .getAdvanceAssignmentByType(directAdvanceAssignment
                         .getAdvanceType()));
-        assertThat(element2.getCriterionRequirements().size(), equalTo(1));
-        assertTrue(element2.getCriterionRequirements().iterator().next() instanceof DirectCriterionRequirement);
-        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .size(), equalTo(1));
-        assertTrue(element2.getHoursGroups().get(0).getCriterionRequirements()
-                .iterator().next() instanceof IndirectCriterionRequirement);
+        assertNotNull(element2
+                .getAdvanceAssignmentByType(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(element2.getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element2.getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)) {
+                assertTrue(each instanceof DirectCriterionRequirement);
+            } else if (each.getCriterion().isEquivalent(criterion2)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
 
+        for (CriterionRequirement each : element2.getHoursGroups().get(0)
+                .getCriterionRequirements()) {
+            if ((each.getCriterion().isEquivalent(criterion) || each
+                    .getCriterion().isEquivalent(criterion2))) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
     }
 
 }
