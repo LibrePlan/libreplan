@@ -1001,4 +1001,121 @@ public class OrderElementTreeModelTest {
         }
     }
 
+    @Test
+    public void checkMoveOrderLineWithCriteriaAndAdvancesToOrderLineGroupWithCriteriaAndAdvances()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        addCriterionRequirement(container);
+        addDirectAdvanceAssignment(container);
+
+        addAnotherCriterionRequirement(element2);
+        addAnotherDirectAdvanceAssignment(element2);
+
+        addAnotherDifferentCriterionRequirement(order);
+        addAnotherDifferentDirectAdvanceAssignment(order);
+
+        model.move(element2, container);
+
+        assertThat(order.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNotNull(order
+                .getDirectAdvanceAssignmentByType(directAdvanceAssignment3
+                        .getAdvanceType()));
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertNotNull(order
+                .getIndirectAdvanceAssignment(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(order.getCriterionRequirements().size(), equalTo(1));
+        assertDirectCriterion(order.getCriterionRequirements().iterator()
+                .next(), criterion3);
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNotNull(container
+                .getDirectAdvanceAssignmentByType(directAdvanceAssignment
+                        .getAdvanceType()));
+        assertNotNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertNull(container
+                .getIndirectAdvanceAssignment(directAdvanceAssignment3
+                        .getAdvanceType()));
+        assertThat(container.getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : container.getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion3)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else if (each.getCriterion().isEquivalent(criterion)) {
+                assertTrue(each instanceof DirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertThat(element.getCriterionRequirements().size(), equalTo(2));
+        for (CriterionRequirement each : element.getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)
+                    || each.getCriterion().isEquivalent(criterion3)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(2));
+        for (CriterionRequirement each : element.getHoursGroups().get(0)
+                .getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)
+                    || each.getCriterion().isEquivalent(criterion3)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+
+        assertNotNull(element2
+                .getAdvanceAssignmentByType(directAdvanceAssignment2
+                        .getAdvanceType()));
+        assertThat(element2.getCriterionRequirements().size(), equalTo(3));
+        for (CriterionRequirement each : element2.getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion2)) {
+                assertTrue(each instanceof DirectCriterionRequirement);
+            } else if (each.getCriterion().isEquivalent(criterion)
+                    || each.getCriterion().isEquivalent(criterion3)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(3));
+        for (CriterionRequirement each : element2.getHoursGroups().get(0)
+                .getCriterionRequirements()) {
+            if (each.getCriterion().isEquivalent(criterion)
+                    || each.getCriterion().isEquivalent(criterion2)
+                    || each.getCriterion().isEquivalent(criterion3)) {
+                assertTrue(each instanceof IndirectCriterionRequirement);
+            } else {
+                fail("Unexpected criterion: " + each.getCriterion());
+            }
+        }
+    }
+
 }
