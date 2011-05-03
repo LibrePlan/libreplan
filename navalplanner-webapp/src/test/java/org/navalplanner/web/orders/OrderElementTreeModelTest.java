@@ -1114,8 +1114,6 @@ public class OrderElementTreeModelTest {
         assertTrue(order.getLabels().isEmpty());
 
         assertThat(container.getLabels().size(), equalTo(1));
-        Label label1 = container.getLabels().iterator().next();
-        Label label2 = label;
         assertThat(container.getLabels().iterator().next(), equalTo(label));
 
         assertTrue(element.getLabels().isEmpty());
