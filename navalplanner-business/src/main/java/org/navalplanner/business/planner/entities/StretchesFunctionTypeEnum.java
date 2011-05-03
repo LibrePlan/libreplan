@@ -59,6 +59,7 @@ public enum StretchesFunctionTypeEnum {
                 List<Interval> intervalsDefinedByStreches,
                 LocalDate startInclusive, LocalDate endExclusive,
                 int totalHours) {
+
             double[] x = Interval.getDayPointsFor(startInclusive,
                     intervalsDefinedByStreches);
             assert x.length == 1 + intervalsDefinedByStreches.size();
@@ -178,10 +179,10 @@ public enum StretchesFunctionTypeEnum {
         List<Interval> intervals = new ArrayList<Interval>();
         intervals.addAll(stretchesFunction.getIntervalsDefinedByStreches());
 
-        LocalDate start = resourceAllocation.getFirstNonConsolidatedDate();
-        LocalDate end = resourceAllocation.getTask().getEndAsLocalDate();
+        LocalDate startInclusive = resourceAllocation.getFirstNonConsolidatedDate();
+        LocalDate endExclusive = resourceAllocation.getTask().getEndAsLocalDate();
         int totalHours = resourceAllocation.getNonConsolidatedHours();
-        apply(resourceAllocation, intervals, start, end, totalHours);
+        apply(resourceAllocation, intervals, startInclusive, endExclusive, totalHours);
     }
 
     protected abstract void apply(ResourceAllocation<?> allocation,
