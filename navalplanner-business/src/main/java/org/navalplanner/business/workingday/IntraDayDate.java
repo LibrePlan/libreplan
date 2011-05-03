@@ -187,6 +187,10 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return getDate().plusDays(1);
     }
 
+    public void plus(int days) {
+        this.date = this.date.plusDays(days);
+    }
+
     public int compareTo(LocalDate other) {
         int result = this.date.compareTo(other);
         if (result != 0) {

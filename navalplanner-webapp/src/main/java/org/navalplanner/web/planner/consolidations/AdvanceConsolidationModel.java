@@ -253,6 +253,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                                 Arrays.asList(resourceAllocation
                                         .asResourcesPerDayModification()))
                                 .untilAllocating(hours(pendingHours));
+                        date.plus(1);
                         task.setIntraDayEndDate(date);
                     }
                 } else {
