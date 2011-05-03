@@ -412,7 +412,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
         overallProgressContent = new OverAllProgressContent(overallProgressTab);
-        overallProgressContent.refresh();
+        overallProgressContent.updateAndRefresh();
     }
 
     private void setupAdvanceAssignmentPlanningController(final Planner planner,
