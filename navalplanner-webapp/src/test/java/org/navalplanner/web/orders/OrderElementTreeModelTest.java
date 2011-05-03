@@ -114,7 +114,7 @@ public class OrderElementTreeModelTest {
 
     private MaterialAssignment materialAssignment;
 
-    private Label label;
+    private Label label, label2;
 
     private QualityForm qualityForm;
 
@@ -209,6 +209,12 @@ public class OrderElementTreeModelTest {
 
     private void addSameLabel(OrderElement orderElement) {
         orderElement.addLabel(label);
+    }
+
+    private void addAnotherLabel(OrderElement orderElement) {
+        label2 = Label.create("label2");
+        LabelType.create("label-type-2").addLabel(label2);
+        orderElement.addLabel(label2);
     }
 
     private void addMaterialAssignment(OrderElement orderElement) {
@@ -1110,6 +1116,8 @@ public class OrderElementTreeModelTest {
         addLabel(container);
         addSameLabel(element2);
 
+        addAnotherLabel(element2);
+
         model.move(element2, container);
 
         assertTrue(order.getLabels().isEmpty());
@@ -1118,7 +1126,8 @@ public class OrderElementTreeModelTest {
         assertThat(container.getLabels().iterator().next(), equalTo(label));
 
         assertTrue(element.getLabels().isEmpty());
-        assertTrue(element2.getLabels().isEmpty());
+        assertThat(element2.getLabels().size(), equalTo(1));
+        assertThat(element2.getLabels().iterator().next(), equalTo(label2));
     }
 
     @Test
@@ -1212,6 +1221,8 @@ public class OrderElementTreeModelTest {
         addLabel(container);
         addSameLabel(container2);
 
+        addAnotherLabel(container2);
+
         model.move(container2, container);
 
         assertTrue(order.getLabels().isEmpty());
@@ -1221,7 +1232,8 @@ public class OrderElementTreeModelTest {
 
         assertTrue(element.getLabels().isEmpty());
 
-        assertTrue(container2.getLabels().isEmpty());
+        assertThat(container2.getLabels().size(), equalTo(1));
+        assertThat(container2.getLabels().iterator().next(), equalTo(label2));
         assertTrue(element2.getLabels().isEmpty());
         assertTrue(element3.getLabels().isEmpty());
     }
@@ -1271,6 +1283,8 @@ public class OrderElementTreeModelTest {
         addLabel(container);
         addSameLabel(element2);
 
+        addAnotherLabel(element2);
+
         model.move(container2, container);
 
         assertTrue(order.getLabels().isEmpty());
@@ -1281,7 +1295,8 @@ public class OrderElementTreeModelTest {
         assertTrue(element.getLabels().isEmpty());
 
         assertTrue(container2.getLabels().isEmpty());
-        assertTrue(element2.getLabels().isEmpty());
+        assertThat(element2.getLabels().size(), equalTo(1));
+        assertThat(element2.getLabels().iterator().next(), equalTo(label2));
         assertTrue(element3.getLabels().isEmpty());
     }
 

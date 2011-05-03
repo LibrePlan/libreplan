@@ -589,6 +589,10 @@ public abstract class OrderElement extends IntegrationEntity implements
             }
             labels.removeAll(toRemove);
         }
+
+        for (OrderElement each : getChildren()) {
+            each.updateLabels();
+        }
     }
 
     public void removeLabel(Label label) {
