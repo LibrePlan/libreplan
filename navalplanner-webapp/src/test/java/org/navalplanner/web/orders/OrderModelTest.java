@@ -46,6 +46,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -331,7 +332,12 @@ public class OrderModelTest {
                     for (OrderElement orderElement : elements) {
                         assertThat(((OrderLineGroup) orderElement)
                                 .getIndirectAdvanceAssignments().size(),
-                                equalTo(0));
+                                equalTo(1));
+                        assertThat(((OrderLineGroup) orderElement)
+                                .getIndirectAdvanceAssignments().iterator()
+                                .next().getAdvanceType(),
+                                equalTo(PredefinedAdvancedTypes.CHILDREN
+                                        .getType()));
                     }
                     for (int i = 0; i < containers.length; i++) {
                         assertThat(elements.get(i).getId(),

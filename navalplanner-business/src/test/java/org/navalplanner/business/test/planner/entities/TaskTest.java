@@ -39,10 +39,14 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 import java.util.Arrays;
 import java.util.Date;
 
+import javax.annotation.Resource;
+
 import org.easymock.IAnswer;
 import org.joda.time.LocalDate;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -84,7 +88,15 @@ public class TaskTest {
 
     private BaseCalendar calendar;
 
-    public TaskTest() {
+    @Resource
+    private IDataBootstrap defaultAdvanceTypesBootstrapListener;
+
+    @Before
+    public void loadRequiredaData() {
+        // Load data
+        defaultAdvanceTypesBootstrapListener.loadRequiredData();
+
+        // Create basic data
         hoursGroup = new HoursGroup();
         hoursGroup.setWorkingHours(3);
         Order order = new Order();
