@@ -1121,4 +1121,50 @@ public class OrderElementTreeModelTest {
         assertTrue(element2.getLabels().isEmpty());
     }
 
+    @Test
+    public void checkMoveOrderLineWithCriterionToOrderLineGroupWithSameCriterion() {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        addCriterionRequirement(container);
+        addCriterionRequirement(element2);
+
+        model.move(element2, container);
+
+        assertTrue(order.getCriterionRequirements().isEmpty());
+
+        assertThat(container.getCriterionRequirements().size(), equalTo(1));
+        assertDirectCriterion(container.getCriterionRequirements().iterator()
+                .next(), criterion);
+
+        assertThat(element.getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getCriterionRequirements().iterator()
+                .next(), criterion);
+        assertThat(element.getHoursGroups().get(0).getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element.getHoursGroups().get(0)
+                .getCriterionRequirements().iterator().next(), criterion);
+
+        assertThat(element2.getCriterionRequirements().size(), equalTo(1));
+        assertIndirectCriterion(element2.getCriterionRequirements().iterator()
+                .next(), criterion);
+        assertThat(element2.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertIndirectCriterion(element2.getHoursGroups().get(0)
+                .getCriterionRequirements().iterator().next(), criterion);
+    }
+
 }
