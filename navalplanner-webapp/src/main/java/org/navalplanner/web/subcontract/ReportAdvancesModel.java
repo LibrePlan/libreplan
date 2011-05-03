@@ -112,8 +112,10 @@ public class ReportAdvancesModel implements IReportAdvancesModel {
 
     private void forceLoadAdvanceAssignments(Order order) {
         order.getDirectAdvanceAssignmentOfTypeSubcontractor();
-        order.getDirectAdvanceAssignmentOfTypeSubcontractor()
+        if (order.getDirectAdvanceAssignmentOfTypeSubcontractor() != null) {
+            order.getDirectAdvanceAssignmentOfTypeSubcontractor()
                 .getAdvanceMeasurements().size();
+        }
     }
 
     @Override
