@@ -192,10 +192,40 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             messagesForUser.showMessage(Level.INFO, _("Cost category saved"));
             return true;
         } catch (ValidationException e) {
-            e.getInvalidValue().getValue();
-            messagesForUser.showInvalidValues(e);
+            showInvalidValues(e);
         }
         return false;
+    }
+
+    private void showInvalidValues(ValidationException e) {
+        Object value = e.getInvalidValue().getBean();
+        if (value instanceof HourCost) {
+            showInvalidValue((HourCost) value);
+        }
+        messagesForUser.showInvalidValues(e);
+    }
+
+    private void showInvalidValue(HourCost hourCost) {
+        Row row = ComponentsFinder.findRowByValue(listHourCosts, hourCost);
+        if (row != null) {
+            if (hourCost.getType() == null) {
+                Listbox workHoursType = getWorkHoursType(row);
+                String message = workHoursType.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
+                        : _("The type of hours cannot be null");
+                throw new WrongValueException(getWorkHoursType(row), message);
+            }
+            if (hourCost.getPriceCost() == null) {
+                throw new WrongValueException(getPricePerHour(row), _("Cannot be null or empty"));
+            }
+        }
+    }
+
+    private Listbox getWorkHoursType(Row row) {
+        return (Listbox) row.getChildren().get(1);
+    }
+
+    private Component getPricePerHour(Row row) {
+        return (Component) row.getChildren().get(2);
     }
 
     public CostCategory getCostCategory() {
