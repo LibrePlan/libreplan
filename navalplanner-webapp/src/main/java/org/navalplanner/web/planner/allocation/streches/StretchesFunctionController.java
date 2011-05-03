@@ -267,6 +267,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
      */
     private class StretchesRenderer implements ListitemRenderer {
 
+        private final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
         @Override
         public void render(Listitem item, Object data) throws Exception {
             Stretch stretch = (Stretch) data;
@@ -317,31 +319,47 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
-                            return stretch.getLengthPercentage().multiply(
-                                    new BigDecimal(100));
+                            return fromValueToPercent(scaleBy(stretch.getLengthPercentage(), 4));
                         }
                     }, new Util.Setter<BigDecimal>() {
                         @Override
-                        public void set(BigDecimal value) {
-                            if (value == null) {
-                                value = BigDecimal.ZERO;
+                        public void set(BigDecimal percent) {
+                            if (percent == null) {
+                                percent = BigDecimal.ZERO;
                             }
-                            if (value.toBigInteger().intValue() > 100
-                                    || value.toBigInteger().intValue() < 0) {
-                                throw new WrongValueException(
-                                        tempDecimalbox,
-                                        _("Length percentage should be between 0 and 100"));
-                            }
-                            value = value.setScale(2).divide(
-                                    new BigDecimal(100), RoundingMode.DOWN);
+                            checkBetweenZeroAndOneHundred(percent);
+                            BigDecimal value = fromPercentToValue(scaleBy(percent, 2));
                             stretchesFunctionModel.setStretchLengthPercentage(
                                     stretch, value);
                             focusState.focusOn(stretch, Field.LENGTH);
                             reloadStretchesListAndCharts();
                         }
+
+                        private void checkBetweenZeroAndOneHundred(BigDecimal percent) {
+                            if (percent.toBigInteger().intValue() > 100
+                                    || percent.toBigInteger().intValue() < 0) {
+                                throw new WrongValueException(
+                                        tempDecimalbox,
+                                        _("Length percentage should be between 0 and 100"));
+                            }
+                        }
+
                     });
             appendChild(item, decimalbox);
             focusState.focusIfApplycableOnLength(stretch, decimalbox);
+        }
+
+        private BigDecimal scaleBy(BigDecimal value, int scale) {
+            return value.setScale(scale, RoundingMode.HALF_UP);
+        }
+
+        private BigDecimal fromValueToPercent(BigDecimal value) {
+            return value.multiply(ONE_HUNDRED);
+        }
+
+        private BigDecimal fromPercentToValue(BigDecimal percent) {
+            return BigDecimal.ZERO.equals(percent) ? BigDecimal.ZERO : percent
+                    .divide(ONE_HUNDRED, RoundingMode.DOWN);
         }
 
         private void appendAmountWorkPercentage(Listitem item,
@@ -351,17 +369,16 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
-                            return stretch.getAmountWorkPercentage().multiply(
-                                    new BigDecimal(100));
+                            return fromValueToPercent(scaleBy(
+                                    stretch.getAmountWorkPercentage(), 4));
                         }
                     }, new Util.Setter<BigDecimal>() {
                         @Override
-                        public void set(BigDecimal value) {
-                            if(value==null){
-                                value = BigDecimal.ZERO;
+                        public void set(BigDecimal percent) {
+                            if (percent == null) {
+                                percent = BigDecimal.ZERO;
                             }
-                            value = value.setScale(2).divide(
-                                    new BigDecimal(100), RoundingMode.DOWN);
+                            BigDecimal value = fromPercentToValue(scaleBy(percent, 2));
                             try {
                                 stretch.setAmountWorkPercentage(value);
                                 focusState.focusOn(stretch, Field.AMOUNT_WORK);
