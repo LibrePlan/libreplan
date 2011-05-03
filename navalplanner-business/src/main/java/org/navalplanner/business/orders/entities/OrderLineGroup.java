@@ -290,6 +290,10 @@ public class OrderLineGroup extends OrderElement implements
                         .getAdvanceType());
             }
         }
+
+        if ((indirectAdvanceAssignments.size() == 1) && existChildrenAdvance()) {
+            removeChildrenAdvanceOrderLineGroup();
+        }
     }
 
     @Override

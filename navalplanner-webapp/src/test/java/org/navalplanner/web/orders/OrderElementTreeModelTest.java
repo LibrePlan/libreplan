@@ -290,6 +290,7 @@ public class OrderElementTreeModelTest {
         model.removeNode(element);
         assertTrue(order.getChildren().isEmpty());
         assertThat(order.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertTrue(order.getIndirectAdvanceAssignments().isEmpty());
         assertFalse(order.getCriterionRequirements().isEmpty());
     }
 
@@ -308,7 +309,7 @@ public class OrderElementTreeModelTest {
         model.removeNode(element);
         assertTrue(order.getChildren().isEmpty());
         assertTrue(order.getDirectAdvanceAssignments().isEmpty());
-        assertNull(order.getIndirectAdvanceAssignment(advanceType));
+        assertTrue(order.getIndirectAdvanceAssignments().isEmpty());
         assertTrue(order.getCriterionRequirements().isEmpty());
     }
 
