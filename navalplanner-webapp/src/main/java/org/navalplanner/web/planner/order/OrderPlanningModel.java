@@ -556,7 +556,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                             return;
                         }
                         if (planner.isVisibleChart()) {
-                            overallProgressContent.refresh();
+                            overallProgressContent.updateAndRefresh();
                         }
                     }
       });
@@ -1683,7 +1683,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            taskElementDAO.save(rootTask);
             rootTask
                     .updateCriticalPathProgress((List<TaskElement>) planningState
                             .getPlanner().getCriticalPath());
