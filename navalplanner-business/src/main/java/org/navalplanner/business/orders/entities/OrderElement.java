@@ -579,6 +579,18 @@ public abstract class OrderElement extends IntegrationEntity implements
         labels.add(label);
     }
 
+    protected void updateLabels() {
+        if (parent != null) {
+            Set<Label> toRemove = new HashSet<Label>();
+            for (Label each : labels) {
+                if (!parent.checkAncestorsNoOtherLabelRepeated(each)) {
+                    toRemove.add(each);
+                }
+            }
+            labels.removeAll(toRemove);
+        }
+    }
+
     public void removeLabel(Label label) {
         labels.remove(label);
     }
@@ -1073,7 +1085,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
-    private boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
+    protected boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
         for (Label label : labels) {
             if (label.isEqualTo(newLabel)) {
                 return false;

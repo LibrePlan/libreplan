@@ -92,6 +92,7 @@ public class OrderLineGroup extends OrderElement implements
         @Override
         protected void onChildAddedAdditionalActions(OrderElement newChild) {
             updateCriterionRequirements();
+            newChild.updateLabels();
         }
 
         @Override

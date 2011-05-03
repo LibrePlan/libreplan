@@ -207,6 +207,10 @@ public class OrderElementTreeModelTest {
         orderElement.addLabel(label);
     }
 
+    private void addSameLabel(OrderElement orderElement) {
+        orderElement.addLabel(label);
+    }
+
     private void addMaterialAssignment(OrderElement orderElement) {
         materialAssignment = MaterialAssignment.create(Material
                 .createUnvalidated("material-code", "material-description",
@@ -1081,6 +1085,41 @@ public class OrderElementTreeModelTest {
 
         assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
         assertNull(element2.getAdvanceAssignmentByType(advanceType));
+    }
+
+    @Test
+    public void checkMoveOrderLineWithLabelToOrderLineGroupWithSameLabel() {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        addLabel(container);
+        addSameLabel(element2);
+
+        model.move(element2, container);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        Label label1 = container.getLabels().iterator().next();
+        Label label2 = label;
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+        assertTrue(element2.getLabels().isEmpty());
     }
 
 }
