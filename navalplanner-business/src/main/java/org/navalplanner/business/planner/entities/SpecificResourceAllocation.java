@@ -313,12 +313,25 @@ public class SpecificResourceAllocation extends
             LocalDate endExclusive, int newHoursForInterval) {
         AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
                 start, endExclusive);
+
         List<DayAssignment> assignments = interval.getAssignmentsOnInterval();
+
+        List<DayAssignment> nonConsolidatedAssignments = interval
+                .getNoConsolidatedAssignmentsOnInterval();
+        List<DayAssignment> consolidatedAssignments = interval
+                .getConsolidatedAssignmentsOnInterval();
+
+        int sumHoursConsolidated = ProportionalDistributor
+                .sumIntegerParts(asHours(consolidatedAssignments));
+        int pendingToReassign = newHoursForInterval - sumHoursConsolidated;
+
         ProportionalDistributor distributor = ProportionalDistributor
-                .create(asHours(assignments));
-        int[] newHoursPerDay = distributor.distribute(newHoursForInterval);
-        resetAssigmentsForInterval(interval,
-                assignmentsForNewHours(assignments, newHoursPerDay));
+                .create(asHours(nonConsolidatedAssignments));
+
+        int[] newHoursPerDay = distributor.distribute(pendingToReassign);
+
+        resetAssigmentsForInterval(interval, assignmentsForNewHours(
+                nonConsolidatedAssignments, newHoursPerDay));
     }
 
     private List<SpecificDayAssignment> assignmentsForNewHours(

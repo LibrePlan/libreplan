@@ -36,7 +36,7 @@ public class ProportionalDistributor {
                 sumIntegerParts(initialShares), initialShares));
     }
 
-    private static int sumIntegerParts(int[] numbers) {
+    public static int sumIntegerParts(int[] numbers) {
         int sum = 0;
         for (Number each : numbers) {
             sum += each.intValue();

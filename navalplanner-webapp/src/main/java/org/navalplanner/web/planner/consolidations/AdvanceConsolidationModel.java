@@ -41,11 +41,11 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
-import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
+import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.planner.entities.consolidations.ConsolidatedValue;
@@ -200,6 +200,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void addConsolidatedValue(ConsolidatedValue value) {
         if (consolidation != null && task != null) {
+            if (consolidation.getConsolidatedValues().contains(value)) {
+                return;
+            }
             if (!consolidation.isCalculated()) {
                 ((NonCalculatedConsolidation) consolidation)
                         .addConsolidatedValue((NonCalculatedConsolidatedValue) value);
@@ -322,12 +325,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
                 LocalDate firstDayNotConsolidated = task
                         .getFirstDayNotConsolidated().getDate();
-                for (DayAssignment dayAssignment : task.getDayAssignments()) {
-                    if (dayAssignment.getDay().compareTo(
-                            firstDayNotConsolidated) >= 0) {
-                        dayAssignment.setConsolidated(false);
-                    }
-                }
 
                 Set<ResourceAllocation<?>> allResourceAllocations = task
                         .getAllResourceAllocations();
@@ -339,10 +336,14 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     if (!consolidation.getConsolidatedValues().isEmpty()) {
                         BigDecimal lastConslidation = task.getConsolidation()
                                 .getConsolidatedValues().last().getValue();
-                        pendingHours = BigDecimal.ONE.subtract(
-                                lastConslidation.divide(new BigDecimal(100),
-                                        RoundingMode.DOWN)).multiply(
-                                new BigDecimal(pendingHours)).intValue();
+
+                        pendingHours = BigDecimal.ONE
+                                .subtract(
+                                        lastConslidation.setScale(2).divide(
+                                                new BigDecimal(100),
+                                                RoundingMode.DOWN)).multiply(
+                                        new BigDecimal(pendingHours))
+                                .intValue();
                     }
                     if (!taskEndDate.equals(endExclusive)) {
                         if ((taskEndDate != null) && (endExclusive != null)
@@ -358,6 +359,24 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     }
                     reassign(resourceAllocation, firstDayNotConsolidated,
                             endExclusive, pendingHours);
+                }
+
+                // delete the assignments with posterior date than endDate
+                List<DayAssignment> toremove = new ArrayList<DayAssignment>();
+                for (DayAssignment dayAssignment : task.getDayAssignments()) {
+                    if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
+                        toremove.add(dayAssignment);
+                    }
+                }
+                task.getDayAssignments().removeAll(toremove);
+
+                // update the day assignment which not are consolidated
+                // according to the first day not consolidated in the task
+                for (DayAssignment dayAssignment : task.getDayAssignments()) {
+                    if (dayAssignment.getDay().compareTo(
+                            firstDayNotConsolidated) >= 0) {
+                        dayAssignment.setConsolidated(false);
+                    }
                 }
             }
         }
