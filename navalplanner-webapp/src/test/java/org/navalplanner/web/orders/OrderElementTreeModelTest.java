@@ -1167,4 +1167,122 @@ public class OrderElementTreeModelTest {
                 .getCriterionRequirements().iterator().next(), criterion);
     }
 
+    @Test
+    public void checkMoveOrderGroupLineWithLabelToOrderLineGroupWithSameLabel() {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container.setName("container");
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        model.addElementAt(element2, "element3", 200);
+
+        OrderLineGroup container2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("container")) {
+                container = (OrderLineGroup) each;
+            } else {
+                container2 = (OrderLineGroup) each;
+            }
+        }
+
+        element = (OrderLine) container.getChildren().get(0);
+
+        OrderLine element3 = null;
+        for (OrderElement each : container2.getChildren()) {
+            if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            } else if (each.getName().equals("element3")) {
+                element3 = (OrderLine) each;
+            }
+        }
+
+        addLabel(container);
+        addSameLabel(container2);
+
+        model.move(container2, container);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+
+        assertTrue(container2.getLabels().isEmpty());
+        assertTrue(element2.getLabels().isEmpty());
+        assertTrue(element3.getLabels().isEmpty());
+    }
+
+    @Test
+    public void checkMoveOrderLineGroupWithLabelOnChildToOrderLineGroupWithSameLabel() {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container.setName("container");
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        model.addElementAt(element2, "element3", 200);
+
+        OrderLineGroup container2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("container")) {
+                container = (OrderLineGroup) each;
+            } else {
+                container2 = (OrderLineGroup) each;
+            }
+        }
+
+        element = (OrderLine) container.getChildren().get(0);
+
+        OrderLine element3 = null;
+        for (OrderElement each : container2.getChildren()) {
+            if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            } else if (each.getName().equals("element3")) {
+                element3 = (OrderLine) each;
+            }
+        }
+
+        addLabel(container);
+        addSameLabel(element2);
+
+        model.move(container2, container);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+
+        assertTrue(container2.getLabels().isEmpty());
+        assertTrue(element2.getLabels().isEmpty());
+        assertTrue(element3.getLabels().isEmpty());
+    }
+
 }
