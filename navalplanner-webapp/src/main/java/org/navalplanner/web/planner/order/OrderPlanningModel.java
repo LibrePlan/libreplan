@@ -49,6 +49,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -407,10 +408,35 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller,
                 planner, changeHooker);
         setupOverallProgress(planner, changeHooker);
+        setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
         overallProgressContent = new OverAllProgressContent(overallProgressTab);
         overallProgressContent.refresh();
+    }
+
+    private void setupAdvanceAssignmentPlanningController(final Planner planner,
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
+
+        advanceAssignmentPlanningController.reloadOverallProgressListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
+                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                    @Override
+                    public Void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return null;
+                        }
+                        if (planner.isVisibleChart()) {
+                            overallProgressContent.updateAndRefresh();
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
     }
 
     private Tabpanel createOverallProgressTab(
