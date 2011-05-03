@@ -199,14 +199,8 @@ public class SaveCommand implements ISaveCommand {
             TaskGroup rootTask = state.getRootTask();
 
             updateRootTaskPosition(rootTask);
-            updateCriticalPathProgress(rootTask);
             taskElementDAO.save(rootTask);
         }
-    }
-
-    private void updateCriticalPathProgress(TaskGroup rootTask) {
-        rootTask.updateCriticalPathProgress((List<TaskElement>) state
-                .getPlanner().getCriticalPath());
     }
 
     private void updateRootTaskPosition(TaskGroup rootTask) {
