@@ -85,6 +85,8 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.limitingresources.QueuesState.Edge;
 import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
@@ -748,13 +750,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         applyAllocation(allocationStillNotDone, new IDayAssignmentBehaviour() {
 
             @Override
-            public void allocateDayAssigments() {
+            public void allocateDayAssigments(IntraDayDate start,
+                    IntraDayDate end) {
                 ResourceAllocation<?> resourceAllocation = getResourceAllocation(allocationStillNotDone);
                 Resource resource = getResource(allocationStillNotDone);
 
                 List<DayAssignment> assignments = allocationStillNotDone.getAssignmentsFor(
                         resourceAllocation, resource);
-                resourceAllocation.allocateLimitingDayAssignments(assignments);
+                resourceAllocation.allocateLimitingDayAssignments(assignments,
+                        start, end);
             }
 
             private ResourceAllocation<?> getResourceAllocation(AllocationSpec allocation) {
@@ -773,7 +777,9 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             IDayAssignmentBehaviour allocationBehaviour) {
 
         // Do day allocation
-        allocationBehaviour.allocateDayAssigments();
+        allocationBehaviour.allocateDayAssigments(
+                convert(allocationStillNotDone.getStartInclusive()),
+                convert(allocationStillNotDone.getEndExclusive()));
 
         LimitingResourceQueueElement element = allocationStillNotDone
             .getElement();
@@ -813,14 +819,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         applyAllocation(allocation, new IDayAssignmentBehaviour() {
 
             @Override
-            public void allocateDayAssigments() {
+            public void allocateDayAssigments(IntraDayDate start,
+                    IntraDayDate end) {
 
                 List<DayAssignment> assignments = LimitingResourceAllocator
                         .generateDayAssignments(
                                 element.getResourceAllocation(),
                                 queue.getResource(), startAt, endsAfter);
                 element.getResourceAllocation().allocateLimitingDayAssignments(
-                        assignments);
+                        assignments, start, end);
             }
 
         });
@@ -848,7 +855,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      */
     private interface IDayAssignmentBehaviour {
 
-        void allocateDayAssigments();
+        void allocateDayAssigments(IntraDayDate start, IntraDayDate end);
 
     }
 
@@ -873,19 +880,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         // Update starting and ending dates for associated Task
         Task task = element.getResourceAllocation().getTask();
-        updateStartingAndEndingDate(task, startTime.getDate(), endTime
-                .getDate());
+        updateStartingAndEndingDate(task, convert(startTime), convert(endTime));
     }
 
-    private void updateStartingAndEndingDate(Task task, LocalDate startDate,
-            LocalDate endDate) {
-        task.setStartDate(toDate(startDate));
-        task.setEndDate(toDate(endDate));
-        task.explicityMoved(startDate);
+    private IntraDayDate convert(DateAndHour dateAndHour) {
+        return IntraDayDate.create(dateAndHour.getDate(),
+                EffortDuration.hours(dateAndHour.getHour()));
     }
 
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
+    private void updateStartingAndEndingDate(Task task, IntraDayDate startDate,
+            IntraDayDate endDate) {
+        task.setIntraDayStartDate(startDate);
+        task.setIntraDayEndDate(endDate);
+        task.explicityMoved(startDate.getDate());
     }
 
     private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue,

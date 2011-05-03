@@ -1245,13 +1245,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public void removeLimitingDayAssignments() {
-        allocateLimitingDayAssignments(Collections.<T>emptyList());
+        resetAssignmentsTo(Collections.<T> emptyList());
     }
 
     @SuppressWarnings("unchecked")
-    public void allocateLimitingDayAssignments(List<? extends DayAssignment> assignments) {
+    public void allocateLimitingDayAssignments(
+            List<? extends DayAssignment> assignments, IntraDayDate start,
+            IntraDayDate end) {
         assert isLimiting();
-        resetAssignmentsTo((List<T>) assignments);
+        resetAllAllocationAssignmentsTo((List<T>) assignments, start, end);
     }
 
     private void removingAssignments(
