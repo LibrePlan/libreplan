@@ -1076,22 +1076,28 @@ public class OrderElementTreeModelTest {
         addDirectAdvanceAssignment(container);
         addDirectAdvanceAssignment(element2);
 
+        addAnotherDirectAdvanceAssignment(element2);
+
         model.move(element2, container);
 
         assertTrue(order.getDirectAdvanceAssignments().isEmpty());
-        assertFalse(order.getIndirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
         assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertFalse(container.getIndirectAdvanceAssignments().isEmpty());
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
 
         assertTrue(element.getDirectAdvanceAssignments().isEmpty());
         assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
 
-        assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
+        assertFalse(element2.getDirectAdvanceAssignments().isEmpty());
         assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(element2.getAdvanceAssignmentByType(advanceType2));
     }
 
     @Test
@@ -1298,6 +1304,170 @@ public class OrderElementTreeModelTest {
         assertThat(element2.getLabels().size(), equalTo(1));
         assertThat(element2.getLabels().iterator().next(), equalTo(label2));
         assertTrue(element3.getLabels().isEmpty());
+    }
+
+    @Test
+    public void checkMoveOrderLineGroupWithAdvanceToOrderLineGroupWithSameAdvance()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container.setName("container");
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        model.addElementAt(element2, "element3", 200);
+
+        OrderLineGroup container2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("container")) {
+                container = (OrderLineGroup) each;
+            } else {
+                container2 = (OrderLineGroup) each;
+            }
+        }
+
+        element = (OrderLine) container.getChildren().get(0);
+
+        OrderLine element3 = null;
+        for (OrderElement each : container2.getChildren()) {
+            if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            } else if (each.getName().equals("element3")) {
+                element3 = (OrderLine) each;
+            }
+        }
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(container2);
+
+        addAnotherDirectAdvanceAssignment(container2);
+
+        model.move(container2, container);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
+
+        assertFalse(container2.getDirectAdvanceAssignments().isEmpty());
+        assertThat(container2.getIndirectAdvanceAssignments().size(),
+                equalTo(1));
+        assertNull(container2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
+        assertNull(container2.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNull(element2.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element3.getAdvanceAssignmentByType(advanceType));
+        assertNull(element3.getAdvanceAssignmentByType(advanceType2));
+    }
+
+    @Test
+    public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineGroupWithSameAdvance()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+        model.addElementAt(order.getChildren().get(0), "element2", 50);
+
+        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container.setName("container");
+
+        OrderLine element = null;
+        OrderLine element2 = null;
+        for (OrderElement each : container.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            }
+        }
+
+        model.unindent(element2);
+
+        model.addElementAt(element2, "element3", 200);
+
+        OrderLineGroup container2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("container")) {
+                container = (OrderLineGroup) each;
+            } else {
+                container2 = (OrderLineGroup) each;
+            }
+        }
+
+        element = (OrderLine) container.getChildren().get(0);
+
+        OrderLine element3 = null;
+        for (OrderElement each : container2.getChildren()) {
+            if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            } else if (each.getName().equals("element3")) {
+                element3 = (OrderLine) each;
+            }
+        }
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(element2);
+
+        addAnotherDirectAdvanceAssignment(element2);
+
+        model.move(container2, container);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(container2.getDirectAdvanceAssignments().isEmpty());
+        assertThat(container2.getIndirectAdvanceAssignments().size(),
+                equalTo(2));
+        assertNull(container2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
+        assertNotNull(container2.getIndirectAdvanceAssignment(advanceType2));
+
+        assertThat(element2.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(element2.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element3.getAdvanceAssignmentByType(advanceType));
+        assertNull(element3.getAdvanceAssignmentByType(advanceType2));
     }
 
 }
