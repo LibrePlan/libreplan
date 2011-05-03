@@ -228,6 +228,9 @@ public class StretchesFunction extends AssignmentFunction {
             stretchDate = each.getDate();
             loadedProportion = each.getAmountWorkPercentage().subtract(
                     sumOfProportions);
+            if (loadedProportion.signum() < 0) {
+                loadedProportion = BigDecimal.ZERO;
+            }
             result.add(Interval.create(loadedProportion, previous,
                     stretchDate, each.isReadOnly()));
             sumOfProportions = each.getAmountWorkPercentage();
@@ -305,7 +308,7 @@ public class StretchesFunction extends AssignmentFunction {
         return !getStretchesPlusConsolidated().isEmpty();
     }
 
-    @AssertTrue(message = "Some stretch has higher or equal values than the "
+    @AssertTrue(message = "Some stretch has lower or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
         List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();
