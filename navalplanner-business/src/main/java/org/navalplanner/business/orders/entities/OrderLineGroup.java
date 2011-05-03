@@ -291,7 +291,8 @@ public class OrderLineGroup extends OrderElement implements
             }
         }
 
-        if ((indirectAdvanceAssignments.size() == 1) && existChildrenAdvance()) {
+        if (children.isEmpty() && (indirectAdvanceAssignments.size() == 1)
+                && existChildrenAdvance()) {
             removeChildrenAdvanceOrderLineGroup();
         }
     }
