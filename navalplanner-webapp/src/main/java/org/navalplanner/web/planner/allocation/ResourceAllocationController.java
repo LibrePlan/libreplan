@@ -40,6 +40,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.LenientDecimalBox;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.AllocationSelector;
 import org.navalplanner.web.common.components.NewAllocationSelector;
@@ -154,7 +155,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        allResourcesPerDay = new Decimalbox();
+        allResourcesPerDay = new LenientDecimalBox();
         allResourcesPerDay.setWidth("80px");
         initAllocationLabels();
         makeReadyInputsForCalculationTypes();

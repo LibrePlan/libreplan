@@ -58,6 +58,7 @@ import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.web.common.EffortDurationBox;
+import org.navalplanner.web.common.LenientDecimalBox;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
 import org.zkoss.zk.au.out.AuWrongValue;
@@ -272,7 +273,7 @@ public abstract class AllocationRow {
 
     private EffortDurationBox effortInput = new EffortDurationBox();
 
-    private final Decimalbox intendedResourcesPerDayInput = new Decimalbox();
+    private final Decimalbox intendedResourcesPerDayInput = new LenientDecimalBox();
 
     private ResourcesPerDay editedValue;
 
