@@ -58,6 +58,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.common.IntegrationEntityModel;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -71,6 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/resources/machine/machines.zul")
 public class MachineModel extends IntegrationEntityModel implements
         IMachineModel {
     private static Log LOG = LogFactory.getLog(MachineModel.class);
