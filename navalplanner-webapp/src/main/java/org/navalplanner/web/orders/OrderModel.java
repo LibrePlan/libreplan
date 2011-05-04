@@ -85,6 +85,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IntegrationEntityModel;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,7 @@ import org.zkoss.zul.Messagebox;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/planner/index.zul;orders_list")
 public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
