@@ -251,6 +251,9 @@ public class OrderElementTreeModelTest {
 
         model.addElement("element", 100);
 
+        assertThat(order.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertTrue(order.getIndirectAdvanceAssignments().isEmpty());
+
         OrderLine element = (OrderLine) model.getRoot().getChildren().get(0);
         assertTrue(element.getDirectAdvanceAssignments().isEmpty());
 
@@ -1296,7 +1299,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1329,7 +1332,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1362,7 +1365,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1372,8 +1375,7 @@ public class OrderElementTreeModelTest {
         assertNull(element.getAdvanceAssignmentByType(advanceType2));
 
         assertFalse(container2.getDirectAdvanceAssignments().isEmpty());
-        assertThat(container2.getIndirectAdvanceAssignments().size(),
-                equalTo(1));
+        assertTrue(container2.getIndirectAdvanceAssignments().isEmpty());
         assertNull(container2.getAdvanceAssignmentByType(advanceType));
         assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
         assertNull(container2.getIndirectAdvanceAssignment(advanceType2));
@@ -1406,7 +1408,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1416,8 +1418,7 @@ public class OrderElementTreeModelTest {
         assertNull(element.getAdvanceAssignmentByType(advanceType2));
 
         assertFalse(container2.getDirectAdvanceAssignments().isEmpty());
-        assertThat(container2.getIndirectAdvanceAssignments().size(),
-                equalTo(1));
+        assertTrue(container2.getIndirectAdvanceAssignments().isEmpty());
         assertNull(container2.getAdvanceAssignmentByType(advanceType));
         assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
         assertNull(container2.getIndirectAdvanceAssignment(advanceType2));
