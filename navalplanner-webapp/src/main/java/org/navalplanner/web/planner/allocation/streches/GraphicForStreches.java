@@ -55,26 +55,27 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
     @Override
     public XYModel getAccumulatedHoursChartData(
             IStretchesFunctionModel stretchesFunctionModel) {
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        List<Stretch> stretches = stretchesFunctionModel.getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return new SimpleXYModel();
-        } else {
-            return getAccumulatedHoursChartData(stretches,
-                    stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
-                            stretchesFunctionModel.getAllocationHours()));
         }
+        return getAccumulatedHoursChartData(stretches,
+                stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
+                        stretchesFunctionModel.getAllocationHours()));
     }
 
     @Override
     public XYModel getDedicationChart(
             IStretchesFunctionModel stretchesFunctionModel) {
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        List<Stretch> stretches = stretchesFunctionModel
+                .getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return new SimpleXYModel();
         }
-        return getDedicationChart(stretches, stretchesFunctionModel
-                .getTaskStartDate(), new BigDecimal(stretchesFunctionModel
-                .getAllocationHours()), stretchesFunctionModel.getTaskCalendar());
+        return getDedicationChart(stretches,
+                stretchesFunctionModel.getTaskStartDate(),
+                new BigDecimal(stretchesFunctionModel.getAllocationHours()),
+                stretchesFunctionModel.getTaskCalendar());
     }
 
     protected abstract XYModel getDedicationChart(List<Stretch> stretches,
@@ -161,8 +162,8 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return canComputeChartFrom(model.getAllStretches(), model
-                    .getTaskStartDate());
+            return canComputeChartFrom(model.getStretchesPlusConsolidated(),
+                    model.getTaskStartDate());
         }
 
         @Override
