@@ -200,18 +200,12 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                         _("Last stretch should have one hundred percent for "
                                 + "length and amount of work percentage"));
             }
-            if (!stretchesFunction.ifInterpolatedMustHaveAtLeastTwoStreches()) {
-                throw new ValidationException(
-                        _("For interpolation at least two stretches are needed"));
-            }
-            if (stretchesFunction.getDesiredType() == StretchesFunctionTypeEnum.INTERPOLATED) {
-                final List<Stretch> stretchesDefinedByUser = getStretchesDefinedByUser();
-                if (!atLeastTwoStreches(stretchesDefinedByUser)) {
+            if (stretchesFunction.isInterpolated()) {
+                if (!stretchesFunction.checkHasAtLeastTwoStretches()) {
                     throw new ValidationException(
                             _("There must be at least 2 stretches for doing interpolation"));
                 }
-                if (!theFirstIntervalIsPosteriorToFirstDay(stretchesDefinedByUser,
-                        getTaskStartDate())) {
+                if (!stretchesFunction.checkFirstIntervalIsPosteriorToDate(getTaskStartDate())) {
                     throw new ValidationException(
                             _("The first stretch must be after the first day for doing interpolation"));
                 }

@@ -387,11 +387,17 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {
+        List<Stretch> stretches = stretchesFor(type);
         if (stretches.isEmpty()) {
             return Collections.emptyList();
         }
         checkStretchesSumOneHundredPercent();
         return intervalsFor(stretches);
+    }
+
+    private List<Stretch> stretchesFor(StretchesFunctionTypeEnum type) {
+        return (getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED)) ? getStretchesPlusConsolidated()
+                : getStretches();
     }
 
     private void checkStretchesSumOneHundredPercent() {
@@ -409,8 +415,22 @@ public class StretchesFunction extends AssignmentFunction {
         return left;
     }
 
-    public boolean ifInterpolatedMustHaveAtLeastTwoStreches() {
-        return getDesiredType() != StretchesFunctionTypeEnum.INTERPOLATED || stretches.size() >= 2;
+    public boolean checkHasAtLeastTwoStretches() {
+        return getStretchesPlusConsolidated().size() >= 2;
+    }
+
+    public boolean checkFirstIntervalIsPosteriorToDate(LocalDate date) {
+        List<Interval> intervals = StretchesFunction
+                .intervalsFor(getStretchesPlusConsolidated());
+        if (intervals.isEmpty()) {
+            return false;
+        }
+        Interval first = intervals.get(0);
+        return first.getEnd().compareTo(date) > 0;
+    }
+
+    public boolean isInterpolated() {
+        return getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED);
     }
 
     public void setConsolidatedStretch(Stretch stretch) {
