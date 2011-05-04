@@ -621,9 +621,9 @@ public abstract class OrderElement extends IntegrationEntity implements
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         if (this.getParent() != null) {
-            addChildrenAdvanceInParents(this.getParent());
             this.getParent().addIndirectAdvanceAssignment(
                     newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
+            addChildrenAdvanceInParents(this.getParent());
         }
     }
 

@@ -192,13 +192,17 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     public boolean existChildrenAdvance() {
+        return (getChildrenAdvance() != null);
+    }
+
+    public IndirectAdvanceAssignment getChildrenAdvance() {
         for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
             if (advance.getAdvanceType().getUnitName().equals(
                     PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
-                return true;
+                return advance;
             }
         }
-        return false;
+        return null;
     }
 
     private List<OrderElement> children = new ArrayList<OrderElement>();
@@ -921,6 +925,12 @@ public class OrderLineGroup extends OrderElement implements
             }
             if (toRemove != null) {
                 indirectAdvanceAssignments.remove(toRemove);
+                if (toRemove.getReportGlobalAdvance()) {
+                    IndirectAdvanceAssignment childrenAdvance = getChildrenAdvance();
+                    if (childrenAdvance != null) {
+                        childrenAdvance.setReportGlobalAdvance(true);
+                    }
+                }
             }
 
             if (parent != null) {

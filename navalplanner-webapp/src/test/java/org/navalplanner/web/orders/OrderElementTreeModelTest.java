@@ -177,8 +177,15 @@ public class OrderElementTreeModelTest {
     private void addDirectAdvanceAssignment(OrderElement orderElement)
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
+        addDirectAdvanceAssignment(orderElement, false);
+    }
+
+    private void addDirectAdvanceAssignment(OrderElement orderElement,
+            boolean spread)
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         DirectAdvanceAssignment directAdvanceAssignment = DirectAdvanceAssignment
-                .create(false, HUNDRED);
+                .create(spread, HUNDRED);
         advanceType = PredefinedAdvancedTypes.PERCENTAGE.getType();
         directAdvanceAssignment.setAdvanceType(advanceType);
         orderElement.addAdvanceAssignment(directAdvanceAssignment);
@@ -1906,6 +1913,65 @@ public class OrderElementTreeModelTest {
         assertIndirectCriterion(element3.getHoursGroups().get(0)
                 .getCriterionRequirements().iterator().next(), criterion);
 
+    }
+
+    /**
+     * This will create the following tree:
+     *
+     * <pre>
+     * order
+     *   |-- element1
+     *   |-- element2
+     * </pre>
+     */
+    private void createTreeWith2Task() {
+        model.addElement("element", 100);
+        model.addElement("element2", 50);
+
+        element = null;
+        element2 = null;
+        for (OrderElement each : order.getChildren()) {
+            if (each.getName().equals("element")) {
+                element = (OrderLine) each;
+            } else if (each.getName().equals("element2")) {
+                element2 = (OrderLine) each;
+            } else {
+                fail("Unexpected OrderElment name: " + each.getName());
+            }
+        }
+
+        model.unindent(element2);
+    }
+
+    @Test
+    public void checkRemoveElementWithAdvanceOnChildWhichSpread()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        createTreeWith2Task();
+
+        assertTrue(order.getIndirectAdvanceAssignments().isEmpty());
+        assertNull(order.getReportGlobalAdvanceAssignment());
+
+        addDirectAdvanceAssignment(element, true);
+        addAnotherDirectAdvanceAssignment(element);
+        addAnotherDirectAdvanceAssignment(element2);
+
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(order.getIndirectAdvanceAssignment(advanceType2));
+        assertThat(order.getReportGlobalAdvanceAssignment().getAdvanceType(),
+                equalTo(advanceType));
+
+        model.removeNode(element);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNull(order.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(order.getIndirectAdvanceAssignment(advanceType2));
+        assertNotNull(order.getReportGlobalAdvanceAssignment());
+
+        assertThat(element2.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNotNull(element2.getDirectAdvanceAssignmentByType(advanceType2));
     }
 
 }
