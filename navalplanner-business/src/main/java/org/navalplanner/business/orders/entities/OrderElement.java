@@ -1376,4 +1376,16 @@ public abstract class OrderElement extends IntegrationEntity implements
         return true;
     }
 
+    public void removeDirectAdvancesInList(
+            Set<DirectAdvanceAssignment> directAdvanceAssignments) {
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            removeAdvanceAssignment(getAdvanceAssignmentByType(each
+                    .getAdvanceType()));
+        }
+
+        for (OrderElement each : getChildren()) {
+            each.removeDirectAdvancesInList(directAdvanceAssignments);
+        }
+    }
+
 }
