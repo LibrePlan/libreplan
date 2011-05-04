@@ -244,7 +244,8 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     private void addIndirectAdvanceAssignments(OrderElement orderElement) {
-        orderElement.removeDirectAdvancesInList(directAdvanceAssignments);
+        orderElement
+                .removeDirectAdvancesInList(getDirectAdvanceAssignmentsAndAllInAncest());
 
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
             IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment

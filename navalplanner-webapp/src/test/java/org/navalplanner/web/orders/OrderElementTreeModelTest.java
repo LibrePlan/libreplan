@@ -1311,6 +1311,39 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    public void checkMoveOrderLineWithAdvanceToOrderLineInGroupWithSameAdvanceType()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        createTreeWithContainerAndTask();
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(element2);
+
+        addAnotherDirectAdvanceAssignment(element2);
+
+        model.move(element2, element);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
+
+        assertFalse(element2.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(element2.getAdvanceAssignmentByType(advanceType2));
+    }
+
+    @Test
     public void checkMoveOrderLineGroupWithAdvanceToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1355,6 +1388,50 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    public void checkMoveOrderLineGroupWithAdvanceToOrderLineInGroupWithSameAdvance()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        createTreeWithContainerAndContainer();
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(container2);
+
+        addAnotherDirectAdvanceAssignment(container2);
+
+        model.move(container2, element);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
+
+        assertFalse(container2.getDirectAdvanceAssignments().isEmpty());
+        assertThat(container2.getIndirectAdvanceAssignments().size(),
+                equalTo(1));
+        assertNull(container2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
+        assertNull(container2.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element2.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNull(element2.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element3.getAdvanceAssignmentByType(advanceType));
+        assertNull(element3.getAdvanceAssignmentByType(advanceType2));
+    }
+
+    @Test
     public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
@@ -1366,6 +1443,50 @@ public class OrderElementTreeModelTest {
         addAnotherDirectAdvanceAssignment(element2);
 
         model.move(container2, container);
+
+        assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
+
+        assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(container.getAdvanceAssignmentByType(advanceType));
+        assertNull(container.getIndirectAdvanceAssignment(advanceType));
+        assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
+
+        assertTrue(element.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNull(element.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(container2.getDirectAdvanceAssignments().isEmpty());
+        assertThat(container2.getIndirectAdvanceAssignments().size(),
+                equalTo(2));
+        assertNull(container2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(container2.getAdvanceAssignmentByType(advanceType2));
+        assertNotNull(container2.getIndirectAdvanceAssignment(advanceType2));
+
+        assertThat(element2.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNull(element2.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(element2.getAdvanceAssignmentByType(advanceType2));
+
+        assertTrue(element3.getDirectAdvanceAssignments().isEmpty());
+        assertNull(element3.getAdvanceAssignmentByType(advanceType));
+        assertNull(element3.getAdvanceAssignmentByType(advanceType2));
+    }
+
+    @Test
+    public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineInGroupWithSameAdvance()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        createTreeWithContainerAndContainer();
+
+        addDirectAdvanceAssignment(container);
+        addDirectAdvanceAssignment(element2);
+
+        addAnotherDirectAdvanceAssignment(element2);
+
+        model.move(container2, element);
 
         assertTrue(order.getDirectAdvanceAssignments().isEmpty());
         assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));

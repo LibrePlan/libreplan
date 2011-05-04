@@ -1388,4 +1388,17 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
     }
 
+    protected Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsAndAllInAncest() {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+
+        result.addAll(directAdvanceAssignments);
+
+        if (getParent() != null) {
+            result.addAll(getParent()
+                    .getDirectAdvanceAssignmentsAndAllInAncest());
+        }
+
+        return result;
+    }
+
 }
