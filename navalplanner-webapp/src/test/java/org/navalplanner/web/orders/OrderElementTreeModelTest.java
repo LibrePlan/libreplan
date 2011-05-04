@@ -120,6 +120,10 @@ public class OrderElementTreeModelTest {
 
     private OrderElementTemplate template;
 
+    private OrderLineGroup container, container2;
+
+    private OrderLine element, element2, element3;
+
     @Before
     public void loadRequiredaData() {
         // Load data
@@ -1052,15 +1056,24 @@ public class OrderElementTreeModelTest {
         }
     }
 
-    @Test
-    public void checkMoveOrderLineWithLabelToOrderLineGroupWithSameLabel() {
+    /**
+     * This will create the following tree:
+     *
+     * <pre>
+     * order
+     *   |-- container
+     *         |-- element
+     *   |-- element2
+     * </pre>
+     */
+    private void createTreeWithContainerAndTask() {
         model.addElement("element", 100);
         model.addElementAt(order.getChildren().get(0), "element2", 50);
 
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container = (OrderLineGroup) order.getChildren().get(0);
 
-        OrderLine element = null;
-        OrderLine element2 = null;
+        element = null;
+        element2 = null;
         for (OrderElement each : container.getChildren()) {
             if (each.getName().equals("element")) {
                 element = (OrderLine) each;
@@ -1070,6 +1083,11 @@ public class OrderElementTreeModelTest {
         }
 
         model.unindent(element2);
+    }
+
+    @Test
+    public void checkMoveOrderLineWithLabelToOrderLineGroupWithSameLabel() {
+        createTreeWithContainerAndTask();
 
         addLabel(container);
         addSameLabel(element2);
@@ -1089,15 +1107,47 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
-    public void checkMoveOrderGroupLineWithLabelToOrderLineGroupWithSameLabel() {
+    public void checkMoveOrderLineWithLabelToOrderLineInGroupWithSameLabel() {
+        createTreeWithContainerAndTask();
+
+        addLabel(container);
+        addSameLabel(element2);
+
+        addAnotherLabel(element2);
+
+        model.move(element2, element);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+        assertThat(element2.getLabels().size(), equalTo(1));
+        assertThat(element2.getLabels().iterator().next(), equalTo(label2));
+    }
+
+    /**
+     * This will create the following tree:
+     *
+     * <pre>
+     * order
+     *   |-- container
+     *         |-- element
+     *   |-- container2
+     *         |-- element2
+     *         |-- element3
+     * </pre>
+     */
+    private void createTreeWithContainerAndContainer() {
         model.addElement("element", 100);
         model.addElementAt(order.getChildren().get(0), "element2", 50);
 
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
+        container = (OrderLineGroup) order.getChildren().get(0);
         container.setName("container");
 
-        OrderLine element = null;
-        OrderLine element2 = null;
+        element = null;
+        element2 = null;
         for (OrderElement each : container.getChildren()) {
             if (each.getName().equals("element")) {
                 element = (OrderLine) each;
@@ -1110,7 +1160,7 @@ public class OrderElementTreeModelTest {
 
         model.addElementAt(element2, "element3", 200);
 
-        OrderLineGroup container2 = null;
+        container2 = null;
         for (OrderElement each : order.getChildren()) {
             if (each.getName().equals("container")) {
                 container = (OrderLineGroup) each;
@@ -1121,7 +1171,7 @@ public class OrderElementTreeModelTest {
 
         element = (OrderLine) container.getChildren().get(0);
 
-        OrderLine element3 = null;
+        element3 = null;
         for (OrderElement each : container2.getChildren()) {
             if (each.getName().equals("element2")) {
                 element2 = (OrderLine) each;
@@ -1129,6 +1179,11 @@ public class OrderElementTreeModelTest {
                 element3 = (OrderLine) each;
             }
         }
+    }
+
+    @Test
+    public void checkMoveOrderGroupLineWithLabelToOrderLineGroupWithSameLabel() {
+        createTreeWithContainerAndContainer();
 
         addLabel(container);
         addSameLabel(container2);
@@ -1151,46 +1206,32 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    public void checkMoveOrderGroupLineWithLabelToOrderLineInGroupWithSameLabel() {
+        createTreeWithContainerAndContainer();
+
+        addLabel(container);
+        addSameLabel(container2);
+
+        addAnotherLabel(container2);
+
+        model.move(container2, element);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+
+        assertThat(container2.getLabels().size(), equalTo(1));
+        assertThat(container2.getLabels().iterator().next(), equalTo(label2));
+        assertTrue(element2.getLabels().isEmpty());
+        assertTrue(element3.getLabels().isEmpty());
+    }
+
+    @Test
     public void checkMoveOrderLineGroupWithLabelOnChildToOrderLineGroupWithSameLabel() {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-        container.setName("container");
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
-
-        model.addElementAt(element2, "element3", 200);
-
-        OrderLineGroup container2 = null;
-        for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("container")) {
-                container = (OrderLineGroup) each;
-            } else {
-                container2 = (OrderLineGroup) each;
-            }
-        }
-
-        element = (OrderLine) container.getChildren().get(0);
-
-        OrderLine element3 = null;
-        for (OrderElement each : container2.getChildren()) {
-            if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            } else if (each.getName().equals("element3")) {
-                element3 = (OrderLine) each;
-            }
-        }
+        createTreeWithContainerAndContainer();
 
         addLabel(container);
         addSameLabel(element2);
@@ -1213,25 +1254,34 @@ public class OrderElementTreeModelTest {
     }
 
     @Test
+    public void checkMoveOrderLineGroupWithLabelOnChildToOrderLineInGroupWithSameLabel() {
+        createTreeWithContainerAndContainer();
+
+        addLabel(container);
+        addSameLabel(element2);
+
+        addAnotherLabel(element2);
+
+        model.move(container2, element);
+
+        assertTrue(order.getLabels().isEmpty());
+
+        assertThat(container.getLabels().size(), equalTo(1));
+        assertThat(container.getLabels().iterator().next(), equalTo(label));
+
+        assertTrue(element.getLabels().isEmpty());
+
+        assertTrue(container2.getLabels().isEmpty());
+        assertThat(element2.getLabels().size(), equalTo(1));
+        assertThat(element2.getLabels().iterator().next(), equalTo(label2));
+        assertTrue(element3.getLabels().isEmpty());
+    }
+
+    @Test
     public void checkMoveOrderLineWithAdvanceToOrderLineGroupWithSameAdvanceType()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
+        createTreeWithContainerAndTask();
 
         addDirectAdvanceAssignment(container);
         addDirectAdvanceAssignment(element2);
@@ -1264,45 +1314,7 @@ public class OrderElementTreeModelTest {
     public void checkMoveOrderLineGroupWithAdvanceToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-        container.setName("container");
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
-
-        model.addElementAt(element2, "element3", 200);
-
-        OrderLineGroup container2 = null;
-        for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("container")) {
-                container = (OrderLineGroup) each;
-            } else {
-                container2 = (OrderLineGroup) each;
-            }
-        }
-
-        element = (OrderLine) container.getChildren().get(0);
-
-        OrderLine element3 = null;
-        for (OrderElement each : container2.getChildren()) {
-            if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            } else if (each.getName().equals("element3")) {
-                element3 = (OrderLine) each;
-            }
-        }
+        createTreeWithContainerAndContainer();
 
         addDirectAdvanceAssignment(container);
         addDirectAdvanceAssignment(container2);
@@ -1346,45 +1358,7 @@ public class OrderElementTreeModelTest {
     public void checkMoveOrderLineGroupWithAdvanceOnChildToOrderLineGroupWithSameAdvance()
             throws DuplicateValueTrueReportGlobalAdvanceException,
             DuplicateAdvanceAssignmentForOrderElementException {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-        container.setName("container");
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
-
-        model.addElementAt(element2, "element3", 200);
-
-        OrderLineGroup container2 = null;
-        for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("container")) {
-                container = (OrderLineGroup) each;
-            } else {
-                container2 = (OrderLineGroup) each;
-            }
-        }
-
-        element = (OrderLine) container.getChildren().get(0);
-
-        OrderLine element3 = null;
-        for (OrderElement each : container2.getChildren()) {
-            if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            } else if (each.getName().equals("element3")) {
-                element3 = (OrderLine) each;
-            }
-        }
+        createTreeWithContainerAndContainer();
 
         addDirectAdvanceAssignment(container);
         addDirectAdvanceAssignment(element2);
@@ -1426,22 +1400,7 @@ public class OrderElementTreeModelTest {
 
     @Test
     public void checkMoveOrderLineWithCriterionToOrderLineGroupWithSameCriterion() {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
+        createTreeWithContainerAndTask();
 
         addCriterionRequirement(container);
         addCriterionRequirement(element2);
@@ -1490,45 +1449,7 @@ public class OrderElementTreeModelTest {
 
     @Test
     public void checkMoveOrderGroupLineWithCriterionToOrderLineGroupWithSameCriterion() {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-        container.setName("container");
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
-
-        model.addElementAt(element2, "element3", 200);
-
-        OrderLineGroup container2 = null;
-        for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("container")) {
-                container = (OrderLineGroup) each;
-            } else {
-                container2 = (OrderLineGroup) each;
-            }
-        }
-
-        element = (OrderLine) container.getChildren().get(0);
-
-        OrderLine element3 = null;
-        for (OrderElement each : container2.getChildren()) {
-            if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            } else if (each.getName().equals("element3")) {
-                element3 = (OrderLine) each;
-            }
-        }
+        createTreeWithContainerAndContainer();
 
         addCriterionRequirement(container);
         addCriterionRequirement(container2);
@@ -1610,45 +1531,7 @@ public class OrderElementTreeModelTest {
 
     @Test
     public void checkMoveOrderLineGroupWithCriterionOnChildToOrderLineGroupWithSameCriterion() {
-        model.addElement("element", 100);
-        model.addElementAt(order.getChildren().get(0), "element2", 50);
-
-        OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
-        container.setName("container");
-
-        OrderLine element = null;
-        OrderLine element2 = null;
-        for (OrderElement each : container.getChildren()) {
-            if (each.getName().equals("element")) {
-                element = (OrderLine) each;
-            } else if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            }
-        }
-
-        model.unindent(element2);
-
-        model.addElementAt(element2, "element3", 200);
-
-        OrderLineGroup container2 = null;
-        for (OrderElement each : order.getChildren()) {
-            if (each.getName().equals("container")) {
-                container = (OrderLineGroup) each;
-            } else {
-                container2 = (OrderLineGroup) each;
-            }
-        }
-
-        element = (OrderLine) container.getChildren().get(0);
-
-        OrderLine element3 = null;
-        for (OrderElement each : container2.getChildren()) {
-            if (each.getName().equals("element2")) {
-                element2 = (OrderLine) each;
-            } else if (each.getName().equals("element3")) {
-                element3 = (OrderLine) each;
-            }
-        }
+        createTreeWithContainerAndContainer();
 
         addCriterionRequirement(container);
         addCriterionRequirement(element2);
