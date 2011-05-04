@@ -24,6 +24,8 @@ package org.navalplanner.business.planner.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.LogFactory;
 import org.apache.commons.math.FunctionEvaluationException;
 import org.apache.commons.math.analysis.SplineInterpolator;
 import org.apache.commons.math.analysis.UnivariateRealFunction;
@@ -31,6 +33,7 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  *
@@ -60,7 +63,9 @@ public enum StretchesFunctionTypeEnum {
                 LocalDate startInclusive, LocalDate endExclusive,
                 int totalHours) {
 
-            double[] x = Interval.getDayPointsFor(startInclusive,
+            final Task task = allocation.getTask();
+
+            double[] x = Interval.getDayPointsFor(task.getStartAsLocalDate(),
                     intervalsDefinedByStreches);
             assert x.length == 1 + intervalsDefinedByStreches.size();
             double[] y = Interval.getHoursPointsFor(totalHours,
@@ -68,50 +73,78 @@ public enum StretchesFunctionTypeEnum {
             assert y.length == 1 + intervalsDefinedByStreches.size();
             int[] hoursForEachDay = hoursForEachDayUsingSplines(x, y,
                     startInclusive, endExclusive);
-            int[] reallyAssigned = getReallyAssigned(allocation,
-                    startInclusive, hoursForEachDay);
-            // Because of calendars, really assigned hours can be less than
-            // the hours for each day specified by the interpolation. The
-            // remainder must be distributed.
-            distributeRemainder(allocation, startInclusive, totalHours,
-                    reallyAssigned);
 
+            Days daysBetween = Days.daysBetween(startInclusive, endExclusive);
+            assert hoursForEachDay.length == daysBetween.getDays();
+
+            allocateDaysFrom(allocation, asEffortDuration(hoursForEachDay), startInclusive);
+            LocalDate newEndDate = lastDayAssignment(allocation).plusDays(1);
+
+            // Because of calendars, really assigned hours can be less than the
+            // hours for each day specified by the interpolation. The remainder
+            // must be distributed.
+            int[] assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
+            int[] remindingHours = distributeRemainder(allocation, startInclusive, totalHours, assignedHours);
+            int[] hoursToAllocate = sum(assignedHours, remindingHours);
+            allocateDaysFrom(allocation, asEffortDuration(hoursToAllocate), startInclusive);
+
+            assignedHours = getAssignedHours(allocation, startInclusive, newEndDate);
+            Validate.isTrue(sum(assignedHours) == totalHours);
         }
 
-        private int[] getReallyAssigned(ResourceAllocation<?> allocation,
-                LocalDate startInclusive, int[] hoursForEachDay) {
-            int[] reallyAssigned = new int[hoursForEachDay.length];
-            for (int i = 0; i < hoursForEachDay.length; i++) {
-                LocalDate day = startInclusive.plusDays(i);
-                LocalDate nextDay = day.plusDays(1);
-                allocation.withPreviousAssociatedResources()
-                        .onIntervalWithinTask(day, nextDay)
-                        .allocateHours(hoursForEachDay[i]);
-                reallyAssigned[i] = allocation.getAssignedHours(day,
-                        nextDay);
+        private int[] getAssignedHours(ResourceAllocation<?> allocation,
+                LocalDate startInclusive, LocalDate endExclusive) {
+
+            final Days daysBetween = Days.daysBetween(startInclusive, endExclusive);
+            int[] result = new int[daysBetween.getDays()];
+
+            LocalDate day = new LocalDate(startInclusive); int i = 0;
+            while (day.isBefore(endExclusive)) {
+                result[i++] = allocation.getAssignedHours(day, day.plusDays(1));
+                day = day.plusDays(1);
             }
-            return reallyAssigned;
+            return result;
         }
 
-        private void distributeRemainder(ResourceAllocation<?> allocation,
+        private void allocateDaysFrom(ResourceAllocation<?> allocation,
+                List<EffortDuration> hoursToAllocate, LocalDate startInclusive) {
+            final LocalDate endExclusive = startInclusive.plusDays(hoursToAllocate.size());
+            LOG.debug(String.format("allocate on interval (%s, %s): %s", startInclusive, endExclusive, hoursToAllocate));
+            allocation.withPreviousAssociatedResources().onInterval(
+                    startInclusive, endExclusive).allocate(hoursToAllocate);
+        }
+
+        private List<EffortDuration> asEffortDuration(int[] hoursPerDay) {
+            List<EffortDuration> result = new ArrayList<EffortDuration>();
+            for (int hours: hoursPerDay) {
+                result.add(EffortDuration.hours(hours));
+            }
+            return result;
+        }
+
+        private int[] sum(int[] assignedHours, int[] remindingHours) {
+            Validate.isTrue(assignedHours.length == remindingHours.length);
+            for (int i = 0; i < assignedHours.length; i++) {
+                assignedHours[i] += remindingHours[i];
+            }
+            return assignedHours;
+        }
+
+        private int[] distributeRemainder(ResourceAllocation<?> allocation,
                 LocalDate startInclusive, int totalHours,
                 int[] reallyAssigned) {
             final int remainder = totalHours - sum(reallyAssigned);
             if (remainder == 0) {
-                return;
+                return reallyAssigned;
             }
-            int[] perDay = distributeRemainder(reallyAssigned, remainder);
-            for (int i = 0; i < perDay.length; i++) {
-                if (perDay[i] == 0) {
-                    continue;
-                }
-                final int newHours = perDay[i] + reallyAssigned[i];
-                LocalDate day = startInclusive.plusDays(i);
-                LocalDate nextDay = day.plusDays(1);
-                allocation.withPreviousAssociatedResources()
-                        .onIntervalWithinTask(day, nextDay)
-                        .allocateHours(newHours);
-            }
+            return distributeRemainder(reallyAssigned, remainder);
+        }
+
+        private int[] distributeRemainder(int[] hoursForEachDay,
+                int remainder) {
+            ProportionalDistributor remainderDistributor = ProportionalDistributor
+                    .create(hoursForEachDay);
+            return remainderDistributor.distribute(remainder);
         }
 
         private int sum(int[] array) {
@@ -122,14 +155,16 @@ public enum StretchesFunctionTypeEnum {
             return result;
         }
 
-        private int[] distributeRemainder(int[] hoursForEachDay,
-                int remainder) {
-            ProportionalDistributor remainderDistributor = ProportionalDistributor
-                    .create(hoursForEachDay);
-            return remainderDistributor.distribute(remainder);
+        private LocalDate lastDayAssignment(ResourceAllocation<?> allocation) {
+            List<DayAssignment> assignments = (List<DayAssignment>) allocation.getAssignments();
+            DayAssignment last = assignments.get(assignments.size() - 1);
+            return last.getDay();
         }
 
     };
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(StretchesFunctionTypeEnum.class);
 
     public static int[] hoursForEachDayUsingSplines(double[] x, double[] y,
             LocalDate startInclusive, LocalDate endExclusive) {
