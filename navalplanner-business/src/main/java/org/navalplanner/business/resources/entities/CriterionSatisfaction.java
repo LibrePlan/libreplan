@@ -243,6 +243,10 @@ public class CriterionSatisfaction extends IntegrationEntity {
         this.finishDate = finish;
     }
 
+    public void noFinish() {
+        this.finishDate = null;
+    }
+
     public boolean isFinished() {
         return finishDate != null;
     }

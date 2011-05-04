@@ -373,6 +373,8 @@ public class AssignedCriterionsModel extends IntegrationEntityModel implements
                     satisfaction.setStartDate(satisfactionDTO.getStart());
                     if (satisfactionDTO.getEndDate() != null) {
                         satisfaction.finish(satisfactionDTO.getEnd());
+                    } else {
+                        satisfaction.noFinish();
                     }
                 }
             }
