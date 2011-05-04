@@ -232,6 +232,11 @@ public class OrderElementTest {
                 maxValue, advanceType);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
+        if (reportGlobalAdvance) {
+            if (orderElement.getReportGlobalAdvanceAssignment() != null) {
+                orderElement.removeReportGlobalAdvanceAssignment();
+            }
+        }
         orderElement.addAdvanceAssignment(advanceAssignment);
         advanceAssignment.addAdvanceMeasurements(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(advanceAssignment);

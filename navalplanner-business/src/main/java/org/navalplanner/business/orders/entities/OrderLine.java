@@ -32,6 +32,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -225,6 +226,14 @@ public class OrderLine extends OrderElement {
             }
         }
         return null;
+    }
+
+    @Override
+    public void removeReportGlobalAdvanceAssignment() {
+        AdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+        }
     }
 
     public boolean containsHoursGroup(String code) {

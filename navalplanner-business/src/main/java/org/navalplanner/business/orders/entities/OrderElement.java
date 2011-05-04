@@ -516,6 +516,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public abstract DirectAdvanceAssignment getReportGlobalAdvanceAssignment();
 
+    public abstract void removeReportGlobalAdvanceAssignment();
+
     public abstract DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type);
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(

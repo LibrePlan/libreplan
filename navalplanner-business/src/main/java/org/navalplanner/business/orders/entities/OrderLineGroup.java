@@ -994,6 +994,24 @@ public class OrderLineGroup extends OrderElement implements
         return null;
     }
 
+    @Override
+    public void removeReportGlobalAdvanceAssignment() {
+        Set<AdvanceAssignment> advanceAssignments = new HashSet<AdvanceAssignment>();
+        advanceAssignments.addAll(getDirectAdvanceAssignments());
+        advanceAssignments.addAll(getIndirectAdvanceAssignments());
+
+        AdvanceAssignment advanceAssignment = null;
+        for (AdvanceAssignment each : advanceAssignments) {
+            if (each.getReportGlobalAdvance()) {
+                advanceAssignment = each;
+            }
+        }
+
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+        }
+    }
+
     public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
         DirectAdvanceAssignment result = getDirectAdvanceAssignmentByType(type);
         if (result != null) {
