@@ -556,6 +556,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 removeChildrenAdvanceInParents(this.getParent());
             }
             markAsDirtyLastAdvanceMeasurementForSpreading();
+            updateSpreadAdvance();
         }
     }
 
@@ -1401,6 +1402,28 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
 
         return result;
+    }
+
+    protected void updateSpreadAdvance() {
+        if (getReportGlobalAdvanceAssignment() == null) {
+            // Set PERCENTAGE type as spread if any
+            String type = PredefinedAdvancedTypes.PERCENTAGE.getTypeName();
+            for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+                if (each.getAdvanceType() != null
+                        && each.getAdvanceType().getType() != null
+                        && each.getAdvanceType().getType().equals(type)) {
+                    each.setReportGlobalAdvance(true);
+                    return;
+                }
+            }
+
+            // Otherwise, set first advance assignment
+            if (!directAdvanceAssignments.isEmpty()) {
+                directAdvanceAssignments.iterator().next()
+                        .setReportGlobalAdvance(true);
+                return;
+            }
+        }
     }
 
 }

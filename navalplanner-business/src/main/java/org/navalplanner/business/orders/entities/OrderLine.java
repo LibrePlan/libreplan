@@ -234,6 +234,7 @@ public class OrderLine extends OrderElement {
         if (advanceAssignment != null) {
             advanceAssignment.setReportGlobalAdvance(false);
         }
+        markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public boolean containsHoursGroup(String code) {

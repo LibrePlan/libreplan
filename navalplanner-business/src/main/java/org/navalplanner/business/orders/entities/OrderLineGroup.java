@@ -164,30 +164,28 @@ public class OrderLineGroup extends OrderElement implements
         }
     }
 
-    private void updateSpreadAdvance(){
-        if(getReportGlobalAdvanceAssignment() == null){
-            AdvanceType type = PredefinedAdvancedTypes.PERCENTAGE.getType();
-            DirectAdvanceAssignment advancePercentage = getAdvanceAssignmentByType(type);
-            if(advancePercentage != null) {
-                if(advancePercentage.isFake()){
-                    for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
-                        if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
-                            each.setReportGlobalAdvance(true);
-                        }
-                    }
-                }else{
-                    advancePercentage.setReportGlobalAdvance(true);
-                }
-            } else {
-                for (DirectAdvanceAssignment advance : getDirectAdvanceAssignments()) {
-                    advance.setReportGlobalAdvance(true);
-                    return;
-                }
-                for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
-                    advance.setReportGlobalAdvance(true);
+    @Override
+    protected void updateSpreadAdvance() {
+        if (getReportGlobalAdvanceAssignment() == null) {
+            // Set CHILDREN type as spread if any
+            String type = PredefinedAdvancedTypes.CHILDREN.getTypeName();
+            for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {
+                if (each.getAdvanceType() != null
+                        && each.getAdvanceType().getType() != null
+                        && each.getAdvanceType().getType().equals(type)) {
+                    each.setReportGlobalAdvance(true);
                     return;
                 }
             }
+
+            // Otherwise, set first indirect advance assignment
+            if (!indirectAdvanceAssignments.isEmpty()) {
+                indirectAdvanceAssignments.iterator().next()
+                        .setReportGlobalAdvance(true);
+                return;
+            }
+
+            super.updateSpreadAdvance();
         }
     }
 
@@ -925,12 +923,7 @@ public class OrderLineGroup extends OrderElement implements
             }
             if (toRemove != null) {
                 indirectAdvanceAssignments.remove(toRemove);
-                if (toRemove.getReportGlobalAdvance()) {
-                    IndirectAdvanceAssignment childrenAdvance = getChildrenAdvance();
-                    if (childrenAdvance != null) {
-                        childrenAdvance.setReportGlobalAdvance(true);
-                    }
-                }
+                updateSpreadAdvance();
             }
 
             if (parent != null) {
@@ -1010,6 +1003,7 @@ public class OrderLineGroup extends OrderElement implements
         if (advanceAssignment != null) {
             advanceAssignment.setReportGlobalAdvance(false);
         }
+        markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {

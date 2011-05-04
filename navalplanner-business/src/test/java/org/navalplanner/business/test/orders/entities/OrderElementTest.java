@@ -23,6 +23,7 @@ package org.navalplanner.business.test.orders.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -1146,6 +1147,32 @@ public class OrderElementTest {
                 .size(), equalTo(1));
         assertFalse(line.getHoursGroups().get(0).getCriterionRequirements()
                 .iterator().next().isValid());
+    }
+
+    @Test
+    public void checkSpreadAdvanceInOrderLine()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderLine orderLine = givenOrderLine("element", "element-code", 100);
+
+        AdvanceType advanceType1 = PredefinedAdvancedTypes.PERCENTAGE.getType();
+        AdvanceType advanceType2 = PredefinedAdvancedTypes.UNITS.getType();
+
+        addAvanceAssignmentWithoutMeasurement(orderLine, advanceType1,
+                BigDecimal.TEN, true);
+        addAvanceAssignmentWithoutMeasurement(orderLine, advanceType2,
+                BigDecimal.TEN, false);
+
+        assertThat(orderLine.getReportGlobalAdvanceAssignment()
+                .getAdvanceType(), equalTo(advanceType1));
+        assertNotNull(orderLine.getReportGlobalAdvanceAssignment());
+
+        orderLine.removeAdvanceAssignment(orderLine
+                .getAdvanceAssignmentByType(advanceType1));
+
+        assertNotNull(orderLine.getReportGlobalAdvanceAssignment());
+        assertThat(orderLine.getReportGlobalAdvanceAssignment()
+                .getAdvanceType(), equalTo(advanceType2));
     }
 
 }
