@@ -59,6 +59,8 @@ public interface IStretchesFunctionModel {
 
     List<Stretch> getStretchesDefinedByUser();
 
+    List<Stretch> getStretchesPlusConsolidated();
+
     void addStretch();
 
     void removeStretch(Stretch stretch);

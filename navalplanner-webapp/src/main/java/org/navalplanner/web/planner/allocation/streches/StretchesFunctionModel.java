@@ -162,6 +162,15 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         return result;
     }
 
+    @Override
+    public List<Stretch> getStretchesPlusConsolidated() {
+        if (stretchesFunction == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(stretchesFunction
+                .getStretchesPlusConsolidated());
+    }
+
     /**
      * Defines an initial read-only stretch with 0% hours worked and 0% progress
      *
