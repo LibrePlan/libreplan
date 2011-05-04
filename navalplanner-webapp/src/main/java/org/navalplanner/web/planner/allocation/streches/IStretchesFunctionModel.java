@@ -55,7 +55,7 @@ public interface IStretchesFunctionModel {
      * Intermediate conversation steps
      */
 
-    List<Stretch> getStretches();
+    List<Stretch> getAllStretches();
 
     List<Stretch> getStretchesDefinedByUser();
 

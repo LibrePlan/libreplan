@@ -142,7 +142,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     @Override
-    public List<Stretch> getStretches() {
+    public List<Stretch> getAllStretches() {
         if (stretchesFunction == null) {
             return Collections.emptyList();
         }

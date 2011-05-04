@@ -149,7 +149,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public List<Stretch> getStretches() {
-        return stretchesFunctionModel.getStretches();
+        return stretchesFunctionModel.getAllStretches();
     }
 
     public StretchesRenderer getStretchesRenderer() {

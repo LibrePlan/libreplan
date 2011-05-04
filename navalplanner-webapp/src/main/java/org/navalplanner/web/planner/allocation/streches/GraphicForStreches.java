@@ -161,7 +161,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return canComputeChartFrom(model.getStretches(), model
+            return canComputeChartFrom(model.getAllStretches(), model
                     .getTaskStartDate());
         }
 
