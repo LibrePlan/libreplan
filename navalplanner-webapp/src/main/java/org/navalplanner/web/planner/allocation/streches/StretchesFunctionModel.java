@@ -221,6 +221,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     private static boolean theFirstIntervalIsPosteriorToFirstDay(
             List<Stretch> stretches, LocalDate start) {
         List<Interval> intervals = StretchesFunction.intervalsFor(stretches);
+        if (intervals.isEmpty()) {
+            return false;
+        }
         Interval first = intervals.get(0);
         return first.getEnd().compareTo(start) > 0;
     }
