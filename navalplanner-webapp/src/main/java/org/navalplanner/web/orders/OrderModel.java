@@ -518,6 +518,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
         dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
         dontPoseAsTransientObjectAnymore(orderElement.getTaskQualityForms());
+        dontPoseAsTransientObjectAnymore(orderElement
+                .getAllMaterialAssignments());
 
         for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
             dontPoseAsTransientObjectAnymore(hoursGroup
