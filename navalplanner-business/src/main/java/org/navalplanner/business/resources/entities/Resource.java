@@ -321,6 +321,16 @@ public abstract class Resource extends IntegrationEntity {
             });
         }
 
+        public Query exactly(final Criterion criterion) {
+            return withNewPredicate(new IPredicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return criterion.isEquivalent(satisfaction.getCriterion());
+                }
+            });
+        }
+
         /**
          * Method called to retrieve the result. If no predicate was set, it
          * returns all satisfactions
@@ -540,8 +550,8 @@ public abstract class Resource extends IntegrationEntity {
     public List<CriterionSatisfaction> finishEnforcedAt(Criterion criterion,
             LocalDate date) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : query().from(
-                criterion).at(date).result()) {
+        for (CriterionSatisfaction criterionSatisfaction : query()
+                .exactly(criterion).at(date).result()) {
             criterionSatisfaction.finish(date);
             result.add(criterionSatisfaction);
         }
