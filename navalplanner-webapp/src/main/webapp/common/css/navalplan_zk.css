@@ -1631,3 +1631,12 @@ input.z-datebox-text-disd {
 .assignedresources .z-auxheader-cnt  {
     font-weight: bold;
 }
+
+.scheduling-graphics .z-south-header {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.timeplot-container {
+    margin-left: 8px;
+}
