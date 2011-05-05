@@ -359,16 +359,24 @@ public class EffortDuration implements Comparable<EffortDuration> {
     }
 
     public String toFormattedString() {
-        EnumMap<Granularity, Integer> byGranularity = this.decompose();
+        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute()
+                .decompose();
         int hours = byGranularity.get(Granularity.HOURS);
         int minutes = byGranularity.get(Granularity.MINUTES);
-        int seconds = byGranularity.get(Granularity.SECONDS);
-        if (minutes == 0 && seconds == 0) {
+        if (minutes == 0) {
             return String.format("%s", hours);
-        } else if (seconds == 0) {
-            return String.format("%s:%s", hours, minutes);
         } else {
-            return String.format("%s:%s:%s", hours, minutes, seconds);
+            return String.format("%s:%s", hours, minutes);
+        }
+    }
+
+    private EffortDuration atNearestMinute() {
+        EnumMap<Granularity, Integer> decompose = this.decompose();
+        int seconds = decompose.get(Granularity.SECONDS);
+        if (seconds >= 30) {
+            return this.plus(EffortDuration.seconds(60 - seconds));
+        } else {
+            return this.minus(EffortDuration.seconds(seconds));
         }
     }
 
