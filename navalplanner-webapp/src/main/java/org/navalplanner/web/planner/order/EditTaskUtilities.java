@@ -83,6 +83,9 @@ public class EditTaskUtilities implements IEditTaskUtilities {
 
     private void reattachAndLoadCalendar(TaskElement taskElement) {
         BaseCalendar calendar = taskElement.getCalendar();
+        if (calendar == null) {
+            return;
+        }
         baseCalendarDAO.reattach(calendar);
         forceLoadCalendar(calendar);
         calendar.getCapacityOn(
