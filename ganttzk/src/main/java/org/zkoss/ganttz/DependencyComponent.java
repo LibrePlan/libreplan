@@ -64,7 +64,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.source = source;
         this.destination = destination;
         this.dependency = dependency;
-        violationListener = new IConstraintViolationListener<GanttDate>() {
+        violationListener = Constraint
+                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint,
@@ -80,7 +81,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 response("constraintViolated", new AuInvoke(
                         DependencyComponent.this, "setCSSClass", "dependency"));
             }
-        };
+                });
         this.dependency.addConstraintViolationListener(violationListener);
     }
 

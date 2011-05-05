@@ -197,7 +197,8 @@ public class TaskComponent extends Div implements AfterCompose {
 
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
-        taskViolationListener = new IConstraintViolationListener<GanttDate>() {
+        taskViolationListener = Constraint
+                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
             public void constraintViolated(Constraint<GanttDate> constraint,
@@ -210,7 +211,7 @@ public class TaskComponent extends Div implements AfterCompose {
                     GanttDate value) {
                 // TODO mark graphically dependency as not violated
             }
-        };
+                });
         this.task.addConstraintViolationListener(taskViolationListener);
         reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
 
