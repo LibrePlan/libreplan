@@ -145,6 +145,12 @@ public abstract class AllocationRow {
         }
     }
 
+    public static void unknownResourcesPerDay(List<AllocationRow> rows) {
+        for (AllocationRow each : rows) {
+            each.setUnknownResourcesPerDay();
+        }
+    }
+
     public static void assignResourcesPerDay(List<AllocationRow> rows,
             ResourcesPerDay[] resourcesPerDay) {
         int i = 0;
@@ -406,6 +412,12 @@ public abstract class AllocationRow {
     private void setResourcesPerDayEditedValue(ResourcesPerDay resourcesPerDay) {
         this.editedValue = resourcesPerDay;
         intendedResourcesPerDayInput.setValue(getAmount(resourcesPerDay));
+    }
+
+    private void setUnknownResourcesPerDay() {
+        this.editedValue = null;
+        this.intendedResourcesPerDayInput.setValue(null);
+        clearRealResourcesPerDay();
     }
 
     private BigDecimal getAmount(ResourcesPerDay resourcesPerDay) {

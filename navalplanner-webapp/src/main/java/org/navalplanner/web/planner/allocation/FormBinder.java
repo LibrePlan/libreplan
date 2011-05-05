@@ -691,16 +691,19 @@ public class FormBinder {
             effortInput.addEventListener(Events.ON_CHANGE, allHoursInputChange);
             allResourcesPerDay.addEventListener(Events.ON_CHANGE,
                     allResourcesPerDayChange);
-            sumResourcesPerDayOrSetToZero();
+            resetStateForResourcesPerDayInputsWhenDoingRecommendedAllocation();
         }
         Util.reloadBindings(allocationsGrid);
     }
 
-    private void sumResourcesPerDayOrSetToZero() {
+    private void resetStateForResourcesPerDayInputsWhenDoingRecommendedAllocation() {
         if (allResourcesPerDay.isDisabled()) {
-            sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
+            allResourcesPerDay.setValue(null);
+            AllocationRow.unknownResourcesPerDay(rows);
         } else {
             allResourcesPerDay.setValue(BigDecimal.ZERO);
+            distributeResourcesPerDayToRows();
+            allResourcesPerDay.focus();
         }
     }
 
