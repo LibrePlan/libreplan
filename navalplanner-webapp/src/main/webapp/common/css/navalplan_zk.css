@@ -1444,19 +1444,22 @@ display:none;
     cursor: default;
 }
 
-.advanced-assignment-area td .z-intbox {
+.advanced-assignment-area td .z-intbox,
+.advanced-assignment-area td .z-textbox {
     height: 20px;
     background: #3C90BE;
     color: white;
     border-right: solid 1px white;
 }
 
-.advanced-assignment-area td .z-intbox[value="0"] {
+.advanced-assignment-area td .z-intbox[value="0"],
+.advanced-assignment-area td .z-textbox[value="0"] {
     background: #ABCDE1;
     color: #555555;
 }
 
-.advanced-assignment-area td .limiting.z-intbox {
+.advanced-assignment-area td .limiting.z-intbox,
+.advanced-assignment-area td .limiting.z-textbox {
     height: 20px;
     background: #61B598; // LIMITING_ASSIGNED
     color: #555555;
@@ -1465,7 +1468,9 @@ display:none;
     -moz-opacity: 1;
 }
 
-.advanced-assignment-area td .limiting.z-intbox[value="0"] {
+
+.advanced-assignment-area td .limiting.z-intbox[value="0"],
+.advanced-assignment-area td .limiting.z-textbox[value="0"] {
     background: #C1D9D1;  // LIMITING_UNNASSIGNED
     color: #555555;
 }
