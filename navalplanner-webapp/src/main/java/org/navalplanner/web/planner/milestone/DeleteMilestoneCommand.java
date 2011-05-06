@@ -51,7 +51,7 @@ public class DeleteMilestoneCommand implements IDeleteMilestoneCommand {
 
     @Override
     public String getIcon() {
-        return null;
+        return "/common/img/ico_borrar.png";
     }
 
     @Override
