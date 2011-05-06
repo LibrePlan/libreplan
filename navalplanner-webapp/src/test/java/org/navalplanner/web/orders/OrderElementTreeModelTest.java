@@ -1308,7 +1308,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1341,7 +1341,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1374,7 +1374,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
@@ -1417,7 +1417,7 @@ public class OrderElementTreeModelTest {
         assertNotNull(order.getAdvanceAssignmentByType(advanceType2));
 
         assertThat(container.getDirectAdvanceAssignments().size(), equalTo(1));
-        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(1));
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getAdvanceAssignmentByType(advanceType));
         assertNull(container.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType2));
