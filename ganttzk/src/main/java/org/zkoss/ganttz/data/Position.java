@@ -121,6 +121,8 @@ public abstract class Position {
         return new ChildPosition(ancestors, positionInParent);
     }
 
+    public abstract Position sameLevelAt(int positionInParent);
+
 
     private static class ChildPosition extends Position {
 
@@ -159,6 +161,11 @@ public abstract class Position {
         public boolean canPop() {
             return parents.size() > 1;
         }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new ChildPosition(parents, positionInParent);
+        }
     }
 
     private static class AppendToTopPosition extends Position {
@@ -185,6 +192,11 @@ public abstract class Position {
         @Override
         public boolean canPop() {
             return false;
+        }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new InsertInTopPosition(positionInParent);
         }
     }
 
@@ -217,6 +229,11 @@ public abstract class Position {
         @Override
         public boolean canPop() {
             return false;
+        }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new InsertInTopPosition(positionInParent);
         }
 
     }
