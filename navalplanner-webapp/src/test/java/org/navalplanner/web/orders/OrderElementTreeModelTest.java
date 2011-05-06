@@ -690,11 +690,13 @@ public class OrderElementTreeModelTest {
         model.indent(element2);
 
         assertTrue(order.getDirectAdvanceAssignments().isEmpty());
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(order.getIndirectAdvanceAssignment(advanceType));
         assertTrue(order.getCriterionRequirements().isEmpty());
 
         OrderLineGroup container = (OrderLineGroup) order.getChildren().get(0);
         assertTrue(container.getDirectAdvanceAssignments().isEmpty());
+        assertThat(container.getIndirectAdvanceAssignments().size(), equalTo(2));
         assertNotNull(container.getIndirectAdvanceAssignment(advanceType));
         assertTrue(container.getCriterionRequirements().isEmpty());
 
