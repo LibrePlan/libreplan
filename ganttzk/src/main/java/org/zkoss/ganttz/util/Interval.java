@@ -82,9 +82,13 @@ public class Interval {
     public Fraction getProportion(DateTime date) {
         Days fromStartToDate = Days.daysBetween(startInclusive,
                 date.toLocalDate());
-        Fraction fraction = Fraction.getFraction(fromStartToDate.getDays(),
+        Fraction result = Fraction.getFraction(fromStartToDate.getDays(),
                 this.daysBetween.getDays());
-        return fraction.add(inTheDayIncrement(date));
+        try {
+            return result.add(inTheDayIncrement(date));
+        } catch (ArithmeticException e) {
+            return result;
+        }
     }
 
     private Fraction inTheDayIncrement(DateTime date) {
@@ -92,11 +96,7 @@ public class Interval {
         Duration duration = new Duration(atStartOfDay, date);
         double result = ((double) duration.getMillis())
                 / lengthBetween.getMillis();
-        try {
-            return Fraction.getFraction(result);
-        } catch (ArithmeticException e) {
-            return Fraction.ZERO;
-        }
+        return Fraction.getFraction(result);
     }
 
     @SuppressWarnings("unchecked")

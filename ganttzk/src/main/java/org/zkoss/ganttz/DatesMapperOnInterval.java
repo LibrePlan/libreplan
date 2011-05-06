@@ -24,6 +24,9 @@
  */
 package org.zkoss.ganttz;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.apache.commons.lang.math.Fraction;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -67,8 +70,18 @@ public class DatesMapperOnInterval implements IDatesMapper {
     }
 
     private int toPixels(Fraction proportion) {
-        return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
-                .intValue();
+        try {
+            return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
+                    .intValue();
+        } catch (ArithmeticException e) {
+            double d = Math.log10(horizontalSize);
+            int scale = (int) d + 1;
+            BigDecimal quotient = new BigDecimal(proportion.getNumerator())
+                    .divide(new BigDecimal(proportion.getDenominator()), scale,
+                            RoundingMode.HALF_UP);
+            return quotient.multiply(new BigDecimal(horizontalSize))
+                    .intValue();
+        }
     }
 
     @Override
