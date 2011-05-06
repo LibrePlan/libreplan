@@ -24,6 +24,7 @@ package org.navalplanner.web.resources.search;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -31,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -424,21 +424,34 @@ public class NewAllocationSelectorController extends
      */
     private CriterionTreeNode asNode(CriterionType criterionType,
             Set<Criterion> criterions) {
-        return new CriterionTreeNode(criterionType, toNodeList(criterions));
+        return new CriterionTreeNode(criterionType,
+                toNodeList(withoutParents(criterions)));
     }
 
-    /**
-     * Converts a {@link Set} of {@link Criterion} to an {@link ArrayList} of
-     * {@link CriterionTreeNode}
-     *
-     * @param criterions
-     * @return
-     */
-    private ArrayList<CriterionTreeNode> toNodeList(Set<Criterion> criterions) {
+    private List<Criterion> withoutParents(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>();
+        for (Criterion each : criterions) {
+            if (each.getParent() == null) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private List<CriterionTreeNode> toNodeList(
+            Collection<? extends Criterion> criterions) {
         ArrayList<CriterionTreeNode> result = new ArrayList<CriterionTreeNode>();
-        for (Criterion criterion : criterions) {
+        for (Criterion criterion : sortedByName(criterions)) {
             result.add(asNode(criterion));
         }
+        return result;
+    }
+
+    private List<Criterion> sortedByName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result, Criterion.byName);
         return result;
     }
 
@@ -449,7 +462,8 @@ public class NewAllocationSelectorController extends
      * @return
      */
     private CriterionTreeNode asNode(Criterion criterion) {
-        return new CriterionTreeNode(criterion, new ArrayList<CriterionTreeNode>());
+        return new CriterionTreeNode(criterion,
+                toNodeList(criterion.getChildren()));
     }
 
     /**
