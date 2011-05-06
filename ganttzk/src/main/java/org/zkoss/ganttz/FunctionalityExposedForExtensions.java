@@ -27,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -92,24 +91,18 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
 
         /**
-         * @param insertionPositionForTop
-         *            the position in which to insert the task at the top level,
-         *            if it must be added to the top level. If it is
-         *            <code>null/code> it is appended to the end
-         * @param task
-         * @param domainObject
-         * @param parent
+         * Registers the task at the provided position.
          */
-        void register(Integer insertionPositionForTop, Task task,
-                T domainObject, TaskContainer parent) {
+        void register(Position position, Task task, T domainObject) {
             fromDomainToTask.put(domainObject, task);
             fromTaskToDomain.put(task, domainObject);
-            if (parent != null) {
-                fromTaskToParent.put(task, parent);
-            } else if (insertionPositionForTop != null) {
-                topLevel.add(insertionPositionForTop, task);
-            } else {
+
+            if (position.isAppendToTop()) {
                 topLevel.add(task);
+            } else if (position.isAtTop()) {
+                topLevel.add(position.getInsertionPosition(), task);
+            } else {
+                fromTaskToParent.put(task, position.getParent());
             }
         }
 
@@ -206,7 +199,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     /**
-     * @param topInsertionPosition
+     * @param insertionPosition
      *            the position in which to register the task at top level. It
      *            can be <code>null</code>
      * @param accumulatedDependencies
@@ -214,41 +207,47 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
      * @param parent
      * @return
      */
-    private Task extractTask(Integer topInsertionPosition,
-            List<DomainDependency<T>> accumulatedDependencies, T data,
-            TaskContainer parent) {
-        ITaskFundamentalProperties adapted = adapter.adapt(data);
+    private Task buildAndRegister(Position position,
+            List<DomainDependency<T>> accumulatedDependencies, T data) {
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
-        final Task result;
-        if (navigator.isLeaf(data)) {
-            if (navigator.isMilestone(data)) {
-                result = new Milestone(adapted);
-            } else {
-                result = new TaskLeaf(adapted);
-            }
-        } else {
-            TaskContainer container = new TaskContainer(adapted, planner
-                    .areContainersExpandedByDefault());
+
+        final Task result = build(data);
+
+        if (!navigator.isLeaf(data)) {
+            TaskContainer container = (TaskContainer) result;
+            int i = 0;
             for (T child : navigator.getChildren(data)) {
-                container.add(extractTask(null, accumulatedDependencies, child,
-                        container));
+                container.add(buildAndRegister(position.down(container, i),
+                        accumulatedDependencies, child));
+                i++;
             }
-            result = container;
         }
-        result
-.setShowingReportedHours(planner.showReportedHoursRightNow());
+
+        result.setShowingReportedHours(planner.showReportedHoursRightNow());
         result.setShowingAdvances(planner.showAdvancesRightNow());
-        mapper.register(topInsertionPosition, result, data, parent);
+
+        mapper.register(position, result, data);
         return result;
+    }
+
+    private Task build(T data) {
+        ITaskFundamentalProperties adapted = adapter.adapt(data);
+        if (navigator.isMilestone(data)) {
+            return new Milestone(adapted);
+        } else if (navigator.isLeaf(data)) {
+            return new TaskLeaf(adapted);
+        } else {
+            return new TaskContainer(adapted,
+                    planner.areContainersExpandedByDefault());
+        }
     }
 
     public void add(Position position, Collection<? extends T> domainObjects) {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
         List<Task> tasksCreated = new ArrayList<Task>();
         for (T object : domainObjects) {
-            Task task = extractTask(position.getInsertionPosition(),
-                    totalDependencies, object, position.getParent());
+            Task task = buildAndRegister(position, totalDependencies, object);
             tasksCreated.add(task);
         }
         updateTimeTracker(tasksCreated);
@@ -289,9 +288,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     @Override
     public void add(Position position, T domainObject) {
-        LinkedList<T> list = new LinkedList<T>();
-        list.add(domainObject);
-        add(position, list);
+        add(position, Collections.singletonList(domainObject));
     }
 
     public IDomainAndBeansMapper<T> getMapper() {
