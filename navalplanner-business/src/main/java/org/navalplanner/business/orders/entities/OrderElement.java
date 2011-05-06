@@ -620,13 +620,17 @@ public abstract class OrderElement extends IntegrationEntity implements
         checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
                 newAdvanceAssignment);
 
+        if (getReportGlobalAdvanceAssignment() == null) {
+            newAdvanceAssignment.setReportGlobalAdvance(true);
+        }
+
         newAdvanceAssignment.setOrderElement(this);
         this.directAdvanceAssignments.add(newAdvanceAssignment);
 
         if (this.getParent() != null) {
+            addChildrenAdvanceInParents(this.getParent());
             this.getParent().addIndirectAdvanceAssignment(
                     newAdvanceAssignment.createIndirectAdvanceFor(this.getParent()));
-            addChildrenAdvanceInParents(this.getParent());
         }
     }
 

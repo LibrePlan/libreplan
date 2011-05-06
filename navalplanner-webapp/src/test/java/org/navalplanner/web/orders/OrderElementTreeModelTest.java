@@ -1959,8 +1959,8 @@ public class OrderElementTreeModelTest {
         assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(3));
         assertNotNull(order.getIndirectAdvanceAssignment(advanceType));
         assertNotNull(order.getIndirectAdvanceAssignment(advanceType2));
-        assertThat(order.getReportGlobalAdvanceAssignment().getAdvanceType(),
-                equalTo(advanceType));
+        assertNotNull(order.getReportGlobalAdvanceAssignment());
+        assertTrue(order.getChildrenAdvance().getReportGlobalAdvance());
 
         model.removeNode(element);
 
@@ -1972,6 +1972,29 @@ public class OrderElementTreeModelTest {
 
         assertThat(element2.getDirectAdvanceAssignments().size(), equalTo(1));
         assertNotNull(element2.getDirectAdvanceAssignmentByType(advanceType2));
+    }
+
+    @Test
+    public void checkChildrenAdvanceIsCreatedAndMarkedAsSpreadInOrder()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        model.addElement("element", 100);
+
+        OrderLine element = (OrderLine) order.getChildren().get(0);
+
+        addDirectAdvanceAssignment(element);
+
+        assertThat(order.getIndirectAdvanceAssignments().size(), equalTo(2));
+        assertNotNull(order.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(order.getChildrenAdvance());
+        assertNotNull(order.getReportGlobalAdvanceAssignment());
+        assertTrue(order.getChildrenAdvance().getReportGlobalAdvance());
+
+        assertThat(element.getDirectAdvanceAssignments().size(), equalTo(1));
+        assertNotNull(element.getAdvanceAssignmentByType(advanceType));
+        assertNotNull(element.getReportGlobalAdvanceAssignment());
+        assertTrue(element.getAdvanceAssignmentByType(advanceType)
+                .getReportGlobalAdvance());
     }
 
 }
