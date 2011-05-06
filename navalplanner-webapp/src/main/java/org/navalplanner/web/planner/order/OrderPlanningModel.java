@@ -130,6 +130,8 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
@@ -326,6 +328,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    private static class NullSeparatorCommandOnTask<T> implements
+            ICommandOnTask<T> {
+
+        @Override
+        public String getName() {
+            return "separator";
+        }
+
+        @Override
+        public String getIcon() {
+            return null;
+        }
+
+        @Override
+        public boolean isApplicableTo(T task) {
+            return true;
+        }
+
+        @Override
+        public void doAction(IContextWithPlannerTask<T> context, T task) {
+            // Do nothing
+        }
+
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(final Planner planner, Order order,
@@ -354,23 +381,27 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.addGlobalCommand(buildReassigningCommand());
 
-        final IResourceAllocationCommand resourceAllocationCommand =
-            buildResourceAllocationCommand(editTaskController);
-        configuration.addCommandOnTask(resourceAllocationCommand);
+        NullSeparatorCommandOnTask<TaskElement> separator = new NullSeparatorCommandOnTask<TaskElement>();
+
+        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
+
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+
+        // Build context menu
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
-        configuration
-                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
+        configuration.addCommandOnTask(separator);
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
-
-        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand =
-            buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+        configuration.addCommandOnTask(resourceAllocationCommand);
+        configuration
+                .addCommandOnTask(buildSubcontractCommand(editTaskController));
+        configuration
+                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
+        configuration.addCommandOnTask(separator);
         configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
         configuration
                 .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
-        configuration
-                .addCommandOnTask(buildSubcontractCommand(editTaskController));
 
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
