@@ -58,4 +58,11 @@
         <modifyDataType tableName="criterion_satisfaction" columnName="finish_date" newDataType="DATE"/>
     </changeSet>
 
+    <changeSet id="remove-stretches-with-amountWorkPercentage-equal-100" author="dpino">
+        <comment>Removes all stretches which amountWorkPercentage value is 100 as now these stretches will be created automatically and never stored into DB</comment>
+        <sql>
+            DELETE FROM stretches WHERE amount_work_percentage = 1.00;
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

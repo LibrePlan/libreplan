@@ -94,10 +94,7 @@ public abstract class StrechesFunctionConfiguration implements
 
     @Override
     public void applyOn(ResourceAllocation<?> resourceAllocation) {
-        StretchesFunction stretchesFunction = StretchesFunctionModel
-                .createDefaultStretchesFunction(resourceAllocation.getTask()
-                        .getEndAsLocalDate());
-        resourceAllocation.setAssignmentFunction(stretchesFunction);
+        resourceAllocation.setAssignmentFunction(StretchesFunction.create());
     }
 
 }

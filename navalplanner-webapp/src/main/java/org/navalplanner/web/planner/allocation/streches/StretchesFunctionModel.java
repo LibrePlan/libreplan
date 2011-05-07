@@ -63,13 +63,6 @@ import org.zkoss.util.Locales;
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
 
-    public static StretchesFunction createDefaultStretchesFunction(LocalDate endDate) {
-        StretchesFunction stretchesFunction = StretchesFunction.create();
-        stretchesFunction.addStretch(Stretch.create(endDate, BigDecimal.ONE,
-                BigDecimal.ONE));
-        return stretchesFunction;
-    }
-
     /**
      * Conversation state
      */
@@ -108,6 +101,7 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             this.taskEndDate = task.getEndDate();
 
             // Initialize stretchesFunction
+            stretchesFunction.setTaskEndDate(task.getEndAsLocalDate());
             this.originalStretchesFunction = stretchesFunction;
             this.stretchesFunction = stretchesFunction.copy();
             this.stretchesFunction.changeTypeTo(type);

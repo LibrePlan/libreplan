@@ -80,7 +80,13 @@ public class Stretch {
     }
 
     public static Stretch copy(Stretch stretch) {
-        return create(stretch.date, stretch.lengthPercentage, stretch.amountWorkPercentage);
+        Stretch result = new Stretch();
+        result.date = stretch.date;
+        result.lengthPercentage = stretch.lengthPercentage;
+        result.amountWorkPercentage = stretch.amountWorkPercentage;
+        result.consolidated = stretch.consolidated;
+        result.readOnly = stretch.readOnly;
+        return result;
     }
 
     public static Stretch buildFromConsolidatedProgress(ResourceAllocation<? extends DayAssignment> resourceAllocation) {
@@ -172,7 +178,7 @@ public class Stretch {
     }
 
     public String toString() {
-        return String.format("(%s, %s, %s) ", date, lengthPercentage, amountWorkPercentage);
+        return String.format("(%s, %s, %s, readOnly: %s) ", date, lengthPercentage, amountWorkPercentage, readOnly);
     }
 
     public boolean isReadOnly() {

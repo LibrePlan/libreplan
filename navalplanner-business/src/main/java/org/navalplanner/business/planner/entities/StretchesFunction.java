@@ -207,6 +207,9 @@ public class StretchesFunction extends AssignmentFunction {
     // Transient. Calculated from resourceAllocation
     private Stretch consolidatedStretch;
 
+    // Transient. Used to calculate read-only last stretch
+    private LocalDate taskEndDate;
+
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
     }
@@ -249,34 +252,35 @@ public class StretchesFunction extends AssignmentFunction {
         result.type = type;
         result.desiredType = desiredType;
         result.consolidatedStretch = consolidatedStretch;
+        result.taskEndDate = taskEndDate;
         return result;
     }
 
     public void resetToStrechesFrom(StretchesFunction from) {
         this.removeAllStretches();
-        for (Stretch each : from.getStretches()) {
+        for (Stretch each : from.getStretchesDefinedByUser()) {
             this.addStretch(Stretch.copy(each));
         }
         this.consolidatedStretch = from.consolidatedStretch;
     }
 
-    public void setStretches(List<Stretch> stretches) {
-        this.stretches = stretches;
-    }
-
-    private void sortStretches() {
-        Collections.sort(stretches, new Comparator<Stretch>() {
-            @Override
-            public int compare(Stretch o1, Stretch o2) {
-                return o1.getDate().compareTo(o2.getDate());
-            }
-        });
+    public List<Stretch> getStretchesDefinedByUser() {
+        return Collections.unmodifiableList(Stretch.sortByDate(stretches));
     }
 
     @Valid
     public List<Stretch> getStretches() {
-        sortStretches();
-        return Collections.unmodifiableList(stretches);
+        List<Stretch> result = new ArrayList<Stretch>(stretches);
+        if (taskEndDate != null) {
+            result.add(getLastStretch());
+        }
+        return Collections.unmodifiableList(Stretch.sortByDate(result));
+    }
+
+    private Stretch getLastStretch() {
+        Stretch result = Stretch.create(taskEndDate, BigDecimal.ONE, BigDecimal.ONE);
+        result.readOnly(true);
+        return result;
     }
 
     public StretchesFunctionTypeEnum getType() {
@@ -338,7 +342,7 @@ public class StretchesFunction extends AssignmentFunction {
 
     public List<Stretch> getStretchesPlusConsolidated() {
         List<Stretch> result = new ArrayList<Stretch>();
-        result.addAll(stretches);
+        result.addAll(getStretches());
         if (consolidatedStretch != null) {
             result.add(consolidatedStretch);
         }
@@ -348,11 +352,10 @@ public class StretchesFunction extends AssignmentFunction {
     @AssertTrue(message = "Last stretch should have one hundred percent for "
             + "length and amount of work percentage")
     public boolean checkOneHundredPercent() {
+        List<Stretch> stretches = getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return false;
         }
-        sortStretches();
-
         Stretch lastStretch = stretches.get(stretches.size() - 1);
         if (lastStretch.getLengthPercentage().compareTo(BigDecimal.ONE) != 0) {
             return false;
@@ -360,7 +363,6 @@ public class StretchesFunction extends AssignmentFunction {
         if (lastStretch.getAmountWorkPercentage().compareTo(BigDecimal.ONE) != 0) {
             return false;
         }
-
         return true;
     }
 
@@ -373,8 +375,13 @@ public class StretchesFunction extends AssignmentFunction {
         if (resourceAllocation.getFirstNonConsolidatedDate() == null) {
             return;
         }
+        taskEndDate = getTaskEndDate(resourceAllocation);
         getDesiredType().applyTo(resourceAllocation, this);
         type = getDesiredType();
+    }
+
+    private LocalDate getTaskEndDate(ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation.getTask().getEndAsLocalDate();
     }
 
     @Override
@@ -401,6 +408,7 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     private void checkStretchesSumOneHundredPercent() {
+        List<Stretch> stretches = getStretchesPlusConsolidated();
         BigDecimal sumOfProportions = stretches.isEmpty() ? BigDecimal.ZERO
                 : last(stretches).getAmountWorkPercentage();
         BigDecimal left = calculateLeftFor(sumOfProportions);
@@ -439,6 +447,10 @@ public class StretchesFunction extends AssignmentFunction {
 
     public Stretch getConsolidatedStretch() {
         return consolidatedStretch;
+    }
+
+    public void setTaskEndDate(LocalDate taskEndDate) {
+        this.taskEndDate = taskEndDate;
     }
 
 }
