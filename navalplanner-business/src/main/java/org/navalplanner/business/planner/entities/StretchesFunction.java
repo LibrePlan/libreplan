@@ -56,12 +56,12 @@ public class StretchesFunction extends AssignmentFunction {
 
         private final BigDecimal loadProportion;
 
-        private boolean readOnly = false;
+        private boolean consolidated = false;
 
         public static Interval create(BigDecimal loadProportion, LocalDate start,
-                LocalDate end, boolean readOnly) {
+                LocalDate end, boolean consolidated) {
             Interval result = create(loadProportion, start, end);
-            result.readOnly(readOnly);
+            result.consolidated(consolidated);
             return result;
         }
 
@@ -133,7 +133,7 @@ public class StretchesFunction extends AssignmentFunction {
         private void apply(ResourceAllocation<?> resourceAllocation,
                 LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
-            Validate.isTrue(!isReadOnly());
+            Validate.isTrue(!isConsolidated());
 
             // End has to be exclusive on last Stretch
             LocalDate endDate = getEnd();
@@ -187,12 +187,12 @@ public class StretchesFunction extends AssignmentFunction {
             return String.format("[%s, %s]: %s ", start, end, loadProportion);
         }
 
-        public boolean isReadOnly() {
-            return readOnly;
+        public void consolidated(boolean value) {
+            consolidated = value;
         }
 
-        public void readOnly(boolean value) {
-            readOnly = value;
+        public boolean isConsolidated() {
+            return consolidated;
         }
 
     }
@@ -232,7 +232,7 @@ public class StretchesFunction extends AssignmentFunction {
                 loadedProportion = BigDecimal.ZERO;
             }
             result.add(Interval.create(loadedProportion, previous,
-                    stretchDate, each.isReadOnly()));
+                    stretchDate, each.isConsolidated()));
             sumOfProportions = each.getAmountWorkPercentage();
             previous = stretchDate;
         }

@@ -107,9 +107,11 @@ public class Stretch {
     @NotNull
     private BigDecimal amountWorkPercentage = BigDecimal.ZERO;
 
-    // Trasient value, a stretch is readOnly if it's a consolidated stretch
-    // or if it is a stretch user cannot edit
+    // Transient value, a stretch is readOnly if it is a stretch user cannot edit
     private boolean readOnly = false;
+
+    // Transient value, a stretch is consolidated if it's a consolidated stretch
+    private boolean consolidated = false;
 
     private Stretch(LocalDate date, BigDecimal lengthPercent, BigDecimal progressPercent) {
         this.date = date;
@@ -181,6 +183,14 @@ public class Stretch {
         readOnly = value;
     }
 
+    public boolean isConsolidated() {
+        return consolidated;
+    }
+
+    public void consolidated(boolean value) {
+        consolidated = value;
+    }
+
 }
 
 /**
@@ -210,6 +220,7 @@ class ConsolidatedStretch {
             Task task) {
         Stretch result = Stretch.create(date, task, advancePercentage);
         result.readOnly(true);
+        result.consolidated(true);
         return result;
     }
 
