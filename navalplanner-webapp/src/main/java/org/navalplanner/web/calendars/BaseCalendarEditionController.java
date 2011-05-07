@@ -91,10 +91,12 @@ public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
 
     private static String asString(Capacity capacity) {
-        String extraEffortString = capacity.isOverAssignableWithoutLimit() ? _("unlimited")
+        String extraEffortString = capacity.isOverAssignableWithoutLimit() ? _("unl")
                 : asString(capacity.getAllowedExtraEffort());
 
-        return asString(capacity.getStandardEffort()) + " " + extraEffortString;
+        return asString(capacity.getStandardEffort()) + " ["
+                + extraEffortString
+                + "]";
     }
 
     private static String asString(EffortDuration duration) {
@@ -103,10 +105,9 @@ public abstract class BaseCalendarEditionController extends
         }
         EnumMap<Granularity, Integer> decomposed = duration.decompose();
 
-        String result = _("{0}h", decomposed.get(Granularity.HOURS));
-        if (decomposed.get(Granularity.MINUTES) > 0) {
-            result += _(" {0}m", decomposed.get(Granularity.MINUTES));
-        }
+        String result = _("{0}:", decomposed.get(Granularity.HOURS));
+        result += _("{0}", decomposed.get(Granularity.MINUTES));
+
         if (decomposed.get(Granularity.SECONDS) > 0) {
             result += _(" {0}s", decomposed.get(Granularity.SECONDS));
         }
@@ -423,6 +424,7 @@ public abstract class BaseCalendarEditionController extends
                 EffortDurationPicker extraDurationPicker, Checkbox checkbox) {
             Listcell extraEffortCell = new Listcell();
             Hbox hbox = new Hbox();
+            hbox.setSclass("extra effort cell");
             hbox.appendChild(extraDurationPicker);
             hbox.appendChild(checkbox);
             extraEffortCell.appendChild(hbox);

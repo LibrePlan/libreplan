@@ -1645,3 +1645,55 @@ input.z-datebox-text-disd {
 .timeplot-container {
     margin-left: 8px;
 }
+
+
+.workerwindow .calendar-tabbox .z-tabs {
+    display:none;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabs {
+    display:block;
+}
+
+.workerwindow .calendar-tabbox .z-tabpanel {
+    border: 0;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabpanel {
+    border: solid 1px #7EAAC6;
+}
+
+.calendar-tabbox .z-textbox {
+    height: auto;
+}
+
+.calendar-tabbox .z-calendar {
+    margin: 5px;
+}
+
+.day-details .z-columns {
+    display: none;
+}
+
+.day-details {
+    width: 165px;
+    margin: 5px;
+}
+
+.day-details .z-datebox-disd input {
+    border: 0;
+    background: transparent;
+    color: black !important;
+}
+
+.day-details .z-datebox-disd * {
+    color: black !important;
+}
+
+.day-details .z-datebox-disd {
+    opacity: 1;
+}
+
+.day-details img {
+    display: none;
+}
