@@ -23,7 +23,6 @@ package org.navalplanner.web.workreports;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +32,6 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -73,7 +71,6 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.ListModel;
@@ -277,19 +274,25 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 validateWorkReport();
             }
             if (value instanceof WorkReportLine) {
-                validateWorkReportLine((WorkReportLine) invalidValue.getBean());
+                WorkReportLine workReportLine = (WorkReportLine) invalidValue.getBean();
+                Row row = ComponentsFinder.findRowByValue(listWorkReportLines, workReportLine);
+                if (row == null) {
+                    messagesForUser.showInvalidValues(e);
+                } else {
+                    validateWorkReportLine(row, workReportLine);
+                }
             }
         }
     }
 
     private boolean showInvalidProperty() {
-        if (getWorkReport() != null) {
+        WorkReport workReport = getWorkReport();
+        if (workReport != null) {
             if (!validateWorkReport()) {
                 return true;
             }
-            for (WorkReportLine workReportLine : getWorkReport()
-                    .getWorkReportLines()) {
-                if (!validateWorkReportLine(workReportLine)) {
+            for (WorkReportLine each : workReport.getWorkReportLines()) {
+                if (!validateWorkReportLine(each)) {
                     return true;
                 }
             }
@@ -326,147 +329,129 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return true;
     }
 
+    private boolean validateWorkReportLine(WorkReportLine workReportLine) {
+        Row row = ComponentsFinder.findRowByValue(listWorkReportLines,
+                workReportLine);
+        return row != null ? validateWorkReportLine(row, workReportLine)
+                : false;
+    }
+
     /**
      * Validates {@link WorkReportLine} data constraints
      *
      * @param invalidValue
      */
     @SuppressWarnings("unchecked")
-    private boolean validateWorkReportLine(WorkReportLine workReportLine) {
-        if (listWorkReportLines != null) {
-            // Find which row contains workReportLine inside listBox
-            Row row = findWorkReportLine(listWorkReportLines.getRows().getChildren(),
- workReportLine);
+    private boolean validateWorkReportLine(Row row,
+            WorkReportLine workReportLine) {
 
-            workReportLine = (WorkReportLine) row.getValue();
-            if (row != null) {
-                if (getWorkReportType().getDateIsSharedByLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getDate() == null) {
-                    Datebox date = getDateboxDate(row);
-                    if (date != null) {
-                        String message = _("The date cannot be null");
-                        showInvalidMessage(date, message);
-                    }
-                    return false;
-                }
-
-                if (getWorkReportType().getResourceIsSharedInLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getResource() == null) {
-                    Autocomplete autoResource = getTextboxResource(row);
-                    if (autoResource != null) {
-                        String message = _("The resource cannot be null");
-                        showInvalidMessage(autoResource, message);
-                    }
-                    return false;
-                }
-
-                if (getWorkReportType().getOrderElementIsSharedInLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getOrderElement() == null) {
-                    BandboxSearch bandboxOrder = getTextboxOrder(row);
-                    if (bandboxOrder != null) {
-                        String message = _("The task code cannot be null");
-                        bandboxOrder.clear();
-                        showInvalidMessage(bandboxOrder, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine
-                        .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
-                    Timebox timeStart = getTimeboxStart(row);
-                    if (timeStart != null) {
-                        String message = _("Time Start cannot be null");
-                        showInvalidMessage(timeStart, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine
-                        .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
-                    Timebox timeFinish = getTimeboxFinish(row);
-                    if (timeFinish != null) {
-                        String message = _("Time finish cannot be null");
-                        showInvalidMessage(timeFinish, message);
-                    }
-                    return false;
-                }
-
-                if (workReportLine.getNumHours() == null) {
-                    // Locate TextboxOrder
-                    Intbox txtHours = getIntboxHours(row);
-                    if (txtHours != null) {
-                        String message = _("Hours cannot be null");
-                        showInvalidMessage(txtHours, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
-                    // Locate TextboxOrder
-                    Intbox txtHours = getIntboxHours(row);
-                    if (txtHours != null) {
-                        String message = _("number of hours is not properly calculated based on clock");
-                        showInvalidMessage(txtHours, message);
-                    }
-                    return false;
-                }
-
-                if (workReportLine.getTypeOfWorkHours() == null) {
-                    // Locate TextboxOrder
-                    Listbox autoTypeOfHours = getTypeOfHours(row);
-                    if (autoTypeOfHours != null) {
-                        String message = autoTypeOfHours.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
-                                : _("The type of hours cannot be null");
-                        showInvalidMessage(autoTypeOfHours, message);
-                    }
-                    return false;
-                }
-
-                if ((!getWorkReport().isCodeAutogenerated())
-                        && (workReportLine.getCode() == null || workReportLine
-                                .getCode().isEmpty())) {
-                    // Locate TextboxCode
-                    Textbox txtCode = getCode(row);
-                    if (txtCode != null) {
-                        String message = _("The code cannot be empty.");
-                        showInvalidMessage(txtCode, message);
-                    }
-                    return false;
-                }
+        if (getWorkReportType().getDateIsSharedByLines()) {
+            if (!validateWorkReport()) {
+                return false;
             }
+        } else if (workReportLine.getDate() == null) {
+            Datebox date = getDateboxDate(row);
+            if (date != null) {
+                String message = _("The date cannot be null");
+                showInvalidMessage(date, message);
+            }
+            return false;
+        }
+
+        if (getWorkReportType().getResourceIsSharedInLines()) {
+            if (!validateWorkReport()) {
+                return false;
+            }
+        } else if (workReportLine.getResource() == null) {
+            Autocomplete autoResource = getTextboxResource(row);
+            if (autoResource != null) {
+                String message = _("The resource cannot be null");
+                showInvalidMessage(autoResource, message);
+            }
+            return false;
+        }
+
+        if (getWorkReportType().getOrderElementIsSharedInLines()) {
+            if (!validateWorkReport()) {
+                return false;
+            }
+        } else if (workReportLine.getOrderElement() == null) {
+            BandboxSearch bandboxOrder = getTextboxOrder(row);
+            if (bandboxOrder != null) {
+                String message = _("The task code cannot be null");
+                bandboxOrder.clear();
+                showInvalidMessage(bandboxOrder, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine
+                .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
+            Timebox timeStart = getTimeboxStart(row);
+            if (timeStart != null) {
+                String message = _("Time Start cannot be null");
+                showInvalidMessage(timeStart, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine
+                .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
+            Timebox timeFinish = getTimeboxFinish(row);
+            if (timeFinish != null) {
+                String message = _("Time finish cannot be null");
+                showInvalidMessage(timeFinish, message);
+            }
+            return false;
+        }
+
+        if (workReportLine.getNumHours() == null) {
+            // Locate TextboxOrder
+            Intbox txtHours = getIntboxHours(row);
+            if (txtHours != null) {
+                String message = _("Hours cannot be null");
+                showInvalidMessage(txtHours, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
+            // Locate TextboxOrder
+            Intbox txtHours = getIntboxHours(row);
+            if (txtHours != null) {
+                String message = _("number of hours is not properly calculated based on clock");
+                showInvalidMessage(txtHours, message);
+            }
+            return false;
+        }
+
+        if (workReportLine.getTypeOfWorkHours() == null) {
+            // Locate TextboxOrder
+            Listbox autoTypeOfHours = getTypeOfHours(row);
+            if (autoTypeOfHours != null) {
+                String message = autoTypeOfHours.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
+                        : _("The type of hours cannot be null");
+                showInvalidMessage(autoTypeOfHours, message);
+            }
+            return false;
+        }
+
+        if ((!getWorkReport().isCodeAutogenerated())
+                && (workReportLine.getCode() == null || workReportLine
+                        .getCode().isEmpty())) {
+            // Locate TextboxCode
+            Textbox txtCode = getCode(row);
+            if (txtCode != null) {
+                String message = _("The code cannot be empty.");
+                showInvalidMessage(txtCode, message);
+            }
+            return false;
         }
         return true;
     }
 
     private void showInvalidMessage(Component comp, String message) {
         throw new WrongValueException(comp, message);
-    }
-
-    /**
-     * Locates which {@link Row} is bound to {@link WorkReportLine} in
-     * rows
-     *
-     * @param rows
-     * @param workReportLine
-     * @return
-     */
-    private Row findWorkReportLine(List<Row> rows,
-            WorkReportLine workReportLine) {
-        for (Row row : rows) {
-            if (workReportLine.equals(row.getValue())) {
-                return row;
-            }
-        }
-        return null;
     }
 
     /**

@@ -62,6 +62,9 @@ public class ComponentsFinder {
     }
 
     public static Row findRowByValue(Grid grid, Object needle) {
+        if (grid == null || needle == null) {
+            return null;
+        }
         Rows rows = grid.getRows();
         for (Object each : rows.getChildren()) {
             if (each instanceof Row) {
@@ -76,7 +79,7 @@ public class ComponentsFinder {
     }
 
     public static Listitem findItemByValue(Listbox listbox, Object needle) {
-        if (needle == null) {
+        if (listbox == null || needle == null) {
             return null;
         }
         for (Object each : listbox.getItems()) {
