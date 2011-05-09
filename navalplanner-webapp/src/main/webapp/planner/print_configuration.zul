@@ -25,60 +25,22 @@
 
     <window border="normal" title="${i18n:_('Print configuration')}"
         closable="true" id="printConfigurationWindow">
-        <panel title="${i18n:_('Select print page properties')}"
-            border="normal" style="margin-bottom:10px;">
-            <panelchildren>
-                <groupbox>
-                    <caption label="${i18n:_('Print layout')}" />
-                    <radiogroup id="print_layout"
-                        onCheck="choice.value = self.selectedItem.label">
-                        <radio label="${i18n:_('PDF')}"
-                            selected="true" />
-                        <radio label="${i18n:_('Landscape')}" disabled="true" visible="false" />
-                        <radio label="${i18n:_('Single image')}" />
-                    </radiogroup>
-                </groupbox>
-                <groupbox visible="false">
-                    <caption label="${i18n:_('Paper size')}" />
-                    <radiogroup id="print_paper_size"
-                        onCheck="choice.value = self.selectedItem.label">
-                        <radio label="${i18n:_('A4')}" selected="true" />
-                        <radio label="${i18n:_('A3')}" disabled="true" />
-                        <radio label="${i18n:_('A2')}" disabled="true" />
-                        <radio label="${i18n:_('A1')}" disabled="true" />
-                    </radiogroup>
-                </groupbox>
-                <groupbox visible="false">
-                    <caption label="${i18n:_('Zoom level')}" />
-                    <radiogroup id="print_zoom_level"
-                        onCheck="choice.value = self.selectedItem.label">
-                        <radio label="${i18n:_('Year')}" selected="true" />
-                        <radio label="${i18n:_('Quarter')}" />
-                        <radio label="${i18n:_('Month')}" />
-                        <radio label="${i18n:_('Week')}" />
-                        <radio label="${i18n:_('Day')}" />
-                    </radiogroup>
-                </groupbox>
-            </panelchildren>
-        </panel>
-        <panel title="${i18n:_('Select print visualization options')}"
-            border="normal" style="margin-bottom:10px;">
-            <panelchildren>
-                <vbox>
-                    <checkbox id="print_labels" label="${i18n:_('Show all labels')}" checked="true" />
-                    <checkbox id="print_resources"
-                        label="${i18n:_('Show all resource assignments')}" checked="true"  />
-                    <checkbox id="print_expanded"
-                        label="${i18n:_('Expand all taskgroups')}" checked="true"  />
-                    <checkbox id="print_shrinked"
-                        label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
-                    <checkbox id="print_advances"
-                        label="${i18n:_('Show all progress')}" checked="true"/>
-                    <checkbox id="print_reported_hours"
-                        label="${i18n:_('Show all reported hours')}" checked="true"/>
-                </vbox>
-            </panelchildren>
-        </panel>
+        <groupbox>
+            <caption label="${i18n:_('Export options')}" />
+            <vbox>
+                <checkbox id="print_labels" label="${i18n:_('Show labels')}" checked="true" />
+                <checkbox id="print_resources"
+                    label="${i18n:_('Show resource assignments')}" checked="true"  />
+                <checkbox id="print_expanded"
+                    label="${i18n:_('Expand taskgroups')}" checked="true"  />
+                <checkbox id="print_shrinked"
+                    label="${i18n:_('Shrink to fit page width')}" checked="true" disabled="true" visible="false"/>
+                <checkbox id="print_advances"
+                    label="${i18n:_('Show progress')}" checked="true"/>
+                <checkbox id="print_reported_hours"
+                    label="${i18n:_('Show all reported hours')}" checked="true"/>
+            </vbox>
+        </groupbox>
         <button id="printButton" label="${i18n:_('Print')}" sclass="save-button global-action"></button>
         <button id="cancelPrintButton" label="${i18n:_('Cancel')}" sclass="cancel-button global-action" onClick="printConfigurationWindow.detach()"/>
     </window>

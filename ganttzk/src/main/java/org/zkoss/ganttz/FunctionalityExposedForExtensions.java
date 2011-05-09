@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Window;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
@@ -474,7 +473,6 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private HashMap<String, String> buildParameters(Component parent) {
         HashMap<String, String> parameters = new HashMap<String, String>();
 
-        Radiogroup layout = (Radiogroup) parent.getFellow("print_layout");
         Checkbox expanded = (Checkbox) parent.getFellow("print_expanded");
         Checkbox resources = (Checkbox) parent.getFellow("print_resources");
         Checkbox labels = (Checkbox) parent.getFellow("print_labels");
@@ -482,9 +480,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox reportedHours = (Checkbox) parent
                 .getFellow("print_reported_hours");
 
-        if (layout.getSelectedIndex() == 2) {
-            parameters.put("extension", ".png");
-        }
+        parameters.put("extension", ".png");
         if (expanded.isChecked() == true) {
             parameters.put("expanded", "all");
         }
