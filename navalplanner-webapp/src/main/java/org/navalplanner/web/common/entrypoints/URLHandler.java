@@ -24,12 +24,15 @@ package org.navalplanner.web.common.entrypoints;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -81,6 +84,53 @@ public class URLHandler<T> {
         request.setAttribute(MANUALLY_SET_PARAMS, entryPoints);
     }
 
+    public interface ICapture {
+
+        public void capture();
+    }
+
+    private static final ThreadLocal<List<String>> linkCaputurer = new ThreadLocal<List<String>>();
+
+    /**
+     * It capture the first redirect done via an {@link EntryPoint} in the
+     * provided {@link ICapture} and returns the path.
+     *
+     * @see #capturePaths(ICapture)
+     * @param redirects
+     * @throws IllegalStateException
+     *             if no {@link EntryPoint} point call is done.
+     */
+    public static String capturePath(ICapture redirects) {
+        List<? extends String> result = capturePaths(redirects);
+        if (result.isEmpty()) {
+            throw new IllegalStateException(
+                    "a call to an entry point should be done");
+        }
+        return result.get(0);
+    }
+
+    /**
+     * It captures the redirects done via {@link EntryPoint} in the provided
+     * {@link ICapture} and returns the paths.
+     *
+     * @param redirects
+     * @return
+     */
+    public static List<? extends String> capturePaths(ICapture redirects) {
+        linkCaputurer.set(new ArrayList<String>());
+        try {
+            redirects.capture();
+            List<String> list = linkCaputurer.get();
+            if (list == null) {
+                throw new RuntimeException(ICapture.class.getName()
+                        + " cannot be nested");
+            }
+            return Collections.unmodifiableList(list);
+        } finally {
+            linkCaputurer.set(null);
+        }
+    }
+
     public URLHandler(IConverterFactory converterFactory,
             IExecutorRetriever executorRetriever,
             Class<T> interfaceDefiningEntryPoints) {
@@ -103,9 +153,6 @@ public class URLHandler<T> {
     }
 
     public void doTransition(String methodName, Object... values) {
-        if (isFlagedInThisRequest()) {
-            return;
-        }
         flagAlreadyExecutedInThisRequest();
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName
@@ -114,6 +161,26 @@ public class URLHandler<T> {
                     + " annotation). Nothing will be done");
             return;
         }
+        String fragment = buildFragment(methodName, values);
+
+        if (linkCaputurer.get() != null) {
+            linkCaputurer.get().add(buildRedirectURL(fragment));
+            return;
+        }
+
+        if (isFlagedInThisRequest()) {
+            return;
+        }
+        String requestPath = executorRetriever.getCurrent().getDesktop()
+                .getRequestPath();
+        if (requestPath.contains(page)) {
+            doBookmark(fragment);
+        } else {
+            sendRedirect(fragment);
+        }
+    }
+
+    private String buildFragment(String methodName, Object... values) {
         EntryPointMetadata linkableMetadata = metadata.get(methodName);
         Class<?>[] types = linkableMetadata.method.getParameterTypes();
         String[] parameterNames = linkableMetadata.annotation.value();
@@ -125,13 +192,7 @@ public class URLHandler<T> {
                     .asStringUngeneric(values[i]);
         }
         String fragment = getFragment(parameterNames, stringRepresentations);
-        String requestPath = executorRetriever.getCurrent().getDesktop()
-                .getRequestPath();
-        if (requestPath.contains(page)) {
-            doBookmark(fragment);
-        } else {
-            sendRedirect(fragment);
-        }
+        return fragment;
     }
 
     private boolean isFlagedInThisRequest() {
@@ -155,8 +216,13 @@ public class URLHandler<T> {
     }
 
     private void sendRedirect(String fragment) {
+        String uri = buildRedirectURL(fragment);
+        executorRetriever.getCurrent().sendRedirect(uri);
+    }
+
+    private String buildRedirectURL(String fragment) {
         StringBuilder linkValue = new StringBuilder(page).append(fragment);
-        executorRetriever.getCurrent().sendRedirect(linkValue.toString());
+        return linkValue.toString();
     }
 
     private String getFragment(String[] parameterNames,
