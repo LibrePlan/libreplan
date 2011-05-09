@@ -221,7 +221,8 @@ public class URLHandler<T> {
     }
 
     private String buildRedirectURL(String fragment) {
-        StringBuilder linkValue = new StringBuilder(page).append(fragment);
+        StringBuilder linkValue = new StringBuilder(page).append(";").append(
+                !fragment.isEmpty() ? fragment.substring(1) : "");
         return linkValue.toString();
     }
 
