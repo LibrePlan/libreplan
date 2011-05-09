@@ -153,7 +153,6 @@ public class URLHandler<T> {
     }
 
     public void doTransition(String methodName, Object... values) {
-        flagAlreadyExecutedInThisRequest();
         if (!metadata.containsKey(methodName)) {
             LOG.error("Method " + methodName
                     + "doesn't represent a state(It doesn't have a "
@@ -171,6 +170,8 @@ public class URLHandler<T> {
         if (isFlagedInThisRequest()) {
             return;
         }
+        flagAlreadyExecutedInThisRequest();
+
         String requestPath = executorRetriever.getCurrent().getDesktop()
                 .getRequestPath();
         if (requestPath.contains(page)) {

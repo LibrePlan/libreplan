@@ -30,14 +30,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.navalplanner.business.common.IAdHocTransactionService;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.URLHandler.ICapture;
+import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.security.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.ganttz.util.IMenuItemsRegister;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -52,14 +59,6 @@ import org.zkoss.zul.Vbox;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public class CustomMenuController extends Div implements IMenuItemsRegister {
-
-    @Autowired
-    private IAdHocTransactionService transactionService;
-
-    private List<CustomMenuItem> firstLevel;
-
-
-    private IConfigurationModel configurationModel;
 
     public static class CustomMenuItem {
 
@@ -164,8 +163,27 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     }
 
+    private static IGlobalViewEntryPoints findGlobalViewEntryPoints() {
+        return (IGlobalViewEntryPoints) getSpringContext().getBean(
+                "globalView", IGlobalViewEntryPoints.class);
+    }
+
+    private static WebApplicationContext getSpringContext() {
+        Execution current = Executions.getCurrent();
+        HttpServletRequest request = (HttpServletRequest) current
+                .getNativeRequest();
+        ServletContext context = request.getSession().getServletContext();
+
+        return WebApplicationContextUtils.getWebApplicationContext(context);
+    }
+
+    private List<CustomMenuItem> firstLevel;
+
+    private IGlobalViewEntryPoints globalView;
+
     public CustomMenuController() {
         this.firstLevel = new ArrayList<CustomMenuItem>();
+        this.globalView = findGlobalViewEntryPoints();
         initializeMenu();
         activateCurrentOne();
         getLocator().store(this);
@@ -225,6 +243,12 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         return new CustomMenuItem(name, url, helpLink);
     }
 
+    private CustomMenuItem subItem(String name, ICapture urlCapture,
+            String helpLink) {
+        return new CustomMenuItem(name, URLHandler.capturePath(urlCapture),
+                helpLink);
+    }
+
     private CustomMenuItem subItem(String name, String url, String helpLink,
             CustomMenuItem... children) {
         CustomMenuItem parent = subItem(name, url, helpLink);
@@ -236,10 +260,30 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     public void initializeMenu() {
         topItem(_("Scheduling"), "/planner/index.zul", "",
-            subItem(_("Projects Planning"), "/planner/index.zul;company_scheduling","01-introducion.html"),
-            subItem(_("Projects"), "/planner/index.zul;orders_list","01-introducion.html#id2"),
-            subItem(_("Resource Usage"),"/planner/index.zul;company_load","01-introducion.html#id1"),
-            subItem(_("Limiting Resources Planning"),"/planner/index.zul;limiting_resources","01-introducion.html"),
+                subItem(_("Projects Planning"), new ICapture() {
+                    @Override
+                    public void capture() {
+                        globalView.goToCompanyScheduling();
+                    }
+                }, "01-introducion.html"),
+                subItem(_("Projects"), new ICapture() {
+                    @Override
+                    public void capture() {
+                        globalView.goToOrdersList();
+                    }
+                }, "01-introducion.html#id2"),
+                subItem(_("Resource Usage"), new ICapture() {
+                    @Override
+                    public void capture() {
+                        globalView.goToCompanyLoad();
+                    }
+                }, "01-introducion.html#id1"),
+                subItem(_("Limiting Resources Planning"), new ICapture() {
+                    @Override
+                    public void capture() {
+                        globalView.goToLimitingResources();
+                    }
+                }, "01-introducion.html"),
             subItem(_("Project Templates"), "/templates/templates.zul", ""));
 
         List<CustomMenuItem> resourcesItems = new ArrayList<CustomMenuItem>();
