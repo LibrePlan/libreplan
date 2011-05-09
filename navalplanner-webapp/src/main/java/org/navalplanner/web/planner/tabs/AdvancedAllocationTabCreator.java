@@ -55,6 +55,9 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
+import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.URLHandler.ICapture;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -88,13 +91,22 @@ public class AdvancedAllocationTabCreator {
         private Set<Resource> associatedResources;
         private final Scenario currentScenario;
 
-        public ResultReceiver(Scenario currentScenario, Order order, Task task) {
+        private final String retryPage;
+
+        public ResultReceiver(Scenario currentScenario, final Order order,
+                Task task) {
             this.currentScenario = currentScenario;
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = AllocationResult.createCurrent(currentScenario, task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
+            this.retryPage = URLHandler.capturePath(new ICapture() {
+                @Override
+                public void capture() {
+                    globalViewEntryPoints.goToAdvancedAllocation(order);
+                }
+            });
             reattachResources();
             loadNeededDataOfTask();
         }
@@ -171,7 +183,11 @@ public class AdvancedAllocationTabCreator {
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
             Validate
                     .isTrue(allocationResult.getAggregate() == modifiedAllocations);
-            adHocTransactionService
+            IAdHocTransactionService withConcurrencyHandling = ConcurrentModificationHandling
+                    .addHandling(retryPage,
+                    IAdHocTransactionService.class, adHocTransactionService);
+
+            withConcurrencyHandling
                     .runOnTransaction(new IOnTransaction<Void>() {
 
                         @Override
@@ -238,22 +254,23 @@ public class AdvancedAllocationTabCreator {
     private final IResourceDAO resourceDAO;
     private final Scenario currentScenario;
     private final Component breadcrumbs;
+    private final IGlobalViewEntryPoints globalViewEntryPoints;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
             IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs) {
+            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
                 orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack,
-                breadcrumbs).build();
+                breadcrumbs, globalViewEntryPoints).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
             IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs) {
+            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
@@ -261,6 +278,7 @@ public class AdvancedAllocationTabCreator {
         Validate.notNull(onBack);
         Validate.notNull(currentScenario);
         Validate.notNull(breadcrumbs);
+        Validate.notNull(globalViewEntryPoints);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
@@ -269,6 +287,7 @@ public class AdvancedAllocationTabCreator {
         this.resourceDAO = resourceDAO;
         this.currentScenario = currentScenario;
         this.breadcrumbs = breadcrumbs;
+        this.globalViewEntryPoints = globalViewEntryPoints;
     }
 
     private ITab build() {

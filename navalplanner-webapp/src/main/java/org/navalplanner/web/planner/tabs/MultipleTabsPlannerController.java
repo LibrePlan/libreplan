@@ -25,6 +25,8 @@ import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -133,6 +135,9 @@ public class MultipleTabsPlannerController implements Composer,
     public static final String BREADCRUMBS_SEPARATOR = "/common/img/migas_separacion.gif";
 
     private Mode mode = Mode.initial();
+
+    @Resource
+    private IGlobalViewEntryPoints globalView;
 
     @Autowired
     private CompanyPlanningController companyPlanningController;
@@ -268,7 +273,7 @@ public class MultipleTabsPlannerController implements Composer,
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
                 .create(mode, transactionService, orderDAO, taskElementDAO,
                         resourceDAO, scenarioManager.getCurrent(),
-                        returnToPlanningTab(), breadcrumbs));
+                        returnToPlanningTab(), breadcrumbs, globalView));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
