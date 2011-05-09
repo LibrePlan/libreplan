@@ -1697,3 +1697,11 @@ input.z-datebox-text-disd {
 .day-details img {
     display: none;
 }
+
+.materials-accordion .z-tab-accordion-header {
+    display: none;
+}
+
+.materials-accordion.z-tabbox-accordion .z-tabpanel-accordion {
+    border: 0;
+}

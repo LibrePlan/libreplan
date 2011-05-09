@@ -19,11 +19,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<panel title="${i18n:_('Materials')}" border="normal" width="600px">
-    <panelchildren>
         <newdatasortablegrid id="gridMaterials"
             fixedLayout="false"
-            model="@{assignedMaterialsController.assignedMaterials}">
+            model="@{assignedMaterialsController.assignedMaterials}" >
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Code')}" />
                 <newdatasortablecolumn label="${i18n:_('Receipt date')}" />
@@ -33,7 +31,7 @@
                 <newdatasortablecolumn label="${i18n:_('Total price')}" />
                 <newdatasortablecolumn label="${i18n:_('Category')}" />
                 <newdatasortablecolumn label="${i18n:_('Status')}" />
-                <newdatasortablecolumn label="" />
+                <newdatasortablecolumn label="${i18n:_('Op.')}" />
             </columns>
             <rows>
                 <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
@@ -69,5 +67,3 @@
                 </row>
             </rows>
         </newdatasortablegrid>
-    </panelchildren>
-</panel>
