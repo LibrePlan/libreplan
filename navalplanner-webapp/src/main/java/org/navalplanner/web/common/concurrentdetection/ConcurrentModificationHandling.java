@@ -21,6 +21,11 @@
 
 package org.navalplanner.web.common.concurrentdetection;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -36,6 +41,36 @@ import org.springframework.dao.OptimisticLockingFailureException;
 @Aspect
 @Order(0)
 public class ConcurrentModificationHandling {
+
+    public static <T> T addHandling(final String goToPage,
+            Class<T> interfaceKlass, T toBeWraped) {
+        Class<?>[] classesToProxy = { interfaceKlass };
+        Object result = Proxy.newProxyInstance(interfaceKlass.getClassLoader(),
+                classesToProxy, handler(toBeWraped, goToPage));
+        return interfaceKlass.cast(result);
+    }
+
+    private static InvocationHandler handler(final Object toBeWraped,
+            final String goToPage) {
+        return new InvocationHandler() {
+
+            @Override
+            public Object invoke(Object proxy, Method method,
+                    Object[] args) throws Throwable {
+                try {
+                    return method.invoke(toBeWraped, args);
+                } catch (InvocationTargetException e) {
+                    Throwable cause = e.getCause();
+                    if (cause instanceof OptimisticLockingFailureException) {
+                        OptimisticLockingFailureException optimisticLockingFailureException = (OptimisticLockingFailureException) cause;
+                        ConcurrentModificationController.showException(
+                                optimisticLockingFailureException, goToPage);
+                    }
+                    throw e;
+                }
+            }
+        };
+    }
 
     public ConcurrentModificationHandling() {
     }
