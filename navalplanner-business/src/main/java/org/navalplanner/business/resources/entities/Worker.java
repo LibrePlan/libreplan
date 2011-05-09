@@ -101,12 +101,12 @@ public class Worker extends Resource implements Comparable {
     }
 
     public String getDescription() {
-        return getFirstName() + " " + getSurname();
+        return getSurname() + "," + getFirstName();
     }
 
     @Override
     public String getShortDescription() {
-        return getNif() + " :: " + getDescription();
+        return getDescription() + " (" + getNif() + ")";
     }
 
     @NotEmpty(message="worker's first name not specified")

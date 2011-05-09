@@ -38,7 +38,7 @@ public class VirtualWorker extends Worker {
     public static VirtualWorker create() {
         VirtualWorker virtualWorker = new VirtualWorker();
         virtualWorker.setNewObject(true);
-        virtualWorker.setNif("[Virtual]");
+        virtualWorker.setNif("(Virtual)");
         virtualWorker.setSurname("---");
         virtualWorker.getCalendar();
         return create(virtualWorker);
@@ -47,7 +47,7 @@ public class VirtualWorker extends Worker {
     public static VirtualWorker create(String code) {
         VirtualWorker virtualWorker = new VirtualWorker();
         virtualWorker.setNewObject(true);
-        virtualWorker.setNif("[Virtual]");
+        virtualWorker.setNif("(Virtual)");
         virtualWorker.setSurname("---");
         virtualWorker.getCalendar();
         return create(virtualWorker, code);
@@ -62,12 +62,17 @@ public class VirtualWorker extends Worker {
     }
 
     @Override
-    public String getDescription(){
-        return getFirstName()+" "+getSurname();
+    public String getDescription() {
+        return getFirstName();
+    }
+
+    @Override
+    public String getShortDescription() {
+        return getFirstName() + " " + getNif();
     }
 
     public String getName() {
-        return getFirstName() + " " + getSurname();
+        return getFirstName();
     }
 
     @Override

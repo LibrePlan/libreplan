@@ -112,7 +112,7 @@ public class Machine extends Resource {
     }
 
     public String getShortDescription() {
-        return getCode() + " :: " + name;
+        return name + " (" + getCode() + ")";
     }
 
     public void setDescription(String description) {
