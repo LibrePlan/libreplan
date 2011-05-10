@@ -87,6 +87,7 @@ import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.limitingresources.QueuesState.Edge;
 import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
@@ -100,6 +101,7 @@ import org.zkoss.ganttz.util.Interval;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/planner/index.zul;limiting_resources")
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
