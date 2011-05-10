@@ -29,7 +29,6 @@ import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.CriterionRequirementOrderElementHandler;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.orders.entities.SchedulingState;
 import org.navalplanner.business.orders.entities.TreeNodeOnListWithSchedulingState;
@@ -227,38 +226,7 @@ public class OrderLineGroupTemplate extends OrderElementTemplate implements
         for (OrderElementTemplate each : children) {
             each.createElement(parent);
         }
-        propagateIndirectCriterionRequirements(parent);
         return parent;
-    }
-
-    /**
-     * Propagates {@link IndirectCriterionRequirement} from template to order,
-     * preserving the original value of 'valid' field
-     */
-    private void propagateIndirectCriterionRequirements(OrderLineGroup orderLineGroup) {
-        propagateIndirectCriterionRequirementsForOrderLineGroup(orderLineGroup);
-        propagateIndirectCriterionRequirementsForOrderLines(orderLineGroup);
-    }
-
-    private void propagateIndirectCriterionRequirementsForOrderLineGroup(
-            OrderLineGroup orderElement) {
-
-        for (DirectCriterionRequirement each : orderElement
-                .getDirectCriterionRequirement()) {
-            criterionRequirementOrderElementHandler
-                    .propagateIndirectCriterionRequirementsForOrderLineGroupKeepingValid(
-                            orderElement, each);
-        }
-    }
-
-    private void propagateIndirectCriterionRequirementsForOrderLines(
-            OrderLineGroup orderLineGroup) {
-        for (OrderElement each : orderLineGroup.getChildren()) {
-            if (each instanceof OrderLine) {
-                criterionRequirementOrderElementHandler
-                        .propagateIndirectCriterionRequirementsKeepingValid((OrderLine) each);
-            }
-        }
     }
 
     @Override
