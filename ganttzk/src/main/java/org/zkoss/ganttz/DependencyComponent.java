@@ -32,6 +32,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -53,6 +54,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private IConstraintViolationListener<GanttDate> violationListener;
 
+    private boolean violated = false;
+
     public DependencyComponent(TaskComponent source, TaskComponent destination,
             Dependency dependency) {
         Validate.notNull(dependency);
@@ -68,21 +71,28 @@ public class DependencyComponent extends XulElement implements AfterCompose {
                 .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<GanttDate> constraint,
-                    GanttDate value) {
-                response("constraintViolated", new AuInvoke(
-                        DependencyComponent.this, "setCSSClass",
-                        "violated-dependency"));
+            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = true;
+                sendCSSUpdate();
             }
 
             @Override
-            public void constraintSatisfied(Constraint<GanttDate> constraint,
-                    GanttDate value) {
-                response("constraintViolated", new AuInvoke(
-                        DependencyComponent.this, "setCSSClass", "dependency"));
+            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = false;
+                sendCSSUpdate();
             }
-                });
-        this.dependency.addConstraintViolationListener(violationListener);
+        });
+        this.dependency.addConstraintViolationListener(violationListener,
+                Mode.RECEIVE_PENDING);
+    }
+
+    private void sendCSSUpdate() {
+        response("constraintViolated", new AuInvoke(DependencyComponent.this,
+                "setCSSClass", getCSSClass()));
+    }
+
+    public String getCSSClass() {
+        return violated ? "violated-dependency" : "dependency";
     }
 
     @Override

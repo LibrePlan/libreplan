@@ -41,6 +41,7 @@ import org.zkoss.ganttz.data.Task.IReloadResourcesTextRequested;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 import org.zkoss.lang.Objects;
 import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
@@ -212,7 +213,8 @@ public class TaskComponent extends Div implements AfterCompose {
                 // TODO mark graphically dependency as not violated
             }
                 });
-        this.task.addConstraintViolationListener(taskViolationListener);
+        this.task.addConstraintViolationListener(taskViolationListener,
+                Mode.RECEIVE_PENDING);
         reloadResourcesTextRequested = new IReloadResourcesTextRequested() {
 
             @Override

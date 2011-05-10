@@ -373,8 +373,6 @@ public class Planner extends HtmlMacroComponent  {
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
-
-        newContext.getDiagramGraph().enforceAllRestrictions();
     }
 
     private void resettingPreviousComponentsToNull() {

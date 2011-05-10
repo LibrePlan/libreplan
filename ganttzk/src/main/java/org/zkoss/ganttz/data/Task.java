@@ -43,6 +43,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnf
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
 /**
  * This class contains the information of a task. It can be modified and
@@ -389,8 +390,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void addConstraintViolationListener(
-            IConstraintViolationListener<GanttDate> listener) {
-        violationNotificator.addConstraintViolationListener(listener);
+            IConstraintViolationListener<GanttDate> listener, Mode mode) {
+        violationNotificator.addConstraintViolationListener(listener, mode);
     }
 
     public void addReloadListener(

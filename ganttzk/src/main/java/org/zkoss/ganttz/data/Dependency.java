@@ -31,6 +31,7 @@ import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
 /**
  * This class represents a dependency. Contains the source and the destination.
@@ -89,8 +90,8 @@ public class Dependency implements IDependency<Task> {
     }
 
     public void addConstraintViolationListener(
-            IConstraintViolationListener<GanttDate> listener) {
-        violationsNotificator.addConstraintViolationListener(listener);
+            IConstraintViolationListener<GanttDate> listener, Mode mode) {
+        violationsNotificator.addConstraintViolationListener(listener, mode);
     }
 
     @Override
