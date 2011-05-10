@@ -205,11 +205,11 @@ public class URLHandler<T> {
     }
 
     private void doBookmark(String fragment) {
-        executorRetriever.getCurrent().getDesktop().setBookmark(
-                stripHash(fragment));
+        executorRetriever.getCurrent().getDesktop()
+                .setBookmark(stripPound(fragment));
     }
 
-    private String stripHash(String fragment) {
+    private String stripPound(String fragment) {
         if (fragment.startsWith("#")) {
             return fragment.substring(1);
         }
@@ -223,7 +223,7 @@ public class URLHandler<T> {
 
     private String buildRedirectURL(String fragment) {
         StringBuilder linkValue = new StringBuilder(page).append(";").append(
-                !fragment.isEmpty() ? fragment.substring(1) : "");
+                stripPound(fragment));
         return linkValue.toString();
     }
 
