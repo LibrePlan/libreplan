@@ -35,8 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.common.entrypoints.URLHandler;
-import org.navalplanner.web.common.entrypoints.URLHandler.ICapture;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.web.context.WebApplicationContext;
@@ -245,7 +245,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private CustomMenuItem subItem(String name, ICapture urlCapture,
             String helpLink) {
-        return new CustomMenuItem(name, URLHandler.capturePath(urlCapture),
+        return new CustomMenuItem(name, EntryPointsHandler.capturePath(urlCapture),
                 helpLink);
     }
 

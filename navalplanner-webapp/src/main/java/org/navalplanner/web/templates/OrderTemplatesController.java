@@ -36,7 +36,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
@@ -265,7 +265,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
 
-        final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
+        final EntryPointsHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
         handler.register(this, page);
 

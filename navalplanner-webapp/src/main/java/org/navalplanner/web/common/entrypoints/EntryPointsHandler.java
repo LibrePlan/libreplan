@@ -51,14 +51,14 @@ import org.zkoss.zk.ui.event.EventListener;
  * <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class URLHandler<T> {
+public class EntryPointsHandler<T> {
 
     private static final String MANUALLY_SET_PARAMS = "PARAMS";
 
-    private static final String FLAG_ATTRIBUTE = URLHandler.class.getName()
+    private static final String FLAG_ATTRIBUTE = EntryPointsHandler.class.getName()
             + "_";
 
-    private static final Log LOG = LogFactory.getLog(URLHandler.class);
+    private static final Log LOG = LogFactory.getLog(EntryPointsHandler.class);
 
     private static class EntryPointMetadata {
         private final Method method;
@@ -131,7 +131,7 @@ public class URLHandler<T> {
         }
     }
 
-    public URLHandler(IConverterFactory converterFactory,
+    public EntryPointsHandler(IConverterFactory converterFactory,
             IExecutorRetriever executorRetriever,
             Class<T> interfaceDefiningEntryPoints) {
         Validate.isTrue(interfaceDefiningEntryPoints.isInterface());

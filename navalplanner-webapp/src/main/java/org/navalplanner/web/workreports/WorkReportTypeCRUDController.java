@@ -45,7 +45,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -139,7 +139,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         super.doAfterCompose(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        final URLHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final EntryPointsHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
         handler.register(this, page);
         getVisibility().showOnly(listWindow);

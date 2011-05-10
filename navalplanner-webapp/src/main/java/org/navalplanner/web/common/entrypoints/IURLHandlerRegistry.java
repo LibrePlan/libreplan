@@ -27,7 +27,7 @@ package org.navalplanner.web.common.entrypoints;
  */
 public interface IURLHandlerRegistry {
 
-    public abstract <T> URLHandler<T> getRedirectorFor(
+    public abstract <T> EntryPointsHandler<T> getRedirectorFor(
             Class<T> klassWithLinkableMetadata);
 
 }

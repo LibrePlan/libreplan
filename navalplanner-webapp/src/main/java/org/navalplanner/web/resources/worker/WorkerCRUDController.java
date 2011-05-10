@@ -48,7 +48,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.zkoss.zk.ui.Component;
@@ -336,7 +336,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         messages = new MessagesForUser(messagesContainer);
         setupResourcesCostCategoryAssignmentController(comp);
 
-        final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
         handler.register(this, page);
         getVisibility().showOnly(listWindow);

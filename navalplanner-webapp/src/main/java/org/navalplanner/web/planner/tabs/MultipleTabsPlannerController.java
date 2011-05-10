@@ -38,7 +38,7 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.templates.entities.OrderTemplate;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
 import org.navalplanner.web.montecarlo.MonteCarloController;
@@ -372,7 +372,7 @@ public class MultipleTabsPlannerController implements Composer,
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher.setConfiguration(buildTabsConfiguration());
-        final URLHandler<IGlobalViewEntryPoints> handler = registry
+        final EntryPointsHandler<IGlobalViewEntryPoints> handler = registry
                 .getRedirectorFor(IGlobalViewEntryPoints.class);
         if (!handler.applyIfMatches(this)) {
             planningTab.toggleToNoFeedback();

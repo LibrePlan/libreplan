@@ -56,8 +56,8 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
-import org.navalplanner.web.common.entrypoints.URLHandler;
-import org.navalplanner.web.common.entrypoints.URLHandler.ICapture;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -101,7 +101,7 @@ public class AdvancedAllocationTabCreator {
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
-            this.retryPage = URLHandler.capturePath(new ICapture() {
+            this.retryPage = EntryPointsHandler.capturePath(new ICapture() {
                 @Override
                 public void capture() {
                     globalViewEntryPoints.goToAdvancedAllocation(order);

@@ -58,7 +58,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
 
         private final Class<?> pageInterface;
 
-        private URLHandler<?> urlHandler;
+        private EntryPointsHandler<?> urlHandler;
 
         private SynthetizedImplementation(
                 ConfigurableListableBeanFactory beanFactory,
@@ -70,12 +70,12 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
-            URLHandler<?> redirector = getHandler();
+            EntryPointsHandler<?> redirector = getHandler();
             redirector.doTransition(method.getName(), args);
             return null;
         }
 
-        private URLHandler<?> getHandler() {
+        private EntryPointsHandler<?> getHandler() {
             if (urlHandler != null) {
                 return urlHandler;
             }

@@ -54,7 +54,7 @@ import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -171,7 +171,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
         handler.register(this, page);
         initCurrentList();

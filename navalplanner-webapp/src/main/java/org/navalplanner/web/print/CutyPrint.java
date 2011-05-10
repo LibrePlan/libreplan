@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.ganttz.Planner;
@@ -157,7 +157,7 @@ public class CutyPrint {
                             HttpServletResponse response)
                             throws ServletException, IOException {
 
-                        URLHandler.setupEntryPointsForThisRequest(request,
+                        EntryPointsHandler.setupEntryPointsForThisRequest(request,
                                 entryPointsMap);
                         // Pending to forward and process additional parameters
                         // as show labels, resources, zoom or expand all
