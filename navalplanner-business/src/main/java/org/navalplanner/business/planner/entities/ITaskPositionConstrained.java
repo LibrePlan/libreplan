@@ -25,11 +25,11 @@
  */
 package org.navalplanner.business.planner.entities;
 
-import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 public interface ITaskPositionConstrained {
 
     TaskPositionConstraint getPositionConstraint();
 
-    void explicityMoved(LocalDate date);
+    void explicityMoved(IntraDayDate date);
 }

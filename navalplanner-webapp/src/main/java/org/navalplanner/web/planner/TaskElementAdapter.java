@@ -256,13 +256,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         });
     }
 
-    public static LocalDate toLocalDate(GanttDate date) {
-        if (date == null) {
-            return null;
-        }
-        return toIntraDay(date).getDate();
-    }
-
     static class GanttDateAdapter extends CustomDate {
 
         private static final int DAY_MILLISECONDS = (int) Days.days(1)
@@ -456,7 +449,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
                         || constraintType
                                 .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
-                    task.explicityMoved(toLocalDate(endDate));
+                    task.explicityMoved(toIntraDay(endDate));
                 }
             }
         }
@@ -918,11 +911,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
                 if (task.getPositionConstraint().isConstraintAppliedToStart()) {
                     setBeginDate(newStart);
-                    task.explicityMoved(toLocalDate(newStart));
+                    task.explicityMoved(toIntraDay(newStart));
                 } else {
                     GanttDate newEnd = inferEndFrom(newStart);
                     setEndDate(newEnd);
-                    task.explicityMoved(toLocalDate(newEnd));
+                    task.explicityMoved(toIntraDay(newEnd));
                 }
             }
         }

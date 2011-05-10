@@ -23,7 +23,7 @@ package org.navalplanner.business.planner.entities;
 import java.util.Date;
 
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * Component class that encapsulates a {@link PositionConstraintType} and its
@@ -34,7 +34,7 @@ public class TaskPositionConstraint {
 
     private PositionConstraintType constraintType = PositionConstraintType.AS_SOON_AS_POSSIBLE;
 
-    private LocalDate constraintDate = null;
+    private IntraDayDate constraintDate = null;
 
     public TaskPositionConstraint() {
     }
@@ -57,23 +57,23 @@ public class TaskPositionConstraint {
                 .toDate() : null;
     }
 
-    public void explicityMovedTo(LocalDate date) {
+    public void explicityMovedTo(IntraDayDate date) {
         Validate.notNull(date);
         constraintType = constraintType.newTypeAfterMoved();
         constraintDate = date;
     }
 
-    public LocalDate getConstraintDate() {
+    public IntraDayDate getConstraintDate() {
         return constraintDate;
     }
 
-    public void notEarlierThan(LocalDate date) {
+    public void notEarlierThan(IntraDayDate date) {
         Validate.notNull(date);
         this.constraintDate = date;
         this.constraintType = PositionConstraintType.START_NOT_EARLIER_THAN;
     }
 
-    public void finishNotLaterThan(LocalDate date) {
+    public void finishNotLaterThan(IntraDayDate date) {
         Validate.notNull(date);
         this.constraintDate = date;
         this.constraintType = PositionConstraintType.FINISH_NOT_LATER_THAN;
@@ -89,12 +89,12 @@ public class TaskPositionConstraint {
         this.constraintDate = null;
     }
 
-    public boolean isValid(PositionConstraintType type, LocalDate value) {
+    public boolean isValid(PositionConstraintType type, IntraDayDate value) {
         return type != null
                 && type.isAssociatedDateRequired() == (value != null);
     }
 
-    public void update(PositionConstraintType type, LocalDate value) {
+    public void update(PositionConstraintType type, IntraDayDate value) {
         Validate.isTrue(isValid(type, value));
         this.constraintType = type;
         this.constraintDate = value;

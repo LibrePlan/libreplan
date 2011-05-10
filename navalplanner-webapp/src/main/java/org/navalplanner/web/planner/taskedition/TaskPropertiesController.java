@@ -36,6 +36,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -354,8 +355,9 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 .getPositionConstraint();
         WebStartConstraintType type = (WebStartConstraintType) startConstraintTypes
                 .getSelectedItemApi().getValue();
-        LocalDate inputDate = type.isAssociatedDateRequired() ? LocalDate
-                .fromDateFields(startConstraintDate.getValue()) : null;
+        IntraDayDate inputDate = type.isAssociatedDateRequired() ? IntraDayDate
+                .startOfDay(LocalDate.fromDateFields(startConstraintDate
+                        .getValue())) : null;
         if (taskConstraint.isValid(type.getType(), inputDate)) {
             taskConstraint.update(type.getType(), inputDate);
             if (currentContext != null) {

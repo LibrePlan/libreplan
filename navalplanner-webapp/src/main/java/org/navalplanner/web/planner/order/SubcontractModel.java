@@ -119,9 +119,9 @@ public class SubcontractModel implements ISubcontractModel {
     private void convertOnStartOnFixedDate(Task task) {
         TaskPositionConstraint taskConstraint = task.getPositionConstraint();
         if (taskConstraint.isValid(PositionConstraintType.START_IN_FIXED_DATE,
-                task.getIntraDayStartDate().getDate())) {
-            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE, task
-                    .getIntraDayStartDate().getDate());
+                task.getIntraDayStartDate())) {
+            taskConstraint.update(PositionConstraintType.START_IN_FIXED_DATE,
+                    task.getIntraDayStartDate());
         }
     }
 

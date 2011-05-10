@@ -419,7 +419,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public void explicityMoved(LocalDate date) {
+    public void explicityMoved(IntraDayDate date) {
         getPositionConstraint().explicityMovedTo(date);
     }
 

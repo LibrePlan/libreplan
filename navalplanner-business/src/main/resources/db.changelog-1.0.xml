@@ -149,4 +149,23 @@
         <sql>UPDATE resource_allocation SET intended_non_consolidated_effort = intended_total_assignment</sql>
     </changeSet>
 
+    <changeSet id="add-effort-duration-to-task-and-milestone" author="mrego">
+        <comment>
+            constraintDate attribute in class TaskPositionConstraint has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in Task and TaskMilestone.
+        </comment>
+        <addColumn tableName="task">
+            <column name="constraint_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="task_milestone">
+            <column name="constraint_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="task"
+            columnName="constraint_date_effort_duration"
+            defaultValueNumeric="0" />
+        <addDefaultValue tableName="task_milestone"
+            columnName="constraint_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
 </databaseChangeLog>

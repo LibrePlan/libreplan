@@ -892,7 +892,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             IntraDayDate endDate) {
         task.setIntraDayStartDate(startDate);
         task.setIntraDayEndDate(endDate);
-        task.explicityMoved(startDate.getDate());
+        task.explicityMoved(startDate);
     }
 
     private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue,

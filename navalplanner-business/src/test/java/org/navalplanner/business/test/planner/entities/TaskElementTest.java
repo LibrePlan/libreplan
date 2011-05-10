@@ -298,7 +298,8 @@ public class TaskElementTest {
         };
     }
 
-    private static Matcher<TaskPositionConstraint> hasValue(final LocalDate value) {
+    private static Matcher<TaskPositionConstraint> hasValue(
+            final LocalDate value) {
         return new BaseMatcher<TaskPositionConstraint>() {
 
             @Override
@@ -306,7 +307,8 @@ public class TaskElementTest {
                 if (object instanceof TaskPositionConstraint) {
                     TaskPositionConstraint startConstraint = (TaskPositionConstraint) object;
                     LocalDate constraintDate = startConstraint
-                            .getConstraintDate();
+                            .getConstraintDate().toDateTimeAtStartOfDay()
+                            .toLocalDate();
                     boolean bothNotNull = value != null
                                                 && constraintDate != null;
                     return value == constraintDate || bothNotNull

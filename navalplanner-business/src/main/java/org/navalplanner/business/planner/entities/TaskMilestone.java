@@ -30,7 +30,6 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
@@ -166,7 +165,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
         return false;
     }
 
-    public void explicityMoved(LocalDate date) {
+    public void explicityMoved(IntraDayDate date) {
         getPositionConstraint().explicityMovedTo(date);
     }
 

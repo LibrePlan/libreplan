@@ -68,6 +68,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.util.deepcopy.DeepCopy;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
@@ -892,13 +893,13 @@ public abstract class OrderElement extends IntegrationEntity implements
         TaskPositionConstraint constraint = task.getPositionConstraint();
         if (getInitDate() != null
                 && (getDeadline() == null || !scheduleBackwards)) {
-            constraint.notEarlierThan(
-                    LocalDate.fromDateFields(this.getInitDate()));
+            constraint.notEarlierThan(IntraDayDate.startOfDay(LocalDate
+                    .fromDateFields(this.getInitDate())));
             return true;
         }
         if (getDeadline() != null) {
-            constraint.finishNotLaterThan(
-                    LocalDate.fromDateFields(this.getDeadline()));
+            constraint.finishNotLaterThan(IntraDayDate.startOfDay(LocalDate
+                    .fromDateFields(this.getDeadline())));
             return true;
         }
         return false;

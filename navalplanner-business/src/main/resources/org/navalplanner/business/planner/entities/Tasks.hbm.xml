@@ -64,8 +64,13 @@
                         <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" type="org.joda.time.contrib.hibernate.PersistentLocalDate"
-                    column="constraint_date" />
+                <component name="constraintDate"
+                    class="org.navalplanner.business.workingday.IntraDayDate">
+                    <property name="date" column="constraint_date"
+                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                    <property name="effortDuration" column="constraint_date_effort_duration"
+                        type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+                </component>
             </component>
 
             <property name="workableDays" column="workable_days" />
@@ -116,8 +121,13 @@
                         <param name="enumClass">org.navalplanner.business.planner.entities.PositionConstraintType</param>
                     </type>
                 </property>
-                <property name="constraintDate" column="constraint_date"
-                    type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                <component name="constraintDate"
+                    class="org.navalplanner.business.workingday.IntraDayDate">
+                    <property name="date" column="constraint_date"
+                        type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
+                    <property name="effortDuration" column="constraint_date_effort_duration"
+                        type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+                </component>
             </component>
         </joined-subclass>
 
