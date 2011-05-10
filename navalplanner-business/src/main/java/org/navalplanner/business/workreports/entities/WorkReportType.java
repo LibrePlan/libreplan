@@ -36,6 +36,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 /**
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -174,6 +175,8 @@ public class WorkReportType extends IntegrationEntity {
                 return true;
             } catch (NonUniqueResultException e) {
                 return false;
+            } catch (HibernateOptimisticLockingFailureException e) {
+                return true;
             }
         }
     }
