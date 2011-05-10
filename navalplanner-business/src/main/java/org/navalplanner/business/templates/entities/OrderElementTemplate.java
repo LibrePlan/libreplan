@@ -62,6 +62,7 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.trees.ITreeNode;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -479,6 +480,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
             }
             catch (NonUniqueResultException e) {
                 return false;
+            } catch (HibernateOptimisticLockingFailureException e) {
+                return true;
             }
         }
     }
