@@ -173,7 +173,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         comp.setVariable("controller", this, true);
         final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
         initCurrentList();
         if(listType != null) {
             //listType is null in reports -> work report lines

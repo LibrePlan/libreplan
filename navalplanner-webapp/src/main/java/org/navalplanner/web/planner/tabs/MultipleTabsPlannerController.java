@@ -379,7 +379,7 @@ public class MultipleTabsPlannerController implements Composer,
             goToCompanyScheduling();
             planningTab.toggleToFeedback();
         }
-        handler.registerListener(this, comp.getPage());
+        handler.registerBookmarkListener(this, comp.getPage());
     }
 
     private TabsRegistry getTabsRegistry() {

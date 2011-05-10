@@ -303,7 +303,12 @@ public class URLHandler<T> {
         return false;
     }
 
-    public <S extends T> void registerListener(final S controller, Page page) {
+    public <S extends T> void register(final S controller, Page page) {
+        registerBookmarkListener(controller, page);
+        applyIfMatches(controller);
+    }
+
+    public <S extends T> void registerBookmarkListener(final S controller, Page page) {
         page.addEventListener("onBookmarkChange", new EventListener() {
 
             @Override

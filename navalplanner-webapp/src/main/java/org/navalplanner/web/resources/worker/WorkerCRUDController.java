@@ -338,7 +338,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
         final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
         setupFilterLimitingResourceListbox();

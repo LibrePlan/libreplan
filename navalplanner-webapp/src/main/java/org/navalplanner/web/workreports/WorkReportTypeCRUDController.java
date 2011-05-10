@@ -141,7 +141,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         comp.setVariable("controller", this, true);
         final URLHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
         getVisibility().showOnly(listWindow);
     }
 

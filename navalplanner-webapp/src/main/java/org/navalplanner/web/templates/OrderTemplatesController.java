@@ -267,7 +267,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
 
         final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
 
         setBreadcrumbs(comp);
     }

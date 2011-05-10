@@ -86,7 +86,7 @@ public class UserCRUDController extends GenericForwardComposer implements
 
         final URLHandler<IUserCRUDController> handler = URLHandlerRegistry
                 .getRedirectorFor(IUserCRUDController.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
 
         getVisibility().showOnly(listWindow);
         passwordBox = (Textbox) createWindow.getFellowIfAny("password");
