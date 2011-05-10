@@ -1043,6 +1043,23 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         abstract class PositionRestrictions {
 
+            private final GanttDate start;
+
+            private final GanttDate end;
+
+            PositionRestrictions(GanttDate start, GanttDate end) {
+                this.start = start;
+                this.end = end;
+            }
+
+            GanttDate getStart() {
+                return start;
+            }
+
+            GanttDate getEnd() {
+                return end;
+            }
+
             abstract List<Constraint<GanttDate>> getStartConstraints();
 
             abstract List<Constraint<GanttDate>> getEndConstraints();
@@ -1053,6 +1070,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
 
         private final class NoRestrictions extends PositionRestrictions {
+
+            public NoRestrictions(TaskPoint taskPoint) {
+                super(adapter.getStartDate(taskPoint.task), adapter
+                        .getEndDateFor(taskPoint.task));
+            }
+
             @Override
             List<Constraint<GanttDate>> getStartConstraints() {
                 return Collections.emptyList();
@@ -1067,10 +1090,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             boolean satisfies(PositionRestrictions restrictions) {
                 return true;
             }
+
         }
 
         PositionRestrictions noRestrictions() {
-            return new NoRestrictions();
+            return new NoRestrictions(taskPoint);
         }
 
         DatesBasedPositionRestrictions biggerThan(GanttDate start, GanttDate end) {
@@ -1089,14 +1113,11 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             private Constraint<GanttDate> startConstraint;
             private Constraint<GanttDate> endConstraint;
-            private final GanttDate start;
-            private final GanttDate end;
 
             public DatesBasedPositionRestrictions(
                     ComparisonType comparisonType, GanttDate start,
                     GanttDate end) {
-                this.start = start;
-                this.end = end;
+                super(start, end);
                 this.startConstraint = ConstraintOnComparableValues
                         .instantiate(comparisonType, start);
                 this.endConstraint = ConstraintOnComparableValues.instantiate(
@@ -1112,8 +1133,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             }
 
             private boolean satisfies(DatesBasedPositionRestrictions other) {
-                return startConstraint.isSatisfiedBy(other.start)
-                        && endConstraint.isSatisfiedBy(other.end);
+                return startConstraint.isSatisfiedBy(other.getStart())
+                        && endConstraint.isSatisfiedBy(other.getEnd());
             }
 
             @Override
@@ -1163,7 +1184,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 this.task = taskPoint.task;
             }
 
-            private PositionRestrictions resultingRestrictions = new NoRestrictions();
+            private PositionRestrictions resultingRestrictions = noRestrictions();
 
             protected PositionRestrictions applyConstraintTo(
                     PositionRestrictions restrictions) {
@@ -1180,24 +1201,14 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
             public void checkSatisfiesResult(PositionRestrictions finalResult) {
                 super.checkSatisfiesResult(finalResult);
-                if (DatesBasedPositionRestrictions.class
-                        .isInstance(finalResult)) {
-                    checkConstraintsAgainst(DatesBasedPositionRestrictions.class
-                            .cast(finalResult));
-                }
-            }
-
-            private void checkConstraintsAgainst(
-                    DatesBasedPositionRestrictions finalResult) {
-                checkStartConstraints(finalResult.start);
-                checkEndConstraints(finalResult.end);
+                checkStartConstraints(finalResult.getStart());
+                checkEndConstraints(finalResult.getEnd());
             }
 
             private void checkStartConstraints(GanttDate finalStart) {
                 Constraint
                         .checkSatisfyResult(getStartConstraints(), finalStart);
             }
-
 
             private void checkEndConstraints(GanttDate finalEnd) {
                 Constraint.checkSatisfyResult(getEndConstraints(), finalEnd);
