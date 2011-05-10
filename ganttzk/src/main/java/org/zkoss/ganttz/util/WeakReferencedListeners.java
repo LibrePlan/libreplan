@@ -24,7 +24,10 @@ package org.zkoss.ganttz.util;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
+
+import org.apache.commons.lang.Validate;
 
 public class WeakReferencedListeners<T> {
 
@@ -44,27 +47,56 @@ public class WeakReferencedListeners<T> {
 
     }
 
-    public synchronized void addListener(T listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException("listener cannot be null");
+    public enum Mode {
+        RECEIVE_PENDING, FROM_NOW_ON;
+    }
+
+    public void addListener(T listener) {
+        this.addListener(listener, Mode.FROM_NOW_ON);
+    }
+
+    public synchronized void addListener(T listener, Mode mode) {
+        Validate.notNull(listener);
+
+        if (getActiveListeners().isEmpty() && mode == Mode.RECEIVE_PENDING) {
+            notifyPendingOfNotificationTo(listener);
         }
         listeners.add(new WeakReference<T>(listener));
     }
 
+    private List<IListenerNotification<? super T>> pendingOfNotification = new ArrayList<WeakReferencedListeners.IListenerNotification<? super T>>();
+
+    private void notifyPendingOfNotificationTo(T listener) {
+        for (IListenerNotification<? super T> each : pendingOfNotification) {
+            each.doNotify(listener);
+        }
+        pendingOfNotification.clear();
+    }
+
     public synchronized void fireEvent(
             IListenerNotification<? super T> notification) {
+        List<T> active = getActiveListeners();
+
+        for (T listener : active) {
+            notification.doNotify(listener);
+        }
+
+        if (active.isEmpty()) {
+            pendingOfNotification.add(notification);
+        }
+    }
+
+    private List<T> getActiveListeners() {
         ListIterator<WeakReference<T>> listIterator = listeners.listIterator();
-        ArrayList<T> active = new ArrayList<T>();
+        List<T> result = new ArrayList<T>();
         while (listIterator.hasNext()) {
             T listener = listIterator.next().get();
             if (listener == null) {
                 listIterator.remove();
             } else {
-                active.add(listener);
+                result.add(listener);
             }
         }
-        for (T listener : active) {
-            notification.doNotify(listener);
-        }
+        return result;
     }
 }

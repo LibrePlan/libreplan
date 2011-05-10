@@ -25,6 +25,7 @@ import java.util.List;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -86,5 +87,9 @@ public class ConstraintViolationNotificator<T> {
         constraintViolationListeners.addListener(listener);
     }
 
+    public void addConstraintViolationListener(
+            IConstraintViolationListener<T> listener, Mode mode) {
+        constraintViolationListeners.addListener(listener, mode);
+    }
 
 }
