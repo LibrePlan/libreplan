@@ -1096,7 +1096,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
-    protected boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
+    public boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
         for (Label label : labels) {
             if (label.isEqualTo(newLabel)) {
                 return false;

@@ -241,8 +241,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     private void setupCriterionRequirements(OrderElement orderElement) {
         for (DirectCriterionRequirement each : getDirectCriterionRequirements()) {
-            orderElement.addCriterionRequirement(DirectCriterionRequirement
-                    .copyFrom(each, orderElement));
+            if (orderElement.canAddCriterionRequirement(each)) {
+                orderElement.addCriterionRequirement(DirectCriterionRequirement
+                        .copyFrom(each, orderElement));
+            }
         }
     }
 
@@ -255,7 +257,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     private void setupLabels(OrderElement orderElement) {
         for (Label each : getLabels()) {
-            orderElement.addLabel(each);
+            if (orderElement.checkAncestorsNoOtherLabelRepeated(each)) {
+                orderElement.addLabel(each);
+            }
         }
     }
 
