@@ -28,6 +28,7 @@ import java.util.EnumMap;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
@@ -36,6 +37,7 @@ import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 /**
  * Type of an exception day.
@@ -172,7 +174,12 @@ public class CalendarExceptionType extends IntegrationEntity {
                 return calendarExceptionType.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
+            } catch (NonUniqueResultException e) {
+                return false;
+            } catch (HibernateOptimisticLockingFailureException e) {
+                return true;
             }
+
         }
     }
 
