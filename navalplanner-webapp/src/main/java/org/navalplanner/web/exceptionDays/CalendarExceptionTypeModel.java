@@ -48,7 +48,7 @@ import org.zkoss.util.InvalidValueException;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/exceptionDays/exceptionDays.zul")
+@OnConcurrentModification(goToPage = "/excetiondays/exceptionDays.zul")
 public class CalendarExceptionTypeModel extends IntegrationEntityModel
         implements ICalendarExceptionTypeModel {
 
