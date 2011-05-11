@@ -44,8 +44,11 @@ public interface ICalendarExceptionTypeDAO extends
 
     boolean existsByNameAnotherTransaction(String name);
 
-    CalendarExceptionType findByName(String name) throws InstanceNotFoundException;
+    CalendarExceptionType findUniqueByName(String name) throws InstanceNotFoundException;
 
     boolean existsByName(String name);
+
+    CalendarExceptionType findUniqueByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException;
 
 }

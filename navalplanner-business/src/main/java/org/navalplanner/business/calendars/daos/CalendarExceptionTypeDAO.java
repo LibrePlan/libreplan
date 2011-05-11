@@ -82,7 +82,7 @@ public class CalendarExceptionTypeDAO extends
     @Override
     public boolean existsByName(String name) {
         try {
-            findByName(name);
+            findUniqueByName(name);
             return true;
         } catch (InstanceNotFoundException e) {
             return false;
@@ -91,7 +91,7 @@ public class CalendarExceptionTypeDAO extends
 
     @Override
     @Transactional(readOnly = true)
-    public CalendarExceptionType findByName(String name) throws InstanceNotFoundException {
+    public CalendarExceptionType findUniqueByName(String name) throws InstanceNotFoundException {
         if (StringUtils.isBlank(name)) {
             throw new InstanceNotFoundException(null, CalendarExceptionType.class.getName());
         }
@@ -107,6 +107,13 @@ public class CalendarExceptionTypeDAO extends
             return calendarExceptionType;
         }
 
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public CalendarExceptionType findUniqueByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
     }
 
 }

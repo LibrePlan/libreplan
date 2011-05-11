@@ -167,7 +167,8 @@ public class CalendarExceptionType extends IntegrationEntity {
                     name);
         } else {
             try {
-                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO.findByName(name);
+                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO
+                        .findUniqueByNameAnotherTransaction(name);
                 return calendarExceptionType.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
