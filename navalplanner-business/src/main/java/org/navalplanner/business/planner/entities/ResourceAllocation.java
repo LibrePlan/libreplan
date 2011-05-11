@@ -1211,38 +1211,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     private void updateAssignments(AllocationInterval interval,
             List<T> assignmentsCreated) {
 
-        /*
-         * removes assignments except those that are consolidated
-         */
         removingAssignments(withoutConsolidated(interval
                 .getAssignmentsOnInterval()));
-        /*
-         * add the assignments except those that already are consolidated. At
-         * this moment all the assignments in the interval are consolidated. So
-         * that it removes the created assignments that have got same date and
-         * therefore are already added.
-         */
-        addingAssignments(subtractAssignmentsWithSameDate(assignmentsCreated,
-                interval.getAssignmentsOnInterval()));
+        addingAssignments(assignmentsCreated);
 
         updateConsolidatedAssignments(interval);
         updateOriginalTotalAssigment();
         updateResourcesPerDay();
-    }
-
-    private Collection<? extends T> subtractAssignmentsWithSameDate(
-            List<T> assignmentsCreated,
-            List<DayAssignment> assignmentsOnInterval) {
-        List<T> toRemove = new ArrayList<T>();
-        for (DayAssignment each : assignmentsOnInterval) {
-            for (T assignment : assignmentsCreated) {
-                if (each.getDay().compareTo(assignment.getDay()) == 0) {
-                    toRemove.add(assignment);
-                }
-            }
-        }
-        assignmentsCreated.removeAll(toRemove);
-        return assignmentsCreated;
     }
 
     private void updateConsolidatedAssignments(AllocationInterval interval) {
@@ -1284,7 +1259,30 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     protected final void addingAssignments(Collection<? extends T> assignments) {
-        getDayAssignmentsState().addingAssignments(assignments);
+        getDayAssignmentsState().addingAssignments(
+                withoutAlreadyPresent(assignments));
+    }
+
+    private List<? extends T> withoutAlreadyPresent(
+            Collection<? extends T> assignments) {
+        if(assignments.isEmpty()){
+            return Collections.emptyList();
+        }
+
+        LocalDate min = Collections.min(assignments,
+                DayAssignment.byDayComparator()).getDay();
+        LocalDate max = Collections.max(assignments,
+                DayAssignment.byDayComparator()).getDay();
+        Set<LocalDate> daysPresent = DayAssignment.byDay(
+                getAssignments(min, max.plusDays(1))).keySet();
+
+        List<T> result = new ArrayList<T>();
+        for (T each : assignments) {
+            if (!daysPresent.contains(each.getDay())) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     public void removeLimitingDayAssignments() {
