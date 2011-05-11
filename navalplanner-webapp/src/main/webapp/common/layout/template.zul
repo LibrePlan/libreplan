@@ -141,21 +141,15 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
             <div>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idUser}"
                     id="warningDefaultPasswduser"
-                    style="display:${templateCtrl.defaultPasswdUserVisible}">
-                    [${i18n:_('user')}]
-				</n:a>
+                    style="display:${templateCtrl.defaultPasswdUserVisible}">[user]</n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
                     id="warningDefaultPasswdwsreader"
-                    style="display:${templateCtrl.defaultPasswdWsreaderVisible}">
-                    [${i18n:_('wswriter')}]
-                </n:a>
+                    style="display:${templateCtrl.defaultPasswdWsreaderVisible}">[wsreader]</n:a>
                 <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
                     id="warningDefaultPasswdwswriter"
-                    style="display:${templateCtrl.defaultPasswdWswriterVisible}">
-                    [${i18n:_('wsreader')}]
-                </n:a>
+                    style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
                 <n:span class="footer-messages-area">
-                    ${i18n:_(' default password were not changed')}.
+                    ${i18n:_('default password were not changed')}.
                 </n:span>
             </div>
         </n:div>
