@@ -29,12 +29,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
+import org.zkoss.ganttz.data.IDependency;
 
 /**
  * Represents a dependency in the domain.
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class DomainDependency<T> {
+public class DomainDependency<T> implements IDependency<T> {
 
     private static final Log LOG = LogFactory.getLog(DomainDependency.class);
 
