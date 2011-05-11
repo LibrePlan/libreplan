@@ -1,3 +1,10 @@
+navalplan (1.1.0-1) maverick; urgency=low
+
+  * Removed unnecessary dependency with texlive-latex-recommended package.
+  * Released version 1.1.0.
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  TODO
+
 navalplan (1.0.6-1) maverick; urgency=low
 
   * Several important bugs fixed during 1.1 stabilization.
