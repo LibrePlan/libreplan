@@ -51,8 +51,8 @@
                     <vbox>
                         <label value="${i18n:_('Year')}" />
                         <listbox id="lbYears" rows="1" mold="select">
-                            <listitem label="${i18n:_('2010')}" value="2010" selected="true" />
-                            <listitem label="${i18n:_('2011')}" value="2011" />
+                            <listitem label="2010" value="2010" selected="true" />
+                            <listitem label="2011" value="2011" />
                         </listbox>
                     </vbox>
                     <vbox>

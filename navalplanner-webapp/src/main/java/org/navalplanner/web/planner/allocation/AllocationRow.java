@@ -370,8 +370,8 @@ public abstract class AllocationRow {
                 .setTooltiptext(_(
                         "Only {0} resources per day were achieved for current allocation",
                         realResourcesPerDay.getAmount().toPlainString()));
-        this.realResourcesPerDay.setValue(_("[{0}]",
-                realResourcesPerDay.getAmount().toPlainString()));
+        this.realResourcesPerDay.setValue(realResourcesPerDay.getAmount()
+                .toPlainString());
     }
 
     private void clearRealResourcesPerDay() {

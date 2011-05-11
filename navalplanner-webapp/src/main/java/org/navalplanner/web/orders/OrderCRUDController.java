@@ -884,7 +884,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 try {
                     if (Messagebox
                             .show(
-                                    _("Deleting this subcontrated order, you is going to lose the relation to report advances. Are you sure?"),
+                                    _("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"),
                                     _("Confirm"), Messagebox.OK
                                             | Messagebox.CANCEL,
                                     Messagebox.QUESTION) == Messagebox.CANCEL) {

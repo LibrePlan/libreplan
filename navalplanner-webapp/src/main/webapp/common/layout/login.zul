@@ -136,7 +136,7 @@ function checkbrowser() {
         document.getElementById("supported-browsers-box").setAttribute("class", "supported-browsers not-supported");
         alertString = "${i18n:_('The browser you are using')}";
         alertString += " ("+navigator.appName+") ";
-        alertString += "${i18n:_('is not supported for his use with NavalPlan.')}";
+        alertString += "${i18n:_('is not supported for its use with NavalPlan.')}";
         alertString += "${i18n:_('Please use some of the compatible browsers: Chrome, Firefox, Safari or Epiphany.')}";
         window.alert(alertString);
     }

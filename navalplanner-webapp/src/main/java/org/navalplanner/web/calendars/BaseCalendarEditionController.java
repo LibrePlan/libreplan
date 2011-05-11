@@ -105,11 +105,11 @@ public abstract class BaseCalendarEditionController extends
         }
         EnumMap<Granularity, Integer> decomposed = duration.decompose();
 
-        String result = _("{0}:", decomposed.get(Granularity.HOURS));
-        result += _("{0}", decomposed.get(Granularity.MINUTES));
+        String result = decomposed.get(Granularity.HOURS) + ":";
+        result += decomposed.get(Granularity.MINUTES);
 
         if (decomposed.get(Granularity.SECONDS) > 0) {
-            result += _(" {0}s", decomposed.get(Granularity.SECONDS));
+            result += " " + decomposed.get(Granularity.SECONDS) + "s";
         }
         return result;
     }
