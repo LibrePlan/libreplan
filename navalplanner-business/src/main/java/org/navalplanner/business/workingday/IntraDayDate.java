@@ -42,6 +42,10 @@ import org.joda.time.LocalDate;
 
 /**
  * <p>
+ * Instances of this class represent values so immutable objects are used. In
+ * order to do modifications new instances must be created.
+ * </p>
+ * <p>
  * A date type that represents a point inside a working day. This doesn't
  * translate directly to a concrete DateTime because the working day can start
  * at an arbitrary hour.
@@ -185,10 +189,6 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
             return getDate();
         }
         return getDate().plusDays(1);
-    }
-
-    public void plus(int days) {
-        this.date = this.date.plusDays(days);
     }
 
     public int compareTo(LocalDate other) {
