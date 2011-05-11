@@ -314,44 +314,57 @@ public class SpecificResourceAllocation extends
         AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
                 start, endExclusive);
 
-        List<DayAssignment> assignments = interval.getAssignmentsOnInterval();
+
+        EffortDuration durationForInterval = EffortDuration
+                .hours(newHoursForInterval);
+        EffortDuration sumConsolidated = DayAssignment
+                .sum(interval
+                        .getConsolidatedAssignmentsOnInterval());
+
+        if (sumConsolidated.compareTo(durationForInterval) >= 0) {
+            return;
+        }
+
+        EffortDuration pendingToReassign = durationForInterval
+                .minus(sumConsolidated);
 
         List<DayAssignment> nonConsolidatedAssignments = interval
                 .getNoConsolidatedAssignmentsOnInterval();
-        List<DayAssignment> consolidatedAssignments = interval
-                .getConsolidatedAssignmentsOnInterval();
-
-        int sumHoursConsolidated = ProportionalDistributor
-                .sumIntegerParts(asHours(consolidatedAssignments));
-        int pendingToReassign = newHoursForInterval - sumHoursConsolidated;
-
         ProportionalDistributor distributor = ProportionalDistributor
-                .create(asHours(nonConsolidatedAssignments));
+                .create(asSeconds(nonConsolidatedAssignments));
 
-        int[] newHoursPerDay = distributor.distribute(pendingToReassign);
+        EffortDuration[] effortsPerDay = asEfforts(distributor
+                .distribute(pendingToReassign.getSeconds()));
 
-        resetAssigmentsForInterval(interval, assignmentsForNewHours(
-                nonConsolidatedAssignments, newHoursPerDay));
+        resetAssigmentsForInterval(interval,
+                assignmentsForEfforts(nonConsolidatedAssignments, effortsPerDay));
     }
 
-    private List<SpecificDayAssignment> assignmentsForNewHours(
-            List<DayAssignment> assignments, int[] newHoursPerDay) {
+    private EffortDuration[] asEfforts(int[] secondsArray) {
+        EffortDuration[] result = new EffortDuration[secondsArray.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = EffortDuration.seconds(secondsArray[i]);
+        }
+        return result;
+    }
+
+    private List<SpecificDayAssignment> assignmentsForEfforts(
+            List<DayAssignment> assignments, EffortDuration[] newEffortsPerDay) {
         List<SpecificDayAssignment> result = new ArrayList<SpecificDayAssignment>();
         int i = 0;
         for (DayAssignment each : assignments) {
-            EffortDuration durationForAssignment = EffortDuration
-                    .hours(newHoursPerDay[i++]);
+            EffortDuration durationForAssignment = newEffortsPerDay[i++];
             result.add(SpecificDayAssignment.create(each.getDay(),
                     durationForAssignment, resource));
         }
         return result;
     }
 
-    private int[] asHours(List<DayAssignment> assignments) {
+    private int[] asSeconds(List<DayAssignment> assignments) {
         int[] result = new int[assignments.size()];
         int i = 0;
         for (DayAssignment each : assignments) {
-            result[i++] = each.getHours();
+            result[i++] = each.getDuration().getSeconds();
         }
         return result;
     }
