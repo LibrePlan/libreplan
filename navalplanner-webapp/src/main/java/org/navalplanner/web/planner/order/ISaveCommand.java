@@ -22,6 +22,7 @@
 package org.navalplanner.web.planner.order;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.extensions.ICommand;
 
 /**
@@ -36,10 +37,13 @@ public interface ISaveCommand extends ICommand<TaskElement> {
 
     public void setState(PlanningState planningState);
 
+    public void setConfiguration(PlannerConfiguration<TaskElement> configuration);
+
     public void addListener(IAfterSaveListener listener);
 
     public void removeListener(IAfterSaveListener listener);
 
     public String getImage();
+
 
 }

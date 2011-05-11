@@ -22,7 +22,6 @@
 package org.navalplanner.business.planner.limiting.entities;
 
 import java.math.BigDecimal;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -37,7 +36,6 @@ import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -46,6 +44,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.navalplanner.business.resources.entities.LimitingResourceQueueElementComparator;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * Entity which represents an element in the queue which represents the limiting
@@ -247,46 +246,13 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return Collections.unmodifiableSet(dependenciesAsDestiny);
     }
 
-    public void updateDates(Date orderInitDate,
-            Collection<? extends Dependency> incomingDependencies) {
-        this.earlierStartDateBecauseOfGantt = calculateStartDate(orderInitDate,
-                incomingDependencies);
-        this.earliestEndDateBecauseOfGantt = calculateEndDate(orderInitDate,
-                incomingDependencies);
+    public void updateDates(IntraDayDate earliestStart, IntraDayDate earliestEnd) {
+        this.earlierStartDateBecauseOfGantt = toDate(earliestStart);
+        this.earliestEndDateBecauseOfGantt = toDate(earliestEnd);
     }
 
-    private Date calculateStartDate(Date orderInitDate,
-            Collection<? extends Dependency> dependenciesWithThisDestination) {
-        Date result = orderInitDate;
-        for (Dependency each : dependenciesWithThisDestination) {
-            if (!each.isDependencyBetweenLimitedAllocatedTasks()
-                    && each.getType().modifiesDestinationStart()) {
-                result = bigger(result, each.getDateFromOrigin());
-            }
-        }
-        return result;
-    }
-
-    private Date calculateEndDate(Date orderInitDate,
-            Collection<? extends Dependency> incomingDependencies) {
-        Date result = orderInitDate;
-        for (Dependency each : incomingDependencies) {
-            if (!each.isDependencyBetweenLimitedAllocatedTasks()
-                    && each.getType().modifiesDestinationEnd()) {
-                result = bigger(result, each.getDateFromOrigin());
-            }
-        }
-        return result;
-    }
-
-    private Date bigger(Date one, Date another) {
-        if (one == null) {
-            return another;
-        }
-        if (another == null) {
-            return one;
-        }
-        return one.compareTo(another) >= 0 ? one : another;
+    private Date toDate(IntraDayDate intraDayDate) {
+        return intraDayDate.toDateTimeAtStartOfDay().toDate();
     }
 
     public void detach() {

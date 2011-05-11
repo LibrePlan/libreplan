@@ -967,7 +967,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             PlannerConfiguration<TaskElement> configuration,
             boolean writingAllowed) {
         if (writingAllowed) {
-            ISaveCommand result = buildSaveCommand();
+            ISaveCommand result = buildSaveCommand(configuration);
             configuration.addGlobalCommand(result);
             return result;
         }
@@ -1029,8 +1029,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return resourceAllocationCommand;
     }
 
-    private ISaveCommand buildSaveCommand() {
+    private ISaveCommand buildSaveCommand(
+            PlannerConfiguration<TaskElement> configuration) {
         ISaveCommand saveCommand = getSaveCommand();
+        saveCommand.setConfiguration(configuration);
         saveCommand.setState(planningState);
         return saveCommand;
     }
