@@ -67,6 +67,17 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
+    public static <T extends DayAssignment> List<T> withConsolidatedValue(
+            Collection<? extends T> assignments, boolean consolidated) {
+        List<T> result = new ArrayList<T>();
+        for (T each : assignments) {
+            if (each.isConsolidated() == consolidated) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     private static int findFirstAfterOrEqual(
             List<? extends DayAssignment> orderedAssignments, LocalDate startInclusive) {
         int start = 0;
@@ -212,7 +223,7 @@ public abstract class DayAssignment extends BaseEntity {
         this.consolidated = consolidated;
     }
 
-    public Boolean isConsolidated() {
+    public boolean isConsolidated() {
         return consolidated == null ? false : consolidated;
     }
 

@@ -1154,13 +1154,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         }
 
         public List<DayAssignment> getNoConsolidatedAssignmentsOnInterval() {
-            return getNonConsolidatedAssignments(this.start.getDate(),
-                    this.end.asExclusiveEnd());
+            return DayAssignment.withConsolidatedValue(
+                    getAssignmentsOnInterval(), false);
         }
 
         public List<DayAssignment> getConsolidatedAssignmentsOnInterval() {
-            return getConsolidatedAssignments(this.start.getDate(), this.end
-                    .asExclusiveEnd());
+            return DayAssignment.withConsolidatedValue(
+                    getAssignmentsOnInterval(), true);
         }
     }
 
@@ -1819,22 +1819,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public List<T> getNonConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(false);
+        return DayAssignment.withConsolidatedValue(getAssignments(), false);
     }
 
     public List<T> getConsolidatedAssignments() {
-        return getDayAssignmentsByConsolidated(true);
-    }
-
-    private List<T> getDayAssignmentsByConsolidated(
-            boolean consolidated) {
-        List<T> result = new ArrayList<T>();
-        for (T day : getAssignments()) {
-            if (day.isConsolidated() == consolidated) {
-                result.add(day);
-            }
-        }
-        return result;
+        return DayAssignment.withConsolidatedValue(getAssignments(), true);
     }
 
     public ResourcesPerDay getNonConsolidatedResourcePerDay() {
@@ -1979,18 +1968,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             LocalDate endExclusive) {
         return new ArrayList<DayAssignment>(DayAssignment.getAtInterval(
                 getAssignments(), start, endExclusive));
-    }
-
-    public List<DayAssignment> getNonConsolidatedAssignments(LocalDate start,
-            LocalDate endExclusive) {
-        return new ArrayList<DayAssignment>(DayAssignment.getAtInterval(
-                getNonConsolidatedAssignments(), start, endExclusive));
-    }
-
-    public List<DayAssignment> getConsolidatedAssignments(LocalDate start,
-            LocalDate endExclusive) {
-        return new ArrayList<DayAssignment>(DayAssignment.getAtInterval(
-                getConsolidatedAssignments(), start, endExclusive));
     }
 
     public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
