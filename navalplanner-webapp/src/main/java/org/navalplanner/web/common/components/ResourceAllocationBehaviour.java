@@ -19,8 +19,6 @@
 
 package org.navalplanner.web.common.components;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
@@ -87,6 +85,13 @@ public enum ResourceAllocationBehaviour {
         }
 
     };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     private String name;
 
