@@ -140,7 +140,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     private DateAndHour getStartDayBecauseOfGantt(LimitingResourceQueueElement element) {
-        return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
+        return new DateAndHour(new LocalDate(element.getEarliestStartDateBecauseOfGantt()), 0);
     }
 
     private void feedValidGapsSince(LimitingResourceQueueElement element, LimitingResourceQueue queue, DateAndHour since) {
@@ -176,7 +176,7 @@ public class ManualAllocationController extends GenericForwardComposer {
             selectStartDate.setSelected(true);
 
             startAllocationDate.setDisabled(false);
-            startAllocationDate.setValue(beingEdited.getEarlierStartDateBecauseOfGantt());
+            startAllocationDate.setValue(beingEdited.getEarliestStartDateBecauseOfGantt());
         } else {
             listCandidateGaps.setDisabled(false);
 
@@ -314,7 +314,7 @@ public class ManualAllocationController extends GenericForwardComposer {
             final LocalDate selectedDay = new LocalDate(startAllocationDate.getValue());
             if (isAppropriative()) {
                 LimitingResourceQueueElement beingEdited = getBeingEditedElement();
-                if (selectedDay.compareTo(new LocalDate(beingEdited.getEarlierStartDateBecauseOfGantt())) < 0) {
+                if (selectedDay.compareTo(new LocalDate(beingEdited.getEarliestStartDateBecauseOfGantt())) < 0) {
                     throw new WrongValueException(startAllocationDate, _("Day is not valid"));
                 }
                 return new DateAndHour(selectedDay, 0);
@@ -403,7 +403,7 @@ public class ManualAllocationController extends GenericForwardComposer {
 
         if (isAppropriative()) {
             final LimitingResourceQueueElement beingEdited = getBeingEditedElement();
-            highlightDaysFromDate(datebox.getUuid(), new LocalDate(beingEdited.getEarlierStartDateBecauseOfGantt()));
+            highlightDaysFromDate(datebox.getUuid(), new LocalDate(beingEdited.getEarliestStartDateBecauseOfGantt()));
         } else {
             highlightDaysInGap(datebox.getUuid(), getSelectedGap());
         }

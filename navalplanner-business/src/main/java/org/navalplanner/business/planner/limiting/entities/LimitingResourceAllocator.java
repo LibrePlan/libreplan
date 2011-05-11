@@ -267,7 +267,7 @@ public class LimitingResourceAllocator {
     }
 
     private static DateAndHour getStartTimeBecauseOfGantt(LimitingResourceQueueElement element) {
-        return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
+        return new DateAndHour(new LocalDate(element.getEarliestStartDateBecauseOfGantt()), 0);
     }
 
     private static Gap createLastGap(

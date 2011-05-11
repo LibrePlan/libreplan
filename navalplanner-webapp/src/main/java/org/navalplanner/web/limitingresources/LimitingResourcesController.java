@@ -238,7 +238,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         final Order order = limitingResourceQueueModel.getOrderByTask(task);
         return new LimitingResourceQueueElementDTO(element, order
                 .getName(), task.getName(), element
-                .getEarlierStartDateBecauseOfGantt());
+                .getEarliestStartDateBecauseOfGantt());
     }
 
     public static String getResourceOrCriteria(
@@ -384,7 +384,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             LimitingResourceQueueElement dest) {
 
         dest.setEarlierStartDateBecauseOfGantt(source
-                .getEarlierStartDateBecauseOfGantt());
+                .getEarliestStartDateBecauseOfGantt());
 
         for (LimitingResourceQueueDependency each : source
                 .getDependenciesAsOrigin()) {

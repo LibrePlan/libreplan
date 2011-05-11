@@ -287,7 +287,7 @@ public class Gap implements Comparable<Gap> {
      */
     public boolean canFit(LimitingResourceQueueElement candidate) {
         LocalDate startAfter = LocalDate.fromDateFields(candidate
-                .getEarlierStartDateBecauseOfGantt());
+                .getEarliestStartDateBecauseOfGantt());
         LocalDate endsAfter = LocalDate.fromDateFields(candidate
                 .getEarliestEndDateBecauseOfGantt());
 

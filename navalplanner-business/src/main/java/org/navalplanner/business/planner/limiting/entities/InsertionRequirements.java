@@ -92,7 +92,7 @@ public class InsertionRequirements {
             LimitingResourceQueueElement element,
             List<LimitingResourceQueueDependency> dependenciesAffectingStart) {
         return DateAndHour.max(asDateAndHour(element
-                .getEarlierStartDateBecauseOfGantt()),
+                .getEarliestStartDateBecauseOfGantt()),
                 max(dependenciesAffectingStart));
     }
 

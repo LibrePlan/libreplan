@@ -170,7 +170,7 @@ public class LimitingResourceQueueElement extends BaseEntity {
         return new Duration(start, end);
     }
 
-    public Date getEarlierStartDateBecauseOfGantt() {
+    public Date getEarliestStartDateBecauseOfGantt() {
         return earlierStartDateBecauseOfGantt;
     }
 
