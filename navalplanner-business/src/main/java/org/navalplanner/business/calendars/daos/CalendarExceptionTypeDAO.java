@@ -90,6 +90,7 @@ public class CalendarExceptionTypeDAO extends
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CalendarExceptionType findByName(String name) throws InstanceNotFoundException {
         if (StringUtils.isBlank(name)) {
             throw new InstanceNotFoundException(null, CalendarExceptionType.class.getName());
