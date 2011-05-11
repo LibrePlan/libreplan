@@ -38,8 +38,8 @@ public class ProportionalDistributor {
 
     public static int sumIntegerParts(int[] numbers) {
         int sum = 0;
-        for (Number each : numbers) {
-            sum += each.intValue();
+        for (int each : numbers) {
+            sum += each;
         }
         return sum;
     }
