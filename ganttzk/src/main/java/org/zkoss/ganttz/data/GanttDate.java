@@ -130,6 +130,10 @@ public abstract class GanttDate implements Comparable<GanttDate> {
      */
     public abstract Date toDayRoundedDate();
 
+    public abstract LocalDate toLocalDate();
+
+    public abstract LocalDate asExclusiveEnd();
+
     public abstract int toPixels(IDatesMapper datesMapper);
 
     public static class LocalDateBased extends GanttDate {
@@ -168,6 +172,16 @@ public abstract class GanttDate implements Comparable<GanttDate> {
         @Override
         public Date toDayRoundedDate() {
             return localDate.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        public LocalDate toLocalDate() {
+            return localDate;
+        }
+
+        @Override
+        public LocalDate asExclusiveEnd() {
+            return localDate;
         }
 
         @Override

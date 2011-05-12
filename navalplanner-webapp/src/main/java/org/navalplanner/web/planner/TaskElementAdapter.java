@@ -291,6 +291,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         @Override
+        public LocalDate toLocalDate() {
+            return date.getDate();
+        }
+
+        @Override
+        public LocalDate asExclusiveEnd() {
+            return date.asExclusiveEnd();
+        }
+
+        @Override
         protected boolean isEqualsToCustom(CustomDate customType) {
             if (customType instanceof GanttDateAdapter) {
                 GanttDateAdapter other = (GanttDateAdapter) customType;
