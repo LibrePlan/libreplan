@@ -21,7 +21,6 @@
 
 package org.navalplanner.web.planner.consolidations;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -240,8 +239,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                                         .getIntendedTotalAssigment()
                                         .getSeconds()))
                         .intValue();
-                int pendingHours = EffortDuration.seconds(pendingSeconds)
-                        .roundToHours();
+                EffortDuration pendingEffort = EffortDuration
+                        .seconds(pendingSeconds);
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
@@ -252,12 +251,12 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         IntraDayDate date = ResourceAllocation.allocating(
                                 Arrays.asList(resourceAllocation
                                         .asResourcesPerDayModification()))
-                                .untilAllocating(hours(pendingHours));
+                                .untilAllocating(pendingEffort);
                         task.setIntraDayEndDate(date.nextDayAtStart());
                     }
                 } else {
                     reassign(resourceAllocation, startInclusive, endExclusive,
-                            pendingHours);
+                            pendingEffort);
                 }
             }
         }
@@ -265,14 +264,15 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
             LocalDate startInclusive, LocalDate endExclusive,
-            Integer pendingHours) {
+            EffortDuration pendingEffort) {
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             ((SpecificResourceAllocation) resourceAllocation)
                     .allocateKeepingProportions(startInclusive, endExclusive,
-                            pendingHours);
+                            pendingEffort);
         } else {
-            resourceAllocation.withPreviousAssociatedResources().onIntervalWithinTask(
-                    startInclusive, endExclusive).allocateHours(pendingHours);
+            resourceAllocation.withPreviousAssociatedResources()
+                    .onIntervalWithinTask(startInclusive, endExclusive)
+                    .allocate(pendingEffort);
         }
     }
 
@@ -331,34 +331,35 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
                     resourceAllocation
                             .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                    int pendingHours = resourceAllocation
-                            .getIntendedTotalAssigment().roundToHours();
+                    EffortDuration pendingEffort = resourceAllocation
+                            .getIntendedTotalAssigment();
                     if (!consolidation.getConsolidatedValues().isEmpty()) {
                         BigDecimal lastConslidation = task.getConsolidation()
                                 .getConsolidatedValues().last().getValue();
 
-                        pendingHours = BigDecimal.ONE
+                        pendingEffort = EffortDuration.seconds(BigDecimal.ONE
                                 .subtract(
                                         lastConslidation.setScale(2).divide(
                                                 new BigDecimal(100),
-                                                RoundingMode.DOWN)).multiply(
-                                        new BigDecimal(pendingHours))
-                                .intValue();
+                                                RoundingMode.DOWN))
+                                .multiply(
+                                        new BigDecimal(pendingEffort
+                                                .getSeconds())).intValue());
                     }
                     if (!taskEndDate.equals(endExclusive)) {
                         if ((taskEndDate != null) && (endExclusive != null)
                                 && (taskEndDate.compareTo(endExclusive) <= 0)) {
                             reassign(resourceAllocation, taskEndDate,
-                                    endExclusive, 0);
+                                    endExclusive, EffortDuration.zero());
                         } else {
                             reassign(resourceAllocation, endExclusive,
-                                    taskEndDate, 0);
+                                    taskEndDate, EffortDuration.zero());
                         }
                         task.setEndDate(endExclusive.toDateTimeAtStartOfDay()
                                 .toDate());
                     }
                     reassign(resourceAllocation, firstDayNotConsolidated,
-                            endExclusive, pendingHours);
+                            endExclusive, pendingEffort);
                 }
 
                 // delete the assignments with posterior date than endDate

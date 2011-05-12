@@ -310,22 +310,19 @@ public class SpecificResourceAllocation extends
     }
 
     public void allocateKeepingProportions(LocalDate start,
-            LocalDate endExclusive, int newHoursForInterval) {
+            LocalDate endExclusive, EffortDuration effortForInterval) {
         AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
                 start, endExclusive);
 
-
-        EffortDuration durationForInterval = EffortDuration
-                .hours(newHoursForInterval);
         EffortDuration sumConsolidated = DayAssignment
                 .sum(interval
                         .getConsolidatedAssignmentsOnInterval());
 
-        if (sumConsolidated.compareTo(durationForInterval) >= 0) {
+        if (sumConsolidated.compareTo(effortForInterval) >= 0) {
             return;
         }
 
-        EffortDuration pendingToReassign = durationForInterval
+        EffortDuration pendingToReassign = effortForInterval
                 .minus(sumConsolidated);
 
         List<DayAssignment> nonConsolidatedAssignments = interval
