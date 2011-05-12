@@ -2124,12 +2124,4 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 : null;
     }
 
-    public void setConsolidatedfromInitTo(LocalDate lastConsolidationDate) {
-        for (DayAssignment day : (List<DayAssignment>) getAssignments()) {
-            if (day.getDay().compareTo(lastConsolidationDate) <= 0) {
-                day.setConsolidated(true);
-            }
-        }
-    }
-
 }
