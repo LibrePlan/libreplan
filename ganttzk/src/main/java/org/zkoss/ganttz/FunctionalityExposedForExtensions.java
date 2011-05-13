@@ -260,7 +260,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         for (Dependency dependency : DomainDependency.toDependencies(mapper,
                 totalDependencies)) {
-            this.diagramGraph.add(dependency);
+            this.diagramGraph.addWithoutEnforcingConstraints(dependency);
         }
         this.diagramGraph.enforceAllRestrictions();
         this.planner.addTasks(position, tasksCreated);
