@@ -195,48 +195,45 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private void addConsolidatedValue(ConsolidatedValue value) {
-        if (consolidation != null && task != null) {
-            if (consolidation.getConsolidatedValues().contains(value)) {
-                return;
-            }
-            if (!consolidation.isCalculated()) {
-                ((NonCalculatedConsolidation) consolidation)
-                        .addConsolidatedValue((NonCalculatedConsolidatedValue) value);
-            } else {
-                ((CalculatedConsolidation) consolidation)
-                        .addConsolidatedValue((CalculatedConsolidatedValue) value);
-            }
+        if (consolidation == null || task == null
+                || consolidation.getConsolidatedValues().contains(value)) {
+            return;
+        }
+        if (!consolidation.isCalculated()) {
+            ((NonCalculatedConsolidation) consolidation)
+                    .addConsolidatedValue((NonCalculatedConsolidatedValue) value);
+        } else {
+            ((CalculatedConsolidation) consolidation)
+                    .addConsolidatedValue((CalculatedConsolidatedValue) value);
+        }
 
-            task.updateAssignmentsConsolidatedValues();
+        task.updateAssignmentsConsolidatedValues();
 
-            Set<ResourceAllocation<?>> allResourceAllocations = task
-                    .getAllResourceAllocations();
-            for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                LocalDate endExclusive = LocalDate.fromDateFields(task
-                        .getEndDate());
+        Set<ResourceAllocation<?>> allResourceAllocations = task
+                .getAllResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+            LocalDate endExclusive = LocalDate
+                    .fromDateFields(task.getEndDate());
 
-                EffortDuration pendingEffort = consolidation
-                        .getNotConsolidated(resourceAllocation
-                                .getIntendedTotalAssigment());
+            EffortDuration pendingEffort = consolidation
+                    .getNotConsolidated(resourceAllocation
+                            .getIntendedTotalAssigment());
 
-                resourceAllocation
-                        .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+            resourceAllocation
+                    .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
-                if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
-                    if (!AllocationsSpecified.isZero(resourceAllocation
-                            .asResourcesPerDayModification().getGoal()
-                            .getAmount())) {
-                        IntraDayDate date = ResourceAllocation.allocating(
-                                Arrays.asList(resourceAllocation
-                                        .asResourcesPerDayModification()))
-                                .untilAllocating(pendingEffort);
-                        task.setIntraDayEndDate(date.nextDayAtStart());
-                    }
-                } else {
-                    reassign(resourceAllocation, task
-                            .getFirstDayNotConsolidated().getDate(),
-                            endExclusive, pendingEffort);
+            if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
+                if (!AllocationsSpecified.isZero(resourceAllocation
+                        .asResourcesPerDayModification().getGoal().getAmount())) {
+                    IntraDayDate date = ResourceAllocation.allocating(
+                            Arrays.asList(resourceAllocation
+                                    .asResourcesPerDayModification()))
+                            .untilAllocating(pendingEffort);
+                    task.setIntraDayEndDate(date.nextDayAtStart());
                 }
+            } else {
+                reassign(resourceAllocation, task.getFirstDayNotConsolidated()
+                        .getDate(), endExclusive, pendingEffort);
             }
         }
     }
@@ -279,59 +276,55 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private void deleteConsolidationIfIsNeeded(AdvanceConsolidationDTO dto) {
-        if (dto.getConsolidatedValue() != null) {
-            if (consolidation != null && task != null) {
-                LocalDate taskEndDate = LocalDate.fromDateFields(task
-                        .getEndDate());
-                LocalDate endExclusive = taskEndDate;
-                if (!consolidation.getConsolidatedValues().isEmpty()) {
-                    endExclusive = consolidation.getConsolidatedValues().last()
-                            .getTaskEndDate();
-                }
+        if (dto.getConsolidatedValue() == null || consolidation == null
+                || task == null) {
+            return;
+        }
 
-                if (!consolidation.isCalculated()) {
-                    ((NonCalculatedConsolidation) consolidation)
-                            .getNonCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
-                    dto.getAdvanceMeasurement()
-                            .getNonCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
+        LocalDate taskEndDate = LocalDate.fromDateFields(task.getEndDate());
+        LocalDate endExclusive = taskEndDate;
+        if (!consolidation.getConsolidatedValues().isEmpty()) {
+            endExclusive = consolidation.getConsolidatedValues().last()
+                    .getTaskEndDate();
+        }
+        if (!consolidation.isCalculated()) {
+            ((NonCalculatedConsolidation) consolidation)
+                    .getNonCalculatedConsolidatedValues().remove(
+                            dto.getConsolidatedValue());
+            dto.getAdvanceMeasurement().getNonCalculatedConsolidatedValues()
+                    .remove(dto.getConsolidatedValue());
+        } else {
+            ((CalculatedConsolidation) consolidation)
+                    .getCalculatedConsolidatedValues().remove(
+                            dto.getConsolidatedValue());
+        }
+
+        task.updateAssignmentsConsolidatedValues();
+
+        LocalDate firstDayNotConsolidated = task.getFirstDayNotConsolidated()
+                .getDate();
+
+        Set<ResourceAllocation<?>> allResourceAllocations = task
+                .getAllResourceAllocations();
+        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+            resourceAllocation
+                    .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+            EffortDuration pendingEffort = task.getConsolidation()
+                    .getNotConsolidated(
+                            resourceAllocation.getIntendedTotalAssigment());
+            if (!taskEndDate.equals(endExclusive)) {
+                if ((taskEndDate != null) && (endExclusive != null)
+                        && (taskEndDate.compareTo(endExclusive) <= 0)) {
+                    reassign(resourceAllocation, taskEndDate, endExclusive,
+                            EffortDuration.zero());
                 } else {
-                    ((CalculatedConsolidation) consolidation)
-                            .getCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
+                    reassign(resourceAllocation, endExclusive, taskEndDate,
+                            EffortDuration.zero());
                 }
-
-                task.updateAssignmentsConsolidatedValues();
-
-                LocalDate firstDayNotConsolidated = task
-                        .getFirstDayNotConsolidated().getDate();
-
-                Set<ResourceAllocation<?>> allResourceAllocations = task
-                        .getAllResourceAllocations();
-                for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                    resourceAllocation
-                            .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                    EffortDuration pendingEffort = task.getConsolidation()
-                            .getNotConsolidated(
-                                    resourceAllocation
-                                            .getIntendedTotalAssigment());
-                    if (!taskEndDate.equals(endExclusive)) {
-                        if ((taskEndDate != null) && (endExclusive != null)
-                                && (taskEndDate.compareTo(endExclusive) <= 0)) {
-                            reassign(resourceAllocation, taskEndDate,
-                                    endExclusive, EffortDuration.zero());
-                        } else {
-                            reassign(resourceAllocation, endExclusive,
-                                    taskEndDate, EffortDuration.zero());
-                        }
-                        task.setEndDate(endExclusive.toDateTimeAtStartOfDay()
-                                .toDate());
-                    }
-                    reassign(resourceAllocation, firstDayNotConsolidated,
-                            endExclusive, pendingEffort);
-                }
+                task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
             }
+            reassign(resourceAllocation, firstDayNotConsolidated, endExclusive,
+                    pendingEffort);
         }
     }
 
