@@ -258,7 +258,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public void updateExceptionDay(LocalDate date, Capacity capacity,
             CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
-        CalendarException day = CalendarException.create(date, capacity, type);
+        CalendarException day = CalendarException.create("", date, capacity,
+                type);
         addExceptionDay(day);
     }
 

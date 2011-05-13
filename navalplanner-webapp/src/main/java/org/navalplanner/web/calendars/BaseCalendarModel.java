@@ -264,6 +264,14 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public Capacity getWorkableCapacity() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getCapacityWithOvertime(selectedDate);
+    }
+
+    @Override
     public DayType getTypeOfDay() {
         if (getBaseCalendar() == null) {
             return null;

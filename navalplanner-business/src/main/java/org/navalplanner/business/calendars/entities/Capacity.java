@@ -223,4 +223,10 @@ public class Capacity {
                         : allowedExtraEffort.multiplyBy(capacity));
     }
 
+    @Override
+    public String toString() {
+        return "[" + getStandardEffortString() + " - " + getExtraEffortString()
+                + "]";
+    }
+
 }

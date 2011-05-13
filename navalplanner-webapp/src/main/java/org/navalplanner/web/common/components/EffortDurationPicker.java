@@ -114,9 +114,12 @@ public class EffortDurationPicker extends Hbox {
     private void updateUIWithValuesFrom(EffortDuration duration) {
         EnumMap<Granularity, Integer> values = duration.decompose();
         hours.setValue(values.get(Granularity.HOURS));
+        hours.invalidate();
         minutes.setValue(values.get(Granularity.MINUTES));
+        minutes.invalidate();
         if (withseconds) {
             seconds.setValue(values.get(Granularity.SECONDS));
+            seconds.invalidate();
         }
     }
 
