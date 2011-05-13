@@ -522,6 +522,9 @@ public class ManageOrderElementAdvancesModel implements
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
+        if (newAdvanceAssignment.getReportGlobalAdvance()) {
+            this.orderElement.removeReportGlobalAdvanceAssignment();
+        }
         this.orderElement.addAdvanceAssignment(newAdvanceAssignment);
     }
 
