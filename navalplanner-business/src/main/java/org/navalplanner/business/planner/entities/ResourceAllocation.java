@@ -1215,14 +1215,15 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 .getAssignmentsOnInterval()));
         addingAssignments(assignmentsCreated);
 
-        updateConsolidatedAssignments(interval);
         updateOriginalTotalAssigment();
         updateResourcesPerDay();
     }
 
-    private void updateConsolidatedAssignments(AllocationInterval interval) {
-        for (DayAssignment day : interval.getAssignmentsOnInterval()) {
-            day.setConsolidated(false);
+    void updateAssignmentsConsolidatedValues() {
+        LocalDate firstNotConsolidated = task.getFirstDayNotConsolidated()
+                .getDate();
+        for (T each : getAssignments()) {
+            each.setConsolidated(each.getDay().isBefore(firstNotConsolidated));
         }
     }
 

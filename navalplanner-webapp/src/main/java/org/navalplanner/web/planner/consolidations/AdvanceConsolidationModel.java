@@ -38,7 +38,6 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
 import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
@@ -210,23 +209,11 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         .addConsolidatedValue((CalculatedConsolidatedValue) value);
             }
 
-            LocalDate startInclusive = value.getDate().plusDays(1);
-            LocalDate taskStartDate = LocalDate.fromDateFields(task
-                    .getStartDate());
-            if (startInclusive.compareTo(taskStartDate) < 0) {
-                startInclusive = taskStartDate;
-            }
+            task.updateAssignmentsConsolidatedValues();
 
             Set<ResourceAllocation<?>> allResourceAllocations = task
                     .getAllResourceAllocations();
             for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                for (DayAssignment dayAssignment : resourceAllocation
-                        .getAssignments()) {
-                    if (dayAssignment.getDay().compareTo(startInclusive) < 0) {
-                        dayAssignment.setConsolidated(true);
-                    }
-                }
-
                 LocalDate endExclusive = LocalDate.fromDateFields(task
                         .getEndDate());
 
@@ -255,8 +242,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                         task.setIntraDayEndDate(date.nextDayAtStart());
                     }
                 } else {
-                    reassign(resourceAllocation, startInclusive, endExclusive,
-                            pendingEffort);
+                    reassign(resourceAllocation, task
+                            .getFirstDayNotConsolidated().getDate(),
+                            endExclusive, pendingEffort);
                 }
             }
         }
@@ -323,6 +311,8 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                                     dto.getConsolidatedValue());
                 }
 
+                task.updateAssignmentsConsolidatedValues();
+
                 LocalDate firstDayNotConsolidated = task
                         .getFirstDayNotConsolidated().getDate();
 
@@ -360,15 +350,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     }
                     reassign(resourceAllocation, firstDayNotConsolidated,
                             endExclusive, pendingEffort);
-                }
-
-                // update the day assignment which not are consolidated
-                // according to the first day not consolidated in the task
-                for (DayAssignment dayAssignment : task.getDayAssignments()) {
-                    if (dayAssignment.getDay().compareTo(
-                            firstDayNotConsolidated) >= 0) {
-                        dayAssignment.setConsolidated(false);
-                    }
                 }
             }
         }

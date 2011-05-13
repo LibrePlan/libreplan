@@ -977,6 +977,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return getIntraDayStartDate();
     }
 
+    public void updateAssignmentsConsolidatedValues() {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.updateAssignmentsConsolidatedValues();
+        }
+    }
+
     public Integer getWorkableDays() {
         if (workableDays == null) {
             return getWorkableDaysBetweenDates();
