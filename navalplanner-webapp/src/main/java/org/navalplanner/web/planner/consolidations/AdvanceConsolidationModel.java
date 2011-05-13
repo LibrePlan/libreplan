@@ -362,15 +362,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                             endExclusive, pendingEffort);
                 }
 
-                // delete the assignments with posterior date than endDate
-                List<DayAssignment> toremove = new ArrayList<DayAssignment>();
-                for (DayAssignment dayAssignment : task.getDayAssignments()) {
-                    if (dayAssignment.getDay().compareTo(endExclusive) >= 0) {
-                        toremove.add(dayAssignment);
-                    }
-                }
-                task.getDayAssignments().removeAll(toremove);
-
                 // update the day assignment which not are consolidated
                 // according to the first day not consolidated in the task
                 for (DayAssignment dayAssignment : task.getDayAssignments()) {
