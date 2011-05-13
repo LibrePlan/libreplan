@@ -42,9 +42,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -70,6 +70,7 @@ import org.navalplanner.web.users.OrderAuthorizationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -1409,21 +1410,30 @@ public class OrderCRUDController extends GenericForwardComposer {
         saveOrderAndContinueButton.setVisible(!showCreate);
     }
 
-    public void highLight(OrderElement orderElement) {
-        Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
-        if (tab != null) {
-            tab.setSelected(true);
-            Events.sendEvent(new SelectEvent(Events.ON_SELECT, tab, null));
-        }
+    public void highLight(final OrderElement orderElement) {
+        final Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
+        LongOperationFeedback.executeLater(tab, new Runnable() {
 
-        if ((!(orderElement instanceof Order))
-                && (orderElementTreeController != null)) {
-            final Treeitem item = orderElementTreeController
+            @Override
+            public void run() {
+                if (tab != null) {
+                    tab.setSelected(true);
+                    Events.sendEvent(new SelectEvent(Events.ON_SELECT, tab,
+                            null));
+                }
+
+                if (!(orderElement instanceof Order)
+                        && orderElementTreeController != null) {
+                    final Treeitem item = orderElementTreeController
                     .getTreeitemByOrderElement(orderElement);
-            if (item != null) {
-                orderElementTreeController.showEditionOrderElement(item);
+
+                    if (item != null) {
+                        orderElementTreeController
+                                .showEditionOrderElement(item);
+                    }
+                }
             }
-        }
+        });
     }
 
     /**

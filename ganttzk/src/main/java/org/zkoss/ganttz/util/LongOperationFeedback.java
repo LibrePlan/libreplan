@@ -63,24 +63,42 @@ public class LongOperationFeedback {
 
     public static void execute(final Component component,
             final ILongOperation longOperation) {
+        Validate.notNull(component);
         Validate.notNull(longOperation);
+
         if (alreadyInside.get()) {
             dispatchActionDirectly(longOperation);
             return;
         }
-        Validate.notNull(component);
+
         Clients.showBusy(longOperation.getName(), true);
+        executeLater(component, new Runnable() {
+            public void run() {
+                try {
+                    alreadyInside.set(true);
+                    longOperation.doAction();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    alreadyInside.set(false);
+                    Clients.showBusy(null, false);
+                }
+            }
+        });
+    }
+
+    public static void executeLater(final Component component,
+            final Runnable runnable) {
+        Validate.notNull(runnable);
+        Validate.notNull(component);
         final String eventName = generateEventName();
         component.addEventListener(eventName, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 try {
-                    alreadyInside.set(true);
-                    longOperation.doAction();
+                    runnable.run();
                 } finally {
-                    alreadyInside.set(false);
-                    Clients.showBusy(null, false);
                     component.removeEventListener(eventName, this);
                 }
             }
