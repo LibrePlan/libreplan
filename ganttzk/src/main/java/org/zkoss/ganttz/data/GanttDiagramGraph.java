@@ -350,7 +350,27 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
     }
 
     public void enforceAllRestrictions() {
-        enforcer.enforceRestrictionsOn(getTopLevelTasks());
+        enforcer.enforceRestrictionsOn(withoutVisibleIncomingDependencies(getTopLevelTasks()));
+    }
+
+    private List<V> withoutVisibleIncomingDependencies(
+            Collection<? extends V> tasks) {
+        List<V> result = new ArrayList<V>();
+        for (V each : tasks) {
+            if (noVisibleDependencies(graph.incomingEdgesOf(each))) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
+    private boolean noVisibleDependencies(Collection<? extends D> dependencies) {
+        for (D each : dependencies) {
+            if (adapter.isVisible(each)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void addTopLevel(V task) {
