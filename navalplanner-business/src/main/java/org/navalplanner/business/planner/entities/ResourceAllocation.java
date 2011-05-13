@@ -26,7 +26,6 @@ import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,6 +58,7 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Allocator
 import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
+import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -615,41 +615,14 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return;
         }
         intendedNonConsolidatedEffort = getNonConsolidatedEffort();
-        if ((task.getConsolidation() == null)
-                || (task.getConsolidation().getConsolidatedValues().isEmpty())) {
+        Consolidation consolidation = task.getConsolidation();
+        if (consolidation == null) {
             intendedTotalAssignment = intendedNonConsolidatedEffort;
+        } else if (consolidation.isCompletelyConsolidated()) {
+            intendedTotalAssignment = getConsolidatedEffort();
         } else {
-            if (isCompletelyConsolidated()) {
-                intendedTotalAssignment = getConsolidatedEffort();
-            } else {
-                intendedTotalAssignment = EffortDuration
-                        .seconds(new BigDecimal(getNonConsolidatedEffort()
-                                .getSeconds()).divide(
-                                getUnconsolidatedPercentage(),
-                                RoundingMode.DOWN).intValue());
-            }
+            intendedTotalAssignment = consolidation.getTotalFromNotConsolidated(getNonConsolidatedEffort());
         }
-    }
-
-    private boolean isCompletelyConsolidated() {
-        return hasConsolidationValues()
-                && getUnconsolidatedPercentage().setScale(2).equals(
-                        BigDecimal.ZERO.setScale(2));
-    }
-
-    private boolean hasConsolidationValues() {
-        return task.getConsolidation() != null
-                && !task.getConsolidation().getConsolidatedValues().isEmpty();
-    }
-
-    private BigDecimal getUnconsolidatedPercentage() {
-        assert hasConsolidationValues();
-        BigDecimal lastConslidation = task.getConsolidation()
-                .getConsolidatedValues().last().getValue();
-        BigDecimal unconsolitedPercentage = BigDecimal.ONE
-                .subtract(lastConslidation.setScale(2).divide(
-                        new BigDecimal(100), RoundingMode.DOWN));
-        return unconsolitedPercentage;
     }
 
     @NotNull
@@ -1060,6 +1033,11 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         } else {
             return !getNonConsolidatedAssignments().isEmpty();
         }
+    }
+
+    private boolean isCompletelyConsolidated() {
+        return task.getConsolidation() != null
+                && task.getConsolidation().isCompletelyConsolidated();
     }
 
     public boolean isUnsatisfied() {

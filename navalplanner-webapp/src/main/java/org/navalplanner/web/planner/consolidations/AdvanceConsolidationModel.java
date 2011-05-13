@@ -23,8 +23,6 @@ package org.navalplanner.web.planner.consolidations;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -217,17 +215,10 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 LocalDate endExclusive = LocalDate.fromDateFields(task
                         .getEndDate());
 
-                int pendingSeconds = BigDecimal.ONE
-                        .subtract(
-                        value.getValue().setScale(2).divide(
-                                new BigDecimal(100), RoundingMode.DOWN))
-                        .multiply(
-                                new BigDecimal(resourceAllocation
-                                        .getIntendedTotalAssigment()
-                                        .getSeconds()))
-                        .intValue();
-                EffortDuration pendingEffort = EffortDuration
-                        .seconds(pendingSeconds);
+                EffortDuration pendingEffort = consolidation
+                        .getNotConsolidated(resourceAllocation
+                                .getIntendedTotalAssigment());
+
                 resourceAllocation
                         .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
 
@@ -321,21 +312,10 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                 for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
                     resourceAllocation
                             .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                    EffortDuration pendingEffort = resourceAllocation
-                            .getIntendedTotalAssigment();
-                    if (!consolidation.getConsolidatedValues().isEmpty()) {
-                        BigDecimal lastConslidation = task.getConsolidation()
-                                .getConsolidatedValues().last().getValue();
-
-                        pendingEffort = EffortDuration.seconds(BigDecimal.ONE
-                                .subtract(
-                                        lastConslidation.setScale(2).divide(
-                                                new BigDecimal(100),
-                                                RoundingMode.DOWN))
-                                .multiply(
-                                        new BigDecimal(pendingEffort
-                                                .getSeconds())).intValue());
-                    }
+                    EffortDuration pendingEffort = task.getConsolidation()
+                            .getNotConsolidated(
+                                    resourceAllocation
+                                            .getIntendedTotalAssigment());
                     if (!taskEndDate.equals(endExclusive)) {
                         if ((taskEndDate != null) && (endExclusive != null)
                                 && (taskEndDate.compareTo(endExclusive) <= 0)) {
