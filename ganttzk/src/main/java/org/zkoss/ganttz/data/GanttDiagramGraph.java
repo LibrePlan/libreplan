@@ -395,7 +395,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
     class TopologicalSorter {
 
+        private Map<TaskPoint, Integer> taskPointsByDepthCached = null;
+
         private Map<TaskPoint, Integer> taskPointsByDepth() {
+            if (taskPointsByDepthCached != null) {
+                return taskPointsByDepthCached;
+            }
+
             Map<TaskPoint, Integer> result = new HashMap<TaskPoint, Integer>();
             Map<TaskPoint, Set<TaskPoint>> visitedBy = new HashMap<TaskPoint, Set<TaskPoint>>();
 
@@ -420,7 +426,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                     }
                 }
             }
-            return result;
+            return taskPointsByDepthCached = Collections
+                    .unmodifiableMap(result);
         }
 
         private <K, T> void initializeIfNeededForKey(Map<K, T> map, K key,
@@ -436,6 +443,10 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 result.add(allPointsPotentiallyModified(each));
             }
             return result;
+        }
+
+        public void recalculationNeeded() {
+            taskPointsByDepthCached = null;
         }
 
         public List<Recalculation> sort(
@@ -490,6 +501,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         while (!stack.isEmpty()){
             V task = stack.remove(0);
             graph.addVertex(task);
+            topologicalSorter.recalculationNeeded();
             adapter.registerDependenciesEnforcerHookOn(task, enforcer);
             if (adapter.isContainer(task)) {
                 for (V child : adapter.getChildren(task)) {
@@ -1791,11 +1803,13 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                 remove(t);
             }
         }
+        topologicalSorter.recalculationNeeded();
         enforcer.enforceRestrictionsOn(needingEnforcing);
     }
 
     public void removeDependency(D dependency) {
         graph.removeEdge(dependency);
+        topologicalSorter.recalculationNeeded();
         V destination = adapter.getDestination(dependency);
         V source = adapter.getSource(dependency);
         enforcer.enforceRestrictionsOn(destination);
@@ -1843,6 +1857,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         V source = adapter.getSource(dependency);
         V destination = adapter.getDestination(dependency);
         graph.addEdge(source, destination, dependency);
+        topologicalSorter.recalculationNeeded();
         if (enforceRestrictions) {
             enforceRestrictions(destination);
         }
