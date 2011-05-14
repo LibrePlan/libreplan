@@ -75,6 +75,17 @@ public enum DependencyType {
 
     public enum Point {
         VOID, START, END;
+
+        public Point getOther() {
+            switch (this) {
+            case START:
+                return END;
+            case END:
+                return START;
+            default:
+                return VOID;
+            }
+        }
     }
 
     private final Point source;
