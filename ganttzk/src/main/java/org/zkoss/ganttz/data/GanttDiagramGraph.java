@@ -1930,6 +1930,23 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
         return result;
     }
 
+    public boolean hasVisibleIncomingDependencies(V task) {
+        return isSomeVisible(graph.incomingEdgesOf(task));
+    }
+
+    public boolean hasVisibleOutcomingDependencies(V task) {
+        return isSomeVisible(graph.outgoingEdgesOf(task));
+    }
+
+    private boolean isSomeVisible(Set<D> dependencies) {
+        for (D each : dependencies) {
+            if (adapter.isVisible(each)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<V> getLatestTasks() {
         List<V> tasks = new ArrayList<V>();
 

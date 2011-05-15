@@ -42,6 +42,10 @@ public interface ICriticalPathCalculable<T> {
 
     List<T> getLatestTasks();
 
+    boolean hasVisibleIncomingDependencies(T task);
+
+    boolean hasVisibleOutcomingDependencies(T task);
+
     Set<T> getIncomingTasksFor(T task);
 
     Set<T> getOutgoingTasksFor(T task);

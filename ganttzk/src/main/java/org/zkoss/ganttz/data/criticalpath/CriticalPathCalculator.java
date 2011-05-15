@@ -121,13 +121,37 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private InitialNode<T, D> createBeginningOfProjectNode() {
-        return new InitialNode<T, D>(new HashSet<T>(removeContainers(graph
+        return new InitialNode<T, D>(
+                removeWithVisibleIncomingDependencies(removeContainers(graph
                 .getInitialTasks())));
     }
 
+
+    private Set<T> removeWithVisibleIncomingDependencies(Collection<T> tasks) {
+        Set<T> result = new HashSet<T>();
+        for (T each : tasks) {
+            if (!graph.hasVisibleIncomingDependencies(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     private LastNode<T, D> createEndOfProjectNode() {
-        return new LastNode<T, D>(new HashSet<T>(removeContainers(graph
-                .getLatestTasks())));
+        return new LastNode<T, D>(
+                removeWithVisibleOutcomingDependencies(removeContainers(graph
+                        .getLatestTasks())));
+    }
+
+    private Set<T> removeWithVisibleOutcomingDependencies(
+            Collection<T> removeContainers) {
+        Set<T> result = new HashSet<T>();
+        for (T each : removeContainers) {
+            if (!graph.hasVisibleOutcomingDependencies(each)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     private Map<T, Node<T, D>> createGraphNodes() {
