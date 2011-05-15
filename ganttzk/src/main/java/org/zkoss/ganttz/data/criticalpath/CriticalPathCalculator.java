@@ -68,6 +68,25 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private Map<T, Map<T, DependencyType>> dependencies;
 
+    private class VisitorTracker {
+
+        private Map<T, Set<T>> visitorsOn = new HashMap<T, Set<T>>();
+
+        void visit(T visited, T visitor) {
+            if (!visitorsOn.containsKey(visited)) {
+                visitorsOn.put(visited, new HashSet<T>());
+            }
+            visitorsOn.get(visited).add(visitor);
+        }
+
+        boolean hasBeenVisitedByAll(T current,
+                Collection<? extends T> collection) {
+            return visitorsOn.containsKey(current)
+                    && visitorsOn.get(current).containsAll(collection);
+        }
+
+    }
+
     public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
         this.graph = graph;
 
@@ -80,10 +99,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
         nodes = createGraphNodes();
 
-        forward(bop, null);
+        forward(bop, null, new VisitorTracker());
         eop.updateLatestValues();
 
-        backward(eop, null);
+        backward(eop, null, new VisitorTracker());
 
         return getTasksOnCriticalPath();
     }
@@ -272,7 +291,8 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return DependencyType.END_START;
     }
 
-    private void forward(Node<T, D> currentNode, T previousTask) {
+    private void forward(Node<T, D> currentNode, T previousTask,
+            VisitorTracker visitorTracker) {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
         int earliestFinish = currentNode.getEarliestFinish();
@@ -284,6 +304,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             int countStartStart = 0;
 
             for (T task : nextTasks) {
+                visitorTracker.visit(task, currentTask);
                 if (graph.isContainer(currentTask)) {
                     if (graph.contains(currentTask, previousTask)) {
                         if (graph.contains(currentTask, task)) {
@@ -312,7 +333,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                     break;
                 }
 
-                forward(node, currentTask);
+                if (visitorTracker.hasBeenVisitedByAll(task,
+                        node.getPreviousTasks())) {
+                    forward(node, currentTask, visitorTracker);
+                }
             }
 
             if (nextTasks.size() == countStartStart) {
@@ -357,7 +381,8 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return Constraint.coalesce(startConstraints);
     }
 
-    private void backward(Node<T, D> currentNode, T nextTask) {
+    private void backward(Node<T, D> currentNode, T nextTask,
+            VisitorTracker visitorTracker) {
         T currentTask = currentNode.getTask();
         int latestStart = currentNode.getLatestStart();
         int latestFinish = currentNode.getLatestFinish();
@@ -369,6 +394,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             int countEndEnd = 0;
 
             for (T task : previousTasks) {
+                visitorTracker.visit(task, currentTask);
                 if (graph.isContainer(currentTask)) {
                     if (graph.contains(currentTask, nextTask)) {
                         if (graph.contains(currentTask, task)) {
@@ -397,7 +423,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                     break;
                 }
 
-                backward(node, currentTask);
+                if (visitorTracker.hasBeenVisitedByAll(task,
+                        node.getNextTasks())) {
+                    backward(node, currentTask, visitorTracker);
+                }
             }
 
             if (previousTasks.size() == countEndEnd) {
