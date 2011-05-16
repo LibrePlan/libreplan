@@ -25,6 +25,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -211,29 +213,29 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
         Set<ResourceAllocation<?>> allResourceAllocations = task
                 .getAllResourceAllocations();
-        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-            LocalDate endExclusive = LocalDate
-                    .fromDateFields(task.getEndDate());
+        withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
+        LocalDate endExclusive = LocalDate.fromDateFields(task.getEndDate());
+        if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
+            reassignExpandingTask(allResourceAllocations);
+        } else {
+            reassignAll(endExclusive, allResourceAllocations);
+        }
+    }
+
+    private void withDetachOnDayAssignmentRemoval(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        for (ResourceAllocation<?> each : allocations) {
+            each.setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        }
+    }
+
+    private void reassignAll(LocalDate endExclusive,
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        for (ResourceAllocation<?> each : allocations) {
             EffortDuration pendingEffort = consolidation
-                    .getNotConsolidated(resourceAllocation
-                            .getIntendedTotalAssigment());
-
-            resourceAllocation
-                    .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-
-            if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
-                if (!AllocationsSpecified.isZero(resourceAllocation
-                        .asResourcesPerDayModification().getGoal().getAmount())) {
-                    IntraDayDate date = ResourceAllocation.allocating(
-                            Arrays.asList(resourceAllocation
-                                    .asResourcesPerDayModification()))
-                            .untilAllocating(pendingEffort);
-                    task.setIntraDayEndDate(date.nextDayAtStart());
-                }
-            } else {
-                reassign(resourceAllocation, endExclusive, pendingEffort);
-            }
+                    .getNotConsolidated(each.getIntendedTotalAssigment());
+            reassign(each, endExclusive, pendingEffort);
         }
     }
 
@@ -247,6 +249,28 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             resourceAllocation.withPreviousAssociatedResources()
                     .fromStartUntil(endExclusive)
                     .allocate(pendingEffort);
+        }
+    }
+
+    private void reassignExpandingTask(
+            Collection<? extends ResourceAllocation<?>> allResourceAllocations) {
+
+        List<IntraDayDate> ends = new ArrayList<IntraDayDate>();
+        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+            if (!AllocationsSpecified.isZero(resourceAllocation
+                    .asResourcesPerDayModification().getGoal().getAmount())) {
+                EffortDuration pendingEffort = consolidation
+                        .getNotConsolidated(resourceAllocation
+                                .getIntendedTotalAssigment());
+                IntraDayDate date = ResourceAllocation.allocating(
+                        Arrays.asList(resourceAllocation
+                                .asResourcesPerDayModification()))
+                        .untilAllocating(pendingEffort);
+                ends.add(date);
+            }
+        }
+        if (!ends.isEmpty()) {
+            task.setIntraDayEndDate(Collections.max(ends));
         }
     }
 
@@ -301,15 +325,9 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
         Set<ResourceAllocation<?>> allResourceAllocations = task
                 .getAllResourceAllocations();
-        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-            resourceAllocation
-                    .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-            EffortDuration pendingEffort = task.getConsolidation()
-                    .getNotConsolidated(
-                            resourceAllocation.getIntendedTotalAssigment());
-            reassign(resourceAllocation, task.getEndAsLocalDate(),
-                    pendingEffort);
-        }
+        withDetachOnDayAssignmentRemoval(allResourceAllocations);
+
+        reassignAll(task.getEndAsLocalDate(), allResourceAllocations);
     }
 
     private void updateConsolidationInAdvanceIfIsNeeded() {
