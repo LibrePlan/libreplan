@@ -79,7 +79,7 @@ install:
 	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.0.0.sql \
 		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0)
 	# Copy SQL upgrade script for version 1.1.0
-	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.0.0.sql \
+	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.1.0.sql \
 		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.1.0)
 	# Install Policy file
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)

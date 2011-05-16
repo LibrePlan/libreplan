@@ -3,7 +3,7 @@ Section: web
 Priority: optional
 Maintainer: Adrian Perez <aperez@igalia.com>
 Build-Depends: debhelper (>= 7.0.50), maven2, python-docutils,
- gettext (>= 0.17), pgf, openjdk-6-jdk
+ gettext (>= 0.17), openjdk-6-jdk
 Standards-Version: 3.8.4
 Homepage: http://www.navalplan.org/en/
 

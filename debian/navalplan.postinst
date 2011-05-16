@@ -71,9 +71,21 @@ fi
 
 if [ -x /etc/init.d/tomcat6 ] ; then
 	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
-		invoke-rc.d tomcat6 restart
+		invoke-rc.d tomcat6 stop
 	else
-		/etc/init.d/tomcat6 restart
+		/etc/init.d/tomcat6 stop
+	fi
+fi
+
+if [ -d /var/lib/tomcat6/webapps/navalplan/ ] ;  then
+    rm -rf /var/lib/tomcat6/webapps/navalplan/
+fi
+
+if [ -x /etc/init.d/tomcat6 ] ; then
+	if [ -x "$(which invoke-rc.d 2> /dev/null)" ] ; then
+		invoke-rc.d tomcat6 start
+	else
+		/etc/init.d/tomcat6 start
 	fi
 fi
 

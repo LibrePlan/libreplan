@@ -1,6 +1,9 @@
 navalplan (1.1.0-1) maverick; urgency=low
 
-  * Removed unnecessary dependency with texlive-latex-recommended package.
+  * Removed unnecessary dependency with texlive-latex-recommended and pgf
+    packages.
+  * Fixed issue in package upgrade removing webapp directory to force
+    redeploy.
   * Released version 1.1.0.
 
  -- Manuel Rego Casasnovas <mrego@igalia.com>  TODO
