@@ -309,21 +309,18 @@ public class SpecificResourceAllocation extends
         }
     }
 
-    public void allocateKeepingProportions(LocalDate start,
-            LocalDate endExclusive, EffortDuration effortForInterval) {
-        AllocationIntervalInsideTask interval = new AllocationIntervalInsideTask(
-                start, endExclusive);
-
-        EffortDuration sumConsolidated = DayAssignment
-                .sum(interval
-                        .getConsolidatedAssignmentsOnInterval());
-
-        if (sumConsolidated.compareTo(effortForInterval) >= 0) {
-            return;
-        }
-
-        EffortDuration pendingToReassign = effortForInterval
-                .minus(sumConsolidated);
+    /**
+     * It does an allocation using the provided {@link EffortDuration} in the
+     * not consolidated part in interval from the first day not consolidated to
+     * the end provided. All previous not consolidated assignments are removed.
+     *
+     * @param effortForNotConsolidatedPart
+     * @param endExclusive
+     */
+    public void allocateWholeAllocationKeepingProportions(
+            EffortDuration effortForNotConsolidatedPart, IntraDayDate end) {
+        AllocationInterval interval = new AllocationInterval(
+                getIntraDayStartDate(), end);
 
         List<DayAssignment> nonConsolidatedAssignments = interval
                 .getNoConsolidatedAssignmentsOnInterval();
@@ -331,9 +328,9 @@ public class SpecificResourceAllocation extends
                 .create(asSeconds(nonConsolidatedAssignments));
 
         EffortDuration[] effortsPerDay = asEfforts(distributor
-                .distribute(pendingToReassign.getSeconds()));
-
-        resetAssigmentsForInterval(interval,
+                .distribute(effortForNotConsolidatedPart.getSeconds()));
+        allocateTheWholeAllocation(
+                interval,
                 assignmentsForEfforts(nonConsolidatedAssignments, effortsPerDay));
     }
 

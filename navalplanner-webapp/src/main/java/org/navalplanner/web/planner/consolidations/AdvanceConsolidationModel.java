@@ -232,22 +232,20 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
                     task.setIntraDayEndDate(date.nextDayAtStart());
                 }
             } else {
-                reassign(resourceAllocation, task.getFirstDayNotConsolidated()
-                        .getDate(), endExclusive, pendingEffort);
+                reassign(resourceAllocation, endExclusive, pendingEffort);
             }
         }
     }
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
-            LocalDate startInclusive, LocalDate endExclusive,
-            EffortDuration pendingEffort) {
+            LocalDate endExclusive, EffortDuration pendingEffort) {
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             ((SpecificResourceAllocation) resourceAllocation)
-                    .allocateKeepingProportions(startInclusive, endExclusive,
-                            pendingEffort);
+                    .allocateWholeAllocationKeepingProportions(pendingEffort,
+                            IntraDayDate.startOfDay(endExclusive));
         } else {
             resourceAllocation.withPreviousAssociatedResources()
-                    .onIntervalWithinTask(startInclusive, endExclusive)
+                    .fromStartUntil(endExclusive)
                     .allocate(pendingEffort);
         }
     }
@@ -281,11 +279,11 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             return;
         }
 
-        LocalDate taskEndDate = LocalDate.fromDateFields(task.getEndDate());
-        LocalDate endExclusive = taskEndDate;
         if (!consolidation.getConsolidatedValues().isEmpty()) {
-            endExclusive = consolidation.getConsolidatedValues().last()
+            LocalDate endExclusive = consolidation.getConsolidatedValues()
+                    .last()
                     .getTaskEndDate();
+            task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
         }
         if (!consolidation.isCalculated()) {
             ((NonCalculatedConsolidation) consolidation)
@@ -301,9 +299,6 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
 
         task.updateAssignmentsConsolidatedValues();
 
-        LocalDate firstDayNotConsolidated = task.getFirstDayNotConsolidated()
-                .getDate();
-
         Set<ResourceAllocation<?>> allResourceAllocations = task
                 .getAllResourceAllocations();
         for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
@@ -312,18 +307,7 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
             EffortDuration pendingEffort = task.getConsolidation()
                     .getNotConsolidated(
                             resourceAllocation.getIntendedTotalAssigment());
-            if (!taskEndDate.equals(endExclusive)) {
-                if ((taskEndDate != null) && (endExclusive != null)
-                        && (taskEndDate.compareTo(endExclusive) <= 0)) {
-                    reassign(resourceAllocation, taskEndDate, endExclusive,
-                            EffortDuration.zero());
-                } else {
-                    reassign(resourceAllocation, endExclusive, taskEndDate,
-                            EffortDuration.zero());
-                }
-                task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
-            }
-            reassign(resourceAllocation, firstDayNotConsolidated, endExclusive,
+            reassign(resourceAllocation, task.getEndAsLocalDate(),
                     pendingEffort);
         }
     }

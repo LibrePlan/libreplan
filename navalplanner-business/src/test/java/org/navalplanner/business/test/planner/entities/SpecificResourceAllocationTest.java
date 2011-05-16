@@ -782,11 +782,12 @@ public class SpecificResourceAllocationTest {
         assertThat(specificResourceAllocation.getAssignments(), haveHours(2, 4,
                 8, 6));
 
-        specificResourceAllocation.allocateKeepingProportions(start,
-                start.plusDays(2), EffortDuration.hours(9));
+        specificResourceAllocation.allocateWholeAllocationKeepingProportions(
+                EffortDuration.hours(18),
+                IntraDayDate.startOfDay(start.plusDays(2)));
 
-        assertThat(specificResourceAllocation.getAssignments(), haveHours(3, 6,
-                8, 6));
+        assertThat(specificResourceAllocation.getAssignments(),
+                haveHours(6, 12));
     }
 
     @Test

@@ -920,14 +920,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                 EffortDuration durationToAssign) {
             List<T> assignmentsCreated = createAssignments(interval,
                     durationToAssign);
-            allocateTheWholeAllocation(interval, assignmentsCreated);
-        }
-
-        private void allocateTheWholeAllocation(AllocationInterval interval,
-                List<T> assignments) {
-            resetAllAllocationAssignmentsTo(assignments,
-                    interval.getStartInclusive(), interval.getEndExclusive());
-            updateResourcesPerDay();
+            ResourceAllocation.this.allocateTheWholeAllocation(interval,
+                    assignmentsCreated);
         }
 
         protected abstract AvailabilityTimeLine getResourcesAvailability();
@@ -1057,6 +1051,13 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         resetAllAllocationAssignmentsTo(assignments,
                 task.getIntraDayStartDate(),
                 task.getIntraDayEndDate());
+    }
+
+    protected void allocateTheWholeAllocation(AllocationInterval interval,
+            List<T> assignments) {
+        resetAllAllocationAssignmentsTo(assignments,
+                interval.getStartInclusive(), interval.getEndExclusive());
+        updateResourcesPerDay();
     }
 
     protected void resetAllAllocationAssignmentsTo(List<T> assignments,
