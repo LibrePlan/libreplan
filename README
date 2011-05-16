@@ -36,8 +36,8 @@ Features
 Requirements
 ------------
 
-* Java 1.6
-* Maven 2
+Visit the following wiki page for a comprehensive list of requirements:
+http://wiki.navalplan.org/twiki/bin/view/NavalPlan/InstallNavalPlan.
 
 See ``INSTALL`` file for installation instructions.
 
