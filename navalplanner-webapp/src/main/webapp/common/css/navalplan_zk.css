@@ -1705,3 +1705,7 @@ input.z-datebox-text-disd {
 .materials-accordion.z-tabbox-accordion .z-tabpanel-accordion {
     border: 0;
 }
+
+.earned-value-chart .legend-container {
+    width: 226px;
+}
