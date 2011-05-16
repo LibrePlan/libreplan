@@ -156,6 +156,15 @@ public class ShareDivisionTest {
     }
 
     @Test
+    public void canHandleAllMaximumValueIntegers() {
+        givenDivisionShare(new Share(Integer.MAX_VALUE), new Share(
+                Integer.MAX_VALUE), new Share(Integer.MAX_VALUE));
+        ShareDivision plus = shareDivision.plus(2);
+        int[] difference = shareDivision.to(plus);
+        assertArrayEquals(new int[] { 1, 1, 0 }, difference);
+    }
+
+    @Test
     public void canHandleMaximumValueIntegersAndMinimumValue() {
         givenDivisionShare(new Share(Integer.MIN_VALUE), new Share(
                 Integer.MAX_VALUE), new Share(Integer.MAX_VALUE), new Share(
