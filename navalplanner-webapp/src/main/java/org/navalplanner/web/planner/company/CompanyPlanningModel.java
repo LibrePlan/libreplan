@@ -97,6 +97,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -383,9 +384,19 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                 vbox.removeChild(child);
                 vbox.appendChild(getEarnedValueChartConfigurableLegend(
                         earnedValueChartFiller, date));
+                dateInfutureMessage(datebox);
             }
 
         });
+    }
+
+    private void dateInfutureMessage(Datebox datebox) {
+        Date value = datebox.getValue();
+        Date today = LocalDate.fromDateFields(new Date())
+                .toDateTimeAtStartOfDay().toDate();
+        if (value != null && (value.compareTo(today) > 0)) {
+            throw new WrongValueException(datebox, _("date in future"));
+        }
     }
 
     public static void appendLoadChartAndLegend(Tabpanel loadChartPannel,

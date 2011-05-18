@@ -772,6 +772,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         };
     }
 
+    private void dateInfutureMessage(Datebox datebox) {
+        Date value = datebox.getValue();
+        Date today = LocalDate.fromDateFields(new Date())
+                .toDateTimeAtStartOfDay().toDate();
+        if (value != null && (value.compareTo(today) > 0)) {
+            throw new WrongValueException(datebox, _("date in future"));
+        }
+    }
+
     private void appendEventListenerToDateboxIndicators(
             final OrderEarnedValueChartFiller earnedValueChartFiller,
             final Vbox vbox, final Datebox datebox) {
@@ -785,6 +794,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 vbox.removeChild(child);
                 vbox.appendChild(getEarnedValueChartConfigurableLegend(
                         earnedValueChartFiller, date));
+                dateInfutureMessage(datebox);
             }
 
         });
