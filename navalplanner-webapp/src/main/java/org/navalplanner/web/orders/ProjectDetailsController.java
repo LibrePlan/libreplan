@@ -47,6 +47,7 @@ import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 /**
@@ -77,6 +78,8 @@ public class ProjectDetailsController extends GenericForwardComposer {
     private Datebox initDate;
 
     private BandboxSearch bdExternalCompanies;
+
+    private Textbox txtName;
 
     private Datebox deadline;
 
@@ -251,6 +254,12 @@ public class ProjectDetailsController extends GenericForwardComposer {
                         bdExternalCompanies.close();
                     }
                 });
+        txtName.addEventListener(Events.ON_OK, new EventListener() {
+            @Override
+            public void onEvent(Event event) throws Exception {
+                accept();
+            }
+        });
     }
 
 }
