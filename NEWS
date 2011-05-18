@@ -1,6 +1,995 @@
 NEWS
 ====
 
+Version 1.1.0 (19 May 2011)
+---------------------------
+
+New major version of NavalPlan. Apart from a lot of bugfixing the main features
+included in this version are:
+
+* Fixed problem with WebKit based browsers.
+
+  Now WebKit based browsers (Chrome, Safari, Epiphany) and last version of
+  Firefox are fully supported.
+
+* Fixed issues in printing.
+
+  Printing uses a WebKit based solution and thus failed occasionally because of
+  the previous issue that is fixed now.
+
+* Over allocation control support.
+
+  In 1.0 version it was not possible to configure a limit of overtime for
+  workers. From now on users can configure calendars with this feature. You can
+  set a maximum overtime in each regular work week day or in a specific
+  exception day.
+
+  This provides a lot of flexibility in the resource allocation strategies. You
+  can do allocations without generating overtime or generating a controlled
+  amount of it. In this way, users can ask the application to calculate the
+  soonest finish date for a task taking into account the overtime allowed.
+
+  A last clarification about this control is that is done per task. The maximum
+  allocation assigned to a worker is observed per task. This means that if you
+  have two tasks in the same period assigned to the same resource, taking into
+  both tasks, you can surpass the overtime constraint.
+
+* Hierarchical criteria enforced.
+
+  Criteria in NavalPlan are like dynamic roles that resources can satisfy and
+  can be hierarchical. This means that one general criterion can include other
+  more specific criteria inside. For instance, it is possible to configure the
+  general criterion Engineer with two children like Electric Engineer and
+  Software Engineer.
+
+  This feature was disabled in version 1.0.4 and is provided again after some
+  fixes were done.
+
+* New generic allocation algorithm.
+
+  Generic allocation is the assignment based on criteria. You specify the set
+  of criteria which must be satisfied by the workers who are able to do the
+  task and, after this, NavalPlan looks for them and selects the ones less
+  loaded to be planned.
+
+  The algorithm which selects the workers to be assigned to a task when
+  generic allocation is used was improved in several points:
+
+  * The sharing hours process allocates workers when selected up to load 100%.
+  * On selecting workers for a date inside a task, the new algorithm tries to
+    use the workers assigned in the previous days of the task. In this way, the
+    algorithm is not based just in load but selects first the previously used
+    resources if they have free hours.
+
+* Project scheduling window new features.
+
+  In the project scheduling window four improvements were done:
+
+  * Positioning system on zoom changes. Now when the user changes the zoom
+    level in the Gantt planning window, after the screen has been refreshed
+    the scroll is moved so the user will see the same time period.
+  * Calendar exception days are shown in the Gantt planning grid with a
+    different background color. At day and week zoom level the project
+    calendar is used to highlight the non-working days.
+  * Violated dependencies are highlighted. A red color is used to draw
+    dependencies that are violated.
+  * Resource load chart precision was improved. Now two points per time unit
+    are represented and this makes the chart more accurate in the resource load
+    chart which is displayed in the bottom of Project Planning view, Project
+    scheduling window, company resource usage screen and project resource usage
+    screen.
+
+* Default password change notification protocol.
+
+  It was implemented a mechanism to control if the password for the default
+  users have been changed. Default accounts which are provided are:
+
+  * admin/admin. This user is the user with administration privileges.
+  * user/user. This is a common user without administration privileges.
+  * wswriter/wswriter. This user has write permissions to use then web
+    services operations which require modify or insert data in NavalPlan.
+  * wsreader/wsreader. This user has read permissions to the use web services
+    operations which only require read permissions.
+
+  The mechanism consists of showing warning messages in the left bottom corner
+  of the screen remembering which default user accounts have still configured
+  the default password.
+
+* Minute accuracy in calendars and allocation windows.
+
+  In 1.0 version calendars are expressed in hours the same as the amount of
+  allocated time in tasks. This means that users cannot use minutes if they
+  want to have a higher detail level in the plans.
+
+  This was changed and now is possible to specify the calendars and the
+  allocations in hours and minutes. In the allocation screens this is done
+  with the ":" separator in the input boxes.
+
+  A thing which is pending to be implemented is to allow estimate the WBS for
+  a project in hours and minutes. In 1.1 is only allowed in hours.
+
+* Limiting resources new insertion algorithm.
+
+  It was implemented a new algorithm for inserting tasks in points where there
+  are already tasks planned in the limiting resources. The new algorithm moves
+  the tasks respecting better the order of the tasks already planned.
+
+* Calendar interface revamp
+
+  User interface for calendars was improved to provide an easier use.
+
+* WBS screen
+
+  This window was tested deeply and errors related to moving nodes in the tree
+  were corrected.
+
+Notes
+~~~~~
+
+If you are upgrading from any 1.0.x verion, you will need to manually execute on
+your database the SQL sentences from file:
+``/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.1.0``
+
+To get database access information review ``/etc/tomcat6/context.xml`` file.
+
+Changes
+~~~~~~~
+
+* [Bug #980] show warning in "Earned Value" tab for future dates.
+* Fixed missing file for upgrading database with Debian package.
+* Fixed issue upgrading Debian package and removed unneeded dependency.
+* Extract common functionality into methods
+* Calls to reassign wipe out the previous not consolidated assignments
+* Add test for a corner case
+* Use guard instead of if for all method
+* Move calculation of efforts to Consolidation
+* When deconsolidating it always uses the previous assingments instead of the
+  newly created ones
+* Remove code with no effect
+* Provide EffortDurations instead of the more coarse hours
+* Remove unused method
+* [Bug #979] Set default width for earned value legend container
+* Linked wiki from README and INSTALL files.
+* Removed dependency with LaTeX as it is not needed to build the package.
+* Added database upgrade scripts for version 1.1.0.
+* [Bug #1070] Calculate the critical path using a topological order
+* Remove tasks that are not really initial from the initial and end tasks
+* Cache the calculated topological order
+* [Bug #1070] Fix problem in GanttDiagramGraph
+* When enforcing all the constraints using only the ones without incoming
+  dependencies
+* When populating the graph with dependencies don't enforce contraints yet
+* [Bug #1066] Fixed bug updating calendar exception days.
+* [Bug #1068] Fixed issue when a quality form advance was marked as spread.
+* [Bug #1067] Fix bug
+* Fix disparity between dates in task properties and allocation tab
+* [i18n] Fixed issue using application in Spanish.
+* [i18n] Updated Spanish and Galician translations.
+* [i18n] Updating keys.pot files.
+* [Bug #1006] it catchs HibernateOptimisticLockingFailureException in validator
+  method of the CalendarExceptionType Entity.
+* [Bug #1054] Consider task constraints
+* Make DomainDependency implement IDependency
+* Rename method to a more accurate name
+* Avoid O(n2) algorithm
+* Change allocateKeepingProportions so it uses EffortDurations instead of hours
+* Refactor
+* It's inefficient to use boxed objects
+* Fix violation of the intended immutability of IntraDayDate
+* [Bug #996] fixing bug in desconsolidation action.
+* [Bug #996] Update the end date of the task correctly.
+* [Bug #996] Calculate correctly the proportion of hours for each day.
+* [Bug #1041] Fixed issues with default password warning messages.
+* [Bug #1065] Fixed issue adding method to open a new transaction on DAO.
+* Revert "[Bug #1006] it catchs HibernateOptimisticLockingFailureException in
+  validator method"
+* [Bug #1006] it catchs HibernateOptimisticLockingFailureException in validator
+  method of the CalendarExceptionType Entity.
+* [Bug #1002] it catchs HibernateOptimisticLockingFailureException in validator
+  method of the orderElementTemplate Entity.
+* [Bug #1008] it catchs HibernateOptimisticLockingFailureException in validator
+  method of the  workReportType entity.
+* [Bug #1061] it marks LimitingResourceQueueModel with @OnConcurrentModification
+  to intercept an OptimisticLockingFailureException.
+* [Bug #1043] Fixed issue changing constraintDate to IntraDayDate.
+* Remove enforceAllRestrictions call
+* Add support for receiving not notified events
+* [Bug #1048] Fix bug
+* [Bug #1064] Fixed more problems related with this issue.
+* [Bug #1064] Fixed bug removing unneeded code to update criteria.
+* Rename URLHandler to EntryPointsHandler
+* Fix method name and reuse it
+* Fix regression introduced in c05150b2345a4c2bebd631c690daf69aeda0f06e
+* Use capture mechanism instead of building urls manually
+* When use redirect avoid to use fragment
+* [Bug #1001] Fix bug
+* Add mechanism for handling OptimisticLockingFailureException on random objects
+* Add mechanism to capture the redirection to a entry point
+* Add missing metadata to entry points
+* Removed PDF option in printing configuration dialog.
+* [Bug #975] Set last stretch with 100% completition as read-only
+* Added method isConsolidated()
+* Improved pretty-print of resources for assignment
+* [Bug #966] Revamped materials assignment interface
+* Revamped calendars administration
+* [Bug #1063] Fix NullPointerException
+* [Bug #1059] Fix bug
+* [Bug #1050] Fix bug
+* Some refactorings
+* [Bug #802] Rearranged context menu and added vertical separators
+* [Bug #1056] Added default icon to Delete Milestone Command
+* Fixed small regression with cell styles in advanced allocation
+* [Bug #1035] Changed left margin of timeplot to fix gantt alignment issues
+* [Bug #1031] Style improvements in assigned resources popup
+* [Bug #1024] Fixed showing progress in print view
+* [Bug #975] Refactored calculation of interpolation
+* [Bug #975] Intervals defined by stretches should include consolidated stretch
+* [Bug #975] Use stretchesPlusConsolidated for drawing Graph
+* [Bug #975] Renamed getStretches() to getAllStretches()
+* [Bug #975] Added method getStretchesPlusConsolidated()
+* [Bug #975] Added method getStretchesDefinedByUser()
+* Fixed possible OutOfBoundsException
+* If loadedProportion is negative set it to zero
+* Show only two decimals in loadProportion and amountOfWork
+* Set date of new stretch starting from consolidated date if any
+* Renamed variables to fit better name
+* Fix misspelling
+* [Bug #1021] Fix bug
+* Fixed some tests due to previous commit.
+* Added check for CHILDREN advance in container and fixed detected issue.
+* Added test to check CHILDREN advance marked as spread by default and fixed
+  issues.
+* [Bug #1046] Fix bug
+* [Bug #1049] Fix bug
+* [Bug #1045] Fix bug
+* Don't show seconds in EffortDurationBox
+* [Bug #648] Add new more lenient decimal box
+* [Bug #1039] Added new test to check spread advance and set them randomly if
+  needed.
+* [Bug #1039] Fixed broken tests due to bug solution.
+* [Bug #1039] Fixed issue with spread advance when it is removed.
+* [Bug #1003] it marks MachineModel with @OnConcurrentModification to intercept
+  an OptimisticLockingFailureException.
+* [Bug #1000] it marks OrderModel with @OnConcurrentModification to intercept an
+  OptimisticLockingFailureException.
+* [Bug #998] Fix layout
+* [Bug #998] Fix column inherited in Calendars
+* Fixed broken tests in previous commit related with CHILDREN advance behaviour.
+* Changed tests and fixed issue with CHILDREN advance.
+* [Bug #1029] Fix bug
+* Fix precondition error in finishing criterions
+* [Bug #1023] Now it can be marked as not finished
+* Added more tests for criteria in WBS.
+* Added more tests for advances in WBS and fixed detected issue.
+* Added more tests for labels in WBS and refactorized some parts.
+* Reorganized code of last tests for WBS.
+* Added more tests for criterions in WBS.
+* Fixed issues in advances related to previous tests.
+* Added more tests for advances in WBS.
+* Added more tests for labels in WBS and fixed detected issue.
+* Added more test to check labels behaviour on WBS movements.
+* Add test to check same criterion on WBS movement.
+* [Bug #1044] it check out the subcontracted direct advance assignment exists
+  before reattaching its measures.
+* [Bug #1011] Fix bug
+* [Bug #1040] Fixed problem added in previous commit.
+* [Bug #1040] Added new checks on tests and fixed problem for orphan children
+  advance types.
+* Removed unused variables in test.
+* [Bug #1028] Removed unnecesary save of rootTask
+* [Bug #1028] Avoid bug
+* [Bug #1038] Added test and fixed bug for repeated labels in WBS.
+* [Bug #1037] Fixed other tests affected by changes in bugfix.
+* [Bug #1037] Added test and fixed bug for advances of same type.
+* Refactorized test to have AdvanceType as checking variables.
+* Basic test for move OrderLine to OrderLineGroup in OrderElementTreeModel.
+* [Bug #987] Pretty print ValidationExceptions as WrongValueExceptions in
+  CostCategories
+* [Bug #978] Update overallProgress whenever the user enters the Gantt screen
+* [Bug #978] Update overallProgress when progress is assigned to a task
+* [Bug #1028] Remove update when a project is saved, and do updateAndRefresh
+  when the graph changes
+* [Bug #1042] Fix bug
+* Added methods to assert criteria and used in the whole test file.
+* Basic test for move method in OrderElementTreeModel.
+* [Bug #893] Fix bug updating dates
+* Merge branch 'FixBug894_3'
+* [Bug #1036] Fix bug removing a consolidation
+* [Bug #894] Add a confirm dialog on order list to warn the user when it
+  removes a subcontracted order.
+* Added more checks to test unindent method.
+* Rename "getDirectAdvanceAssignmentOfSubcontractedOrderElements" to
+  "getDirectAdvanceAssignmentOfTypeSubcontractor"
+* [Bug #894] Subcontrating relation is maintained in the root element.
+* Added test to check invalidation of indirect criterion requirements.
+* Extract copy and pasted code to utilities class
+* [Bug #1016] [Bug #1017] [Bug #1018] [Bug #1019] [Bug #1020] Fix report
+  criteria hierarchy bugs
+* untilAllocating requires an EffortDuration instead of hours
+* Change HoursModification to use EffortDuration
+* ResourceAllocation#isSatisfied considers the non consolidated assignments
+* Add intendedNonConsolidatedEffort field
+* Fix formatting
+* Rename originalTotalAssignment to intendedTotalAssignment and use
+  EffortDuration instead of hours
+* [Bug #1010] Switch from Intboxes to EffortDurationBoxes
+* Return EffortDurations instead of ints in aggregating methods
+* Extract method to produce a sum of EffortDurations
+* Remove unused method
+* Removed unused method.
+* Added remove method to interface ICriterionRequirable.
+* Bump timeplot version to 1.0_2_4.
+* Removed unused and empty interface ICriterionRequirementHandler.
+* Add test to check preservation of invalidated indirect criteria.
+* Added checks for criteria in hours groups in tests.
+* [Bug #1034] Fixed bug for users with "Project creation allowed" role.
+* [Bug #1010] Use EffortDurationBox in AdvanceAllocation
+* Make restrictions use EffortDuration instead of hours
+* Add ZK component for editing EffortDurations as text
+* Add getTotalEffort method
+* Rename IAllocateHoursOnInterval to IAllocateEffortOnInterval
+* Add method to allocate an EffortDuration instead of hours
+* Updated NEWS file and release date.
+* Released 1.0.6 version.
+* [Bug #1028] Avoid bug
+* [Bug #1030] Fixed opening read-only transaction in removeMaterialAssignment.
+* [Bug #1026] Fix bug
+* Inline silly method
+* Extract class class responsible of hooking into chart refilling events
+* [Bug #978] Remove refresh button
+* Fixed test notAllowRemoveCalendarWithChildrenInOtherVersions
+* [Bug #1015] Fix bug at hours worked by resource report
+* [Bug #1012] Fix bug at resource load
+* Refactor Criterion comparators
+* Remove unnecessary invocation to show message
+* [Bug #994] Show message when finishing reallocations
+* Fix some type warnings related to the use of generics with GanttDiagramGraph
+* Use getReassignationResourcesPerDay
+* [Bug #995] Fix bug
+* Fix checking of a calendar being used by resources
+* [Bug #1009] Fix bug
+* [Bug #907] Changed styles in advanced limiting assignment cells
+* [Bug #407] Fixed positioning issues in print CSS
+* [Bug #1007] Vertical height parameter added to CutyCapt
+* [Bug #975] Stretch function cannot be applied if the task is already 100%
+  consolidated
+* [Bug #975] Respect consolidated day assignments of a Resource Allocation
+  when applying a Stretch function
+* Added sortByDate
+* Use factory method instead of constructor
+* Tell the user when the intended and the real resources per day differ
+* AllocationRow tracks the current calculated value
+* Fix satisfaction condition
+* Add intended_resources_per_day column
+* Keep the intended resources per day
+* Fix test that was not testing anything
+* Specify the resource calendars using capacities
+* Create easier to read methods for specifying overassingment
+* Not satisfying the resources per day doesn't prevent exit
+* [Bug #976] Add an initial only-read stretch in advance allocation functions
+* Added toString()
+* Added constructor and contructor copy
+* Moved member attributes to beginning of class
+* Moved StretchesFunction$Type to its own file
+* Changed contructor to protected
+* Refactoring getAdvanceMeasurement method to
+  getAdvanceMeasurementAtDateOrPrevious.
+* [Bug #1005]  subcontracted task sends each progress measurement correctly.
+* Added more tests for OrderElementTreeModel::indent method.
+* Added basic test for OrderElementTreeModel::unindent method.
+* More checks in basic test for OrderElementTreeModel::indent method.
+* [Bug #999] Don't pose as transient anymore other objects hanging from Calendar
+* [Bug #988] Check calendar is not being referenced by other entities
+* [Bug #988] Remove former resource calendar when a new calendar is selected
+  for a machine
+* [Bug #988] Remove former resource calendar when a new calendar is selected
+  for a worker
+* [Bug #988] Create test saveAndRemoveResourceCalendar
+* [Bug #1004] Fix bug LazyInitializationException of Calendars
+* Added basic test for OrderElementTreeModel::indent method.
+* [Bug #997] Fix error in generic allocation
+* Rename method to reflect better meaning
+* Add Javadoc comment explaining the semantics of IntraDayDate#getEffortDuration
+* Removed added method in EntitiesTree and moved to business.
+* [Bug #999] Fix bug set as dontPoseAsTransientAnymore after clicking
+  SaveAndContinue
+* Fixed lazy when toLeaf is called manipulating WBS.
+* [Bug #952] Fix bug
+* [Bug #992] Fix bug
+* [Bug #993] Fix bug
+* [Bug #993] Add methods to increase and decrease a IntraDayDate
+* [Bug #990] When removing a profile check is not referenced by order
+  authorizations
+* [Bug #990] When removing a profile check is not referenced by other users
+* Changed toContainer to set code to null as it was done till now.
+* Added several tests that check add and remove elements on tree.
+* Adding OrderElementTreeModelTest with basic tests for addElement operation.
+* Added method getCriterionType in PredefinedCriterionTypes.
+* Added missing MANIFEST file
+* Set gradient default property to false in timeplotz
+* Added MANIFEST file to timemplotz to avoid error with deploy.sh
+* [Bug #992] Fix bug
+* [Bug #991] When removing an hours type check is not referenced by other
+  entities
+* Prevent exiting by accept if goals are not satisfied
+* Warn if the goals set are not satisfied when applying the allocation
+* Usability improvement on calendar's work week edition
+* [Bug #989] Fix bug
+* [Bug #989] Support discounting the hours of several allocations
+* Rename method so its meaning is easier to understand
+* [Bug #986] Prevent removing a label type that is being used by and
+  orderelement
+* [Bug #986] Prevent removing a label that is being used by an orderelement
+* [Bug #986] Set cascade to none in mapping between Labels and OrderElements
+* [Bug #986] Remove unused code
+* [Bug #987] Don't select hour type if there are no items in the list of hours
+  type
+* [Bug #987] Change cast to Listbox
+* [Bug #985] Fixed changing lables mapping to all-delete-orphan.
+* Add method for specifying several days together in an interval
+* [Bug #941] fixing bug :  Quality forms are not duplicated now in the same
+  task.
+* Refactor to make easy further changes
+* It can specify the intervals using IntraDayDates now
+* Refactor
+* Fixed NullPointerException in PageForErrorOnEvent.
+* Improved design of errors and fixed NullPointerException when clicking in
+  continue.
+* [Bug #981] Project with long name are showed properly in "Project Costs Per
+  Resource" report.
+* Improved information showed when some runtime error happens.
+* [Bug #983] Sigmoid function is applied without modifying the endDate of the
+  task
+* [Bug #974] Rename applyDefaultFunction() to applyOn()
+* [Bug #974] Refactor the code that handles selection of function allocation
+  options
+* [Bug #974] Do standard resource allocation when user selects NONE in
+  AdvanceAllocation
+* Fix misspelling error
+* [Bug #969] Substitute autocomplete box for select box in Work Reports. Hours
+  type are now shown as a select box.
+* [Bug #969] Refresh box of price per hour instead of doing a reloadBindings
+  of the current row
+* [Bug #969] Substitute autocomplete box for select box in Cost Categories.
+  Hours type are now shown as a select box.
+* Added method findItemByValue() to ComponentsFinder
+* [Bug #911] Use method easier to understand
+* [Bug #911] Declare the truly required type in Resource
+* [Bug #911] Fix bug
+* Revert "[Bug #911] Disabling at interface criterion hierarchy while bug is
+  not fixed."
+* [Bug #982] Fix bug ClassCastException on editing a Work Report
+* [Bug #941] Check out if a quality form is not assigned twice to the same
+  order element.
+* Take into consideration that some days could not have day assignments
+* Field must be renamed so ZK injects it
+* [Bug #873] Show warning before add an empty label.
+* Remove findSatisfyingAllCriterionsAtSomePoint from IResourceDAO
+* Use IResourcesSearcher for searching resources associated with criterions
+* Move and rename ResourceSearchModel to ResourcesSearcher
+* The no longer valid allocations are marked as unsatisfied
+* Fix variable name
+* Remove wrong assert
+* Use ResourcesSearchModel instead of IResourceDAO
+* Remove unused field
+* Remove unused method using IResourceDAO query by criteria capabilities
+* Remove unused method
+* Remove already present method in Resource
+* Add simple README file to zk-Timeplot
+* Bundle all needed files in timeplot.js
+* Remove some generated artifacts from repository
+* Fix infinite loops
+* Use deploy script to install locally the new timeplotz-modified dependency
+* Adding to repository original Timeplot-1.0_2
+* [Bug #] Fix division by zero in Gantt
+* Released 1.0.5 version.
+* [i18n] Updated Spanish and Galician translations
+* [i18n] Updated .pot files
+* [Bug #876] Remove tree operation options (up, down, etc) for every entry in
+  the tree of tasks in Template view
+* [Bug #876] Refactor interface for handling operations in a tree (up, down,
+  indent, unindent, etc)
+* [Bug #877] ValidationException saving several templates at one time with the
+  same name
+* Revert "[Bug #876] Template tasks tree is not coherent with project details
+  task tree"
+* [Bug #876] Template tasks tree is not coherent with project details task tree
+* [Bug #876] Swap columns 'Hours' and 'Must start after' in Template view to
+  match view in Orders
+* [Bug #931] Added helper class for printing a ValidatonExcepton as a
+  WrongValidationException, showing up next to a widget
+* [Bug #931] Rename method
+* [Bug #931] Reuse invalidValue() method from ValidationException
+* [Bug #961] Call to dontPoseAsTransientObjectAnymore for each transient object.
+* [Bug #931] Added explicit check hour cost in 'Cost category' don't overlap
+  for the same type of hours
+* [Bug #965] Change field 'Date' to 'Receipt date' in OrderElement's Material
+  tab
+* [Bug #967] Transient instance editing task in WBS after set criterion and save
+* [Bug #955] Perspectives column displays scroll when vertical space is not
+  enough
+* [Bug #962] Cancel action in 'Progress assignment' window leave the Task as
+  it was before editing
+* [Bug #930] Impossible to delete work hours type
+* [Bug #942] Detect it can't fullfil the request duration beforehand
+* [Bug #964] Impossible to delete materials not assigned to an order element
+* [Bug #963] Fixed setting Comboitem value.
+* [Bug #962] It is necessary the reattachment of the orderelement in order to
+  get the consolidate values.
+* [Bug #947] When closing OrderElement window, if there are errors in advance
+  tab, show this tab with the error
+* [Bug #947] check if not exists any indirect or direct advance when it
+  changes advance type.
+* Pull up asHoursModification
+* [Bug #943] Fix bug
+* [Bug #943] Avoid to reassign allocations with zero resources per day
+* The tasks inside a task group are not being validated
+* [Bug #943] Change error handling
+* Fix OrderElementServiceTest
+* [Bug #948] Updated legend colours
+* [Bug #948] Improved graphs colour coherence
+* [Bug #962] Cancel action in "Progress assignment" window leave the Task as
+  it was before editing
+* [Bug #962] Refactor fillVariables
+* [Bug #962] Refactor addNewLineAdvanceAssignment
+* [Bug #962] Avoid nulls in merging process
+* [Bug #932] Check there are not overlapped category assignments, and if there
+  are mark failing criterio assignment in form
+* [Bug #937] Add event ON_OK in bandboxSearch in the correponding controllers.
+* [Bug #960] When closing OrderElement window, if there are errors in other
+  tabs, go to the tab with the error
+* [Bug #958] Fix NullPointerException in progress assignment pop-up
+* [Bug #946] Fixed LazyInitializationException in MonteCarloTab
+* [Bug #883] delete the pop-up with "Project saved" when you create a new
+  project
+* [Bug #957] Fixed bug object references an unsaved transient instance
+* [Bug #951] Change example URL in 'Edit company' window
+* [Bug #954] Handle concurrency support in Configuration window
+* [Bug #952] Show list of resources in 'Resource load view' in order
+* [Bug #950] Planning mode combo filled several times
+* [Bug #949] Translate values of ProgressType in Global Company View
+* [Bug #949] Translate values of ProgressType in listbox of
+  Configuration->'Show Progress'
+* [Bug #946] Fix LazyInitializationException
+* [Bug #942] Fixed tests that try to store a calendar with zero hours.
+* [Bug #942] Modified creation of new calendars to use 8 hours for workable
+  days by default.
+* [Bug #942] Added constraint to avoid storing calendars with zero hours.
+* [Bug #942] Added test to avoid store a calendar with zero hours.
+* [Bug #942] Using configurationBootstrap in BaseCalendarDAOTest in order to
+  run the test isolated.
+* [Bug #942] Logging a warning when it's not calendar capacity in 5 years to
+  calculate end date for a task.
+* [Bug #943] Skipped test while issue is not finally closed.
+* [Bug #885] Added single-click edition support to CRUD grids
+* [Bug #885] Changed grid double-click grid listeners for edition to
+  single-click
+* [Bug #885] Changed appearance of single-click editable grids to be underlined
+* Added missing @Override annotations and removed unneccesary casts
+* Removed unneccesary parameter on LimitesResourcesPanel
+* Added rounded corners to clicked icons in toolbar
+* [Bug #943] Temporal fix, LOG error instead of launching exception
+* [Bug #906] Fixed bug avoiding exception and using task dates if aggregate is
+  empty.
+* Fix typos in training guide (spanish version).
+* Released 1.0.4 version.
+* [i18n] Updated translation files and current translation.
+* [Bug #880] Fixed bandboxSearch component widths for QualityForms finders
+* [Bug #880] Fixed templateFinder listbox width
+* [Bug #939] Fixed adding the same method also in TaskQualityFormItem.
+* [i18n] Marked string to translate.
+* [Bug #880] Fixed default width property
+* [doc] Fixed several issues on training exercises.
+* [Bug #883] Just after creating a project save it and go to edit mode.
+* [Bug #789] Fixed enum not translated in quality forms edition.
+* [Bug #939] Fixed adding new method to return a string for the position.
+* [Bug #927] change standard way to manage this exception
+* [Bug #874] it does not reallocate resources if resource per day has 0 hours.
+* [Bug #889] Fixed changing styles of progress bars
+* [Bug #789] Fixed string not market for translation "Save & New work report".
+* [Bug #914] reset the class of the icon of expanded tree.
+* [Bug #936] Fixed issue setting scale to 2 decimal figure, before converting
+  in String.
+* [Bug #935] query grouped by date
+* [doc] Fixed small issues on training exercises.
+* [Bug #934] Fixed problem with calendar creating a new resource.
+* [i18n] Fixed wrong translation in Spanish string.
+* [i18n] Small fixes in wrong strings.
+* [i18n] Updated translations.
+* [i18n] Updated .pot files.
+* [Bug #933] Fixed translations in report "Work and progress per task".
+* [doc] Removed auto-generated file in user documentation.
+* [doc] Fixed wrong message on index of user documentation.
+* [doc] Translated changes by Loren in commit b1b5b4 to other languages.
+* [doc] Remove unneeded sentence (marked to remove) in introduction section of
+  help.
+* [doc] Fixed encoding in some files. Now all files have UTF-8.
+* [Bug #875] Fixed subcontract service to create project also in Gantt view.
+* [doc] Small changes to help main page
+* [Bug #928] Add a button in the template list to allow deleting templates.
+* [Bug #927] Improve the imputed hours tab in the order element view.
+* [Bug #926] Add constraint to enable the report progress option in a quality
+  form
+* [Bug #925] Improve the report "cost by resource" with some changes:
+* [Bug #921] Fixed problem avoiding possibility to save URL with white spaces.
+* [Bug #921] Showing a proper error message if there are problems creating HTTP
+  connection.
+* [Bug #891] Fixed checking if a task is subcontracted and was already sent to
+  subcontract.
+* [doc] Increased font size on CSS to 0.8em.
+* [Bug #909] Fixed critical path when dependencies have priority.
+* [Bug #880] Fixed increasing templateFinder component widths
+* [Bug #917] Fixed bug changing visibility of PlanningData default constructor
+  to public.
+* [doc] Small fix in use case development guide
+* [doc] General revision of development guide.
+* Removed jfreechart-igalia dependency as it was not needed anymore.
+* Moved minutes and second labels in EffortDuration Picker to tooltipText
+  attribute
+* [Bug #901] Fixed showing limiting resources queues ordered alphabetically
+* Added parameter to hide seconds from EffortDurationPicker component
+* [Bug #915] Fixed correcting corner case in AdvancedAllocation horizontal
+  paginator
+* [doc] Added web services section to use case development guide.
+* [doc] Added testing section in use case development guide.
+* [Bug #898] Add column criterion type (worker or machine) in criterion types
+  list.
+* [Bug #924] Call method useSchedulingDataFor for each order.
+* NavalPlan exercises for formation course in Spanish in reStructuredText.
+* [doc] Added more sections to use case development guide.
+* [Bug #884] Show progress measurements list in reverse order.
+* [Bug #884] Sort progress measurements list in reverse order.
+* [Bug #854] fix the labels in workingProgressPerTask report
+* [Bug #923] control if the save command is initialized.
+* [Bug #908] Total amount of allocated hours miscalculated in lineal
+  interpolation (Streches function)
+* [Bug #862] Changed generic button styling
+* [Bug #862] Added custom images with button borders
+* [Bug #858] Fixed container width properties in advanced allocation grid
+* [Bug #918] Fixed issue reattaching and force loading of calendar.
+* [Bug #920] clear old data in progress chart, before adding new data.
+* [Bug #912] You cannot delete an derived exception.
+* [Bug #916] Fixed issue checking if list of constraints is empty and not only
+  if it is null.
+* [Bug #913] NullPointerException exception changing between perspectives
+* [Bug #911] Disabling at interface criterion hierarchy while bug is not fixed.
+* [i18n] Updated translations.
+* [Bug #910] Change string 'Type resource assignation' to 'Resource allocation
+  type'
+* NavalPlan formation manual in spanish in reStructuredText.
+* [doc] Added information about interface in use case development guide.
+* [Bug #892] Rename labels in 'Overall progress'
+* [doc] Use case development guide.
+* [Bug #903] Fix regression: creating a gap out of a LocalDate caused tasks
+  may overlap due to loose of information about hour
+* Some improvements in code
+* If a LongOperation is executed inside another it's executed directly
+* [Bug #903] Fix regression wrong calculation of gaps in limiting resources
+* [Bug #890] Fixed marking to generate the entries in keys.pot.
+* [Bug #871] Fixed problem calculating initial date.
+* [Bug #871] Added more tests checking more constraints.
+* [Bug #903] Limiting resource allocation window does not respect activation
+  periods for the resources
+* [Bug #871] Added more tests to confirm that the bug is fixed.
+* [Bug #871] Fixed problem in critical path when dependencies are violated by
+  constraints.
+* [Bug #871] Detected problem with critical path calculator added test to
+  explain it.
+* [Bug #890] call to method of internationalization from the component.
+* [Bug #888] show the chart of all advance assignments by default.
+* [doc] Small fixes in reports guide to be ready to publish it.
+* [Bug #887] Fix bug
+* [Bug #887] Fix bug
+* [Bug #887] Fix bug
+* [doc] Added sections about how to filter report and send parameters to Jasper.
+* [Bug #896] Fix bug
+* [Bug #897] Fix bug
+* [Bug #895] Fix bug
+* Show summary of validation errors
+* [Bug #892] Rename labels in 'Overall progress'
+* Rename property 'default.passwords.control' to 'default.passwordsControl'
+* [Bug #903] Limiting resource allocation window does not respect activation
+  periods for the resources
+* [Bug #900] Error doing generic allocation
+* [Bug #841] Automatic generic assignment limiting resources raises nullpointer
+  exception
+* [Bug #899] Show tag GENERIC_MACHINES
+* [doc] Adapted guide to last changes on reports.
+* [reports] Changed order for project in report strings.
+* [Bug #611] [reports] Fixed font issues in the rest of reports.
+* [Bug #611] [reports] Set font styles in hoursWorkedPerWorkerReport.jrxml.
+* [Bug #611] [reports] Review font definition in
+  hoursWorkedPerWorkerReport.jrxml.
+* Training material update
+* [doc] Added info about model and extract database data to report guide.
+* [doc] First version of basic tutorial to create a new report on NavalPlan.
+* Added comment in main pom.xml to mark the point where bundle folders for
+  reports are specified.
+* Give more priority to the resources already picked
+* Keep using the same AssignmentsAllocator
+* No need to make it abstract
+* Considerer the biggest assignment done in the last day
+* Removed some unneeded test code in .zul files related with reports.
+* Removed pencil files with interface prototypes.
+* Removed unneeded dump from Git repository.
+* First tries to assign all possible hours without using overtime
+* Refactor GenericResourceAllocationTest
+* Change method to use EffortDuration
+* Not need to specify explictly a null calendar
+* Rename classes
+* Rename local variables so it's easier to understand
+* Remove unused methods
+* Add getCapacityWithOvertime to ICalendar
+* Add min and max methods to Capacity
+* Rename method so it's consistent
+* Add method to multiply a Capacity
+* Move method closer to call site
+* Remove warnings from file
+* [Bug #789] Fixed several translation issues lately detected.
+* [Bug #867] Fix bug
+* [Bug #867] Fix bug
+* [Bug #867] Fix bug
+* [Bug #847] Fix bug
+* [Bug #881] Using always the same string for autogenerated codes.
+* [Bug #861] Fix bug
+* [Bug #879] Using inherited instead of indirect for criteria and labels.
+* [Bug #878] Changed menu order in order to have coherency between menu and
+  perspectives.
+* [Bug #856] Failure when you close with the exit button 'X' in edition window
+  of the order elements
+* [Bug #855] Fix bug
+* Apply validation annotation to the field
+* [Bug #871] The problem is due to receiving an empty list of tasks
+* [Bug #865] Fix bug
+* [Bug #870] NavalPlan appears in English if browser is configured with es-es
+* Fix bug create or edit resource should start on first tab
+* [Bug #864] S-curve changes the end date of a task
+* [Bug #868] It does not update the row of the order element correctly
+* [Bug #866] Repeated project code message after saving an already saved project
+* [Bug #863] Error changing strategy without resource assignment
+* [Bug #859] Fix bug
+* [Bug #859] Fix bug
+* [Bug #844] Fix bug
+* [Bug #857] Fix bug
+* [Bug #845] Fix bug
+* [Bug #884] fix the filtering to show only the current satisfied criteria.
+* Added constraint to detect issue before saving wrong data.
+* Add some columns to work report lines report
+* Released 1.0.3 version.
+* [Bug #848] Removed repeated method in OrderLineGroup.
+* [Bug #851] fix bug
+* Refactor
+* [Bug #853] Fix bug
+* [Bug #852] Fixed bug adding children advance if some indirect advance exists.
+* [Bug #850] fix bug
+* Added warning log message when fake advance is NULL in
+  ManageOrderElementAdvancesModel.
+* Added warning log message when fake advance is NULL in
+  AdvanceAssignmentPlanningModel.
+* [Bug #849] set the init date in with current date by default in cost category
+  view
+* [Bug #849] fix the behaviour of the dates in the cost category view
+* [Bug #848] Fix bug
+* Removed extra padding appearing next to floating calendars
+* [Bug #814] Fix bug
+* Avoid having Orders as proxies
+* Move loadOrderAvoidingProxyFor to OrderModel
+* [Bug #843] Fix bug
+* Fixed nullpointer exception on work week date picker
+* [Bug #842] Fix bug
+* Avoid exception if effortAssigned is zero
+* Fixed positioning issues on add assignment button
+* Fixed bug with project deadline mark
+* Revamped toolbar buttons
+* Dotted line representing current day aligned to day middle
+* Added save-and-continue action to calendar edition window
+* Removed unused code
+* Change the way it is represented the load chart at zoom level of week
+* Change the way it is represented the load chart
+* Change the way it is represented the load chart
+* Remove unused field
+* Use EffortDuration instead of hours to increase precision
+* [Bug #840] Fix bug
+* Expose methods to allow to get the EffortDuration elapsed in an interval of
+  IntraDayDates
+* [Bug #838] Fix bug
+* Add method to allow to allocate hours outside the task's bounds
+* Extract superclass and generalize the use of interval
+* Rename onInterval method
+* Rename methods
+* Add documentation for method
+* [Bug #838] Fix bug
+* [Bug #837] Fix bug
+* Replace "principal" by main
+* Add related specific allocations second level
+* Add new query for searching for specific allocations interfering with a
+  criterion
+* Pull up method and do it more generic
+* Refactor genericAllocationsByCriterion
+* Adapt LoadPeriodGeneratorOnCriterion so it can work with specific allocations
+* Avoid executing methods twice
+* Avoid repeating query
+* Fixed visibility problems of disabled inputs on Chrome
+* [Bug #805] Fix bug
+* [Bug #819] Report internazionalization problem in webkit browsers
+* [Bug #836] Fixed using English as default language
+* fix the code style in db.changelog-1.0.xml and improve the comments in
+  Configuration class.
+* Make the change password link bolder
+* Apply footer-messages-area to more top level elements
+* Improve warning message
+* [Bug #830] Remove unnecessary code
+* [Bug #830] Changing in perspective does not reload data from database
+* Removed enable_critical_chain_support from LiquiBase configuration.
+* adds compiling option to disable the warning changing default password.
+* Introduce the changes of data base in db.changelog-1.0.xml.
+* Introduce warning for other predefined users about its default password.
+* Add information in user list about if the user is administrator or not.
+* Remove the warning of the need to change admin password.
+* Introduce warning to change admin password
+* [Bug #833] Fix bug
+* [Bug #833] Disable advance search button
+* [Bug #835] Fix bug
+* Some fix on Debian package folder.
+* [Bug #828] Recreate dependencies on chaning horizontal scroll in limiting
+* On changing zoom in limiting resources dependencies are not redrawn
+* Small fix in a message that uses "fiscal code" instead of ID.
+* [Bug #824] Fixed issue checking worker ID prior to criterions.
+* Avoid memory leak
+* [Bug #825] Fix bug
+* [Bug #829] Don't let user change the type of a dependency between a Limiting
+  Task and any other type of Task
+* [Bug #829] Fix bug initialize destination and origin tasks of dependencies if
+  they were not initialized yet
+* [Bug #826] Fix bug Validating Exception on allocating a resource to a limiting
+  task the first time
+* [Bug 827] Fix bug do appropriative allocation if required based on days
+  constraints
+* [Bug #826] For limiting tasks, update size of the task if the user changes the
+  numbers of hours allocated of the resource allocated in that task
+* [Bug #821] Fix bug
+* Not allow to allocate on intervals beyond a task's bounds
+* The cells after the end of the task are not editable
+* Extract method in order to encapsulate the rule in one place
+* Eliminate code repetition
+* Fixing the condition for isBeforeTaskStartDate
+* [Bug #816] Fix bug
+* Show saving message after the changes have really been done
+* Use Resource.getCaptionFor() for showing list of resources selected
+* Select the first radio item of AssignmentType (not necessary
+  GENERIC_ALL_WORKERS)
+* Refactored constraintForResourcesPerDay and constraintForHoursInput
+* [Bug #807] Revamped cell styles in advanced assignment
+* Graphical issues in taskdetails component
+* Fix javascript error when resizing ganttpanel and chart is not shown
+* Changed image path for non-workable day shade
+* [Bug #661] Fix bug for weeklevel
+* Added shade image for non workable days on zoomlevel week
+* Released 1.0.2 version.
+* Fixed problem in Debian package install with some missing SQL sentences.
+* [Bug #810] Fix bug
+* Minor fix
+* [Bug #817] Fix bug
+* Added horizontal line under timetracker header
+* [Bug #818] Exception launched on clicking 'Resource search' type of allocation
+  (generic, specific) radio button
+* Fix bug in 'Worker search' screen, close button was not working for limiting
+  resources
+* Fixed invalid timetracker's width for days
+* Fixed problem with last LiquiBase change in MySQL.
+* [Bug #815] Fix bug
+* Add possibility of specifying new invalid dates
+* Extract method
+* Make canWork rely on Capacity data
+* Use Capacity in BaseCalendar
+* Make consufing method private
+* Updated NavalPlan license headers to 2011.
+* Refactored components allocation_search and allocation_search_component
+* Added Resource.getCaptionFor()
+* Replaced method IResourceSearchModel.byLimiting(boolean) with .byResourceType
+  (ResourceType).
+* Replaced the limitingResource attribute in Resource entity with resourceType.
+* Small enhancement in CutyCapt command.
+* Fixed problem with CSS not being used in printing.
+* When creating the default calendar make weekend days not overassignable
+* Ensure selected date is always not null
+* [Bug #765] Fixes the position of the scroll bar in the resources load screen.
+* [Bug #765] Fixes the position of the scroll bar in the limiting planning.
+* [Bug #765] Fixes the position of the scroll bar in the gantt.
+* [Bug #813] it corrects redirects in the editing virtual workers screen
+* [Bug #812] changes Map for SortedMap in PredefinedDatabaseSnapshots
+* Add Capacity Picker for edition of CalendarData
+* Make CalendarData return Capacity instead of EffortDuration
+* Refactor test
+* Replace switch by method
+* Remove parameter
+* Fix parameter name
+* CalendarData is updated receiving Capacity objects
+* Remove unchecked casting warnings
+* Remove unused method
+* Remove use of java.util.Date for Calendar related entities
+* Rename method to reflect better meaning
+* Use CapacityPicker to edit the capacity of a CalendarException
+* Allow CapacityPicker to work without bindings
+* Make the methods for creating and adding exceptions receive Capacity
+* Show extra effort column for CalendarException
+* Move methods for getting efforts representations
+* [Bug #796] Fixed. The problem is that the AdvanceMeasurement was still marked
+  as transient.
+* [Bug #811] Translate pending messages including string 'nif/NIF'
+* [Bug #812] sorts the combo of multiple search in allocation pop-up.
+* [Bug #797] checks out if obligatory data are introduced to create a new
+  project.
+* [Bug #797] checks out that deadline is greater than start date in project
+  popup window.
+* When doing an appropriative allocation, unschedule only enough elements for
+  making room for the new position
+* Remove reloadElementInQueue()
+* When end is null (last gap) add 10 years from now
+* Fix bug unschedule since date, if an element is already placed at that date
+  unschedule it too
+* Refactor code for allocating previously unscheduled elements
+* Change behaviour for appropriative and non-appropriative allocations
+* Schedule several unassigned queue elements at once
+* Check if an automatic allocation should be appropriative or non-appropriative
+* Calculate the latestEndDate where a limiting resource task could be allocated
+* Use name for method more consistent with field name
+* Use Capacity instead of EffortDuration for CalendarData
+* Now CalendarException uses a Capacity instead of the field duration
+* Change label to reflect better meaning
+* [Bug #803] Refactor LimitingResourcesPanel
+* [Bug #804] Fix bug
+* [Bug #803] Fix bug dependencies were not being drawn again on changing zoom
+  level in LimitingResources
+* [Bug #809] Fixed marking to translate missing label.
+* Added warning message to login screen for unsupported browsers
+* Changed image for limiting resources tasks deadlines
+* After moving tasks its violated depedendences are displayed with different
+  style
+* Refactored dependencies implementation to support different appearance based
+  on CSS class
+* Released 1.0.1 version.
+* Updated TODO file with decisions from roadmap meeting.
+* [Bug #803] Remove unused code
+* [Bug #803] Change Zoom level in LimitingResources launches Validation
+  exception
+* [Bug #808] Fix bug when a resource field in Resource search is selected for
+  the first time, set 'Current selection' as name of that resource
+* [Bug #788] changes the structure and labels in resource load view.
+* A new LiquiBase issue with MySQL again.
+* Now fixing a issue added in previous commit 8d5c9dfe issue with PostgreSQL.
+* Fixed LiquiBase issue with MySQL.
+* Allow to edit the extra hours for CalendarExceptionType
+* Create picker for Capacity
+* Now CalendarExceptionType uses a Capacity instead of the field duration and
+  notAssignable
+* Added dependency with ttf-freefont on debian/control.
+* [Bug #801] Fixed typo in Spanish translation.
+* Substitute panel for groupbox
+* Isolate 'Allocation Configuration' group box into a component, and embed it
+  into 'Resource allocation'
+* Isolate 'Task Information' group box into a component, and embed it into
+  'Resource allocation' and 'Limiting Resource allocation'
+* Create folder taskpanels and move all task panels related with 'Edit Task' to
+  it
+* [Bug #785] it has fixed translations of the changes in the company list.
+* [Bug #785] Add improvements in companies list.
+* [Bug #784] Sort results of add criterion combo in resource edition
+* Reset the progressmeter to zero when the MonteCarlo chart is closed
+* Fix the type parameter
+* [Bug #800] Fix closable button in 'Calendar allocation' window
+* [Bug #800] Fix closable button in 'Progress consolidation' window
+* [Bug #800] Add closable button to 'Progress assignment' window
+* [Bug #800] Add closable button to 'Project details' window
+* [Bug #782] Fix bug
+* Fix asyncNotifications
+* [Bug #779] Fix bug
+* Avoid LazyInitializationException accessing template's labels
+* [Bug #798] Refactor 'Remove Criterion' window, change it for a MessageBox
+  window
+* [Bug #795] Refactor calendar remove dialog box and change it to a MessageBox
+
+
 Version 1.0.6 (27 Apr 2011)
 ---------------------------
 
