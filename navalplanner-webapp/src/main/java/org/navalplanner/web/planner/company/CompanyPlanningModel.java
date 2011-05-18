@@ -67,8 +67,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -482,8 +482,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             checkbox.setAttribute("indicator", type);
             checkbox.setStyle("color: " + type.getColor());
 
-            BigDecimal value = earnedValueChartFiller.getIndicator(type,
-                    date);
+            BigDecimal value = earnedValueChartFiller.getIndicator(type, date) != null ? earnedValueChartFiller
+                    .getIndicator(type, date)
+                    : BigDecimal.ZERO;
             String units = _("h");
             if (type.equals(EarnedValueType.CPI)
                     || type.equals(EarnedValueType.SPI)) {
