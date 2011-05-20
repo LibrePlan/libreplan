@@ -1,76 +1,107 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-    xmlns:beans="http://www.springframework.org/schema/beans"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
-    <!--
-         NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
-         for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY.
-    -->
+    <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
+        for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
 
-    <http auto-config="true" realm="NavalPlan Web Application" >
+    <http auto-config="true" realm="NavalPlan Web Application">
 
         <!-- Web services -->
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER" method="GET" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="POST" />
-        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER" method="PUT" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_READER"
+            method="GET" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER"
+            method="POST" />
+        <intercept-url pattern="/ws/rest/**" access="ROLE_WS_WRITER"
+            method="PUT" />
 
-        <!--  Web application -->
-        <intercept-url pattern="/common/img/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/planner/css/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/callback/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/zkau/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/help/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/layout/login.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
-        <intercept-url pattern="/common/layout/timeout.zul" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <!-- Web application -->
+        <intercept-url pattern="/common/img/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/css/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/planner/css/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/callback/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/zkau/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/help/**"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/layout/login.zul"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
+        <intercept-url pattern="/common/layout/timeout.zul"
+            access="IS_AUTHENTICATED_ANONYMOUSLY" />
         <intercept-url pattern="/advance/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/resources/criterions/**" access="ROLE_ADMINISTRATION"/>
+        <intercept-url pattern="/resources/criterions/**"
+            access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/calendars/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/labels/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/materials/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/costcategories/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/common/configuration.zul" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/costcategories/**"
+            access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/common/configuration.zul"
+            access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/qualityforms/**" access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/users/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/externalcompanies/**" access="ROLE_ADMINISTRATION" />
-        <intercept-url pattern="/workreports/workReportTypes.zul" access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/externalcompanies/**"
+            access="ROLE_ADMINISTRATION" />
+        <intercept-url pattern="/workreports/workReportTypes.zul"
+            access="ROLE_ADMINISTRATION" />
         <intercept-url pattern="/**" access="IS_AUTHENTICATED_FULLY" />
-        <form-login login-page="/common/layout/login.zul" authentication-failure-url="/common/layout/login.zul?login_error=true"/>
+        <form-login login-page="/common/layout/login.zul"
+            authentication-failure-url="/common/layout/login.zul?login_error=true" />
 
     </http>
 
-    <!--
-          Beans used by Spring Security (current configuration assumes users
-          are registered in the database).
-    -->
-    <beans:bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
-        <beans:constructor-arg value="512"/>
-    </beans:bean>
-
-    <beans:bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
-        p:userPropertyToUse="username"/>
-
-    <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
+    <!-- Beans used by Spring Security (current configuration assumes users
+        are registered in the database). <beans:bean id="passwordEncoder" class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
+        <beans:constructor-arg value="512"/> </beans:bean> <beans:bean id="saltSource"
+        class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
+        p:userPropertyToUse="username"/> <beans:bean id="authenticationProvider"
+        class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
-        <custom-authentication-provider/>
+        <custom-authentication-provider/> </beans:bean> -->
+    <!-- Beans used by the NavalPlan Web application when users are registered
+        in the database. When users are registered externally (e.g. in a LDAP server),
+        these lines may be commented. <beans:bean id="dbUserDetailsService" class="org.navalplanner.web.users.services.DBUserDetailsService"/>
+        <beans:bean id="dbPasswordEncoderService" class="org.navalplanner.web.users.services.DBPasswordEncoderService"
+        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource"/> <beans:bean
+        id="usersBootstrapInDB" class="org.navalplanner.web.users.bootstrap.UsersBootstrapInDB"
+        p:dbPasswordEncoderService-ref="dbPasswordEncoderService"/> -->
+    <!-- Beans used by the NavalPlan Web Application when users are registerd
+        in LDAP. At this moment users MUST be also in database with same username.
+        This will be changed in the near future. the url, base, userDN and password
+        properties must be set with the proper values -->
+    <beans:bean id="contextSource"
+        class="org.springframework.ldap.core.support.LdapContextSource"
+        p:url="ldap://localhost:389" p:base="dc=example,dc=org"
+        p:userDn="cn=admin,dc=example,dc=org" p:password="admin">
     </beans:bean>
 
-    <!--
-          Beans used by the NavalPlan Web application when users are
-          registered in the database. When users are registered externally
-          (e.g. in a LDAP server), these lines may be commented.
-    -->
-    <beans:bean id="dbUserDetailsService" class="org.navalplanner.web.users.services.DBUserDetailsService"/>
+    <beans:bean id="ldapTemplate"
+        class="org.springframework.ldap.core.LdapTemplate"
+        p:contextSource-ref="contextSource">
+    </beans:bean>
 
-    <beans:bean id="dbPasswordEncoderService" class="org.navalplanner.web.users.services.DBPasswordEncoderService"
-        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource"/>
+    <!-- This authentication provider will make possible all the login process
+        when an LDAP is used. Also will allow authenticate users in database. The
+        property strUserId must be set with the proper value. It represents the property
+        of the user in LDAP which will be used to check the username. -->
+    <beans:bean id="authenticationProvider"
+        class="org.navalplanner.web.users.services.LDAPCustomAuthenticationProvider"
+        p:userDetailsService-ref="ldapUserDetailsService"
+        p:ldapTemplate-ref="ldapTemplate" p:userId="uid">
+        <custom-authentication-provider />
+    </beans:bean>
 
-    <beans:bean id="usersBootstrapInDB" class="org.navalplanner.web.users.bootstrap.UsersBootstrapInDB"
-        p:dbPasswordEncoderService-ref="dbPasswordEncoderService"/>
+    <!-- This bean is used to implement UserDetailsService with LDAP authentication
+        Provider. -->
+    <beans:bean id="ldapUserDetailsService"
+        class="org.navalplanner.web.users.services.LDAPUserDetailsService" />
 
 </beans:beans>

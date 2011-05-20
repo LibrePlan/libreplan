@@ -212,6 +212,32 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core-tiger</artifactId>
         </dependency>
+        <!-- Spring Dependency LDAP -->
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-core-tiger</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-odm</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-ldif-core</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ldap</groupId>
+            <artifactId>spring-ldap-ldif-batch</artifactId>
+            <version>1.3.1.RELEASE</version>
+        </dependency>
         <!--  AspectJ (required by Spring Security) -->
         <dependency>
             <groupId>org.aspectj</groupId>
