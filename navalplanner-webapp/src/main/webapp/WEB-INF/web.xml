@@ -134,8 +134,8 @@
     </servlet-mapping>
 
     <session-config>
-        <!-- -1 means session doesn't timeout -->
-        <session-timeout>-1</session-timeout>
+        <!-- The session timeout is an hour -->
+        <session-timeout>60</session-timeout>
     </session-config>
 
     <welcome-file-list>

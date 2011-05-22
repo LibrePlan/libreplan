@@ -4,8 +4,8 @@
     </log>
 
     <session-config>
-        <!-- -1 value means session should never timeout -->
-        <session-timeout>-1</session-timeout>
+        <!-- 1 hour for timeout-->
+        <session-timeout>3600</session-timeout>
     </session-config>
     <error-page>
         <exception-type>java.lang.Throwable
