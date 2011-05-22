@@ -58,6 +58,10 @@
     </filter-mapping>
 
     <!-- //// -->
+    <listener>
+        <listener-class>org.navalplanner.web.LoggingConfiguration</listener-class>
+    </listener>
+
     <!-- ZK -->
     <listener>
         <description>Used to cleanup when a session is destroyed</description>

@@ -10,7 +10,7 @@
   </appender>
 
   <appender name="rolling" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="navalplan.log" />
+    <param name="file" value="${navalplan-log-directory}navalplan.log" />
     <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
     <layout class="org.apache.log4j.PatternLayout">
@@ -19,7 +19,7 @@
   </appender>
 
   <appender name="rolling-errors" class="org.apache.log4j.DailyRollingFileAppender">
-    <param name="file" value="navalplan-error.log" />
+    <param name="file" value="${navalplan-log-directory}navalplan-error.log" />
     <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
 
     <layout class="org.apache.log4j.PatternLayout">
