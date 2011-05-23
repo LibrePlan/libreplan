@@ -45,6 +45,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 
 <div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
 
+<timer repeats="true" running="true" delay="30000" onTimer=""/>
 <borderlayout height="100%" width="100%" >
 <north border="none">
 <n:div>
@@ -68,7 +69,6 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
   </n:table></n:td>
   </n:tr>
 </n:table>
-
 
       <n:div class="user-area">
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">

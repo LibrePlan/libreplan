@@ -3,9 +3,16 @@
         <log-base></log-base>
     </log>
 
+    <desktop-config>
+        <!-- seconds it takes between requests for a desktop to be invalidated -->
+        <!-- a timer is introduced to avoid invalidation of pages still open -->
+        <desktop-timeout>60</desktop-timeout>
+    </desktop-config>
+
     <session-config>
-        <!-- 1 hour for timeout-->
-        <session-timeout>3600</session-timeout>
+        <!-- 0 implies default from web.xml  -->
+        <session-timeout>0</session-timeout>
+        <timer-keep-alive>true</timer-keep-alive>
     </session-config>
     <error-page>
         <exception-type>java.lang.Throwable

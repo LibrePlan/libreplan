@@ -28,7 +28,7 @@ resourcesLoadPanel = self;
 ]]>
 </zscript>
 
-
+    <timer repeats="true" running="true" delay="30000" onTimer=""/>
     <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
        <north height="30px" border="0" sclass="toolbar-box">
        <hbox align="center" id="toolbar">
