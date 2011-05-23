@@ -27,12 +27,14 @@ import org.apache.commons.lang.Validate;
  */
 public abstract class PreAndPostNotReentrantActionsWrapper {
 
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
+    private static final class BooleanThreadLocal extends ThreadLocal<Boolean> {
         @Override
         protected Boolean initialValue() {
             return false;
         }
-    };
+    }
+
+    private final ThreadLocal<Boolean> inside = new BooleanThreadLocal();
 
     public void doAction(IAction action) {
         Validate.notNull(action);
@@ -49,7 +51,7 @@ public abstract class PreAndPostNotReentrantActionsWrapper {
         try {
             action.doAction();
         } finally {
-            inside.set(false);
+            inside.remove();
             postAction();
         }
     }
