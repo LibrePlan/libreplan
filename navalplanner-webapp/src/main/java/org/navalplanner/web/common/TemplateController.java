@@ -64,16 +64,9 @@ public class TemplateController extends GenericForwardComposer {
 
     private IMessagesForUser windowMessages;
 
-    private static TemplateController current;
-
-    public static TemplateController getCurrent() {
-        return current;
-    }
-
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        TemplateController.current = this;
         if (templateModel.isScenariosVisible()) {
             window = (Window) comp.getFellow("changeScenarioWindow");
             windowMessages = new MessagesForUser(window

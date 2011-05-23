@@ -27,13 +27,13 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.Configuration;
 import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.common.TemplateController;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.IDBPasswordEncoderService;
@@ -56,6 +56,9 @@ public class UserModel implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
@@ -179,8 +182,9 @@ public class UserModel implements IUserModel {
     }
 
     private String isWarningDefaultPasswdOthersVisible() {
-        return (TemplateController.getCurrent() != null) ? TemplateController
-                .getCurrent().getDefaultPasswdVisible() : "none";
+        return MandatoryUser
+                .adminChangedAndSomeOtherNotChanged(configurationDAO
+                        .getConfiguration()) ? "inline" : "none";
     }
 
     @Override
