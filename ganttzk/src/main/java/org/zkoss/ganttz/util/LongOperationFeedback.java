@@ -80,7 +80,7 @@ public class LongOperationFeedback {
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 } finally {
-                    alreadyInside.set(false);
+                    alreadyInside.remove();
                     Clients.showBusy(null, false);
                 }
             }
