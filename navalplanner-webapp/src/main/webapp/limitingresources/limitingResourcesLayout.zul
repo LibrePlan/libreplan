@@ -41,7 +41,6 @@
         editController = editTaskController;
     ]]>
     </zscript>
-    <timer repeats="true" running="true" delay="30000" onTimer=""/>
     <borderlayout sclass="resourcesloadlayout" width="auto">
 
         <!-- Top control button bar -->
