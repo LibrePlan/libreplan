@@ -23,10 +23,10 @@ package org.zkoss.ganttz.servlets;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -47,11 +47,12 @@ public class CallbackServlet extends HttpServlet {
 
     private static final String MAPPING = "/callback/";
 
-    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 10; // ten
+    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 1; // one
+                                                                      // minute
     // minutes
 
-    private static final long EXPIRATION_TIME_MILLIS = 1000 * 60 * 30; // half
-    // hour;
+    private static final long EXPIRATION_TIME_MILLIS = 1000 * 60 * 2; // two
+                                                                      // minutes
 
     private static Random random = new Random();
 
