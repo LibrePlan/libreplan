@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -124,6 +123,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         Map<String, Object> result = super.getParameters();
 
         result.put("orderName", getSelectedOrder().getName());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         // Task status
         final TaskStatusEnum taskStatus = getSelectedTaskStatus();
@@ -211,6 +212,14 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     public void onRemoveCriterion(Criterion criterion) {
         workingArrangementsPerOrderModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    private String getParameterCriterions() {
+        return workingArrangementsPerOrderModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return workingArrangementsPerOrderModel.getSelectedLabel();
     }
 
 }

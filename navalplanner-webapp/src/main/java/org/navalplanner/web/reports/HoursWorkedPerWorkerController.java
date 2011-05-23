@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -129,6 +128,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
         result.put("showNote", hoursWorkedPerWorkerModel.isShowReportMessage());
         return result;
     }
@@ -317,4 +318,11 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         return hoursWorkedPerWorkerModel.getSelectedCriterions();
     }
 
+    private String getParameterCriterions() {
+        return hoursWorkedPerWorkerModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return hoursWorkedPerWorkerModel.getSelectedLabel();
+    }
 }

@@ -67,4 +67,8 @@ public interface IHoursWorkedPerWorkerModel {
     boolean addSelectedCriterion(Criterion criterion);
 
     List<Criterion> getCriterions();
+
+    String getSelectedCriteria();
+
+    String getSelectedLabel();
 }

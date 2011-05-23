@@ -24,7 +24,6 @@ package org.navalplanner.web.reports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,7 +100,8 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
 
         result.put("orderName", getSelectedOrder().getName());
         result.put("referenceDate", getDeadlineDate());
-
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
         return result;
     }
 
@@ -170,5 +170,13 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
     public void onRemoveCriterion(Criterion criterion) {
         workingProgressPerTaskModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    private String getParameterCriterions() {
+        return workingProgressPerTaskModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return workingProgressPerTaskModel.getSelectedLabel();
     }
 }

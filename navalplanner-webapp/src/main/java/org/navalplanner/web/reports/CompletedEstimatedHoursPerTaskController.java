@@ -24,7 +24,6 @@ package org.navalplanner.web.reports;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +104,8 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
 
         result.put("orderName", getSelectedOrder().getName());
         result.put("referenceDate", getDeadlineDate());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         return result;
     }
@@ -176,4 +177,11 @@ public class CompletedEstimatedHoursPerTaskController extends NavalplannerReport
         Util.reloadBindings(lbCriterions);
     }
 
+    private String getParameterCriterions() {
+        return completedEstimatedHoursPerTaskModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return completedEstimatedHoursPerTaskModel.getSelectedLabel();
+    }
 }

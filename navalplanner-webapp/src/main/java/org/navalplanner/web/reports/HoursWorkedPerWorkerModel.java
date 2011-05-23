@@ -24,6 +24,7 @@ package org.navalplanner.web.reports;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -70,6 +71,14 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     private List<Criterion> selectedCriterions = new ArrayList<Criterion>();
 
     private List<Criterion> allCriterions = new ArrayList<Criterion>();
+
+    private String selectedCriteria;
+
+    private String selectedLabel;
+
+    private boolean hasChangeCriteria = false;
+
+    private boolean hasChangeLabels = false;
 
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
@@ -158,6 +167,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
             return false;
         }
         this.selectedLabels.add(label);
+        hasChangeLabels = true;
         return true;
     }
 
@@ -210,6 +220,7 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
     @Override
     public void removeSelectedCriterion(Criterion criterion) {
         this.selectedCriterions.remove(criterion);
+        hasChangeCriteria = true;
     }
 
     @Override
@@ -218,12 +229,57 @@ public class HoursWorkedPerWorkerModel implements IHoursWorkedPerWorkerModel {
             return false;
         }
         this.selectedCriterions.add(criterion);
+        hasChangeCriteria = true;
         return true;
     }
 
     @Override
     public List<Criterion> getSelectedCriterions() {
         return selectedCriterions;
+    }
+
+    public void setSelectedLabel(String selectedLabel) {
+        this.selectedLabel = selectedLabel;
+    }
+
+    public String getSelectedLabel() {
+        if (hasChangeLabels) {
+            this.selectedLabel = null;
+            Iterator<Label> iterator = this.selectedLabels.iterator();
+            if (iterator.hasNext()) {
+                this.selectedLabel = new String();
+                this.selectedLabel = this.selectedLabel.concat(iterator.next()
+                        .getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedLabel = this.selectedLabel.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeLabels = false;
+        }
+        return selectedLabel;
+    }
+
+    public void setSelectedCriteria(String selectedCriteria) {
+        this.selectedCriteria = selectedCriteria;
+    }
+
+    public String getSelectedCriteria() {
+        if (hasChangeCriteria) {
+            this.selectedCriteria = null;
+            Iterator<Criterion> iterator = this.selectedCriterions.iterator();
+            if (iterator.hasNext()) {
+                this.selectedCriteria = new String();
+                this.selectedCriteria = this.selectedCriteria.concat(iterator
+                        .next().getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedCriteria = this.selectedCriteria.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeCriteria = false;
+        }
+        return selectedCriteria;
     }
 
 }

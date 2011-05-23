@@ -5,6 +5,8 @@
 	<parameter name="endingDate" class="java.util.Date"/>
 	<parameter name="showNote" class="java.lang.Boolean"/>
 	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="criteria" class="java.lang.String"/>
+	<parameter name="labels" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
 	<field name="date" class="java.util.Date"/>
 	<field name="clockStart" class="java.util.Date"/>
@@ -184,7 +186,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="118" splitType="Stretch">
+		<band height="160" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="13" width="263" height="33"/>
 				<textElement verticalAlignment="Middle" markup="none">
@@ -236,7 +238,7 @@
 				<textFieldExpression class="java.util.Date"><![CDATA[$P{endingDate}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="13" y="102" width="540" height="15">
+				<reportElement x="13" y="144" width="540" height="15">
 					<printWhenExpression><![CDATA[$P{showNote}.equals( java.lang.Boolean.TRUE )]]></printWhenExpression>
 				</reportElement>
 				<textElement markup="none">
@@ -245,12 +247,44 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{note1}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="5" y="102" width="8" height="15">
+				<reportElement x="5" y="144" width="8" height="15">
 					<printWhenExpression><![CDATA[$P{showNote}.equals( java.lang.Boolean.TRUE )]]></printWhenExpression>
 				</reportElement>
 				<textElement/>
 				<text><![CDATA[*]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="0" y="98" width="57" height="20">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{criteria} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="none">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{criteria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="118" width="57" height="20">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{labels} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement markup="none">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{labels}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="57" y="98" width="494" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{criteria}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="57" y="118" width="494" height="20"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{labels}]]></textFieldExpression>
+			</textField>
 		</band>
 	</title>
 	<pageHeader>
