@@ -457,21 +457,14 @@ public class TemplateModel implements ITemplateModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isChangedDefaultPassword(MandatoryUser user) {
-        Configuration configuration = configurationDAO.getConfiguration();
+    public boolean hasChangedDefaultPassword(MandatoryUser user) {
+        return user.hasChangedDefaultPassword(configurationDAO.getConfiguration());
+    }
 
-        switch (user) {
-        case ADMIN:
-            return configuration.getChangedDefaultAdminPassword();
-        case USER:
-            return configuration.getChangedDefaultUserPassword();
-        case WSREADER:
-            return configuration.getChangedDefaultWsreaderPassword();
-        case WSWRITER:
-            return configuration.getChangedDefaultWswriterPassword();
-        }
-        return configurationDAO.getConfiguration()
-                .getChangedDefaultAdminPassword();
+    @Override
+    @Transactional(readOnly = true)
+    public boolean adminPasswordChangedAndSomeOtherNotChanged() {
+        return MandatoryUser.adminChangedAndSomeOtherNotChanged(configurationDAO.getConfiguration());
     }
 
     @Override
