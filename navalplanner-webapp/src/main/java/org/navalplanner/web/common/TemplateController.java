@@ -138,34 +138,35 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public String getDefaultPasswdAdminVisible() {
-        return ((templateModel != null) && (!templateModel
-                .isChangedDefaultPassword(MandatoryUser.ADMIN))) ? "inline"
-                : "none";
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.ADMIN);
     }
 
     public String getDefaultPasswdUserVisible() {
-        return ((templateModel != null) && (!templateModel
-                .isChangedDefaultPassword(MandatoryUser.USER))) ? "inline"
-                : "none";
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.USER);
     }
 
     public String getDefaultPasswdWsreaderVisible() {
-        return ((templateModel != null) && (!templateModel
-                .isChangedDefaultPassword(MandatoryUser.WSREADER))) ? "inline"
-                : "none";
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSREADER);
     }
 
     public String getDefaultPasswdWswriterVisible() {
-        return ((templateModel != null) && (!templateModel
-                .isChangedDefaultPassword(MandatoryUser.WSWRITER))) ? "inline"
-                : "none";
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSWRITER);
+    }
+
+    private String notChangedPasswordWarningDisplayPropertyFor(
+            MandatoryUser mandatoryUser) {
+        return asDisplayProperty(templateModel
+                .hasChangedDefaultPassword(mandatoryUser));
+    }
+
+
+    private String asDisplayProperty(boolean passwordChanged) {
+        return passwordChanged ? "none" : "inline";
     }
 
     public String getDefaultPasswdVisible() {
-        return (getDefaultPasswdAdminVisible().equals("none") && (getDefaultPasswdUserVisible()
-                .equals("inline")
-                || getDefaultPasswdWsreaderVisible().equals("inline") || getDefaultPasswdWswriterVisible()
-                .equals("inline"))) ? "inline" : "none";
+        return asDisplayProperty(!templateModel
+                .adminPasswordChangedAndSomeOtherNotChanged());
     }
 
     public String getIdAdminUser() {
