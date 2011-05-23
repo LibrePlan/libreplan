@@ -28,6 +28,8 @@ planner = self;
         </zscript>
 
         <hbox align="center" id="toolbar">
+            <!-- 30 seconds timer, to keep alive page -->
+            <timer repeats="true" running="true" delay="30000" onTimer=""/>
 
             <separator />
 
