@@ -1726,9 +1726,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            rootTask
-                    .updateCriticalPathProgress((List<TaskElement>) planningState
-                            .getPlanner().getCriticalPath());
+            Planner planner = planningState.getPlanner();
+            if (planner != null) {
+                rootTask.updateCriticalPathProgress((List<TaskElement>) planner
+                        .getCriticalPath());
+            }
         }
 
         private void setAdvancePercentage(BigDecimal value) {
