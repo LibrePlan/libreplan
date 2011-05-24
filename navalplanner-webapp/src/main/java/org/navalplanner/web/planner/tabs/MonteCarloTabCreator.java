@@ -226,7 +226,10 @@ public class MonteCarloTabCreator {
             }
 
             private void initializeCalendarFor(TaskElement task) {
-                BaseCalendar calendar = task.getCalendar();
+                initializeCalendar(task.getCalendar());
+            }
+
+            private void initializeCalendar(BaseCalendar calendar) {
                 Hibernate.initialize(calendar);
                 initializeCalendarAvailabilities(calendar.getCalendarAvailabilities());
                 initializeCalendarExceptions(calendar.getExceptions());
@@ -245,6 +248,9 @@ public class MonteCarloTabCreator {
                 for (CalendarData each: calendarDataVersions) {
                     Hibernate.initialize(each);
                     Hibernate.initialize(each.getHoursPerDay());
+                    if (each.getParent() != null) {
+                        initializeCalendar(each.getParent());
+                    }
                 }
             }
 
