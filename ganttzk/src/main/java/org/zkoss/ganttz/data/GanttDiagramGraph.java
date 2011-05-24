@@ -1767,7 +1767,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
         @Override
         public String toString() {
-            return String.format("%s, parentRecalculation: %s, parents: %s",
+            return String.format(
+                    "%s, parentRecalculation: %s, predecessors: %s",
                     taskPoint, parentRecalculation,
                     asSimpleString(recalculationsCouldAffectThis));
         }
