@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +35,7 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
+import org.navalplanner.business.common.daos.IGenericDAO.Mode;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -48,7 +48,6 @@ import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -140,15 +139,9 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     @Transactional
     public void confirm() {
-
         checkEntitySequences();
-        try {
-            configurationDAO.save(configuration);
-            storeAndRemoveEntitySequences();
-        } catch (HibernateOptimisticLockingFailureException e) {
-            throw new ConcurrentModificationException(
-                    _("Some entity sequence was created during the configuration process, it is impossible to update entity sequence table. Please, try again later"));
-        }
+        configurationDAO.save(configuration, Mode.FLUSH_BEFORE_VALIDATION);
+        storeAndRemoveEntitySequences();
     }
 
     private void checkEntitySequences() {
