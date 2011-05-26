@@ -462,6 +462,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         this.associatedComponent = comp;
         loadAndInitializeComponents();
         Clients.evalJavaScript("ADVANCE_ALLOCATIONS.listenToScroll();");
+
     }
 
     private void loadAndInitializeComponents() {
@@ -1237,60 +1238,121 @@ class Row {
 
     private void initializeAssigmentFunctionsCombobox() {
         hboxAssigmentFunctionsCombobox = new Hbox();
-
-        Combobox assignmentFunctionsCombo = getAssignmentFunctionsCombo();
-        appendListener(assignmentFunctionsCombo);
-        assignmentFunctionsCombo.setValue(functionName);
-
+        AssignmentFunctionCombobox assignmentFunctionsCombo = new AssignmentFunctionCombobox(
+                functions, getAllocation().getAssignmentFunction());
         hboxAssigmentFunctionsCombobox.appendChild(assignmentFunctionsCombo);
         hboxAssigmentFunctionsCombobox
                 .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
     }
 
-    private void appendListener(final Combobox assignmentFunctionsCombo) {
-        assignmentFunctionsCombo.addEventListener(Events.ON_CHANGE,
-                new EventListener() {
+    /**
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *         Encapsulates the logic of the combobox used for selecting what
+     *         type of assignment function to apply
+     */
+    class AssignmentFunctionCombobox extends Combobox {
 
-                    @Override
-                    public void onEvent(Event event)
-                            throws InterruptedException {
-                        final String currentValue = assignmentFunctionsCombo.getValue();
-                        if (currentValue.equals(getPreviousValue())) {
-                            return;
-                        }
-                        if (showConfirmChangeFunctionDialog() == Messagebox.YES) {
-                            IAssignmentFunctionConfiguration function = getSelectedFunction();
-                            if (function != null) {
-                                function.applyOn(getAllocation());
-                            }
-                        } else {
-                            setPreviousValue(currentValue);
-                        }
+        private String previousValue;
+
+        public AssignmentFunctionCombobox(IAssignmentFunctionConfiguration[] functions,
+                AssignmentFunction initialValue) {
+            for (IAssignmentFunctionConfiguration each : functions) {
+                Comboitem comboitem = comboItem(each);
+                this.appendChild(comboitem);
+                if (each.isTargetedTo(initialValue)) {
+                    selectItem(comboitem);
+                }
+            }
+            this.addEventListener(Events.ON_CHANGE, onChangeCombobox(this));
+        }
+
+        private Comboitem comboItem(IAssignmentFunctionConfiguration assignmentFunction) {
+            Comboitem comboitem = new Comboitem(assignmentFunction.getName());
+            comboitem.setValue(assignmentFunction);
+            return comboitem;
+        }
+
+        private void selectItem(Comboitem comboitem) {
+            String functionName = ((IAssignmentFunctionConfiguration) comboitem.getValue()).getName();
+            this.setSelectedItem(comboitem);
+            this.setValue(functionName);
+            this.setPreviousValue(functionName);
+        }
+
+        private EventListener onChangeCombobox(final AssignmentFunctionCombobox combobox) {
+            return new EventListener() {
+
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    final String currentValue = combobox.getValue();
+                    final String previousValue = combobox.getPreviousValue();
+
+                    // Same value selected
+                    if (currentValue.equals(previousValue)) {
+                        return;
                     }
-
-                    private IAssignmentFunctionConfiguration getSelectedFunction() {
-                        Comboitem selectedItem = assignmentFunctionsCombo.getSelectedItem();
-                        return (selectedItem != null) ? (IAssignmentFunctionConfiguration) selectedItem.getValue() : null;
+                    // Cannot apply function if task contains consolidated day assignments
+                    final ResourceAllocation<?> resourceAllocation = getAllocation();
+                    if (isSigmoid(currentValue)
+                            && !resourceAllocation
+                                    .getConsolidatedAssignments().isEmpty()) {
+                        showCannotApplySigmoidFunction();
+                        combobox.setValue(previousValue);
+                        return;
                     }
-
-                    private String getPreviousValue() {
-                        return (String) assignmentFunctionsCombo.getVariable("previousValue", true);
+                    // User didn't accept
+                    if (showConfirmChangeFunctionDialog() != Messagebox.YES) {
+                        combobox.setValue(previousValue);
+                        return;
                     }
-
-                    private void setPreviousValue(String value) {
-                        assignmentFunctionsCombo.setVariable("previousValue", value, true);
+                    // Apply sigmoid function
+                    IAssignmentFunctionConfiguration function = getSelectedFunction(combobox);
+                    if (function != null) {
+                        setPreviousValue(currentValue);
+                        function.applyOn(resourceAllocation);
                     }
+                }
+            };
+        }
 
-                    private int showConfirmChangeFunctionDialog()
-                            throws InterruptedException {
-                        return Messagebox
-                                .show(_("You are going to change the assignment function. Are you sure?"),
-                                        _("Confirm change"), Messagebox.YES
-                                                | Messagebox.NO,
-                                        Messagebox.QUESTION);
-                    }
+        private String getPreviousValue() {
+            return previousValue;
+        }
 
-                });
+        private void setPreviousValue(String value) {
+            this.previousValue = value;
+        }
+
+        private boolean isSigmoid(String value) {
+            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString().equals(value);
+        }
+
+        private void showCannotApplySigmoidFunction() {
+            try {
+                Messagebox
+                        .show(_("Task contains consolidated progress. Cannot apply sigmoid function."),
+                                _("Error"), Messagebox.OK, Messagebox.ERROR);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        private int showConfirmChangeFunctionDialog()
+                throws InterruptedException {
+            return Messagebox
+                    .show(_("You are going to change the assignment function. Are you sure?"),
+                            _("Confirm change"),
+                            Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
+        }
+
+        private IAssignmentFunctionConfiguration getSelectedFunction(
+                Combobox combobox) {
+            Comboitem selectedItem = combobox.getSelectedItem();
+            return (selectedItem != null) ? (IAssignmentFunctionConfiguration) selectedItem
+                    .getValue() : null;
+        }
+
     }
 
     private IAssignmentFunctionConfiguration none = new IAssignmentFunctionConfiguration() {
@@ -1443,21 +1505,6 @@ class Row {
     };
 
     private boolean isLimiting;
-
-    private Combobox getAssignmentFunctionsCombo() {
-        AssignmentFunction assignmentFunction = getAllocation()
-                .getAssignmentFunction();
-        Combobox result = new Combobox();
-        for (IAssignmentFunctionConfiguration each : functions) {
-            Comboitem comboitem = new Comboitem(each.getName());
-            comboitem.setValue(each);
-            result.appendChild(comboitem);
-            if (each.isTargetedTo(assignmentFunction)) {
-                result.setSelectedItem(comboitem);
-            }
-        }
-        return result;
-    }
 
     private Button getAssignmentFunctionsConfigureButton(
             final Combobox assignmentFunctionsCombo) {
