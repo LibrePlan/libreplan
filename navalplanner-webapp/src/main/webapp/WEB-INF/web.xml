@@ -134,8 +134,8 @@
     </servlet-mapping>
 
     <session-config>
-        <!-- The session timeout is an hour -->
-        <session-timeout>60</session-timeout>
+        <!-- The session timeout is ten minutes. A timer is used to keep the session alive if there is some open page -->
+        <session-timeout>10</session-timeout>
     </session-config>
 
     <welcome-file-list>
