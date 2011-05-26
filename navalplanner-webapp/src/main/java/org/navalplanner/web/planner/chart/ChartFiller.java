@@ -33,10 +33,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +57,7 @@ import org.zkforge.timeplot.geometry.DefaultValueGeometry;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -581,23 +582,20 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, boolean justDaysWithInformation) {
-        return createPlotInfoFrom(createDataSourceUri(map, interval,
-                justDaysWithInformation));
-    }
-
-    private String createDataSourceUri(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval, boolean justDaysWithInformation) {
-        return getServletUri(
-                map,
-                interval.getStart(),
-                interval.getFinish(),
-                createGraphicSpecification(map, interval,
-                        justDaysWithInformation));
+        if (!map.isEmpty()) {
+            setMinimumValueForChartIfLess(Collections.min(map.values()));
+            setMaximumValueForChartIfGreater(Collections.max(map.values()));
+        }
+        return createPlotInfoFrom(createGraphicSpecification(map,
+                interval, justDaysWithInformation));
     }
 
     private GraphicSpecificationCreator createGraphicSpecification(
             SortedMap<LocalDate, BigDecimal> map, Interval interval,
             boolean justDaysWithInformation) {
+        if (map.isEmpty()) {
+            return null;
+        }
         if (justDaysWithInformation) {
             return new JustDaysWithInformationGraphicSpecificationCreator(
                     interval.getFinish(), map, interval.getStart());
@@ -608,31 +606,26 @@ public abstract class ChartFiller implements IChartFiller {
     }
 
     private String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final LocalDate start, final LocalDate finish,
             final GraphicSpecificationCreator graphicSpecificationCreator) {
-        if (mapDayAssignments.isEmpty()) {
+        if (graphicSpecificationCreator == null) {
             return "";
         }
-
-        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
-                .values()));
-        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
-                .values()));
-
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
-        String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator);
-        return uri;
+        return CallbackServlet.registerAndCreateURLFor(request,
+                graphicSpecificationCreator,
+                DisposalMode.WHEN_NO_LONGER_REFERENCED);
     }
 
-    private Plotinfo createPlotInfoFrom(String dataSourceUri) {
+    private Plotinfo createPlotInfoFrom(
+            GraphicSpecificationCreator graphicSpecificationCreator) {
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(dataSourceUri);
+        pds.setDataSourceUri(getServletUri(graphicSpecificationCreator));
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
+        plotinfo.setAttribute("keep-chart-specification-creator-referenced",
+                graphicSpecificationCreator);
         plotinfo.setPlotDataSource(pds);
         return plotinfo;
     }
