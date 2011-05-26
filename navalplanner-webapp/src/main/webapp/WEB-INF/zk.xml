@@ -6,7 +6,7 @@
     <desktop-config>
         <!-- seconds it takes between requests for a desktop to be invalidated -->
         <!-- a timer is introduced to avoid invalidation of pages still open -->
-        <desktop-timeout>60</desktop-timeout>
+        <desktop-timeout>30</desktop-timeout>
     </desktop-config>
 
     <session-config>
