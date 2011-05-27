@@ -38,6 +38,7 @@ import org.navalplanner.business.common.daos.IEntitySequenceDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -53,6 +54,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -97,6 +99,7 @@ public class ConfigurationModel implements IConfigurationModel {
     public void init() {
         this.configuration = getCurrentConfiguration();
         initEntitySequences();
+        initLdapConfiguration();
     }
 
     private void initEntitySequences() {
@@ -107,6 +110,12 @@ public class ConfigurationModel implements IConfigurationModel {
         for (EntitySequence entitySequence : entitySequenceDAO.getAll()) {
             entitySequences.get(entitySequence.getEntityName()).add(
                     entitySequence);
+        }
+    }
+
+    private void initLdapConfiguration() {
+        if (null == configuration.getLdapConfiguration()) {
+            configuration.setLdapConfiguration(LDAPConfiguration.create());
         }
     }
 
@@ -140,8 +149,9 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional
     public void confirm() {
         checkEntitySequences();
+        configurationDAO.save(configuration);
         try {
-            configurationDAO.save(configuration);
+
             storeAndRemoveEntitySequences();
         } catch (Exception e) {
             throw new OptimisticLockingFailureException(
@@ -348,7 +358,8 @@ public class ConfigurationModel implements IConfigurationModel {
     @Override
     public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
         if (configuration != null) {
-            configuration.setGenerateCodeForWorkReport(generateCodeForWorkReport);
+            configuration
+                    .setGenerateCodeForWorkReport(generateCodeForWorkReport);
         }
     }
 
@@ -379,8 +390,8 @@ public class ConfigurationModel implements IConfigurationModel {
     public void setGenerateCodeForTypesOfWorkHours(
             Boolean generateCodeForTypesOfWorkHours) {
         if (configuration != null) {
-            configuration.setGenerateCodeForTypesOfWorkHours(
-                    generateCodeForTypesOfWorkHours);
+            configuration
+                    .setGenerateCodeForTypesOfWorkHours(generateCodeForTypesOfWorkHours);
         }
     }
 
@@ -396,8 +407,8 @@ public class ConfigurationModel implements IConfigurationModel {
     public void setGenerateCodeForMaterialCategories(
             Boolean generateCodeForMaterialCategories) {
         if (configuration != null) {
-            configuration.setGenerateCodeForMaterialCategories(
-                    generateCodeForMaterialCategories);
+            configuration
+                    .setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
         }
     }
 
@@ -451,11 +462,9 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void setMonteCarloMethodTabVisible(
-            Boolean visible) {
+    public void setMonteCarloMethodTabVisible(Boolean visible) {
         if (configuration != null) {
-            configuration
-                    .setMonteCarloMethodTabVisible(visible);
+            configuration.setMonteCarloMethodTabVisible(visible);
         }
     }
 
@@ -472,7 +481,7 @@ public class ConfigurationModel implements IConfigurationModel {
             Boolean expandOrderPlanningViewCharts) {
         if (configuration != null) {
             configuration
-                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
+                    .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
         }
     }
 
@@ -570,6 +579,88 @@ public class ConfigurationModel implements IConfigurationModel {
             return scenarios.size() > 1;
         }
         return false;
+    }
+
+    @Override
+    public void setLdapHost(String host) {
+        configuration.getLdapConfiguration().setLdapHost(host);
+    }
+
+    @Override
+    public String getLdapHost() {
+        return configuration.getLdapConfiguration().getLdapHost();
+    }
+
+    @Override
+    public void setLdapPort(String port) {
+        configuration.getLdapConfiguration().setLdapPort(port);
+    }
+
+    @Override
+    public String getLdapPort() {
+        return configuration.getLdapConfiguration().getLdapPort();
+    }
+
+    @Override
+    public void setLdapBase(String base) {
+        configuration.getLdapConfiguration().setLdapBase(base);
+    }
+
+    @Override
+    public String getLdapBase() {
+        return configuration.getLdapConfiguration().getLdapBase();
+    }
+
+    @Override
+    public void setLdapUserDn(String userDn) {
+        configuration.getLdapConfiguration().setLdapUserDn(userDn);
+    }
+
+    @Override
+    public String getLdapUserDn() {
+        return configuration.getLdapConfiguration().getLdapUserDn();
+    }
+
+    @Override
+    public void setLdapPassword(String passwd) {
+        configuration.getLdapConfiguration().setLdapPassword(passwd);
+    }
+
+    @Override
+    public String getLdapPassword() {
+        return configuration.getLdapConfiguration().getLdapPassword();
+    }
+
+    @Override
+    public void setLdapUserId(String userId) {
+        configuration.getLdapConfiguration().setLdapUserId(userId);
+    }
+
+    @Override
+    public String getLdapUserId() {
+        return configuration.getLdapConfiguration().getLdapUserId();
+    }
+
+    @Override
+    public void setSavePasswordsDB(Boolean savePasswordsDB) {
+        configuration.getLdapConfiguration().setLdapSavePasswordsDB(
+                savePasswordsDB);
+    }
+
+    @Override
+    public Boolean isSavePasswordsDB() {
+        return configuration.getLdapConfiguration().getLdapSavePasswordsDB();
+    }
+
+    @Override
+    public Boolean isLdapAuthEnabled() {
+        return configuration.getLdapConfiguration().getLdapAuthEnabled();
+    }
+
+    @Override
+    public void setLdapAuthEnabled(Boolean ldapAuthEnabled) {
+        configuration.getLdapConfiguration()
+                .setLdapAuthEnabled(ldapAuthEnabled);
     }
 
 }

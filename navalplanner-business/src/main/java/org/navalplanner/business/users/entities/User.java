@@ -37,12 +37,14 @@ import org.navalplanner.business.users.daos.IUserDAO;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
+ *
  */
 public class User extends BaseEntity {
 
-    private String loginName="";
+    private String loginName = "";
 
-    private String password="";
+    private String password = "";
 
     private Set<UserRole> roles = new HashSet<UserRole>();
 
@@ -54,10 +56,14 @@ public class User extends BaseEntity {
 
     private Scenario lastConnectedScenario;
 
+    // TODO if a user is a navalplan user or not (ldap)
+    private Boolean navalplanUser;
+
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
-    public User() {}
+    public User() {
+    }
 
     private User(String loginName, String password, Set<UserRole> roles) {
         this.loginName = loginName;
@@ -66,7 +72,7 @@ public class User extends BaseEntity {
     }
 
     public static User create(String loginName, String password,
-        Set<UserRole> roles) {
+            Set<UserRole> roles) {
 
         return create(new User(loginName, password, roles));
 
@@ -76,7 +82,7 @@ public class User extends BaseEntity {
         return create(new User());
     }
 
-    @NotEmpty(message="login name not specified")
+    @NotEmpty(message = "login name not specified")
     public String getLoginName() {
         return loginName;
     }
@@ -85,7 +91,7 @@ public class User extends BaseEntity {
         this.loginName = loginName;
     }
 
-    @NotEmpty(message="password not specified")
+    @NotEmpty(message = "password not specified")
     public String getPassword() {
         return password;
     }
@@ -111,13 +117,14 @@ public class User extends BaseEntity {
     }
 
     /**
-     * Retrieves UserRoles from related Profiles and returns them
-     * together with the UserRoles related directly to the User entity
+     * Retrieves UserRoles from related Profiles and returns them together with
+     * the UserRoles related directly to the User entity
+     *
      * @return A list of UserRole objects
      */
     public Set<UserRole> getAllRoles() {
         Set<UserRole> allRoles = new HashSet<UserRole>(roles);
-        for(Profile profile : getProfiles()) {
+        for (Profile profile : getProfiles()) {
             allRoles.addAll(profile.getRoles());
         }
         return allRoles;
@@ -170,7 +177,7 @@ public class User extends BaseEntity {
         return isInRole(UserRole.ROLE_ADMINISTRATION);
     }
 
-    @AssertTrue(message="login name is already being used by another user")
+    @AssertTrue(message = "login name is already being used by another user")
     public boolean checkConstraintUniqueLoginName() {
 
         IUserDAO userDAO = Registry.getUserDAO();
@@ -195,6 +202,14 @@ public class User extends BaseEntity {
 
     public Scenario getLastConnectedScenario() {
         return lastConnectedScenario;
+    }
+
+    public Boolean isNavalplanUser() {
+        return navalplanUser;
+    }
+
+    public void setNavalplanUser(Boolean navalplanUser) {
+        this.navalplanUser = navalplanUser;
     }
 
 }

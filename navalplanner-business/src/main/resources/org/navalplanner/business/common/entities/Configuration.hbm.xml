@@ -65,7 +65,16 @@
 
         <property name="scenariosVisible" not-null="true"
             column="scenarios_visible" />
-
+        <component name="ldapConfiguration" class="org.navalplanner.business.common.entities.LDAPConfiguration">
+            <property name="ldapHost" column="ldap_Host"/>
+            <property name="ldapPort" column="ldap_port"/>
+            <property name="ldapBase" column="ldap_base"/>
+            <property name="ldapUserDn" column="ldap_userdn"/>
+            <property name="ldapPassword" column="ldap_password"/>
+            <property name="ldapUserId" column="ldap_userid"/>
+            <property name="ldapSavePasswordsDB" column="ldap_save_password_db"/>
+            <property name="ldapAuthEnabled" column="ldap_auth_enabled"/>
+        </component>
     </class>
 
 </hibernate-mapping>

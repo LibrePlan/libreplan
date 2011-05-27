@@ -1,8 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<databaseChangeLog
-    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+    <changeSet id="add-new-column-ldap-host" author="calvarinop">
+        <comment>Add new column to store ldap host</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_host" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-port" author="calvarinop">
+        <comment>Add new column to store ldap port</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_port" type="VARCHAR(5)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-base" author="calvarinop">
+        <comment>Add new column to store ldap base</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_base" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-userdn" author="calvarinop">
+        <comment>Add new column to store ldap userdn</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_userdn" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-password" author="calvarinop">
+        <comment>Add new column to store ldap password</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_password" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-userid" author="calvarinop">
+        <comment>Add new column to store ldap userid</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_userid" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-save-password-db"
+        author="calvarinop">
+        <comment>Add new column to store ldap passwords in database</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_save_password_db" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="add-new-column-ldap-auth-enabled" author="calvarinop">
+        <comment>Add new column to store ldap authentication enabled</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_auth_enabled" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-new-column-navalplan-user"
+        author="idiazt">
+        <comment>Add new column to store if it is a navalplan user</comment>
+        <addColumn tableName="user_table">
+            <column name="navalplan_user" type="BOOLEAN" />
+        </addColumn>
+    </changeSet>
+    <changeSet id="delete-constraint-not-null-user-password"
+        author="idiazt">
+        <comment>Delete constraint not null for user password</comment>
+        <dropNotNullConstraint tableName="user_table"
+            columnName="password" columnDataType="VARCHAR(255)" />
+    </changeSet>
+
 
 </databaseChangeLog>

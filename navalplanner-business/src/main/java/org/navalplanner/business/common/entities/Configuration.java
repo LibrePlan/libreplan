@@ -31,6 +31,7 @@ import org.navalplanner.business.common.BaseEntity;
  * Application configuration variables.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
 public class Configuration extends BaseEntity {
 
@@ -86,6 +87,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean scenariosVisible = false;
 
+    private LDAPConfiguration ldapConfiguration;
+
     public void setDefaultCalendar(BaseCalendar defaultCalendar) {
         this.defaultCalendar = defaultCalendar;
     }
@@ -112,8 +115,73 @@ public class Configuration extends BaseEntity {
         if ((companyCode == null) || (companyCode.isEmpty())) {
             return false;
         }
-
         return !companyCode.contains(" ");
+    }
+
+    @AssertTrue(message = "host not specified")
+    public boolean checkConstraintLdapHostWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapHost())
+                    || getLdapConfiguration().getLdapHost().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "port not specified")
+    public boolean checkConstraintLdapPortWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapPort())
+                    || getLdapConfiguration().getLdapPort().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "base not specified")
+    public boolean checkConstraintLdapBaseWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapBase())
+                    || getLdapConfiguration().getLdapBase().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "userDn not specified")
+    public boolean checkConstraintLdapUserDnWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapUserDn())
+                    || getLdapConfiguration().getLdapUserDn().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "userId not specified")
+    public boolean checkConstraintLdapUserIdWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapUserId())
+                    || getLdapConfiguration().getLdapUserId().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @AssertTrue(message = "userDn not specified")
+    public boolean checkConstraintLdapPasswordWithoutWhiteSpaces() {
+        if (getLdapConfiguration().getLdapAuthEnabled()) {
+            if ((null == getLdapConfiguration().getLdapPassword())
+                    || getLdapConfiguration().getLdapPassword().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
@@ -309,6 +377,14 @@ public class Configuration extends BaseEntity {
     public Boolean getChangedDefaultWswriterPassword() {
         return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
                 : false;
+    }
+
+    public LDAPConfiguration getLdapConfiguration() {
+        return ldapConfiguration;
+    }
+
+    public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
+        this.ldapConfiguration = ldapConfiguration;
     }
 
 }

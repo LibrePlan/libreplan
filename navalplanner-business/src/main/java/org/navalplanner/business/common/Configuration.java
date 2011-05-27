@@ -19,6 +19,7 @@
 
 package org.navalplanner.business.common;
 
+
 /**
  * It contains the compiling option to disable the warning changing default
  * password and implements of singleton pattern.

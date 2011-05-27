@@ -49,9 +49,11 @@ public interface IConfigurationModel {
      * Intermediate conversation steps
      */
     BaseCalendar getDefaultCalendar();
+
     void setDefaultCalendar(BaseCalendar calendar);
 
     String getCompanyCode();
+
     void setCompanyCode(String companyCode);
 
     Boolean getGenerateCodeForWorkReportType();
@@ -68,22 +70,28 @@ public interface IConfigurationModel {
             Boolean generateCodeForCalendarExceptionType);
 
     Boolean getGenerateCodeForCriterion();
+
     void setGenerateCodeForCriterion(Boolean generateCodeForCriterion);
 
     Boolean getGenerateCodeForLabel();
+
     void setGenerateCodeForLabel(Boolean generateCodeForLabel);
 
     Boolean getGenerateCodeForWorkReport();
+
     void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport);
 
     Boolean getGenerateCodeForResources();
+
     void setGenerateCodeForResources(Boolean generateCodeForResources);
 
     Boolean getGenerateCodeForTypesOfWorkHours();
+
     void setGenerateCodeForTypesOfWorkHours(
             Boolean generateCodeForTypesOfWorkHours);
 
     Boolean getGenerateCodeForMaterialCategories();
+
     void setGenerateCodeForMaterialCategories(
             Boolean generateCodeForMaterialCategories);
 
@@ -116,6 +124,7 @@ public interface IConfigurationModel {
      * Final conversation steps
      */
     void confirm();
+
     void cancel();
 
     Boolean getGenerateCodeForUnitTypes();
@@ -143,5 +152,37 @@ public interface IConfigurationModel {
     void setScenariosVisible(Boolean scenariosVisible);
 
     Boolean moreScenariosThanMasterCreated();
+
+    Boolean isSavePasswordsDB();
+
+    void setSavePasswordsDB(Boolean savePasswordsDB);
+
+    String getLdapUserId();
+
+    void setLdapUserId(String userId);
+
+    String getLdapPassword();
+
+    void setLdapPassword(String passwd);
+
+    String getLdapUserDn();
+
+    void setLdapUserDn(String userDn);
+
+    String getLdapBase();
+
+    void setLdapBase(String base);
+
+    String getLdapPort();
+
+    void setLdapPort(String port);
+
+    String getLdapHost();
+
+    void setLdapHost(String host);
+
+    void setLdapAuthEnabled(Boolean ldapAuthEnabled);
+
+    Boolean isLdapAuthEnabled();
 
 }

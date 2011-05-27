@@ -65,11 +65,12 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
 
-
 /**
  * Controller for {@link Configuration} entity.
+ *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Cristina Alavrino Perez <cristina.alvarino@comtecsf.es>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -134,7 +135,8 @@ public class ConfigurationController extends GenericForwardComposer {
             public void onEvent(Event event) throws Exception {
                 Listitem selectedItem = getSelectedItem((SelectEvent) event);
                 if (selectedItem != null) {
-                    ProgressType progressType = (ProgressType) selectedItem.getValue();
+                    ProgressType progressType = (ProgressType) selectedItem
+                            .getValue();
                     configurationModel.setProgressType(progressType);
                 }
             }
@@ -222,8 +224,8 @@ public class ConfigurationController extends GenericForwardComposer {
                 if (seq != null) {
                     Textbox prefixBox = (Textbox) row.getChildren().get(1);
                     if (!seq.isAlreadyInUse()) {
-                        String errorMessage = this.validPrefix(seq, prefixBox
-                                .getValue());
+                        String errorMessage = this.validPrefix(seq,
+                                prefixBox.getValue());
                         if (errorMessage != null) {
                             throw new WrongValueException(prefixBox,
                                     errorMessage);
@@ -274,7 +276,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForCriterion(Boolean generateCodeForCriterion) {
-        configurationModel.setGenerateCodeForCriterion(generateCodeForCriterion);
+        configurationModel
+                .setGenerateCodeForCriterion(generateCodeForCriterion);
     }
 
     public Boolean getGenerateCodeForWorkReportType() {
@@ -320,7 +323,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForWorkReport(Boolean generateCodeForWorkReport) {
-        configurationModel.setGenerateCodeForWorkReport(generateCodeForWorkReport);
+        configurationModel
+                .setGenerateCodeForWorkReport(generateCodeForWorkReport);
     }
 
     public Boolean getGenerateCodeForResources() {
@@ -328,7 +332,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void setGenerateCodeForResources(Boolean generateCodeForResources) {
-        configurationModel.setGenerateCodeForResources(generateCodeForResources);
+        configurationModel
+                .setGenerateCodeForResources(generateCodeForResources);
     }
 
     public Boolean getGenerateCodeForTypesOfWorkHours() {
@@ -337,8 +342,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setGenerateCodeForTypesOfWorkHours(
             Boolean generateCodeForTypesOfWorkHours) {
-        configurationModel.setGenerateCodeForTypesOfWorkHours(
-                generateCodeForTypesOfWorkHours);
+        configurationModel
+                .setGenerateCodeForTypesOfWorkHours(generateCodeForTypesOfWorkHours);
     }
 
     public Boolean getGenerateCodeForMaterialCategories() {
@@ -347,8 +352,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setGenerateCodeForMaterialCategories(
             Boolean generateCodeForMaterialCategories) {
-        configurationModel.setGenerateCodeForMaterialCategories(
-                generateCodeForMaterialCategories);
+        configurationModel
+                .setGenerateCodeForMaterialCategories(generateCodeForMaterialCategories);
     }
 
     public void reloadGeneralConfiguration() {
@@ -459,9 +464,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     group.setOpen(false);
                 }
                 group.setValue(entityName);
-                group
-                        .appendChild(new Label(_(entityName
-                                .getSequenceLiteral())));
+                group.appendChild(new Label(_(entityName.getSequenceLiteral())));
                 group.addEventListener(Events.ON_OPEN, new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
@@ -479,8 +482,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 appendOperations(row, entitySequence);
 
                 if (entitySequence.isAlreadyInUse()) {
-                    row
-                            .setTooltiptext(_("The code sequence is already in use and it can not be updated."));
+                    row.setTooltiptext(_("The code sequence is already in use and it can not be updated."));
                 }
             }
         }
@@ -512,7 +514,7 @@ public class ConfigurationController extends GenericForwardComposer {
         private void updateOtherSequences(final EntitySequence activeSequence) {
             for (EntitySequence sequence : getEntitySequences(activeSequence
                     .getEntityName())) {
-                    sequence.setActive(false);
+                sequence.setActive(false);
             }
         }
 
@@ -584,9 +586,9 @@ public class ConfigurationController extends GenericForwardComposer {
 
                         @Override
                         public String get() {
-                            return EntitySequence.formatValue(entitySequence
-                                    .getNumberOfDigits(), entitySequence
-                                    .getLastValue());
+                            return EntitySequence.formatValue(
+                                    entitySequence.getNumberOfDigits(),
+                                    entitySequence.getLastValue());
                         }
                     });
 
@@ -647,8 +649,8 @@ public class ConfigurationController extends GenericForwardComposer {
         return null;
     }
 
-    public Constraint checkConstraintNumberOfDigits(){
-        return new Constraint(){
+    public Constraint checkConstraintNumberOfDigits() {
+        return new Constraint() {
 
             @Override
             public void validate(Component comp, Object value)
@@ -658,7 +660,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 if (!sequence.isAlreadyInUse()) {
                     Integer numberOfDigits = (Integer) value;
                     try {
-                    sequence.setNumberOfDigits(numberOfDigits);
+                        sequence.setNumberOfDigits(numberOfDigits);
                     } catch (IllegalArgumentException e) {
                         throw new WrongValueException(comp, e.getMessage());
                     }
@@ -685,8 +687,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private void showMessageNotDelete() {
         try {
             Messagebox
-                    .show(
-                            _("It can not be deleted. At least one sequence is necessary."),
+                    .show(_("It can not be deleted. At least one sequence is necessary."),
                             _("Deleting sequence"), Messagebox.OK,
                             Messagebox.INFORMATION);
         } catch (InterruptedException e) {
@@ -749,4 +750,70 @@ public class ConfigurationController extends GenericForwardComposer {
     public boolean moreScenariosThanMasterCreated() {
         return configurationModel.moreScenariosThanMasterCreated();
     }
+
+    // Tab ldap properties
+    public String getLdapHost() {
+        return configurationModel.getLdapHost();
+    }
+
+    public void setLdapHost(String ldapHost) {
+        configurationModel.setLdapHost(ldapHost);
+    }
+
+    public String getLdapPort() {
+        return configurationModel.getLdapPort();
+    }
+
+    public void setLdapPort(String ldapPort) {
+        configurationModel.setLdapPort(ldapPort);
+    }
+
+    public String getLdapBase() {
+        return configurationModel.getLdapBase();
+    }
+
+    public void setLdapBase(String ldapBase) {
+        configurationModel.setLdapBase(ldapBase);
+    }
+
+    public String getLdapUserDn() {
+        return configurationModel.getLdapUserDn();
+    }
+
+    public void setLdapUserDn(String ldapUserDn) {
+        configurationModel.setLdapUserDn(ldapUserDn);
+    }
+
+    public String getLdapPassword() {
+        return configurationModel.getLdapPassword();
+    }
+
+    public void setLdapPassword(String ldapPassword) {
+        configurationModel.setLdapPassword(ldapPassword);
+    }
+
+    public String getLdapUserId() {
+        return configurationModel.getLdapUserId();
+    }
+
+    public void setLdapUserId(String ldapUserId) {
+        configurationModel.setLdapUserId(ldapUserId);
+    }
+
+    public Boolean isLdapSavePasswordsDB() {
+        return configurationModel.isSavePasswordsDB();
+    }
+
+    public void setLdapSavePasswordsDB(Boolean ldapSavePasswordsDB) {
+        configurationModel.setSavePasswordsDB(ldapSavePasswordsDB);
+    }
+
+    public Boolean isLdapAuthEnabled() {
+        return configurationModel.isLdapAuthEnabled();
+    }
+
+    public void setLdapAuthEnabled(Boolean ldapAuthEnabled) {
+        configurationModel.setLdapAuthEnabled(ldapAuthEnabled);
+    }
+
 }

@@ -1,19 +1,18 @@
-
-    <!--
-        This file is part of NavalPlan Copyright (C) 2009-2010 Fundación
-        para o Fomento da Calidade Industrial e Desenvolvemento
-        Tecnolóxico de Galicia This program is free software: you can
-        redistribute it and/or modify it under the terms of the GNU
-        Affero General Public License as published by the Free Software
-        Foundation, either version 3 of the License, or (at your option)
-        any later version. This program is distributed in the hope that
-        it will be useful, but WITHOUT ANY WARRANTY; without even the
-        implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-        PURPOSE. See the GNU Affero General Public License for more
-        details. You should have received a copy of the GNU Affero
-        General Public License along with this program. If not, see
-        <http://www.gnu.org/licenses/>.
-    -->
+<!--
+    This file is part of NavalPlan Copyright (C) 2009-2010 Fundación
+    para o Fomento da Calidade Industrial e Desenvolvemento
+    Tecnolóxico de Galicia This program is free software: you can
+    redistribute it and/or modify it under the terms of the GNU
+    Affero General Public License as published by the Free Software
+    Foundation, either version 3 of the License, or (at your option)
+    any later version. This program is distributed in the hope that
+    it will be useful, but WITHOUT ANY WARRANTY; without even the
+    implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+    PURPOSE. See the GNU Affero General Public License for more
+    details. You should have received a copy of the GNU Affero
+    General Public License along with this program. If not, see
+    <http://www.gnu.org/licenses/>.
+-->
 
 <?page title="${i18n:_('NavalPlan: Configuration')}"?>
 <?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
@@ -36,23 +35,27 @@
             <tabs>
                 <tab label="${i18n:_('Main preferences')}" />
                 <tab label="${i18n:_('Entity sequences')}" />
+                <tab label="${i18n:_('LDAP configuration')}" />
             </tabs>
             <tabpanels>
                 <tabpanel id="panelConfiguration">
-                    <grid fixedLayout="true" id="configurationVariables">
+                    <grid fixedLayout="true"
+                        id="configurationVariables">
                         <columns>
                             <column width="200px" />
                             <column />
                         </columns>
                         <rows>
                             <row>
-                                <label value="${i18n:_('Company code')}" />
+                                <label
+                                    value="${i18n:_('Company code')}" />
                                 <textbox id="companyCode"
                                     value="@{configurationController.companyCode}"
                                     constraint="no empty:${i18n:_('Cannot be empty or null')}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Default calendar')}" />
+                                <label
+                                    value="${i18n:_('Default calendar')}" />
                                 <bandboxSearch
                                     id="defaultCalendarBandboxSearch"
                                     finder="BaseCalendarBandboxFinder"
@@ -60,7 +63,8 @@
                                     selectedElement="@{configurationController.defaultCalendar}" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Show progress')}" />
+                                <label
+                                    value="${i18n:_('Show progress')}" />
                                 <listbox id="lbTypeProgress"
                                     model="@{configurationController.progressTypes}"
                                     itemRenderer="@{configurationController.progressTypeRenderer}"
@@ -68,12 +72,15 @@
                                     mold="select" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Company logo URL')}" />
+                                <label
+                                    value="${i18n:_('Company logo URL')}" />
                                 <textbox id="companyLogoURL"
-                                    value="@{configurationController.companyLogoURL}" width="300px"/>
+                                    value="@{configurationController.companyLogoURL}"
+                                    width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Generate code for')}" />
+                                <label
+                                    value="${i18n:_('Generate code for')}" />
                                 <grid>
                                     <columns>
                                         <column width="50%" />
@@ -170,7 +177,8 @@
 
                             <!-- Perspectives -->
                             <row>
-                                <label value="${i18n:_('Perspectives')}" />
+                                <label
+                                    value="${i18n:_('Perspectives')}" />
                                 <grid>
                                     <columns>
                                         <column width="50%" />
@@ -183,9 +191,10 @@
                                                 checked="@{configurationController.monteCarloMethodTabVisible}" />
                                         </row>
                                         <row>
-                                            <checkbox id="scenariosVisible"
+                                            <checkbox
+                                                id="scenariosVisible"
                                                 label="${i18n:_('Enable scenarios module')}"
-                                                checked = "@{configurationController.scenariosVisible}" />
+                                                checked="@{configurationController.scenariosVisible}" />
                                         </row>
                                     </rows>
                                 </grid>
@@ -194,14 +203,17 @@
                     </grid>
                 </tabpanel>
                 <tabpanel id="panelEntitySequences">
-                    <panel border="normal" title="Entity code sequences">
+                    <panel border="normal"
+                        title="Entity code sequences">
                         <panelchildren id="panelEntitySequence">
                             <vbox>
                                 <hbox valign="center">
-                                    <label value="${i18n:_('Select entity:')}" />
+                                    <label
+                                        value="${i18n:_('Select entity:')}" />
                                     <combobox id="entityCombo"
                                         model="@{configurationController.entityNames}">
-                                        <comboitem self="@{each=entityName}"
+                                        <comboitem
+                                            self="@{each=entityName}"
                                             label="@{entityName.description}"
                                             value="@{entityName}" />
                                     </combobox>
@@ -210,8 +222,7 @@
                                     <textbox id="prefixBox" />
                                     <label
                                         value="${i18n:_('Number of digits:')}" />
-                                    <intbox id="numDigitBox"
-                                        value="5" />
+                                    <intbox id="numDigitBox" value="5" />
                                     <button label="${i18n:_('add')}"
                                         onClick="configurationController.addNewEntitySequence()" />
                                 </hbox>
@@ -221,8 +232,10 @@
                                     fixedLayout="true" height="400px"
                                     rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
                                     <columns sizable="true">
-                                        <column label="${i18n:_('Active')}" />
-                                        <column label="${i18n:_('Prefix')}" />
+                                        <column
+                                            label="${i18n:_('Active')}" />
+                                        <column
+                                            label="${i18n:_('Prefix')}" />
                                         <column
                                             label="${i18n:_('Number of digits')}" />
                                         <column
@@ -235,12 +248,57 @@
                         </panelchildren>
                     </panel>
                 </tabpanel>
+
+                <tabpanel id="panelLDAPConfiguration">
+                    <grid>
+                        <columns>
+                            <column width="200px" />
+                            <column />
+                        </columns>
+                        <rows>
+                            <row>
+                                <label value="${i18n:_('Host:')}" />
+                                <textbox id="ldapHost" value="@{configurationController.ldapHost}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Port:')}" />
+                                <textbox id="ldapPort" value="@{configurationController.ldapPort}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Base:')}" />
+                                <textbox id="ldapBase" value="@{configurationController.ldapBase}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('UserDn:')}" />
+                                <textbox id="ldapUserDn" value="@{configurationController.ldapUserDn}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('UserId:')}" />
+                                <textbox id="ldapUserId" value="@{configurationController.ldapUserId}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Password:')}" />
+                                <textbox id="ldapPassword" value="@{configurationController.ldapPassword}" type="password"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Save passwords in database')}" />
+                                <checkbox id="ldapSavePasswordsDB" checked="@{configurationController.ldapSavePasswordsDB}" />
+                            </row>
+                            <row>
+                                <label value="${i18n:_('LDAP Authentication enabled')}" />
+                                <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapAuthEnabled}" />
+                            </row>
+                        </rows>
+                    </grid>
+                </tabpanel>
             </tabpanels>
         </tabbox>
         <hbox>
-            <button label="${i18n:_('Save')}" sclass="save-button global-action"
+            <button label="${i18n:_('Save')}"
+                sclass="save-button global-action"
                 onClick="configurationController.save()" />
-            <button label="${i18n:_('Cancel')}" sclass="cancel-button global-action"
+            <button label="${i18n:_('Cancel')}"
+                sclass="cancel-button global-action"
                 onClick="configurationController.cancel()" />
         </hbox>
 

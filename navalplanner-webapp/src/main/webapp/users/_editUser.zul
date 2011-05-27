@@ -64,6 +64,10 @@
                                 <textbox id="email"
                                     value="@{controller.user.email}" width="300px"/>
                             </row>
+                            <row>
+                                <label value="${i18n:_('Navalplan user')}:" />
+                                <checkbox id="navalplanUser" checked="@{controller.user.navalplanUser}" />
+                            </row>
                         </rows>
                     </grid>
                     </panelchildren>
