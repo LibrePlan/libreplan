@@ -1627,13 +1627,14 @@ input.z-datebox-text-disd {
 }
 
 .assigned-hours-input {
-    width: 60px
+    width: 60px;
+    margin-left: -20px;
 }
 
 .assigned-resources-input  {
-    width:40px;
+    width: 40px;
     float: left;
-    margin-left: 20px;
+    margin-left: 15px;
 }
 
 .assigned-resources-label {
