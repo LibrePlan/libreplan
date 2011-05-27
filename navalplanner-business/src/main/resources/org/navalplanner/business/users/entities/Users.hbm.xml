@@ -21,7 +21,7 @@
         <version name="version" access="property" type="long" />
         <property name="loginName" not-null="true" unique="true"
             column="login_name" />
-        <property name="password" not-null="true"/>
+        <property name="password"/>
         <property name="email"/>
         <property name="disabled"/>
         <property name="navalplanUser" column="navalplan_user"/>

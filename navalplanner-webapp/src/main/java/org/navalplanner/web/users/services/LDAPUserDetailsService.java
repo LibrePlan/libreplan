@@ -43,8 +43,8 @@ import org.springframework.transaction.annotation.Transactional;
  * At this time it takes values from authenticated user (LDAP or DB) and gets
  * from DB the user properties.
  *
- * @author Ignacio Diaz <ignacio.diaz@comtecsf.es>
- * @author Cristina Alvarino <cristina.alvarino@comtecsf.es>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  *
  */
 public class LDAPUserDetailsService implements UserDetailsService {
@@ -71,7 +71,10 @@ public class LDAPUserDetailsService implements UserDetailsService {
             scenario = PredefinedScenarios.MASTER.getScenario();
         }
 
-        return new CustomUser(user.getLoginName(), user.getPassword(),
+        String password = user.getPassword();
+        if (null == password)
+            password = "foo";
+        return new CustomUser(user.getLoginName(), password,
                 !user.isDisabled(), true, // accountNonExpired
                 true, // credentialsNonExpired
                 true, // accountNonLocked
@@ -89,7 +92,5 @@ public class LDAPUserDetailsService implements UserDetailsService {
         }
 
         return grantedAuthorities;
-
     }
-
 }

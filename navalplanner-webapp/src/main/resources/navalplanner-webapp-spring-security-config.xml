@@ -6,7 +6,7 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-2.0.1.xsd">
 
-    <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
+    <!-- NOTE: see http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.htm
         for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
 
     <http auto-config="true" realm="NavalPlan Web Application">
@@ -64,31 +64,29 @@
         class="org.springframework.security.providers.encoding.ShaPasswordEncoder">
         <beans:constructor-arg value="512" />
     </beans:bean>
+
     <beans:bean id="saltSource"
         class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
         p:userPropertyToUse="username" />
     <!-- <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
-        <custom-authentication-provider /> </beans:bean> -->
+        <custom-authentication-provider/> </beans:bean> -->
     <!-- Beans used by the NavalPlan Web application when users are registered
         in the database. When users are registered externally (e.g. in a LDAP server),
-        these lines may be commented. -->
-<!--     <beans:bean id="dbUserDetailsService"
-        class="org.navalplanner.web.users.services.DBUserDetailsService" /> -->
+        these lines may be commented. <beans:bean id="dbUserDetailsService" class="org.navalplanner.web.users.services.DBUserDetailsService"/> -->
     <beans:bean id="dbPasswordEncoderService"
         class="org.navalplanner.web.users.services.DBPasswordEncoderService"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" />
+
     <beans:bean id="usersBootstrapInDB"
         class="org.navalplanner.web.users.bootstrap.UsersBootstrapInDB"
         p:dbPasswordEncoderService-ref="dbPasswordEncoderService" />
-    <!-- Beans used by the NavalPlan Web Application when users are registered
+    <!-- Beans used by the NavalPlan Web Application when users are registerd
         in LDAP. At this moment users MUST be also in database with same username.
         This will be changed in the near future. the url, base, userDN and password
         properties must be set with the proper values -->
     <beans:bean id="contextSource"
-        class="org.springframework.ldap.core.support.LdapContextSource"
-        p:url="ldap://192.168.65.146:389" p:base="dc=comtecsf,dc=es"
-        p:userDn="cn=admin,dc=comtecsf,dc=es" p:password="proelldap">
+        class="org.navalplanner.web.users.services.LDAPCustomContextSource">
     </beans:bean>
 
     <beans:bean id="ldapTemplate"
@@ -103,7 +101,8 @@
     <beans:bean id="authenticationProvider"
         class="org.navalplanner.web.users.services.LDAPCustomAuthenticationProvider"
         p:userDetailsService-ref="ldapUserDetailsService"
-        p:ldapTemplate-ref="ldapTemplate" p:userId="uid">
+        p:ldapTemplate-ref="ldapTemplate"
+        p:passwordEncoderService-ref="dbPasswordEncoderService">
         <custom-authentication-provider />
     </beans:bean>
 
@@ -111,5 +110,4 @@
         Provider. -->
     <beans:bean id="ldapUserDetailsService"
         class="org.navalplanner.web.users.services.LDAPUserDetailsService" />
-
 </beans:beans>

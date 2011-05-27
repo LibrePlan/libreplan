@@ -26,6 +26,7 @@ import org.navalplanner.business.common.BaseEntity;
  * This entity will be used to store the LDAP connection properties for
  * authentication
  *
+ * @author Ignacio Diaz <ignacio.diaz@comtecsf.es>
  * @author Cristina Alvarino <cristina.alvarino@comtecsf.es>
  *
  */
@@ -48,11 +49,10 @@ public class LDAPConfiguration extends BaseEntity {
 
     private String ldapPassword;
 
-    // TODO Almacena si se guardarán los passwords del ldap en la bd
+    // LDAP passwords will be imported to DB or not
     private Boolean ldapSavePasswordsDB;
 
-    // TODO Guarda si se va a usar la autenticación con el ldap o no(la de
-    // navalplan)
+    // LDAP Authentication will be used or not
     private Boolean ldapAuthEnabled;
 
     public String getLdapUserId() {
@@ -103,7 +103,7 @@ public class LDAPConfiguration extends BaseEntity {
         this.ldapPassword = ldapPassword;
     }
 
-    public Boolean getLdapSavePasswordsDB() {
+    public Boolean isLdapSavePasswordsDB() {
         return ldapSavePasswordsDB;
     }
 

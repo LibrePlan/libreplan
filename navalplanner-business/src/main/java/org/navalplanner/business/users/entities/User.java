@@ -38,6 +38,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  *
  */
 public class User extends BaseEntity {
@@ -57,7 +58,7 @@ public class User extends BaseEntity {
     private Scenario lastConnectedScenario;
 
     // TODO if a user is a navalplan user or not (ldap)
-    private Boolean navalplanUser;
+    private Boolean navalplanUser = true;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -91,7 +92,6 @@ public class User extends BaseEntity {
         this.loginName = loginName;
     }
 
-    @NotEmpty(message = "password not specified")
     public String getPassword() {
         return password;
     }
