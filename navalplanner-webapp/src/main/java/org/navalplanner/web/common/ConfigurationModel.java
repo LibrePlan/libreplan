@@ -649,7 +649,7 @@ public class ConfigurationModel implements IConfigurationModel {
 
     @Override
     public Boolean isSavePasswordsDB() {
-        return configuration.getLdapConfiguration().getLdapSavePasswordsDB();
+        return configuration.getLdapConfiguration().isLdapSavePasswordsDB();
     }
 
     @Override

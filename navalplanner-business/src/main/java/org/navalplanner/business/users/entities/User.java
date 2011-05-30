@@ -57,7 +57,7 @@ public class User extends BaseEntity {
 
     private Scenario lastConnectedScenario;
 
-    // TODO if a user is a navalplan user or not (ldap)
+    // if a user is a navalplan user or not (ldap)
     private Boolean navalplanUser = true;
 
     /**
