@@ -47,6 +47,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.ArrayGroupsModel;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -62,7 +63,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
 
 
@@ -756,5 +756,9 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public boolean moreScenariosThanMasterCreated() {
         return configurationModel.moreScenariosThanMasterCreated();
+    }
+
+    public boolean isChangedDefaultPasswdAdmin() {
+        return configurationModel.isChangedDefaultPasswdAdmin();
     }
 }

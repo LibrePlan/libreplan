@@ -271,7 +271,8 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration == null) {
             return null;
         }
-        return configuration.isAutocompleteLogin();
+        return (configuration.isAutocompleteLogin() && (!configuration
+                .getChangedDefaultAdminPassword()));
     }
 
     @Override
@@ -279,6 +280,12 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setAutocompleteLogin(autocompleteLogin);
         }
+    }
+
+    @Override
+    public Boolean isChangedDefaultPasswdAdmin() {
+        return configuration != null ? configuration
+                .getChangedDefaultAdminPassword() : false;
     }
 
     @Override

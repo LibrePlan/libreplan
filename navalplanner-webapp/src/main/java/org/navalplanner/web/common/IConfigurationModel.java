@@ -146,5 +146,7 @@ public interface IConfigurationModel {
 
     Boolean isAutocompleteLogin();
 
+    Boolean isChangedDefaultPasswdAdmin();
+
     void setAutocompleteLogin(Boolean autocompleteLogin);
 }

@@ -22,6 +22,7 @@
 package org.navalplanner.web.common;
 
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -52,8 +53,11 @@ public class LoginController extends GenericForwardComposer {
      * It returns the login value in function of the property autocompleteLogin.
      */
     public String getLoginValue() {
-        return configurationDAO.getConfigurationWithReadOnlyTransaction()
-                .isAutocompleteLogin() ? this.autocompletLoginValue : null;
+        Configuration configuration = configurationDAO
+                .getConfigurationWithReadOnlyTransaction();
+        return ((configuration.isAutocompleteLogin()) && (!configuration
+                .getChangedDefaultAdminPassword())) ? this.autocompletLoginValue
+                : null;
     }
 
 }
