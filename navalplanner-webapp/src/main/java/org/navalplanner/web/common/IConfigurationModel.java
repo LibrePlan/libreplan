@@ -144,4 +144,7 @@ public interface IConfigurationModel {
 
     Boolean moreScenariosThanMasterCreated();
 
+    Boolean isAutocompleteLogin();
+
+    void setAutocompleteLogin(Boolean autocompleteLogin);
 }

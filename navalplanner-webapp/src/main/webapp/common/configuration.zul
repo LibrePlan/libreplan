@@ -181,6 +181,10 @@
                                             <checkbox
                                                 label="${i18n:_('MonteCarlo method')}"
                                                 checked="@{configurationController.monteCarloMethodTabVisible}" />
+                                            <checkbox id="enableAutocompleteLogin"
+                                                label="${i18n:_('enable autocomplete login')}"
+                                                checked="@{configurationController.autocompleteLogin}"
+                                                onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
                                         <row>
                                             <checkbox id="scenariosVisible"

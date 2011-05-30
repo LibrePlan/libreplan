@@ -19,6 +19,9 @@
 
 package org.navalplanner.business.common;
 
+import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * It contains the compiling option to disable the warning changing default
  * password and implements of singleton pattern.
@@ -28,6 +31,9 @@ package org.navalplanner.business.common;
 public class Configuration {
 
     private static final Configuration singleton = new Configuration();
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     private Boolean defaultPasswordsControl;
 

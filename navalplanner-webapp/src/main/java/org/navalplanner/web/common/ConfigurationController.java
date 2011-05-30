@@ -374,6 +374,14 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
+    public Boolean isAutocompleteLogin() {
+        return configurationModel.isAutocompleteLogin();
+    }
+
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        configurationModel.setAutocompleteLogin(autocompleteLogin);
+    }
+
     public void removeEntitySequence(EntitySequence entitySequence) {
         try {
             configurationModel.removeEntitySequence(entitySequence);

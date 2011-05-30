@@ -267,6 +267,21 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
+    public Boolean isAutocompleteLogin() {
+        if (configuration == null) {
+            return null;
+        }
+        return configuration.isAutocompleteLogin();
+    }
+
+    @Override
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        if (configuration != null) {
+            configuration.setAutocompleteLogin(autocompleteLogin);
+        }
+    }
+
+    @Override
     public Boolean getGenerateCodeForWorkReportType() {
         if (configuration == null) {
             return null;

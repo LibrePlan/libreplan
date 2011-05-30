@@ -55,6 +55,8 @@
             column="changed_default_wsreader_password" />
         <property name="changedDefaultWswriterPassword" not-null="true"
             column="changed_default_wswriter_password" />
+        <property name="autocompleteLogin" not-null="true"
+            column="enabled_autocomplete_login" />
         <property name="progressType" column="progress_type">
             <type name="org.hibernate.type.EnumType">
                 <param name="enumClass">org.navalplanner.business.common.entities.ProgressType</param>

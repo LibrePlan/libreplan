@@ -80,6 +80,8 @@ public class Configuration extends BaseEntity {
 
     private Boolean changedDefaultWswriterPassword = false;
 
+    private Boolean autocompleteLogin = true;
+
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
     private String companyLogoURL = "";
@@ -311,4 +313,11 @@ public class Configuration extends BaseEntity {
                 : false;
     }
 
+    public Boolean isAutocompleteLogin() {
+        return this.autocompleteLogin != null ? this.autocompleteLogin : true;
+    }
+
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        this.autocompleteLogin = autocompleteLogin;
+    }
 }
