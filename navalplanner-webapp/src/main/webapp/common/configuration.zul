@@ -73,6 +73,15 @@
                                     value="@{configurationController.companyLogoURL}" width="300px"/>
                             </row>
                             <row>
+                                <label value="${i18n:_('Autocomplete login form')}" />
+                                <checkbox id="enableAutocompleteLogin"
+                                    label="${i18n:_('Enable/Disable')}"
+                                    disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
+                                    tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
+                                    checked="@{configurationController.autocompleteLogin}"
+                                    onCheck="configurationController.reloadGeneralConfiguration();" />
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Generate code for')}" />
                                 <grid>
                                     <columns>
@@ -181,12 +190,6 @@
                                             <checkbox
                                                 label="${i18n:_('MonteCarlo method')}"
                                                 checked="@{configurationController.monteCarloMethodTabVisible}" />
-                                            <checkbox id="enableAutocompleteLogin"
-                                                label="${i18n:_('enable autocomplete login')}"
-                                                disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
-                                                tooltiptext = "@{configurationController.tooltiptextAutocompleteLogin}"
-                                                checked="@{configurationController.autocompleteLogin}"
-                                                onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
                                         <row>
                                             <checkbox id="scenariosVisible"
