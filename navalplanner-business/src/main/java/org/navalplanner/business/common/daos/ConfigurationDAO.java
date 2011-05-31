@@ -68,11 +68,4 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
         query.executeUpdate();
     }
 
-    @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void disabledAutocompleteLogin() {
-        String sql = "UPDATE Configuration e SET e.enabled_autocomplete_login = false";
-        Query query = getSession().createQuery(sql);
-        query.executeUpdate();
-    }
 }

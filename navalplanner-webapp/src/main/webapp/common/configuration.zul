@@ -184,7 +184,7 @@
                                             <checkbox id="enableAutocompleteLogin"
                                                 label="${i18n:_('enable autocomplete login')}"
                                                 disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
-                                                tooltiptext = "${i18n:_('disable/enable autocomplete property in form login, if the admin password is still in  default.')}"
+                                                tooltiptext = "@{configurationController.tooltiptextAutocompleteLogin}"
                                                 checked="@{configurationController.autocompleteLogin}"
                                                 onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>

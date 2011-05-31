@@ -46,10 +46,4 @@ public interface IConfigurationDAO extends IGenericDAO<Configuration, Long> {
      */
     void saveChangedDefaultPassword(String user, boolean change);
 
-    /**
-     * It disables the value in the field enabled_autocomplete_login of the
-     * Configuration
-     */
-    void disabledAutocompleteLogin();
-
 }

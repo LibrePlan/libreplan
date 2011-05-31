@@ -761,4 +761,8 @@ public class ConfigurationController extends GenericForwardComposer {
     public boolean isChangedDefaultPasswdAdmin() {
         return configurationModel.isChangedDefaultPasswdAdmin();
     }
+
+    public String getTooltiptextAutocompleteLogin() {
+        return _("disable/enable autocomplete property in form login, if the admin password is still in  default.");
+    }
 }
