@@ -14,7 +14,7 @@
            defaultValueBoolean="TRUE" />
         <addNotNullConstraint tableName="configuration"
            columnName="enabled_autocomplete_login"
-            defaultNullValue="FALSE"
+            defaultNullValue="TRUE"
             columnDataType="BOOLEAN" />
     </changeSet>
 
