@@ -35,9 +35,16 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.springframework.ldap.UncategorizedLdapException;
+import org.springframework.ldap.core.DistinguishedName;
+import org.springframework.ldap.core.LdapTemplate;
+import org.springframework.ldap.core.support.DefaultDirObjectFactory;
+import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.ldap.filter.EqualsFilter;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -214,6 +221,35 @@ public class ConfigurationController extends GenericForwardComposer {
         reloadWindow();
         initOpenedGroup();
         reloadEntitySequences();
+    }
+
+    public void testLDAPConnection() {
+        LdapContextSource source = new LdapContextSource();
+        source.setUrl(configurationModel.getLdapConfiguration().getLdapHost());
+        source.setBase(configurationModel.getLdapConfiguration().getLdapBase());
+        source.setUserDn(configurationModel.getLdapConfiguration()
+                .getLdapUserDn());
+        source.setPassword(configurationModel.getLdapConfiguration()
+                .getLdapPassword());
+        source.setDirObjectFactory(DefaultDirObjectFactory.class);
+        source.setPooled(false);
+        try {
+            source.afterPropertiesSet();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        LdapTemplate template = new LdapTemplate(source);
+        try {
+            template.authenticate(DistinguishedName.EMPTY_PATH,
+                    new EqualsFilter(configurationModel.getLdapConfiguration()
+                            .getLdapUserId(), "test").toString(), "test");
+            messages.showMessage(Level.INFO,
+                    _("LDAP connection was successful"));
+        } catch (UncategorizedLdapException ce) {
+            messages.showMessage(Level.ERROR,
+                    _("Cannot connect to LDAP server"));
+        }
     }
 
     private boolean checkValidEntitySequenceRows() {
@@ -752,68 +788,11 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     // Tab ldap properties
-    public String getLdapHost() {
-        return configurationModel.getLdapHost();
+    public LDAPConfiguration getLdapConfiguration() {
+        return configurationModel.getLdapConfiguration();
     }
 
-    public void setLdapHost(String ldapHost) {
-        configurationModel.setLdapHost(ldapHost);
+    public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
+        configurationModel.setLdapConfiguration(ldapConfiguration);
     }
-
-    public String getLdapPort() {
-        return configurationModel.getLdapPort();
-    }
-
-    public void setLdapPort(String ldapPort) {
-        configurationModel.setLdapPort(ldapPort);
-    }
-
-    public String getLdapBase() {
-        return configurationModel.getLdapBase();
-    }
-
-    public void setLdapBase(String ldapBase) {
-        configurationModel.setLdapBase(ldapBase);
-    }
-
-    public String getLdapUserDn() {
-        return configurationModel.getLdapUserDn();
-    }
-
-    public void setLdapUserDn(String ldapUserDn) {
-        configurationModel.setLdapUserDn(ldapUserDn);
-    }
-
-    public String getLdapPassword() {
-        return configurationModel.getLdapPassword();
-    }
-
-    public void setLdapPassword(String ldapPassword) {
-        configurationModel.setLdapPassword(ldapPassword);
-    }
-
-    public String getLdapUserId() {
-        return configurationModel.getLdapUserId();
-    }
-
-    public void setLdapUserId(String ldapUserId) {
-        configurationModel.setLdapUserId(ldapUserId);
-    }
-
-    public Boolean isLdapSavePasswordsDB() {
-        return configurationModel.isSavePasswordsDB();
-    }
-
-    public void setLdapSavePasswordsDB(Boolean ldapSavePasswordsDB) {
-        configurationModel.setSavePasswordsDB(ldapSavePasswordsDB);
-    }
-
-    public Boolean isLdapAuthEnabled() {
-        return configurationModel.isLdapAuthEnabled();
-    }
-
-    public void setLdapAuthEnabled(Boolean ldapAuthEnabled) {
-        configurationModel.setLdapAuthEnabled(ldapAuthEnabled);
-    }
-
 }

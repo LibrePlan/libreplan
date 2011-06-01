@@ -72,6 +72,12 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
             Configuration configuration = Configuration.create();
             configuration.setDefaultCalendar(getDefaultCalendar());
             configuration.setCompanyCode(COMPANY_CODE);
+            LDAPConfiguration ldapConfiguration = configuration
+                    .getLdapConfiguration();
+            if (null == configuration.getLdapConfiguration()) {
+                ldapConfiguration = LDAPConfiguration.create();
+            }
+            configuration.setLdapConfiguration(ldapConfiguration);
             configurationDAO.save(configuration);
         }
     }
@@ -128,5 +134,4 @@ public class ConfigurationBootstrap implements IConfigurationBootstrap {
 
         return calendar;
     }
-
 }

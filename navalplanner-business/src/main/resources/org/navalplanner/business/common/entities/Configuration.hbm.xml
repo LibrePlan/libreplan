@@ -72,8 +72,8 @@
             <property name="ldapUserDn" column="ldap_userdn"/>
             <property name="ldapPassword" column="ldap_password"/>
             <property name="ldapUserId" column="ldap_userid"/>
-            <property name="ldapSavePasswordsDB" column="ldap_save_password_db"/>
-            <property name="ldapAuthEnabled" column="ldap_auth_enabled"/>
+            <property name="ldapSavePasswordsDB" column="ldap_save_password_db" not-null="true"/>
+            <property name="ldapAuthEnabled" column="ldap_auth_enabled" not-null="true"/>
         </component>
     </class>
 

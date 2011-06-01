@@ -50,10 +50,10 @@ public class LDAPConfiguration extends BaseEntity {
     private String ldapPassword;
 
     // LDAP passwords will be imported to DB or not
-    private Boolean ldapSavePasswordsDB;
+    private Boolean ldapSavePasswordsDB = true;
 
     // LDAP Authentication will be used or not
-    private Boolean ldapAuthEnabled;
+    private Boolean ldapAuthEnabled = false;
 
     public String getLdapUserId() {
         return ldapUserId;

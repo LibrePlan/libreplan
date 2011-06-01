@@ -26,8 +26,8 @@
         This will be changed in the near future. the url, base, userDN and password
         properties must be set with the proper values -->
     <bean id="contextSource"
-      class="org.springframework.ldap.core.support.LdapContextSource" p:url="ldap://192.168.65.146:389" p:base="dc=comtecsf,dc=es"
-      p:userDn="cn=admin,dc=comtecsf,dc=es" p:password="proelldap">
+      class="org.springframework.ldap.core.support.LdapContextSource" p:url="ldap://localhost:389" p:base="dc=example,dc=org"
+      p:userDn="cn=admin,dc=example,dc=org" p:password="admin">
     </bean>
 
     <bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate"
@@ -41,7 +41,7 @@
     <bean id="authenticationProvider"
         class="org.navalplanner.web.users.services.LDAPCustomAuthenticationProvider"
         p:userDetailsService-ref="ldapUserDetailsService"
-        p:ldapTemplate-ref="ldapTemplate" p:userId="uid">
+        p:ldapTemplate-ref="ldapTemplate">
     </bean>
 
     <!-- This bean is used to implement UserDetailsService with LDAP authentication

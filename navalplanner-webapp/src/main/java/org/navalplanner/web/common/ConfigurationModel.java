@@ -582,85 +582,11 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void setLdapHost(String host) {
-        configuration.getLdapConfiguration().setLdapHost(host);
+    public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
+        configuration.setLdapConfiguration(ldapConfiguration);
     }
-
     @Override
-    public String getLdapHost() {
-        return configuration.getLdapConfiguration().getLdapHost();
+    public LDAPConfiguration getLdapConfiguration() {
+        return configuration.getLdapConfiguration();
     }
-
-    @Override
-    public void setLdapPort(String port) {
-        configuration.getLdapConfiguration().setLdapPort(port);
-    }
-
-    @Override
-    public String getLdapPort() {
-        return configuration.getLdapConfiguration().getLdapPort();
-    }
-
-    @Override
-    public void setLdapBase(String base) {
-        configuration.getLdapConfiguration().setLdapBase(base);
-    }
-
-    @Override
-    public String getLdapBase() {
-        return configuration.getLdapConfiguration().getLdapBase();
-    }
-
-    @Override
-    public void setLdapUserDn(String userDn) {
-        configuration.getLdapConfiguration().setLdapUserDn(userDn);
-    }
-
-    @Override
-    public String getLdapUserDn() {
-        return configuration.getLdapConfiguration().getLdapUserDn();
-    }
-
-    @Override
-    public void setLdapPassword(String passwd) {
-        configuration.getLdapConfiguration().setLdapPassword(passwd);
-    }
-
-    @Override
-    public String getLdapPassword() {
-        return configuration.getLdapConfiguration().getLdapPassword();
-    }
-
-    @Override
-    public void setLdapUserId(String userId) {
-        configuration.getLdapConfiguration().setLdapUserId(userId);
-    }
-
-    @Override
-    public String getLdapUserId() {
-        return configuration.getLdapConfiguration().getLdapUserId();
-    }
-
-    @Override
-    public void setSavePasswordsDB(Boolean savePasswordsDB) {
-        configuration.getLdapConfiguration().setLdapSavePasswordsDB(
-                savePasswordsDB);
-    }
-
-    @Override
-    public Boolean isSavePasswordsDB() {
-        return configuration.getLdapConfiguration().isLdapSavePasswordsDB();
-    }
-
-    @Override
-    public Boolean isLdapAuthEnabled() {
-        return configuration.getLdapConfiguration().getLdapAuthEnabled();
-    }
-
-    @Override
-    public void setLdapAuthEnabled(Boolean ldapAuthEnabled) {
-        configuration.getLdapConfiguration()
-                .setLdapAuthEnabled(ldapAuthEnabled);
-    }
-
 }

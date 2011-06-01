@@ -66,6 +66,31 @@
         <dropNotNullConstraint tableName="user_table"
             columnName="password" columnDataType="VARCHAR(255)" />
     </changeSet>
-
-
+    <changeSet id="set-default-value-navalplan-user" author="idiazt">
+        <addDefaultValue tableName="user_table"
+           columnName="navalplan_user"
+           defaultValueBoolean="TRUE" />
+       <addNotNullConstraint tableName="user_table"
+           columnName="navalplan_user"
+           defaultNullValue="TRUE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+    <changeSet id="set-default-value-ldap-save-password-db" author="idiazt">
+        <addDefaultValue tableName="configuration"
+           columnName="ldap_save_password_db"
+           defaultValueBoolean="TRUE" />
+       <addNotNullConstraint tableName="configuration"
+           columnName="ldap_save_password_db"
+           defaultNullValue="TRUE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+    <changeSet id="set-default-value-ldap-auth-enabled" author="idiazt">
+        <addDefaultValue tableName="configuration"
+           columnName="ldap_auth_enabled"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="configuration"
+           columnName="ldap_auth_enabled"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
 </databaseChangeLog>

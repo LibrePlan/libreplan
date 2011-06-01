@@ -24,7 +24,7 @@
         <property name="password"/>
         <property name="email"/>
         <property name="disabled"/>
-        <property name="navalplanUser" column="navalplan_user"/>
+        <property name="navalplanUser" column="navalplan_user" not-null="true"/>
 
         <!-- Index created in a database-object section -->
         <set name="roles" table="roles_table">

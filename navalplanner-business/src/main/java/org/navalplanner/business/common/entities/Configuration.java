@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.common.entities;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
@@ -121,8 +122,7 @@ public class Configuration extends BaseEntity {
     @AssertTrue(message = "host not specified")
     public boolean checkConstraintLdapHostWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapHost())
-                    || getLdapConfiguration().getLdapHost().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapHost())) {
                 return false;
             }
         }
@@ -132,8 +132,7 @@ public class Configuration extends BaseEntity {
     @AssertTrue(message = "port not specified")
     public boolean checkConstraintLdapPortWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapPort())
-                    || getLdapConfiguration().getLdapPort().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapPort())) {
                 return false;
             }
         }
@@ -143,8 +142,7 @@ public class Configuration extends BaseEntity {
     @AssertTrue(message = "base not specified")
     public boolean checkConstraintLdapBaseWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapBase())
-                    || getLdapConfiguration().getLdapBase().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapBase())) {
                 return false;
             }
         }
@@ -154,8 +152,7 @@ public class Configuration extends BaseEntity {
     @AssertTrue(message = "userDn not specified")
     public boolean checkConstraintLdapUserDnWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapUserDn())
-                    || getLdapConfiguration().getLdapUserDn().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapUserDn())) {
                 return false;
             }
         }
@@ -165,19 +162,17 @@ public class Configuration extends BaseEntity {
     @AssertTrue(message = "userId not specified")
     public boolean checkConstraintLdapUserIdWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapUserId())
-                    || getLdapConfiguration().getLdapUserId().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapUserId())) {
                 return false;
             }
         }
         return true;
     }
 
-    @AssertTrue(message = "userDn not specified")
+    @AssertTrue(message = "password not specified")
     public boolean checkConstraintLdapPasswordWithoutWhiteSpaces() {
         if (getLdapConfiguration().getLdapAuthEnabled()) {
-            if ((null == getLdapConfiguration().getLdapPassword())
-                    || getLdapConfiguration().getLdapPassword().isEmpty()) {
+            if (StringUtils.isBlank(getLdapConfiguration().getLdapPassword())) {
                 return false;
             }
         }

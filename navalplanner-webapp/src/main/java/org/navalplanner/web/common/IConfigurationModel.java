@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
+import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.entities.ProgressType;
 
 /**
@@ -153,36 +154,8 @@ public interface IConfigurationModel {
 
     Boolean moreScenariosThanMasterCreated();
 
-    Boolean isSavePasswordsDB();
+    void setLdapConfiguration(LDAPConfiguration ldapConfiguration);
 
-    void setSavePasswordsDB(Boolean savePasswordsDB);
-
-    String getLdapUserId();
-
-    void setLdapUserId(String userId);
-
-    String getLdapPassword();
-
-    void setLdapPassword(String passwd);
-
-    String getLdapUserDn();
-
-    void setLdapUserDn(String userDn);
-
-    String getLdapBase();
-
-    void setLdapBase(String base);
-
-    String getLdapPort();
-
-    void setLdapPort(String port);
-
-    String getLdapHost();
-
-    void setLdapHost(String host);
-
-    void setLdapAuthEnabled(Boolean ldapAuthEnabled);
-
-    Boolean isLdapAuthEnabled();
+    LDAPConfiguration getLdapConfiguration();
 
 }

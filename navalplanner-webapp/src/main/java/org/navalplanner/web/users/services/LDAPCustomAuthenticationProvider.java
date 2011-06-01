@@ -27,9 +27,12 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.CommunicationException;
+import org.springframework.ldap.UncategorizedLdapException;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.BadCredentialsException;
 import org.springframework.security.providers.AuthenticationProvider;
@@ -92,6 +95,8 @@ public class LDAPCustomAuthenticationProvider extends
             throws AuthenticationException {
 
         final String usernameInserted = username;
+        String encodedPassword = passwordEncoderService.encodePassword(
+                authentication.getCredentials().toString(), username);
         User user = null;
 
         // Gets user from DB if exists
@@ -111,8 +116,6 @@ public class LDAPCustomAuthenticationProvider extends
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
             // is a NavalPlan user, then we must authenticate against DB
-            String encodedPassword = passwordEncoderService.encodePassword(
-                    authentication.getCredentials().toString(), username);
             if (encodedPassword.equals(user.getPassword())) {
                 // user credentials are ok
                 return getUserDetailsService().loadUserByUsername(username);
@@ -155,87 +158,122 @@ public class LDAPCustomAuthenticationProvider extends
                 }
                 // Sets the new context to ldapTemplate
                 ldapTemplate.setContextSource(context);
-
-                // Test authentication for user against LDAP
-                if (ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
-                        new EqualsFilter(configuration.getLdapUserId(),
-                                username).toString(), authentication
-                                .getCredentials().toString())) {
-                    // Authentication against LDAP was ok
-                    if (null == user) {
-                        // user does not exist in NavalPlan must be imported
-                        final User userNavalplan = User.create();
-                        userNavalplan.setLoginName(username);
-                        // we must check if it is needed to save LDAP passwords
-                        // in
-                        // DB
-                        String encodedPassword = null;
-                        if (configuration.isLdapSavePasswordsDB())
-                            encodedPassword = passwordEncoderService
-                                    .encodePassword(authentication
-                                            .getCredentials().toString(),
-                                            username);
-                        userNavalplan.setPassword(encodedPassword);
-                        userNavalplan.setNavalplanUser(false);
-                        userNavalplan.setDisabled(false);
-                        userNavalplan.addRole(UserRole.ROLE_ADMINISTRATION);
-                        transactionService
-                                .runOnTransaction(new IOnTransaction() {
-                                    @Override
-                                    public Object execute() {
-                                        userDAO.save(userNavalplan);
-                                        return true;
-                                    }
-                                });
-                    } else {
-                        // user exists in NavalPlan
-                        if (configuration.isLdapSavePasswordsDB()) {
-                            String encodedPassword = passwordEncoderService
-                                    .encodePassword(authentication
-                                            .getCredentials().toString(),
-                                            username);
-                            // We must test if user had password in database,
-                            // because the configuration
-                            // of importing passwords could be changed after the
-                            // import of the user
-                            // so the password could be null in database.
-                            if (null == user.getPassword()
-                                    || !(user.getPassword()
-                                            .equals(encodedPassword))) {
-                                user.setPassword(encodedPassword);
-                                final User userNavalplan = user;
-                                transactionService
-                                        .runOnTransaction(new IOnTransaction() {
-                                            @Override
-                                            public Object execute() {
-                                                userDAO.save(userNavalplan);
-                                                return true;
-                                            }
-                                        });
+                try {
+                    // Test authentication for user against LDAP
+                    if (ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
+                            new EqualsFilter(configuration.getLdapUserId(),
+                                    username).toString(), authentication
+                                    .getCredentials().toString())) {
+                        // Authentication against LDAP was ok
+                        if (null == user) {
+                            // user does not exist in NavalPlan must be imported
+                            final User userNavalplan = User.create();
+                            userNavalplan.setLoginName(username);
+                            // we must check if it is needed to save LDAP
+                            // passwords
+                            // in
+                            // DB
+                            encodedPassword = null;
+                            if (configuration.isLdapSavePasswordsDB())
+                                encodedPassword = passwordEncoderService
+                                        .encodePassword(authentication
+                                                .getCredentials().toString(),
+                                                username);
+                            userNavalplan.setPassword(encodedPassword);
+                            userNavalplan.setNavalplanUser(false);
+                            userNavalplan.setDisabled(false);
+                            userNavalplan.addRole(UserRole.ROLE_ADMINISTRATION);
+                            transactionService
+                                    .runOnTransaction(new IOnTransaction() {
+                                        @Override
+                                        public Object execute() {
+                                            userDAO.save(userNavalplan);
+                                            return true;
+                                        }
+                                    });
+                        } else {
+                            // user exists in NavalPlan
+                            if (configuration.isLdapSavePasswordsDB()) {
+                                // We must test if user had password in
+                                // database,
+                                // because the configuration
+                                // of importing passwords could be changed after
+                                // the
+                                // import of the user
+                                // so the password could be null in database.
+                                if (null == user.getPassword()
+                                        || !(user.getPassword()
+                                                .equals(encodedPassword))) {
+                                    user.setPassword(encodedPassword);
+                                    final User userNavalplan = user;
+                                    transactionService
+                                            .runOnTransaction(new IOnTransaction() {
+                                                @Override
+                                                public Object execute() {
+                                                    userDAO.save(userNavalplan);
+                                                    return true;
+                                                }
+                                            });
+                                }
                             }
                         }
+                        // Gets and returns user from DB once authenticated
+                        // against
+                        // LDAP
+                        return getUserDetailsService().loadUserByUsername(
+                                username);
+                    } else {
+                        throw new BadCredentialsException(
+                                "User is not in LDAP.");
                     }
-                    // Gets and returns user from DB once authenticated against
-                    // LDAP
-                    return getUserDetailsService().loadUserByUsername(username);
-                } else {
-                    throw new BadCredentialsException("User is not in LDAP.");
+                } catch (CommunicationException ce) {
+                    // This exception captures when LDAP is not reachable.
+                    // We must in this case try to authenticate against DB.
+                    // LDAP is not enabled we must check if the LDAP user is in
+                    // DB
+                    if (authenticateInDatabase(authentication, username, user)) {
+                        // user credentials are ok
+                        return getUserDetailsService().loadUserByUsername(
+                                username);
+                    } else {
+                        throw new BadCredentialsException(
+                                "Authenticating LDAP user against LDAP. Maybe LDAP is out of service. "
+                                        + "Credentials are not the same as in database.");
+                    }
+                } catch (UncategorizedLdapException ule) {
+                    // This exception captures when LDAP URL is malformed
+                    // this should never occur, but we check it to try
+                    // database authentication.
+                    if (authenticateInDatabase(authentication, username, user)) {
+                        // user credentials are ok
+                        return getUserDetailsService().loadUserByUsername(
+                                username);
+                    } else {
+                        throw new BadCredentialsException(
+                                "LDAP url is malformed. Trying to authenticate against DB. "
+                                        + "Credentials are not the same as in database");
+                    }
                 }
             } else {
                 // LDAP is not enabled we must check if the LDAP user is in DB
-                String encodedPassword = passwordEncoderService.encodePassword(
-                        authentication.getCredentials().toString(), username);
-                if (null != user.getPassword()
-                        && encodedPassword.equals(user.getPassword())) {
+                if (authenticateInDatabase(authentication, username, user)) {
                     // user credentials are ok
                     return getUserDetailsService().loadUserByUsername(username);
                 } else {
                     throw new BadCredentialsException(
-                            "Authenticating LDAP user against LDAP. Maybe LDAP is out of service. "
+                            "Authenticating LDAP user against LDAP was not possible because LDAPAuthentication is not enabled. "
                                     + "Credentials are not the same as in database.");
                 }
             }
         }
+    }
+
+    private boolean authenticateInDatabase(Authentication authentication,
+            String username, User user) {
+        String encodedPassword = passwordEncoderService.encodePassword(
+                authentication.getCredentials().toString(), username);
+        return (null != user.getPassword() && encodedPassword.equals(user
+                .getPassword()));
     }
 
     public DBPasswordEncoderService getPasswordEncoderService() {
