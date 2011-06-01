@@ -469,8 +469,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                                     + o2.taskPoint);
                     int result = o1Depth - o2Depth;
                     if (result == 0) {
-                        return asInt(o2.parentRecalculation)
-                                - asInt(o1.parentRecalculation);
+                        return asInt(o1.parentRecalculation)
+                                - asInt(o2.parentRecalculation);
                     }
                     return result;
                 }
