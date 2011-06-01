@@ -45,6 +45,8 @@ public class HoursWorkedPerResourceDTO {
 
     private String orderElementCode;
 
+    private String orderElementName;
+
     private String descriptionValues;
 
     private String labels;
@@ -59,6 +61,7 @@ Resource resource,
         this.clockFinish = workReportLine.getClockFinish();
         this.numHours = workReportLine.getNumHours();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
+        this.orderElementName = workReportLine.getOrderElement().getName();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
         this.labels = labelsAsString(workReportLine.getLabels());
     }
@@ -125,6 +128,14 @@ Resource resource,
 
     public void setOrderElementCode(String orderElementCode) {
         this.orderElementCode = orderElementCode;
+    }
+
+    public String getOrderElementName() {
+        return orderElementName;
+    }
+
+    public void setOrderElementName(String orderElementName) {
+        this.orderElementName = orderElementName;
     }
 
     public String getDescriptionValues() {
