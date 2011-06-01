@@ -39,6 +39,7 @@ import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
+import org.springframework.ldap.CommunicationException;
 import org.springframework.ldap.UncategorizedLdapException;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -247,6 +248,9 @@ public class ConfigurationController extends GenericForwardComposer {
             messages.showMessage(Level.INFO,
                     _("LDAP connection was successful"));
         } catch (UncategorizedLdapException ce) {
+            messages.showMessage(Level.ERROR,
+                    _("Cannot connect to LDAP server"));
+        } catch (CommunicationException ce) {
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to LDAP server"));
         }

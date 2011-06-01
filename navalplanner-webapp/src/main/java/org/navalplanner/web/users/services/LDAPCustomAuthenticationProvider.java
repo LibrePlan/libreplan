@@ -272,7 +272,8 @@ public class LDAPCustomAuthenticationProvider extends
             String username, User user) {
         String encodedPassword = passwordEncoderService.encodePassword(
                 authentication.getCredentials().toString(), username);
-        return (null != user.getPassword() && encodedPassword.equals(user
+        return (null != user && null != user.getPassword() && encodedPassword
+                .equals(user
                 .getPassword()));
     }
 
