@@ -459,13 +459,6 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
 
                 @Override
                 public int compare(Recalculation o1, Recalculation o2) {
-                    // recalculations that are parent recalculations must go
-                    // first
-                    int result = asInt(o2.parentRecalculation)
-                            - asInt(o1.parentRecalculation);
-                    if (result != 0) {
-                        return result;
-                    }
                     int o1Depth = onNullDefault(
                             taskPointsByDepth.get(o1.taskPoint),
                             Integer.MAX_VALUE, "no depth value for "
@@ -474,7 +467,12 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
                             taskPointsByDepth.get(o2.taskPoint),
                             Integer.MAX_VALUE, "no depth value for "
                                     + o2.taskPoint);
-                    return o1Depth - o2Depth;
+                    int result = o1Depth - o2Depth;
+                    if (result == 0) {
+                        return asInt(o2.parentRecalculation)
+                                - asInt(o1.parentRecalculation);
+                    }
+                    return result;
                 }
 
                 private int asInt(boolean b) {
