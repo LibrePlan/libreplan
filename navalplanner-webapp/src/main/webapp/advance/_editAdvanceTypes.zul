@@ -35,7 +35,7 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Unit name')}" />
-                            <textbox value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
+                            <textbox id="unitName" value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
                                 disabled="@{controller.immutable}" />
                         </row>
                         <row>

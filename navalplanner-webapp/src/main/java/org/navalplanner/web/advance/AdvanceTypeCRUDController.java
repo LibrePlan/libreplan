@@ -48,6 +48,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
@@ -165,14 +167,34 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
-        try {
-            advanceTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, _("Progress type saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-            return false;
+        if (isAllValid()) {
+            try {
+                advanceTypeModel.save();
+                messagesForUser.showMessage(Level.INFO,
+                        _("Progress type saved"));
+                return true;
+            } catch (ValidationException e) {
+                messagesForUser.showInvalidValues(e);
+                return false;
+            }
         }
+        return false;
+    }
+
+    private boolean isAllValid() {
+        Component window = this.getCurrentWindow();
+        Textbox unitName = (Textbox) window.getFellowIfAny("unitName");
+        InputElement defaultMaxValue = (InputElement) window
+                .getFellowIfAny("defaultMaxValue");
+        InputElement precision = (InputElement) window
+                .getFellowIfAny("precision");
+        unitName.setFocus(true);
+        return (isValid(unitName) && isValid(precision) && isValid(defaultMaxValue));
+    }
+
+    private boolean isValid(InputElement inputtext) {
+        inputtext.setFocus(true);
+        return inputtext.isValid();
     }
 
     public void confirmRemove(AdvanceType advanceType) {
