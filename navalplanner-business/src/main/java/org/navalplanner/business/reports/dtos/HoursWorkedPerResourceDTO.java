@@ -24,6 +24,7 @@ package org.navalplanner.business.reports.dtos;
 import java.util.Date;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Resource;
@@ -111,7 +112,7 @@ Resource resource,
     }
 
     public Date getDate() {
-        return date;
+        return LocalDate.fromDateFields(date).toDateTimeAtStartOfDay().toDate();
     }
 
     public void setDate(Date date) {
