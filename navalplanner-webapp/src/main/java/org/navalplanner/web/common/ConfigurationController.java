@@ -231,7 +231,8 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void testLDAPConnection() {
         LdapContextSource source = new LdapContextSource();
-        source.setUrl(configurationModel.getLdapConfiguration().getLdapHost());
+        source.setUrl(configurationModel.getLdapConfiguration().getLdapHost()
+                + ":" + configurationModel.getLdapConfiguration().getLdapPort());
         source.setBase(configurationModel.getLdapConfiguration().getLdapBase());
         source.setUserDn(configurationModel.getLdapConfiguration()
                 .getLdapUserDn());
