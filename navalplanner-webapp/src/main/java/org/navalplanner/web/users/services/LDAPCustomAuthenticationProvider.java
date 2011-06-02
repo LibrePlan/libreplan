@@ -28,6 +28,7 @@ import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.CommunicationException;
+import org.springframework.ldap.ServiceUnavailableException;
 import org.springframework.ldap.UncategorizedLdapException;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -251,6 +252,18 @@ public class LDAPCustomAuthenticationProvider extends
                     } else {
                         throw new BadCredentialsException(
                                 "LDAP url is malformed. Trying to authenticate against DB. "
+                                        + "Credentials are not the same as in database");
+                    }
+                } catch (ServiceUnavailableException sua) {
+                    // This exception captures when LDAP is not available
+                    // We try database authentication.
+                    if (authenticateInDatabase(authentication, username, user)) {
+                        // user credentials are ok
+                        return getUserDetailsService().loadUserByUsername(
+                                username);
+                    } else {
+                        throw new BadCredentialsException(
+                                "LDAP is out of service. Trying to authenticate against DB. "
                                         + "Credentials are not the same as in database");
                     }
                 }
