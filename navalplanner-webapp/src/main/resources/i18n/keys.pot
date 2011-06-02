@@ -6950,7 +6950,7 @@ msgid "Project creation allowed"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/daos/EntitySequenceDAO.java:82
-msgid "You can not remove this order sequence, it is already in use"
+msgid "You can not remove this entity sequence, it is already in use"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
@@ -6967,7 +6967,7 @@ msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/EntitySequence.java:90
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/EntitySequence.java:131
-msgid "You can not modifiy this order sequence, it is already in use"
+msgid "You can not modifiy this entity sequence, it is already in use"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/EntitySequence.java:140
