@@ -10,9 +10,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: 1.1.0\n"
+"Project-Id-Version: 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-11 18:16+0200\n"
+"POT-Creation-Date: 2011-06-02 17:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,7 @@ msgstr ""
 msgid "Show reported hours"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:77
 msgid "Show/Hide Progress"
 msgstr ""
 
@@ -50,12 +50,12 @@ msgstr ""
 msgid "by criteria"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:70
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:69
 msgid "Show/Hide reported hours"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:45
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:44
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 msgid "Zoom"
 msgstr ""
 
@@ -83,7 +83,7 @@ msgstr ""
 msgid "Criterion"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:40
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
 msgid "Print"
 msgstr ""
 
@@ -103,6 +103,9 @@ msgstr ""
 msgid "filtering by name"
 msgstr ""
 
+msgid ""
+msgstr ""
+
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:30
 msgid "End"
 msgstr ""
@@ -119,11 +122,11 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:44
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
 msgid "Filter"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:66
 msgid "Flatten/Unflatten tree"
 msgstr ""
 
@@ -131,12 +134,12 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:51
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
 msgid "Name filter"
 msgstr ""
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:69
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:68
 msgid "Name"
 msgstr ""
 
@@ -144,11 +147,11 @@ msgstr ""
 msgid "Show progress"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
 msgid "Expand/Collapse all"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:35
 msgid "Create Project"
 msgstr ""
 
@@ -164,7 +167,7 @@ msgstr ""
 msgid "Month"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:60
 msgid "Show/Hide resources"
 msgstr ""
 
@@ -188,7 +191,7 @@ msgstr ""
 msgid "Day"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:55
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:54
 msgid "Show/Hide Critical path"
 msgstr ""
 
@@ -200,7 +203,7 @@ msgstr ""
 msgid "Load: {0}%"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:57
 msgid "Show/Hide labels"
 msgstr ""
 
@@ -208,8 +211,8 @@ msgstr ""
 msgid "Hour"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:92
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:113
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
 msgid "Graphics"
 msgstr ""
 
@@ -233,7 +236,7 @@ msgstr ""
 msgid "All"
 msgstr ""
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
 msgid "Refresh"
 msgstr ""
 
