@@ -87,7 +87,7 @@ public class EntitySequence extends BaseEntity {
         if (isAlreadyInUse()) {
             throw new IllegalArgumentException(
                     I18nHelper
-                            ._("You can not modifiy this order sequence, it is already in use"));
+                            ._("You can not modifiy this entity sequence, it is already in use"));
         }
 
         this.prefix = prefix;
@@ -128,7 +128,7 @@ public class EntitySequence extends BaseEntity {
         if (isAlreadyInUse()) {
             throw new IllegalArgumentException(
                     I18nHelper
-                            ._("You can not modifiy this order sequence, it is already in use"));
+                            ._("You can not modifiy this entity sequence, it is already in use"));
         }
 
         if ((numberOfDigits != null)
