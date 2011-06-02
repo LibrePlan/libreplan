@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
@@ -81,6 +83,9 @@ import org.zkoss.zul.api.Window;
  * @author Cristina Alavrino Perez <cristina.alvarino@comtecsf.es>
  */
 public class ConfigurationController extends GenericForwardComposer {
+
+    private static final Log LOG = LogFactory
+            .getLog(ConfigurationController.class);
 
     private final ProgressTypeRenderer progressTypeRenderer = new ProgressTypeRenderer();
 
@@ -247,10 +252,12 @@ public class ConfigurationController extends GenericForwardComposer {
                             .getLdapUserId(), "test").toString(), "test");
             messages.showMessage(Level.INFO,
                     _("LDAP connection was successful"));
-        } catch (UncategorizedLdapException ce) {
+        } catch (UncategorizedLdapException ule) {
+            LOG.info(ule);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to LDAP server"));
         } catch (CommunicationException ce) {
+            LOG.info(ce);
             messages.showMessage(Level.ERROR,
                     _("Cannot connect to LDAP server"));
         }
