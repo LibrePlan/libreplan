@@ -20,12 +20,13 @@
  */
 package org.navalplanner.business.planner.entities;
 
+
 /**
  * Enum with all possible ways of calculating the start of a task <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public enum PositionConstraintType {
-    AS_SOON_AS_POSSIBLE(false) {
+    AS_SOON_AS_POSSIBLE(false, _("as soon as possible")) {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
@@ -37,7 +38,7 @@ public enum PositionConstraintType {
             return true;
         }
     },
-    START_NOT_EARLIER_THAN(true) {
+    START_NOT_EARLIER_THAN(true, _("start not earlier than")) {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
@@ -49,7 +50,7 @@ public enum PositionConstraintType {
             return true;
         }
     },
-    START_IN_FIXED_DATE(true) {
+    START_IN_FIXED_DATE(true, _("start in fixed date")) {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
@@ -61,7 +62,7 @@ public enum PositionConstraintType {
             return true;
         }
     },
-    AS_LATE_AS_POSSIBLE(false) {
+    AS_LATE_AS_POSSIBLE(false, _("as late as possible")) {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
@@ -73,7 +74,7 @@ public enum PositionConstraintType {
             return false;
         }
     },
-    FINISH_NOT_LATER_THAN(true) {
+    FINISH_NOT_LATER_THAN(true, _("finish not later than")) {
 
         @Override
         public PositionConstraintType newTypeAfterMoved() {
@@ -86,16 +87,29 @@ public enum PositionConstraintType {
         }
     };
 
-    private boolean dateRequired;
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
-    private PositionConstraintType(boolean dateRequired) {
+    private boolean dateRequired;
+    private String name;
+
+    private PositionConstraintType(boolean dateRequired, String name) {
         this.dateRequired = dateRequired;
+        this.name = name;
     }
 
     public abstract PositionConstraintType newTypeAfterMoved();
 
     public boolean isAssociatedDateRequired() {
         return dateRequired;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public abstract boolean appliesToTheStart();
