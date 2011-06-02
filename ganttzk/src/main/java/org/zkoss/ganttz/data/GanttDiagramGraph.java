@@ -360,7 +360,8 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements
             Collection<? extends V> tasks) {
         List<V> result = new ArrayList<V>();
         for (V each : tasks) {
-            if (noVisibleDependencies(graph.incomingEdgesOf(each))) {
+            if (noVisibleDependencies(isScheduleForward() ? graph
+                    .incomingEdgesOf(each) : graph.outgoingEdgesOf(each))) {
                 result.add(each);
             }
         }
