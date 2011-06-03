@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -96,17 +97,17 @@ public class OrderElementHistoricalStatisticsComponent extends
                             finishApplications = getFinishedApplicationsNumber()
                                     .toString();
                             averageEstimatedHours = calculateAverageEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             averageWorkedHours = calculateAverageWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             maxEstimatedHours = calculateMaxEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             maxWorkedHours = calculateMaxWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             minEstimatedHours = calculateMinEstimatedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             minWorkedHours = calculateMinWorkedHours()
-                                    .toString();
+                                    .setScale(2).toString();
                             return null;
                         }
                     });

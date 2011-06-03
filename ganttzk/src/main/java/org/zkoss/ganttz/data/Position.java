@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,8 @@
 
 package org.zkoss.ganttz.data;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -69,6 +71,11 @@ public abstract class Position {
 
     public abstract boolean isAppendToTop();
 
+    /**
+     * From most near ancestor, to most remote, i.e., the first ancestor is the
+     * parent and the last one is a top level task. It can return an empty list
+     * if this {@link Position} is {@link #isAtTop()}
+     */
     public abstract List<? extends TaskContainer> getAncestors();
 
     public abstract TaskContainer getParent();
@@ -98,6 +105,23 @@ public abstract class Position {
      *             if not {@link canPop}
      */
     public abstract Position pop() throws UnsupportedOperationException;
+
+    /**
+     * Creates a new position below the current one, with current being the
+     * TaskContainer associated with the current {@link Position}.
+     *
+     * @param current
+     * @param positionInParent
+     * @return
+     */
+    public Position down(TaskContainer current, int positionInParent) {
+        List<TaskContainer> ancestors = new ArrayList<TaskContainer>();
+        ancestors.add(current);
+        ancestors.addAll(getAncestors());
+        return new ChildPosition(ancestors, positionInParent);
+    }
+
+    public abstract Position sameLevelAt(int positionInParent);
 
 
     private static class ChildPosition extends Position {
@@ -137,6 +161,11 @@ public abstract class Position {
         public boolean canPop() {
             return parents.size() > 1;
         }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new ChildPosition(parents, positionInParent);
+        }
     }
 
     private static class AppendToTopPosition extends Position {
@@ -152,7 +181,7 @@ public abstract class Position {
 
         @Override
         public List<? extends TaskContainer> getAncestors() {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         @Override
@@ -163,6 +192,11 @@ public abstract class Position {
         @Override
         public boolean canPop() {
             return false;
+        }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new InsertInTopPosition(positionInParent);
         }
     }
 
@@ -184,7 +218,7 @@ public abstract class Position {
 
         @Override
         public List<? extends TaskContainer> getAncestors() {
-            return Arrays.asList();
+            return Collections.emptyList();
         }
 
         @Override
@@ -195,6 +229,11 @@ public abstract class Position {
         @Override
         public boolean canPop() {
             return false;
+        }
+
+        @Override
+        public Position sameLevelAt(int positionInParent) {
+            return new InsertInTopPosition(positionInParent);
         }
 
     }

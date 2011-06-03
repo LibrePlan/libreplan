@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,6 +62,7 @@ import org.navalplanner.business.requirements.entities.DirectCriterionRequiremen
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.trees.ITreeNode;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -240,8 +242,10 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     private void setupCriterionRequirements(OrderElement orderElement) {
         for (DirectCriterionRequirement each : getDirectCriterionRequirements()) {
-            orderElement.addCriterionRequirement(DirectCriterionRequirement
-                    .copyFrom(each, orderElement));
+            if (orderElement.canAddCriterionRequirement(each)) {
+                orderElement.addCriterionRequirement(DirectCriterionRequirement
+                        .copyFrom(each, orderElement));
+            }
         }
     }
 
@@ -254,7 +258,9 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     private void setupLabels(OrderElement orderElement) {
         for (Label each : getLabels()) {
-            orderElement.addLabel(each);
+            if (orderElement.checkAncestorsNoOtherLabelRepeated(each)) {
+                orderElement.addLabel(each);
+            }
         }
     }
 
@@ -474,6 +480,8 @@ public abstract class OrderElementTemplate extends BaseEntity implements
             }
             catch (NonUniqueResultException e) {
                 return false;
+            } catch (HibernateOptimisticLockingFailureException e) {
+                return true;
             }
         }
     }
@@ -518,13 +526,15 @@ public abstract class OrderElementTemplate extends BaseEntity implements
 
     }
 
-    protected void removeCriterionRequirement(CriterionRequirement requirement) {
+    @Override
+    public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().
                     getChildren().remove((IndirectCriterionRequirement)requirement);
         }
     }
+
     @Override
     public void addCriterionRequirement(
             CriterionRequirement criterionRequirement) {

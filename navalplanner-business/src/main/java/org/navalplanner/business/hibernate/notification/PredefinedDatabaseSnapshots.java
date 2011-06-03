@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,15 +22,16 @@ package org.navalplanner.business.hibernate.notification;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
@@ -93,9 +95,9 @@ public class PredefinedDatabaseSnapshots {
     @Autowired
     private ISnapshotRefresherService snapshotRefresherService;
 
-    private IAutoUpdatedSnapshot<Map<CriterionType, List<Criterion>>> criterionsMap;
+    private IAutoUpdatedSnapshot<SortedMap<CriterionType, List<Criterion>>> criterionsMap;
 
-    public Map<CriterionType, List<Criterion>> snapshotCriterionsMap() {
+    public SortedMap<CriterionType, List<Criterion>> snapshotCriterionsMap() {
         return criterionsMap.getValue();
     }
 
@@ -238,18 +240,31 @@ public class PredefinedDatabaseSnapshots {
     @Autowired
     private ICriterionDAO criterionDAO;
 
-    private Callable<Map<CriterionType, List<Criterion>>> calculateCriterionsMap() {
-        return new Callable<Map<CriterionType, List<Criterion>>>() {
+    private Callable<SortedMap<CriterionType, List<Criterion>>> calculateCriterionsMap() {
+        return new Callable<SortedMap<CriterionType, List<Criterion>>>() {
             @Override
-            public Map<CriterionType, List<Criterion>> call() throws Exception {
-                Map<CriterionType, List<Criterion>> result = new HashMap<CriterionType, List<Criterion>>();
+            public SortedMap<CriterionType, List<Criterion>> call()
+                    throws Exception {
+                SortedMap<CriterionType, List<Criterion>> result = new TreeMap<CriterionType, List<Criterion>>(
+                        getComparatorByName());
                 for (CriterionType criterionType : criterionTypeDAO
-                        .getCriterionTypes()) {
-                    List<Criterion> criterions = new ArrayList<Criterion>(
-                            criterionDAO.findByType(criterionType));
-                    result.put(criterionType, criterions);
+                        .getSortedCriterionTypes()) {
+                    if (criterionType.isEnabled()) {
+                        List<Criterion> criterions = criterionType
+                                .getSortCriterions();
+                        result.put(criterionType, criterions);
+                    }
                 }
                 return result;
+            }
+        };
+    }
+
+    private Comparator<CriterionType> getComparatorByName(){
+        return new Comparator<CriterionType>() {
+            @Override
+            public int compare(CriterionType arg0, CriterionType arg1) {
+                return (arg0.getName().compareTo(arg1.getName()));
             }
         };
     }
@@ -318,16 +333,20 @@ public class PredefinedDatabaseSnapshots {
             @Override
             public Map<Class<?>, List<Resource>> call() throws Exception {
                 Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
-                result.put(Worker.class,
-                        new ArrayList<Resource>(resourceDAO.getRealWorkers()));
-                result.put(Machine.class,
-                        new ArrayList<Resource>(resourceDAO.getMachines()));
-                result.put(VirtualWorker.class, new ArrayList<Resource>(
-                        resourceDAO.getVirtualWorkers()));
+                result.put(Worker.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getRealWorkers())));
+                result.put(Machine.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getMachines())));
+                result.put(VirtualWorker.class, Resource
+                        .sortByName(new ArrayList<Resource>(resourceDAO
+                                .getVirtualWorkers())));
                 return result;
             }
         };
     }
+
 
     @Autowired
     private IExternalCompanyDAO externalCompanyDAO;

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,7 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import java.util.Date;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,65 +60,98 @@ public class CalendarData extends IntegrationEntity {
         }
     }
 
-    public void updateHourPerDay(Map<Integer, Integer> hoursPerDay)
+    public void updateCapacitiesPerDay(Map<Integer, Capacity> capacityPerDay)
             throws IllegalArgumentException {
-        if ((hoursPerDay != null)) {
-            for (Days day : Days.values()) {
-                Integer hours = hoursPerDay.get(day.ordinal());
-                if (hours != null) {
-                    setDurationAt(day, EffortDuration.hours(hours));
-                }
+        if (capacityPerDay == null) {
+            return;
+        }
+        for (Days day : Days.values()) {
+            Capacity capacity = capacityPerDay.get(day.ordinal());
+            if (capacity != null) {
+                setCapacityAt(day, capacity);
             }
         }
     }
 
-    private Map<Integer, EffortDuration> effortPerDay;
+    private Map<Integer, Capacity> capacityPerDay;
 
     private LocalDate expiringDate;
 
     private BaseCalendar parent;
 
     public enum Days {
-        MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+        MONDAY(_("Monday")), TUESDAY(_("Tuesday")), WEDNESDAY(_("Wednesday")), THURSDAY(
+                _("Thursday")), FRIDAY(_("Friday")), SATURDAY(_("Saturday")), SUNDAY(
+                _("Sunday"));
+
+        /**
+         * Forces to mark the string as needing translation
+         */
+        private static String _(String string) {
+            return string;
+        }
+
+        private String name;
+
+        private Days(String name) {
+            this.name = name;
+        }
+
+        public String getName() {
+            return name;
+        }
+
     }
 
     /**
      * Constructor for hibernate. Do not use!
      */
     public CalendarData() {
-        effortPerDay = new HashMap<Integer, EffortDuration>();
+        capacityPerDay = new HashMap<Integer, Capacity>();
         for (Days each : Days.values()) {
-            setDurationAt(each, null);
+            setCapacityAt(each, null);
         }
     }
 
     public Map<Integer, Integer> getHoursPerDay() {
-        return asHours(effortPerDay);
+        return asHours(capacityPerDay);
     }
 
-    private Map<Integer, Integer> asHours(Map<Integer, EffortDuration> efforts) {
+    private Map<Integer, Integer> asHours(Map<Integer, Capacity> capacities) {
         Map<Integer, Integer> result = new HashMap<Integer, Integer>();
-        for (Entry<Integer, EffortDuration> each : efforts.entrySet()) {
-            EffortDuration value = each.getValue();
+        for (Entry<Integer, Capacity> each : capacities.entrySet()) {
+            EffortDuration value = toDuration(each.getValue());
             result.put(each.getKey(), value == null ? null : value.getHours());
         }
         return result;
     }
 
-    public EffortDuration getDurationAt(Days day) {
-        return effortPerDay.get(day.ordinal());
+    private static EffortDuration toDuration(Capacity capacity) {
+        if (capacity == null) {
+            return null;
+        }
+        return capacity.getStandardEffort();
     }
 
-    public void setDurationAt(Days day, EffortDuration duration) {
-        effortPerDay.put(day.ordinal(), duration);
+    public Capacity getCapacityOn(Days day) {
+        return capacityPerDay.get(day.ordinal());
     }
+
+    public Map<Integer, Capacity> getCapacityPerDay() {
+        return Collections.unmodifiableMap(capacityPerDay);
+    }
+
+    public void setCapacityAt(Days day, Capacity capacity) {
+        capacityPerDay.put(day.ordinal(), capacity);
+    }
+
 
     public boolean isDefault(Days day) {
-        return getDurationAt(day) == null;
+        return getCapacityOn(day) == null;
     }
 
     public void setDefault(Days day) {
-        setDurationAt(day, null);
+        setCapacityAt(day, null);
     }
 
     /**
@@ -127,18 +161,14 @@ public class CalendarData extends IntegrationEntity {
         return expiringDate;
     }
 
-    public void setExpiringDate(Date expiringDate) {
-        setExpiringDate(new LocalDate(expiringDate));
-    }
-
     public void setExpiringDate(LocalDate expiringDate) {
         this.expiringDate = expiringDate;
     }
 
     public CalendarData copy() {
         CalendarData copy = create();
-        copy.effortPerDay = new HashMap<Integer, EffortDuration>(
-                this.effortPerDay);
+        copy.capacityPerDay = new HashMap<Integer, Capacity>(
+                this.capacityPerDay);
         copy.expiringDate = this.expiringDate;
         copy.parent = this.parent;
 
@@ -171,8 +201,15 @@ public class CalendarData extends IntegrationEntity {
     }
 
     boolean isEmptyFor(Days day) {
-        return !isDefault(day) && getDurationAt(day).isZero() || isDefault(day)
-                && hasParent() && getParent().onlyGivesZeroHours(day);
+        if (isDefault(day)) {
+            if (hasParent()) {
+                return getParent().onlyGivesZeroHours(day);
+            } else {
+                return true;
+            }
+        } else {
+            return getCapacityOn(day).isZero();
+        }
     }
 
     private boolean hasParent() {

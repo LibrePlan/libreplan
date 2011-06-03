@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +22,7 @@
 package org.navalplanner.business.planner.entities;
 
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 /**
  * This interface represents an object on which an allocation can be done
@@ -32,10 +34,69 @@ public interface IAllocatable extends IAllocateResourcesPerDay {
 
     public IAllocateResourcesPerDay resourcesPerDayFromEndUntil(LocalDate start);
 
-    public IAllocateHoursOnInterval onInterval(LocalDate start, LocalDate end);
+    /**
+     * @see IAllocatable#onIntervalWithinTask(IntraDayDate, IntraDayDate)
+     */
+    public IAllocateEffortOnInterval onIntervalWithinTask(
+            LocalDate startInclusive, LocalDate endExclusive);
 
-    public IAllocateHoursOnInterval fromStartUntil(LocalDate endExclusive);
+    /**
+     * <p>
+     * It does the allocation in the intersection of the underlying task's
+     * bounds and the interval specified. This ensures it can't modify the start
+     * and end of the task. The start and end of the allocation can grow, but
+     * they can't be shrunk.
+     * </p>
+     * <p>
+     * Putting it in another way: This method can't be used to expand an
+     * allocation beyond the task's bounds.
+     * </p>
+     *
+     * @param start
+     * @param end
+     * @return an object which can be used to allocate hours on the interval
+     *         specified with the considerations noted above
+     */
+    public IAllocateEffortOnInterval onIntervalWithinTask(IntraDayDate start,
+            IntraDayDate end);
 
-    public IAllocateHoursOnInterval fromEndUntil(LocalDate start);
+    /**
+     * @see IAllocatable#onInterval(IntraDayDate, IntraDayDate)
+     */
+    public IAllocateEffortOnInterval onInterval(LocalDate startInclusive,
+            LocalDate endExclusive);
+
+    /**
+     * It does the allocation in the interval specified with one consideration:
+     * the consolidated part of the allocation is never modified.
+     *
+     * @param startInclusive
+     * @param endExclusive
+     * @return an object which can be used to allocate hours on the interval
+     *         specified with the considerations noted above
+     */
+    public IAllocateEffortOnInterval onInterval(IntraDayDate start,
+            IntraDayDate end);
+
+    /**
+     * It allocates the effort specified on the interval from the start, i.e.
+     * first day not consolidated to the specified end. All previous assignments
+     * are removed, but the consolidated ones.
+     *
+     * @param endExclusive
+     * @return
+     */
+    public IAllocateEffortOnInterval fromStartUntil(LocalDate endExclusive);
+
+    /**
+     * It allocates the effort specified on the interval from the end until the
+     * start. Being the start the maximum of the provided start and the first
+     * not consolidated day. All previous assignments are removed, but the
+     * consolidated ones.
+     *
+     * @param endExclusive
+     * @return
+     */
+    public IAllocateEffortOnInterval fromEndUntil(LocalDate start);
 
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,16 +41,20 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
+import org.zkoss.zul.api.Rows;
 
 /**
  * CRUD Controller for {@link LabelType}
@@ -89,11 +94,89 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(messagesContainer);
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
-        gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
-        gridLabelTypes = (Grid) listWindow.getFellowIfAny("gridLabelTypes");
+        initializeLabelsGrid();
+        initializeLabelTypesGrid();
         showListWindow();
         newLabelTextbox = (Textbox) editWindow
                 .getFellowIfAny("newLabelTextbox");
+    }
+
+    private void initializeLabelsGrid() {
+        gridLabels = (Grid) editWindow.getFellowIfAny("gridLabels");
+        // Renders grid and enables delete button if label is new
+        gridLabels.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                gridLabels.renderAll();
+
+                final Rows rows = gridLabels.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final Label label = (Label) row.getValue();
+                    Button btnDelete = (Button) row.getChildren().get(2);
+                    if (!canRemoveLabel(label)) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete
+                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setTooltiptext("");
+                    }
+                }
+            }
+
+            private boolean canRemoveLabel(Label label) {
+                if (label.isNewObject()) {
+                    return true;
+                }
+                return label.getOrderElements().isEmpty();
+            }
+
+        });
+    }
+
+    private void initializeLabelTypesGrid() {
+        gridLabelTypes = (Grid) listWindow.getFellowIfAny("labelTypes");
+
+        gridLabelTypes.addEventListener("onInitRender", new EventListener() {
+
+            @Override
+            public void onEvent(Event event) throws Exception {
+                gridLabelTypes.renderAll();
+
+                final Rows rows = gridLabelTypes.getRows();
+                for (Iterator i = rows.getChildren().iterator(); i.hasNext();) {
+                    final Row row = (Row) i.next();
+                    final LabelType labelType = (LabelType) row.getValue();
+                    Hbox hbox = (Hbox) row.getChildren().get(2);
+                    Button btnDelete = (Button) hbox.getChildren().get(1);
+                    if (!canRemoveLabelType(labelType)) {
+                        btnDelete.setDisabled(true);
+                        btnDelete.setImage("/common/img/ico_borrar_out.png");
+                        btnDelete
+                                .setHoverImage("/common/img/ico_borrar_out.png");
+                        btnDelete.setTooltiptext("");
+                    }
+                }
+            }
+
+            private boolean canRemoveLabelType(LabelType labelType) {
+                boolean canRemove = true;
+                if (labelType.isNewObject()) {
+                    return canRemove;
+                }
+                // If at least one of its labels is being used by and
+                // orderelement, cannot remove labelType
+                for (Label each: labelType.getLabels()) {
+                    if (!each.getOrderElements().isEmpty()) {
+                        canRemove = false;
+                        break;
+                    }
+                }
+                return canRemove;
+            }
+
+        });
     }
 
     private void showListWindow() {
@@ -270,13 +353,29 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     }
 
     public void createLabel() {
-        validate();
-        labelTypeModel.addLabel(newLabelTextbox.getValue());
-        Util.reloadBindings(gridLabels);
-        // After adding a new row, model might be disordered, so we force it to
-        // sort again respecting previous settings
-        forceSortGridLabels();
-        newLabelTextbox.setValue("");
+        try{
+            validateNewLabel();
+            validate();
+            labelTypeModel.addLabel(newLabelTextbox.getValue());
+            Util.reloadBindings(gridLabels);
+            // After adding a new row, model might be disordered, so we force it
+            // to
+            // sort again respecting previous settings
+            forceSortGridLabels();
+            newLabelTextbox.setValue("");
+        } catch (ValidationException e) {
+            for (InvalidValue invalidValue : e.getInvalidValues()) {
+                messagesForUser.showMessage(Level.ERROR, invalidValue
+                        .getMessage());
+            }
+        }
+    }
+
+    private String validateNewLabel() throws ValidationException {
+        String name = newLabelTextbox.getValue();
+        labelTypeModel.validateNameNotEmpty(name);
+        labelTypeModel.thereIsOtherWithSameNameAndType(name);
+        return name;
     }
 
     /**

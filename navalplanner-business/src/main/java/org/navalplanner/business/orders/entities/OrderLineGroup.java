@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,7 +35,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
@@ -46,9 +47,11 @@ import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
+import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
@@ -87,10 +90,17 @@ public class OrderLineGroup extends OrderElement implements
         }
 
         @Override
+        protected void onChildAddedAdditionalActions(OrderElement newChild) {
+            updateCriterionRequirements();
+            newChild.updateLabels();
+        }
+
+        @Override
         protected void onChildRemovedAdditionalActions(OrderElement removedChild) {
             if (removedChild.isScheduled() && getThis().isScheduled()) {
                 removeChildTask(removedChild);
             }
+            updateCriterionRequirements();
         }
 
         private void removeChildTask(OrderElement removedChild) {
@@ -154,41 +164,43 @@ public class OrderLineGroup extends OrderElement implements
         }
     }
 
-    private void updateSpreadAdvance(){
-        if(getReportGlobalAdvanceAssignment() == null){
-            AdvanceType type = PredefinedAdvancedTypes.PERCENTAGE.getType();
-            DirectAdvanceAssignment advancePercentage = getAdvanceAssignmentByType(type);
-            if(advancePercentage != null) {
-                if(advancePercentage.isFake()){
-                    for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
-                        if (type != null && each.getAdvanceType().getId().equals(type.getId())) {
-                            each.setReportGlobalAdvance(true);
-                        }
-                    }
-                }else{
-                    advancePercentage.setReportGlobalAdvance(true);
-                }
-            } else {
-                for (DirectAdvanceAssignment advance : getDirectAdvanceAssignments()) {
-                    advance.setReportGlobalAdvance(true);
-                    return;
-                }
-                for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
-                    advance.setReportGlobalAdvance(true);
+    @Override
+    protected void updateSpreadAdvance() {
+        if (getReportGlobalAdvanceAssignment() == null) {
+            // Set CHILDREN type as spread if any
+            String type = PredefinedAdvancedTypes.CHILDREN.getTypeName();
+            for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {
+                if (each.getAdvanceType() != null
+                        && each.getAdvanceType().getType() != null
+                        && each.getAdvanceType().getType().equals(type)) {
+                    each.setReportGlobalAdvance(true);
                     return;
                 }
             }
+
+            // Otherwise, set first indirect advance assignment
+            if (!indirectAdvanceAssignments.isEmpty()) {
+                indirectAdvanceAssignments.iterator().next()
+                        .setReportGlobalAdvance(true);
+                return;
+            }
+
+            super.updateSpreadAdvance();
         }
     }
 
     public boolean existChildrenAdvance() {
+        return (getChildrenAdvance() != null);
+    }
+
+    public IndirectAdvanceAssignment getChildrenAdvance() {
         for (IndirectAdvanceAssignment advance : getIndirectAdvanceAssignments()) {
             if (advance.getAdvanceType().getUnitName().equals(
                     PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
-                return true;
+                return advance;
             }
         }
-        return false;
+        return null;
     }
 
     private List<OrderElement> children = new ArrayList<OrderElement>();
@@ -234,6 +246,9 @@ public class OrderLineGroup extends OrderElement implements
     }
 
     private void addIndirectAdvanceAssignments(OrderElement orderElement) {
+        orderElement
+                .removeDirectAdvancesInList(getDirectAdvanceAssignmentsAndAllInAncest());
+
         for (DirectAdvanceAssignment directAdvanceAssignment : orderElement.directAdvanceAssignments) {
             IndirectAdvanceAssignment indirectAdvanceAssignment = IndirectAdvanceAssignment
                     .create();
@@ -248,6 +263,10 @@ public class OrderLineGroup extends OrderElement implements
                     .getIndirectAdvanceAssignments()) {
                 this.addIndirectAdvanceAssignment(indirectAdvanceAssignment);
             }
+        }
+
+        if (!indirectAdvanceAssignments.isEmpty()) {
+            addChildrenAdvanceOrderLineGroup();
         }
     }
 
@@ -264,6 +283,11 @@ public class OrderLineGroup extends OrderElement implements
                         .getAdvanceType());
             }
         }
+
+        if (children.isEmpty() && (indirectAdvanceAssignments.size() == 1)
+                && existChildrenAdvance()) {
+            removeChildrenAdvanceOrderLineGroup();
+        }
     }
 
     @Override
@@ -279,13 +303,62 @@ public class OrderLineGroup extends OrderElement implements
     public OrderLine toLeaf() {
         OrderLine result = OrderLine.create();
 
-        result.setName(getName());
+        result.infoComponent = getInfoComponent().copy();
+        result.setCode(null);
         result.setInitDate(getInitDate());
         result.setDeadline(getDeadline());
+
         result.setWorkHours(0);
-        result.directAdvanceAssignments = new HashSet<DirectAdvanceAssignment>(
-                this.directAdvanceAssignments);
+
+        result.directAdvanceAssignments = copyDirectAdvanceAssignments(this,
+                result);
+        result.materialAssignments = copyMaterialAssignments(this, result);
+        result.labels = copyLabels(this, result);
+        result.taskQualityForms = copyTaskQualityForms(this, result);
+
         copyRequirementToOrderElement(result);
+
+        result.initializeTemplate(this.getTemplate());
+
+        result.setExternalCode(getExternalCode());
+
+        return result;
+    }
+
+    private static Set<DirectAdvanceAssignment> copyDirectAdvanceAssignments(
+            OrderElement origin, OrderElement destination) {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+        for (DirectAdvanceAssignment each : origin.directAdvanceAssignments) {
+            result.add(DirectAdvanceAssignment.copy(each, destination));
+        }
+        return result;
+    }
+
+    private static Set<MaterialAssignment> copyMaterialAssignments(
+            OrderElement origin, OrderElement destination) {
+        Set<MaterialAssignment> result = new HashSet<MaterialAssignment>();
+        for (MaterialAssignment each : origin.materialAssignments) {
+            result.add(MaterialAssignment.copy(each, destination));
+        }
+        return result;
+    }
+
+    private static Set<Label> copyLabels(
+            OrderElement origin, OrderElement destination) {
+        Set<Label> result = new HashSet<Label>();
+        for (Label each : origin.labels) {
+            destination.addLabel(each);
+            result.add(each);
+        }
+        return result;
+    }
+
+    private static Set<TaskQualityForm> copyTaskQualityForms(
+            OrderElement origin, OrderElement destination) {
+        Set<TaskQualityForm> result = new HashSet<TaskQualityForm>();
+        for (TaskQualityForm each : origin.taskQualityForms) {
+            result.add(TaskQualityForm.copy(each, destination));
+        }
         return result;
     }
 
@@ -532,9 +605,9 @@ public class OrderLineGroup extends OrderElement implements
             next2 = null;
         }
 
-        BigDecimal previous1 = new BigDecimal(0);
-        BigDecimal previous2 = new BigDecimal(0);
-        BigDecimal previousResult = new BigDecimal(0);
+        BigDecimal previous1 = BigDecimal.ZERO;
+        BigDecimal previous2 = BigDecimal.ZERO;
+        BigDecimal previousResult = BigDecimal.ZERO;
 
         LocalDate date;
         BigDecimal add;
@@ -818,7 +891,10 @@ public class OrderLineGroup extends OrderElement implements
 
     public void addIndirectAdvanceAssignment(
             IndirectAdvanceAssignment indirectAdvanceAssignment) {
-        if (!existsIndirectAdvanceAssignmentWithTheSameType(indirectAdvanceAssignment)) {
+        if ((!existsIndirectAdvanceAssignmentWithTheSameType(indirectAdvanceAssignment
+                .getAdvanceType()))
+                && (!existsDirectAdvanceAssignmentWithTheSameType(indirectAdvanceAssignment
+                        .getAdvanceType()))) {
             indirectAdvanceAssignments.add(indirectAdvanceAssignment);
         }
         if (parent != null) {
@@ -846,6 +922,7 @@ public class OrderLineGroup extends OrderElement implements
             }
             if (toRemove != null) {
                 indirectAdvanceAssignments.remove(toRemove);
+                updateSpreadAdvance();
             }
 
             if (parent != null) {
@@ -856,19 +933,6 @@ public class OrderLineGroup extends OrderElement implements
             // AdvanceType in some children, the IndirectAdvanceAssignment
             // should persist
         }
-    }
-
-    private boolean existsIndirectAdvanceAssignmentWithTheSameType(
-            IndirectAdvanceAssignment newIndirectAdvanceAssignment) {
-        String unitName = newIndirectAdvanceAssignment.getAdvanceType()
-                .getUnitName();
-        for (IndirectAdvanceAssignment indirectAdvanceAssignment : indirectAdvanceAssignments) {
-            if (unitName.equals(indirectAdvanceAssignment.getAdvanceType()
-                    .getUnitName())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean existsIndirectAdvanceAssignmentWithTheSameType(
@@ -920,6 +984,25 @@ public class OrderLineGroup extends OrderElement implements
             }
         }
         return null;
+    }
+
+    @Override
+    public void removeReportGlobalAdvanceAssignment() {
+        Set<AdvanceAssignment> advanceAssignments = new HashSet<AdvanceAssignment>();
+        advanceAssignments.addAll(getDirectAdvanceAssignments());
+        advanceAssignments.addAll(getIndirectAdvanceAssignments());
+
+        AdvanceAssignment advanceAssignment = null;
+        for (AdvanceAssignment each : advanceAssignments) {
+            if (each.getReportGlobalAdvance()) {
+                advanceAssignment = each;
+            }
+        }
+
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+        }
+        markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type) {
@@ -976,39 +1059,6 @@ public class OrderLineGroup extends OrderElement implements
         return orderLine;
     }
 
-    @Override
-    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements() {
-        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
-
-        if (!StringUtils.isBlank(getExternalCode())) {
-            for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
-                if (directAdvanceAssignment.getAdvanceType().getUnitName()
-                        .equals(advanceType.getUnitName())) {
-                    result.add(directAdvanceAssignment);
-                    return result;
-                }
-            }
-        }
-
-        for (OrderElement orderElement : children) {
-            result.addAll(orderElement
-                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements());
-        }
-
-        if (!StringUtils.isBlank(getExternalCode())) {
-            if (result.isEmpty()) {
-                DirectAdvanceAssignment advanceAssignment = getAdvanceAssignmentByType(advanceType);
-                if (advanceAssignment != null) {
-                    result.add(advanceAssignment);
-                }
-            }
-        }
-
-        return result;
-    }
-
     public OrderVersion getCurrentOrderVersion() {
         return getCurrentSchedulingData().getOriginOrderVersion();
     }
@@ -1053,6 +1103,19 @@ public class OrderLineGroup extends OrderElement implements
             result.addAll(orderElement.getAllChildren());
         }
         return result;
+    }
+
+    @AssertTrue(message = "indirect advance assignments should have different types")
+    public boolean checkConstraintIndirectAdvanceAssignmentsWithDifferentType() {
+        Set<String> types = new HashSet<String>();
+        for (IndirectAdvanceAssignment each : indirectAdvanceAssignments) {
+            String type = each.getAdvanceType().getUnitName();
+            if (types.contains(type)) {
+                return false;
+            }
+            types.add(type);
+        }
+        return true;
     }
 
 }

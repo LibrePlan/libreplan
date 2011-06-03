@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -100,7 +101,8 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
 
         result.put("orderName", getSelectedOrder().getName());
         result.put("referenceDate", getDeadlineDate());
-
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
         return result;
     }
 
@@ -169,5 +171,13 @@ public class WorkingProgressPerTaskController extends NavalplannerReportControll
     public void onRemoveCriterion(Criterion criterion) {
         workingProgressPerTaskModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    private String getParameterCriterions() {
+        return workingProgressPerTaskModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return workingProgressPerTaskModel.getSelectedLabel();
     }
 }

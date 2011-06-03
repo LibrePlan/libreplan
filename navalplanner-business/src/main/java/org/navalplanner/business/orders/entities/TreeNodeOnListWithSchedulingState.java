@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,6 +46,15 @@ public abstract class TreeNodeOnListWithSchedulingState<T extends ITreeNode<T>>
     @Override
     protected void onChildAdded(T newChild) {
         updateSchedulingStateGiven(newChild);
+        onChildAddedAdditionalActions(newChild);
+    }
+
+    /**
+     * This method is intended to be overridden
+     *
+     * @param previousChild
+     */
+    protected void onChildAddedAdditionalActions(T newChild) {
     }
 
     @Override
@@ -54,7 +64,7 @@ public abstract class TreeNodeOnListWithSchedulingState<T extends ITreeNode<T>>
     }
 
     /**
-     * This method is intended to be overriden
+     * This method is intended to be overridden
      * @param previousChild
      */
     protected void onChildRemovedAdditionalActions(T previousChild) {

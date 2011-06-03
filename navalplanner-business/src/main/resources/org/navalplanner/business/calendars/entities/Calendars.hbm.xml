@@ -65,8 +65,12 @@
 
         <property name="date" access="field"
             type="org.joda.time.contrib.hibernate.PersistentLocalDate"/>
-        <property name="duration" access="field"
-            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        <component name="capacity" class="org.navalplanner.business.calendars.entities.Capacity">
+            <property name="standardEffort" column="standard_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+            <property name="allowedExtraEffort" column="allowed_extra_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+        </component>
         <!-- Not indexed -->
         <many-to-one name="type" cascade="none"
             column="calendar_exception_id" />
@@ -89,9 +93,13 @@
 
         <property name="name" unique="true" />
         <property name="color" />
-        <property name="notAssignable" column="not_assignable" />
 
-        <property name="duration" type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+        <component name="capacity" class="org.navalplanner.business.calendars.entities.Capacity">
+            <property name="standardEffort" column="standard_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+            <property name="allowedExtraEffort" column="allowed_extra_effort"
+                type="org.navalplanner.business.workingday.hibernate.EffortDurationType"></property>
+        </component>
     </class>
 
     <!-- CalendarData -->
@@ -105,11 +113,15 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <map name="effortPerDay" table="effort_per_day">
+        <map name="capacityPerDay" table="capacity_per_day">
             <key column="base_calendar_id"/>
             <index column="day_id" type="integer" />
-            <element column="effort"
-                type="org.navalplanner.business.workingday.hibernate.EffortDurationType" />
+            <composite-element class="org.navalplanner.business.calendars.entities.Capacity">
+                <property name="standardEffort" column="standard_effort"
+                    type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+                <property name="allowedExtraEffort" column="allowed_extra_effort"
+                    type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+            </composite-element>
         </map>
 
         <!-- Not indexed -->

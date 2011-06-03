@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -151,11 +152,18 @@ public class TimeLineRequiredMaterialModel implements
     public JRDataSource getTimeLineRequiredMaterial(Date startingDate,
             Date endingDate, MaterialStatusEnum status, List<Order> listOrders,
             List<MaterialCategory> categories, List<Material> materials) {
-        for (Order each : listOrders) {
+
+        List<Order> orderToInitialized = new ArrayList<Order>(listOrders);
+        if (listOrders.isEmpty()) {
+            orderToInitialized.addAll(getOrders());
+        }
+
+        for (Order each : orderToInitialized) {
             reattachmentOrder(each);
         }
+
         Scenario currentScenario = scenarioManager.getCurrent();
-        for (Order each : listOrders) {
+        for (Order each : orderToInitialized) {
             each.useSchedulingDataFor(currentScenario);
         }
 
@@ -191,8 +199,8 @@ public class TimeLineRequiredMaterialModel implements
     private List<TimeLineRequiredMaterialDTO> filterAndCreateMaterialDTOs() {
         List<TimeLineRequiredMaterialDTO> result = new ArrayList<TimeLineRequiredMaterialDTO>();
         for (MaterialAssignment material : listMaterialAssignment) {
-            OrderElement order = orderElementDAO
-                    .loadOrderAvoidingProxyFor(material.getOrderElement());
+            OrderElement order = orderDAO.loadOrderAvoidingProxyFor(material
+                    .getOrderElement());
 
             TaskElement task = findTaskBy(material);
             reloadTask(task);

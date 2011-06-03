@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +20,6 @@
  */
 
 package org.navalplanner.business.calendars.entities;
-
-import java.util.Date;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
@@ -40,20 +39,30 @@ import org.navalplanner.business.workingday.EffortDuration;
  */
 public class CalendarException extends IntegrationEntity {
 
-    public static CalendarException create(Date date, EffortDuration duration,
-            CalendarExceptionType type) {
-        return create(new CalendarException(new LocalDate(date), duration, type));
+    public static CalendarException create(LocalDate date,
+            EffortDuration duration, CalendarExceptionType type) {
+        return create(new CalendarException(date, from(duration, type), type));
     }
 
-    public static CalendarException create(LocalDate date,
-            EffortDuration duration,
+    public static CalendarException create(LocalDate date, Capacity capacity,
             CalendarExceptionType type) {
-        return create(new CalendarException(date, duration, type));
+        return create(new CalendarException(date, capacity, type));
     }
 
     public static CalendarException create(String code, LocalDate date,
             EffortDuration duration, CalendarExceptionType type) {
-        return create(new CalendarException(date, duration, type), code);
+        return create(new CalendarException(date, from(duration, type), type),
+                code);
+    }
+
+    public static CalendarException create(String code, LocalDate date,
+            Capacity capacity, CalendarExceptionType type) {
+        return create(new CalendarException(date, capacity, type), code);
+    }
+
+    private static Capacity from(EffortDuration duration,
+            CalendarExceptionType type) {
+        return type.getCapacity().withStandardEffort(duration);
     }
 
     private static EffortDuration fromHours(Integer hours) {
@@ -67,7 +76,7 @@ public class CalendarException extends IntegrationEntity {
         }
 
         if (hours != null) {
-            this.duration = fromHours(hours);
+            this.capacity.withStandardEffort(fromHours(hours));
         }
 
         if (type != null) {
@@ -77,7 +86,7 @@ public class CalendarException extends IntegrationEntity {
 
     private LocalDate date;
 
-    private EffortDuration duration;
+    private Capacity capacity;
 
     private CalendarExceptionType type;
 
@@ -88,11 +97,11 @@ public class CalendarException extends IntegrationEntity {
 
     }
 
-    private CalendarException(LocalDate date, EffortDuration duration,
+    private CalendarException(LocalDate date, Capacity capacity,
             CalendarExceptionType type) {
-        Validate.notNull(duration);
+        Validate.notNull(capacity);
         this.date = date;
-        this.duration = duration;
+        this.capacity = capacity;
         this.type = type;
     }
 
@@ -101,9 +110,13 @@ public class CalendarException extends IntegrationEntity {
         return date;
     }
 
-    @NotNull
     public EffortDuration getDuration() {
-        return duration;
+        return capacity.getStandardEffort();
+    }
+
+    @NotNull
+    public Capacity getCapacity() {
+        return capacity;
     }
 
     @NotNull

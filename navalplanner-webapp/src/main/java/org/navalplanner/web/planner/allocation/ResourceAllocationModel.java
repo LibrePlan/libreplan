@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Hibernate;
+import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -45,6 +47,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -53,8 +56,8 @@ import org.navalplanner.business.resources.entities.MachineWorkersConfigurationU
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.order.PlanningState;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -79,7 +82,7 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     private IResourceDAO resourceDAO;
 
     @Autowired
-    private IResourceSearchModel searchModel;
+    private IResourcesSearcher searchModel;
 
     @Autowired
     private IHoursGroupDAO hoursGroupDAO;
@@ -136,9 +139,13 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
             List<? extends Resource> resourcesFound = searchModel
                     .searchBy(each.getResourceType())
                     .byCriteria(each.getCriterions()).execute();
-            allocationRowsHandler.addGeneric(each.getResourceType(),
+            boolean added = allocationRowsHandler.addGeneric(each
+                    .getResourceType(),
                     each.getCriterions(), reloadResources(resourcesFound),
                     each.getHours());
+            if (!added) {
+                return null;
+            }
         }
         return ProportionalDistributor.create(hours);
     }
@@ -164,42 +171,52 @@ public class ResourceAllocationModel implements IResourceAllocationModel {
     }
 
     @Override
-    public void accept() {
+    public Flagged<AllocationResult, Warnings> accept() {
         if (context != null) {
-            applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
+            return applyDateChangesNotificationIfNoFlags(new IOnTransaction<Flagged<AllocationResult, Warnings>>() {
                 @Override
-                public Void execute() {
+                public Flagged<AllocationResult, Warnings> execute() {
                     stepsBeforeDoingAllocation();
-                    allocationRowsHandler.doAllocation().applyTo(
-                            planningState.getCurrentScenario(), task);
-                    return null;
+                    Flagged<AllocationResult, Warnings> allocationResult = allocationRowsHandler
+                            .doAllocation();
+                    if (!allocationResult.isFlagged()) {
+                        allocationResult.getValue().applyTo(
+                                planningState.getCurrentScenario(), task);
+                    }
+                    return allocationResult;
                 }
             });
         }
+        return null;
     }
 
     @Override
     public void accept(final AllocationResult modifiedAllocationResult) {
         if (context != null) {
-            applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
+            applyDateChangesNotificationIfNoFlags(new IOnTransaction<Flagged<Void, Void>>() {
                 @Override
-                public Void execute() {
+                public Flagged<Void, Void> execute() {
                     stepsBeforeDoingAllocation();
                     modifiedAllocationResult.applyTo(planningState
                             .getCurrentScenario(), task);
-                    return null;
+
+                    return Flagged.justValue(null);
                 }
             });
         }
     }
 
-    private void applyAllocationWithDateChangesNotification(
-            IOnTransaction<?> allocationDoer) {
+    private <V, T extends Flagged<V, ?>> T applyDateChangesNotificationIfNoFlags(
+            IOnTransaction<T> allocationDoer) {
         org.zkoss.ganttz.data.Task ganttTask = context.getTask();
         GanttDate previousStartDate = ganttTask.getBeginDate();
         GanttDate previousEnd = ganttTask.getEndDate();
-        transactionService.runOnReadOnlyTransaction(allocationDoer);
-        ganttTask.fireChangesForPreviousValues(previousStartDate, previousEnd);
+        T result = transactionService.runOnReadOnlyTransaction(allocationDoer);
+        if (!result.isFlagged()) {
+            ganttTask.fireChangesForPreviousValues(previousStartDate,
+                    previousEnd);
+        }
+        return result;
     }
 
     private void stepsBeforeDoingAllocation() {

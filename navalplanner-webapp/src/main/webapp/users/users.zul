@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +29,25 @@
 <?component name="list" inline="true" macroURI="_listUsers.zul"?>
 <?component name="edition" inline="true" macroURI="_editUser.zul"?>
 <zk>
+  <script type="text/JavaScript">
+    <![CDATA[
+		function showOrHideWarnings(displayA, displayO, user, displayU)  {
+			if(displayA != "null"){
+				var warningAdmin = document.getElementById ("warningDefaultPasswdadmin");
+				warningAdmin.style["display"] = displayA;
+			}
+
+			var warningOthers = document.getElementById ("warningDefaultPasswdOthers");
+            warningOthers.style["display"] = displayO;
+
+			if(displayU != "null" && user != "null"){
+				var warningUser = document.getElementById ("warningDefaultPasswd"+user);
+				warningUser.style["display"] = displayU;
+			}
+        }
+    ]]>
+  </script>
+
     <window self="@{define(content)}"
         apply="org.navalplanner.web.users.UserCRUDController">
         <vbox id="messagesContainer"></vbox>

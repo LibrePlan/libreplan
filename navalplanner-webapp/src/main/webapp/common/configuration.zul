@@ -63,6 +63,7 @@
                                 <label value="${i18n:_('Show progress')}" />
                                 <listbox id="lbTypeProgress"
                                     model="@{configurationController.progressTypes}"
+                                    itemRenderer="@{configurationController.progressTypeRenderer}"
                                     selectedItem="@{configurationController.selectedProgressType}"
                                     mold="select" />
                             </row>
@@ -70,6 +71,15 @@
                                 <label value="${i18n:_('Company logo URL')}" />
                                 <textbox id="companyLogoURL"
                                     value="@{configurationController.companyLogoURL}" width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Autocomplete login form')}" />
+                                <checkbox id="enableAutocompleteLogin"
+                                    label="${i18n:_('Enable/Disable')}"
+                                    disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
+                                    tooltiptext = "${i18n:_('Enable/Disable autocomplete property in login form, if the admin password is still in default')}"
+                                    checked="@{configurationController.autocompleteLogin}"
+                                    onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Generate code for')}" />

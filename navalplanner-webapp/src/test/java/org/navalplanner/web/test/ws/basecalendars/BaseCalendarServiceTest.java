@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,6 +29,7 @@ import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_T
 import static org.navalplanner.web.test.ws.common.Util.getUniqueName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +45,7 @@ import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -195,8 +198,11 @@ public class BaseCalendarServiceTest {
 
         /* Build Base Calendar list. */
         BaseCalendarDTO bc1 = new BaseCalendarDTO(getUniqueName(),
-                getUniqueName(), null, calendarExceptions,
-                new ArrayList<CalendarDataDTO>());
+                getUniqueName(), null, calendarExceptions, Arrays
+                        .asList(new CalendarDataDTO(Arrays
+                                .asList(new HoursPerDayDTO(
+                                        CalendarData.Days.MONDAY.name(),
+                                        new Integer(8))), null, null)));
 
         String codeBaseCalendar = getUniqueName();
         BaseCalendarDTO bc2 = new BaseCalendarDTO(codeBaseCalendar,
@@ -216,10 +222,12 @@ public class BaseCalendarServiceTest {
         assertTrue(baseCalendar.getCalendarDataVersions().size() == 2);
 
         CalendarData data = baseCalendar.getCalendarDataByCode("codeData");
-        assertEquals(EffortDuration.hours(4),
-                data.getDurationAt(CalendarData.Days.FRIDAY));
-        assertEquals(EffortDuration.hours(4),
-                data.getDurationAt(CalendarData.Days.TUESDAY));
+        assertEquals(Capacity.create(EffortDuration.hours(4))
+                .overAssignableWithoutLimit(),
+                data.getCapacityOn(CalendarData.Days.FRIDAY));
+        assertEquals(Capacity.create(EffortDuration.hours(4))
+                .overAssignableWithoutLimit(true),
+                data.getCapacityOn(CalendarData.Days.TUESDAY));
     }
 
     @Test

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,6 +42,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
@@ -335,6 +337,29 @@ public class QualityFormCRUDController extends GenericForwardComposer {
      * @param QualityFormItem
      */
     public void confirmDeleteQualityFormItem(QualityFormItem item) {
+        if (qualityFormModel.isTotalPercentage(item)) {
+            try {
+                if (Messagebox
+                        .show(
+                                _("Deleting this item, it will disable the report progress option. Are you sure?"),
+                                _("Confirm"),
+                                Messagebox.OK | Messagebox.CANCEL,
+                                Messagebox.QUESTION) == Messagebox.OK) {
+                    Checkbox reportProgress = (Checkbox) editWindow
+                            .getFellowIfAny("checkBoxReportProgress");
+                    disabledCheckbocReportProgress(reportProgress);
+                } else {
+                    return;
+                }
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        deleteQualityFormItem(item);
+    }
+
+    private void deleteQualityFormItem(QualityFormItem item) {
         qualityFormModel.confirmDeleteQualityFormItem(item);
         Util.reloadBindings(gridQualityFormItems);
     }
@@ -490,4 +515,28 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         predicate = getSelectedName();
     }
 
+    public void validateReportProgress(Component comp) {
+        Checkbox checkbox = (Checkbox) comp;
+        if (checkbox != null) {
+            if ((checkbox.isChecked()) && (!hasItemWithTotalPercentage())) {
+                disabledCheckbocReportProgress(checkbox);
+                messagesForUser
+                        .showMessage(
+                                Level.ERROR,
+                                _("The quality form must have an item with 100% value to report progress"));
+            }
+        }
+    }
+
+    private boolean hasItemWithTotalPercentage() {
+        return this.qualityFormModel.hasItemWithTotalPercentage();
+    }
+
+    private void disabledCheckbocReportProgress(Checkbox reportProgress) {
+        if (reportProgress != null) {
+            getQualityForm().setReportAdvance(false);
+            reportProgress.setChecked(false);
+            reportProgress.invalidate();
+        }
+    }
 }

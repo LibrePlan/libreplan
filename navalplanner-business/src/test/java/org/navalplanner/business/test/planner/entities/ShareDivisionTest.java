@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -152,6 +153,15 @@ public class ShareDivisionTest {
         ShareDivision plus = shareDivision.plus(10);
         int[] difference = shareDivision.to(plus);
         assertArrayEquals(new int[] { 4, 6, 0, 0, 0 }, difference);
+    }
+
+    @Test
+    public void canHandleAllMaximumValueIntegers() {
+        givenDivisionShare(new Share(Integer.MAX_VALUE), new Share(
+                Integer.MAX_VALUE), new Share(Integer.MAX_VALUE));
+        ShareDivision plus = shareDivision.plus(2);
+        int[] difference = shareDivision.to(plus);
+        assertArrayEquals(new int[] { 1, 1, 0 }, difference);
     }
 
     @Test

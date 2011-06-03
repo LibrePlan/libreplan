@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -66,6 +67,17 @@ public abstract class DayAssignment extends BaseEntity {
         return result;
     }
 
+    public static <T extends DayAssignment> List<T> withConsolidatedValue(
+            Collection<? extends T> assignments, boolean consolidated) {
+        List<T> result = new ArrayList<T>();
+        for (T each : assignments) {
+            if (each.isConsolidated() == consolidated) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     private static int findFirstAfterOrEqual(
             List<? extends DayAssignment> orderedAssignments, LocalDate startInclusive) {
         int start = 0;
@@ -92,7 +104,7 @@ public abstract class DayAssignment extends BaseEntity {
     }
 
     public static <T extends DayAssignment> Map<Resource, List<T>> byResourceAndOrdered(
-            Collection<T> assignments) {
+            Collection<? extends T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
         for (T assignment : assignments) {
             Resource resource = assignment.getResource();
@@ -211,7 +223,7 @@ public abstract class DayAssignment extends BaseEntity {
         this.consolidated = consolidated;
     }
 
-    public Boolean isConsolidated() {
+    public boolean isConsolidated() {
         return consolidated == null ? false : consolidated;
     }
 
@@ -222,6 +234,18 @@ public abstract class DayAssignment extends BaseEntity {
             public int compare(DayAssignment assignment1,
                     DayAssignment assignment2) {
                 return assignment1.getDay().compareTo(assignment2.getDay());
+            }
+        };
+    }
+
+    public static Comparator<DayAssignment> byDurationComparator() {
+        return new Comparator<DayAssignment>() {
+
+            @Override
+            public int compare(DayAssignment assignment1,
+                    DayAssignment assignment2) {
+                return assignment1.getDuration().compareTo(
+                        assignment2.getDuration());
             }
         };
     }
@@ -254,7 +278,26 @@ public abstract class DayAssignment extends BaseEntity {
 
     protected abstract void detachFromAllocation();
 
-    public abstract boolean belongsTo(Object allocation);
+    public final boolean belongsToSomeOf(Map<Long, Set<BaseEntity>> allocations) {
+        BaseEntity parent = getParent();
+        if (parent.getId() == null) {
+            Set<BaseEntity> entitiesWithNullId = allocations.get(null);
+            return entitiesWithNullId != null
+                    && entitiesWithNullId.contains(parent);
+        }
+        Set<BaseEntity> set = allocations.get(parent.getId());
+        return set != null;
+    }
+
+    protected abstract BaseEntity getParent();
+
+    public final boolean belongsTo(BaseEntity allocation) {
+        if (allocation == null) {
+            return false;
+        }
+        return belongsToSomeOf(BaseEntity.byId(Collections
+                .singleton(allocation)));
+    }
 
     /**
      * @return <code>null</code> if {@link DayAssignment this} day assignment

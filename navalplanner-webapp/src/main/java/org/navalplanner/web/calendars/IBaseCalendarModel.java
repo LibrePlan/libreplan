@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +33,7 @@ import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.IIntegrationEntityModel;
@@ -102,9 +104,9 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     boolean isEditing();
 
-    void setSelectedDay(Date date);
+    void setSelectedDay(LocalDate date);
 
-    Date getSelectedDay();
+    LocalDate getSelectedDay();
 
     DayType getTypeOfDay();
 
@@ -112,8 +114,10 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     EffortDuration getWorkableTime();
 
-    void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration);
+    Capacity getWorkableCapacity();
+
+    void createException(CalendarExceptionType type, LocalDate startDate,
+            LocalDate endDate, Capacity capacity);
 
     Boolean isDefault(Days day);
 
@@ -137,15 +141,15 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     Date getExpiringDate();
 
-    void setExpiringDate(Date date);
+    void setExpiringDate(LocalDate date);
 
-    Date getDateValidFrom();
+    LocalDate getDateValidFrom();
 
-    void setDateValidFrom(Date date);
+    void setDateValidFrom(LocalDate date);
 
     List<CalendarData> getHistoryVersions();
 
-    void createNewVersion(Date date);
+    void createNewVersion(LocalDate date);
 
     boolean isLastVersion();
 
@@ -163,8 +167,8 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     CalendarExceptionType getCalendarExceptionType(LocalDate date);
 
-    void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration);
+    void updateException(CalendarExceptionType type, LocalDate startDate,
+            LocalDate endDate, Capacity capacity);
 
     void removeCalendarData(CalendarData calendarData);
 
@@ -192,14 +196,22 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     void confirmSave() throws ValidationException;
 
+    void confirmSaveAndContinue() throws ValidationException;
+
     void confirmRemove(BaseCalendar calendar);
 
     void cancel();
 
-    EffortDuration getDurationAt(Days day);
+    Capacity getCapacityAt(Days day);
 
-    void setDurationAt(Days day, EffortDuration value);
+    void setCapacityAt(Days day, Capacity capacity);
 
     void generateCalendarCodes();
+
+    boolean isLastActivationPeriod(CalendarAvailability calendarAvailability);
+
+    boolean isOwnException(CalendarException exception);
+
+    void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
 
 }

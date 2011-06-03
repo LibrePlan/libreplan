@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +33,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.common.ITemplateModel.IOnFinished;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.security.SecurityUtils;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -126,5 +128,53 @@ public class TemplateController extends GenericForwardComposer {
 
     public Boolean getScenariosVisible() {
         return (templateModel != null) && templateModel.isScenariosVisible();
+    }
+
+    public String getDefaultPasswdAdminVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.ADMIN);
+    }
+
+    public String getDefaultPasswdUserVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.USER);
+    }
+
+    public String getDefaultPasswdWsreaderVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSREADER);
+    }
+
+    public String getDefaultPasswdWswriterVisible() {
+        return notChangedPasswordWarningDisplayPropertyFor(MandatoryUser.WSWRITER);
+    }
+
+    private String notChangedPasswordWarningDisplayPropertyFor(
+            MandatoryUser mandatoryUser) {
+        return asDisplayProperty(templateModel
+                .hasChangedDefaultPassword(mandatoryUser));
+    }
+
+
+    private String asDisplayProperty(boolean passwordChanged) {
+        return passwordChanged ? "none" : "inline";
+    }
+
+    public String getDefaultPasswdVisible() {
+        return asDisplayProperty(!templateModel
+                .adminPasswordChangedAndSomeOtherNotChanged());
+    }
+
+    public String getIdAdminUser() {
+        return templateModel.getIdUser(MandatoryUser.ADMIN.getLoginName());
+    }
+
+    public String getIdUser() {
+        return templateModel.getIdUser(MandatoryUser.USER.getLoginName());
+    }
+
+    public String getIdWsreaderUser() {
+        return templateModel.getIdUser(MandatoryUser.WSREADER.getLoginName());
+    }
+
+    public String getIdWswriterUser() {
+        return templateModel.getIdUser(MandatoryUser.WSWRITER.getLoginName());
     }
 }

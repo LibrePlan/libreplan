@@ -1,0 +1,77 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+                          Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+
+<tabpanel id="${arg.id}">
+    <grid>
+    <columns>
+        <column width="300px"/>
+        <column />
+    </columns>
+        <rows>
+            <row>
+                <label value="${i18n:_('Name')}" />
+                <textbox id="name" value="@{propertiesController.ganttTaskDTO.name}" width="400px" />
+            </row>
+            <row>
+                <label value="${i18n:_('Start')}" />
+                <datebox id="startDateBox" disabled="true"
+                value="@{propertiesController.ganttTaskDTO.beginDate}" />
+            </row>
+            <row>
+                <label value="${i18n:_('End')}" />
+                <datebox id="endDateBox" disabled="true"
+                value="@{propertiesController.ganttTaskDTO.endDate}" />
+            </row>
+            <row>
+                <label value="${i18n:_('Deadline')}"/>
+                <datebox id="deadLineDateBox" value="@{propertiesController.ganttTaskDTO.deadlineDate}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Notes')}" />
+                <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" width="400px" rows="3"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Hours')}" />
+                <intbox id="hours" disabled="true" />
+            </row>
+                <row id="durationRow">
+                <label value="${i18n:_('Duration (days)')}" />
+                <intbox id="duration" disabled="true"/>
+            </row>
+            <row id="startConstraint">
+                <label value="${i18n:_('Constraint')}" />
+                <vbox>
+                    <combobox id="startConstraintTypes" width="300px" />
+                    <datebox id="startConstraintDate" constraint ="no empty"/>
+                </vbox>
+            </row>
+            <row id="resourceAllocationType" visible="@{editController.isTask}">
+                <label value="${i18n:_('Resource allocation type')}" />
+                <listbox id="lbResourceAllocationType"
+                    mold="select"
+                    model="@{propertiesController.resourceAllocationTypeOptionList}"
+                    selectedItem="@{propertiesController.resourceAllocationType}"/>
+            </row>
+        </rows>
+    </grid>
+</tabpanel>

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -110,7 +111,8 @@ zkTasklist.hideTooltip = function(elem) {
 	if (zkTasklist.tooltipTimeout) {
 		clearTimeout(zkTasklist.tooltipTimeout);
 	}
-	document.getElementById(elem).style["display"] = "none";
+	node = document.getElementById(elem);
+	if ((elem != null) && (node != null)) node.style["display"] = "none";
 }
 
 zkTasklist.timeplotcontainer_rescroll = function(elem) {
@@ -284,8 +286,8 @@ function adjustScrollableDimensions() {
 	// Inner divs need recalculation to adjust to new scroll displacement lenght
 	document.getElementById('ganttpanel_inner_scroller_x').style["width"] = watermark.offsetWidth
 			+ "px";
-}
 
+}
 
 /**
  *
@@ -723,8 +725,12 @@ zkTaskContainer.legendResize = function(cmp) {
 	var taskdetailsContainer = YAHOO.util.Selector.query('.taskdetailsContainer')[0];
 	var legendContainer = YAHOO.util.Selector.query('.legend-container')[0];
 	var legendContainerEarned = YAHOO.util.Selector.query('.legend-container')[1];
-	legendContainer.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
-	legendContainerEarned.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	if ( legendContainer != undefined ) {
+		legendContainer.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	}
+	if ( legendContainerEarned != undefined ) {
+		legendContainerEarned.style["width"] = (taskdetailsContainer.clientWidth - LEGEND_CONTAINER_OFFSET )+"px";
+	}
 
 };
 

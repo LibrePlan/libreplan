@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -85,6 +86,8 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         return result;
     }
@@ -219,4 +222,11 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
         return REPORT_NAME;
     }
 
+    private String getParameterCriterions() {
+        return orderCostsPerResourceModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return orderCostsPerResourceModel.getSelectedLabel();
+    }
 }

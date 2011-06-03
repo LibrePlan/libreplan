@@ -20,8 +20,6 @@
 
 package org.navalplanner.web.common.components.finders;
 
-import static org.navalplanner.web.I18nHelper._;
-
 import java.util.List;
 
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -43,7 +41,14 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     @Autowired
     private IOrderDAO orderDAO;
 
-    private final String headers[] = { _("Project"), _("Project code") };
+    private final String headers[] = { _("Project code"), _("Project name") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)

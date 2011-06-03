@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,12 +27,14 @@ import org.apache.commons.lang.Validate;
  */
 public abstract class PreAndPostNotReentrantActionsWrapper {
 
-    private final ThreadLocal<Boolean> inside = new ThreadLocal<Boolean>() {
+    private static final class BooleanThreadLocal extends ThreadLocal<Boolean> {
         @Override
         protected Boolean initialValue() {
             return false;
         }
-    };
+    }
+
+    private final ThreadLocal<Boolean> inside = new BooleanThreadLocal();
 
     public void doAction(IAction action) {
         Validate.notNull(action);
@@ -48,7 +51,7 @@ public abstract class PreAndPostNotReentrantActionsWrapper {
         try {
             action.doAction();
         } finally {
-            inside.set(false);
+            inside.remove();
             postAction();
         }
     }

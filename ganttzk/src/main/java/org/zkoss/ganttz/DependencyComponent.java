@@ -3,6 +3,8 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
+ *
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +33,7 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.sys.ContentRenderer;
@@ -53,6 +56,8 @@ public class DependencyComponent extends XulElement implements AfterCompose {
 
     private IConstraintViolationListener<GanttDate> violationListener;
 
+    private boolean violated = false;
+
     public DependencyComponent(TaskComponent source, TaskComponent destination,
             Dependency dependency) {
         Validate.notNull(dependency);
@@ -64,21 +69,32 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         this.source = source;
         this.destination = destination;
         this.dependency = dependency;
-        violationListener = new IConstraintViolationListener<GanttDate>() {
+        violationListener = Constraint
+                .onlyOnZKExecution(new IConstraintViolationListener<GanttDate>() {
 
             @Override
-            public void constraintViolated(Constraint<GanttDate> constraint,
-                    GanttDate value) {
-                // TODO mark graphically dependency as violated
+            public void constraintViolated(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = true;
+                sendCSSUpdate();
             }
 
             @Override
-            public void constraintSatisfied(Constraint<GanttDate> constraint,
-                    GanttDate value) {
-                // TODO mark graphically dependency as not violated
+            public void constraintSatisfied(Constraint<GanttDate> constraint, GanttDate value) {
+                violated = false;
+                sendCSSUpdate();
             }
-        };
-        this.dependency.addConstraintViolationListener(violationListener);
+        });
+        this.dependency.addConstraintViolationListener(violationListener,
+                Mode.RECEIVE_PENDING);
+    }
+
+    private void sendCSSUpdate() {
+        response("constraintViolated", new AuInvoke(DependencyComponent.this,
+                "setCSSClass", getCSSClass()));
+    }
+
+    public String getCSSClass() {
+        return violated ? "violated-dependency" : "dependency";
     }
 
     @Override
@@ -164,6 +180,10 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         render(renderer, "_idTaskOrig", getIdTaskOrig());
         render(renderer, "_idTaskEnd", getIdTaskEnd());
         render(renderer, "_dependencyType", getDependencyType());
+    }
+
+    public boolean hasLimitingTasks() {
+        return (source.isLimiting() || destination.isLimiting());
     }
 
 }

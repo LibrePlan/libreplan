@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -24,13 +25,18 @@
 <vbox sclass="legend">
 
     <hbox pack="center" sclass="legend-row">
-        <n:div class="capability"/>
-        <n:label>${i18n:_('Total capability')}</n:label>
+        <n:div class="overload"/>
+        <n:label>${i18n:_('Overload')}</n:label>
+    </hbox>
+
+    <hbox pack="center" sclass="legend-row resources-full-load">
+        <n:div class="full-load"/>
+        <n:label>${i18n:_('Load 100%')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row">
-        <n:div class="overload"/>
-        <n:label>${i18n:_('Overload')}</n:label>
+        <n:div class="capability"/>
+        <n:label>${i18n:_('Total capability')}</n:label>
     </hbox>
 
     <hbox pack="center" sclass="legend-row">

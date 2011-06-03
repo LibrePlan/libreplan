@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -77,23 +78,49 @@ public class TransferOrdersController extends GenericForwardComposer {
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch
-                                .getSelectedElement();
-                        transferOrdersModel.setSourceScenario(sourceScenario);
-                        Util.reloadBindings(sourceScenarioOrders);
+                        setSourceScenario();
                     }
                 });
+
+        sourceScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        setSourceScenario();
+                    }
+                });
+
         destinationScenarioBandboxSearch.setListboxEventListener(
                 Events.ON_CLICK, new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch
-                                .getSelectedElement();
-                        transferOrdersModel
-                                .setDestinationScenario(destinationScenario);
-                        Util.reloadBindings(destinationScenarioOrders);
+                        setDestinationScenario();
                     }
                 });
+
+        destinationScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        setDestinationScenario();
+                    }
+                });
+    }
+
+    private void setSourceScenario() {
+        Scenario sourceScenario = (Scenario) sourceScenarioBandboxSearch
+                .getSelectedElement();
+        transferOrdersModel.setSourceScenario(sourceScenario);
+        Util.reloadBindings(sourceScenarioOrders);
+        sourceScenarioBandboxSearch.close();
+    }
+
+    private void setDestinationScenario() {
+        Scenario destinationScenario = (Scenario) destinationScenarioBandboxSearch
+                .getSelectedElement();
+        transferOrdersModel.setDestinationScenario(destinationScenario);
+        Util.reloadBindings(destinationScenarioOrders);
+        destinationScenarioBandboxSearch.close();
     }
 
     public List<Scenario> getScenarios() {

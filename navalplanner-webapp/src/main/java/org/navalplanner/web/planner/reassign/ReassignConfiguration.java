@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.planner.TaskElementAdapter;
 import org.zkoss.ganttz.data.Task;
 
@@ -63,8 +65,8 @@ public class ReassignConfiguration {
     }
 
     private boolean isAfterDate(Task each) {
-        LocalDate start = TaskElementAdapter.toLocalDate(each.getBeginDate());
-        LocalDate end = TaskElementAdapter.toLocalDate(each.getEndDate());
+        IntraDayDate start = TaskElementAdapter.toIntraDay(each.getBeginDate());
+        IntraDayDate end = TaskElementAdapter.toIntraDay(each.getEndDate());
         return start.compareTo(date) > 0 || end.compareTo(date) > 0;
     }
 

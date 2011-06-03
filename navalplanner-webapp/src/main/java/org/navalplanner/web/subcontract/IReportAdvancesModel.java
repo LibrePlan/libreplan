@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@
 package org.navalplanner.web.subcontract;
 
 import java.util.List;
-import java.util.Set;
 
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -38,19 +38,19 @@ public interface IReportAdvancesModel {
 
     List<Order> getOrdersWithExternalCodeInAnyOrderElement();
 
-    AdvanceMeasurement getLastAdvanceMeasurement(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments);
-
     AdvanceMeasurement getLastAdvanceMeasurementReported(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments);
-
-    boolean isAnyAdvanceMeasurementNotReported(
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments);
+            DirectAdvanceAssignment directAdvanceAssignment);
 
     void sendAdvanceMeasurements(Order order)
             throws UnrecoverableErrorServiceException,
             ConnectionProblemsException;
 
     String exportXML(Order order);
+
+    AdvanceMeasurement getLastAdvanceMeasurement(
+            DirectAdvanceAssignment directAdvanceAssignment);
+
+    boolean isAnyAdvanceMeasurementNotReported(
+            DirectAdvanceAssignment directAdvanceAssignment);
 
 }

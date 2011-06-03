@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +31,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -92,6 +94,16 @@ public abstract class CombinedWorkHours implements ICalendar {
     }
 
     @Override
+    public Capacity getCapacityWithOvertime(LocalDate day) {
+        Capacity result = null;
+        for (ICalendar each : calendars) {
+            Capacity current = each.getCapacityWithOvertime(day);
+            result = result == null ? current : updateCapacity(result, current);
+        }
+        return result;
+    }
+
+    @Override
     public AvailabilityTimeLine getAvailability() {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         for (ICalendar each : calendars) {
@@ -108,6 +120,8 @@ public abstract class CombinedWorkHours implements ICalendar {
 
     protected abstract EffortDuration updateCapacity(EffortDuration current,
             EffortDuration each);
+
+    protected abstract Capacity updateCapacity(Capacity a, Capacity current);
 
     @Override
     public boolean thereAreCapacityFor(AvailabilityTimeLine availability,
@@ -142,6 +156,11 @@ class Min extends CombinedWorkHours {
         return accumulated.and(each);
     }
 
+    @Override
+    protected Capacity updateCapacity(Capacity accumulated, Capacity current) {
+        return Capacity.min(accumulated, current);
+    }
+
 }
 
 class Max extends CombinedWorkHours {
@@ -166,5 +185,10 @@ class Max extends CombinedWorkHours {
     protected AvailabilityTimeLine compoundAvailability(
             AvailabilityTimeLine accumulated, AvailabilityTimeLine each) {
         return accumulated.or(each);
+    }
+
+    @Override
+    protected Capacity updateCapacity(Capacity accumulated, Capacity current) {
+        return Capacity.max(accumulated, current);
     }
 }

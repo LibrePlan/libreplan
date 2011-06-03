@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,7 +42,19 @@ public interface IGenericDAO <E, PK extends Serializable>{
 
     public Class<E> getEntityClass();
 
+    public enum Mode {
+        FLUSH_BEFORE_VALIDATION, AUTOMATIC_FLUSH;
+    }
+
     /**
+     * It saves with automatic flush
+     *
+     * @see #save(Object, Mode)
+     */
+    public void save(E entity) throws ValidationException;
+
+    /**
+     * <p>
      * It inserts the object passed as a parameter in the ORM session, planning
      * it for updating (even though it is not modified before or after the call
      * to this method) or insertion, depending if it is was detached or
@@ -50,10 +63,15 @@ public interface IGenericDAO <E, PK extends Serializable>{
      * executed (if the entity has version control enabled) with the possible
      * <code>org.springframework.dao.OptimisticLockingFailureException</code>
      * being thrown.
+     * </p>
+     * <p>
+     *
+     * </p>
+     *
      * @throws ValidationException
      *             if the entity has some invalid values
      */
-    public void save(E entity) throws ValidationException;
+    public void save(E entity, Mode mode) throws ValidationException;
 
     /**
      * Unlike <code>save</code>, it does not execute validations.

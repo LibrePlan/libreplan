@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,14 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * The information required for creating a {@link SpecificResourceAllocation}
@@ -85,29 +86,40 @@ public class SpecificAllocationRow extends AllocationRow {
     }
 
     public static SpecificAllocationRow from(SpecificResourceAllocation specific) {
-        SpecificAllocationRow result = forResource(specific.getResource());
-        result.setOrigin(specific);
-
-        result.setNonConsolidatedResourcesPerDay(specific
-                .getNonConsolidatedResourcePerDay());
-
+        SpecificAllocationRow result = new SpecificAllocationRow(specific);
+        setupResource(result, specific.getResource());
         return result;
     }
 
-    public static SpecificAllocationRow forResource(Resource resource) {
-        SpecificAllocationRow result = new SpecificAllocationRow();
-        result.setName(resource.getShortDescription());
-        result.setResource(resource);
-        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(1));
+    public static SpecificAllocationRow forResource(
+            CalculatedValue calculatedValue, Resource resource) {
+        SpecificAllocationRow result = new SpecificAllocationRow(
+                calculatedValue);
+        setupResource(result, resource);
         return result;
+    }
+
+    private static void setupResource(SpecificAllocationRow specificRow,
+            Resource resource) {
+        specificRow.setName(resource.getShortDescription());
+        specificRow.setResource(resource);
     }
 
     private Resource resource;
 
+    private SpecificAllocationRow(CalculatedValue calculatedValue) {
+        super(calculatedValue);
+    }
+
+    private SpecificAllocationRow(SpecificResourceAllocation origin) {
+        super(origin);
+    }
+
     @Override
-    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         return ResourcesPerDayModification.create(createSpecific(task),
-                getNonConsolidatedResourcesPerDay());
+                getResourcesPerDayEditedValue());
     }
 
     private SpecificResourceAllocation createSpecific(Task task) {
@@ -120,9 +132,10 @@ public class SpecificAllocationRow extends AllocationRow {
     }
 
     @Override
-    public HoursModification toHoursModification(Task task) {
-        return HoursModification.create(createSpecific(task),
-                getHoursFromInput());
+    public EffortModification toHoursModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
+        return EffortModification.create(createSpecific(task),
+                getEffortFromInput());
     }
 
     public Resource getResource() {

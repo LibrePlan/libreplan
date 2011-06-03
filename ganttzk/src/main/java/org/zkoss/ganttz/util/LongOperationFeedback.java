@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +39,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
@@ -53,18 +55,50 @@ public class LongOperationFeedback {
         String getName();
     }
 
+    private static final ThreadLocal<Boolean> alreadyInside = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return false;
+        }
+    };
+
     public static void execute(final Component component,
             final ILongOperation longOperation) {
         Validate.notNull(component);
         Validate.notNull(longOperation);
+
+        if (alreadyInside.get()) {
+            dispatchActionDirectly(longOperation);
+            return;
+        }
+
         Clients.showBusy(longOperation.getName());
+        executeLater(component, new Runnable() {
+            public void run() {
+                try {
+                    alreadyInside.set(true);
+                    longOperation.doAction();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                } finally {
+                    alreadyInside.remove();
+                    Clients.clearBusy();
+                }
+            }
+        });
+    }
+
+    public static void executeLater(final Component component,
+            final Runnable runnable) {
+        Validate.notNull(runnable);
+        Validate.notNull(component);
         final String eventName = generateEventName();
         component.addEventListener(eventName, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
                 try {
-                    longOperation.doAction();
+                    runnable.run();
                 } finally {
                     Clients.clearBusy();
                     component.removeEventListener(eventName, this);
@@ -72,6 +106,15 @@ public class LongOperationFeedback {
             }
         });
         Events.echoEvent(eventName, component, null);
+    }
+
+    private static void dispatchActionDirectly(
+            final ILongOperation longOperation) {
+        try {
+            longOperation.doAction();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static String generateEventName() {

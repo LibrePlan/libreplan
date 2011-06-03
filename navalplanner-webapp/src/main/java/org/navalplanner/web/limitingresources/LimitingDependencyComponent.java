@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,6 @@
 package org.navalplanner.web.limitingresources;
 
 import org.apache.commons.lang.Validate;
-import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zul.impl.XulElement;
@@ -77,14 +77,6 @@ public class LimitingDependencyComponent extends XulElement {
 
     public void setIdTaskEnd(String idTaskEnd) {
         this.destination = findTaskComponent(idTaskEnd);
-    }
-
-    public void zoomChanged() {
-        redrawDependency();
-    }
-
-    public void redrawDependency() {
-        response("zoomChanged", new AuInvoke(this, "draw"));
     }
 
     public QueueTask getSource() {

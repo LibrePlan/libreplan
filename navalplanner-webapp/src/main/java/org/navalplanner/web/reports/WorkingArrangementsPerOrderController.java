@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -123,6 +124,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         Map<String, Object> result = super.getParameters();
 
         result.put("orderName", getSelectedOrder().getName());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         // Task status
         final TaskStatusEnum taskStatus = getSelectedTaskStatus();
@@ -210,6 +213,14 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     public void onRemoveCriterion(Criterion criterion) {
         workingArrangementsPerOrderModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    private String getParameterCriterions() {
+        return workingArrangementsPerOrderModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return workingArrangementsPerOrderModel.getSelectedLabel();
     }
 
 }

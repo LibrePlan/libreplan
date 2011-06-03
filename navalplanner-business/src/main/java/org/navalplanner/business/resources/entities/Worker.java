@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -100,12 +101,12 @@ public class Worker extends Resource implements Comparable {
     }
 
     public String getDescription() {
-        return getFirstName() + " " + getSurname();
+        return getSurname() + "," + getFirstName();
     }
 
     @Override
     public String getShortDescription() {
-        return getNif() + " :: " + getDescription();
+        return getDescription() + " (" + getNif() + ")";
     }
 
     @NotEmpty(message="worker's first name not specified")
@@ -147,8 +148,8 @@ public class Worker extends Resource implements Comparable {
         return !isVirtual();
     }
 
-    @AssertTrue(message = "Worker with the same nif previously existed")
-    public boolean checkConstraintUniqueNif() {
+    @AssertTrue(message = "ID already used. It has to be be unique")
+    public boolean checkConstraintUniqueFiscalCode() {
         if (!areFirstNameSurnameNifSpecified()) {
             return true;
         }
@@ -163,7 +164,7 @@ public class Worker extends Resource implements Comparable {
                 return worker.getId().equals(getId());
             }
         } catch (InstanceNotFoundException e) {
-            return isNewObject();
+            return true;
         }
     }
 

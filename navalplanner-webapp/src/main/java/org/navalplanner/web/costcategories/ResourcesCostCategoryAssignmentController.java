@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +28,7 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.resources.entities.Resource;
@@ -36,6 +38,7 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.util.ValidationExceptionPrinter;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -317,4 +320,21 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     public void validateConstraints() {
         ConstraintChecker.isValid(self);
     }
+
+    /**
+     * Check there are not category assignment overlaps
+     *
+     * @return
+     */
+    public boolean validate() {
+        List<ResourcesCostCategoryAssignment> costCategoryAssignments = resourcesCostCategoryAssignmentModel
+                .getCostCategoryAssignments();
+        try {
+            CostCategory.validateCostCategoryOverlapping(costCategoryAssignments);
+        } catch (ValidationException e) {
+            ValidationExceptionPrinter.showAt(listResourcesCostCategoryAssignments, e);
+        }
+        return true;
+    }
+
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +31,9 @@ import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -193,7 +196,7 @@ public class EditTaskController extends GenericForwardComposer {
             showNonLimitingResourcesTab();
         } else if (ResourceAllocationTypeEnum.LIMITING_RESOURCES
                 .equals(resourceAllocationType)) {
-            limitingResourceAllocationController.init(asTask(taskElement),
+            limitingResourceAllocationController.init(context, asTask(taskElement),
                     planningState, messagesForUser);
             showLimitingResourcesTab();
         }
@@ -281,7 +284,10 @@ public class EditTaskController extends GenericForwardComposer {
             ResourceAllocationTypeEnum currentState = taskPropertiesController.getCurrentState();
             if (ResourceAllocationTypeEnum.NON_LIMITING_RESOURCES.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(resourceAllocationTabpanel);
-                resourceAllocationController.accept();
+                boolean mustNotExit = !resourceAllocationController.accept();
+                if (mustNotExit) {
+                    return;
+                }
             } else if (ResourceAllocationTypeEnum.SUBCONTRACT.equals(currentState)) {
                 editTaskTabbox.setSelectedPanelApi(subcontractTabpanel);
                 subcontractController.accept();
@@ -395,7 +401,8 @@ public class EditTaskController extends GenericForwardComposer {
         private AdvanceAllocationResultReceiver(AllocationResult allocation) {
             Validate.isTrue(!allocation.getAggregate().isEmpty());
             this.allocation = allocation;
-            final int totalHours = allocation.getAggregate().getTotalHours();
+            final EffortDuration totalEffort = allocation.getAggregate()
+                    .getTotalEffort();
             final IntraDayDate start = allocation.getIntraDayStart();
             final IntraDayDate end = allocation.getIntraDayEnd();
             final CalculatedValue calculatedValue = allocation
@@ -403,8 +410,8 @@ public class EditTaskController extends GenericForwardComposer {
             restrictionSource = new IRestrictionSource() {
 
                 @Override
-                public int getTotalHours() {
-                    return totalHours;
+                public EffortDuration getTotalEffort() {
+                    return totalEffort;
                 }
 
                 @Override

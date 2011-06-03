@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,12 @@ package org.navalplanner.web.reports;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRParameter;
 
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
@@ -98,6 +101,7 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
     protected Map<String, Object> getParameters() {
         Map<String, Object> parameters = new HashMap<String, Object>();
         parameters.put("logo", String.format("/logos/%s/logo.png", getLanguage()));
+        parameters.put(JRParameter.REPORT_LOCALE, getCurrentLocale());
         return parameters;
     }
 
@@ -107,6 +111,17 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
             lang = DEFAULT_LANG;
         }
         return lang;
+    }
+
+    private Locale getCurrentLocale() {
+        String lang = getLanguage();
+        if (lang.equals("es")) {
+            return new Locale("es", "ES");
+        }
+        if (lang.equals("gl")) {
+            return new Locale("gl", "ES");
+        }
+        return new Locale("en", "US");
     }
 
     protected abstract JRDataSource getDataSource();

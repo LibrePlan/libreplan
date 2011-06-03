@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,6 +36,16 @@ public final class DetailItem {
 
     private boolean even;
     private boolean bankHoliday;
+
+    private String bankHolidayWeek;
+
+    public String getBankHolidayWeek() {
+        return bankHolidayWeek;
+    }
+
+    public void setBankHolidayWeek(String bankHolidayWeek) {
+        this.bankHolidayWeek = bankHolidayWeek;
+    }
 
     private boolean currentPeriod;
     private int currentDayOffset;
@@ -83,8 +94,9 @@ public final class DetailItem {
 
     public void markCurrentDay() {
         if (this.startDate.isBeforeNow() && this.endDate.isAfterNow()) {
-            int offsetInPx = Math.round((((float) Days.daysBetween(
-                    this.startDate, new DateTime()).getDays()) / ((float) Days
+            int offsetInPx = Math
+                    .round(((((float) Days.daysBetween(this.startDate,
+                            new DateTime()).getDays()) + (float) 0.5) / ((float) Days
                     .daysBetween(this.startDate, this.endDate).getDays()))
                     * this.size);
             this.markCurrentDay(offsetInPx);
@@ -172,6 +184,10 @@ public final class DetailItem {
             offset = getDeadlineOffset() + "px";
         }
         return offset;
+    }
+
+    public void markBankHolidayWeek(String result) {
+        setBankHolidayWeek(result);
     }
 
     public void markBankHoliday() {

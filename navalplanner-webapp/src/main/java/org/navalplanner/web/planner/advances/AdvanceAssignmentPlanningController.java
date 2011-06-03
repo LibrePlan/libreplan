@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,10 +35,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.TaskList;
+import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Window;
 
@@ -59,6 +62,8 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
     private Window window;
 
     private IContextWithPlannerTask<TaskElement> context;
+
+    private IReloadChartListener reloadOverallProgressListener;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -98,7 +103,13 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         manageOrderElementAdvancesController.openWindow(orderElement);
     }
 
+    public void onClose(Event event) {
+        cancel();
+        event.stopPropagation();
+    }
+
     public void cancel() {
+        manageOrderElementAdvancesController.cancel();
         advanceAssignmentPlanningModel.cancel();
         close();
     }
@@ -109,6 +120,13 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
             advanceAssignmentPlanningModel.accept();
             updateTaskComponents();
             close();
+            reloadOverallProgress();
+        }
+    }
+
+    private void reloadOverallProgress() {
+        if (reloadOverallProgressListener != null) {
+            reloadOverallProgressListener.reloadChart();
         }
     }
 
@@ -147,4 +165,9 @@ public class AdvanceAssignmentPlanningController extends GenericForwardComposer 
         }
         return title;
     }
+
+    public void reloadOverallProgressListener(IReloadChartListener reloadChartListener) {
+        reloadOverallProgressListener = reloadChartListener;
+    }
+
 }

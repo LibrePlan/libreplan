@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@
 
 package org.navalplanner.business.resources.daos;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -49,14 +49,6 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * @return
      */
     List<Resource> findResourcesRelatedTo(List<Task> tasks);
-
-    /**
-     * Returns a list of {@link Resource} satisfying all criteria at some point
-     * in time
-     * @param criterions
-     * @return
-     */
-    List<Resource> findSatisfyingAllCriterionsAtSomePoint(Collection<? extends Criterion> criterions);
 
     /**
      * Returns all {@link Machine}

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +30,6 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONF
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -43,6 +43,7 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
+import org.navalplanner.web.resources.criterion.CriterionsModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
@@ -133,12 +134,13 @@ public class CriterionModelTest {
     }
 
     private CriterionType ensureExists(CriterionType transientType) {
-        List<CriterionType> found = criterionTypeDAO.findByName(transientType);
-        if (!found.isEmpty()) {
-            return found.get(0);
+        CriterionType found = criterionTypeDAO.findByName(transientType
+                .getName());
+        if (found != null) {
+            return found;
         }
         criterionTypeDAO.save(transientType);
-        return criterionTypeDAO.findByName(transientType).get(0);
+        return criterionTypeDAO.findByName(transientType.getName());
     }
 
     /*@Test

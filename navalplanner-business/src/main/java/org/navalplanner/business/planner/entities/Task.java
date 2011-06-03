@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,10 +33,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
@@ -44,11 +48,12 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
@@ -57,11 +62,20 @@ import org.navalplanner.business.util.deepcopy.AfterCopy;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Task extends TaskElement implements ITaskPositionConstrained {
+
+    private static final Log LOG = LogFactory.getLog(Task.class);
+
+    /**
+     * Maximum number of days in order to looking for calendar capacity (defined
+     * to 5 years)
+     */
+    private static int MAX_DAYS_LOOKING_CAPACITY = 360 * 5;
 
     public static Task createTask(TaskSource taskSource) {
         Task task = new Task();
@@ -84,6 +98,25 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             IntraDayDate end = getIntraDayEndDate();
             setIntraDayStartDate(duration.fromEndToStart(end));
         }
+    }
+
+    /**
+     * Calculates end date for a task, starting from start until fulfilling
+     * number of hours.
+     *
+     * For tasks with limiting resources it's needed to resize a task if the
+     * number of hours allocated to a resource changes. In non limiting
+     * resources, the task is resized because when the number of hours changes,
+     * new days assignments are generated, and then the task is resized
+     * accordingly.
+     *
+     * @param hours
+     */
+    public void resizeToHours(int hours) {
+        Validate.isTrue(isLimiting());
+        EffortDuration workHours = EffortDuration.hours(hours);
+        DurationBetweenDates duration = new DurationBetweenDates(0, workHours);
+        setIntraDayEndDate(duration.fromStartToEnd(getIntraDayStartDate()));
     }
 
     private CalculatedValue calculatedValue = CalculatedValue.END_DATE;
@@ -147,9 +180,9 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 .getTotalHours();
     }
 
-    private int getTotalIntendedHours() {
+    private EffortDuration getTotalNonConsolidatedEffort() {
         return AggregateOfResourceAllocations
-                .createFromAll(resourceAllocations).getIntendedHours();
+                .createFromAll(resourceAllocations).getNonConsolidatedEffort();
     }
 
     public int getTotalHours() {
@@ -386,7 +419,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         }
     }
 
-    public void explicityMoved(LocalDate date) {
+    public void explicityMoved(IntraDayDate date) {
         getPositionConstraint().explicityMovedTo(date);
     }
 
@@ -397,19 +430,54 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return positionConstraint;
     }
 
-    private static abstract class AllocationModificationStrategy {
+    private static class ModificationsResult<T extends AllocationModification> {
 
-        protected final IResourceDAO resourceDAO;
+        static <T extends AllocationModification> ModificationsResult<T> create(
+                List<ResourceAllocation<?>> original, List<T> canBeModified) {
 
-        public AllocationModificationStrategy(IResourceDAO resourceDAO) {
-            Validate.notNull(resourceDAO);
-            this.resourceDAO = resourceDAO;
+            List<ResourceAllocation<?>> beingModified = AllocationModification
+                    .getBeingModified(canBeModified);
+            List<ResourceAllocation<?>> noLongerValid = new ArrayList<ResourceAllocation<?>>();
+            for (ResourceAllocation<?> each : original) {
+                if (!beingModified.contains(each)) {
+                    noLongerValid.add(each);
+                }
+            }
+            return new ModificationsResult<T>(canBeModified, noLongerValid);
         }
 
-        public abstract List<ResourcesPerDayModification> getResourcesPerDayModified(
+        private final List<T> valid;
+
+        private final List<ResourceAllocation<?>> noLongerValid;
+
+        private ModificationsResult(List<T> valid, List<ResourceAllocation<?>> noLongerValid) {
+            this.valid = Collections.unmodifiableList(valid);
+            this.noLongerValid = Collections.unmodifiableList(noLongerValid);
+        }
+
+        public List<T> getBeingModified() {
+            return valid;
+        }
+
+        public List<ResourceAllocation<?>> getNoLongerValid() {
+            return noLongerValid;
+        }
+
+    }
+
+    private static abstract class AllocationModificationStrategy {
+
+        protected final IResourcesSearcher searcher;
+
+        public AllocationModificationStrategy(IResourcesSearcher searcher) {
+            Validate.notNull(searcher);
+            this.searcher = searcher;
+        }
+
+        public abstract ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations);
 
-        public abstract List<HoursModification> getHoursModified(
+        public abstract ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations);
 
     }
@@ -417,21 +485,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private static class WithTheSameHoursAndResourcesPerDay extends
             AllocationModificationStrategy {
 
-        public WithTheSameHoursAndResourcesPerDay(IResourceDAO resourceDAO) {
-            super(resourceDAO);
+        public WithTheSameHoursAndResourcesPerDay(IResourcesSearcher searcher) {
+            super(searcher);
         }
 
         @Override
-        public List<HoursModification> getHoursModified(
+        public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.fromExistent(allocations, resourceDAO);
+            List<EffortModification> canBeModified = EffortModification
+                    .fromExistent(allocations, searcher);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
         @Override
-        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.fromExistent(allocations,
-                    resourceDAO);
+            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
+                    .fromExistent(allocations, searcher);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
     }
@@ -439,21 +510,24 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     private static class WithAnotherResources extends
             AllocationModificationStrategy {
 
-        public WithAnotherResources(IResourceDAO resourceDAO) {
-            super(resourceDAO);
+        public WithAnotherResources(IResourcesSearcher searcher) {
+            super(searcher);
         }
 
         @Override
-        public List<HoursModification> getHoursModified(
+        public ModificationsResult<EffortModification> getHoursModified(
                 List<ResourceAllocation<?>> allocations) {
-            return HoursModification.withNewResources(allocations, resourceDAO);
+            List<EffortModification> canBeModified = EffortModification
+                    .withNewResources(allocations, searcher);
+            return ModificationsResult.create(allocations, canBeModified);
         }
 
         @Override
-        public List<ResourcesPerDayModification> getResourcesPerDayModified(
+        public ModificationsResult<ResourcesPerDayModification> getResourcesPerDayModified(
                 List<ResourceAllocation<?>> allocations) {
-            return ResourcesPerDayModification.withNewResources(allocations,
-                    resourceDAO);
+            List<ResourcesPerDayModification> canBeModified = ResourcesPerDayModification
+                    .withNewResources(allocations, searcher);
+            return ModificationsResult.create(allocations, canBeModified);
         }
     }
 
@@ -465,7 +539,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     protected IDatesHandler createDatesHandler(final Scenario scenario,
-            final IResourceDAO resourceDAO) {
+            final IResourcesSearcher searcher) {
         return new IDatesHandler() {
 
             @Override
@@ -481,7 +555,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
             private void doReassignment(Direction direction) {
                 reassign(scenario, direction,
-                        new WithTheSameHoursAndResourcesPerDay(resourceDAO));
+                        new WithTheSameHoursAndResourcesPerDay(searcher));
             }
 
             @Override
@@ -595,15 +669,47 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
                 EffortDuration remaining) {
             IntraDayDate result = IntraDayDate.startOfDay(start.getDate());
             remaining = remaining.plus(start.getEffortDuration());
-            LocalDate current = start.getDate();
+            EffortDuration originalRemaining = remaining;
+            LocalDate startDate = start.getDate();
+            LocalDate current = startDate;
+            if (!canBeFulfilled(start, originalRemaining)) {
+                return roughApproximationDueToNotFullfilingCalendar(startDate,
+                        originalRemaining);
+            }
             while (!remaining.isZero()) {
                 EffortDuration capacity = calendar.getCapacityOn(PartialDay
                         .wholeDay(current));
                 result = IntraDayDate.create(current, remaining);
                 remaining = remaining.minus(min(capacity, remaining));
                 current = current.plusDays(1);
+                if (Days.daysBetween(startDate, current).getDays() > MAX_DAYS_LOOKING_CAPACITY) {
+                    LOG.error("thereAreCapacityFor didn't detect that it didn't"
+                            + " really have enough capacity to fulfill the required hours"
+                            + " or this capacity is more than "
+                            + MAX_DAYS_LOOKING_CAPACITY + " in the future");
+                    return roughApproximationDueToNotFullfilingCalendar(
+                            startDate, originalRemaining);
+                }
             }
             return result;
+        }
+
+        private boolean canBeFulfilled(IntraDayDate start,
+                EffortDuration originalRemaining) {
+            AvailabilityTimeLine availability = AvailabilityTimeLine.allValid();
+            availability.invalidUntil(start.getDate());
+            return calendar.thereAreCapacityFor(availability,
+                    ResourcesPerDay.amount(1), originalRemaining);
+        }
+
+        private IntraDayDate roughApproximationDueToNotFullfilingCalendar(
+                LocalDate startDate,
+                EffortDuration originalRemaining) {
+            LOG.warn("Calendar " + calendar + " doesn't have enough capacity, "
+                    + "using 8h per day to calculate end date for the task");
+            return IntraDayDate.create(
+                    startDate.plusDays(originalRemaining.getHours() / 8),
+                    EffortDuration.zero());
         }
 
         public IntraDayDate fromEndToStart(IntraDayDate newEnd) {
@@ -646,45 +752,57 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
     }
 
     public void reassignAllocationsWithNewResources(Scenario scenario,
-            IResourceDAO resourceDAO) {
-        reassign(scenario, getAllocationDirection(),
-                new WithAnotherResources(resourceDAO));
+            IResourcesSearcher searcher) {
+        reassign(scenario, getAllocationDirection(), new WithAnotherResources(
+                searcher));
     }
 
     private void reassign(Scenario onScenario, Direction direction,
             AllocationModificationStrategy strategy) {
-        this.lastAllocationDirection = direction;
-        if (isLimiting()) {
-            return;
-        }
-        List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
-                getResourceAlloations());
-        List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
-                .modified(copied);
-        if (toBeModified.isEmpty()) {
-            return;
-        }
-        doAllocation(strategy, direction, toBeModified);
-        updateDerived(copied);
+        try {
+            this.lastAllocationDirection = direction;
+            if (isLimiting()) {
+                return;
+            }
+            List<ModifiedAllocation> copied = ModifiedAllocation.copy(onScenario,
+                    getResourceAlloations());
+            List<ResourceAllocation<?>> toBeModified = ModifiedAllocation
+                    .modified(copied);
+            if (toBeModified.isEmpty()) {
+                return;
+            }
+            doAllocation(strategy, direction, toBeModified);
+            updateDerived(copied);
 
-        List<ResourceAllocation<?>> newAllocations = emptyList(),
-        modifiedAllocations = emptyList();
-        mergeAllocation(onScenario, getIntraDayStartDate(),
-                getIntraDayEndDate(), workableDays, calculatedValue,
-                newAllocations, copied, modifiedAllocations);
+            List<ResourceAllocation<?>> newAllocations = emptyList(), removedAllocations = emptyList();
+            mergeAllocation(onScenario, getIntraDayStartDate(),
+                    getIntraDayEndDate(), workableDays, calculatedValue,
+                    newAllocations, copied, removedAllocations);
+        } catch (Exception e) {
+            LOG.error("reassignment for task: " + this
+                    + " couldn't be completed", e);
+        }
     }
 
     private void doAllocation(AllocationModificationStrategy strategy,
             Direction direction, List<ResourceAllocation<?>> toBeModified) {
-        List<ResourcesPerDayModification> allocations = strategy
+        ModificationsResult<ResourcesPerDayModification> modificationsResult = strategy
                 .getResourcesPerDayModified(toBeModified);
+        markAsUnsatisfied(modificationsResult.getNoLongerValid());
+        List<ResourcesPerDayModification> allocations = modificationsResult
+                .getBeingModified();
+        if (allocations.isEmpty()) {
+            LOG.warn("all allocations for task " + this
+                    + " have no valid data that could be used");
+            return;
+        }
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
             ResourceAllocation.allocating(allocations).allocateOnTaskLength();
             break;
         case END_DATE:
             IntraDayDate date = ResourceAllocation.allocating(allocations)
-                    .untilAllocating(direction, getTotalIntendedHours());
+                    .untilAllocating(direction, getTotalNonConsolidatedEffort());
             if (direction == Direction.FORWARD) {
                 setIntraDayEndDate(date);
             } else {
@@ -692,13 +810,27 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
             break;
         case RESOURCES_PER_DAY:
-            List<HoursModification> hoursModified = strategy
+            ModificationsResult<EffortModification> hoursModificationResult = strategy
                     .getHoursModified(toBeModified);
+            markAsUnsatisfied(hoursModificationResult.getNoLongerValid());
+            List<EffortModification> hoursModified = hoursModificationResult
+                    .getBeingModified();
+            if (hoursModified.isEmpty()) {
+                LOG.warn("all allocations for task " + this + " can't be used");
+                return;
+            }
             ResourceAllocation.allocatingHours(hoursModified)
                               .allocateUntil(new LocalDate(getEndDate()));
             break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
+        }
+    }
+
+    private void markAsUnsatisfied(
+            Collection<? extends ResourceAllocation<?>> noLongerValid) {
+        for (ResourceAllocation<?> each : noLongerValid) {
+            each.markAsUnsatisfied();
         }
     }
 
@@ -772,6 +904,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         return (subcontractedTaskData != null);
     }
 
+    public boolean isSubcontractedAndWasAlreadySent() {
+        return (subcontractedTaskData != null)
+                && (!subcontractedTaskData.getState()
+                        .equals(SubcontractState.PENDING));
+    }
+
     public boolean hasSomeSatisfiedAllocation() {
         return !getSatisfiedResourceAllocations().isEmpty();
     }
@@ -837,6 +975,12 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
             }
         }
         return getIntraDayStartDate();
+    }
+
+    public void updateAssignmentsConsolidatedValues() {
+        for (ResourceAllocation<?> each : getAllResourceAllocations()) {
+            each.updateAssignmentsConsolidatedValues();
+        }
     }
 
     public Integer getWorkableDays() {

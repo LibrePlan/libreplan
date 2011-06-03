@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,11 +20,6 @@
 -->
 
 <zk>
-    <zscript><![CDATA[
-       selectorController = new org.navalplanner.web.resources.search.NewAllocationSelectorController();
-    ]]>
-    </zscript>
-
     <vbox apply="${selectorController}">
 
         <groupbox style="margin-top: 5px" closable="false">
@@ -63,25 +59,22 @@
             </hbox>
 
             <!-- Assignment Type -->
-            <hbox>
+            <hbox width="100%">
                 <grid fixedLayout="true">
                     <columns>
                         <column width="200px" />
                         <column  />
                     </columns>
-                    <rows>
-                        <row>
-                            <hbox>
+                    <rows width="100%">
+                        <row width="100%">
+                            <hbox width="100%">
                                 <label value="${i18n:_('Assignment Type')}" />
                                 <image src="/common/img/axuda.gif" tooltip="allocation-type-popup"
                                         sclass="context-help-popup" height="15px" />
                             </hbox>
-                            <radiogroup id="allocationTypeSelector" orient="vertical">
-                                <radio forEach="${selectorController.allocationTypes}"
-                                        label="${each.name}" value="${each}" />
-                            </radiogroup>
+                            <radiogroup id="allocationTypeSelector" orient="vertical" />
                         </row>
-                        <row>
+                        <row width="100%">
                             <label value="${i18n:_('Current selection')}" />
                             <label id="allocationSelectedItems" value="${i18n:_('[generic all workers]')}" />
                         </row>

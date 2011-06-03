@@ -15,10 +15,18 @@
         <property name="resourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
             column="resources_per_day" />
 
+        <property name="intendedResourcesPerDay" type="org.navalplanner.business.workingday.hibernate.ResourcesPerDayType"
+            column="intended_resources_per_day" />
+
         <property name="intendedTotalHours" column="intended_total_hours" />
 
-        <property name="originalTotalAssignment" access="field"
-            column="original_total_assignment" />
+        <property name="intendedTotalAssignment" access="field"
+            column="intended_total_assignment"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
+
+        <property name="intendedNonConsolidatedEffort" access="field"
+            column="intended_non_consolidated_effort"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType"/>
 
         <!-- Indexed -->
         <many-to-one class="Task" name="task" column="task" index="idx_resource_allocation_on_task"/>
@@ -312,7 +320,7 @@
             </list>
             <property name="type">
               <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunction$Type</param>
+                <param name="enumClass">org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum</param>
               </type>
             </property>
         </joined-subclass>

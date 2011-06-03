@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +31,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 /**
- * Registry of {@link URLHandler} <br />
+ * Registry of {@link EntryPointsHandler} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
@@ -43,14 +44,14 @@ public class URLHandlerRegistry implements IURLHandlerRegistry {
     @Autowired
     private IConverterFactory converterFactory;
 
-    private Map<Class<?>, URLHandler<?>> cached = new HashMap<Class<?>, URLHandler<?>>();;
+    private Map<Class<?>, EntryPointsHandler<?>> cached = new HashMap<Class<?>, EntryPointsHandler<?>>();;
 
     @SuppressWarnings("unchecked")
-    public <T> URLHandler<T> getRedirectorFor(Class<T> klassWithLinkableMetadata) {
+    public <T> EntryPointsHandler<T> getRedirectorFor(Class<T> klassWithLinkableMetadata) {
         if (cached.containsKey(klassWithLinkableMetadata)) {
-            return (URLHandler<T>) cached.get(klassWithLinkableMetadata);
+            return (EntryPointsHandler<T>) cached.get(klassWithLinkableMetadata);
         }
-        URLHandler<T> result = new URLHandler<T>(converterFactory,
+        EntryPointsHandler<T> result = new EntryPointsHandler<T>(converterFactory,
                 executorRetriever, klassWithLinkableMetadata);
         cached.put(klassWithLinkableMetadata, result);
         return result;

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -81,7 +82,7 @@ public class CalendarExceptionTypeDAO extends
     @Override
     public boolean existsByName(String name) {
         try {
-            findByName(name);
+            findUniqueByName(name);
             return true;
         } catch (InstanceNotFoundException e) {
             return false;
@@ -90,7 +91,7 @@ public class CalendarExceptionTypeDAO extends
 
     @Override
     @Transactional(readOnly = true)
-    public CalendarExceptionType findByName(String name) throws InstanceNotFoundException {
+    public CalendarExceptionType findUniqueByName(String name) throws InstanceNotFoundException {
         if (StringUtils.isBlank(name)) {
             throw new InstanceNotFoundException(null, CalendarExceptionType.class.getName());
         }
@@ -106,6 +107,13 @@ public class CalendarExceptionTypeDAO extends
             return calendarExceptionType;
         }
 
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public CalendarExceptionType findUniqueByNameAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findUniqueByName(name);
     }
 
 }

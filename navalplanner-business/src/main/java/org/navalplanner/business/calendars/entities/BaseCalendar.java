@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,30 +21,34 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.zero;
+import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.IVetoer;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -54,7 +59,8 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  */
 public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
-    private static final EffortDuration DEFAULT_VALUE = EffortDuration.zero();
+    private static final Capacity DEFAULT_VALUE = Capacity.zero()
+            .overAssignableWithoutLimit();
 
     public static BaseCalendar create() {
         return create(new BaseCalendar(CalendarData.create()));
@@ -62,6 +68,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public static BaseCalendar create(String code) {
         return create(new BaseCalendar(CalendarData.create()), code);
+    }
+
+    public static BaseCalendar createBasicCalendar() {
+        BaseCalendar calendar = create();
+        Capacity eightHours = Capacity.create(hours(8))
+                .overAssignableWithoutLimit();
+        calendar.setCapacityAt(Days.MONDAY, eightHours);
+        calendar.setCapacityAt(Days.TUESDAY, eightHours);
+        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
+        calendar.setCapacityAt(Days.THURSDAY, eightHours);
+        calendar.setCapacityAt(Days.FRIDAY, eightHours);
+        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
+        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
+        return calendar;
     }
 
     public static BaseCalendar createUnvalidated(String code, String name,
@@ -143,10 +163,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return getLastCalendarData().getParent();
     }
 
-    public BaseCalendar getParent(Date date) {
-        return getParent(new LocalDate(date));
-    }
-
     public BaseCalendar getParent(LocalDate date) {
         return getCalendarData(date).getParent();
     }
@@ -155,20 +171,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         getLastCalendarData().setParent(parent);
     }
 
-    public void setParent(BaseCalendar parent, Date date) {
-        setParent(parent, new LocalDate(date));
-    }
-
     public void setParent(BaseCalendar parent, LocalDate date) {
         getCalendarData(date).setParent(parent);
     }
 
     public boolean isDerived() {
         return (getParent() != null);
-    }
-
-    public boolean isDerived(Date date) {
-        return isDerived(new LocalDate(date));
     }
 
     public boolean isDerived(LocalDate date) {
@@ -192,10 +200,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         }
 
         return Collections.unmodifiableSet(exceptionDays);
-    }
-
-    public Set<CalendarException> getExceptions(Date date) {
-        return getExceptions(new LocalDate(date));
     }
 
     public Set<CalendarException> getExceptions(LocalDate date) {
@@ -240,10 +244,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         exceptions.add(day);
     }
 
-    public void removeExceptionDay(Date date) throws IllegalArgumentException {
-        removeExceptionDay(new LocalDate(date));
-    }
-
     public void removeExceptionDay(LocalDate date)
             throws IllegalArgumentException {
         CalendarException day = getOwnExceptionDay(date);
@@ -255,20 +255,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         exceptions.remove(day);
     }
 
-    public void updateExceptionDay(Date date, EffortDuration duration,
-            CalendarExceptionType type) throws IllegalArgumentException {
-        updateExceptionDay(new LocalDate(date), duration, type);
-    }
-
-    public void updateExceptionDay(LocalDate date, EffortDuration duration,
+    public void updateExceptionDay(LocalDate date, Capacity capacity,
             CalendarExceptionType type) throws IllegalArgumentException {
         removeExceptionDay(date);
-        CalendarException day = CalendarException.create(date, duration, type);
+        CalendarException day = CalendarException.create("", date, capacity,
+                type);
         addExceptionDay(day);
-    }
-
-    public CalendarException getOwnExceptionDay(Date date) {
-        return getOwnExceptionDay(new LocalDate(date));
     }
 
     public CalendarException getOwnExceptionDay(LocalDate date) {
@@ -279,10 +271,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         }
 
         return null;
-    }
-
-    public CalendarException getExceptionDay(Date date) {
-        return getExceptionDay(new LocalDate(date));
     }
 
     public CalendarException getExceptionDay(LocalDate date) {
@@ -296,82 +284,47 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     public EffortDuration getCapacityOn(PartialDay date) {
-        return date.limitDuration(getWorkableTimeAt(date.getDate()));
+        return date.limitWorkingDay(getCapacityWithOvertime(date.getDate())
+                .getStandardEffort());
     }
 
-    public EffortDuration getWorkableTimeAt(LocalDate date) {
+    @Override
+    public Capacity getCapacityWithOvertime(LocalDate day) {
+        Validate.notNull(day);
+        return multiplyByCalendarUnits(findCapacityAt(day));
+    }
+
+    private Capacity findCapacityAt(LocalDate date) {
         if (!isActive(date)) {
-            return EffortDuration.zero();
+            return Capacity.zero();
         }
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
-            return exceptionDay.getDuration();
+            return exceptionDay.getCapacity();
         }
-
-        switch (date.getDayOfWeek()) {
-        case DateTimeConstants.MONDAY:
-            return getDurationAt(date, Days.MONDAY);
-
-        case DateTimeConstants.TUESDAY:
-            return getDurationAt(date, Days.TUESDAY);
-
-        case DateTimeConstants.WEDNESDAY:
-            return getDurationAt(date, Days.WEDNESDAY);
-
-        case DateTimeConstants.THURSDAY:
-            return getDurationAt(date, Days.THURSDAY);
-
-        case DateTimeConstants.FRIDAY:
-            return getDurationAt(date, Days.FRIDAY);
-
-        case DateTimeConstants.SATURDAY:
-            return getDurationAt(date, Days.SATURDAY);
-
-        case DateTimeConstants.SUNDAY:
-            return getDurationAt(date, Days.SUNDAY);
-
-        default:
-            throw new RuntimeException("Day of week out of range!");
-        }
+        return getCapacityConsideringCalendarDatasOn(date, getDayFrom(date));
     }
 
-    private boolean isOverAssignable(LocalDate localDate) {
-        CalendarException exceptionDay = getExceptionDay(localDate);
-        if (exceptionDay != null) {
-            return exceptionDay.getType().isOverAssignable();
-        }
-        return true;
+    private Days getDayFrom(LocalDate date) {
+        return Days.values()[date.getDayOfWeek() - 1];
     }
 
-    public EffortDuration getDurationAt(Date date, Days day) {
-        return getDurationAt(new LocalDate(date), day);
-    }
-
-    public EffortDuration getDurationAt(LocalDate date, Days day) {
+    public Capacity getCapacityConsideringCalendarDatasOn(LocalDate date, Days day) {
         CalendarData calendarData = getCalendarData(date);
 
-        EffortDuration duration = calendarData.getDurationAt(day);
+        Capacity capacity = calendarData.getCapacityOn(day);
         BaseCalendar parent = getParent(date);
-        if (duration == null && parent != null) {
-            return parent.getDurationAt(date, day);
+        if (capacity == null && parent != null) {
+            return parent.getCapacityConsideringCalendarDatasOn(date, day);
         }
-        return valueIfNotNullElseDefaultValue(duration);
+        return valueIfNotNullElseDefaultValue(capacity);
     }
 
-    private EffortDuration valueIfNotNullElseDefaultValue(
-            EffortDuration duration) {
-        if (duration == null) {
+    private Capacity valueIfNotNullElseDefaultValue(Capacity capacity) {
+        if (capacity == null) {
             return DEFAULT_VALUE;
         }
-        return duration;
-    }
-
-    /**
-     * Returns the number of workable hours for a specific period depending on
-     * the calendar restrictions.
-     */
-    public Integer getWorkableHours(Date initDate, Date endDate) {
-        return getWorkableHours(new LocalDate(initDate), new LocalDate(endDate));
+        return capacity;
     }
 
     /**
@@ -386,22 +339,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * Returns the workable duration for a specific period depending on the
      * calendar restrictions.
      */
-    public EffortDuration getWorkableDuration(LocalDate init, LocalDate end) {
-        EffortDuration result = zero();
-        for (LocalDate current = init; current.compareTo(end) <= 0; current = current
-                .plusDays(1)) {
-            result = result.plus(getCapacityOn(PartialDay.wholeDay(current)));
-            init = init.plusDays(1);
-        }
-        return result;
-    }
+    public EffortDuration getWorkableDuration(LocalDate init,
+            LocalDate endInclusive) {
+        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(init)
+                .daysUntil(
+                        IntraDayDate.startOfDay(endInclusive).nextDayAtStart());
 
-    /**
-     * Returns the number of workable hours for a specific week depending on the
-     * calendar restrictions.
-     */
-    public Integer getWorkableHoursPerWeek(Date date) {
-        return getWorkableHoursPerWeek(new LocalDate(date));
+        return EffortDuration.sum(daysBetween, new IEffortFrom<PartialDay>() {
+
+            @Override
+            public EffortDuration from(PartialDay each) {
+                return getCapacityOn(each);
+            }
+
+        });
     }
 
     /**
@@ -437,15 +388,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * It makes that the current calendar expires in the specific date. And the
      * new calendar will be used from that date onwards.
      */
-    public void newVersion(Date date) throws IllegalArgumentException {
-        newVersion(new LocalDate(date));
-    }
-
-    /**
-     * Creates a new version this {@link BaseCalendar} from the specific date.
-     * It makes that the current calendar expires in the specific date. And the
-     * new calendar will be used from that date onwards.
-     */
     public void newVersion(LocalDate date) throws IllegalArgumentException {
         CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
         if ((calendarData.getExpiringDate() != null)
@@ -474,8 +416,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
         }
 
-        if (version.getExpiringDate().toDateTimeAtStartOfDay().toDate()
-                .compareTo(new Date()) <= 0) {
+        if (version.getExpiringDate().compareTo(new LocalDate()) <= 0) {
 
             throw new IllegalArgumentException(
                     "You can not add a version with previous date than current date");
@@ -522,10 +463,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return copy;
     }
 
-    public DayType getType(Date date) {
-        return getType(new LocalDate(date));
-    }
-
     public DayType getType(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
         if (exceptionDay != null) {
@@ -565,18 +502,14 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
-    public void setDurationAt(Days day, EffortDuration duration) {
+    public void setCapacityAt(Days day, Capacity capacity) {
         CalendarData calendarData = getLastCalendarData();
-        calendarData.setDurationAt(day, duration);
+        calendarData.setCapacityAt(day, capacity);
     }
 
-    public void setDurationAt(Days day, EffortDuration effort, Date date) {
-        setDurationAt(day, effort, LocalDate.fromDateFields(date));
-    }
-
-    public void setDurationAt(Days day, EffortDuration effort, LocalDate date) {
+    public void setCapacityAt(Days day, Capacity capacity, LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
-        calendarData.setDurationAt(day, effort);
+        calendarData.setCapacityAt(day, capacity);
     }
 
     private CalendarData getCalendarDataBeforeTheLastIfAny() {
@@ -591,10 +524,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarData.isDefault(day);
     }
 
-    public boolean isDefault(Days day, Date date) {
-        return isDefault(day, new LocalDate(date));
-    }
-
     public boolean isDefault(Days day, LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
         return calendarData.isDefault(day);
@@ -603,10 +532,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public void setDefault(Days day) {
         CalendarData calendarData = getLastCalendarData();
         calendarData.setDefault(day);
-    }
-
-    public void setDefault(Days day, Date date) {
-        setDefault(day, new LocalDate(date));
     }
 
     public void setDefault(Days day, LocalDate date) {
@@ -618,25 +543,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return getLastCalendarData().getExpiringDate();
     }
 
-    public LocalDate getExpiringDate(Date date) {
-        return getExpiringDate(new LocalDate(date));
-    }
-
     public LocalDate getExpiringDate(LocalDate date) {
         return getCalendarData(date).getExpiringDate();
     }
 
-    public void setExpiringDate(Date expiringDate) {
-        setExpiringDate(new LocalDate(expiringDate));
-    }
-
     public void setExpiringDate(LocalDate expiringDate) {
         setExpiringDate(expiringDate, new LocalDate());
-    }
-
-    public void setExpiringDate(Date expiringDate, Date date)
-            throws IllegalArgumentException {
-        setExpiringDate(new LocalDate(expiringDate), new LocalDate(date));
     }
 
     public void setExpiringDate(LocalDate expiringDate, LocalDate date)
@@ -674,20 +586,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(index);
     }
 
-    public LocalDate getValidFrom(Date date) {
-        return getValidFrom(new LocalDate(date));
-    }
-
     public LocalDate getValidFrom(LocalDate date) {
         CalendarData calendarData = getPreviousCalendarData(date);
         if (calendarData == null) {
             return null;
         }
         return calendarData.getExpiringDate();
-    }
-
-    public void setValidFrom(Date validFromDate, Date date) {
-        setValidFrom(new LocalDate(validFromDate), new LocalDate(date));
     }
 
     public void setValidFrom(LocalDate validFromDate, LocalDate date)
@@ -698,14 +602,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                     "You can not set this date for the first version");
         }
         setExpiringDate(calendarData, validFromDate);
-    }
-
-    public boolean isLastVersion(Date date) {
-        return isLastVersion(new LocalDate(date));
-    }
-
-    public boolean isFirstVersion(Date date) {
-        return isFirstVersion(new LocalDate(date));
     }
 
     public boolean isLastVersion(LocalDate date) {
@@ -724,15 +620,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * Returns a set of non workable days (0 hours) for a specific period
      * depending on the calendar restrictions.
      */
-    public Set<LocalDate> getNonWorkableDays(Date initDate, Date endDate) {
-        return getNonWorkableDays(new LocalDate(initDate), new LocalDate(
-                endDate));
-    }
-
-    /**
-     * Returns a set of non workable days (0 hours) for a specific period
-     * depending on the calendar restrictions.
-     */
     public Set<LocalDate> getNonWorkableDays(LocalDate init, LocalDate end) {
         Set<LocalDate> result = new HashSet<LocalDate>();
         for (LocalDate current = init; current.compareTo(end) <= 0; current = current
@@ -744,9 +631,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return result;
     }
 
-    public CalendarExceptionType getExceptionType(Date date) {
-        return getExceptionType(new LocalDate(date));
-    }
 
     public CalendarExceptionType getExceptionType(LocalDate date) {
         CalendarException exceptionDay = getExceptionDay(date);
@@ -832,10 +716,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         calendarAvailabilities.remove(calendarAvailability);
     }
 
-    public boolean isActive(Date date) {
-        return isActive(new LocalDate(date));
-    }
-
     public boolean isActive(LocalDate date) {
         if (getCalendarAvailabilities().isEmpty()) {
             return true;
@@ -848,15 +728,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return false;
     }
 
-    public boolean canWork(LocalDate date) {
-        return isActive(date) && canWorkConsideringOnlyException(date);
+    public boolean canWorkOn(LocalDate date) {
+        Capacity capacity = findCapacityAt(date);
+        return capacity.allowsWorking();
     }
 
-
-    private boolean canWorkConsideringOnlyException(LocalDate date) {
-        CalendarException exceptionDay = getExceptionDay(date);
-        return exceptionDay == null || canWorkAt(exceptionDay);
-    }
     public CalendarAvailability getLastCalendarAvailability() {
         if (calendarAvailabilities.isEmpty()) {
             return null;
@@ -865,6 +741,20 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         // not be necessary, doing it for safety
         List<CalendarAvailability> sorted = getCalendarAvailabilitiesSortedByStartDate();
         return sorted.get(sorted.size() - 1);
+    }
+
+    public boolean isLastCalendarAvailability(
+            CalendarAvailability calendarAvailability) {
+        if (getLastCalendarAvailability() == null
+                || calendarAvailability == null) {
+            return false;
+        }
+        if (getLastCalendarAvailability().getId() == null
+                && calendarAvailability.getId() == null) {
+            return getLastCalendarAvailability() == calendarAvailability;
+        }
+        return ObjectUtils.equals(getLastCalendarAvailability().getId(),
+                calendarAvailability.getId());
     }
 
     public void setStartDate(CalendarAvailability calendarAvailability,
@@ -895,31 +785,29 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     @Override
     public EffortDuration asDurationOn(PartialDay day, ResourcesPerDay amount) {
-        EffortDuration workableDuration = day
-                .limitDuration(getWorkableTimeAt(day.getDate()));
-        EffortDuration asDuration = amount
-                .asDurationGivenWorkingDayOf(workableDuration);
-        return limitOverAssignability(day.getDate(), asDuration,
-                workableDuration);
-    }
+        Capacity capacity = findCapacityAt(day.getDate());
+        EffortDuration oneResourcePerDayWorkingDuration = day
+                .limitWorkingDay(capacity.getStandardEffort());
+        EffortDuration amountRequestedDuration = amount
+                .asDurationGivenWorkingDayOf(oneResourcePerDayWorkingDuration);
 
-    private EffortDuration limitOverAssignability(LocalDate day,
-            EffortDuration effortInitiallyCalculated,
-            EffortDuration workableHoursAtDay) {
-        boolean overAssignable = isOverAssignable(day);
-        if (overAssignable) {
-            return effortInitiallyCalculated;
-        } else {
-            return EffortDuration.min(effortInitiallyCalculated,
-                    multiplyByCapacity(workableHoursAtDay));
-        }
+        return multiplyByCalendarUnits(capacity).limitDuration(
+                amountRequestedDuration);
     }
 
     /**
-     * This method is intended to be overriden
+     * <p>
+     * Calendar units are the number of units this calendar is applied to. For
+     * example a {@link VirtualWorker} composed of ten workers would multiply
+     * the capacity by ten.
+     * </p>
+     * <p>
+     * This method is intended to be overridden
+     * </p>
+     *
      */
-    protected EffortDuration multiplyByCapacity(EffortDuration duration) {
-        return duration;
+    protected Capacity multiplyByCalendarUnits(Capacity capacity) {
+        return capacity;
     }
 
     @Override
@@ -943,9 +831,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
     }
 
-    public boolean onlyGivesZeroHours(Days each) {
-        CalendarData last = lastCalendarData();
-        return last.isEmptyFor(each);
+    public boolean onlyGivesZeroHours(Days day) {
+        for (CalendarData each : calendarDataVersions) {
+            if (!each.isEmptyFor(day)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -958,10 +850,23 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     private void addInvaliditiesDerivedFromCalendar(AvailabilityTimeLine result) {
         addInvaliditiesFromAvailabilities(result);
         addInvaliditiesFromExceptions(result);
-        addInvaliditiesFromCalendarDatas(result);
+        addInvaliditiesFromEmptyCalendarDatas(result);
+        addInvaliditiesFromEmptyDaysInCalendarDatas(result);
     }
 
-    private void addInvaliditiesFromCalendarDatas(AvailabilityTimeLine result) {
+    private void addInvaliditiesFromEmptyDaysInCalendarDatas(
+            AvailabilityTimeLine result) {
+        result.setVetoer(new IVetoer() {
+
+            @Override
+            public boolean isValid(LocalDate date) {
+                return canWorkOn(date);
+            }
+        });
+    }
+
+    private void addInvaliditiesFromEmptyCalendarDatas(
+            AvailabilityTimeLine result) {
         LocalDate previous = null;
         for (CalendarData each : calendarDataVersions) {
             addInvalidityIfDataEmpty(result, previous, each);
@@ -1013,15 +918,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private void addInvaliditiesFromExceptions(AvailabilityTimeLine timeLine) {
         for (CalendarException each : getExceptions()) {
-            if (!canWorkAt(each)) {
+            if (!each.getCapacity().allowsWorking()) {
                 timeLine.invalidAt(each.getDate());
             }
         }
-    }
-
-    private boolean canWorkAt(CalendarException each) {
-        return !each.getDuration().isZero()
-                || each.getType().isOverAssignable();
     }
 
     @Override
@@ -1141,4 +1041,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     public Integer getLastSequenceCode() {
         return lastSequenceCode;
     }
+
+    @AssertTrue(message = "calendars with zero hours are not allowed")
+    public boolean checkConstraintZeroHours() {
+        if ((calendarDataVersions != null) && (!calendarDataVersions.isEmpty())) {
+            for (CalendarData each : calendarDataVersions) {
+                if (!each.isEmpty()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 }

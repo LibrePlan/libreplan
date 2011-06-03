@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,6 +37,7 @@ import org.navalplanner.web.orders.materials.AssignedMaterialsToOrderElementCont
 import org.navalplanner.web.orders.materials.OrderElementMaterialAssignmentsComponent;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Tab;
@@ -235,35 +237,59 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void back() {
-        closeAll();
-    }
-
-    private void closeAll() {
-        if ((manageOrderElementAdvancesController != null)
-                && (!manageOrderElementAdvancesController.close())) {
-            selectTab("tabAdvances");
-            return;
-        }
-        if ((assignedCriterionRequirementController != null)
-                && (!assignedCriterionRequirementController.close())) {
-            selectTab("tabRequirements");
-            return;
-        }
-        selectTab("tabTaskQualityForm");
-        if ((assignedTaskQualityFormsController != null)
-                && (!assignedTaskQualityFormsController.confirm())) {
-            return;
-        }
         close();
     }
 
     private void close() {
-        self.setVisible(false);
-        Util.reloadBindings(self.getParent());
+        if (validateTabs()) {
+            self.setVisible(false);
+            Util.reloadBindings(self.getParent());
+        }
     }
 
-    public void onClose(Event event) {
-        closeAll();
+    private boolean validateTabs() {
+        return (validateProgressTab() && validateTaskQualityTab() && validateCriterionRequirementsTab());
+    }
+
+    private boolean validateTaskQualityTab() {
+        try {
+            if (assignedTaskQualityFormsController != null) {
+                assignedTaskQualityFormsController.confirm();
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabTaskQualityForm");
+            throw e;
+        }
+        return true;
+    }
+
+    private boolean validateCriterionRequirementsTab() {
+        try {
+            if (assignedCriterionRequirementController != null) {
+                assignedCriterionRequirementController.close();
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabRequirements");
+            throw e;
+        }
+        return true;
+    }
+
+    private boolean validateProgressTab() {
+        try {
+            if ((manageOrderElementAdvancesController != null) && (!manageOrderElementAdvancesController.close())){
+                selectTab("tabAdvances");
+                return false;
+            }
+        } catch (WrongValueException e) {
+            selectTab("tabAdvances");
+            throw e;
+        }
+        return true;
+    }
+
+    public void close(Event event) {
+        close();
         event.stopPropagation();
     }
 

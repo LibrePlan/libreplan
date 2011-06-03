@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,6 +42,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -75,6 +77,9 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
     private IExternalCompanyDAO externalCompanyDAO;
 
     private InstanceConstraintViolationsListDTO getErrorMessage(String code,
@@ -97,7 +102,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
         if (StringUtils
                 .isEmpty(orderElementWithAdvanceMeasurementsListDTO.externalCompanyNif)) {
-            return getErrorMessage("", "external company nif not specified");
+            return getErrorMessage("", "external company ID not specified");
         }
 
         ExternalCompany externalCompany;
@@ -154,7 +159,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
 
                 for (AdvanceMeasurementDTO advanceMeasurementDTO : orderElementWithAdvanceMeasurementsDTO.advanceMeasurements) {
                     AdvanceMeasurement advanceMeasurement = advanceAssignmentSubcontractor
-                            .getAdvanceMeasurement(DateConverter
+                            .getAdvanceMeasurementAtExactDate(DateConverter
                                     .toLocalDate(advanceMeasurementDTO.date));
                     if (advanceMeasurement == null) {
                         advanceAssignmentSubcontractor
@@ -178,8 +183,7 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
                 // update the advance percentage in its related task
                 Scenario scenarioMaster = PredefinedScenarios.MASTER
                         .getScenario();
-                Order order = orderElementDAO
-                        .loadOrderAvoidingProxyFor(orderElement);
+                Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
                 OrderVersion orderVersion = order.getScenarios().get(
                         scenarioMaster);
                 updateAdvancePercentage(orderVersion, orderElement);

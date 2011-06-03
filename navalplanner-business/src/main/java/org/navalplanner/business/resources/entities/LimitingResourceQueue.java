@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +21,9 @@
 
 package org.navalplanner.business.resources.entities;
 
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isAfter;
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isInTheMiddle;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -29,13 +33,15 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.navalplanner.business.calendars.entities.CalendarAvailability;
+import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.GapInterval;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
-
 /**
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -101,10 +107,18 @@ public class LimitingResourceQueue extends BaseEntity {
     private List<GapOnQueue> calculateGaps() {
         List<Gap> result = new ArrayList<Gap>();
         DateAndHour previousEnd = null;
+        ResourceCalendar calendar = resource.getCalendar();
+        List<CalendarAvailability> activationPeriods = calendar.getCalendarAvailabilities();
+
         for (LimitingResourceQueueElement each : limitingResourceQueueElements) {
             DateAndHour startTime = each.getStartTime();
             if (previousEnd == null || startTime.isAfter(previousEnd)) {
-                result.add(Gap.create(resource, previousEnd, startTime));
+                List<GapInterval> gapIntervals = GapInterval.
+                        create(previousEnd, startTime).
+                        delimitByActivationPeriods(activationPeriods);
+                if (!gapIntervals.isEmpty()) {
+                    result.addAll(GapInterval.gapsOn(gapIntervals, resource));
+                }
             }
             previousEnd = each.getEndTime();
         }
@@ -141,28 +155,20 @@ public class LimitingResourceQueue extends BaseEntity {
         return queueElements.subList(position + 1, queueElements.size());
     }
 
+    public List<LimitingResourceQueueElement> getElementsSince(DateAndHour time) {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        for (LimitingResourceQueueElement each: getLimitingResourceQueueElements()) {
+            if (isInTheMiddle(each, time) || isAfter(each, time)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     public void queueElementMoved(
             LimitingResourceQueueElement limitingResourceQueueElement) {
         invalidCachedGaps();
-    }
-
-    /**
-     * limitingResourceQueueElements is a SortedSet of
-     * {@link LimitingResourceQueueElement} ordered by startDate
-     *
-     * When an element if shifted visually in a list of queue elements, it might
-     * be necessary to rearrange the SortedSet so the new element occupies its
-     * real position. Instead of rearranging the SortedSet again, the element is
-     * removed from the set and inserted again. Insert operation guarantees that
-     * an element is inserted at the right position
-     *
-     */
-    public void reloadLimitingResourceQueueElement(
-            LimitingResourceQueueElement element) {
-        if (limitingResourceQueueElements.contains(element)) {
-            limitingResourceQueueElements.remove(element);
-            limitingResourceQueueElements.add(element);
-        }
     }
 
     public String toString() {

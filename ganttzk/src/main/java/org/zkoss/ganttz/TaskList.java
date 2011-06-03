@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.apache.commons.lang.math.Fraction;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
@@ -43,8 +46,10 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -280,10 +285,18 @@ public class TaskList extends XulElement implements AfterCompose {
                     for (TaskComponent taskComponent : getTaskComponents()) {
                         taskComponent.zoomChanged();
                     }
+                    adjustZoomColumnsHeight();
+                    adjustZoomPositionScroll();
                 }
             };
             getTimeTracker().addZoomListener(zoomLevelChangedListener);
         }
+    }
+
+    public LocalDate toDate(int pixels, Fraction pixelsPerDay, Interval interval) {
+        int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
+                .intValue();
+        return interval.getStart().plusDays(daysInto);
     }
 
     private Map<TaskComponent, Menupopup> contextMenus = new HashMap<TaskComponent, Menupopup>();
@@ -319,6 +332,14 @@ public class TaskList extends XulElement implements AfterCompose {
 
     GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
+    }
+
+    public void adjustZoomColumnsHeight() {
+        response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
+    }
+
+    private void adjustZoomPositionScroll() {
+        getTimeTrackerComponent().movePositionScroll();
     }
 
     public void redrawDependencies() {

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,17 +47,21 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.MultipleInstancesException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.ResourcesCostCategoryAssignment;
 import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
+import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
@@ -113,6 +118,18 @@ public abstract class Resource extends IntegrationEntity {
         return resources;
     }
 
+    public static String getCaptionFor(ResourceAllocation<?> resourceAllocation) {
+        return getCaptionFor(resourceAllocation.getAssociatedResources());
+    }
+
+    public static String getCaptionFor(List<Resource> resources) {
+        List<String> values = new ArrayList<String>();
+        for (Resource each: resources) {
+            values.add(each.getShortDescription());
+        }
+        return StringUtils.join(values, ", ");
+    }
+
     private ResourceCalendar calendar;
 
     private Set<CriterionSatisfaction> criterionSatisfactions = new HashSet<CriterionSatisfaction>();
@@ -124,7 +141,7 @@ public abstract class Resource extends IntegrationEntity {
     private Set<ResourcesCostCategoryAssignment> resourcesCostCategoryAssignments =
         new HashSet<ResourcesCostCategoryAssignment>();
 
-    private Boolean limitingResource = Boolean.FALSE;
+    private ResourceType resourceType = ResourceType.NON_LIMITING_RESOURCE;
 
     private LimitingResourceQueue limitingResourceQueue;
 
@@ -294,12 +311,22 @@ public abstract class Resource extends IntegrationEntity {
             });
         }
 
-        public Query from(final ICriterion criterion) {
+        public Query from(final Criterion criterion) {
             return withNewPredicate(new IPredicate() {
 
                 @Override
                 public boolean accepts(CriterionSatisfaction satisfaction) {
-                    return satisfaction.getCriterion().isEquivalent(criterion);
+                    return criterion.includes(satisfaction.getCriterion());
+                }
+            });
+        }
+
+        public Query exactly(final Criterion criterion) {
+            return withNewPredicate(new IPredicate() {
+
+                @Override
+                public boolean accepts(CriterionSatisfaction satisfaction) {
+                    return criterion.isEquivalent(satisfaction.getCriterion());
                 }
             });
         }
@@ -394,7 +421,7 @@ public abstract class Resource extends IntegrationEntity {
         return query().from(type).result();
     }
 
-    public List<CriterionSatisfaction> getSatisfactionsFor(ICriterion criterion) {
+    public List<CriterionSatisfaction> getSatisfactionsFor(Criterion criterion) {
         return query().from(criterion).result();
     }
 
@@ -408,7 +435,7 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public List<CriterionSatisfaction> getCurrentSatisfactionsFor(
-            ICriterion criterion) {
+            Criterion criterion) {
         return query().from(criterion).current().result();
     }
 
@@ -523,8 +550,8 @@ public abstract class Resource extends IntegrationEntity {
     public List<CriterionSatisfaction> finishEnforcedAt(Criterion criterion,
             LocalDate date) {
         ArrayList<CriterionSatisfaction> result = new ArrayList<CriterionSatisfaction>();
-        for (CriterionSatisfaction criterionSatisfaction : query().from(
-                criterion).at(date).result()) {
+        for (CriterionSatisfaction criterionSatisfaction : query()
+                .exactly(criterion).at(date).result()) {
             criterionSatisfaction.finish(date);
             result.add(criterionSatisfaction);
         }
@@ -825,19 +852,18 @@ public abstract class Resource extends IntegrationEntity {
 
     }
 
-    public int getAssignedHours(LocalDate localDate) {
-        int sum = 0;
-        for (DayAssignment dayAssignment : getAssignmentsForDay(localDate)) {
-            sum += dayAssignment.getHours();
-        }
-        return sum;
+    public EffortDuration getAssignedEffort(LocalDate localDate) {
+        return DayAssignment.sum(getAssignmentsForDay(localDate));
     }
 
     public EffortDuration getAssignedDurationDiscounting(
-            Object alloationFromWhichDiscountHours, LocalDate day) {
+            Map<Long, Set<BaseEntity>> allocationsFromWhichDiscountHours,
+            LocalDate day) {
         EffortDuration result = zero();
         for (DayAssignment dayAssignment : getAssignmentsForDay(day)) {
-            if (!dayAssignment.belongsTo(alloationFromWhichDiscountHours)) {
+
+            if (!dayAssignment
+                    .belongsToSomeOf(allocationsFromWhichDiscountHours)) {
                 result = result.plus(dayAssignment.getDuration());
             }
         }
@@ -867,13 +893,25 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public int getTotalWorkHours(LocalDate start, LocalDate end) {
-        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end, null);
+        return getTotalWorkHours(start, end, null);
     }
 
-    public int getTotalWorkHours(LocalDate start, LocalDate end,
+    public int getTotalWorkHours(LocalDate start, LocalDate endExclusive,
             ICriterion criterion) {
-        return getTotalWorkHoursFor(getCalendarOrDefault(), start, end,
-                criterion);
+        return getTotalEffortFor(IntraDayDate.startOfDay(start),
+                IntraDayDate.startOfDay(endExclusive), criterion)
+                .roundToHours();
+    }
+
+    public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
+            IntraDayDate endExclusive) {
+        return getTotalEffortFor(startInclusive, endExclusive, null);
+    }
+
+    public EffortDuration getTotalEffortFor(IntraDayDate startInclusive,
+            IntraDayDate endExclusive, ICriterion criterion) {
+        return getTotalEffortFor(getCalendarOrDefault(), startInclusive,
+                endExclusive, criterion);
     }
 
     public ICalendar getCalendarOrDefault() {
@@ -881,20 +919,27 @@ public abstract class Resource extends IntegrationEntity {
                 .getDefaultWorkingDay();
     }
 
-    private int getTotalWorkHoursFor(ICalendar calendar, LocalDate start,
-            LocalDate end, ICriterion criterionToSatisfy) {
-        EffortDuration sum = zero();
-        Iterable<PartialDay> daysBetween = IntraDayDate.startOfDay(start)
-                .daysUntil(IntraDayDate.startOfDay(end));
-        for (PartialDay current : daysBetween) {
-            EffortDuration capacityCurrent = calendar.getCapacityOn(current);
-            if (capacityCurrent != null
-                    && (criterionToSatisfy == null || satisfiesCriterionAt(
-                            criterionToSatisfy, current.getDate()))) {
-                sum = sum.plus(capacityCurrent);
+    private EffortDuration getTotalEffortFor(final ICalendar calendar,
+            IntraDayDate startInclusive, IntraDayDate endExclusive,
+            final ICriterion criterionToSatisfy) {
+
+        Iterable<PartialDay> daysBetween = startInclusive
+                .daysUntil(endExclusive);
+
+        return EffortDuration.sum(daysBetween, new IEffortFrom<PartialDay>() {
+
+            @Override
+            public EffortDuration from(PartialDay current) {
+                EffortDuration capacityCurrent = calendar
+                        .getCapacityOn(current);
+                if (capacityCurrent != null
+                        && (criterionToSatisfy == null || satisfiesCriterionAt(
+                                criterionToSatisfy, current.getDate()))) {
+                    return capacityCurrent;
+                }
+                return zero();
             }
-        }
-        return sum.roundToHours();
+        });
     }
 
     private boolean satisfiesCriterionAt(ICriterion criterionToSatisfy,
@@ -1056,14 +1101,11 @@ public abstract class Resource extends IntegrationEntity {
          * Check if time intervals in cost assignments are correct in isolation.
          * If not, it does not make sense to check assignment overlapping.
          */
-        for (ResourcesCostCategoryAssignment i :
-            getResourcesCostCategoryAssignments()) {
-
-            if (!(i.isInitDateSpecified() &&
-                  i.checkConstraintPositiveTimeInterval())) {
+        for (ResourcesCostCategoryAssignment each : getResourcesCostCategoryAssignments()) {
+            if (!(each.isInitDateSpecified() && each
+                    .checkConstraintPositiveTimeInterval())) {
                 return false;
             }
-
         }
 
         /*
@@ -1072,28 +1114,11 @@ public abstract class Resource extends IntegrationEntity {
         List<ResourcesCostCategoryAssignment> assignmentsList =
             new ArrayList<ResourcesCostCategoryAssignment>();
         assignmentsList.addAll(getResourcesCostCategoryAssignments());
-        for(int i=0; i<assignmentsList.size(); i++) {
-            LocalDate initDate = assignmentsList.get(i).getInitDate();
-            LocalDate endDate = assignmentsList.get(i).getEndDate();
-            for(int j=i+1; j<assignmentsList.size(); j++) {
-                ResourcesCostCategoryAssignment listElement = assignmentsList.get(j);
-                if (endDate == null && listElement.getEndDate() == null) {
-                    return true;
-                }
-                else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
-                        (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
-                    return true;
-                }
-                else if((endDate != null && listElement.getEndDate() != null) &&
-                        ((listElement.getEndDate().compareTo(initDate)>=0 && //  (1) listElement.getEndDate() inside [initDate, endDate]
-                          listElement.getEndDate().compareTo(endDate)<=0) ||
-                         (listElement.getInitDate().compareTo(initDate)>=0 && // (2) listElement.getInitDate() inside [initDate, endDate]
-                          listElement.getInitDate().compareTo(endDate)<=0) ||
-                         (listElement.getInitDate().compareTo(initDate)<=0 && // (3) [listElement.getInitDate(), listElement.getEndDate()]
-                          listElement.getEndDate().compareTo(endDate)>=0))) { //     contains [initDate, endDate]
-                    return true;
-                }
-            }
+
+        try {
+            CostCategory.validateCostCategoryOverlapping(assignmentsList);
+        } catch (ValidationException e) {
+            return true;
         }
         return false;
 
@@ -1139,11 +1164,15 @@ public abstract class Resource extends IntegrationEntity {
     }
 
     public Boolean isLimitingResource() {
-        return limitingResource;
+        return (resourceType == ResourceType.LIMITING_RESOURCE);
     }
 
-    public void setLimitingResource(Boolean limitingResource) {
-        this.limitingResource = limitingResource;
+    public ResourceType getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(ResourceType resourceType) {
+        this.resourceType = resourceType;
     }
 
     public LimitingResourceQueue getLimitingResourceQueue() {

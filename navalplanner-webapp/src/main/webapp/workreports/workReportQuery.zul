@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -64,21 +65,36 @@
                 model="@{controller.queryWorkReportLines}"
                 onInitRender ="controller.sortQueryWorkReportLines();">
                 <columns sizable="true">
-                <column id="date" label="${i18n:_('Date')}" width="200px" align="center"
+                <column id="date" label="${i18n:_('Date')}" width="60px" align="center"
                     sort="auto(date)" sortDirection="ascending"/>
-                <column label="${i18n:_('Resource')}" width="200px" align="center"/>
-                <column label="${i18n:_('Task Code')}" width="200px" align="center"/>
-                <column label="${i18n:_('Start hour')}" width="80px" align="center"/>
-                <column label="${i18n:_('Finish hour')}" width="80px" align="center"/>
-                <column label="${i18n:_('Hours')}" width="80px" align="center"/>
-                <column label="${i18n:_('Hours type')}" width="150px" align="center"/>
-                <column label="${i18n:_('Work Report')}" width="100%" align="center"/>
+                <column id="resource" label="${i18n:_('Resource')}" width="190px" align="center"
+                    sort="auto(resource.shortDescription)" sortDirection="ascending"/>
+                <column id="projectCode" label="${i18n:_('Project Code')}" width="130px" align="center"
+                    sort="auto(orderElement.order.code)" sortDirection="ascending"/>
+                <column id="projectName" label="${i18n:_('Project Name')}" width="150px" align="center"
+                    sort="auto(orderElement.order.name)" sortDirection="ascending"/>
+                <column id="taskCode" label="${i18n:_('Task Code')}" width="130px" align="center"
+                    sort="auto(orderElement.code)" sortDirection="ascending"/>
+                <column id="taskName" label="${i18n:_('Task name')}" width="150px" align="center"
+                    sort="auto(orderElement.name)" sortDirection="ascending"/>
+                <column id="startHour" label="${i18n:_('Start hour')}" width="80px" align="center"
+                    sort="auto(clockStart)" sortDirection="ascending"/>
+                <column id="finishHour" label="${i18n:_('Finish hour')}" width="80px" align="center"
+                    sort="auto(clockFinish)" sortDirection="ascending"/>
+                <column id="hours" label="${i18n:_('Hours')}" width="50px" align="center"
+                    sort="auto(numHours)" sortDirection="ascending"/>
+                <column id="hourType" label="${i18n:_('Hours type')}" width="90px" align="center"
+                    sort="auto(typeOfWorkHours.name)" sortDirection="ascending"/>
+                <column label="${i18n:_('Work Report')}" width="80px" align="center"/>
                 </columns>
                 <rows>
                 <row self="@{each='queryWorkReportLine'}" value="@{queryWorkReportLine}">
                     <label value="@{queryWorkReportLine.date, converter='org.navalplanner.web.common.typeconverters.DateConverter'}" />
                     <label value="@{queryWorkReportLine.resource.shortDescription}"/>
+                    <label value="@{queryWorkReportLine.orderElement.order.code}" />
+                    <label value="@{queryWorkReportLine.orderElement.order.name}" />
                     <label value="@{queryWorkReportLine.orderElement.code}" />
+                    <label value="@{queryWorkReportLine.orderElement.name}" />
                     <label value="@{queryWorkReportLine.clockStart, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
                     <label value="@{queryWorkReportLine.clockFinish, converter='org.navalplanner.web.common.typeconverters.TimeConverter'}" />
                     <label value="@{queryWorkReportLine.numHours}" />
@@ -170,7 +186,7 @@
             <button onClick="controller.saveAndContinue();"
                 label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.newWorkReportWithSameType();"
-                label="Save &amp; New work report" sclass="saveandcontinue-button global-action"/>
+                label="${i18n:_('Save &amp; New work report')}" sclass="saveandcontinue-button global-action"/>
             <button onClick="controller.cancel();"
                 label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
 

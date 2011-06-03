@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +20,9 @@
  */
 
 package org.navalplanner.web.limitingresources;
+
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isAfter;
+import static org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement.isInTheMiddle;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +47,7 @@ import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -63,6 +67,7 @@ import org.navalplanner.business.planner.limiting.entities.AllocationSpec;
 import org.navalplanner.business.planner.limiting.entities.DateAndHour;
 import org.navalplanner.business.planner.limiting.entities.Gap;
 import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueue;
+import org.navalplanner.business.planner.limiting.entities.Gap.GapOnQueueWithQueueElement;
 import org.navalplanner.business.planner.limiting.entities.InsertionRequirements;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceAllocator;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
@@ -80,6 +85,9 @@ import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.limitingresources.QueuesState.Edge;
 import org.navalplanner.web.planner.order.SaveCommand;
 import org.navalplanner.web.security.SecurityUtils;
@@ -93,10 +101,11 @@ import org.zkoss.ganttz.util.Interval;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/planner/index.zul;limiting_resources")
 public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Autowired
-    private IOrderElementDAO orderElementDAO;
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -233,14 +242,18 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         for (ResourceAllocation<?> each: task.getAllResourceAllocations()) {
             Hibernate.initialize(each);
         }
-        for (Dependency each: task.getDependenciesWithThisOrigin()) {
-            Hibernate.initialize(each);
-        }
-        for (Dependency each: task.getDependenciesWithThisDestination()) {
-            Hibernate.initialize(each);
-        }
+        initializeDependencies(task);
         initializeTaskSource(task.getTaskSource());
         initializeRootOrder(task);
+    }
+
+    private void initializeDependencies(Task task) {
+        for (Dependency each: task.getDependenciesWithThisOrigin()) {
+            Hibernate.initialize(each.getDestination());
+        }
+        for (Dependency each: task.getDependenciesWithThisDestination()) {
+            Hibernate.initialize(each.getOrigin());
+        }
     }
 
     private boolean hasResourceAllocation(Task task) {
@@ -363,8 +376,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     @Override
     @Transactional(readOnly = true)
     public Order getOrderByTask(TaskElement task) {
-        return orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        return orderDAO.loadOrderAvoidingProxyFor(task.getOrderElement());
     }
 
     @Override
@@ -398,7 +410,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     @Override
     public List<LimitingResourceQueue> getLimitingResourceQueues() {
-        return queuesState.getQueues();
+        return queuesState.getQueuesOrderedByResourceName();
     }
 
     @Override
@@ -406,6 +418,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return queuesState.getUnassigned();
     }
 
+    @Override
     public ZoomLevel calculateInitialZoomLevel() {
         Interval interval = getViewInterval();
         return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
@@ -418,27 +431,61 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         InsertionRequirements requirements = queuesState
                 .getRequirementsFor(externalQueueElement);
-        AllocationSpec allocationDone = insertAtGap(requirements);
-        if (allocationDone == null) {
+        AllocationSpec allocation = insertAtGap(requirements);
+        if (allocation == null) {
             return Collections.emptyList();
         }
+        applyAllocation(allocation);
 
-        assert allocationDone.isValid();
+        assert allocation.isValid();
         List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
         result.add(requirements.getElement());
 
         List<LimitingResourceQueueElement> moved = shift(
                 queuesState
-                .getPotentiallyAffectedByInsertion(externalQueueElement),
-                requirements.getElement(),
-                allocationDone);
+                        .getPotentiallyAffectedByInsertion(externalQueueElement),
+                requirements.getElement(), allocation);
+        result.addAll(rescheduleAffectedElementsToSatisfyDependencies(allocation, moved));
 
-        result.addAll(moved);
+        return result;
+    }
+
+    /**
+     * After an allocation dependencies might be broken, this method unschedules
+     * elements affected by an allocation and reschedule them again in
+     * topological order, so dependencies are satisfied
+     *
+     * If the allocation was appropriative it also allocates those elements that
+     * might be unscheduled before due to the appropriative allocation
+     *
+     * @param allocation
+     * @param moved
+     * @return
+     */
+    private Collection<? extends LimitingResourceQueueElement> rescheduleAffectedElementsToSatisfyDependencies(
+            AllocationSpec allocation, List<LimitingResourceQueueElement> moved) {
+
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+        List<LimitingResourceQueueElement> toReschedule = new ArrayList<LimitingResourceQueueElement>();
+
+        checkAllocationIsAppropriative(false);
+        for (LimitingResourceQueueElement each: moved) {
+            toReschedule.add(unschedule(each));
+        }
+        if (allocation.isAppropriative()) {
+            toReschedule.addAll(allocation.getUnscheduledElements());
+        }
+        for (LimitingResourceQueueElement each: queuesState.inTopologicalOrder(toReschedule)) {
+            result.addAll(assignLimitingResourceQueueElement(each));
+        }
+        checkAllocationIsAppropriative(true);
+
         return result;
     }
 
     /**
      * Moves elements in order to satisfy dependencies
+     *
      * @param potentiallyAffectedByInsertion
      * @param elementInserted
      * @param allocationAlreadyDone
@@ -457,16 +504,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             applyAllocation(each);
 
             LimitingResourceQueueElement element = each.getElement();
-            reloadElementInQueue(element);
             result.add(element);
         }
 
         return result;
-    }
-
-    private void reloadElementInQueue(LimitingResourceQueueElement element) {
-        final LimitingResourceQueue queue = element.getLimitingResourceQueue();
-        queue.reloadLimitingResourceQueueElement(element);
     }
 
     private List<AllocationSpec> getAllocationsToBeDone(
@@ -588,21 +629,115 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      *         otherwise
      */
     private AllocationSpec insertAtGap(InsertionRequirements requirements) {
+        AllocationSpec allocationStillNotDone = findAllocationSpecFor(requirements);
+        return doAppropriativeIfNecessary(allocationStillNotDone, requirements);
+    }
+
+    /**
+     * Find valid {@link AllocationSpec} taking into account requirements
+     *
+     * @param requirements
+     * @return
+     */
+    private AllocationSpec findAllocationSpecFor(InsertionRequirements requirements) {
         List<GapOnQueue> potentiallyValidGapsFor = queuesState
                 .getPotentiallyValidGapsFor(requirements);
+        return findAllocationSpecFor(potentiallyValidGapsFor, requirements);
+    }
+
+    private AllocationSpec findAllocationSpecFor(List<GapOnQueue> gapsOnQueue, InsertionRequirements requirements) {
         boolean generic = requirements.getElement().isGeneric();
-        for (GapOnQueue each : potentiallyValidGapsFor) {
-            for (GapOnQueue eachSubGap : getSubGaps(each, requirements
-                    .getElement(), generic)) {
+        for (GapOnQueue each : gapsOnQueue) {
+            for (GapOnQueue eachSubGap : getSubGaps(each,
+                    requirements.getElement(), generic)) {
                 AllocationSpec allocation = requirements
                         .guessValidity(eachSubGap);
                 if (allocation.isValid()) {
-                    applyAllocation(allocation);
                     return allocation;
                 }
             }
         }
         return null;
+    }
+
+    private AllocationSpec doAppropriativeIfNecessary(AllocationSpec allocation,
+            InsertionRequirements requirements) {
+        if (allocation != null) {
+            if (checkAllocationIsAppropriative()
+                    && requirements.isAppropiativeAllocation(allocation)) {
+                return doAppropriativeAllocation(requirements, allocation);
+            }
+            return allocation;
+        }
+        return null;
+    }
+
+    private AllocationSpec insertAtGap(InsertionRequirements requirements, LimitingResourceQueue queue) {
+        AllocationSpec allocationStillNotDone = findAllocationSpecForInQueue(requirements, queue);
+        return doAppropriativeIfNecessary(allocationStillNotDone, requirements);
+    }
+
+    private AllocationSpec findAllocationSpecForInQueue(
+            InsertionRequirements requirements, LimitingResourceQueue queue) {
+
+        List<GapOnQueue> potentiallyValidGapsFor = new ArrayList<GapOnQueue>();
+
+        for (GapOnQueue each : queuesState
+                .getPotentiallyValidGapsFor(requirements)) {
+            if (each.getOriginQueue().equals(queue)) {
+                potentiallyValidGapsFor.add(each);
+            }
+        }
+        return findAllocationSpecFor(potentiallyValidGapsFor, requirements);
+    }
+
+    private boolean checkAllocationIsAppropriative = true;
+
+    private AllocationSpec doAppropriativeAllocation(
+            InsertionRequirements requirements, AllocationSpec allocation) {
+
+        LimitingResourceQueueElement element = requirements.getElement();
+        List<LimitingResourceQueue> potentiallyValidQueues = getAssignableQueues(element);
+        LimitingResourceQueue queue = earliestQueue(potentiallyValidQueues);
+
+        List<LimitingResourceQueueElement> unscheduled = new ArrayList<LimitingResourceQueueElement>();
+        allocation = unscheduleElementsFor(queue, requirements, unscheduled);
+        allocation.setUnscheduledElements(queuesState.inTopologicalOrder(unscheduled));
+        return allocation;
+    }
+
+    /**
+     * Returns queue which last element is at a earliest date
+     *
+     * @param potentiallyValidQueues
+     * @return
+     */
+    private LimitingResourceQueue earliestQueue(
+            List<LimitingResourceQueue> potentiallyValidQueues) {
+
+        LimitingResourceQueue result = null;
+        LocalDate latestDate = null;
+
+        for (LimitingResourceQueue each : potentiallyValidQueues) {
+            SortedSet<LimitingResourceQueueElement> elements = each
+                    .getLimitingResourceQueueElements();
+            if (!elements.isEmpty()) {
+                LocalDate date = elements.last().getEndDate();
+                if (latestDate == null || date.isAfter(latestDate)) {
+                    latestDate = date;
+                    result = each;
+                }
+            }
+        }
+        return result;
+    }
+
+    private void checkAllocationIsAppropriative(boolean value) {
+        checkAllocationIsAppropriative = value;
+    }
+
+    private boolean checkAllocationIsAppropriative() {
+        return checkAllocationIsAppropriative;
     }
 
     private List<GapOnQueue> getSubGaps(GapOnQueue each,
@@ -613,17 +748,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return Collections.singletonList(each);
     }
 
-    private void applyAllocation(final AllocationSpec allocationStillNotDone) {
+    private AllocationSpec applyAllocation(final AllocationSpec allocationStillNotDone) {
         applyAllocation(allocationStillNotDone, new IDayAssignmentBehaviour() {
 
             @Override
-            public void allocateDayAssigments() {
+            public void allocateDayAssigments(IntraDayDate start,
+                    IntraDayDate end) {
                 ResourceAllocation<?> resourceAllocation = getResourceAllocation(allocationStillNotDone);
                 Resource resource = getResource(allocationStillNotDone);
 
                 List<DayAssignment> assignments = allocationStillNotDone.getAssignmentsFor(
                         resourceAllocation, resource);
-                resourceAllocation.allocateLimitingDayAssignments(assignments);
+                resourceAllocation.allocateLimitingDayAssignments(assignments,
+                        start, end);
             }
 
             private ResourceAllocation<?> getResourceAllocation(AllocationSpec allocation) {
@@ -635,13 +772,16 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             }
 
         });
+        return allocationStillNotDone;
     }
 
     private void applyAllocation(AllocationSpec allocationStillNotDone,
             IDayAssignmentBehaviour allocationBehaviour) {
 
         // Do day allocation
-        allocationBehaviour.allocateDayAssigments();
+        allocationBehaviour.allocateDayAssigments(
+                convert(allocationStillNotDone.getStartInclusive()),
+                convert(allocationStillNotDone.getEndExclusive()));
 
         LimitingResourceQueueElement element = allocationStillNotDone
             .getElement();
@@ -665,16 +805,14 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
     private List<LimitingResourceQueueElement> assignLimitingResourceQueueElementToQueueAt(
             final LimitingResourceQueueElement element,
-            final LimitingResourceQueue queue, final DateAndHour startTime,
+            final LimitingResourceQueue queue,
+            final DateAndHour startAt,
             final DateAndHour endsAfter) {
 
         // Check if allocation is possible
-        InsertionRequirements requirements = queuesState
-                .getRequirementsFor(element);
-        List<GapOnQueue> gapOnQueue = GapOnQueue.onQueue(queue, startTime,
-                endsAfter);
-        AllocationSpec allocation = requirements.guessValidity(gapOnQueue
-                .iterator().next());
+        InsertionRequirements requirements = queuesState.getRequirementsFor(
+                element, startAt);
+        AllocationSpec allocation = insertAtGap(requirements, queue);
         if (!allocation.isValid()) {
             return Collections.emptyList();
         }
@@ -683,14 +821,15 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         applyAllocation(allocation, new IDayAssignmentBehaviour() {
 
             @Override
-            public void allocateDayAssigments() {
+            public void allocateDayAssigments(IntraDayDate start,
+                    IntraDayDate end) {
 
                 List<DayAssignment> assignments = LimitingResourceAllocator
                         .generateDayAssignments(
                                 element.getResourceAllocation(),
-                                queue.getResource(), startTime, endsAfter);
+                                queue.getResource(), startAt, endsAfter);
                 element.getResourceAllocation().allocateLimitingDayAssignments(
-                        assignments);
+                        assignments, start, end);
             }
 
         });
@@ -704,9 +843,8 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         List<LimitingResourceQueueElement> moved = shift(
                 queuesState.getPotentiallyAffectedByInsertion(element),
                 requirements.getElement(), allocation);
+        result.addAll(rescheduleAffectedElementsToSatisfyDependencies(allocation, moved));
 
-        // Return all moved tasks (including the allocated one)
-        result.addAll(moved);
         return result;
     }
 
@@ -719,7 +857,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      */
     private interface IDayAssignmentBehaviour {
 
-        void allocateDayAssigments();
+        void allocateDayAssigments(IntraDayDate start, IntraDayDate end);
 
     }
 
@@ -744,19 +882,19 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         // Update starting and ending dates for associated Task
         Task task = element.getResourceAllocation().getTask();
-        updateStartingAndEndingDate(task, startTime.getDate(), endTime
-                .getDate());
+        updateStartingAndEndingDate(task, convert(startTime), convert(endTime));
     }
 
-    private void updateStartingAndEndingDate(Task task, LocalDate startDate,
-            LocalDate endDate) {
-        task.setStartDate(toDate(startDate));
-        task.setEndDate(toDate(endDate));
+    private IntraDayDate convert(DateAndHour dateAndHour) {
+        return IntraDayDate.create(dateAndHour.getDate(),
+                EffortDuration.hours(dateAndHour.getHour()));
+    }
+
+    private void updateStartingAndEndingDate(Task task, IntraDayDate startDate,
+            IntraDayDate endDate) {
+        task.setIntraDayStartDate(startDate);
+        task.setIntraDayEndDate(endDate);
         task.explicityMoved(startDate);
-    }
-
-    private Date toDate(LocalDate date) {
-        return date.toDateTimeAtStartOfDay().toDate();
     }
 
     private void addLimitingResourceQueueElementIfNeeded(LimitingResourceQueue queue,
@@ -901,9 +1039,10 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      * later added to the list of unassigned elements
      */
     @Override
-    public void unschedule(LimitingResourceQueueElement queueElement) {
+    public LimitingResourceQueueElement unschedule(LimitingResourceQueueElement queueElement) {
         queuesState.unassingFromQueue(queueElement);
         markAsModified(queueElement);
+        return queueElement;
     }
 
     /**
@@ -965,50 +1104,82 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
         return beingEdited;
     }
 
-
     @Override
-    public Set<LimitingResourceQueueElement> appropriativeAllocation(LimitingResourceQueueElement _element, LimitingResourceQueue _queue,
-            DateAndHour allocationTime) {
+    public Set<LimitingResourceQueueElement> appropriativeAllocation(
+            LimitingResourceQueueElement _element,
+            LimitingResourceQueue _queue, DateAndHour allocationTime) {
 
         Set<LimitingResourceQueueElement> result = new HashSet<LimitingResourceQueueElement>();
 
         LimitingResourceQueue queue = queuesState.getEquivalent(_queue);
         LimitingResourceQueueElement element = queuesState.getEquivalent(_element);
 
+        InsertionRequirements requirements = queuesState
+                .getRequirementsFor(element, allocationTime);
+
         if (element.getLimitingResourceQueue() != null) {
             unschedule(element);
         }
 
-        List<LimitingResourceQueueElement> unscheduledElements = new ArrayList<LimitingResourceQueueElement>();
+        // Unschedule elements in queue since allocationTime and put them in
+        // toSchedule
+        List<LimitingResourceQueueElement> toSchedule = new ArrayList<LimitingResourceQueueElement>();
+        unscheduleElementsFor(queue, requirements, toSchedule);
 
-        Gap gap;
-        do {
-            gap = LimitingResourceAllocator.getFirstValidGapSince(element, queue, allocationTime);
+        result.addAll(assignLimitingResourceQueueElementToQueueAt(element,
+                queue, allocationTime, getEndsAfterBecauseOfGantt(element)));
 
-            if (gap != null) {
-                final LocalDate startDate = gap.getStartTime().getDate();
-
-                if (startDate.equals(allocationTime.getDate())) {
-                    result.addAll(assignLimitingResourceQueueElementToQueueAt(
-                            element, queue, allocationTime,
-                            getEndsAfterBecauseOfGantt(element)));
-                    break;
-                } else {
-                    LimitingResourceQueueElement elementAtTime = getFirstElementFrom(
-                            queue, allocationTime);
-                    if (elementAtTime != null) {
-                        unschedule(elementAtTime);
-                        unscheduledElements.add(elementAtTime);
-                    }
-                }
-            }
-        } while (gap != null);
-
-        for (LimitingResourceQueueElement each: unscheduledElements) {
-            assignLimitingResourceQueueElement(each);
+        for (LimitingResourceQueueElement each: queuesState
+                .inTopologicalOrder(toSchedule)) {
+            result.addAll(assignLimitingResourceQueueElement(each));
         }
-
         return result;
+    }
+
+    /**
+     * Creates room enough in a queue for fitting requirements
+     *
+     * Starts unscheduling elements in queue since
+     * requirements.earliestPossibleStart() When there's room enough for
+     * allocating requirements, the method stops unscheduling more elements
+     *
+     * Returns the list of elements that were unscheduled in the process
+     *
+     * @param queue
+     * @param requirements
+     * @return
+     */
+    private AllocationSpec unscheduleElementsFor(
+            LimitingResourceQueue queue, InsertionRequirements requirements,
+            List<LimitingResourceQueueElement> result) {
+        DateAndHour allocationTime = requirements.getEarliestPossibleStart();
+        List<GapOnQueueWithQueueElement> gapsWithQueueElements = queuesState
+                .getGapsWithQueueElementsOnQueueSince(queue, allocationTime);
+
+        return unscheduleElementsFor(gapsWithQueueElements, requirements, result);
+    }
+
+    private AllocationSpec unscheduleElementsFor(List<GapOnQueueWithQueueElement> gaps,
+            InsertionRequirements requirements,
+            List<LimitingResourceQueueElement> result) {
+
+        if (gaps.isEmpty()) {
+            return null;
+        }
+        GapOnQueueWithQueueElement first = gaps.get(0);
+        GapOnQueue gapOnQueue = first.getGapOnQueue();
+        if (gapOnQueue != null) {
+            AllocationSpec allocation = requirements.guessValidity(gapOnQueue);
+            if (allocation.isValid()) {
+                return allocation;
+            }
+        }
+        result.add(unschedule(first.getQueueElement()));
+        if (gaps.size() > 1) {
+            gaps.set(1, GapOnQueueWithQueueElement.coalesce(first, gaps.get(1)));
+        }
+        gaps.remove(0);
+        return unscheduleElementsFor(gaps, requirements, result);
     }
 
     @SuppressWarnings("unchecked")
@@ -1030,15 +1201,6 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             }
         }
         return null;
-    }
-
-    private boolean isAfter(LimitingResourceQueueElement element, DateAndHour time) {
-        return element.getStartTime().isAfter(time);
-    }
-
-    private boolean isInTheMiddle(LimitingResourceQueueElement element, DateAndHour time) {
-        return (element.getStartTime().isBefore(time) || element.getStartTime().isEquals(time))
-                    && (element.getEndTime().isAfter(time) || element.getEndTime().isEquals(time));
     }
 
     @Override
@@ -1066,6 +1228,17 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
 
         markAsModified(newElement);
 
+        return result;
+    }
+
+
+    @Override
+    public Set<LimitingResourceQueueElement> assignLimitingResourceQueueElements(
+            List<LimitingResourceQueueElement> queueElements) {
+        Set<LimitingResourceQueueElement> result = new HashSet<LimitingResourceQueueElement>();
+        for (LimitingResourceQueueElement each: queuesState.inTopologicalOrder(queueElements)) {
+            result.addAll(assignLimitingResourceQueueElement(each));
+        }
         return result;
     }
 

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.api.Rows;
 
 /**
  * Utility methods to find components
@@ -50,6 +56,37 @@ public class ComponentsFinder {
         for (Component child : children) {
             if (child.getId().equals(id)) {
                 return child;
+            }
+        }
+        return null;
+    }
+
+    public static Row findRowByValue(Grid grid, Object needle) {
+        if (grid == null || needle == null) {
+            return null;
+        }
+        Rows rows = grid.getRows();
+        for (Object each : rows.getChildren()) {
+            if (each instanceof Row) {
+                Row row = (Row) each;
+                Object value = row.getValue();
+                if (needle.equals(value)) {
+                    return row;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Listitem findItemByValue(Listbox listbox, Object needle) {
+        if (listbox == null || needle == null) {
+            return null;
+        }
+        for (Object each : listbox.getItems()) {
+            Listitem item = (Listitem) each;
+            Object value = item.getValue();
+            if (needle.toString().equals(value.toString())) {
+                return item;
             }
         }
         return null;

@@ -1,3 +1,21 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2010-2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.navalplanner.web.exceptionDays;
 
 import static org.navalplanner.web.I18nHelper._;
@@ -7,15 +25,18 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.PredefinedCalendarExceptionTypes;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.Util.Getter;
+import org.navalplanner.web.common.Util.Setter;
+import org.navalplanner.web.common.components.CapacityPicker;
 import org.navalplanner.web.common.components.EffortDurationPicker;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,9 +76,11 @@ public class CalendarExceptionTypeCRUDController extends GenericForwardComposer 
 
     private Textbox tbColor;
 
-    private Checkbox cbNotOverAssignable;
+    private Checkbox overAssignable;
 
-    private EffortDurationPicker edpDuration;
+    private EffortDurationPicker standardEffort;
+
+    private EffortDurationPicker extraEffort;
 
     private OnlyOneVisible visibility;
 
@@ -74,32 +97,30 @@ public class CalendarExceptionTypeCRUDController extends GenericForwardComposer 
         showListWindow();
     }
 
-    private void initializeEffortDurationPicker() {
+    private void initializeCapacityPicker() {
         final CalendarExceptionType exceptionType = getExceptionDayType();
-        edpDuration = (EffortDurationPicker) editWindow
-                .getFellowIfAny("edpDuration");
-        edpDuration.bind(new Util.Getter<EffortDuration>() {
+        CapacityPicker.workWith(overAssignable, standardEffort, extraEffort,
+                new Getter<Capacity>() {
 
-            @Override
-            public EffortDuration get() {
-                return exceptionType != null ? exceptionType.getDuration() : null;
-            }
-        }, new Util.Setter<EffortDuration>() {
+                    @Override
+                    public Capacity get() {
+                        return exceptionType.getCapacity();
+                    }
+                }, new Setter<Capacity>() {
 
-            @Override
-            public void set(EffortDuration value) {
-                if (exceptionType != null) {
-                    exceptionType.setDuration(value);
-                }
-            }
-        });
+                    @Override
+                    public void set(Capacity value) {
+                        exceptionType.setCapacity(value);
+                    }
+                });
     }
 
     private void initializeEditWindowComponents() {
         tbName = (Textbox) editWindow.getFellowIfAny("tbName");
         tbColor = (Textbox) editWindow.getFellowIfAny("tbColor");
-        cbNotOverAssignable = (Checkbox) editWindow
-                .getFellowIfAny("cbNotOverAssignable");
+        overAssignable = Util.findComponentAt(editWindow, "overAssignable");
+        standardEffort = Util.findComponentAt(editWindow, "standardEffort");
+        extraEffort = Util.findComponentAt(editWindow, "extraEffort");
     }
 
     private void showListWindow() {
@@ -118,7 +139,7 @@ public class CalendarExceptionTypeCRUDController extends GenericForwardComposer 
     }
 
     private void showEditWindow() {
-        initializeEffortDurationPicker();
+        initializeCapacityPicker();
         editWindow.setTitle(_("Edit Exception Day Type"));
         showWindow(editWindow);
     }
@@ -130,7 +151,7 @@ public class CalendarExceptionTypeCRUDController extends GenericForwardComposer 
     }
 
     private void showCreateWindow() {
-        initializeEffortDurationPicker();
+        initializeCapacityPicker();
         editWindow.setTitle(_("Create Exception Day Type"));
         showWindow(editWindow);
     }
@@ -151,7 +172,6 @@ public class CalendarExceptionTypeCRUDController extends GenericForwardComposer 
     private void clearFields() {
         tbName.setRawValue("");
         tbColor.setRawValue("");
-        cbNotOverAssignable.setChecked(Boolean.TRUE);
     }
 
     private boolean save() {

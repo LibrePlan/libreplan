@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -68,42 +70,85 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     }
 
-    public static List<Criterion> sortByName(Collection<Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result, new Comparator<Criterion>() {
-
-            @Override
-            public int compare(Criterion o1, Criterion o2) {
-                if (o1.getName() == null) {
-                    return 1;
-                }
-                if (o2.getName() == null) {
-                    return -1;
-                }
-                return o1.getName().toLowerCase().compareTo(
-                        o2.getName().toLowerCase());
-            }
-        });
+    public static Set<Criterion> withAllDescendants(
+            Collection<? extends Criterion> originalCriteria) {
+        Set<Criterion> result = new HashSet<Criterion>();
+        for (Criterion each : originalCriteria) {
+            result.add(each);
+            result.addAll(withAllDescendants(each.getChildren()));
+        }
         return result;
     }
 
-    public static List<Criterion> sortByTypeAndName(Collection<Criterion> criterions) {
-        List<Criterion> result = new ArrayList<Criterion>(criterions);
-        Collections.sort(result, new Comparator<Criterion>() {
+    public static final Comparator<Criterion> byName = new Comparator<Criterion>() {
 
-            @Override
-            public int compare(Criterion o1, Criterion o2) {
-                if (o1.getName() == null || o1.getType().getName() == null) {
-                    return 1;
-                }
-                if (o2.getName() == null || o2.getType().getName() == null) {
-                    return -1;
-                }
-                String name1 = o1.getType().getName() + " " + o1.getName();
-                String name2 = o2.getType().getName() + " " + o2.getName();
-                return name1.compareTo(name2);
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.getName() == null) {
+                return 1;
             }
-        });
+            if (o2.getName() == null) {
+                return -1;
+            }
+            return o1.getName().toLowerCase()
+                    .compareTo(o2.getName().toLowerCase());
+        }
+    };
+
+    public static final Comparator<Criterion> byType = new Comparator<Criterion>() {
+
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.getType().getName() == null) {
+                return 1;
+            }
+            if (o2.getType().getName() == null) {
+                return -1;
+            }
+            return o1.getType().getName().toLowerCase()
+                    .compareTo(o2.getType().getName().toLowerCase());
+        }
+    };
+
+    public static final Comparator<Criterion> byInclusion = new Comparator<Criterion>() {
+
+        @Override
+        public int compare(Criterion o1, Criterion o2) {
+            if (o1.isEquivalent(o2)) {
+                return 0;
+            }
+            if (o1.includes(o2)) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    };
+
+    public static List<Criterion> sortByName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result, byName);
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Criterion> sortByTypeAndName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(result,
+                ComparatorUtils.chainedComparator(byType, byName));
+        return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static List<Criterion> sortByInclusionTypeAndName(
+            Collection<? extends Criterion> criterions) {
+        List<Criterion> result = new ArrayList<Criterion>(criterions);
+        Collections.sort(
+                result,
+                ComparatorUtils.chainedComparator(new Comparator[] {
+                        byInclusion, byType, byName }));
         return result;
     }
 
@@ -118,7 +163,7 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         return getCaptionFor(ResourceEnum.WORKER, criteria);
     }
 
-    public static String getCaptionForCriterionsFrom(
+    public static String getCaptionFor(
             GenericResourceAllocation allocation) {
         return getCaptionFor(allocation.getResourceType(),
                 allocation.getCriterions());
@@ -137,7 +182,7 @@ public class Criterion extends IntegrationEntity implements ICriterion {
         }
         List<String> result = new ArrayList<String>();
         for (Criterion each : criteria) {
-            result.add(each.getName());
+            result.add(each.getCompleteName());
         }
         return StringUtils.join(result, ",");
     }
@@ -337,11 +382,31 @@ public class Criterion extends IntegrationEntity implements ICriterion {
 
     }
 
-    public boolean isEquivalent(ICriterion criterion) {
-        if (criterion instanceof Criterion) {
-            Criterion other = (Criterion) criterion;
-            return new EqualsBuilder().append(getName(), other.getName())
-                    .append(getType(), other.getType()).isEquals();
+    public boolean isEquivalent(Criterion other) {
+        return new EqualsBuilder().append(getName(), other.getName())
+                .append(getType(), other.getType()).isEquals();
+    }
+
+    public boolean isEquivalentOrIncludedIn(Criterion other) {
+        if (isEquivalent(other)) {
+            return true;
+        }
+        for (Criterion each : other.getChildren()) {
+            if (isEquivalentOrIncludedIn(each)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean includes(Criterion other) {
+        if (isEquivalent(other)) {
+            return true;
+        }
+        for (Criterion each : this.getChildren()) {
+            if (each.includes(other)) {
+                return true;
+            }
         }
         return false;
     }
@@ -394,4 +459,10 @@ public class Criterion extends IntegrationEntity implements ICriterion {
     public Boolean isCodeAutogenerated() {
         return getType() != null ? getType().isCodeAutogenerated() : false;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s :: %s", type, name);
+    }
+
 }

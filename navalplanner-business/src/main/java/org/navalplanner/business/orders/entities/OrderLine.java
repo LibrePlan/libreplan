@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,17 +28,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
-import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
 
 public class OrderLine extends OrderElement {
@@ -107,37 +106,8 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLineGroup toContainer() {
         OrderLineGroup result = OrderLineGroup.create();
-        result.setName(getName());
-        result.setCode(null);
-        result.setInitDate(getInitDate());
-        result.setDeadline(getDeadline());
-
-        // copy the criterion requirements to container
-        copyRequirementToOrderElement(result);
-
-        // removed the direct criterion requirements
-        removeAllDirectCriterionRequirement();
-
-        if (getName() != null) {
-            this.setName(getName() + " (copy)");
-        }
-        if (getCode() != null) {
-            this.setCode(getCode());
-        }
-
-        // propagate external code to new container
-        result.setExternalCode(getExternalCode());
-        this.setExternalCode(null);
-
+        result.setName("new container");
         return result;
-    }
-
-    private void removeAllDirectCriterionRequirement() {
-        Set<DirectCriterionRequirement> directRequirements = new HashSet<DirectCriterionRequirement>(
-                getDirectCriterionRequirement());
-        for (DirectCriterionRequirement requirement : directRequirements) {
-            removeDirectCriterionRequirement(requirement);
-        }
     }
 
     @Valid
@@ -245,12 +215,7 @@ public class OrderLine extends OrderElement {
             CriterionRequirement newRequirement) {
         return criterionRequirementHandler
                 .existSameCriterionRequirementIntoOrderLine(this,
-                newRequirement);
-    }
-
-    protected void copyRequirementToOrderElement(OrderLineGroup container) {
-        criterionRequirementHandler.copyRequirementToOrderLineGroup(this,
-                container);
+                        newRequirement);
     }
 
     @Override
@@ -261,6 +226,15 @@ public class OrderLine extends OrderElement {
             }
         }
         return null;
+    }
+
+    @Override
+    public void removeReportGlobalAdvanceAssignment() {
+        AdvanceAssignment advanceAssignment = getReportGlobalAdvanceAssignment();
+        if (advanceAssignment != null) {
+            advanceAssignment.setReportGlobalAdvance(false);
+        }
+        markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
     public boolean containsHoursGroup(String code) {
@@ -291,7 +265,7 @@ public class OrderLine extends OrderElement {
     }
 
     public void incrementLastHoursGroupSequenceCode() {
-        if(lastHoursGroupSequenceCode==null){
+        if (lastHoursGroupSequenceCode == null) {
             lastHoursGroupSequenceCode = 0;
         }
         lastHoursGroupSequenceCode++;
@@ -340,18 +314,6 @@ public class OrderLine extends OrderElement {
     @Override
     public OrderLine calculateOrderLineForSubcontract() {
         return this;
-    }
-
-    @Override
-    public Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements() {
-        if (StringUtils.isBlank(getExternalCode())) {
-            return Collections.emptySet();
-        }
-
-        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
-                .getType();
-
-        return getAllDirectAdvanceAssignments(advanceType);
     }
 
     @Override

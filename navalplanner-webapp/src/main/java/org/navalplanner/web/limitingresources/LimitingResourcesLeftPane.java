@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,8 +38,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
     private MutableTreeModel<LimitingResourceQueue> modelForTree;
 
     public LimitingResourcesLeftPane(
-            MutableTreeModel<LimitingResourceQueue> treeModel,
-            QueueListComponent resourceLoadList) {
+            MutableTreeModel<LimitingResourceQueue> treeModel) {
         this.modelForTree = treeModel;
     }
 
@@ -82,8 +82,8 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return (Tree) getFellow("loadsTree");
     }
 
-    private Component createFirstLevel(LimitingResourceQueue principal) {
-        Div result = createLabelWithName(principal);
+    private Component createFirstLevel(LimitingResourceQueue main) {
+        Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
         return result;
     }
@@ -94,10 +94,10 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return result;
     }
 
-    private Div createLabelWithName(LimitingResourceQueue principal) {
+    private Div createLabelWithName(LimitingResourceQueue main) {
         Div result = new Div();
         Label label = new Label();
-        final String conceptName = principal.getResource().getName();
+        final String conceptName = main.getResource().getName();
         label.setValue(conceptName);
         result.appendChild(label);
         return result;

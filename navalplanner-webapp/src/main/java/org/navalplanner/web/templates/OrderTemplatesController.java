@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +27,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -34,7 +36,7 @@ import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.planner.tabs.IGlobalViewEntryPoints;
 import org.navalplanner.web.templates.advances.AdvancesAssignmentComponent;
 import org.navalplanner.web.templates.criterionrequirements.CriterionRequirementTemplateComponent;
@@ -54,8 +56,10 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Grid;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Tree;
@@ -94,6 +98,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private IURLHandlerRegistry handlerRegistry;
 
     private EditTemplateWindowController editTemplateController;
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(OrderTemplatesController.class);
 
     public List<OrderElementTemplate> getTemplates() {
         return model.getRootTemplates();
@@ -258,9 +265,9 @@ public class OrderTemplatesController extends GenericForwardComposer implements
         messagesForUser = new MessagesForUser(messagesContainer);
         getVisibility().showOnly(listWindow);
 
-        final URLHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
+        final EntryPointsHandler<IOrderTemplatesControllerEntryPoints> handler = handlerRegistry
                 .getRedirectorFor(IOrderTemplatesControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
 
         setBreadcrumbs(comp);
     }
@@ -337,5 +344,34 @@ public class OrderTemplatesController extends GenericForwardComposer implements
                 }
             }
         };
+    }
+
+    /**
+     * Pop up confirm remove dialog
+     * @param OrderTemplate
+     */
+    public void confirmDelete(OrderElementTemplate template) {
+        try {
+            if (Messagebox.show(_("Delete project template. Are you sure?"),
+                    _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
+                if (this.model.hasNotApplications(template)) {
+                    this.model.confirmDelete(template);
+                    Grid gridOrderTemplates = (Grid) listWindow
+                            .getFellowIfAny("listing");
+                    if (gridOrderTemplates != null) {
+                        Util.reloadBindings(gridOrderTemplates);
+                    }
+                } else {
+                    messagesForUser
+                            .showMessage(
+                                    Level.ERROR,
+                                    _("This template can not be removed because it has applications."));
+                }
+            }
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on showing delete confirm"), e);
+        }
+
     }
 }

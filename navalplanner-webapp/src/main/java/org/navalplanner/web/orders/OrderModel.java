@@ -85,6 +85,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IntegrationEntityModel;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +104,7 @@ import org.zkoss.zul.Messagebox;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/planner/index.zul;orders_list")
 public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
@@ -282,6 +284,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         forceLoadCalendar(this.getCalendar());
         forceLoadCustomer(this.order.getCustomer());
         forceLoadLabels(this.order);
+        forceLoadMaterialAssignments(this.order);
+        forceLoadTaskQualityForms(this.order);
         currentScenario = scenarioManager.getCurrent();
         this.order.useSchedulingDataFor(currentScenario);
         loadTasks(this.order);
@@ -310,6 +314,20 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         orderElement.getLabels().size();
         for (OrderElement each : orderElement.getChildren()) {
             forceLoadLabels(each);
+        }
+    }
+
+    private void forceLoadMaterialAssignments(OrderElement orderElement) {
+        orderElement.getMaterialAssignments().size();
+        for (OrderElement each : orderElement.getChildren()) {
+            forceLoadMaterialAssignments(each);
+        }
+    }
+
+    private void forceLoadTaskQualityForms(OrderElement orderElement) {
+        orderElement.getTaskQualityForms().size();
+        for (OrderElement each : orderElement.getChildren()) {
+            forceLoadTaskQualityForms(each);
         }
     }
 
@@ -490,15 +508,39 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     private void dontPoseAsTransientObjectAnymore(OrderElement orderElement) {
         dontPoseAsTransientObjectAnymore(orderElement.getTaskSourcesFromBottomToTop());
         dontPoseAsTransientObjectAnymore(orderElement.getSchedulingDatasForVersionFromBottomToTop());
+
         dontPoseAsTransientObjectAnymore(orderElement.getDirectAdvanceAssignments());
-        dontPoseAsTransientObjectAnymore(orderElement.getDirectCriterionRequirement());
+        dontPoseAsTransientObjectAnymore(getAllMeasurements(orderElement.getDirectAdvanceAssignments()));
+
+        dontPoseAsTransientObjectAnymore(orderElement
+                .getIndirectAdvanceAssignments());
+        dontPoseAsTransientObjectAnymore(orderElement
+                .getCriterionRequirements());
         dontPoseAsTransientObjectAnymore(orderElement.getLabels());
         dontPoseAsTransientObjectAnymore(orderElement.getTaskElements());
         dontPoseAsTransientObjectAnymore(orderElement.getHoursGroups());
+        dontPoseAsTransientObjectAnymore(orderElement.getTaskQualityForms());
+        dontPoseAsTransientObjectAnymore(orderElement
+                .getAllMaterialAssignments());
+
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            dontPoseAsTransientObjectAnymore(hoursGroup
+                    .getCriterionRequirements());
+        }
+
         for(OrderElement child : orderElement.getAllChildren()) {
             child.dontPoseAsTransientObjectAnymore();
             dontPoseAsTransientObjectAnymore(child);
         }
+    }
+
+    private List<AdvanceMeasurement> getAllMeasurements(
+            Collection<? extends DirectAdvanceAssignment> assignments) {
+        List<AdvanceMeasurement> result = new ArrayList<AdvanceMeasurement>();
+        for (DirectAdvanceAssignment each : assignments) {
+            result.addAll(each.getAdvanceMeasurements());
+        }
+        return result;
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
@@ -515,7 +557,6 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         calculateAndSetTotalHours();
         orderDAO.save(order);
         reattachCurrentTaskSources();
-        deleteOrderElementWithoutParent();
         if (newOrderVersionNeeded) {
             OrderVersion newVersion = OrderVersion
                     .createInitialVersion(currentScenario);
@@ -534,6 +575,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         }
         saveDerivedScenarios();
         calculateAdvancePercentageIncludingChildren(order);
+        deleteOrderElementWithoutParent();
     }
 
     private void calculateAdvancePercentageIncludingChildren(OrderElement order) {
@@ -914,6 +956,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
                 SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
             return true;
         }
+        if (order.isNewObject()
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
+            return true;
+        }
         try {
             User user = userDAO.findByLoginName(loginName);
             for(OrderAuthorization authorization :
@@ -937,6 +983,10 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     @Transactional(readOnly = true)
     public boolean userCanWrite(Order order, String loginName) {
         if (SecurityUtils.isUserInRole(UserRole.ROLE_EDIT_ALL_ORDERS)) {
+            return true;
+        }
+        if (order.isNewObject()
+                & SecurityUtils.isUserInRole(UserRole.ROLE_CREATE_ORDER)) {
             return true;
         }
         try {

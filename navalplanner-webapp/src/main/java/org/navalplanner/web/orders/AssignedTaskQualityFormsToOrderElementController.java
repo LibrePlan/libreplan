@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -216,6 +217,13 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     }
 
     public void deleteTaskQualityForm(TaskQualityForm taskQualityForm) {
+        try {
+            assignedTaskQualityFormsToOrderElementModel
+                    .removeAdvanceAssignmentIfNeeded(taskQualityForm);
+        } catch (ValidationException e) {
+            showInformativeMessage(e.getMessage());
+            return;
+        }
         assignedTaskQualityFormsToOrderElementModel
                 .deleteTaskQualityForm(taskQualityForm);
         reloadTaskQualityForms();
@@ -267,8 +275,8 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
             appendDetails(row, taskQualityForm);
             appendNewLabel(row, taskQualityForm.getQualityForm().getName());
-            appendNewLabel(row, taskQualityForm.getQualityForm()
-                    .getQualityFormType().toString());
+            appendNewLabel(row, _(taskQualityForm.getQualityForm()
+                    .getQualityFormType().toString()));
             appendCheckboxReportAdvance(row, taskQualityForm);
             appendOperations(row);
         }
@@ -290,10 +298,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
                                     assignedTaskQualityFormsToOrderElementModel
                                             .addAdvanceAssignmentIfNeeded(taskQualityForm);
                                 } else {
-                                    assignedTaskQualityFormsToOrderElementModel
+                                    try {
+                                        assignedTaskQualityFormsToOrderElementModel
                                             .removeAdvanceAssignmentIfNeeded(taskQualityForm);
+                                    } catch (ValidationException e) {
+                                        showInformativeMessage(e.getMessage());
+                                        return;
+                                    }
                                 }
-
                                 taskQualityForm.setReportAdvance(value);
                             } catch (DuplicateValueTrueReportGlobalAdvanceException e) {
                                 throw new RuntimeException(e);
@@ -315,8 +327,18 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         }
     }
 
+    private void showInformativeMessage(String message) {
+        try {
+            Messagebox.show(_(message), _("Delete"), Messagebox.OK,
+                    Messagebox.ERROR);
+        } catch (InterruptedException e) {
+            messagesForUser.showMessage(Level.ERROR, _(e.getMessage()));
+        }
+    }
+
     private void appendDetails(Row row, TaskQualityForm taskQualityForm)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+            throws ClassNotFoundException, InstantiationException,
+            IllegalAccessException {
         Detail details = new Detail();
         details.setParent(row);
         details.appendChild(appendGridItems(row, taskQualityForm));
@@ -406,7 +428,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             row.setValue(item);
 
             appendNewLabel(row, item.getName());
-            appendNewLabel(row, item.getPosition().toString());
+            appendNewLabel(row, item.getStringPosition());
             appendNewLabel(row, item.getPercentage().toString());
             appendCheckPassed(row);
             appendDate(row);
@@ -436,6 +458,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             @Override
             public void set(Date value) {
                 item.setDate(value);
+                updateAdvancesIfNeeded();
             }
         });
 
@@ -461,6 +484,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
             @Override
             public void set(Boolean value) {
                 item.setPassed(value);
+                updateAdvancesIfNeeded();
             }
         });
 
@@ -525,10 +549,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     // Operations to confirm and validate
 
     public boolean confirm() {
-        assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
+        updateAdvancesIfNeeded();
         boolean result = validate();
         validateConstraints();
         return result;
+    }
+
+    public void updateAdvancesIfNeeded() {
+        assignedTaskQualityFormsToOrderElementModel.updateAdvancesIfNeeded();
     }
 
     public void validateConstraints() {

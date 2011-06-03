@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -87,6 +89,14 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
 
     private List<Label> allLabels = new ArrayList<Label>();
 
+    private String selectedCriteria;
+
+    private String selectedLabel;
+
+    private boolean hasChangeCriteria = false;
+
+    private boolean hasChangeLabels = false;
+
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
     static {
@@ -138,6 +148,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
         OrderCostsPerResourceDTO emptyDTO = new OrderCostsPerResourceDTO(
                 emptyWorker, wrl);
         emptyDTO.setOrderName(order.getName());
+        emptyDTO.setOrderCode(order.getCode());
         emptyDTO.setCost(new BigDecimal(0));
         return emptyDTO;
     }
@@ -273,6 +284,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     @Override
     public void removeSelectedLabel(Label label) {
         this.selectedLabels.remove(label);
+        this.hasChangeLabels = true;
     }
 
     @Override
@@ -281,6 +293,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
             return false;
         }
         this.selectedLabels.add(label);
+        this.hasChangeLabels = true;
         return true;
     }
 
@@ -333,6 +346,7 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
     @Override
     public void removeSelectedCriterion(Criterion criterion) {
         this.selectedCriterions.remove(criterion);
+        this.hasChangeCriteria = true;
     }
 
     @Override
@@ -341,12 +355,57 @@ public class OrderCostsPerResourceModel implements IOrderCostsPerResourceModel {
             return false;
         }
         this.selectedCriterions.add(criterion);
+        this.hasChangeCriteria = true;
         return true;
     }
 
     @Override
     public List<Criterion> getSelectedCriterions() {
         return selectedCriterions;
+    }
+
+    public void setSelectedLabel(String selectedLabel) {
+        this.selectedLabel = selectedLabel;
+    }
+
+    public String getSelectedLabel() {
+        if (hasChangeLabels) {
+            this.selectedLabel = null;
+            Iterator<Label> iterator = this.selectedLabels.iterator();
+            if (iterator.hasNext()) {
+                this.selectedLabel = new String();
+                this.selectedLabel = this.selectedLabel.concat(iterator.next()
+                        .getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedLabel = this.selectedLabel.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeLabels = false;
+        }
+        return selectedLabel;
+    }
+
+    public void setSelectedCriteria(String selectedCriteria) {
+        this.selectedCriteria = selectedCriteria;
+    }
+
+    public String getSelectedCriteria() {
+        if (hasChangeCriteria) {
+            this.selectedCriteria = null;
+            Iterator<Criterion> iterator = this.selectedCriterions.iterator();
+            if (iterator.hasNext()) {
+                this.selectedCriteria = new String();
+                this.selectedCriteria = this.selectedCriteria.concat(iterator
+                        .next().getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedCriteria = this.selectedCriteria.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeCriteria = false;
+        }
+        return selectedCriteria;
     }
 
 }

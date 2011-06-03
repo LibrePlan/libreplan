@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,9 +31,10 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.orders.entities.TaskSource;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.IntraDayDate;
 
@@ -101,6 +103,7 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
+    @Valid
     public List<TaskElement> getChildren() {
         return Collections.unmodifiableList(taskElements);
     }
@@ -134,7 +137,8 @@ public class TaskGroup extends TaskElement {
     }
 
     @Override
-    protected IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO) {
+    protected IDatesHandler createDatesHandler(Scenario scenario,
+            IResourcesSearcher resourcesSearcher) {
         return new IDatesHandler() {
 
             @Override

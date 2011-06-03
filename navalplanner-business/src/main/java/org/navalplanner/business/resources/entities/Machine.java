@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@
 
 package org.navalplanner.business.resources.entities;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -112,17 +112,11 @@ public class Machine extends Resource {
     }
 
     public String getShortDescription() {
-        return getCode() + " :: " + name;
+        return name + " (" + getCode() + ")";
     }
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean satisfiesCriterions(Set<Criterion> criterions) {
-        ICriterion compositedCriterion = CriterionCompounder.buildAnd(
-                new ArrayList<ICriterion>(criterions)).getResult();
-        return compositedCriterion.isSatisfiedBy(this);
     }
 
     @Override
@@ -135,4 +129,10 @@ public class Machine extends Resource {
     public ResourceEnum getType() {
         return type;
     }
+
+    @Override
+    public String toString() {
+        return String.format("MACHINE: %s", name);
+    }
+
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,12 +28,14 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IIntegrationEntityModel;
 
 /**
  * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface ICostCategoryModel extends IIntegrationEntityModel {
 
@@ -61,4 +64,9 @@ public interface ICostCategoryModel extends IIntegrationEntityModel {
         throws InstanceNotFoundException;
 
     boolean canRemoveCostCategory(CostCategory category);
+
+    void validateHourCostsOverlap() throws ValidationException;
+
+    List<TypeOfWorkHours> getAllHoursType();
+
 }

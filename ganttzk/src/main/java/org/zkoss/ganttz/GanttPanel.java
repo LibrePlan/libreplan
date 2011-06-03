@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,12 +23,14 @@ package org.zkoss.ganttz;
 
 import java.util.List;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
@@ -45,6 +48,10 @@ public class GanttPanel extends XulElement implements AfterCompose {
     private final Planner planner;
 
     private transient IZoomLevelChangedListener zoomLevelChangedListener;
+
+    private LocalDate previousStart;
+
+    private Interval previousInterval;
 
     public GanttPanel(
             Planner planner,
@@ -74,10 +81,36 @@ public class GanttPanel extends XulElement implements AfterCompose {
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
-            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+            protected void scrollHorizontalPercentage(int daysDisplacement) {
                 response("scroll_horizontal", new AuInvoke(GanttPanel.this,
-                        "scroll_horizontal", "" + pixelsDisplacement));
+                        "scroll_horizontal", "" + daysDisplacement));
+                moveCurrentPositionScroll();
             }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // get the previous data.
+                LocalDate previousStart = getPreviousStart();
+
+                // get the current data
+                int diffDays = getTimeTrackerComponent().getDiffDays(
+                        previousStart);
+                double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
+
+                response("move_scroll", new AuInvoke(GanttPanel.this,
+                        "move_scroll", "" + diffDays, "" + pixelPerDay));
+            }
+
+            protected void updateCurrentDayScroll() {
+                double previousPixelPerDay = getTimeTracker().getMapper()
+                        .getPixelsPerDay()
+                        .doubleValue();
+
+                response("update_day_scroll", new AuInvoke(GanttPanel.this,
+                        "update_day_scroll", "" + previousPixelPerDay));
+
+            }
+
         };
     }
 
@@ -88,6 +121,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
                 .asDependencyComponents(diagramGraph.getVisibleDependencies()));
         timeTrackerComponent.afterCompose();
         dependencyList.afterCompose();
+        savePreviousData();
         if (planner.isExpandAll()) {
             FunctionalityExposedForExtensions<?> context = (FunctionalityExposedForExtensions<?>) planner
                     .getContext();
@@ -118,10 +152,14 @@ public class GanttPanel extends XulElement implements AfterCompose {
     }
 
     public void zoomIncrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         getTimeTracker().zoomIncrease();
     }
 
     public void zoomDecrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         getTimeTracker().zoomDecrease();
     }
 
@@ -130,7 +168,14 @@ public class GanttPanel extends XulElement implements AfterCompose {
     }
 
     public void setZoomLevel(ZoomLevel zoomLevel, int scrollLeft) {
-        timeTrackerComponent.setZoomLevel(zoomLevel, scrollLeft);
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
+        getTimeTrackerComponent().setZoomLevel(zoomLevel, scrollLeft);
+    }
+
+    private void savePreviousData() {
+        this.previousStart = getTimeTracker().getRealInterval().getStart();
+        this.previousInterval = getTimeTracker().getMapper().getInterval();
     }
 
     public Planner getPlanner() {
@@ -153,4 +198,11 @@ public class GanttPanel extends XulElement implements AfterCompose {
       response("adjust_height", new AuInvoke(this, "adjust_height"));
     }
 
+    public LocalDate getPreviousStart() {
+        return previousStart;
+    }
+
+    public Interval getPreviousInterval() {
+        return previousInterval;
+    }
 }

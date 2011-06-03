@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,7 +46,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.springframework.security.context.SecurityContext;
 import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.ganttz.Planner;
@@ -58,7 +59,7 @@ public class CutyPrint {
 
     private static final Log LOG = LogFactory.getLog(CutyPrint.class);
 
-    private static final String CUTYCAPT_COMMAND = "/usr/bin/CutyCapt ";
+    private static final String CUTYCAPT_COMMAND = "CutyCapt ";
     // Estimated maximum execution time (ms)
 
     private static final int CUTYCAPT_TIMEOUT = 100000;
@@ -80,6 +81,7 @@ public class CutyPrint {
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
 
+	private static int PRINT_VERTICAL_SPACING = 160;
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -155,7 +157,7 @@ public class CutyPrint {
                             HttpServletResponse response)
                             throws ServletException, IOException {
 
-                        URLHandler.setupEntryPointsForThisRequest(request,
+                        EntryPointsHandler.setupEntryPointsForThisRequest(request,
                                 entryPointsMap);
                         // Pending to forward and process additional parameters
                         // as show labels, resources, zoom or expand all
@@ -184,6 +186,11 @@ public class CutyPrint {
                 minWidthForTaskNameColumn);
         captureString += " --min-width=" + plannerWidth;
 
+		int plannerHeight = (expanded ? planner.getAllTasksNumber() : planner
+				.getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
+
+		captureString += " --min-height=" + plannerHeight;
+
         // Static width and time delay parameters (FIX)
 
         captureString += " --delay=" + CAPTURE_DELAY;
@@ -200,7 +207,7 @@ public class CutyPrint {
                 minWidthForTaskNameColumn);
 
         // Relative user styles
-        captureString += " --user-styles=" + generatedCSSFile;
+        captureString += " --user-style-path=" + generatedCSSFile;
 
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
@@ -322,15 +329,8 @@ public class CutyPrint {
             }
             String includeCSSLines = " body { width: " + width + "px; } \n";
             if ((labels != null) && (labels.equals("all"))) {
-                includeCSSLines += " .task-labels { display: inline !important;} \n";
+                includeCSSLines += " .task-labels { display: inline !important;} \n ";
             }
-            if ((advances != null) && (advances.equals("all"))) {
-                includeCSSLines += " .completion2 { display: inline !important;} \n";
-            }
-            if ((reportedHours != null) && (reportedHours.equals("all"))) {
-                includeCSSLines += " .completion { display: inline !important;} \n";
-            }
-
 
             if ((resources != null) && (resources.equals("all"))) {
                 includeCSSLines += " .task-resources { display: inline !important;} \n";

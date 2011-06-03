@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +35,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.OpenEvent;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Menupopup;
+import org.zkoss.zul.Menuseparator;
 import org.zkoss.zul.impl.api.XulElement;
 
 public class MenuBuilder<T extends XulElement> {
@@ -120,16 +122,20 @@ public class MenuBuilder<T extends XulElement> {
             }
         });
         for (final Item item : items) {
-            Menuitem menuItem = item.createMenuItem();
-            menuItem.addEventListener("onClick", new EventListener() {
-
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    ItemAction<T> action = item.action;
-                    action.onEvent(referenced, event);
-                }
-            });
-            result.appendChild(menuItem);
+            if (!item.name.equals("separator")) {
+                Menuitem menuItem = item.createMenuItem();
+                menuItem.addEventListener("onClick", new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        ItemAction<T> action = item.action;
+                        action.onEvent(referenced, event);
+                    }
+                });
+                result.appendChild(menuItem);
+            } else {
+                Menuseparator separator = new Menuseparator();
+                result.appendChild(separator);
+            }
         }
         insertInRootComponent(result);
         if (setContext) {

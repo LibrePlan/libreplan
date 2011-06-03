@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,8 +23,8 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
-
+import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -54,6 +55,8 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class BaseCalendarCRUDController extends GenericForwardComposer {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(BaseCalendarCRUDController.class);
 
     private IBaseCalendarModel baseCalendarModel;
 
@@ -102,7 +105,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToEditForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initEdit(baseCalendar);
         assignEditionController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
@@ -132,16 +135,29 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         }
     }
 
+    public void saveAndContinue() {
+        try {
+            validateCalendarExceptionCodes();
+            baseCalendarModel.generateCalendarCodes();
+            baseCalendarModel.confirmSaveAndContinue();
+            messagesForUser.showMessage(Level.INFO, _(
+                    "Base calendar \"{0}\" saved", baseCalendarModel
+                            .getBaseCalendar().getName()));
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+    }
+
     public void goToCreateForm() {
         baseCalendarModel.initCreate();
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
     }
 
-    public void setSelectedDay(Date date) {
+    public void setSelectedDay(LocalDate date) {
         baseCalendarModel.setSelectedDay(date);
 
         reloadDayInformation();
@@ -165,6 +181,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             @Override
             public void save() {
                 BaseCalendarCRUDController.this.save();
+            }
+
+            @Override
+            public void saveAndContinue() {
+                BaseCalendarCRUDController.this.saveAndContinue();
             }
 
         };
@@ -192,6 +213,11 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             @Override
             public void save() {
                 BaseCalendarCRUDController.this.save();
+            }
+
+            @Override
+            public void saveAndContinue() {
+                BaseCalendarCRUDController.this.saveAndContinue();
             }
 
         };
@@ -223,7 +249,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initCreateDerived(baseCalendar);
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
@@ -236,7 +262,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
         baseCalendarModel.initCreateCopy(baseCalendar);
         assignCreateController();
-        setSelectedDay(new Date());
+        setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(createWindow);
         Util.reloadBindings(createWindow);
@@ -370,27 +396,56 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                                     + "Please, change the default calendar in the Configuration window before."));
             return;
         }
+        removeCalendar(calendar);
+    }
 
-        try {
-            int status = Messagebox
-                    .show(_("Confirm deleting {0}. Are you sure?",
-                            calendar.getName()), _("Delete"), Messagebox.OK
-                            | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                remove(calendar);
+    private void removeCalendar(BaseCalendar calendar) {
+        if (!isReferencedByOtherEntities(calendar)) {
+            int result = showConfirmDeleteCalendar(calendar);
+            if (result == Messagebox.OK) {
+                final String calendarName = calendar.getName();
+                baseCalendarModel.confirmRemove(calendar);
+                messagesForUser.showMessage(Level.INFO,
+                        _("Removed calendar \"{0}\"", calendarName));
+                Util.reloadBindings(listWindow);
             }
-
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
     }
 
-    private void remove(BaseCalendar calendar) {
-        final String name = calendar.getName();
-        baseCalendarModel.confirmRemove(calendar);
-        messagesForUser.showMessage(Level.INFO,
-                _("Removed calendar \"{0}\"", name));
-        Util.reloadBindings(listWindow);
+    private int showConfirmDeleteCalendar(BaseCalendar calendar) {
+        try {
+            return Messagebox
+                    .show(_("Confirm deleting {0}. Are you sure?",
+                            calendar.getName()), _("Delete"), Messagebox.OK
+                            | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing removing element: ", calendar.getId()),
+                    e);
+        }
+        return Messagebox.CANCEL;
+    }
+
+    private boolean isReferencedByOtherEntities(BaseCalendar calendar) {
+        try {
+            baseCalendarModel.checkIsReferencedByOtherEntities(calendar);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteCalendarDialog(e.getInvalidValue().getMessage(),
+                    calendar);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteCalendarDialog(String message, BaseCalendar calendar) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing warning message removing calendar: ",
+                            calendar.getId()), e);
+        }
     }
 
     public boolean isDefault(BaseCalendar calendar) {

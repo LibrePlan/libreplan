@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,7 +32,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 
 
 
@@ -47,13 +48,18 @@ public interface IStretchesFunctionModel {
      */
 
     void init(StretchesFunction stretchesFunction,
-            ResourceAllocation<?> resourceAllocation, Type type);
+            ResourceAllocation<?> resourceAllocation,
+            StretchesFunctionTypeEnum type);
 
     /*
      * Intermediate conversation steps
      */
 
-    List<Stretch> getStretches();
+    List<Stretch> getAllStretches();
+
+    List<Stretch> getStretchesDefinedByUser();
+
+    List<Stretch> getStretchesPlusConsolidated();
 
     void addStretch();
 

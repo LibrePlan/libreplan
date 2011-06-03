@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,12 +21,9 @@
 
 package org.navalplanner.business.planner.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,9 +37,8 @@ import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -84,27 +81,6 @@ public class GenericResourceAllocation extends
         return result;
     }
 
-    public static Map<Resource, List<GenericResourceAllocation>> byResource(
-            Collection<GenericResourceAllocation> allocations) {
-        Map<Resource, List<GenericResourceAllocation>> result = new HashMap<Resource, List<GenericResourceAllocation>>();
-        for (GenericResourceAllocation resourceAllocation : allocations) {
-            for (Resource resource : resourceAllocation
-                    .getAssociatedResources()) {
-                initializeIfNeeded_(result, resource);
-                result.get(resource).add(resourceAllocation);
-            }
-        }
-        return result;
-    }
-
-    private static void initializeIfNeeded_(
-            Map<Resource, List<GenericResourceAllocation>> result,
-            Resource resource) {
-        if (!result.containsKey(resource)) {
-            result.put(resource, new ArrayList<GenericResourceAllocation>());
-        }
-    }
-
     @OnCopy(Strategy.SHARE_COLLECTION_ELEMENTS)
     private Set<Criterion> criterions = new HashSet<Criterion>();
 
@@ -114,6 +90,7 @@ public class GenericResourceAllocation extends
     private Set<GenericDayAssignmentsContainer> genericDayAssignmentsContainers = new HashSet<GenericDayAssignmentsContainer>();
 
     @Valid
+    @SuppressWarnings("unused")
     private Set<GenericDayAssignmentsContainer> getGenericDayAssignmentsContainers() {
         return new HashSet<GenericDayAssignmentsContainer>(
                 genericDayAssignmentsContainers);
@@ -210,10 +187,6 @@ public class GenericResourceAllocation extends
         return Collections.unmodifiableSet(criterions);
     }
 
-    private static Date toDate(LocalDate day) {
-        return day.toDateTimeAtStartOfDay().toDate();
-    }
-
     private final class ResourcesSatisfyingCriterionsSelector implements
             IResourceSelector {
 
@@ -233,18 +206,18 @@ public class GenericResourceAllocation extends
         public GenericAllocation(List<Resource> resources) {
             this.resources = resources;
             hoursDistributor = new EffortDistributor(resources,
-                    getAssignedHoursForResource(),
+                    getAssignedEffortForResource(),
                     new ResourcesSatisfyingCriterionsSelector());
         }
 
         @Override
-        protected List<GenericDayAssignment> distributeForDay(LocalDate day,
+        public List<GenericDayAssignment> distributeForDay(PartialDay day,
                 EffortDuration effort) {
             List<GenericDayAssignment> result = new ArrayList<GenericDayAssignment>();
             for (ResourceWithAssignedDuration each : hoursDistributor
                     .distributeForDay(day, effort)) {
-                result.add(GenericDayAssignment.create(day, each.duration,
-                        each.resource));
+                result.add(GenericDayAssignment.create(day.getDate(),
+                        each.duration, each.resource));
             }
             return result;
         }
@@ -257,19 +230,19 @@ public class GenericResourceAllocation extends
 
     }
 
-    private IAssignedHoursForResource assignedHoursCalculatorOverriden = null;
+    private IAssignedEffortForResource assignedEffortCalculatorOverriden = null;
 
-    public void overrideAssignedHoursForResource(
-            GenericResourceAllocation allocation) {
-        assignedHoursCalculatorOverriden = allocation
-                .getAssignedHoursForResource();
+    public void discountAssignedHoursForResourceFrom(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
+                allocations);
     }
 
-    private IAssignedHoursForResource getAssignedHoursForResource() {
-        if (assignedHoursCalculatorOverriden != null) {
-            return assignedHoursCalculatorOverriden;
+    private IAssignedEffortForResource getAssignedEffortForResource() {
+        if (assignedEffortCalculatorOverriden != null) {
+            return assignedEffortCalculatorOverriden;
         }
-        return new AssignedHoursDiscounting(this);
+        return new AssignedEffortDiscounting(this);
     }
 
     @Override
@@ -291,16 +264,6 @@ public class GenericResourceAllocation extends
         return GenericDayAssignment.class;
     }
 
-    public List<DayAssignment> createAssignmentsAtDay(List<Resource> resources,
-            PartialDay day, ResourcesPerDay resourcesPerDay,
-            final EffortDuration maxLimit) {
-        final EffortDuration durations = min(
-                calculateTotalToDistribute(day, resourcesPerDay), maxLimit);
-        GenericAllocation genericAllocation = new GenericAllocation(resources);
-        return new ArrayList<DayAssignment>(genericAllocation.distributeForDay(
-                day.getDate(), durations));
-    }
-
     @Override
     public List<Resource> getAssociatedResources() {
         return new ArrayList<Resource>(DayAssignment
@@ -316,21 +279,9 @@ public class GenericResourceAllocation extends
     ResourceAllocation<GenericDayAssignment> createCopy(Scenario scenario) {
         GenericResourceAllocation allocation = create();
         allocation.criterions = new HashSet<Criterion>(criterions);
-        allocation.assignedHoursCalculatorOverriden = new AssignedHoursDiscounting(
+        allocation.assignedEffortCalculatorOverriden = new AssignedEffortDiscounting(
                 this);
         return allocation;
-    }
-
-    @Override
-    public ResourcesPerDayModification asResourcesPerDayModification() {
-        return ResourcesPerDayModification.create(this,
-                getIntendedResourcesPerDay(), getAssociatedResources());
-    }
-
-    @Override
-    public HoursModification asHoursModification() {
-        return HoursModification.create(this, getIntendedHours(),
-                getAssociatedResources());
     }
 
     @Override
@@ -341,8 +292,10 @@ public class GenericResourceAllocation extends
     }
 
     @Override
-    public List<Resource> querySuitableResources(IResourceDAO resourceDAO) {
-        return resourceDAO.findSatisfyingAllCriterionsAtSomePoint(getCriterions());
+    public List<Resource> querySuitableResources(
+            IResourcesSearcher resourcesSearcher) {
+        return resourcesSearcher.searchBoth().byCriteria(getCriterions())
+                .execute();
     }
 
     public static Map<Criterion, List<GenericResourceAllocation>> byCriterion(
@@ -408,6 +361,17 @@ public class GenericResourceAllocation extends
 
     public ResourceEnum getResourceType() {
         return resourceType != null ? resourceType : inferType(criterions);
+    }
+
+    @Override
+    public EffortDuration getAssignedEffort(Criterion criterion,
+            LocalDate start, LocalDate endExclusive) {
+        return super.getAssignedDuration(start, endExclusive);
+    }
+
+    public IEffortDistributor<GenericDayAssignment> createEffortDistributor(
+            List<Resource> resources) {
+        return new GenericAllocation(resources);
     }
 
 }

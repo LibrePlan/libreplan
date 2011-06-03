@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -44,8 +45,16 @@ import org.zkoss.ganttz.data.constraint.Constraint;
  */
 public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
-    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create() {
-        return new CriticalPathCalculator<T, D>();
+    private final boolean dependenciesConstraintsHavePriority;
+
+    public static <T, D extends IDependency<T>> CriticalPathCalculator<T, D> create(
+            boolean dependenciesConstraintsHavePriority) {
+        return new CriticalPathCalculator<T, D>(
+                dependenciesConstraintsHavePriority);
+    }
+
+    private CriticalPathCalculator(boolean dependenciesConstraintsHavePriority) {
+        this.dependenciesConstraintsHavePriority = dependenciesConstraintsHavePriority;
     }
 
     private ICriticalPathCalculable<T> graph;
@@ -59,6 +68,25 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private Map<T, Map<T, DependencyType>> dependencies;
 
+    private class VisitorTracker {
+
+        private Map<T, Set<T>> visitorsOn = new HashMap<T, Set<T>>();
+
+        void visit(T visited, T visitor) {
+            if (!visitorsOn.containsKey(visited)) {
+                visitorsOn.put(visited, new HashSet<T>());
+            }
+            visitorsOn.get(visited).add(visitor);
+        }
+
+        boolean hasBeenVisitedByAll(T current,
+                Collection<? extends T> collection) {
+            return visitorsOn.containsKey(current)
+                    && visitorsOn.get(current).containsAll(collection);
+        }
+
+    }
+
     public List<T> calculateCriticalPath(ICriticalPathCalculable<T> graph) {
         this.graph = graph;
 
@@ -71,17 +99,16 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
         nodes = createGraphNodes();
 
-        forward(bop, null);
+        forward(bop, null, new VisitorTracker());
         eop.updateLatestValues();
 
-        backward(eop, null);
+        backward(eop, null, new VisitorTracker());
 
         return getTasksOnCriticalPath();
     }
 
     private LocalDate calculateInitDate() {
-        List<T> initialTasks = graph.getInitialTasks();
-        if (initialTasks.isEmpty()) {
+        if (graph.getTasks().isEmpty()) {
             return null;
         }
         GanttDate ganttDate = Collections.min(getStartDates());
@@ -90,7 +117,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
 
     private List<GanttDate> getStartDates() {
         List<GanttDate> result = new ArrayList<GanttDate>();
-        for (T task : graph.getInitialTasks()) {
+        for (T task : graph.getTasks()) {
             result.add(graph.getStartDate(task));
         }
         return result;
@@ -113,13 +140,37 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
     }
 
     private InitialNode<T, D> createBeginningOfProjectNode() {
-        return new InitialNode<T, D>(new HashSet<T>(removeContainers(graph
+        return new InitialNode<T, D>(
+                removeWithVisibleIncomingDependencies(removeContainers(graph
                 .getInitialTasks())));
     }
 
+
+    private Set<T> removeWithVisibleIncomingDependencies(Collection<T> tasks) {
+        Set<T> result = new HashSet<T>();
+        for (T each : tasks) {
+            if (!graph.hasVisibleIncomingDependencies(each)) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
+
     private LastNode<T, D> createEndOfProjectNode() {
-        return new LastNode<T, D>(new HashSet<T>(removeContainers(graph
-                .getLatestTasks())));
+        return new LastNode<T, D>(
+                removeWithVisibleOutcomingDependencies(removeContainers(graph
+                        .getLatestTasks())));
+    }
+
+    private Set<T> removeWithVisibleOutcomingDependencies(
+            Collection<T> removeContainers) {
+        Set<T> result = new HashSet<T>();
+        for (T each : removeContainers) {
+            if (!graph.hasVisibleOutcomingDependencies(each)) {
+                result.add(each);
+            }
+        }
+        return result;
     }
 
     private Map<T, Node<T, D>> createGraphNodes() {
@@ -240,7 +291,8 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         return DependencyType.END_START;
     }
 
-    private void forward(Node<T, D> currentNode, T previousTask) {
+    private void forward(Node<T, D> currentNode, T previousTask,
+            VisitorTracker visitorTracker) {
         T currentTask = currentNode.getTask();
         int earliestStart = currentNode.getEarliestStart();
         int earliestFinish = currentNode.getEarliestFinish();
@@ -252,6 +304,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             int countStartStart = 0;
 
             for (T task : nextTasks) {
+                visitorTracker.visit(task, currentTask);
                 if (graph.isContainer(currentTask)) {
                     if (graph.contains(currentTask, previousTask)) {
                         if (graph.contains(currentTask, task)) {
@@ -263,7 +316,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         currentTask, task);
-                Constraint<GanttDate> constraint = getDateStartConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraints(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -280,7 +333,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                     break;
                 }
 
-                forward(node, currentTask);
+                if (visitorTracker.hasBeenVisitedByAll(task,
+                        node.getPreviousTasks())) {
+                    forward(node, currentTask, visitorTracker);
+                }
             }
 
             if (nextTasks.size() == countStartStart) {
@@ -302,33 +358,31 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
         node.setEarliestStart(earliestStart);
     }
 
-    private Constraint<GanttDate> getDateStartConstraint(T task) {
-        if (task == null) {
+    private Constraint<GanttDate> getDateConstraints(T task) {
+        if (dependenciesConstraintsHavePriority || task == null) {
             return null;
         }
 
-        List<Constraint<GanttDate>> constraints = graph
+        List<Constraint<GanttDate>> startConstraints = graph
                 .getStartConstraintsFor(task);
-        if (constraints == null) {
-            return null;
-        }
-        return Constraint.coalesce(constraints);
-    }
-
-    private Constraint<GanttDate> getDateEndConstraint(T task) {
-        if (task == null) {
-            return null;
-        }
-
-        List<Constraint<GanttDate>> constraints = graph
+        List<Constraint<GanttDate>> endConstraints = graph
                 .getEndConstraintsFor(task);
-        if (constraints == null) {
+        if ((startConstraints == null || startConstraints.isEmpty())
+                && (endConstraints == null || endConstraints.isEmpty())) {
             return null;
         }
-        return Constraint.coalesce(constraints);
+        if (startConstraints == null || startConstraints.isEmpty()) {
+            return Constraint.coalesce(endConstraints);
+        }
+        if (endConstraints == null || endConstraints.isEmpty()) {
+            return Constraint.coalesce(startConstraints);
+        }
+        startConstraints.addAll(endConstraints);
+        return Constraint.coalesce(startConstraints);
     }
 
-    private void backward(Node<T, D> currentNode, T nextTask) {
+    private void backward(Node<T, D> currentNode, T nextTask,
+            VisitorTracker visitorTracker) {
         T currentTask = currentNode.getTask();
         int latestStart = currentNode.getLatestStart();
         int latestFinish = currentNode.getLatestFinish();
@@ -340,6 +394,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
             int countEndEnd = 0;
 
             for (T task : previousTasks) {
+                visitorTracker.visit(task, currentTask);
                 if (graph.isContainer(currentTask)) {
                     if (graph.contains(currentTask, nextTask)) {
                         if (graph.contains(currentTask, task)) {
@@ -351,7 +406,7 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                 Node<T, D> node = nodes.get(task);
                 DependencyType dependencyType = getDependencyTypeEndStartByDefault(
                         task, currentTask);
-                Constraint<GanttDate> constraint = getDateEndConstraint(task);
+                Constraint<GanttDate> constraint = getDateConstraints(task);
 
                 switch (dependencyType) {
                 case START_START:
@@ -368,7 +423,10 @@ public class CriticalPathCalculator<T, D extends IDependency<T>> {
                     break;
                 }
 
-                backward(node, currentTask);
+                if (visitorTracker.hasBeenVisitedByAll(task,
+                        node.getNextTasks())) {
+                    backward(node, currentTask, visitorTracker);
+                }
             }
 
             if (previousTasks.size() == countEndEnd) {

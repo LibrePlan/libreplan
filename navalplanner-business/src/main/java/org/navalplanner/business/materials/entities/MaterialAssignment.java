@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -147,6 +148,15 @@ public class MaterialAssignment extends BaseEntity implements Comparable {
     public int compareTo(Object arg0) {
         final MaterialAssignment materialAssignment = (MaterialAssignment) arg0;
         return materialAssignment.getMaterial().compareTo(getMaterial());
+    }
+
+    public static MaterialAssignment copy(MaterialAssignment origin,
+            OrderElement orderElement) {
+        MaterialAssignment copy = MaterialAssignment.createFrom(
+                origin.materialInfo, orderElement);
+        copy.estimatedAvailability = origin.estimatedAvailability;
+        copy.status = origin.status;
+        return copy;
     }
 
 }

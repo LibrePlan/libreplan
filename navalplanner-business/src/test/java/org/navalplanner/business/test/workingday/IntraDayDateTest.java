@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +30,8 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 import static org.navalplanner.business.workingday.EffortDuration.minutes;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,6 +47,7 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.IntraDayDate.UntilEnd;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * @author Óscar González Fernández
@@ -207,31 +211,31 @@ public class IntraDayDateTest {
     }
 
     @Test
-    public void aPartialDayCanLimitAnEffortDuration() {
+    public void aPartialDayCanLimitAWorkingDayDuration() {
         PartialDay day = new PartialDay(IntraDayDate.create(today,
                 halfHour), IntraDayDate.create(today, oneHour));
-        assertThat(day.limitDuration(hours(10)), equalTo(minutes(30)));
-        assertThat(day.limitDuration(minutes(40)), equalTo(minutes(10)));
+        assertThat(day.limitWorkingDay(hours(10)), equalTo(minutes(30)));
+        assertThat(day.limitWorkingDay(minutes(40)), equalTo(minutes(10)));
         PartialDay completeDay = new PartialDay(IntraDayDate.startOfDay(today),
                 IntraDayDate.startOfDay(tomorrow));
-        assertThat(completeDay.limitDuration(hours(10)), equalTo(hours(10)));
+        assertThat(completeDay.limitWorkingDay(hours(10)), equalTo(hours(10)));
         PartialDay startsInTheMiddle = new PartialDay(IntraDayDate.create(
                 today, EffortDuration.hours(3)),
                 IntraDayDate.startOfDay(tomorrow));
-        assertThat(startsInTheMiddle.limitDuration(hours(10)),
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(10)),
                 equalTo(hours(7)));
-        assertThat(startsInTheMiddle.limitDuration(hours(3)), equalTo(zero()));
-        assertThat(startsInTheMiddle.limitDuration(hours(2)), equalTo(zero()));
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(3)), equalTo(zero()));
+        assertThat(startsInTheMiddle.limitWorkingDay(hours(2)), equalTo(zero()));
         PartialDay startAndEndInSameDay = new PartialDay(IntraDayDate.create(
                 today, EffortDuration.hours(3)), IntraDayDate.create(today,
                 EffortDuration.hours(6)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(4)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(4)),
                 equalTo(hours(1)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(5)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(5)),
                 equalTo(hours(2)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(6)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(6)),
                 equalTo(hours(3)));
-        assertThat(startAndEndInSameDay.limitDuration(hours(10)),
+        assertThat(startAndEndInSameDay.limitWorkingDay(hours(10)),
                 equalTo(hours(3)));
     }
 
@@ -294,4 +298,73 @@ public class IntraDayDateTest {
 
         assertThat(IntraDayDate.startOfDay(today).roundDown(), equalTo(today));
     }
+
+    @Test
+    public void canIncreaseAnIntraDayDayBySomeEffort() {
+        LocalDate today = new LocalDate();
+        IntraDayDate intraDate = IntraDayDate.create(today, hours(2));
+        EffortDuration[] efforts = { hours(4), hours(8), hours(12), hours(0),
+                hours(16) };
+        for (EffortDuration effort : efforts) {
+            IntraDayDate newDay = intraDate.increaseBy(
+                    ResourcesPerDay.amount(1), effort);
+
+            assertThat(newDay.getDate(), equalTo(today));
+            assertThat(newDay.getEffortDuration(), equalTo(hours(2)
+                    .plus(effort)));
+        }
+    }
+
+    @Test
+    public void theAmountOfTheIncreaseDependsOnTheAmountOfResourcesPerDay() {
+        LocalDate today = new LocalDate();
+        IntraDayDate intraDate = IntraDayDate.startOfDay(today);
+
+        EffortDuration effort = hours(6);
+
+        ResourcesPerDay half = ResourcesPerDay.amount(new BigDecimal(BigInteger
+                .valueOf(5), 1));
+        ResourcesPerDay oneQuarter = ResourcesPerDay.amount(new BigDecimal(
+                BigInteger.valueOf(25), 2));
+        ResourcesPerDay[] resourcesPerDays = { ResourcesPerDay.amount(2),
+                ResourcesPerDay.amount(3), half, oneQuarter,
+                ResourcesPerDay.amount(4) };
+
+        EffortDuration[] ends = { hours(3), hours(2), hours(12), hours(24),
+                hours(1).and(30, Granularity.MINUTES) };
+
+        for (int i = 0; i < resourcesPerDays.length; i++) {
+            ResourcesPerDay r = resourcesPerDays[i];
+            EffortDuration end = ends[i];
+            IntraDayDate newDay = intraDate.increaseBy(r, effort);
+
+            assertThat(newDay.getDate(), equalTo(today));
+            assertThat(newDay.getEffortDuration(), equalTo(end));
+        }
+    }
+
+    @Test
+    public void canDecreaseAnIntraDayBySomeEffort() {
+        LocalDate today = new LocalDate();
+        IntraDayDate intraDate = IntraDayDate.create(today, hours(10));
+        EffortDuration[] efforts = { hours(4), hours(8), hours(5), hours(10),
+                hours(1) };
+        for (EffortDuration effort : efforts) {
+            IntraDayDate newDay = intraDate.decreaseBy(
+                    ResourcesPerDay.amount(1), effort);
+
+            assertThat(newDay.getDate(), equalTo(today));
+            assertThat(newDay.getEffortDuration(),
+                    equalTo(hours(10).minus(effort)));
+        }
+    }
+
+    @Test
+    public void theDateAlwaysKeepsBeingTheSameWhenDecreasing() {
+        LocalDate today = new LocalDate();
+        IntraDayDate intraDate = IntraDayDate.create(today, hours(10));
+        assertThat(intraDate.decreaseBy(ResourcesPerDay.amount(1), hours(12))
+                .getDate(), equalTo(today));
+    }
+
 }

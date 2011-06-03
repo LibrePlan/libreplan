@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
@@ -99,7 +101,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
+        SortedMap<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -116,7 +118,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
         return getListMatching();
     }
 
-    private Map<CriterionType, List<Criterion>> getCriterionsMap() {
+    private SortedMap<CriterionType, List<Criterion>> getCriterionsMap() {
         return this.databaseSnapshots.snapshotCriterionsMap();
     }
 

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,7 +52,7 @@ import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.materials.entities.MaterialAssignment;
-import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.SchedulingState.Type;
 import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchronization;
 import org.navalplanner.business.planner.entities.Task;
@@ -67,11 +68,12 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.trees.ITreeNode;
 import org.navalplanner.business.util.deepcopy.DeepCopy;
+import org.navalplanner.business.workingday.IntraDayDate;
 
 public abstract class OrderElement extends IntegrationEntity implements
         ICriterionRequirable, ITreeNode<OrderElement> {
 
-    private InfoComponent infoComponent = new InfoComponent();
+    protected InfoComponent infoComponent = new InfoComponent();
 
     private Date initDate;
 
@@ -84,11 +86,11 @@ public abstract class OrderElement extends IntegrationEntity implements
     protected Set<MaterialAssignment> materialAssignments = new HashSet<MaterialAssignment>();
 
     @Valid
-    private Set<Label> labels = new HashSet<Label>();
+    protected Set<Label> labels = new HashSet<Label>();
 
-    private Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
+    protected Set<TaskQualityForm> taskQualityForms = new HashSet<TaskQualityForm>();
 
-    private Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
+    protected Set<CriterionRequirement> criterionRequirements = new HashSet<CriterionRequirement>();
 
     protected OrderLineGroup parent;
 
@@ -515,6 +517,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     public abstract DirectAdvanceAssignment getReportGlobalAdvanceAssignment();
 
+    public abstract void removeReportGlobalAdvanceAssignment();
+
     public abstract DirectAdvanceAssignment getAdvanceAssignmentByType(AdvanceType type);
 
     public DirectAdvanceAssignment getDirectAdvanceAssignmentByType(
@@ -542,8 +546,6 @@ public abstract class OrderElement extends IntegrationEntity implements
     public abstract Set<IndirectAdvanceAssignment> getAllIndirectAdvanceAssignments(
             AdvanceType advanceType);
 
-    public abstract Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
-
     protected abstract Set<DirectAdvanceAssignment> getAllDirectAdvanceAssignmentsReportGlobal();
 
     public void removeAdvanceAssignment(AdvanceAssignment advanceAssignment) {
@@ -555,6 +557,7 @@ public abstract class OrderElement extends IntegrationEntity implements
                 removeChildrenAdvanceInParents(this.getParent());
             }
             markAsDirtyLastAdvanceMeasurementForSpreading();
+            updateSpreadAdvance();
         }
     }
 
@@ -580,6 +583,22 @@ public abstract class OrderElement extends IntegrationEntity implements
         labels.add(label);
     }
 
+    protected void updateLabels() {
+        if (parent != null) {
+            Set<Label> toRemove = new HashSet<Label>();
+            for (Label each : labels) {
+                if (!parent.checkAncestorsNoOtherLabelRepeated(each)) {
+                    toRemove.add(each);
+                }
+            }
+            labels.removeAll(toRemove);
+        }
+
+        for (OrderElement each : getChildren()) {
+            each.updateLabels();
+        }
+    }
+
     public void removeLabel(Label label) {
         labels.remove(label);
     }
@@ -601,6 +620,10 @@ public abstract class OrderElement extends IntegrationEntity implements
                 newAdvanceAssignment);
         checkChildrenNoOtherAssignmentWithSameAdvanceType(this,
                 newAdvanceAssignment);
+
+        if (getReportGlobalAdvanceAssignment() == null) {
+            newAdvanceAssignment.setReportGlobalAdvance(true);
+        }
 
         newAdvanceAssignment.setOrderElement(this);
         this.directAdvanceAssignments.add(newAdvanceAssignment);
@@ -696,15 +719,13 @@ public abstract class OrderElement extends IntegrationEntity implements
             OrderElement orderElement,
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException {
-        for (DirectAdvanceAssignment directAdvanceAssignment : orderElement
-                .getDirectAdvanceAssignments()) {
-            if (AdvanceType.equivalentInDB(directAdvanceAssignment
-                    .getAdvanceType(), newAdvanceAssignment.getAdvanceType())) {
+        if (orderElement
+                .existsDirectAdvanceAssignmentWithTheSameType(newAdvanceAssignment
+                        .getAdvanceType())) {
                 throw new DuplicateAdvanceAssignmentForOrderElementException(
                         _("Duplicate Progress Assignment For Task"),
                         this,
                         OrderElement.class);
-            }
         }
         if (!orderElement.getChildren().isEmpty()) {
             for (OrderElement child : orderElement.getChildren()) {
@@ -712,6 +733,16 @@ public abstract class OrderElement extends IntegrationEntity implements
                         newAdvanceAssignment);
             }
         }
+    }
+
+    public boolean existsDirectAdvanceAssignmentWithTheSameType(AdvanceType type) {
+        for (DirectAdvanceAssignment directAdvanceAssignment : directAdvanceAssignments) {
+            if (AdvanceType.equivalentInDB(directAdvanceAssignment
+                    .getAdvanceType(), type)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public BigDecimal getAdvancePercentage() {
@@ -753,11 +784,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         return Collections.unmodifiableSet(criterionRequirements);
     }
 
-    protected Set<CriterionRequirement> myCriterionRequirements() {
-        return criterionRequirements;
-    }
-
-
     /*
      * Operations to manage the criterion requirements of a orderElement
      * (remove, adding, update of the criterion requirement of the orderElement
@@ -777,7 +803,8 @@ public abstract class OrderElement extends IntegrationEntity implements
 
     }
 
-    protected void removeCriterionRequirement(CriterionRequirement requirement) {
+    @Override
+    public void removeCriterionRequirement(CriterionRequirement requirement) {
         criterionRequirements.remove(requirement);
         if (requirement instanceof IndirectCriterionRequirement) {
             ((IndirectCriterionRequirement)requirement).getParent().
@@ -866,13 +893,13 @@ public abstract class OrderElement extends IntegrationEntity implements
         TaskPositionConstraint constraint = task.getPositionConstraint();
         if (getInitDate() != null
                 && (getDeadline() == null || !scheduleBackwards)) {
-            constraint.notEarlierThan(
-                    LocalDate.fromDateFields(this.getInitDate()));
+            constraint.notEarlierThan(IntraDayDate.startOfDay(LocalDate
+                    .fromDateFields(this.getInitDate())));
             return true;
         }
         if (getDeadline() != null) {
-            constraint.finishNotLaterThan(
-                    LocalDate.fromDateFields(this.getDeadline()));
+            constraint.finishNotLaterThan(IntraDayDate.startOfDay(LocalDate
+                    .fromDateFields(this.getDeadline())));
             return true;
         }
         return false;
@@ -1070,7 +1097,7 @@ public abstract class OrderElement extends IntegrationEntity implements
         return false;
     }
 
-    private boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
+    public boolean checkAncestorsNoOtherLabelRepeated(Label newLabel) {
         for (Label label : labels) {
             if (label.isEqualTo(newLabel)) {
                 return false;
@@ -1200,21 +1227,12 @@ public abstract class OrderElement extends IntegrationEntity implements
         return this;
     }
 
-    protected void setExternalCode(String externalCode) {
+    public void setExternalCode(String externalCode) {
         this.externalCode = externalCode;
     }
 
     public String getExternalCode() {
         return externalCode;
-    }
-
-    public void moveCodeToExternalCode() {
-        setExternalCode(getCode());
-        setCode(null);
-
-        for (OrderElement child : getChildren()) {
-            child.moveCodeToExternalCode();
-        }
     }
 
     public abstract OrderLine calculateOrderLineForSubcontract();
@@ -1251,8 +1269,8 @@ public abstract class OrderElement extends IntegrationEntity implements
             }
         }
         // not exist assigned task
-        IOrderElementDAO orderElementDAO = Registry.getOrderElementDAO();
-        return (orderElementDAO.loadOrderAvoidingProxyFor(this))
+        IOrderDAO orderDAO = Registry.getOrderDAO();
+        return (orderDAO.loadOrderAvoidingProxyFor(this))
                 .isFinishedAdvance();
     }
 
@@ -1351,6 +1369,66 @@ public abstract class OrderElement extends IntegrationEntity implements
             return super.isCodeAutogenerated();
         }
         return getOrder() != null ? getOrder().isCodeAutogenerated() : false;
+    }
+
+    @AssertTrue(message = "a quality form can not be assigned twice to the same order element")
+    public boolean checkConstraintUniqueQualityForm() {
+        Set<QualityForm> qualityForms = new HashSet<QualityForm>();
+        for (TaskQualityForm each : taskQualityForms) {
+            QualityForm qualityForm = each.getQualityForm();
+            if (qualityForms.contains(qualityForm)) {
+                return false;
+            }
+            qualityForms.add(qualityForm);
+        }
+        return true;
+    }
+
+    public void removeDirectAdvancesInList(
+            Set<DirectAdvanceAssignment> directAdvanceAssignments) {
+        for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+            removeAdvanceAssignment(getAdvanceAssignmentByType(each
+                    .getAdvanceType()));
+        }
+
+        for (OrderElement each : getChildren()) {
+            each.removeDirectAdvancesInList(directAdvanceAssignments);
+        }
+    }
+
+    protected Set<DirectAdvanceAssignment> getDirectAdvanceAssignmentsAndAllInAncest() {
+        Set<DirectAdvanceAssignment> result = new HashSet<DirectAdvanceAssignment>();
+
+        result.addAll(directAdvanceAssignments);
+
+        if (getParent() != null) {
+            result.addAll(getParent()
+                    .getDirectAdvanceAssignmentsAndAllInAncest());
+        }
+
+        return result;
+    }
+
+    protected void updateSpreadAdvance() {
+        if (getReportGlobalAdvanceAssignment() == null) {
+            // Set PERCENTAGE type as spread if any
+            String type = PredefinedAdvancedTypes.PERCENTAGE.getTypeName();
+            for (DirectAdvanceAssignment each : directAdvanceAssignments) {
+                if (each.getAdvanceType() != null
+                        && each.getAdvanceType().getType() != null
+                        && each.getAdvanceType().getType().equals(type)) {
+                    each.setReportGlobalAdvance(true);
+                    return;
+                }
+            }
+
+            // Otherwise, set first advance assignment
+            if (!directAdvanceAssignments.isEmpty()) {
+                directAdvanceAssignments.iterator().next()
+                        .setReportGlobalAdvance(true);
+                return;
+            }
+        }
     }
 
 }

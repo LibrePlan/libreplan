@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -113,6 +114,7 @@ public class MonteCarloController extends GenericForwardComposer {
 
             @Override
             public void onEvent(Event event) throws Exception {
+                validateRowsPercentages();
                 IBackGroundOperation<IDesktopUpdate> operation = new IBackGroundOperation<IDesktopUpdate>() {
 
                      @Override
@@ -129,7 +131,6 @@ public class MonteCarloController extends GenericForwardComposer {
                 try {
                     updatesEmitter.doUpdate(disableButton(true));
                     int iterations = getIterations();
-                    validateRowsPercentages();
                     final Map<LocalDate, BigDecimal> monteCarloData = monteCarloModel
                             .calculateMonteCarlo(getSelectedCriticalPath(),
                                     iterations,
@@ -168,6 +169,9 @@ public class MonteCarloController extends GenericForwardComposer {
             private void validateRowsPercentages() {
                 Intbox intbox;
 
+                int page = 0;
+                int counter = 0;
+
                 Rows rows = gridCriticalPathTasks.getRows();
                 for (Object each : rows.getChildren()) {
                     Row row = (Row) each;
@@ -183,8 +187,14 @@ public class MonteCarloController extends GenericForwardComposer {
                     sum += intbox.getValue();
 
                     if (sum != 100) {
+                        gridCriticalPathTasks.setActivePage(page);
                         throw new WrongValueException(row,
                                 _("Percentages should sum 100"));
+                    }
+
+                    counter++;
+                    if (counter % gridCriticalPathTasks.getPageSize() == 0) {
+                        page++;
                     }
                 }
             }
@@ -274,6 +284,7 @@ public class MonteCarloController extends GenericForwardComposer {
         }
         if (gridCriticalPathTasks.getRowRenderer() == null) {
             gridCriticalPathTasks.setRowRenderer(gridCriticalPathTasksRender);
+            gridCriticalPathTasks.renderAll();
         }
     }
 

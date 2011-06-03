@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,8 +33,10 @@ import java.util.Set;
 import org.navalplanner.business.advance.entities.AdvanceAssignmentTemplate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
@@ -49,6 +52,7 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.templates.daos.IOrderElementTemplateDAO;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.orders.QualityFormsOnConversation;
 import org.navalplanner.web.orders.labels.LabelsOnConversation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,12 +67,16 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/templates/templates.zul")
 public class OrderTemplatesModel implements IOrderTemplatesModel {
 
     private static final Map<CriterionType, List<Criterion>> mapCriterions = new HashMap<CriterionType, List<Criterion>>();
 
     @Autowired
     private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private IOrderDAO orderDAO;
 
     @Autowired
     private IOrderElementTemplateDAO dao;
@@ -119,7 +127,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     public OrderElementsOnConversation getOrderElementsOnConversation() {
         if (orderElementsOnConversation == null) {
             orderElementsOnConversation = new OrderElementsOnConversation(
-                    orderElementDAO);
+                    orderElementDAO, orderDAO);
         }
         return orderElementsOnConversation;
     }
@@ -159,7 +167,7 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
     @Transactional(readOnly = true)
     public void createTemplateFrom(OrderElement orderElement) {
         initializeAcompanyingObjectsOnConversation();
-        Order order = orderElementDAO.loadOrderAvoidingProxyFor(orderElement);
+        Order order = orderDAO.loadOrderAvoidingProxyFor(orderElement);
         order.useSchedulingDataFor(getCurrentScenario());
         OrderElement orderElementOrigin = orderElementDAO
                 .findExistingEntity(orderElement
@@ -314,4 +322,20 @@ public class OrderTemplatesModel implements IOrderTemplatesModel {
         return result;
     }
 
+    @Override
+    @Transactional
+    public void confirmDelete(OrderElementTemplate template) {
+        try {
+            dao.remove(template.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException();
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasNotApplications(OrderElementTemplate template) {
+        getOrderElementsOnConversation().initialize(template);
+        return getOrderElementsOnConversation().getOrderElements().isEmpty();
+    }
 }

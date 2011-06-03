@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,13 +34,14 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
@@ -47,6 +49,7 @@ import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,7 +76,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
      */
     protected BaseCalendar baseCalendar;
 
-    private Date selectedDate;
+    private LocalDate selectedDate = new LocalDate();
 
     protected boolean editing = false;
 
@@ -110,7 +113,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         editing = false;
         boolean codeGenerated = configurationDAO.getConfiguration()
                 .getGenerateCodeForBaseCalendars();
-        this.baseCalendar = BaseCalendar.create("");
+        this.baseCalendar = BaseCalendar.createBasicCalendar();
 
         if (codeGenerated) {
             setDefaultCode();
@@ -242,14 +245,13 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setSelectedDay(Date date) {
-        this.selectedDate = date;
+    public void setSelectedDay(LocalDate date) {
+        this.selectedDate = date != null ? date : new LocalDate();
     }
 
     @Override
-    public Date getSelectedDay() {
-        return selectedDate != null ? new Date(this.selectedDate.getTime())
-                : null;
+    public LocalDate getSelectedDay() {
+        return selectedDate;
     }
 
     @Override
@@ -257,8 +259,16 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        return getBaseCalendar().getWorkableTimeAt(
-                LocalDate.fromDateFields(selectedDate));
+        return getBaseCalendar().getCapacityOn(
+                PartialDay.wholeDay(selectedDate));
+    }
+
+    @Override
+    public Capacity getWorkableCapacity() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        return getBaseCalendar().getCapacityWithOvertime(selectedDate);
     }
 
     @Override
@@ -280,28 +290,27 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void createException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration) {
-        for (LocalDate date = new LocalDate(startDate); date
-                .compareTo(new LocalDate(endDate)) <= 0; date = date
+    public void createException(CalendarExceptionType type,
+            LocalDate startDate, LocalDate endDate, Capacity capacity) {
+        for (LocalDate date = startDate; date.compareTo(endDate) <= 0; date = date
                 .plusDays(1)) {
             if (getTypeOfDay(date).equals(DayType.OWN_EXCEPTION)) {
-                getBaseCalendar().updateExceptionDay(date, duration, type);
+                getBaseCalendar().updateExceptionDay(date, capacity, type);
             } else {
                 CalendarException day = CalendarException.create("", date,
-                        duration,
-                        type);
+                        capacity, type);
                 getBaseCalendar().addExceptionDay(day);
             }
         }
     }
 
     @Override
-    public EffortDuration getDurationAt(Days day) {
+    public Capacity getCapacityAt(Days day) {
         if (getBaseCalendar() == null) {
-            return EffortDuration.zero();
+            return Capacity.zero();
         }
-        return getBaseCalendar().getDurationAt(selectedDate, day);
+        return getBaseCalendar().getCapacityConsideringCalendarDatasOn(
+                selectedDate, day);
     }
 
     @Override
@@ -316,8 +325,10 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     public void unsetDefault(Days day) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setDurationAt(day, EffortDuration.zero(),
-                    selectedDate);
+            Capacity previousCapacity = getBaseCalendar()
+                    .getCapacityConsideringCalendarDatasOn(selectedDate, day);
+            getBaseCalendar()
+                    .setCapacityAt(day, previousCapacity, selectedDate);
         }
     }
 
@@ -329,9 +340,9 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setDurationAt(Days day, EffortDuration value) {
+    public void setCapacityAt(Days day, Capacity value) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().setDurationAt(day, value, selectedDate);
+            getBaseCalendar().setCapacityAt(day, value, selectedDate);
         }
     }
 
@@ -405,7 +416,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void setExpiringDate(Date date) {
+    public void setExpiringDate(LocalDate date) {
         if ((getBaseCalendar() != null)
                 && (getBaseCalendar().getExpiringDate(selectedDate) != null)) {
             getBaseCalendar()
@@ -414,20 +425,17 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public Date getDateValidFrom() {
+    public LocalDate getDateValidFrom() {
         if (getBaseCalendar() != null) {
             LocalDate validFromDate = getBaseCalendar().getValidFrom(
                     selectedDate);
-            if (validFromDate != null) {
-                return validFromDate.toDateTimeAtStartOfDay().toDate();
-            }
+            return validFromDate;
         }
-
         return null;
     }
 
     @Override
-    public void setDateValidFrom(Date date) {
+    public void setDateValidFrom(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().setValidFrom(date, selectedDate);
         }
@@ -443,7 +451,7 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void createNewVersion(Date date) {
+    public void createNewVersion(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().newVersion(date);
         }
@@ -489,8 +497,40 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Override
     @Transactional(rollbackFor = ValidationException.class)
     public void confirmSave() throws ValidationException {
-        checkInvalidValuesCalendar(getBaseCalendar());
-        baseCalendarDAO.save(getBaseCalendar());
+        confirmSave(getBaseCalendar());
+    }
+
+    @Transactional(rollbackFor = ValidationException.class)
+    private void confirmSave(BaseCalendar calendar) throws ValidationException {
+        checkInvalidValuesCalendar(calendar);
+        baseCalendarDAO.save(calendar);
+    }
+
+    @Override
+    @Transactional(rollbackFor = ValidationException.class)
+    public void confirmSaveAndContinue() throws ValidationException {
+        BaseCalendar baseCalendar = getBaseCalendar();
+        confirmSave(baseCalendar);
+        dontPoseAsTransientObjectAnymore(baseCalendar);
+    }
+
+    /**
+     * Don't pose as transient anymore calendar and all data hanging from
+     * calendar (data versions, availabilities and exceptions)
+     *
+     * @param calendar
+     */
+    private void dontPoseAsTransientObjectAnymore(BaseCalendar calendar) {
+        calendar.dontPoseAsTransientObjectAnymore();
+        for (CalendarData each: calendar.getCalendarDataVersions()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+        for (CalendarAvailability each : calendar.getCalendarAvailabilities()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
+        for (CalendarException each : calendar.getExceptions()) {
+            each.dontPoseAsTransientObjectAnymore();
+        }
     }
 
     @Override
@@ -566,6 +606,14 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public boolean isOwnException(CalendarException exception) {
+        if (getBaseCalendar() == null) {
+            return false;
+        }
+        return getBaseCalendar().getOwnExceptions().contains(exception);
+    }
+
+    @Override
     public void removeException(LocalDate date) {
         if (getBaseCalendar() != null) {
             getBaseCalendar().removeExceptionDay(date);
@@ -591,8 +639,8 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void updateException(CalendarExceptionType type, Date startDate,
-            Date endDate, EffortDuration duration) {
+    public void updateException(CalendarExceptionType type,
+            LocalDate startDate, LocalDate endDate, Capacity capacity) {
         for (LocalDate date = new LocalDate(startDate); date
                 .compareTo(new LocalDate(endDate)) <= 0; date = date
                 .plusDays(1)) {
@@ -600,12 +648,12 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                 if (type == null) {
                     getBaseCalendar().removeExceptionDay(date);
                 } else {
-                    getBaseCalendar().updateExceptionDay(date, duration, type);
+                    getBaseCalendar().updateExceptionDay(date, capacity, type);
                 }
             } else {
                 if (type != null) {
                     CalendarException day = CalendarException.create(date,
-                            duration, type);
+                            capacity, type);
                     getBaseCalendar().addExceptionDay(day);
                 }
             }
@@ -632,11 +680,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        Date selectedDay = getSelectedDay();
+        LocalDate selectedDay = getSelectedDay();
         if (selectedDay == null) {
             return null;
         }
-        return getBaseCalendar().getCalendarData(new LocalDate(selectedDay));
+        return getBaseCalendar().getCalendarData(selectedDay);
     }
 
     @Override
@@ -721,4 +769,21 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.baseCalendar;
     }
+
+    @Override
+    public boolean isLastActivationPeriod(
+            CalendarAvailability calendarAvailability) {
+        if (getBaseCalendar() != null) {
+            return getBaseCalendar().isLastCalendarAvailability(
+                    calendarAvailability);
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException {
+        baseCalendarDAO.checkIsReferencedByOtherEntities(calendar);
+    }
+
 }

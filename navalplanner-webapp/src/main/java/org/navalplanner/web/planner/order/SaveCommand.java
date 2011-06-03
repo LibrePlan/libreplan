@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +34,7 @@ import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
@@ -40,6 +42,7 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.IConsolidationDAO;
@@ -65,10 +68,18 @@ import org.navalplanner.business.planner.limiting.daos.ILimitingResourceQueueDep
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueDependency;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
+import org.navalplanner.web.planner.TaskElementAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.adapters.DomainDependency;
+import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
+import org.zkoss.ganttz.data.ConstraintCalculator;
+import org.zkoss.ganttz.data.DependencyType.Point;
+import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.zul.Messagebox;
 
@@ -103,6 +114,9 @@ public class SaveCommand implements ISaveCommand {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
     private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
 
     @Autowired
@@ -110,14 +124,41 @@ public class SaveCommand implements ISaveCommand {
 
     private PlanningState state;
 
+    private PlannerConfiguration<TaskElement> configuration;
+
+    private ConstraintCalculator<TaskElement> constraintCalculator;
+
     @Autowired
     private IAdHocTransactionService transactionService;
 
     private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
+    private IAdapterToTaskFundamentalProperties<TaskElement> adapter;
+
+
     @Override
     public void setState(PlanningState state) {
         this.state = state;
+    }
+
+    @Override
+    public void setConfiguration(PlannerConfiguration<TaskElement> configuration) {
+        this.configuration = configuration;
+        this.adapter = configuration.getAdapter();
+        this.constraintCalculator = new ConstraintCalculator<TaskElement>(
+                configuration.isScheduleBackwards()) {
+
+            @Override
+            protected GanttDate getStartDate(TaskElement vertex) {
+                return TaskElementAdapter
+                        .toGantt(vertex.getIntraDayStartDate());
+            }
+
+            @Override
+            protected GanttDate getEndDate(TaskElement vertex) {
+                return TaskElementAdapter.toGantt(vertex.getIntraDayEndDate());
+            }
+        };
     }
 
     @Override
@@ -194,14 +235,8 @@ public class SaveCommand implements ISaveCommand {
             TaskGroup rootTask = state.getRootTask();
 
             updateRootTaskPosition(rootTask);
-            updateCriticalPathProgress(rootTask);
             taskElementDAO.save(rootTask);
         }
-    }
-
-    private void updateCriticalPathProgress(TaskGroup rootTask) {
-        rootTask.updateCriticalPathProgress((List<TaskElement>) state
-                .getPlanner().getCriticalPath());
     }
 
     private void updateRootTaskPosition(TaskGroup rootTask) {
@@ -238,11 +273,64 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void updateLimitingResourceQueueElementDates(Task task) {
-        LimitingResourceQueueElement limiting = task
-                .getAssociatedLimitingResourceQueueElementIfAny();
-        Date initDate = state.getRootTask().getOrderElement().getInitDate();
-        limiting.updateDates(initDate,
-                task.getDependenciesWithThisDestination());
+        try {
+            LimitingResourceQueueElement limiting = task
+                    .getAssociatedLimitingResourceQueueElementIfAny();
+
+            GanttDate earliestStart = resolveConstraints(task, Point.START);
+            GanttDate earliestEnd = resolveConstraints(task, Point.END);
+
+            limiting.updateDates(TaskElementAdapter.toIntraDay(earliestStart),
+                    TaskElementAdapter.toIntraDay(earliestEnd));
+        } catch (Exception e) {
+            // if this fails all the saving shouldn't fail
+            LOG.error(
+                    "error updating associated LimitingResourceQueueElement for task: "
+                            + task, e);
+        }
+    }
+
+    private GanttDate resolveConstraints(Task task, Point point) {
+        List<Constraint<GanttDate>> dependencyConstraints = toConstraints(
+                adapter.getIncomingDependencies(task), point);
+        List<Constraint<GanttDate>> taskConstraints = getTaskConstraints(task);
+
+        boolean dependenciesHavePriority = configuration
+                .isDependenciesConstraintsHavePriority();
+        if (dependenciesHavePriority) {
+            return Constraint
+                    .<GanttDate> initialValue(
+                            TaskElementAdapter.toGantt(getOrderInitDate()))
+                    .withConstraints(taskConstraints)
+                    .withConstraints(dependencyConstraints)
+                    .applyWithoutFinalCheck();
+        } else {
+            return Constraint
+                    .<GanttDate> initialValue(
+                            TaskElementAdapter.toGantt(getOrderInitDate()))
+                    .withConstraints(dependencyConstraints)
+                    .withConstraints(taskConstraints)
+                    .applyWithoutFinalCheck();
+        }
+    }
+
+    private List<Constraint<GanttDate>> getTaskConstraints(Task task) {
+        return TaskElementAdapter.getStartConstraintsFor(task, getOrderInitDate());
+    }
+
+    private LocalDate getOrderInitDate() {
+        return LocalDate.fromDateFields(state.getRootTask().getOrderElement()
+                .getInitDate());
+    }
+
+    private List<Constraint<GanttDate>> toConstraints(
+            List<DomainDependency<TaskElement>> incomingDependencies,
+            Point point) {
+        List<Constraint<GanttDate>> result = new ArrayList<Constraint<GanttDate>>();
+        for (DomainDependency<TaskElement> each : incomingDependencies) {
+            result.addAll(constraintCalculator.getConstraints(each, point));
+        }
+        return result;
     }
 
     private void removeEmptyConsolidation(TaskElement taskElement) {
@@ -381,7 +469,7 @@ public class SaveCommand implements ISaveCommand {
     }
 
     private void dontPoseAsTransient(OrderElement orderElement) {
-        OrderElement order = (OrderElement) orderElementDAO
+        OrderElement order = (OrderElement) orderDAO
                 .loadOrderAvoidingProxyFor(orderElement);
         order.dontPoseAsTransientObjectAnymore();
         dontPoseAsTransientAdvances(order.getDirectAdvanceAssignments());

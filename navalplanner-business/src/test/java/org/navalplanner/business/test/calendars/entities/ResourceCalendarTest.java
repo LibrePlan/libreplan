@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,8 +34,11 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Tests for {@link ResourceCalendar}.
@@ -43,13 +47,21 @@ import org.navalplanner.business.workingday.EffortDuration;
  */
 public class ResourceCalendarTest {
 
-    public static ResourceCalendar createBasicResourceCalendar() {
+    private static final Capacity capacityForEveryDay = Capacity.create(
+            EffortDuration.hours(8)).overAssignableWithoutLimit();
+
+    public static ResourceCalendar createBasicResourceCalendar(int capacity) {
         ResourceCalendar calendar = ResourceCalendar.create();
         calendar.setName("Test");
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, EffortDuration.hours(8));
+            calendar.setCapacityAt(each, capacityForEveryDay);
         }
+        calendar.setCapacity(capacity);
         return calendar;
+    }
+
+    public static ResourceCalendar createBasicResourceCalendar() {
+        return createBasicResourceCalendar(1);
     }
 
     private static final LocalDate PAST = (new LocalDate()).minusMonths(1);
@@ -71,6 +83,35 @@ public class ResourceCalendarTest {
                 equalTo(EffortDuration.zero()));
         assertThat(calendar.getCapacityOn(wholeDay(FUTURE)),
                 equalTo(EffortDuration.hours(8)));
+    }
+
+    @Test
+    public void getCapacityWithOverTimeIsMultipliedByTheCapacityOfTheResourceCalendar() {
+        ResourceCalendar calendar = createBasicResourceCalendar(2);
+        Capacity capacity = calendar.getCapacityWithOvertime(FUTURE);
+        assertThat(capacity, equalTo(capacityForEveryDay.multiplyBy(2)));
+    }
+
+    @Test
+    public void theCapacityEffortIsMultipliedByTheCapacityOfTheResourceCalendar() {
+        ResourceCalendar calendar = createBasicResourceCalendar(2);
+        EffortDuration duration = calendar.getCapacityOn(PartialDay
+                .wholeDay(FUTURE));
+        assertThat(duration, equalTo(capacityForEveryDay.getStandardEffort()
+                .multiplyBy(2)));
+    }
+
+    @Test
+    public void asDurationOnDoesntChangeWithTheCapacityOfTheResourceCalendar() {
+        ResourceCalendar[] calendars = { createBasicResourceCalendar(),
+                createBasicResourceCalendar(2), createBasicResourceCalendar(3) };
+        for (ResourceCalendar each : calendars) {
+            EffortDuration duration = each.asDurationOn(
+                    PartialDay.wholeDay(FUTURE),
+                    ResourcesPerDay.amount(1));
+            assertThat(duration,
+                    equalTo(capacityForEveryDay.getStandardEffort()));
+        }
     }
 
     @Test(expected = IllegalArgumentException.class)

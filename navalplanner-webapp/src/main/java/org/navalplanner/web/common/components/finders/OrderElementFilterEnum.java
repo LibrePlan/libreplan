@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,6 @@
  */
 package org.navalplanner.web.common.components.finders;
 
-import org.navalplanner.business.i18n.I18nHelper;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -49,7 +49,7 @@ public enum OrderElementFilterEnum implements IFilterEnum {
     }
 
     public String toString() {
-        return I18nHelper._(this.description);
+        return this.description;
     }
 
 }

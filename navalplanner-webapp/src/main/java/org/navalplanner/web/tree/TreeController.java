@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -98,7 +99,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
     }
 
-    protected void indent(T element) {
+    public void indent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().indent(element);
         filterByPredicateIfAny();
@@ -122,7 +123,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
     }
 
-    protected void unindent(T element) {
+    public void unindent(T element) {
         viewStateSnapshot = TreeViewStateSnapshot.takeSnapshot(tree);
         getModel().unindent(element);
         filterByPredicateIfAny();
@@ -153,8 +154,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         filterByPredicateIfAny();
     }
 
-    protected T getSelectedNode() {
-        return type.cast(tree.getSelectedItemApi().getValue());
+    public T getSelectedNode() {
+        Treeitem item = tree.getSelectedItem();
+        if (item != null) {
+            Object value = item.getValue();
+            return value != null ? type.cast(value) : null;
+        }
+        return null;
     }
 
     public void move(Component dropedIn, Component dragged) {
@@ -286,8 +292,10 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         filterByPredicateIfAny();
     }
 
-    protected void remove(T element) {
+    public void remove(T element) {
+        List<T> parentNodes = getModel().getParents(element);
         getModel().removeNode(element);
+        getRenderer().refreshHoursValueForNodes(parentNodes);
     }
 
     @Override
@@ -375,7 +383,9 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     Navigation navigation, Treerow treerow) {
                 List<InputElement> boxes = getNavigableElements(treerow);
                 int position = boxes.indexOf(inputElement);
-
+                if (position > boxes.size() - 1) {
+                    return;
+                }
                 switch (navigation) {
                 case UP:
                     focusGoUp(treerow, position);
@@ -515,11 +525,13 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
             private void focusCorrectBox(Treerow treerow, int position,
                     Navigation whereIfDisabled) {
                 List<InputElement> boxes = getNavigableElements(treerow);
-
-                if (boxes.get(position).isDisabled()) {
-                    moveFocusTo(boxes.get(position), whereIfDisabled, treerow);
-                } else {
-                    boxes.get(position).focus();
+                if (position < boxes.size() - 1) {
+                    if (boxes.get(position).isDisabled()) {
+                        moveFocusTo(boxes.get(position), whereIfDisabled,
+                                treerow);
+                    } else {
+                        boxes.get(position).focus();
+                    }
                 }
             }
 
@@ -794,13 +806,18 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         public void refreshHoursValueForThisNodeAndParents(T node) {
-            List<T> parentNodes = getModel().getParents(node);
-            for (T parent : parentNodes) {
-                Intbox intbox = hoursIntBoxByElement.get(parent);
+            List<T> nodeAndItsParents = getModel().getParents(node);
+            nodeAndItsParents.add(node);
+            refreshHoursValueForNodes(nodeAndItsParents);
+        }
+
+        public void refreshHoursValueForNodes(List<T> nodes) {
+            for (T node : nodes) {
+                Intbox intbox = hoursIntBoxByElement.get(node);
                 // For the Order node there is no associated intbox
                 if (intbox != null) {
                     Integer currentHours = getHoursGroupHandler()
-                            .getWorkHoursFor(parent);
+                            .getWorkHoursFor(node);
                     intbox.setValue(currentHours);
                 }
             }
@@ -1006,7 +1023,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
 
     protected Set<Treecell> cellsMarkedAsModified = new HashSet<Treecell>();
 
-    protected void markModifiedTreeitem(Treerow item) {
+    public void markModifiedTreeitem(Treerow item) {
         Treecell tc = (Treecell) item.getFirstChild();
         // Check if marked label has been previously added
         if (!(tc.getLastChild() instanceof org.zkoss.zul.Label)) {

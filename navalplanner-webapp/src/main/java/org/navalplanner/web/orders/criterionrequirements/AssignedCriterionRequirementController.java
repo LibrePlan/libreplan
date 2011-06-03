@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -246,7 +247,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             try {
                 int status = Messagebox
                     .show(
-                            _("Are you sure of changing the resource type? You will lose the criterions with different resource type."),
+                            _("Are you sure of changing the resource type? You will lose the criteria with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
 

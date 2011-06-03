@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,8 +33,10 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 import org.navalplanner.business.costcategories.daos.IResourcesCostCategoryAssignmentDAO;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for UI operations related to {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -63,6 +67,9 @@ public class CostCategoryModel extends IntegrationEntityModel implements
 
     @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Override
     public List<CostCategory> getCostCategories() {
@@ -130,6 +137,12 @@ public class CostCategoryModel extends IntegrationEntityModel implements
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<TypeOfWorkHours> getAllHoursType() {
+        return typeOfWorkHoursDAO.hoursTypeByNameAsc();
+    }
+
+    @Override
     public CostCategory getCostCategory() {
         return costCategory;
     }
@@ -179,5 +192,10 @@ public class CostCategoryModel extends IntegrationEntityModel implements
 
     public IntegrationEntity getCurrentEntity() {
         return this.costCategory;
+    }
+
+    @Override
+    public void validateHourCostsOverlap() throws ValidationException {
+        CostCategory.validateHourCostsOverlap(getCostCategory().getHourCosts());
     }
 }

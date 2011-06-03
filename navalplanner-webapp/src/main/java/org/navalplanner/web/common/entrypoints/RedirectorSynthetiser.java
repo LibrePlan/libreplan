@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,7 +58,7 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
 
         private final Class<?> pageInterface;
 
-        private URLHandler<?> urlHandler;
+        private EntryPointsHandler<?> urlHandler;
 
         private SynthetizedImplementation(
                 ConfigurableListableBeanFactory beanFactory,
@@ -69,12 +70,12 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args)
                 throws Throwable {
-            URLHandler<?> redirector = getHandler();
+            EntryPointsHandler<?> redirector = getHandler();
             redirector.doTransition(method.getName(), args);
             return null;
         }
 
-        private URLHandler<?> getHandler() {
+        private EntryPointsHandler<?> getHandler() {
             if (urlHandler != null) {
                 return urlHandler;
             }

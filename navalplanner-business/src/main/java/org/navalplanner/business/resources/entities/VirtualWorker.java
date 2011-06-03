@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,7 +38,7 @@ public class VirtualWorker extends Worker {
     public static VirtualWorker create() {
         VirtualWorker virtualWorker = new VirtualWorker();
         virtualWorker.setNewObject(true);
-        virtualWorker.setNif("[Virtual]");
+        virtualWorker.setNif("(Virtual)");
         virtualWorker.setSurname("---");
         virtualWorker.getCalendar();
         return create(virtualWorker);
@@ -46,7 +47,7 @@ public class VirtualWorker extends Worker {
     public static VirtualWorker create(String code) {
         VirtualWorker virtualWorker = new VirtualWorker();
         virtualWorker.setNewObject(true);
-        virtualWorker.setNif("[Virtual]");
+        virtualWorker.setNif("(Virtual)");
         virtualWorker.setSurname("---");
         virtualWorker.getCalendar();
         return create(virtualWorker, code);
@@ -61,12 +62,17 @@ public class VirtualWorker extends Worker {
     }
 
     @Override
-    public String getDescription(){
-        return getFirstName()+" "+getSurname();
+    public String getDescription() {
+        return getFirstName();
+    }
+
+    @Override
+    public String getShortDescription() {
+        return getFirstName() + " " + getNif();
     }
 
     public String getName() {
-        return getFirstName() + " " + getSurname();
+        return getFirstName();
     }
 
     @Override
@@ -84,7 +90,7 @@ public class VirtualWorker extends Worker {
 
     @AssertTrue
     @Override
-    public boolean checkConstraintUniqueNif() {
+    public boolean checkConstraintUniqueFiscalCode() {
         return true;
     }
 

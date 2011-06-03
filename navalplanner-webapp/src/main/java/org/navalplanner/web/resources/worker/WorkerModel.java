@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +33,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -50,7 +52,6 @@ import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionWithItsType;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
 import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
@@ -73,11 +74,15 @@ import org.springframework.transaction.annotation.Transactional;
  * Model for worker <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  * @author Fernando Bellas Permuy <fbellas@udc.es>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/resources/worker/worker.zul")
 public class WorkerModel extends IntegrationEntityModel implements IWorkerModel {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(WorkerModel.class);
 
     @Autowired
     private IResourceDAO resourceDAO;
@@ -88,7 +93,10 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     private final ICriterionType<?>[] laboralRelatedTypes = {
             PredefinedCriterionTypes.LEAVE,
             PredefinedCriterionTypes.WORK_RELATIONSHIP };
+
     private Worker worker;
+
+    private ResourceCalendar calendarToRemove = null;
 
     private final ICriterionDAO criterionDAO;
 
@@ -126,6 +134,8 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     @Override
     @Transactional
     public void save() throws ValidationException {
+        removeCalendarIfNeeded();
+        resourceDAO.save(worker);
         if (worker.getCalendar() != null) {
             baseCalendarModel.checkInvalidValuesCalendar(worker.getCalendar());
         }
@@ -133,8 +143,19 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
         if(assignedCriterionsModel != null){
             assignedCriterionsModel.confirm();
         }
-        resourceDAO.save(worker);
         localizationsAssigner = null;
+    }
+
+    private void removeCalendarIfNeeded() {
+        if (calendarToRemove != null) {
+            try {
+                resourceDAO.reattach(worker);
+                baseCalendarDAO.remove(calendarToRemove.getId());
+                calendarToRemove = null;
+            } catch (InstanceNotFoundException e) {
+                LOG.error("Couldn't remove calendar");
+            }
+        }
     }
 
     @Override
@@ -504,19 +525,6 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion) {
-        List<Resource> resources = resourceDAO.list(Resource.class);
-        HashSet<Resource> result = new HashSet<Resource>();
-        for (Resource resource : resources) {
-            if (criterion.isSatisfiedBy(resource)) {
-                result.add(resource);
-            }
-        }
-        return result;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<BaseCalendar> getBaseCalendars() {
         return baseCalendarDAO.getBaseCalendars();
     }
@@ -610,6 +618,12 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     public IntegrationEntity getCurrentEntity() {
         return this.worker;
+    }
+
+    @Override
+    public void removeCalendar() {
+        calendarToRemove = worker.getCalendar();
+        worker.setCalendar(null);
     }
 
 }

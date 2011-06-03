@@ -48,9 +48,8 @@
 }
 
 #listdetails_container td {
-    border-bottom: 1px solid #86A4BE;
-    border-left: 1px solid #86A4BE;
-    border: 0px;
+    border-bottom: dotted 1px #CCC;
+    border-right: dotted 1px #CCC;
 }
 
 #listdetails_container td {
@@ -173,7 +172,6 @@
 }
 
 .order-startdate, .order-enddate  {
-    border-left: 1px dotted;
     padding-left: 3px;
 }
 
@@ -231,7 +229,7 @@
 
 .end,.start,.mid,.arrow {
     position: absolute;
-    padding: 4px;
+    /* padding: 4px; */
     cursor: crosshair;
     z-index:0;
 }
@@ -239,10 +237,18 @@
 #ganttpanel .end,
 #ganttpanel .start {
      height: 1px;
+     padding: 4px 0 2px 1px;
+     margin-left: 4px;
+     background-position: 0px 2px;
 }
 
 #ganttpanel .mid {
     width: 1px;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-right: 4px;
+    padding-left: 0px;
+    background-position: 4px 0;
 }
 
 
@@ -262,6 +268,11 @@
 }
 #listlimitingdependencies .mid {
     height: 1px;
+}
+
+#listlimitingdependencies .arrow {
+    background-image: none;
+    padding:0px;
 }
 
 div.box.limiting-assigned {
@@ -285,7 +296,7 @@ div.box.limiting-unassigned {
     width: 0%;
     margin-top: 0px;
     height: 3px; /* zkTasklist.HEIGHT_PER_TASK / 2 */
-    background-color: #FFCC99;
+    background-color: #F21CFF;
     border: 0px;
     margin-top: -5px;
 }
@@ -414,6 +425,17 @@ div.box.limiting-unassigned {
     height: 650px;
 }
 
+
+#watermark .week-level.timetracker_column_even {
+    background-color: #FFFFFF !important;
+}
+
+#watermark .week-level {
+    background-image: url("../../zkau/web/ganttz/img/not-workable-shade.png"), url("../../zkau/web/ganttz/img/not-workable-shade.png"), url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png"),url("../../zkau/web/ganttz/img/not-workable-shade.png");
+    background-repeat: repeat-y, repeat-y,repeat-y,repeat-y,repeat-y,repeat-y,repeat-y;
+    background-position: -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0, -8px 0;
+}
+
 .limitingresources #watermark .bankHoliday {
     height: 650px;
 }
@@ -433,6 +455,12 @@ div.box.limiting-unassigned {
     background-image:
         url("../../zkau/web/ganttz/img/pixel.gif");
     background-repeat: repeat-y;
+}
+
+#watermark .timetracker_column_today_deadline {
+    background-image:
+        url("../img/watermark_today.png"), url("../../zkau/web/ganttz/img/pixel.gif");
+    background-repeat: repeat-y, repeat-y;
 }
 
 
@@ -813,7 +841,7 @@ div.z-tree {
 }
 
 .listdetails td {
-    border-bottom: 1px dotted #86A4BE !important;
+    border-bottom: 1px dotted #CCC !important;
 }
 
 .plannerlayout, .resourcesloadlayout, .advancedallocationlayout {
@@ -944,6 +972,7 @@ height: 100%
 .advancedallocationlayout .calculated-hours.z-label {
     font-weight: bold;
     color: #555555;
+    cursor: default;
 }
 .advancedallocationlayout .unmodifiable-hours.z-label {
     color: #555555;
@@ -1154,7 +1183,7 @@ height: 100%
     float:left;
     width:10px;
     height:22px;
-    background-image: url("../../zkau/web/ganttz/img/watermark_deadline.png");
+    background-image: url("../../zkau/web/ganttz/img/deadline.png");
 }
 
 
@@ -1199,6 +1228,13 @@ body .perspectives-column {
 .taskdetailsContainer {
     overflow-x: scroll;
     overflow-y: hidden;
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.taskspanel {
+    border-top: 0;
+    border-bottom: 0;
 }
 
 .row .assigned {
@@ -1267,4 +1303,61 @@ body .perspectives-column {
 
 div.z-grid-header .second_level_ tr {
     overflow: visible;
+}
+
+
+.start, .end {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-hor.png");
+        background-repeat:repeat-x;
+}
+
+.mid {
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-ver.png");
+        background-repeat:repeat-y;
+}
+
+.arrow {
+    height: 10px;
+    width: 10px;
+    background-image:
+        url("../../zkau/web/ganttz/img/solid-black-arrows.png");
+    background-repeat: no-repeat;
+    padding: 3px 4px 4px 4px;
+}
+
+
+.violated-dependency .start, .violated-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-hor.png");
+}
+.violated-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-ver.png");
+}
+.violated-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/solid-red-arrows.png");
+}
+
+.resources-dependency .start, .resources-dependency .end {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-hor.png");
+}
+.resources-dependency .mid {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-ver.png");
+}
+.resources-dependency .arrow {
+    background-image: url("../../zkau/web/ganttz/img/dashed-black-arrows.png");
+}
+
+
+.point-east {
+    background-position: 0 2px;
+}
+.point-south {
+    background-position: -18px 0;
+}
+.point-west {
+    background-position: -35px 2px;
+}
+.point-north {
+    background-position: -48px 0;
 }

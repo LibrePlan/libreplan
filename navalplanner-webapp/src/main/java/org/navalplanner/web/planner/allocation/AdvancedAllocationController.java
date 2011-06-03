@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,10 +51,12 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -84,7 +87,6 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.LayoutRegion;
 import org.zkoss.zul.ListModel;
@@ -125,8 +127,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return getAggregate().getAllocationsSortedByStartDate();
         }
 
-        int getTotalHours() {
-            return getAggregate().getTotalHours();
+        EffortDuration getTotalEffort() {
+            return getAggregate().getTotalEffort();
         }
 
         AggregateOfResourceAllocations getAggregate() {
@@ -213,7 +215,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     public abstract static class Restriction {
 
         public interface IRestrictionSource {
-            int getTotalHours();
+
+            EffortDuration getTotalEffort();
 
             LocalDate getStart();
 
@@ -226,8 +229,8 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
             case END_DATE:
-                return Restriction.fixedHours(restrictionSource.getStart(),
-                        restrictionSource.getTotalHours());
+                return Restriction.fixedEffort(restrictionSource.getStart(),
+                        restrictionSource.getTotalEffort());
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
@@ -248,8 +251,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             return new OnlyOnIntervalRestriction(start, end);
         }
 
-        private static Restriction fixedHours(LocalDate start, int hours) {
-            return new FixedHoursRestriction(start, hours);
+        private static Restriction fixedEffort(LocalDate start,
+                EffortDuration effort) {
+            return new FixedEffortRestriction(start, effort);
         }
 
         abstract LocalDate limitStartDate(LocalDate startDate);
@@ -258,13 +262,13 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
         abstract boolean isDisabledEditionOn(DetailItem item);
 
-        public abstract boolean isInvalidTotalHours(int totalHours);
+        public abstract boolean isInvalidTotalEffort(EffortDuration totalEffort);
 
-        public abstract void showInvalidHours(IMessagesForUser messages,
-                int totalHours);
+        public abstract void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort);
 
-        public abstract void markInvalidTotalHours(Row groupingRow,
-                int currentHours);
+        public abstract void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort);
     }
 
     private static class OnlyOnIntervalRestriction extends Restriction {
@@ -291,7 +295,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
             return false;
         }
 
@@ -306,23 +310,27 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
         }
     }
 
-    private static class FixedHoursRestriction extends Restriction {
-        private final int hours;
+    private static class FixedEffortRestriction extends Restriction {
+
+        private final EffortDuration effort;
+
         private final LocalDate start;
 
-        private FixedHoursRestriction(LocalDate start, int hours) {
+        private FixedEffortRestriction(LocalDate start, EffortDuration effort) {
             this.start = start;
-            this.hours = hours;
+            this.effort = effort;
         }
 
         @Override
@@ -341,24 +349,25 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
-            return this.hours != totalHours;
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
+            return this.effort.compareTo(totalEffort) != 0;
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
-            messages.showMessage(Level.WARNING,
-                    getMessage(totalHours));
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
+            messages.showMessage(Level.WARNING, getMessage(totalEffort));
         }
 
-        private String getMessage(int totalHours) {
-            return _("there must be {0} hours instead of {1}", hours,
-                    totalHours);
+        private String getMessage(EffortDuration totalEffort) {
+            return _("there must be {0} effort instead of {1}",
+                    effort.toFormattedString(), totalEffort.toFormattedString());
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int totalHours) {
-            groupingRow.markErrorOnTotal(getMessage(totalHours));
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration totalEffort) {
+            groupingRow.markErrorOnTotal(getMessage(totalEffort));
         }
     }
 
@@ -370,7 +379,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public boolean isInvalidTotalHours(int totalHours) {
+        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
             return false;
         }
 
@@ -385,12 +394,14 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         }
 
         @Override
-        public void markInvalidTotalHours(Row groupingRow, int currentHours) {
+        public void markInvalidEffort(Row groupingRow,
+                EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public void showInvalidHours(IMessagesForUser messages, int totalHours) {
+        public void showInvalidEffort(IMessagesForUser messages,
+                EffortDuration totalEffort) {
             throw new UnsupportedOperationException();
         }
     }
@@ -530,8 +541,9 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                     paginatorStart = paginatorStart.plus(intervalIncrease());
                 }
                 paginatorEnd = paginatorStart.plus(intervalIncrease());
-                if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
-                    paginatorEnd = paginatorEnd.plus(intervalIncrease());
+                // Avoid reduced intervals
+                if (!intervalEnd.isAfter(paginatorEnd.plus(intervalIncrease()))) {
+                    paginatorEnd = intervalEnd;
                 }
                 updatePaginationButtons();
             }
@@ -569,7 +581,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             paginatorStart = paginatorStart.plus(intervalIncrease());
             paginatorEnd = paginatorEnd.plus(intervalIncrease());
             // Avoid reduced last intervals
-            if ((paginatorEnd.plus(intervalIncrease()).isAfter(intervalEnd))) {
+            if (!intervalEnd.isAfter(paginatorEnd.plus(intervalIncrease()))) {
                 paginatorEnd = paginatorEnd.plus(intervalIncrease());
             }
             updatePaginationButtons();
@@ -713,12 +725,12 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$acceptButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.getTotalHours();
+            EffortDuration totalEffort = allocationInput.getTotalEffort();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalHours(totalHours)) {
+            if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidTotalHours(groupingRow, totalHours);
+                restriction.markInvalidEffort(groupingRow, totalEffort);
             }
         }
         back.goBack();
@@ -730,23 +742,23 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     public void onClick$saveButton() {
         for (AllocationInput allocationInput : allocationInputs) {
-            int totalHours = allocationInput.getTotalHours();
+            EffortDuration totalEffort = allocationInput.getTotalEffort();
             Restriction restriction = allocationInput.getResultReceiver()
                     .createRestriction();
-            if (restriction.isInvalidTotalHours(totalHours)) {
+            if (restriction.isInvalidTotalEffort(totalEffort)) {
                 Row groupingRow = groupingRows.get(allocationInput);
-                restriction.markInvalidTotalHours(groupingRow, totalHours);
+                restriction.markInvalidEffort(groupingRow, totalEffort);
             }
+        }
+        for (AllocationInput allocationInput : allocationInputs) {
+            allocationInput.getResultReceiver().accepted(
+                    allocationInput.getAggregate());
         }
         try {
             Messagebox.show(_("Advanced assignment saved"), _("Information"),
                     Messagebox.OK, Messagebox.INFORMATION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
-        }
-        for (AllocationInput allocationInput : allocationInputs) {
-            allocationInput.getResultReceiver().accepted(
-                    allocationInput.getAggregate());
         }
     }
 
@@ -944,7 +956,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private Row buildGroupingRow(AllocationInput allocationInput) {
         Restriction restriction = allocationInput.getResultReceiver()
                 .createRestriction();
-        String taskName = _("{0}", allocationInput.getTaskName());
+        String taskName = allocationInput.getTaskName();
         Row groupingRow = Row.createRow(messages, restriction, taskName, 0,
                 allocationInput.getAllocationsSortedByStartDate(), false, allocationInput.task);
         return groupingRow;
@@ -962,20 +974,20 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
     private List<ColumnOnRow> getColumnsForLeft() {
         List<ColumnOnRow> result = new ArrayList<ColumnOnRow>();
-        result.add(new ColumnOnRow("Name") {
+        result.add(new ColumnOnRow(_("Name")) {
 
             @Override
             public Component cellFor(Row row) {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow("Hours") {
+        result.add(new ColumnOnRow(_("Efforts")) {
             @Override
             public Component cellFor(Row row) {
-                return row.getAllHours();
+                return row.getAllEffort();
             }
         });
-        result.add(new ColumnOnRow("Function") {
+        result.add(new ColumnOnRow(_("Function")) {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1001,7 +1013,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
             @Override
             public Component cellFor(DetailItem item, Row data) {
-                return data.hoursOnInterval(item);
+                return data.effortOnInterval(item);
             }
         };
     }
@@ -1041,7 +1053,7 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
     public Column toColumn() {
         Column column = new org.zkoss.zul.Column();
         column.setLabel(_(columnName));
-        column.setSclass(((String) columnName).toLowerCase());
+        column.setSclass(columnName.toLowerCase());
         return column;
     }
 
@@ -1078,10 +1090,10 @@ class Row {
     }
 
     public void markErrorOnTotal(String message) {
-        throw new WrongValueException(allHoursInput, message);
+        throw new WrongValueException(allEffortInput, message);
     }
 
-    private Component allHoursInput;
+    private EffortDurationBox allEffortInput;
 
     private Label nameLabel;
 
@@ -1116,8 +1128,8 @@ class Row {
 
             @Override
             public void changeOnGlobal() {
-                reloadAllHours();
-                reloadHoursSameRowForDetailItems();
+                reloadAllEffort();
+                reloadEffortsSameRowForDetailItems();
             }
 
             @Override
@@ -1126,8 +1138,8 @@ class Row {
                 if (component == null) {
                     return;
                 }
-                reloadHoursOnInterval(component, detailItem);
-                reloadAllHours();
+                reloadEffortOnInterval(component, detailItem);
+                reloadAllEffort();
             }
         });
     }
@@ -1148,65 +1160,63 @@ class Row {
         }
     }
 
-    Component getAllHours() {
-        if (allHoursInput == null) {
-            allHoursInput = buildAllHours();
-            reloadAllHours();
-            addListenerIfNeeded(allHoursInput);
+    Component getAllEffort() {
+        if (allEffortInput == null) {
+            allEffortInput = buildSumAllEffort();
+            reloadAllEffort();
+            addListenerIfNeeded(allEffortInput);
         }
-        return allHoursInput;
+        return allEffortInput;
     }
 
-    private Component buildAllHours() {
-        return (isGroupingRow() || isLimiting) ? new Label()
-                : noNegativeIntbox();
+    private EffortDurationBox buildSumAllEffort() {
+        return (isGroupingRow() || isLimiting) ? EffortDurationBox
+                .notEditable() : new EffortDurationBox();
     }
 
-    private void addListenerIfNeeded(Component allHoursComponent) {
+    private void addListenerIfNeeded(Component allEffortComponent) {
         if (isGroupingRow() || isLimiting) {
             return;
         }
-        final Intbox intbox = (Intbox) allHoursComponent;
-        intbox.addEventListener(Events.ON_CHANGE, new EventListener() {
+        final EffortDurationBox effortDurationBox = (EffortDurationBox) allEffortComponent;
+        effortDurationBox.addEventListener(Events.ON_CHANGE,
+                new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Integer value = intbox.getValue();
-                getAllocation().withPreviousAssociatedResources().onInterval(
+                        EffortDuration value = effortDurationBox
+                                .getEffortDurationValue();
+
+                getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
                         getAllocation().getStartDate(),
                         getAllocation().getEndDate())
-                        .allocateHours(value);
+                        .allocate(value);
                 fireCellChanged();
-                reloadHoursSameRowForDetailItems();
-                reloadAllHours();
+                        reloadEffortsSameRowForDetailItems();
+                        reloadAllEffort();
             }
         });
     }
 
-    private void reloadHoursSameRowForDetailItems() {
+    private void reloadEffortsSameRowForDetailItems() {
         for (Entry<DetailItem, Component> entry : componentsByDetailItem
                 .entrySet()) {
-            reloadHoursOnInterval(entry.getValue(), entry.getKey());
+            reloadEffortOnInterval(entry.getValue(), entry.getKey());
         }
     }
 
-    private void reloadAllHours() {
-        if (isGroupingRow() || isLimiting) {
-            Label label = (Label) allHoursInput;
-            int totalHours = aggregate.getTotalHours();
-            if (label != null) {
-                label.setValue(totalHours + "");
-                Clients.closeErrorBox(label);
-            }
-            if (restriction.isInvalidTotalHours(totalHours)) {
-                restriction.showInvalidHours(messages, totalHours);
-            }
-        } else {
-            Intbox intbox = (Intbox) allHoursInput;
-            intbox.setValue(aggregate.getTotalHours());
-            if (isLimiting) {
-                intbox.setDisabled(true);
-            }
+    private void reloadAllEffort() {
+        if (allEffortInput == null) {
+            return;
+        }
+        EffortDuration allEffort = aggregate.getTotalEffort();
+        allEffortInput.setValue(allEffort);
+        Clients.closeErrorBox(allEffortInput);
+        if (isLimiting) {
+            allEffortInput.setDisabled(true);
+        }
+        if (restriction.isInvalidTotalEffort(allEffort)) {
+            restriction.showInvalidEffort(messages, allEffort);
         }
     }
 
@@ -1243,39 +1253,42 @@ class Row {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        ResourceAllocation<?> resourceAllocation = getAllocation();
-                        AssignmentFunction assignmentFunction = resourceAllocation
-                                .getAssignmentFunction();
-                        IAssignmentFunctionConfiguration choosen = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
-                                .getSelectedItem().getValue();
-                        boolean hasChanged = !choosen
-                                .isTargetedTo(assignmentFunction);
-                        boolean noPreviousAllocation = assignmentFunction == null;
-                        if (hasChanged) {
-                            boolean changeConfirmed = false;
-                            if (noPreviousAllocation || (changeConfirmed = isChangeConfirmed()) ) {
-                                choosen.applyDefaultFunction(resourceAllocation);
-                                assignmentFunctionsCombo.setVariable("previousValue", assignmentFunctionsCombo.getValue(), true);
-                                return;
+                        final String currentValue = assignmentFunctionsCombo.getValue();
+                        if (currentValue.equals(getPreviousValue())) {
+                            return;
+                        }
+                        if (showConfirmChangeFunctionDialog() == Messagebox.YES) {
+                            IAssignmentFunctionConfiguration function = getSelectedFunction();
+                            if (function != null) {
+                                function.applyOn(getAllocation());
                             }
-
-                            if (!changeConfirmed) {
-                                String previousValue = (String) assignmentFunctionsCombo.getVariable("previousValue", true);
-                                assignmentFunctionsCombo.setValue(previousValue);
-                            }
+                        } else {
+                            setPreviousValue(currentValue);
                         }
                     }
 
-                    private boolean isChangeConfirmed()
+                    private IAssignmentFunctionConfiguration getSelectedFunction() {
+                        Comboitem selectedItem = assignmentFunctionsCombo.getSelectedItem();
+                        return (selectedItem != null) ? (IAssignmentFunctionConfiguration) selectedItem.getValue() : null;
+                    }
+
+                    private String getPreviousValue() {
+                        return (String) assignmentFunctionsCombo.getVariable("previousValue", true);
+                    }
+
+                    private void setPreviousValue(String value) {
+                        assignmentFunctionsCombo.setVariable("previousValue", value, true);
+                    }
+
+                    private int showConfirmChangeFunctionDialog()
                             throws InterruptedException {
-                        int status = Messagebox
-                                .show(
-                                        _("You are going to change the assignment function. Are you sure?"),
+                        return Messagebox
+                                .show(_("You are going to change the assignment function. Are you sure?"),
                                         _("Confirm change"), Messagebox.YES
                                                 | Messagebox.NO,
                                         Messagebox.QUESTION);
-                        return Messagebox.YES == status;
                     }
+
                 });
     }
 
@@ -1303,18 +1316,26 @@ class Row {
         }
 
         @Override
-        public void applyDefaultFunction(
+        public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(null);
+            reloadEfforts();
         }
+
+        private void reloadEfforts() {
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
+            fireCellChanged();
+        }
+
     };
 
     private abstract class CommonStrechesConfiguration extends
             StrechesFunctionConfiguration {
         @Override
         protected void assignmentFunctionChanged() {
-            reloadHoursSameRowForDetailItems();
-            reloadAllHours();
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
             fireCellChanged();
         }
 
@@ -1325,7 +1346,7 @@ class Row {
 
         @Override
         protected Component getParentOnWhichOpenWindow() {
-            return allHoursInput.getParent();
+            return allEffortInput.getParent();
         }
     }
 
@@ -1342,8 +1363,8 @@ class Row {
         }
 
         @Override
-        protected Type getType() {
-            return Type.DEFAULT;
+        protected StretchesFunctionTypeEnum getType() {
+            return StretchesFunctionTypeEnum.STRETCHES;
         }
 
         @Override
@@ -1365,8 +1386,8 @@ class Row {
         }
 
         @Override
-        protected Type getType() {
-            return Type.INTERPOLATED;
+        protected StretchesFunctionTypeEnum getType() {
+            return StretchesFunctionTypeEnum.INTERPOLATED;
         }
 
         @Override
@@ -1399,15 +1420,15 @@ class Row {
         }
 
         @Override
-        public void applyDefaultFunction(
+        public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
-            reloadHours();
+            reloadEfforts();
         }
 
-        private void reloadHours() {
-            reloadHoursSameRowForDetailItems();
-            reloadAllHours();
+        private void reloadEfforts() {
+            reloadEffortsSameRowForDetailItems();
+            reloadAllEffort();
             fireCellChanged();
         }
 
@@ -1501,89 +1522,98 @@ class Row {
         return null;
     }
 
-    private Integer getHoursForDetailItem(DetailItem item) {
+    private EffortDuration getEffortForDetailItem(DetailItem item) {
         DateTime startDate = item.getStartDate();
         DateTime endDate = item.getEndDate();
-        return this.aggregate.hoursBetween(startDate.toLocalDate(), endDate
+        return this.aggregate.effortBetween(startDate.toLocalDate(), endDate
                 .toLocalDate());
     }
 
-    Component hoursOnInterval(DetailItem item) {
-        Component result =
-            isGroupingRow() || isBeforeTaskStartDate(item) ||
-                isBeforeLatestConsolidation(item) ?
-                    new Label() :
-                    disableIfNeeded(item, noNegativeIntbox());
-        reloadHoursOnInterval(result, item);
+    Component effortOnInterval(DetailItem item) {
+        Component result = cannotBeEdited(item) ? new Label()
+                : disableIfNeeded(item, new EffortDurationBox());
+        reloadEffortOnInterval(result, item);
         componentsByDetailItem.put(item, result);
         addListenerIfNeeded(item, result);
         return result;
     }
 
-    private Intbox disableIfNeeded(DetailItem item, Intbox intBox) {
-        intBox.setDisabled(restriction.isDisabledEditionOn(item));
-        return intBox;
+    private boolean cannotBeEdited(DetailItem item) {
+        return isGroupingRow() || doesNotIntersectWithTask(item)
+                || isBeforeLatestConsolidation(item);
     }
 
-    private Intbox noNegativeIntbox() {
-        Intbox result = new Intbox();
-        result.setConstraint("no negative, no empty");
-        return result;
+    private EffortDurationBox disableIfNeeded(DetailItem item,
+            EffortDurationBox effortDurationBox) {
+        effortDurationBox.setDisabled(restriction.isDisabledEditionOn(item));
+        return effortDurationBox;
     }
 
     private void addListenerIfNeeded(final DetailItem item,
             final Component component) {
-        if (isGroupingRow() || isBeforeTaskStartDate(item) ||
-                isBeforeLatestConsolidation(item)) {
+        if (cannotBeEdited(item)) {
             return;
         }
-        final Intbox intbox = (Intbox) component;
+        final EffortDurationBox effortBox = (EffortDurationBox) component;
         component.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                Integer value = intbox.getValue();
+                EffortDuration value = effortBox.getEffortDurationValue();
                 LocalDate startDate = restriction.limitStartDate(item
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
                 getAllocation().withPreviousAssociatedResources()
-                                   .onInterval(startDate, endDate)
-                                   .allocateHours(value);
+                                   .onIntervalWithinTask(startDate, endDate)
+                                   .allocate(value);
                 fireCellChanged(item);
-                intbox.setRawValue(getHoursForDetailItem(item));
-                reloadAllHours();
+                effortBox.setRawValue(getEffortForDetailItem(item));
+                reloadAllEffort();
             }
         });
     }
 
-    private void reloadHoursOnInterval(Component component, DetailItem item) {
-        if (isGroupingRow()) {
+    private void reloadEffortOnInterval(Component component, DetailItem item) {
+        if (cannotBeEdited(item)) {
             Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("calculated-hours");
-        }
-        else if (isBeforeTaskStartDate(item)) {
-            Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("unmodifiable-hours");
-        } else if (isBeforeLatestConsolidation(item)) {
-            Label label = (Label) component;
-            label.setValue(getHoursForDetailItem(item) + "");
-            label.setClass("consolidated-hours");
+            label.setValue(getEffortForDetailItem(item).toFormattedString());
+            label.setClass(getLabelClassFor(item));
         } else {
-            Intbox intbox = (Intbox) component;
-            intbox.setValue(getHoursForDetailItem(item));
+            EffortDurationBox effortDurationBox = (EffortDurationBox) component;
+            effortDurationBox.setValue(getEffortForDetailItem(item));
             if (isLimiting) {
-                intbox.setDisabled(true);
+                effortDurationBox.setDisabled(true);
+                effortDurationBox.setSclass(" limiting");
             }
         }
     }
 
+    private String getLabelClassFor(DetailItem item) {
+        if (isGroupingRow()) {
+            return "calculated-hours";
+        }
+        if (doesNotIntersectWithTask(item)) {
+            return "unmodifiable-hours";
+        }
+        if (isBeforeLatestConsolidation(item)) {
+            return "consolidated-hours";
+        }
+        return "";
+    }
+
+    private boolean doesNotIntersectWithTask(DetailItem item) {
+        return isBeforeTaskStartDate(item) || isAfterTaskEndDate(item);
+    }
+
     private boolean isBeforeTaskStartDate(DetailItem item) {
-        DateTime taskStartDate =
-            new DateTime(task.getStartDate().getTime());
-        return item.getEndDate().compareTo(taskStartDate) < 0;
+        return task.getIntraDayStartDate().compareTo(
+                item.getEndDate().toLocalDate()) >= 0;
+    }
+
+    private boolean isAfterTaskEndDate(DetailItem item) {
+        return task.getIntraDayEndDate().compareTo(
+                item.getStartDate().toLocalDate()) <= 0;
     }
 
     private boolean isBeforeLatestConsolidation(DetailItem item) {

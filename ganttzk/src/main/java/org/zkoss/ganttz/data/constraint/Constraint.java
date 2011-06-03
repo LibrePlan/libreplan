@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +27,7 @@ import java.util.List;
 
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.zk.ui.Executions;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -88,6 +90,27 @@ public abstract class Constraint<T> {
         public void constraintViolated(Constraint<T> constraint, T value);
 
         public void constraintSatisfied(Constraint<T> constraint, T value);
+    }
+
+    public static <T> IConstraintViolationListener<T> onlyOnZKExecution(
+            final IConstraintViolationListener<T> original) {
+        return new IConstraintViolationListener<T>() {
+
+            @Override
+            public void constraintViolated(Constraint<T> constraint, T value) {
+                if (Executions.getCurrent() != null) {
+                    original.constraintViolated(constraint, value);
+                }
+            }
+
+            @Override
+            public void constraintSatisfied(Constraint<T> constraint, T value) {
+                if (Executions.getCurrent() != null) {
+                    original.constraintSatisfied(constraint, value);
+                }
+            }
+        };
+
     }
 
     public static class ConstraintBuilder<T> {

@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +30,7 @@
         </hbox>
     </div>
     <separator bar="false" spacing="5px" orient="vertical"/>
-    <grid id="qualityFormsList" model="@{controller.qualityForms}"
+    <grid id="qualityFormsList" model="@{controller.qualityForms}" sclass="clickable-rows"
         mold="paging" pageSize="10" fixedLayout="true">
         <columns>
             <column label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
@@ -37,7 +38,7 @@
             <column label="${i18n:_('Operations')}" width="120px"/>
         </columns>
         <rows>
-            <row self="@{each='qualityForm'}" value="@{qualityForm}">
+            <row self="@{each='qualityForm'}" value="@{qualityForm}" onClick="controller.goToEditForm(self.value)">
                 <label value="@{qualityForm.name}" />
                 <label value="@{qualityForm.description}" />
                 <hbox>

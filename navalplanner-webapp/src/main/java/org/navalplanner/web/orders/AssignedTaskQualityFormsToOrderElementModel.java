@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -151,7 +152,16 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
 
     @Override
     public void deleteTaskQualityForm(TaskQualityForm taskQualityForm) {
-        orderElement.removeTaskQualityForm(taskQualityForm);
+            orderElement.removeTaskQualityForm(taskQualityForm);
+    }
+
+    private AdvanceAssignment getAdvanceAssignment(
+            TaskQualityForm taskQualityForm) {
+        AdvanceType advanceType = taskQualityForm.getQualityForm()
+                .getAdvanceType();
+        advanceTypeDAO.reattach(advanceType);
+        return taskQualityForm.getOrderElement()
+                .getDirectAdvanceAssignmentByType(advanceType);
     }
 
     @Override
@@ -308,17 +318,23 @@ public class AssignedTaskQualityFormsToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public void removeAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm) {
-        AdvanceType advanceType = taskQualityForm.getQualityForm()
-                .getAdvanceType();
-        advanceTypeDAO.reattach(advanceType);
-        AdvanceAssignment advanceAssignment = taskQualityForm.getOrderElement()
-                .getDirectAdvanceAssignmentByType(advanceType);
-
+    public void removeAdvanceAssignmentIfNeeded(TaskQualityForm taskQualityForm)
+            throws ValidationException {
+        AdvanceAssignment advanceAssignment = this
+                .getAdvanceAssignment(taskQualityForm);
         if (advanceAssignment != null) {
-            taskQualityForm.getOrderElement().removeAdvanceAssignment(
+            if (advanceAssignment.getReportGlobalAdvance()) {
+                showMessageDeleteSpread();
+            } else {
+                taskQualityForm.getOrderElement().removeAdvanceAssignment(
                     advanceAssignment);
+            }
         }
+    }
+
+    private void showMessageDeleteSpread() throws ValidationException {
+        throw new ValidationException(
+                _("The operation does not perform because the task has progress reports that is spread associated with this quality form"));
     }
 
     @Override

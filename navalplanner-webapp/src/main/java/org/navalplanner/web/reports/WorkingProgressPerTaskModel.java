@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +24,7 @@ package org.navalplanner.web.reports;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -68,6 +70,9 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     private ILabelDAO labelDAO;
 
     @Autowired
+    private ICommonQueries commonQueries;
+
+    @Autowired
     private IScenarioManager scenarioManager;
 
     @Autowired
@@ -80,6 +85,14 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     private List<Criterion> allCriterions = new ArrayList<Criterion>();
 
     private List<Label> allLabels = new ArrayList<Label>();
+
+    private String selectedCriteria;
+
+    private String selectedLabel;
+
+    private boolean hasChangeCriteria = false;
+
+    private boolean hasChangeLabels = false;
 
     private static List<ResourceEnum> applicableResources = new ArrayList<ResourceEnum>();
 
@@ -107,7 +120,9 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
         final List<WorkingProgressPerTaskDTO> workingHoursPerWorkerList =
             new ArrayList<WorkingProgressPerTaskDTO>();
 
-        final List<Task> tasks = filteredTaskElements(order, labels, criterions);
+        reattachLabels();
+        final List<Task> tasks = commonQueries.filteredTaskElements(order,
+                labels, criterions);
         final List<Task> sortTasks = sortTasks(order, tasks);
         for (Task task : sortTasks) {
             workingHoursPerWorkerList.add(new WorkingProgressPerTaskDTO(task,
@@ -155,56 +170,6 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
         loadAllCriterions();
     }
 
-    @Transactional(readOnly = true)
-    private List<Task> filteredTaskElements(Order order, List<Label> labels,
-            List<Criterion> criterions) {
-        List<OrderElement> orderElements = order.getAllChildren();
-        // Filter by labels
-        List<OrderElement> filteredOrderElements = filteredOrderElementsByLabels(
-                orderElements, labels);
-        return orderDAO.getFilteredTask(filteredOrderElements, criterions);
-    }
-
-    private List<OrderElement> filteredOrderElementsByLabels(
-            List<OrderElement> orderElements, List<Label> labels) {
-        if (labels != null && !labels.isEmpty()) {
-            List<OrderElement> filteredOrderElements = new ArrayList<OrderElement>();
-            for (OrderElement orderElement : orderElements) {
-                List<Label> inheritedLabels = getInheritedLabels(orderElement);
-                if (containsAny(labels, inheritedLabels)) {
-                    filteredOrderElements.add(orderElement);
-                }
-            }
-            return filteredOrderElements;
-        } else {
-            return orderElements;
-        }
-    }
-
-    private boolean containsAny(List<Label> labelsA, List<Label> labelsB) {
-        for (Label label : labelsB) {
-            if (labelsA.contains(label)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Transactional(readOnly = true)
-    public List<Label> getInheritedLabels(OrderElement orderElement) {
-        List<Label> result = new ArrayList<Label>();
-        if (orderElement != null) {
-            reattachLabels();
-            result.addAll(orderElement.getLabels());
-            OrderElement parent = orderElement.getParent();
-            while (parent != null) {
-                result.addAll(parent.getLabels());
-                parent = parent.getParent();
-            }
-        }
-        return result;
-    }
-
     private void reattachLabels() {
         for (Label label : getAllLabels()) {
             labelDAO.reattach(label);
@@ -228,6 +193,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     @Override
     public void removeSelectedLabel(Label label) {
         this.selectedLabels.remove(label);
+        this.hasChangeLabels = true;
     }
 
     @Override
@@ -236,6 +202,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
             return false;
         }
         this.selectedLabels.add(label);
+        this.hasChangeLabels = true;
         return true;
     }
 
@@ -288,6 +255,7 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
     @Override
     public void removeSelectedCriterion(Criterion criterion) {
         this.selectedCriterions.remove(criterion);
+        this.hasChangeCriteria = true;
     }
 
     @Override
@@ -296,12 +264,57 @@ public class WorkingProgressPerTaskModel implements IWorkingProgressPerTaskModel
             return false;
         }
         this.selectedCriterions.add(criterion);
+        this.hasChangeCriteria = true;
         return true;
     }
 
     @Override
     public List<Criterion> getSelectedCriterions() {
         return selectedCriterions;
+    }
+
+    public void setSelectedLabel(String selectedLabel) {
+        this.selectedLabel = selectedLabel;
+    }
+
+    public String getSelectedLabel() {
+        if (hasChangeLabels) {
+            Iterator<Label> iterator = this.selectedLabels.iterator();
+            this.selectedLabel = null;
+            if (iterator.hasNext()) {
+                this.selectedLabel = new String();
+                this.selectedLabel = this.selectedLabel.concat(iterator
+                        .next().getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedLabel = this.selectedLabel.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeLabels = false;
+        }
+        return selectedLabel;
+    }
+
+    public void setSelectedCriteria(String selectedCriteria) {
+        this.selectedCriteria = selectedCriteria;
+    }
+
+    public String getSelectedCriteria() {
+        if (hasChangeCriteria) {
+            this.selectedCriteria = null;
+            Iterator<Criterion> iterator = this.selectedCriterions.iterator();
+            if (iterator.hasNext()) {
+                this.selectedCriteria = new String();
+                this.selectedCriteria = this.selectedCriteria.concat(iterator
+                        .next().getName());
+            }
+            while (iterator.hasNext()) {
+                this.selectedCriteria = this.selectedCriteria.concat(", "
+                        + iterator.next().getName());
+            }
+            hasChangeCriteria = false;
+        }
+        return selectedCriteria;
     }
 
 }

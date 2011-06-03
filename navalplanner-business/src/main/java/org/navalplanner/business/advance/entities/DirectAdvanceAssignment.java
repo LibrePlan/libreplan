@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -111,7 +112,7 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return advanceMeasurements.first();
     }
 
-    public AdvanceMeasurement getAdvanceMeasurement(LocalDate date) {
+    public AdvanceMeasurement getAdvanceMeasurementAtDateOrPrevious(LocalDate date) {
         if (advanceMeasurements.isEmpty()) {
             return null;
         }
@@ -134,13 +135,19 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
             return BigDecimal.ZERO;
         }
 
-        AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurement(date)
+        AdvanceMeasurement advanceMeasurement = (date != null) ? getAdvanceMeasurementAtDateOrPrevious(date)
                 : getLastAdvanceMeasurement();
-        if (advanceMeasurement == null) {
+        if (advanceMeasurement == null || advanceMeasurement.getValue() == null) {
             return BigDecimal.ZERO;
         }
         return advanceMeasurement.getValue().divide(maxValue, 4,
                 RoundingMode.DOWN);
+    }
+
+    public void addAdvanceMeasurements(Set<AdvanceMeasurement> measurements) {
+        for (AdvanceMeasurement each: measurements) {
+            addAdvanceMeasurements(each);
+        }
     }
 
     public boolean addAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
@@ -155,9 +162,18 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return result;
     }
 
-    public void removeAdvanceMeasurements(AdvanceMeasurement advanceMeasurement) {
+    public void removeAdvanceMeasurement(AdvanceMeasurement advanceMeasurement) {
         this.advanceMeasurements.remove(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(null);
+        getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
+    }
+
+    public void removeAdvanceMeasurements(
+            Set<AdvanceMeasurement> advanceMeasurements) {
+        for (AdvanceMeasurement each: advanceMeasurements) {
+            each.setAdvanceAssignment(null);
+        }
+        this.advanceMeasurements.removeAll(advanceMeasurements);
         getOrderElement().markAsDirtyLastAdvanceMeasurementForSpreading();
     }
 
@@ -231,6 +247,17 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
 
     public Set<NonCalculatedConsolidation> getNonCalculatedConsolidation() {
         return nonCalculatedConsolidations;
+    }
+
+    public static DirectAdvanceAssignment copy(
+            DirectAdvanceAssignment origin,
+            OrderElement orderElement) {
+        DirectAdvanceAssignment copy = DirectAdvanceAssignment.create(origin
+                .getReportGlobalAdvance(), origin.getMaxValue());
+        copy.setAdvanceType(origin.getAdvanceType());
+        copy.setAdvanceMeasurements(origin.getAdvanceMeasurements());
+        copy.setOrderElement(orderElement);
+        return copy;
     }
 
 }

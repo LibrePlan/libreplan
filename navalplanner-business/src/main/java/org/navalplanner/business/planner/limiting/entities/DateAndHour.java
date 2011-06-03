@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,6 @@
 package org.navalplanner.business.planner.limiting.entities;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
@@ -40,7 +40,21 @@ import org.navalplanner.business.workingday.IntraDayDate;
 public class DateAndHour implements Comparable<DateAndHour> {
 
     public static DateAndHour from(LocalDate date) {
-        return new DateAndHour(date, 0);
+        if (date != null) {
+            return new DateAndHour(date, 0);
+        }
+        return null;
+    }
+
+    public static DateAndHour from(IntraDayDate date) {
+        return new DateAndHour(date.getDate(), date.getEffortDuration().getHours());
+    }
+
+    public static DateAndHour TEN_YEARS_FROM(DateAndHour dateAndHour) {
+        LocalDate date = dateAndHour.getDate() != null ? dateAndHour.getDate() : new LocalDate();
+        DateAndHour result = new DateAndHour(date, dateAndHour.getHour());
+        result.plusYears(10);
+        return result;
     }
 
     private LocalDate date;
@@ -48,11 +62,13 @@ public class DateAndHour implements Comparable<DateAndHour> {
     private Integer hour;
 
     public DateAndHour(LocalDate date, Integer hour) {
+        Validate.notNull(date);
         this.date = date;
         this.hour = hour;
     }
 
     public DateAndHour(DateAndHour dateAndHour) {
+        Validate.notNull(date);
         this.date = dateAndHour.getDate();
         this.hour = dateAndHour.getHour();
     }

@@ -9,7 +9,7 @@ JAVA_HOME  := /usr/lib/jvm/java-6-openjdk
 
 MAVEN_REPO := $(CURDIR)/debian/maven-repo
 MAVEN_OPTS := -Pprod,postgresql,-liquibase-update \
-              -DdataSource.jndiName=jdbc/navalplan-ds \
+              -DdataSource.jndiName=java:comp/env/jdbc/navalplan-ds \
 	      -Dmaven.test.skip=true -B \
               -s $(CURDIR)/debian/maven-settings.xml
 
@@ -78,6 +78,9 @@ install:
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/)
 	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.0.0.sql \
 		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.0.0)
+	# Copy SQL upgrade script for version 1.1.0
+	$(call CMD,cp $(CURDIR)/scripts/database/upgrade_1.1.0.sql \
+		$(CURDIR)/debian/tmp/usr/share/dbconfig-common/data/navalplan/upgrade/pgsql/1.1.0)
 	# Install Policy file
 	$(call CMD,mkdir -p $(CURDIR)/debian/tmp/etc/tomcat6/policy.d)
 	$(call CMD,cp $(CURDIR)/debian/51navalplan.policy \

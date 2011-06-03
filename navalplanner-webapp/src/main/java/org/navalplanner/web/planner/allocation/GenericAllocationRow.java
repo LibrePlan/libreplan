@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -30,16 +31,17 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
-import org.navalplanner.business.workingday.ResourcesPerDay;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
+import org.navalplanner.business.resources.entities.ResourceType;
 
 /**
  * The information required for creating a {@link GenericResourceAllocation}
@@ -47,21 +49,23 @@ import org.navalplanner.web.resources.search.IResourceSearchModel;
  */
 public class GenericAllocationRow extends AllocationRow {
 
-    private static GenericAllocationRow createDefault(ResourceEnum resourceType) {
+    private static GenericAllocationRow initializeDefault(
+            GenericAllocationRow result, ResourceEnum resourceType) {
         Validate.notNull(resourceType);
-        GenericAllocationRow result = new GenericAllocationRow();
         result.setName(_("Generic"));
-        result.setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
         result.resourceType = resourceType;
         return result;
     }
 
-    public static GenericAllocationRow create(ResourceEnum resourceType,
+    public static GenericAllocationRow create(CalculatedValue calculatedValue,
+            ResourceEnum resourceType,
             Collection<? extends Criterion> criterions,
             Collection<? extends Resource> resources) {
+
+        GenericAllocationRow result = new GenericAllocationRow(calculatedValue);
         Validate.isTrue(!resources.isEmpty());
         Validate.notNull(criterions);
-        GenericAllocationRow result = createDefault(resourceType);
+        initializeDefault(result, resourceType);
         result.criterions = new HashSet<Criterion>(criterions);
         result.resources = new ArrayList<Resource>(resources);
         result.setName(Criterion.getCaptionFor(resourceType, criterions));
@@ -70,27 +74,36 @@ public class GenericAllocationRow extends AllocationRow {
 
     public static GenericAllocationRow from(
             GenericResourceAllocation resourceAllocation,
-            IResourceSearchModel searchModel) {
-        GenericAllocationRow result = createDefault(resourceAllocation
-                .getResourceType());
-        result.setOrigin(resourceAllocation);
+            IResourcesSearcher searchModel) {
+        GenericAllocationRow result = initializeDefault(
+                new GenericAllocationRow(resourceAllocation),
+                resourceAllocation.getResourceType());
 
-        result.setNonConsolidatedResourcesPerDay(resourceAllocation
-                .getNonConsolidatedResourcePerDay());
+        ResourceType type = resourceAllocation.isLimiting() ?
+                ResourceType.LIMITING_RESOURCE :
+                ResourceType.NON_LIMITING_RESOURCE;
 
         result.criterions = resourceAllocation.getCriterions();
         result.resources = new ArrayList<Resource>(searchModel
                 .searchBy(resourceAllocation.getResourceType())
                 .byCriteria(resourceAllocation.getCriterions())
-                .byLimiting(resourceAllocation.isLimiting()).execute());
+                .byResourceType(type).execute());
         result.setName(Criterion
-                .getCaptionForCriterionsFrom(resourceAllocation));
+                .getCaptionFor(resourceAllocation));
         return result;
     }
 
     private ResourceEnum resourceType;
     private Set<Criterion> criterions;
     private List<Resource> resources;
+
+    private GenericAllocationRow(CalculatedValue calculatedValue) {
+        super(calculatedValue);
+    }
+
+    private GenericAllocationRow(GenericResourceAllocation origin) {
+        super(origin);
+    }
 
     @Override
     public boolean isGeneric() {
@@ -99,7 +112,7 @@ public class GenericAllocationRow extends AllocationRow {
 
     public static Collection<GenericAllocationRow> toGenericAllocations(
             Collection<? extends ResourceAllocation<?>> resourceAllocations,
-            IResourceSearchModel searchModel) {
+            IResourcesSearcher searchModel) {
         ArrayList<GenericAllocationRow> result = new ArrayList<GenericAllocationRow>();
         for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
             if (resourceAllocation instanceof GenericResourceAllocation) {
@@ -111,27 +124,35 @@ public class GenericAllocationRow extends AllocationRow {
     }
 
     @Override
-    public ResourcesPerDayModification toResourcesPerDayModification(Task task) {
-        GenericResourceAllocation newGeneric = createGenericAllocation(task);
+    public ResourcesPerDayModification toResourcesPerDayModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
+        GenericResourceAllocation newGeneric = createGenericAllocation(task,
+                requestedToRemove);
         return ResourcesPerDayModification
-                .create(newGeneric, getNonConsolidatedResourcesPerDay(), this.resources);
+                .create(newGeneric, getResourcesPerDayEditedValue(), this.resources);
     }
 
-    private GenericResourceAllocation createGenericAllocation(Task task) {
+    private GenericResourceAllocation createGenericAllocation(Task task,
+            Collection<? extends ResourceAllocation<?>> allocationsRemoved) {
         GenericResourceAllocation result = GenericResourceAllocation.create(
                 task, resourceType, criterions);
         GenericResourceAllocation origin = (GenericResourceAllocation) getOrigin();
+        Set<ResourceAllocation<?>> discountFrom = new HashSet<ResourceAllocation<?>>(
+                allocationsRemoved);
         if (origin != null) {
-            result.overrideAssignedHoursForResource(origin);
             result.overrideConsolidatedDayAssignments(origin);
+            discountFrom.add(origin);
         }
+        result.discountAssignedHoursForResourceFrom(discountFrom);
         return result;
     }
 
     @Override
-    public HoursModification toHoursModification(Task task) {
-        return HoursModification.create(createGenericAllocation(task),
-                getHoursFromInput(), resources);
+    public EffortModification toHoursModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
+        return EffortModification.create(
+                createGenericAllocation(task, requestedToRemove),
+                getEffortFromInput(), resources);
     }
 
     public boolean hasSameCriterionsAndType(Set<Criterion> criterions,

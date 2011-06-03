@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,6 +47,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.ArrayGroupsModel;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -54,13 +56,13 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
 
 
@@ -70,6 +72,8 @@ import org.zkoss.zul.api.Window;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class ConfigurationController extends GenericForwardComposer {
+
+    private final ProgressTypeRenderer progressTypeRenderer = new ProgressTypeRenderer();
 
     private Window configurationWindow;
 
@@ -370,6 +374,14 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
+    public Boolean isAutocompleteLogin() {
+        return configurationModel.isAutocompleteLogin();
+    }
+
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        configurationModel.setAutocompleteLogin(autocompleteLogin);
+    }
+
     public void removeEntitySequence(EntitySequence entitySequence) {
         try {
             configurationModel.removeEntitySequence(entitySequence);
@@ -426,6 +438,20 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public Boolean isScenariosVisible() {
         return configurationModel.isScenariosVisible();
+    }
+
+    public ProgressTypeRenderer getProgressTypeRenderer() {
+        return progressTypeRenderer;
+    }
+
+    private class ProgressTypeRenderer implements ListitemRenderer {
+
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            ProgressType progressType = (ProgressType) data;
+            item.setLabel(_(progressType.getValue()));
+        }
+
     }
 
     public class EntitySequenceGroupRenderer implements RowRenderer {
@@ -731,4 +757,9 @@ public class ConfigurationController extends GenericForwardComposer {
     public boolean moreScenariosThanMasterCreated() {
         return configurationModel.moreScenariosThanMasterCreated();
     }
+
+    public boolean isChangedDefaultPasswdAdmin() {
+        return configurationModel.isChangedDefaultPasswdAdmin();
+    }
+
 }

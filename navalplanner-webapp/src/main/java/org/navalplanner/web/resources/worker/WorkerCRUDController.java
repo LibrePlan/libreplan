@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +34,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.resources.entities.ResourceType;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
@@ -46,7 +48,7 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.zkoss.zk.ui.Component;
@@ -129,6 +131,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Textbox txtfilter;
 
+    private boolean isEditingWorkes;
+
+    private Tab personalDataTab;
+
+    private Tab assignedCriteriaTab;
+
+    private Tab costCategoryAssignmentTab;
+
     public WorkerCRUDController() {
     }
 
@@ -176,17 +186,29 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (save()) {
-            goToEditForm(getWorker());
+            if (this.isEditingWorkes) {
+                goToEditForm(getWorker());
+            } else {
+                this.goToEditVirtualWorkerForm(getWorker());
+            }
         }
     }
 
     public boolean save() {
         validateConstraints();
+
+        // Validate 'Cost category assignment' tab is correct
+        if (resourcesCostCategoryAssignmentController != null) {
+            if (!resourcesCostCategoryAssignmentController.validate()) {
+                return false;
+            }
+        }
+
         try {
             if (baseCalendarEditionController != null) {
                 baseCalendarEditionController.save();
             }
-            if(criterionsController != null){
+            if (criterionsController != null){
                 if(!criterionsController.validate()){
                     return false;
                 }
@@ -207,17 +229,20 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private void validateConstraints() {
-        Tab tab = (Tab) editWindow.getFellowIfAny("personalDataTab");
+        Tab selectedTab = personalDataTab;
         try {
             validatePersonalDataTab();
-            tab = (Tab) editWindow.getFellowIfAny("assignedCriteriaTab");
-            criterionsController.validateConstraints();
-            tab = (Tab) editWindow.getFellowIfAny("costCategoryAssignmentTab");
-            resourcesCostCategoryAssignmentController.validateConstraints();
+
+            selectedTab = assignedCriteriaTab;
+            validateAssignedCriteriaTab();
+
+            selectedTab = costCategoryAssignmentTab;
+            validateCostCategoryAssigmentTab();
+
             //TODO: check 'calendar' tab
         }
-        catch(WrongValueException e) {
-            tab.setSelected(true);
+        catch (WrongValueException e) {
+            selectedTab.setSelected(true);
             throw e;
         }
     }
@@ -226,29 +251,28 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         ConstraintChecker.isValid(editWindow.getFellowIfAny("personalDataTabpanel"));
     }
 
+    private void validateAssignedCriteriaTab() {
+        criterionsController.validateConstraints();
+    }
+
+    private void validateCostCategoryAssigmentTab() {
+        resourcesCostCategoryAssignmentController.validateConstraints();
+    }
+
     public void cancel() {
         goToList();
     }
 
+    @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
     }
 
+    @Override
     public void goToEditForm(Worker worker) {
-            getBookmarker().goToEditForm(worker);
-            workerModel.prepareEditFor(worker);
-            resourcesCostCategoryAssignmentController.setResource(workerModel.getWorker());
-            if (isCalendarNotNull()) {
-                editCalendar();
-            }
-            editAsignedCriterions();
-            editWindow.setTitle(_("Edit Worker"));
-            getVisibility().showOnly(editWindow);
-            Util.reloadBindings(editWindow);
-    }
-
-    public void goToEditVirtualWorkerForm(Worker worker) {
+        setEditingWorkes(true);
+        getBookmarker().goToEditForm(worker);
         workerModel.prepareEditFor(worker);
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
@@ -256,30 +280,46 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
-        editWindow.setTitle(_("Edit Virtual Workers Group"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+        showEditWindow(_("Edit Worker"));
     }
 
-    public void goToEditForm() {
+    public void goToEditVirtualWorkerForm(Worker worker) {
+        setEditingWorkes(false);
+        workerModel.prepareEditFor(worker);
+        resourcesCostCategoryAssignmentController.setResource(workerModel
+                .getWorker());
         if (isCalendarNotNull()) {
             editCalendar();
         }
-        editWindow.setTitle(_("Edit Worker"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+        editAsignedCriterions();
+        showEditWindow(_("Edit Virtual Workers Group"));
     }
 
+    public void goToEditForm() {
+        setEditingWorkes(true);
+        if (isCalendarNotNull()) {
+            editCalendar();
+        }
+        showEditWindow(_("Edit Worker"));
+    }
+
+    @Override
     public void goToCreateForm() {
+        setEditingWorkes(true);
         getBookmarker().goToCreateForm();
         workerModel.prepareForCreate();
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
-        editWindow.setTitle(_("Create Worker"));
+        showEditWindow(_("Create Worker"));
+        resourceCalendarModel.cancel();
+    }
+
+    private void showEditWindow(String title) {
+        personalDataTab.setSelected(true);
+        editWindow.setTitle(title);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
-        resourceCalendarModel.cancel();
     }
 
     @Override
@@ -296,12 +336,19 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         messages = new MessagesForUser(messagesContainer);
         setupResourcesCostCategoryAssignmentController(comp);
 
-        final URLHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final EntryPointsHandler<IWorkerCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkerCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
         getVisibility().showOnly(listWindow);
         initFilterComponent();
         setupFilterLimitingResourceListbox();
+        initializeTabs();
+    }
+
+    private void initializeTabs() {
+        personalDataTab = (Tab) editWindow.getFellow("personalDataTab");
+        assignedCriteriaTab = (Tab) editWindow.getFellow("assignedCriteriaTab");
+        costCategoryAssignmentTab = (Tab) editWindow.getFellow("costCategoryAssignmentTab");
     }
 
     private void initFilterComponent() {
@@ -419,7 +466,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             throw new RuntimeException(e);
         }
 
-        baseCalendarEditionController.setSelectedDay(new Date());
+        baseCalendarEditionController.setSelectedDay(new LocalDate());
         Util.reloadBindings(editCalendarWindow);
         Util.reloadBindings(createNewVersionWindow);
     }
@@ -459,8 +506,8 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
             @Override
             public void cancel() {
+                workerModel.removeCalendar();
                 resourceCalendarModel.cancel();
-                workerModel.setCalendar(null);
                 reloadCurrentWindow();
             }
 
@@ -476,6 +523,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 }
                 reloadCurrentWindow();
                 workerModel.setCapacity(capacity);
+            }
+
+            @Override
+            public void saveAndContinue() {
+                save();
             }
 
         };
@@ -509,13 +561,12 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateVirtualWorkerForm() {
+        setEditingWorkes(false);
         workerModel.prepareForCreate(true);
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
-        editWindow.setTitle(_("Create Virtual Workers Group"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
+        showEditWindow(_("Create Virtual Workers Group"));
         resourceCalendarModel.cancel();
     }
 
@@ -610,7 +661,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     private ResourcePredicate createPredicate() {
-        List<FilterPair> listFilters = (List<FilterPair>) bdFilters
+        List<FilterPair> listFilters = bdFilters
                 .getSelectedElements();
 
         String personalFilter = txtfilter.getValue();
@@ -675,6 +726,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             this.option = option;
         }
 
+        @Override
         public String toString() {
             return _(option);
         }
@@ -705,6 +757,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                     LimitingResourceEnum.NON_LIMITING_RESOURCE);
         }
 
+        public static ResourceType toResourceType(LimitingResourceEnum limitingResource) {
+            if (LIMITING_RESOURCE.equals(limitingResource)) {
+                return ResourceType.LIMITING_RESOURCE;
+            }
+            return ResourceType.NON_LIMITING_RESOURCE;
+        }
+
     }
 
     private void setupFilterLimitingResourceListbox() {
@@ -733,7 +792,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     public void setLimitingResource(LimitingResourceEnum option) {
         Worker worker = getWorker();
         if (worker != null) {
-            worker.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            worker.setResourceType(LimitingResourceEnum.toResourceType(option));
         }
     }
 
@@ -787,7 +846,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 final Worker worker = (Worker) data;
                 row.setValue(worker);
 
-                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
                             public void onEvent(Event event) throws Exception {
@@ -819,6 +878,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             }
 
         };
+    }
+
+    public void setEditingWorkes(boolean isEditingWorkes) {
+        this.isEditingWorkes = isEditingWorkes;
+    }
+
+    public boolean isEditingWorkes() {
+        return isEditingWorkes;
     }
 
 }

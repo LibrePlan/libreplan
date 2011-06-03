@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,6 +42,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.DayAssignment;
@@ -55,6 +57,7 @@ import org.zkforge.timeplot.geometry.DefaultValueGeometry;
 import org.zkforge.timeplot.geometry.TimeGeometry;
 import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -147,7 +150,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate firstDay, LocalDate lastDay);
 
         protected LocalDate nextDay(LocalDate date) {
-            if (isZoomByDay()) {
+            if (isZoomByDayOrWeek()) {
                 return date.plusDays(1);
             } else {
                 return date.plusWeeks(1);
@@ -165,7 +168,7 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         private LocalDate convertAsNeededByZoom(LocalDate date) {
-            if (isZoomByDay()) {
+            if (isZoomByDayOrWeek()) {
                 return date;
             } else {
                 return getThursdayOfThisWeek(date);
@@ -173,18 +176,51 @@ public abstract class ChartFiller implements IChartFiller {
         }
 
         protected BigDecimal getHoursForDay(LocalDate day) {
-            return map.get(day) != null ? map
-                    .get(day) : BigDecimal.ZERO;
+            return map.get(day) != null ? map.get(day) : BigDecimal.ZERO;
         }
 
-        protected void printLine(PrintWriter writer, LocalDate day,
+        protected void printLine(PrintWriter writer, DateTime day,
                 BigDecimal hours) {
-            writer.println(day.toString("yyyyMMdd") + " " + hours);
+            // using ISO 8601 format [YYYY][MM][DD]T[hh][mm][ss]Z.
+            String position = day.toString("yyyyMMdd") + "T"
+                    + day.toString("HHmmss") + "Z";
+            writer.println(position + " " + hours);
+        }
+
+        protected void printIntervalLine(PrintWriter writer, LocalDate day,
+                BigDecimal hours, boolean isZoomByDay) {
+            // using ISO 8601 format [YYYY][MM][DD]T[hh][mm][ss]Z.
+            DateTime initOfInterval = getInitOfInterval(day, isZoomByDay);
+            DateTime finishOfInterval = getFinishOfInterval(day, isZoomByDay);
+
+            printLine(writer, initOfInterval, hours);
+            printLine(writer, finishOfInterval, hours);
+        }
+
+        protected DateTime getInitOfInterval(LocalDate day,
+                boolean isZoomByDayOrWeek) {
+            if (isZoomByDayOrWeek) {
+                return day.toDateTimeAtStartOfDay();
+            } else {
+                return day.minusDays(day.getDayOfWeek() - 1)
+                        .toDateTimeAtStartOfDay();
+            }
+        }
+
+        protected DateTime getFinishOfInterval(LocalDate day,
+                boolean isZoomByDayOrWeek) {
+            if (isZoomByDayOrWeek) {
+                return day.plusDays(1).toDateTimeAtStartOfDay().minusSeconds(1);
+            } else {
+                return day.plusDays(8 - day.getDayOfWeek())
+                        .toDateTimeAtStartOfDay().minusSeconds(1);
+            }
         }
 
         private void fillZeroValueFromStart(PrintWriter writer) {
             if (!startIsDayOfFirstAssignment()) {
-                printLine(writer, start, BigDecimal.ZERO);
+                printLine(writer, start.toDateTimeAtStartOfDay(),
+                        BigDecimal.ZERO);
                 if (startIsPreviousToPreviousDayToFirstAssignment()) {
                     printLine(writer, previousDayToFirstAssignment(),
                             BigDecimal.ZERO);
@@ -198,11 +234,13 @@ public abstract class ChartFiller implements IChartFiller {
 
         private boolean startIsPreviousToPreviousDayToFirstAssignment() {
             return !map.isEmpty()
-                    && start.compareTo(previousDayToFirstAssignment()) < 0;
+                    && start.compareTo(previousDayToFirstAssignment()
+                            .toLocalDate()) < 0;
         }
 
-        private LocalDate previousDayToFirstAssignment() {
-            return map.firstKey().minusDays(1);
+        private DateTime previousDayToFirstAssignment() {
+            return getInitOfInterval(map.firstKey(), isZoomByDayOrWeek())
+                    .minusSeconds(1);
         }
 
         private void fillZeroValueToFinish(PrintWriter writer) {
@@ -211,7 +249,9 @@ public abstract class ChartFiller implements IChartFiller {
                     printLine(writer, nextDayToLastAssignment(),
                             BigDecimal.ZERO);
                 }
-                printLine(writer, finish, BigDecimal.ZERO);
+                DateTime finishMidNight = finish.plusDays(1)
+                        .toDateTimeAtStartOfDay().minusSeconds(1);
+                printLine(writer, finishMidNight, BigDecimal.ZERO);
             }
         }
 
@@ -221,11 +261,13 @@ public abstract class ChartFiller implements IChartFiller {
 
         private boolean finishIsPosteriorToNextDayToLastAssignment() {
             return !map.isEmpty()
-                    && finish.compareTo(nextDayToLastAssignment()) > 0;
+                    && finish
+                            .compareTo(nextDayToLastAssignment().toLocalDate()) > 0;
         }
 
-        private LocalDate nextDayToLastAssignment() {
-            return map.lastKey().plusDays(1);
+        private DateTime nextDayToLastAssignment() {
+            return this.getFinishOfInterval(map.lastKey(), isZoomByDayOrWeek())
+                    .plusSeconds(1);
         }
     }
 
@@ -242,7 +284,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate lastDay) {
             for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = nextDay(day)) {
                 BigDecimal hours = getHoursForDay(day);
-                printLine(writer, day, hours);
+                printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
             }
         }
 
@@ -262,7 +304,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate lastDay) {
             for (LocalDate day : getDays()) {
                 BigDecimal hours = getHoursForDay(day);
-                printLine(writer, day, hours);
+                printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
             }
         }
 
@@ -299,8 +341,9 @@ public abstract class ChartFiller implements IChartFiller {
         return date.dayOfWeek().withMinimumValue().plusDays(DAYS_TO_THURSDAY);
     }
 
-    private boolean isZoomByDay() {
-        return zoomLevel.equals(ZoomLevel.DETAIL_FIVE);
+    private boolean isZoomByDayOrWeek() {
+        return (zoomLevel.equals(ZoomLevel.DETAIL_FIVE) || zoomLevel
+                .equals(ZoomLevel.DETAIL_FOUR));
     }
 
     protected void resetMinimumAndMaximumValueForChart() {
@@ -340,7 +383,7 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected SortedMap<LocalDate, EffortDuration> groupAsNeededByZoom(
             SortedMap<LocalDate, EffortDuration> map) {
-        if (isZoomByDay()) {
+        if (isZoomByDayOrWeek()) {
             return map;
         }
         return groupByWeekDurations(map);
@@ -379,7 +422,7 @@ public abstract class ChartFiller implements IChartFiller {
 
         TimeGeometry timeGeometry = new DefaultTimeGeometry();
 
-        if (!isZoomByDay()) {
+        if (!isZoomByDayOrWeek()) {
             start = getThursdayOfThisWeek(start);
             finish = getThursdayOfThisWeek(finish);
         }
@@ -536,23 +579,20 @@ public abstract class ChartFiller implements IChartFiller {
 
     protected Plotinfo createPlotinfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, boolean justDaysWithInformation) {
-        return createPlotInfoFrom(createDataSourceUri(map, interval,
-                justDaysWithInformation));
-    }
-
-    private String createDataSourceUri(SortedMap<LocalDate, BigDecimal> map,
-            Interval interval, boolean justDaysWithInformation) {
-        return getServletUri(
-                map,
-                interval.getStart(),
-                interval.getFinish(),
-                createGraphicSpecification(map, interval,
-                        justDaysWithInformation));
+        if (!map.isEmpty()) {
+            setMinimumValueForChartIfLess(Collections.min(map.values()));
+            setMaximumValueForChartIfGreater(Collections.max(map.values()));
+        }
+        return createPlotInfoFrom(createGraphicSpecification(map,
+                interval, justDaysWithInformation));
     }
 
     private GraphicSpecificationCreator createGraphicSpecification(
             SortedMap<LocalDate, BigDecimal> map, Interval interval,
             boolean justDaysWithInformation) {
+        if (map.isEmpty()) {
+            return null;
+        }
         if (justDaysWithInformation) {
             return new JustDaysWithInformationGraphicSpecificationCreator(
                     interval.getFinish(), map, interval.getStart());
@@ -563,31 +603,26 @@ public abstract class ChartFiller implements IChartFiller {
     }
 
     private String getServletUri(
-            final SortedMap<LocalDate, BigDecimal> mapDayAssignments,
-            final LocalDate start, final LocalDate finish,
             final GraphicSpecificationCreator graphicSpecificationCreator) {
-        if (mapDayAssignments.isEmpty()) {
+        if (graphicSpecificationCreator == null) {
             return "";
         }
-
-        setMinimumValueForChartIfLess(Collections.min(mapDayAssignments
-                .values()));
-        setMaximumValueForChartIfGreater(Collections.max(mapDayAssignments
-                .values()));
-
         HttpServletRequest request = (HttpServletRequest) Executions
                 .getCurrent().getNativeRequest();
-        String uri = CallbackServlet.registerAndCreateURLFor(request,
-                graphicSpecificationCreator, false);
-        return uri;
+        return CallbackServlet.registerAndCreateURLFor(request,
+                graphicSpecificationCreator, false,
+                DisposalMode.WHEN_NO_LONGER_REFERENCED);
     }
 
-    private Plotinfo createPlotInfoFrom(String dataSourceUri) {
+    private Plotinfo createPlotInfoFrom(
+            GraphicSpecificationCreator graphicSpecificationCreator) {
         PlotDataSource pds = new PlotDataSource();
-        pds.setDataSourceUri(dataSourceUri);
+        pds.setDataSourceUri(getServletUri(graphicSpecificationCreator));
         pds.setSeparator(" ");
 
         Plotinfo plotinfo = new Plotinfo();
+        plotinfo.setAttribute("keep-chart-specification-creator-referenced",
+                graphicSpecificationCreator);
         plotinfo.setPlotDataSource(pds);
         return plotinfo;
     }

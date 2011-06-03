@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -30,9 +31,14 @@
     macroURI="/orders/components/_listOrderElementMaterials.zul"?>
 <?component name="listOrderElementTaskQualityForms" inline="true" macroURI="_listOrderElementTaskQualityForms.zul"?>
 
-<window id="${arg.top_id}" title="@{i18n:_('Edit task')}"
-    width="950px" left="50px" top="50px"
-    closable="true" visible="false">
+<window id="${arg.top_id}"
+    title="@{i18n:_('Edit task')}"
+    width="950px"
+    left="50px"
+    top="50px"
+    visible="false"
+    closable="true"
+    onClose="orderElementController.close(event)" >
 
     <tabbox height="620px" id="tabboxOrderElement">
         <tabs>
@@ -56,7 +62,7 @@
             <tabpanel id="tabPanelDetails">
                 <orderElementDetails id="orderElementDetails" />
             </tabpanel>
-            <tabpanel>
+            <tabpanel style="overflow:auto">
                 <listOrderElementHours id="orderElementHours" fulfill="tabAssignedHours.onSelect"/>
             </tabpanel>
             <tabpanel>

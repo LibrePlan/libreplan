@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -101,20 +102,6 @@ public class CriterionSatisfactionDTO implements INewObject {
         this.criterionAndType = criterionAndType;
     }
 
-    public String getState() {
-        if (startDate == null) {
-            return "";
-        }
-        if (!isFinished() || isCurrent()) {
-            return "Current";
-        }
-        return "Expired";
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
     public void setNewObject(Boolean isNewObject) {
         this.newObject = isNewObject;
     }
@@ -164,19 +151,21 @@ public class CriterionSatisfactionDTO implements INewObject {
     }
 
     public boolean isCurrent() {
-        Date now = new Date();
-        if (!isFinished()) {
-            return true;
-        }
-        return now.compareTo(getEndDate()) <= 0;
+        return ((!isFinished()) && (!isIncoming()));
     }
 
      public Interval getInterval() {
         return Interval.range(startDate, endDate);
     }
 
-    public boolean isFinished() {
-        return endDate != null;
+    private boolean isFinished() {
+        return (endDate != null) ? getEndDate().compareTo(new Date()) < 0
+                : false;
+    }
+
+    private boolean isIncoming() {
+        return (startDate != null) ? getStartDate().compareTo(new Date()) > 0
+                : false;
     }
 
     public void setStartDate(Date startDate) {

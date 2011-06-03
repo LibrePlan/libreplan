@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,12 +23,52 @@ package org.navalplanner.business.common.exceptions;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.BaseEntity;
 
 /**
  * Encapsulates some validation failure <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class ValidationException extends RuntimeException {
+
+    private static String getValidationErrorSummary(
+            InvalidValue... invalidValues) {
+        StringBuilder builder = new StringBuilder();
+        for (InvalidValue each : invalidValues) {
+            builder.append(summaryFor(each));
+            builder.append("; ");
+        }
+        if (invalidValues.length > 0) {
+            builder.delete(builder.length() - 2, builder.length());
+        }
+        return builder.toString();
+    }
+
+    private static String summaryFor(InvalidValue invalidValue) {
+        return "at " + asString(invalidValue.getBean()) + " "
+                + invalidValue.getPropertyPath() + ": "
+                + invalidValue.getMessage();
+    }
+
+    private static String asString(Object bean) {
+        if (bean == null) {
+            // this shouldn't happen, just in case
+            return "null";
+        }
+        if (bean instanceof BaseEntity) {
+            BaseEntity entity = (BaseEntity) bean;
+            return bean.getClass().getSimpleName() + " "
+                    + entity.getExtraInformation();
+        }
+        return bean.toString();
+    }
+
+    public static ValidationException invalidValue(String message, Object value) {
+        InvalidValue invalidValue = new InvalidValue(message, null, "", value,
+                null);
+        return new ValidationException(invalidValue);
+    }
 
     private InvalidValue[] invalidValues;
 
@@ -35,8 +76,12 @@ public class ValidationException extends RuntimeException {
         return invalidValues.clone();
     }
 
+    public InvalidValue getInvalidValue() {
+        return (invalidValues.length > 0) ? invalidValues.clone()[0] : null;
+    }
+
     public ValidationException(InvalidValue invalidValue) {
-        super();
+        super(getValidationErrorSummary(invalidValue));
         storeInvalidValues(toArray(invalidValue));
     }
 
@@ -47,7 +92,7 @@ public class ValidationException extends RuntimeException {
     }
 
     public ValidationException(InvalidValue[] invalidValues) {
-        super();
+        super(getValidationErrorSummary(invalidValues));
         storeInvalidValues(invalidValues);
     }
 

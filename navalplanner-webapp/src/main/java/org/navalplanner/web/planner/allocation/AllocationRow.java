@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,12 +21,14 @@
 
 package org.navalplanner.web.planner.allocation;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
@@ -44,24 +47,30 @@ import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.Task.ModifiedAllocation;
-import org.navalplanner.business.planner.entities.allocationalgorithms.HoursModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification;
+import org.navalplanner.business.planner.entities.allocationalgorithms.AllocationModification.IByType;
+import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.web.common.EffortDurationBox;
+import org.navalplanner.web.common.LenientDecimalBox;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController.DerivedAllocationColumn;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
+import org.zkoss.zk.au.out.AuWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleConstraint;
 import org.zkoss.zul.SimpleListModel;
@@ -73,15 +82,72 @@ import org.zkoss.zul.SimpleListModel;
  */
 public abstract class AllocationRow {
 
+    private static final ResourcesPerDay RESOURCES_PER_DAY_DEFAULT_VALUE = ResourcesPerDay
+            .amount(1);
+
     public static final SimpleConstraint CONSTRAINT_FOR_RESOURCES_PER_DAY = new SimpleConstraint(
+            SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
+
+    private static final SimpleConstraint CONSTRAINT_FOR_HOURS_INPUT = new SimpleConstraint(
             SimpleConstraint.NO_EMPTY | SimpleConstraint.NO_NEGATIVE);
 
     private static final Log LOG = LogFactory.getLog(AllocationRow.class);
 
-    public static void assignHours(List<AllocationRow> rows, int[] hours) {
+    public static EffortDuration sumAllConsolidatedEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getConsolidatedEffort();
+            }
+        });
+    }
+
+    public static EffortDuration sumAllTotalEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getTotalEffort();
+            }
+
+        });
+    }
+
+    public static EffortDuration sumAllOriginalEffort(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getOriginalEffort();
+            }
+        });
+    }
+
+    public static EffortDuration sumAllEffortFromInputs(
+            Collection<? extends AllocationRow> rows) {
+        return EffortDuration.sum(rows, new IEffortFrom<AllocationRow>() {
+
+            @Override
+            public EffortDuration from(AllocationRow each) {
+                return each.getEffortFromInput();
+            }
+        });
+    }
+
+    public static void assignEfforts(List<AllocationRow> rows,
+            EffortDuration[] efforts) {
         int i = 0;
         for (AllocationRow each : rows) {
-            each.hoursInput.setValue(hours[i++]);
+            each.effortInput.setValue(efforts[i++]);
+        }
+    }
+
+    public static void unknownResourcesPerDay(List<AllocationRow> rows) {
+        for (AllocationRow each : rows) {
+            each.setUnknownResourcesPerDay();
         }
     }
 
@@ -89,22 +155,34 @@ public abstract class AllocationRow {
             ResourcesPerDay[] resourcesPerDay) {
         int i = 0;
         for (AllocationRow each : rows) {
-            each.setNonConsolidatedResourcesPerDay(resourcesPerDay[i++]);
+            each.setResourcesPerDayEditedValue(resourcesPerDay[i++]);
+            each.clearRealResourcesPerDay();
         }
     }
 
-    public static void loadDataFromLast(Collection<? extends AllocationRow> rows) {
+    public static void loadDataFromLast(List<? extends AllocationRow> rows,
+            List<? extends AllocationModification> modifications) {
+        Validate.isTrue(rows.size() == modifications.size());
+        Iterator<? extends AllocationModification> iterator = modifications
+                .iterator();
         for (AllocationRow each : rows) {
             each.loadDataFromLast();
+            each.clearRealResourcesPerDay();
+
+            AllocationModification modification = iterator.next();
+            if (!modification.satisfiesModificationRequested()) {
+                each.warnObjectiveNotSatisfied(modification);
+            }
         }
     }
 
     public static List<ResourcesPerDayModification> createAndAssociate(
-            Task task, Collection<? extends AllocationRow> rows) {
+            Task task, Collection<? extends AllocationRow> rows,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (AllocationRow each : rows) {
             ResourcesPerDayModification modification = each
-                    .toResourcesPerDayModification(task);
+                    .toResourcesPerDayModification(task, requestedToRemove);
             result.add(modification);
             each.setTemporal(modification.getBeingModified());
         }
@@ -121,12 +199,13 @@ public abstract class AllocationRow {
         return null;
     }
 
-    public static List<HoursModification> createHoursModificationsAndAssociate(
-            Task task, List<AllocationRow> currentRows) {
-        List<HoursModification> result = new ArrayList<HoursModification>();
+    public static List<EffortModification> createHoursModificationsAndAssociate(
+            Task task, List<AllocationRow> currentRows,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove) {
+        List<EffortModification> result = new ArrayList<EffortModification>();
         for (AllocationRow each : currentRows) {
-            HoursModification hoursModification = each
-                    .toHoursModification(task);
+            EffortModification hoursModification = each.toHoursModification(
+                    task, requestedToRemove);
             result.add(hoursModification);
             each.setTemporal(hoursModification.getBeingModified());
         }
@@ -181,7 +260,7 @@ public abstract class AllocationRow {
 
     public static List<AllocationRow> toRows(
             Collection<? extends ResourceAllocation<?>> resourceAllocations,
-            IResourceSearchModel searchModel) {
+            IResourcesSearcher searchModel) {
         List<AllocationRow> result = new ArrayList<AllocationRow>();
         result.addAll(GenericAllocationRow.toGenericAllocations(
                 resourceAllocations, searchModel));
@@ -190,29 +269,61 @@ public abstract class AllocationRow {
         return result;
     }
 
-    private ResourceAllocation<?> origin;
+    private final ResourceAllocation<?> origin;
+
+    private CalculatedValue currentCalculatedValue;
 
     private ResourceAllocation<?> temporal;
 
     private String name;
 
-    private ResourcesPerDay nonConsolidatedResourcesPerDay;
+    private EffortDurationBox effortInput = new EffortDurationBox();
 
-    private Intbox hoursInput = new Intbox();
+    private final Decimalbox intendedResourcesPerDayInput = new LenientDecimalBox();
 
-    private final Decimalbox resourcesPerDayInput = new Decimalbox();
+    private ResourcesPerDay editedValue;
+
+    private final Label realResourcesPerDay = new Label();
 
     private Grid derivedAllocationsGrid;
 
+    public AllocationRow(CalculatedValue calculatedValue) {
+        this.currentCalculatedValue = calculatedValue;
+        this.origin = null;
+        setResourcesPerDayEditedValue(RESOURCES_PER_DAY_DEFAULT_VALUE);
+        initialize();
+    }
+
+    public AllocationRow(ResourceAllocation<?> origin) {
+        this.origin = origin;
+        this.currentCalculatedValue = origin.getTask().getCalculatedValue();
+        setResourcesPerDayEditedValue(resourcesPerDayForInputFrom(origin));
+        if (origin != null && !origin.areIntendedResourcesPerDaySatisfied()) {
+            onDifferentRealResourcesPerDay(origin
+                    .getNonConsolidatedResourcePerDay());
+        }
+        loadEffort();
+        initialize();
+    }
+
+    private static ResourcesPerDay resourcesPerDayForInputFrom(
+            ResourceAllocation<?> resourceAllocation) {
+        CalculatedValue calculatedValue = resourceAllocation.getTask()
+                .getCalculatedValue();
+        return calculatedValue == CalculatedValue.RESOURCES_PER_DAY ? resourceAllocation
+                .getNonConsolidatedResourcePerDay() : resourceAllocation
+                .getIntendedResourcesPerDay();
+    }
+
     private void initializeResourcesPerDayInput() {
-        resourcesPerDayInput.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_NEGATIVE));
-        resourcesPerDayInput.setWidth("80px");
-        Util.bind(resourcesPerDayInput, new Util.Getter<BigDecimal>() {
+        intendedResourcesPerDayInput
+                .setConstraint(CONSTRAINT_FOR_RESOURCES_PER_DAY);
+        intendedResourcesPerDayInput.setSclass("assigned-resources-input");
+        Util.bind(intendedResourcesPerDayInput, new Util.Getter<BigDecimal>() {
 
             @Override
             public BigDecimal get() {
-                return getNonConsolidatedResourcesPerDay().getAmount();
+                return getResourcesPerDayEditedValue().getAmount();
             }
 
         }, new Util.Setter<BigDecimal>() {
@@ -220,26 +331,25 @@ public abstract class AllocationRow {
             @Override
             public void set(BigDecimal value) {
                 BigDecimal amount = value == null ? new BigDecimal(0) : value;
-                setNonConsolidatedResourcesPerDay(ResourcesPerDay
+                setResourcesPerDayEditedValue(ResourcesPerDay
                         .amount(amount));
             }
         });
     }
 
-    public AllocationRow() {
-        setNonConsolidatedResourcesPerDay(ResourcesPerDay.amount(0));
+    private void initialize() {
         initializeResourcesPerDayInput();
-        hoursInput.setValue(0);
-        hoursInput.setWidth("80px");
-        hoursInput.setDisabled(true);
-        hoursInput.setConstraint(new SimpleConstraint(
-                SimpleConstraint.NO_NEGATIVE));
+        effortInput.setSclass("assigned-hours-input");
+        effortInput.setConstraint(constraintForHoursInput());
+        loadEffort();
     }
 
     public abstract ResourcesPerDayModification toResourcesPerDayModification(
-            Task task);
+            Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
-    public abstract HoursModification toHoursModification(Task task);
+    public abstract EffortModification toHoursModification(Task task,
+            Collection<? extends ResourceAllocation<?>> requestedToRemove);
 
     public boolean isCreating() {
         return origin == null;
@@ -253,9 +363,19 @@ public abstract class AllocationRow {
         return origin;
     }
 
-    protected void setOrigin(ResourceAllocation<?> allocation) {
-        this.origin = allocation;
-        loadHours();
+    private void onDifferentRealResourcesPerDay(
+            ResourcesPerDay realResourcesPerDay) {
+        this.realResourcesPerDay.setSclass("assigned-resources-label");
+        this.realResourcesPerDay
+                .setTooltiptext(_(
+                        "Only {0} resources per day were achieved for current allocation",
+                        realResourcesPerDay.getAmount().toPlainString()));
+        this.realResourcesPerDay.setValue(realResourcesPerDay.getAmount()
+                .toPlainString());
+    }
+
+    private void clearRealResourcesPerDay() {
+        this.realResourcesPerDay.setValue("");
     }
 
     public boolean hasDerivedAllocations() {
@@ -282,20 +402,25 @@ public abstract class AllocationRow {
         this.name = name;
     }
 
-    public ResourcesPerDay getNonConsolidatedResourcesPerDay() {
-        return this.nonConsolidatedResourcesPerDay;
+    public ResourcesPerDay getResourcesPerDayEditedValue() {
+        return this.editedValue;
     }
 
     public ResourcesPerDay getResourcesPerDayFromInput() {
-        BigDecimal value = resourcesPerDayInput.getValue();
+        BigDecimal value = intendedResourcesPerDayInput.getValue();
         value = value != null ? value : BigDecimal.ZERO;
         return ResourcesPerDay.amount(value);
     }
 
-    public void setNonConsolidatedResourcesPerDay(
-            ResourcesPerDay resourcesPerDay) {
-        this.nonConsolidatedResourcesPerDay = resourcesPerDay;
-        resourcesPerDayInput.setValue(getAmount(resourcesPerDay));
+    private void setResourcesPerDayEditedValue(ResourcesPerDay resourcesPerDay) {
+        this.editedValue = resourcesPerDay;
+        intendedResourcesPerDayInput.setValue(getAmount(resourcesPerDay));
+    }
+
+    private void setUnknownResourcesPerDay() {
+        this.editedValue = null;
+        this.intendedResourcesPerDayInput.setValue((BigDecimal) null);
+        clearRealResourcesPerDay();
     }
 
     private BigDecimal getAmount(ResourcesPerDay resourcesPerDay) {
@@ -311,87 +436,119 @@ public abstract class AllocationRow {
     public abstract boolean isGeneric();
 
     public boolean isEmptyResourcesPerDay() {
-        return getNonConsolidatedResourcesPerDay().isZero();
+        return getResourcesPerDayEditedValue().isZero();
     }
 
     public abstract List<Resource> getAssociatedResources();
 
-    public Intbox getHoursInput() {
-        return hoursInput;
+    public EffortDurationBox getEffortInput() {
+        return effortInput;
     }
 
-    public Decimalbox getResourcesPerDayInput() {
-        return resourcesPerDayInput;
+    public Decimalbox getIntendedResourcesPerDayInput() {
+        return intendedResourcesPerDayInput;
+    }
+
+    public Label getRealResourcesPerDay() {
+        return realResourcesPerDay;
     }
 
     public void addListenerForInputChange(EventListener onChangeListener) {
-        getHoursInput().addEventListener(Events.ON_CHANGE, onChangeListener);
-        getResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
+        getEffortInput().addEventListener(Events.ON_CHANGE, onChangeListener);
+        getIntendedResourcesPerDayInput().addEventListener(Events.ON_CHANGE,
                 onChangeListener);
     }
 
-    public void loadHours() {
-        hoursInput.setValue(getHours());
+    public void loadEffort() {
+        effortInput.setValue(getEffort());
     }
 
-    protected int getHoursFromInput() {
-        return hoursInput.getValue() != null ? hoursInput.getValue() : 0;
+    protected EffortDuration getEffortFromInput() {
+        return effortInput.getValue() != null ? effortInput
+                .getEffortDurationValue()
+                : zero();
     }
 
-    private Integer getHours() {
+    private EffortDuration getEffort() {
         if (temporal != null) {
-            return temporal.getNonConsolidatedHours();
+            return temporal.getNonConsolidatedEffort();
         }
         if (origin != null) {
-            return origin.getNonConsolidatedHours();
+            return origin.getNonConsolidatedEffort();
         }
-        return 0;
+        return zero();
     }
 
     public void applyDisabledRules(CalculatedValue calculatedValue,
             boolean recommendedAllocation) {
-        hoursInput
+        this.currentCalculatedValue = calculatedValue;
+        effortInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
-        hoursInput.setConstraint(constraintForHoursInput());
-        resourcesPerDayInput
+        effortInput.setConstraint(constraintForHoursInput());
+        intendedResourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
                         || recommendedAllocation);
-        resourcesPerDayInput.setConstraint(constraintForResourcesPerDayInput());
+        if (intendedResourcesPerDayInput.isDisabled()) {
+            clearRealResourcesPerDay();
+        }
+        intendedResourcesPerDayInput
+                .setConstraint(constraintForResourcesPerDayInput());
     }
 
     private Constraint constraintForHoursInput() {
-        if (hoursInput.isDisabled()) {
-            return null;
-        }
-        return new SimpleConstraint(SimpleConstraint.NO_EMPTY
-                | SimpleConstraint.NO_NEGATIVE);
+        return (effortInput.isDisabled()) ? null : CONSTRAINT_FOR_HOURS_INPUT;
     }
 
     private Constraint constraintForResourcesPerDayInput() {
-        if (resourcesPerDayInput.isDisabled()) {
-            return null;
-        }
-        return CONSTRAINT_FOR_RESOURCES_PER_DAY;
+        return (intendedResourcesPerDayInput.isDisabled()) ? null
+                : CONSTRAINT_FOR_RESOURCES_PER_DAY;
     }
 
-    public void loadDataFromLast() {
-        hoursInput.setValue(temporal.getAssignedHours());
-        resourcesPerDayInput
-                .setValue(temporal.getResourcesPerDay().getAmount());
+    private void loadDataFromLast() {
+        Clients.closeErrorBox(effortInput);
+        Clients.closeErrorBox(intendedResourcesPerDayInput);
+
+        effortInput.setValue(temporal.getAssignedEffort());
+        loadResourcesPerDayFrom(temporal);
+    }
+
+    private void warnObjectiveNotSatisfied(AllocationModification modification) {
+        modification.byType(new IByType<Void>() {
+
+            @Override
+            public Void onResourcesPerDay(
+                    ResourcesPerDayModification modification) {
+
+                ResourcesPerDay realResourcesPerDay = modification
+                        .getBeingModified().getNonConsolidatedResourcePerDay();
+                onDifferentRealResourcesPerDay(realResourcesPerDay);
+
+                return null;
+            }
+
+            @Override
+            public Void onHours(EffortModification modification) {
+                EffortDuration goal = modification.getEffort();
+                Clients.response(new AuWrongValue(effortInput, _(
+                        "{0} cannot be fulfilled", goal.toFormattedString())));
+
+                return null;
+            }
+        });
     }
 
     public void addListenerForHoursInputChange(EventListener listener) {
-        hoursInput.addEventListener(Events.ON_CHANGE, listener);
+        effortInput.addEventListener(Events.ON_CHANGE, listener);
     }
 
-    public void setHoursToInput(Integer hours) {
-        hoursInput.setValue(hours);
+    public void setEffortToInput(EffortDuration effort) {
+        effortInput.setValue(effort);
     }
 
     public void addListenerForResourcesPerDayInputChange(
             EventListener resourcesPerDayRowInputChange) {
-        resourcesPerDayInput.addEventListener(Events.ON_CHANGE,
+        intendedResourcesPerDayInput.addEventListener(Events.ON_CHANGE,
                 resourcesPerDayRowInputChange);
     }
 
@@ -448,34 +605,34 @@ public abstract class AllocationRow {
         }
     }
 
-    public int getOriginalHours() {
+    public EffortDuration getOriginalEffort() {
         if (temporal != null) {
-            return temporal.getOriginalTotalAssigment();
+            return temporal.getIntendedTotalAssigment();
         }
         if (origin != null) {
-            return origin.getOriginalTotalAssigment();
+            return origin.getIntendedTotalAssigment();
         }
-        return 0;
+        return zero();
     }
 
-    public int getTotalHours() {
+    public EffortDuration getTotalEffort() {
         if (temporal != null) {
-            return temporal.getAssignedHours();
+            return temporal.getAssignedEffort();
         }
         if (origin != null) {
-            return origin.getAssignedHours();
+            return origin.getAssignedEffort();
         }
-        return 0;
+        return zero();
     }
 
-    public int getConsolidatedHours() {
+    public EffortDuration getConsolidatedEffort() {
         if (temporal != null) {
-            return temporal.getConsolidatedHours();
+            return temporal.getConsolidatedEffort();
         }
         if (origin != null) {
-            return origin.getConsolidatedHours();
+            return origin.getConsolidatedEffort();
         }
-        return 0;
+        return zero();
     }
 
     public int getNonConsolidatedHours() {
@@ -509,19 +666,17 @@ public abstract class AllocationRow {
     }
 
     public void loadResourcesPerDay() {
-        if (temporal != null) {
-            nonConsolidatedResourcesPerDay = temporal.getNonConsolidatedResourcePerDay();
-        } else {
-            if (origin != null) {
-                nonConsolidatedResourcesPerDay = origin
-                        .getNonConsolidatedResourcePerDay();
-            } else {
-                nonConsolidatedResourcesPerDay = ResourcesPerDay.amount(0);
-            }
-        }
+        loadResourcesPerDayFrom(temporal != null ? temporal : origin);
+    }
 
-        resourcesPerDayInput.setValue(nonConsolidatedResourcesPerDay
-                .getAmount());
+    private void loadResourcesPerDayFrom(ResourceAllocation<?> allocation) {
+        if (allocation == null) {
+            setResourcesPerDayEditedValue(ResourcesPerDay.amount(0));
+        }
+        boolean useIntention = currentCalculatedValue != CalculatedValue.RESOURCES_PER_DAY;
+        setResourcesPerDayEditedValue(useIntention ? allocation
+                .getIntendedResourcesPerDay() : allocation
+                .getNonConsolidatedResourcePerDay());
     }
 
     public abstract ResourceEnum getType();
@@ -529,7 +684,7 @@ public abstract class AllocationRow {
     private org.zkoss.zul.Row findRow() {
         Component current = null;
         do {
-            current = hoursInput.getParent();
+            current = effortInput.getParent();
         } while (!(current instanceof org.zkoss.zul.Row));
         return (org.zkoss.zul.Row) current;
     }
@@ -572,15 +727,15 @@ public abstract class AllocationRow {
                 String firstLine = _(
                         "In the available periods {0} only {1} hours are available.",
                         validPeriods, sumReached.getHours());
-                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criterions by the resources and their calendars.")
+                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criteria by the resources and their calendars.")
                         : _("The periods available depend on the resource's calendar.");
-                throw new WrongValueException(hoursInput, firstLine + "\n"
+                throw new WrongValueException(effortInput, firstLine + "\n"
                         + secondLine);
             }
 
             @Override
             public Void on(ResourcesPerDayIsZero result) {
-                throw new WrongValueException(resourcesPerDayInput,
+                throw new WrongValueException(intendedResourcesPerDayInput,
                         _("Resources per day are zero"));
             }
         });

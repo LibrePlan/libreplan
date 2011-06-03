@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +23,6 @@ package org.navalplanner.web.planner.milestone;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.apache.commons.lang.Validate;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
@@ -59,39 +59,17 @@ public class AddMilestoneCommand implements IAddMilestoneCommand {
     public void doAction(IContextWithPlannerTask<TaskElement> context,
             TaskElement task) {
         TaskMilestone milestone = TaskMilestone.create(task.getEndDate());
-        milestone.setName("new milestone");
+        milestone.setName(_("new milestone"));
         taskElementDAO.reattach(task);
-        InsertionPoint insertionPoint = getInsertionPoint(task);
-        insertionPoint.root.addTaskElement(insertionPoint.insertionPosition,
-                milestone);
-        context.add(Position
-                .createAtTopPosition(insertionPoint.insertionPosition),
-                milestone);
+
+        Position taskPosition = context.getMapper().findPositionFor(task);
+        int insertAt = taskPosition.getInsertionPosition() + 1;
+
+        TaskGroup parent = task.getParent();
+        parent.addTaskElement(insertAt, milestone);
+        context.add(taskPosition.sameLevelAt(insertAt), milestone);
+
         planningState.added(milestone.getParent());
-    }
-
-    private static class InsertionPoint {
-        final TaskGroup root;
-
-        final int insertionPosition;
-
-        private InsertionPoint(TaskGroup root, int position) {
-            this.root = root;
-            this.insertionPosition = position + 1;
-        }
-    }
-
-    private InsertionPoint getInsertionPoint(TaskElement task) {
-        Validate.isTrue(task.getParent() != null,
-                "the task parent is not null "
-                        + "since all shown tasks are children "
-                        + "of the root TaskGroup");
-        TaskGroup taskParent = task.getParent();
-        if (taskParent.getParent() == null) {
-            return new InsertionPoint(taskParent, taskParent.getChildren()
-                    .indexOf(task));
-        }
-        return getInsertionPoint(taskParent);
     }
 
     @Override

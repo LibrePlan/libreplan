@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +23,9 @@
  *
  */
 package org.zkoss.ganttz;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.apache.commons.lang.math.Fraction;
 import org.joda.time.DateTime;
@@ -49,7 +53,7 @@ public class DatesMapperOnInterval implements IDatesMapper {
     public LocalDate toDate(int pixels) {
         int daysInto = Fraction.getFraction(pixels, 1).divideBy(pixelsPerDay)
                 .intValue();
-        return interval.getStart().plusDays(daysInto);
+        return getInterval().getStart().plusDays(daysInto);
     }
 
     @Override
@@ -62,17 +66,27 @@ public class DatesMapperOnInterval implements IDatesMapper {
     }
 
     private Fraction getProportion(DateTime dateTime) {
-        return interval.getProportion(dateTime);
+        return getInterval().getProportion(dateTime);
     }
 
     private int toPixels(Fraction proportion) {
-        return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
-                .intValue();
+        try {
+            return proportion.multiplyBy(Fraction.getFraction(horizontalSize, 1))
+                    .intValue();
+        } catch (ArithmeticException e) {
+            double d = Math.log10(horizontalSize);
+            int scale = (int) d + 1;
+            BigDecimal quotient = new BigDecimal(proportion.getNumerator())
+                    .divide(new BigDecimal(proportion.getDenominator()), scale,
+                            RoundingMode.HALF_UP);
+            return quotient.multiply(new BigDecimal(horizontalSize))
+                    .intValue();
+        }
     }
 
     @Override
     public int toPixels(ReadableDuration duration) {
-        DateTime end = interval.getStart().toDateTimeAtStartOfDay()
+        DateTime end = getInterval().getStart().toDateTimeAtStartOfDay()
                 .plus(duration);
         return toPixels(getProportion(end));
     }
@@ -96,6 +110,14 @@ public class DatesMapperOnInterval implements IDatesMapper {
     @Override
     public int getHorizontalSize() {
         return this.horizontalSize;
+    }
+
+    public Fraction getPixelsPerDay() {
+        return pixelsPerDay;
+    }
+
+    public Interval getInterval() {
+        return interval;
     }
 
 }

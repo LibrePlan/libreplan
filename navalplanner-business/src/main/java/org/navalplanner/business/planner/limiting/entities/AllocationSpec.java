@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,6 +52,8 @@ public abstract class AllocationSpec {
 
     private final GapOnQueue originalGap;
 
+    private List<LimitingResourceQueueElement> unscheduled = new ArrayList<LimitingResourceQueueElement>();
+
     protected AllocationSpec(GapOnQueue originalGap) {
         Validate.notNull(originalGap);
         this.originalGap = originalGap;
@@ -77,6 +80,20 @@ public abstract class AllocationSpec {
     public LimitingResourceQueue getQueue() {
         return originalGap.getOriginQueue();
     }
+
+    public boolean isAppropriative() {
+        return !unscheduled.isEmpty();
+    }
+
+    public void setUnscheduledElements(
+            List<LimitingResourceQueueElement> queueElements) {
+        unscheduled.addAll(queueElements);
+    }
+
+    public List<LimitingResourceQueueElement> getUnscheduledElements() {
+        return unscheduled;
+    }
+
 }
 
 class InvalidAllocationAttempt extends AllocationSpec {

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +23,9 @@ package org.zkoss.ganttz.timetracker;
 
 import java.util.Collection;
 
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
+import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
@@ -99,7 +103,11 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         return this.getTimeTracker().getDetailLevel();
     }
 
-    protected abstract void scrollHorizontalPercentage(int pixelsDisplacement);
+    protected abstract void scrollHorizontalPercentage(int daysDisplacement);
+
+    protected abstract void moveCurrentPositionScroll();
+
+    protected abstract void updateCurrentDayScroll();
 
     public Collection<DetailItem> getDetailsFirstLevel() {
         return timeTracker.getDetailsFirstLevel();
@@ -126,8 +134,30 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     }
 
     private void changeDetailLevel(double days) {
-        scrollHorizontalPercentage((int) Math.floor(days
-                / getTimeTrackerState().daysPerPixel()));
+        scrollHorizontalPercentage((int) Math.floor(days));
+    }
+
+    public void movePositionScroll() {
+        moveCurrentPositionScroll();
+    }
+
+    public void updateDayScroll() {
+        updateCurrentDayScroll();
+    }
+
+    public int getDiffDays(LocalDate previousStart) {
+        // get the current data
+        IDatesMapper mapper = getTimeTracker().getMapper();
+        LocalDate start = getTimeTracker().getRealInterval().getStart();
+        return Days.daysBetween(start, previousStart).getDays();
+    }
+
+    public double getPixelPerDay() {
+        return getTimeTracker().getMapper().getPixelsPerDay().doubleValue();
+    }
+
+    public boolean getWeekLevel() {
+        return timeTracker.getDetailLevel() == ZoomLevel.DETAIL_FOUR;
     }
 
     public void setZoomLevel(ZoomLevel zoomlevel, int scrollLeft){

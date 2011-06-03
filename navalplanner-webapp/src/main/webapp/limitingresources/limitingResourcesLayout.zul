@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -40,7 +41,6 @@
         editController = editTaskController;
     ]]>
     </zscript>
-
     <borderlayout sclass="resourcesloadlayout" width="auto">
 
         <!-- Top control button bar -->
@@ -88,7 +88,7 @@
                             <vbox pack="top" align="center">
                             <tree fixedLayout="true">
                                 <treecols>
-                                    <treecol label="Name" height="29px"/>
+                                    <treecol label="${i18n:_('Name')}" height="29px"/>
                                 </treecols>
                             </tree>
 

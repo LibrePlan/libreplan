@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +24,6 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.templates.entities.OrderLineTemplate;
-import org.navalplanner.business.trees.ITreeNode;
-import org.navalplanner.business.trees.ITreeParentNode;
 import org.navalplanner.web.tree.EntitiesTree;
 
 /**
@@ -35,13 +34,6 @@ public class TemplatesTree extends EntitiesTree<OrderElementTemplate> {
 
     public TemplatesTree(OrderElementTemplate root) {
         super(OrderElementTemplate.class, root);
-    }
-
-    @Override
-    protected void added(ITreeNode<OrderElementTemplate> destination,
-            ITreeNode<OrderElementTemplate> added,
-            ITreeParentNode<OrderElementTemplate> turnedIntoContainer) {
-        // do nothing
     }
 
     @Override

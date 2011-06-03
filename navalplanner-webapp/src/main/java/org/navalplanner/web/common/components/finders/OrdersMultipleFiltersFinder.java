@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +24,7 @@ package org.navalplanner.web.common.components.finders;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -82,7 +84,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private List<FilterPair> fillWithFirstTenFiltersCriterions() {
-        Map<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
+        SortedMap<CriterionType, List<Criterion>> mapCriterions = getMapCriterions();
         Iterator<CriterionType> iteratorCriterionType = mapCriterions.keySet()
                 .iterator();
         while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
@@ -99,7 +101,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
         return getListMatching();
     }
 
-    private Map<CriterionType, List<Criterion>> getMapCriterions() {
+    private SortedMap<CriterionType, List<Criterion>> getMapCriterions() {
         return databaseSnapshots.snapshotCriterionsMap();
     }
 

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -207,8 +208,8 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return (Tree) getFellow("loadsTree");
     }
 
-    private Component createFirstLevel(LoadTimeLine principal) {
-        Div result = createLabelWithName(principal);
+    private Component createFirstLevel(LoadTimeLine main) {
+        Div result = createLabelWithName(main);
         result.setSclass("firstlevel");
         return result;
     }
@@ -219,10 +220,10 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return result;
     }
 
-    private Div createLabelWithName(LoadTimeLine principal) {
+    private Div createLabelWithName(LoadTimeLine main) {
         Div result = new Div();
         Label label = new Label();
-        final String conceptName = principal.getConceptName();
+        final String conceptName = main.getConceptName();
         label.setValue(conceptName);
         result.appendChild(label);
         return result;

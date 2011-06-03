@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -255,7 +256,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         clearHeaderIfNecessary();
         final String[] headers = multipleFiltersFinder.getHeaders();
         for (int i = 0; i < headers.length; i++) {
-            listhead.getChildren().add(new Listheader(headers[i]));
+            listhead.getChildren().add(new Listheader(_(headers[i])));
         }
     }
 

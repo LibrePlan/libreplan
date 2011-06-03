@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,6 +41,10 @@ public interface ICriticalPathCalculable<T> {
     List<T> getInitialTasks();
 
     List<T> getLatestTasks();
+
+    boolean hasVisibleIncomingDependencies(T task);
+
+    boolean hasVisibleOutcomingDependencies(T task);
 
     Set<T> getIncomingTasksFor(T task);
 

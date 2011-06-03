@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,23 +23,24 @@
 
     <newdatasortablegrid id="listExceptionDayTypes"
         model="@{controller.exceptionDayTypes}"
-        mold="paging" pageSize="10"
+        mold="paging" pageSize="10" class="clickable-rows"
         fixedLayout="true">
 
         <columns>
             <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_('Color')}"/>
             <newdatasortablecolumn label="${i18n:_('Over assignable')}" />
-            <newdatasortablecolumn label="${i18n:_('Duration')}" />
-
+            <newdatasortablecolumn label="${i18n:_('Standard Effort')}" />
+            <newdatasortablecolumn label="${i18n:_('Extra Effort')}" />
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}">
+            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}" onClick="controller.goToEditForm(self.value)">
                 <label value="@{exceptionDayType.name}" />
                 <label value="@{exceptionDayType.color}" />
                 <label value="@{exceptionDayType.overAssignableStr}" />
-                <label value="@{exceptionDayType.durationStr}" />
+                <label value="@{exceptionDayType.capacity.standardEffortString}" />
+                <label value="@{exceptionDayType.capacity.extraEffortString}" />
 
                 <!-- Operation -->
                 <hbox>

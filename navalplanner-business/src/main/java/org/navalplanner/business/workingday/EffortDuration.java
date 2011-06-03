@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +22,17 @@
 package org.navalplanner.business.workingday;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.math.Fraction;
 
 /**
  * <p>
@@ -65,6 +71,63 @@ public class EffortDuration implements Comparable<EffortDuration> {
         public int convertFromSeconds(int seconds) {
             return seconds / secondsPerUnit;
         }
+    }
+
+    private static final Pattern lenientEffortDurationSpecification = Pattern
+            .compile("(\\d+)(\\s*:\\s*\\d+\\s*)*");
+
+    private static final Pattern contiguousDigitsPattern = Pattern
+            .compile("\\d+");
+
+    /**
+     * If an {@link EffortDuration} can't be parsed <code>null</code> is
+     * returned. The hours field at least is required, the next fields are the
+     * minutes and seconds. If there is more than one field, they are separated
+     * by colons.
+     *
+     * @param string
+     * @return
+     */
+    public static EffortDuration parseFromFormattedString(String string) {
+        Matcher matcher = lenientEffortDurationSpecification.matcher(string);
+        if (matcher.find()) {
+            List<String> parts = scan(contiguousDigitsPattern, string);
+            assert parts.size() >= 1;
+            return EffortDuration.hours(retrieveNumber(0, parts))
+                    .and(retrieveNumber(1, parts), Granularity.MINUTES)
+                    .and(retrieveNumber(2, parts), Granularity.SECONDS);
+        }
+        return null;
+    }
+
+    private static List<String> scan(Pattern pattern, String text) {
+        List<String> result = new ArrayList<String>();
+        Matcher matcher = pattern.matcher(text);
+        while (matcher.find()) {
+            result.add(matcher.group());
+        }
+        return result;
+    }
+
+    private static int retrieveNumber(int i, List<String> parts) {
+        if (i >= parts.size()) {
+            return 0;
+        }
+        return Integer.parseInt(parts.get(i));
+    }
+
+    public interface IEffortFrom<T> {
+
+        public EffortDuration from(T each);
+    }
+
+    public static <T> EffortDuration sum(Iterable<? extends T> collection,
+            IEffortFrom<T> effortFrom) {
+        EffortDuration result = zero();
+        for (T each : collection) {
+            result = result.plus(effortFrom.from(each));
+        }
+        return result;
     }
 
     public static EffortDuration zero() {
@@ -183,6 +246,10 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return seconds / other.seconds;
     }
 
+    public Fraction divivedBy(EffortDuration effortAssigned) {
+        return Fraction.getFraction(this.seconds, effortAssigned.seconds);
+    }
+
     /**
      * Calculates the remainder resulting of doing the integer division of both
      * durations
@@ -289,6 +356,28 @@ public class EffortDuration implements Comparable<EffortDuration> {
         Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
         Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
         return hours + ":" + minutes + ":" + seconds;
+    }
+
+    public String toFormattedString() {
+        EnumMap<Granularity, Integer> byGranularity = this.atNearestMinute()
+                .decompose();
+        int hours = byGranularity.get(Granularity.HOURS);
+        int minutes = byGranularity.get(Granularity.MINUTES);
+        if (minutes == 0) {
+            return String.format("%s", hours);
+        } else {
+            return String.format("%s:%s", hours, minutes);
+        }
+    }
+
+    private EffortDuration atNearestMinute() {
+        EnumMap<Granularity, Integer> decompose = this.decompose();
+        int seconds = decompose.get(Granularity.SECONDS);
+        if (seconds >= 30) {
+            return this.plus(EffortDuration.seconds(60 - seconds));
+        } else {
+            return this.minus(EffortDuration.seconds(seconds));
+        }
     }
 
 }

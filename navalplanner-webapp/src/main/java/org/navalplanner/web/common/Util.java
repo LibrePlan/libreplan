@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,8 +26,10 @@ import static org.navalplanner.web.I18nHelper._;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -36,7 +39,6 @@ import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zkplus.databind.DataBinder;
 import org.zkoss.zul.Bandbox;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
@@ -45,6 +47,7 @@ import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
+import org.zkoss.zul.api.Checkbox;
 
 /**
  * Utilities class. <br />
@@ -414,7 +417,7 @@ public class Util {
      *            The {@link Setter} interface that will implement a set method.
      * @return The {@link Checkbox} bound
      */
-    public static Checkbox bind(final Checkbox checkBox,
+    public static <C extends Checkbox> C bind(final C checkBox,
             final Getter<Boolean> getter, final Setter<Boolean> setter) {
         checkBox.setChecked(getter.get());
         checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
@@ -559,6 +562,57 @@ public class Util {
     public static <T extends Component> T findComponentAt(Component container,
             String idOfComponentToBeFound) {
         return (T) container.getFellow(idOfComponentToBeFound);
+    }
+
+    public interface ICreation<T extends Component> {
+        public T createAt(Component parent);
+    }
+
+    public static <T extends Component> T findOrCreate(Component container,
+            Class<T> klassOfComponentToFind, ICreation<T> ifNotFound) {
+        @SuppressWarnings("unchecked")
+        List<T> existent = ComponentsFinder.findComponentsOfType(
+                klassOfComponentToFind, container.getChildren());
+        if (!existent.isEmpty()) {
+            return existent.get(0);
+        }
+        return ifNotFound.createAt(container);
+    }
+
+    /**
+     * It removes all listeners registered for eventName and adds the new
+     * listener. It's ensured that the only listener left in the component for
+     * events of name eventName is uniqueListener
+     *
+     * @param component
+     * @param eventName
+     * @param uniqueListener
+     */
+    public static void ensureUniqueListener(Component component, String eventName,
+            EventListener uniqueListener) {
+        ensureUniqueListeners(component, eventName, uniqueListener);
+    }
+
+    /**
+     * It removes all listeners registered for eventName and adds the new
+     * listeners. It's ensured that the only listeners left in the component for
+     * events of name eventName is uniqueListeners
+     *
+     * @param component
+     * @param eventName
+     * @param uniqueListeners
+     *            new listeners to add
+     */
+    public static void ensureUniqueListeners(Component component,
+            String eventName, EventListener... uniqueListeners) {
+        Iterator<?> listenerIterator = component.getListenerIterator(eventName);
+        while (listenerIterator.hasNext()) {
+            listenerIterator.next();
+            listenerIterator.remove();
+        }
+        for (EventListener each : uniqueListeners) {
+            component.addEventListener(eventName, each);
+        }
     }
 
 }

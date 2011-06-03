@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,6 +39,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
@@ -94,10 +96,16 @@ public class UnitTypeController extends GenericForwardComposer {
         return new RowRenderer() {
             @Override
             public void render(Row row, Object data) throws Exception {
-                UnitType unitType = (UnitType) data;
+                final UnitType unitType = (UnitType) data;
 
                 appendUnitTypeName(row, unitType);
                 appendOperations(row, unitType);
+                row.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditFormInEditionMode(unitType);
+                    }
+                });
             }
 
             private void appendUnitTypeName(Row row, UnitType unitType) {
@@ -247,11 +255,11 @@ public class UnitTypeController extends GenericForwardComposer {
     private void validateAll() {
         Textbox codeTextBox = (Textbox) editWindow.
             getFellowIfAny("codeTextBox");
-        validate((InputElement) codeTextBox,codeTextBox.getValue());
+        validate(codeTextBox,codeTextBox.getValue());
 
         Textbox measureTextBox = (Textbox) editWindow.
             getFellowIfAny("measureTextBox");
-        validate((InputElement) measureTextBox,measureTextBox.getValue());
+        validate(measureTextBox,measureTextBox.getValue());
     }
 
     /**

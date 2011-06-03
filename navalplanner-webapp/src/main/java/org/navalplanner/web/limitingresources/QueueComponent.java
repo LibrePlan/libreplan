@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -87,14 +88,6 @@ public class QueueComponent extends XulElement implements
 
     private List<QueueTask> queueTasks = new ArrayList<QueueTask>();
 
-    public List<QueueTask> getQueueTasks() {
-        return queueTasks;
-    }
-
-    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
-        this.limitingResourceQueue = limitingResourceQueue;
-    }
-
     private QueueComponent(
             final QueueListComponent queueListComponent,
             final TimeTracker timeTracker,
@@ -111,10 +104,22 @@ public class QueueComponent extends XulElement implements
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 getChildren().clear();
                 createChildren(limitingResourceQueue, timeTracker.getMapper());
-                // invalidate();
             }
         };
         this.timeTracker.addZoomListener(zoomChangedListener);
+    }
+
+    @Override
+    public void afterCompose() {
+        appendContextMenus();
+    }
+
+    public List<QueueTask> getQueueTasks() {
+        return queueTasks;
+    }
+
+    public void setLimitingResourceQueue(LimitingResourceQueue limitingResourceQueue) {
+        this.limitingResourceQueue = limitingResourceQueue;
     }
 
     private void createChildren(LimitingResourceQueue limitingResourceQueue,
@@ -509,11 +514,6 @@ public class QueueComponent extends XulElement implements
         for (QueueTask each : queueTasks) {
             appendMenu(each);
         }
-    }
-
-    @Override
-    public void afterCompose() {
-        appendContextMenus();
     }
 
     public void renderProperties(ContentRenderer renderer) throws IOException{

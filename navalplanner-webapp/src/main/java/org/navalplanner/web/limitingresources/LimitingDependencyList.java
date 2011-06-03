@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@
 
 package org.navalplanner.web.limitingresources;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +32,9 @@ import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueue
 import org.navalplanner.business.resources.entities.LimitingResourceQueue;
 import org.zkoss.ganttz.DependencyList;
 import org.zkoss.ganttz.timetracker.TimeTracker;
-import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zul.impl.XulElement;
 
@@ -46,14 +46,55 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private static final Log LOG = LogFactory.getLog(DependencyList.class);
 
-    private transient IZoomLevelChangedListener listener;
-
     private final LimitingResourcesPanel panel;
+
+    private transient IZoomLevelChangedListener listener;
 
     private Map<LimitingResourceQueueDependency, LimitingDependencyComponent> dependencies = new HashMap<LimitingResourceQueueDependency, LimitingDependencyComponent>();
 
     public LimitingDependencyList(LimitingResourcesPanel panel) {
         this.panel = panel;
+    }
+
+    @Override
+    public void afterCompose() {
+        if (listener == null) {
+            listener = new IZoomLevelChangedListener() {
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    recreateDependencyComponents();
+                }
+
+            };
+            getTimeTracker().addZoomListener(listener);
+        }
+    }
+
+    public void recreateDependencyComponents() {
+        removeDependencyComponents();
+        createDependencyComponents();
+    }
+
+    private void removeDependencyComponents() {
+        List<LimitingDependencyComponent> children = ComponentsFinder
+                .findComponentsOfType(LimitingDependencyComponent.class,
+                        getChildren());
+        for (LimitingDependencyComponent each : children) {
+            removeChild(each);
+        }
+    }
+
+    private void createDependencyComponents() {
+        for (LimitingResourceQueueDependency each: dependencies.keySet()) {
+            LimitingDependencyComponent dependencyComponent = createDependencyComponent(each);
+            if (dependencyComponent != null) {
+                addDependencyComponent(dependencyComponent);
+            }
+        }
+    }
+
+    private TimeTracker getTimeTracker() {
+        return panel.getTimeTracker();
     }
 
     public void addDependenciesFor(LimitingResourceQueueElement queueElement) {
@@ -105,7 +146,6 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
 
     private void addDependencyComponent(
             LimitingDependencyComponent dependencyComponent) {
-        dependencyComponent.redrawDependency();
         dependencyComponent.setParent(this);
     }
 
@@ -134,47 +174,8 @@ public class LimitingDependencyList extends XulElement implements AfterCompose {
         }
     }
 
-    @Override
-    public void afterCompose() {
-        if (listener == null) {
-            listener = new IZoomLevelChangedListener() {
-                @Override
-                public void zoomLevelChanged(ZoomLevel detailLevel) {
-                    for (LimitingDependencyComponent dependencyComponent : getLimitingDependencyComponents()) {
-                        dependencyComponent.zoomChanged();
-                    }
-                }
-            };
-            getTimeTracker().addZoomListener(listener);
-        }
-        redrawDependencies();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<LimitingDependencyComponent> getLimitingDependencyComponents() {
-        return new ArrayList<LimitingDependencyComponent>(dependencies.values());
-    }
-
-    private TimeTracker getTimeTracker() {
-        return getTimeTrackerComponent().getTimeTracker();
-    }
-
-    private TimeTrackerComponent getTimeTrackerComponent() {
-        return panel.getTimeTrackerComponent();
-    }
-
-    private void redrawDependencies() {
-        redrawDependencyComponents(getLimitingDependencyComponents());
-    }
-
-    private void redrawDependencyComponents(
-            List<LimitingDependencyComponent> dependencyComponents) {
-        for (LimitingDependencyComponent dependencyComponent : dependencyComponents) {
-            dependencyComponent.redrawDependency();
-        }
-    }
-
     public void clear() {
+        removeDependencyComponents();
         dependencies.clear();
     }
 

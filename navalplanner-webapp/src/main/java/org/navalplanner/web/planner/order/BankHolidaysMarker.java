@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +21,7 @@
 package org.navalplanner.web.planner.order;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
@@ -41,6 +43,8 @@ public final class BankHolidaysMarker implements
 
     private final ICalendar calendar;
 
+    private static final int WEEK_LEVEL_SHADE_WIDTH = 8;
+
     /**
      * <strong>Important: </strong>Make sure that the provided calendar has all
      * its associated data loaded.
@@ -60,6 +64,24 @@ public final class BankHolidaysMarker implements
             if (calendar.getCapacityOn(day).isZero()) {
                 item.markBankHoliday();
             }
+        }
+        if ((calendar != null)
+                && (z == ZoomLevel.DETAIL_THREE || z == ZoomLevel.DETAIL_FOUR)) {
+            LocalDate day = item.getStartDate().toLocalDate();
+            boolean notWorkable;
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < 7; i++) {
+                notWorkable = calendar.getCapacityOn(PartialDay.wholeDay(day))
+                        .isZero();
+                day = day.plusDays(1);
+                result.append(notWorkable ? i * WEEK_LEVEL_SHADE_WIDTH
+                        : -WEEK_LEVEL_SHADE_WIDTH);
+                result.append("px 0");
+                if (i != 6) {
+                    result.append(",");
+                }
+            }
+            item.markBankHolidayWeek(result.toString());
         }
         return item;
     }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -34,6 +34,7 @@ import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
+import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.components.NewAllocationSelector.AllocationType;
 
 /**
@@ -126,8 +127,19 @@ public class LimitingAllocationRow {
     }
 
     public AllocationType getAllocationType() {
-        return (resourceAllocation instanceof SpecificResourceAllocation) ? AllocationType.SPECIFIC
-                : AllocationType.GENERIC_WORKERS;
+        if (resourceAllocation instanceof SpecificResourceAllocation) {
+            return AllocationType.SPECIFIC;
+        } else if (isWorker()) {
+            return AllocationType.GENERIC_WORKERS;
+        }
+        return AllocationType.GENERIC_MACHINES;
+    }
+
+    public boolean isWorker() {
+        if (resources != null && !resources.isEmpty()) {
+            return ((Resource) resources.iterator().next()) instanceof Worker;
+        }
+        return false;
     }
 
     public String getAllocationTypeStr() {
@@ -136,22 +148,15 @@ public class LimitingAllocationRow {
 
     public String getAllocation() {
         final AllocationType type = getAllocationType();
-        if (AllocationType.GENERIC_WORKERS.equals(type)) {
-            final GenericResourceAllocation generic = (GenericResourceAllocation) resourceAllocation;
-            return Criterion.getCaptionForCriterionsFrom(generic);
+        if (AllocationType.GENERIC_WORKERS.equals(type)
+                || AllocationType.GENERIC_MACHINES.equals(type)) {
+            return Criterion
+                    .getCaptionFor((GenericResourceAllocation) resourceAllocation);
         }
         if (AllocationType.SPECIFIC.equals(type)) {
-            return formatResources(resourceAllocation.getAssociatedResources());
+            return Resource.getCaptionFor(resourceAllocation);
         }
         return "";
-    }
-
-    private String formatResources(List<Resource> resources) {
-        List<String> resourcesNames = new ArrayList<String>();
-        for (Resource each: resources) {
-            resourcesNames.add(each.getName());
-        }
-        return StringUtils.join(resourcesNames, ",");
     }
 
     public int getHours() {

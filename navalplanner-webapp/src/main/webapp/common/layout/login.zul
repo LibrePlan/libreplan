@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +25,13 @@
 <?xel-method prefix="project" name="version" class="org.navalplanner.business.common.VersionInformation"
     signature="java.lang.String getVersion()"?>
 
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript>
 <![CDATA[
+    controller = loginController;
     contextPath = Executions.getCurrent().getContextPath();
     logoLoginLink = contextPath + "/common/img/" +
         org.navalplanner.web.I18nHelper._("en") + "/logo_login.png";
@@ -71,7 +75,7 @@
         <n:tr>
           <n:td><label> </label>
               <div align="center">
-                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="admin" />
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="${controller.loginValue}" />
             </div></n:td>
         </n:tr>
         <n:tr>
@@ -79,7 +83,7 @@
         </n:tr>
         <n:tr>
           <n:td><div align="center">
-              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="admin"/>
+              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="${controller.loginValue}"/>
           </div></n:td>
         </n:tr>
         <n:tr>
@@ -114,7 +118,7 @@
     <n:td height="10" background="${contextPath}/common/img/linea_pie_login.gif"></n:td>
   </n:tr>
   <n:tr>
-    <n:td><n:span class="supported-browsers">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
+    <n:td><n:span class="supported-browsers" id="supported-browsers-box">${i18n:_('Supported Chrome, Firefox, Safari and Epiphany browsers')}</n:span>
     <n:div style="float:right;color:green;font-size:10px;">v${project:version()}</n:div></n:td>
   </n:tr>
   <n:tr>
@@ -126,4 +130,22 @@
     <n:td background="${contextPath}/common/img/flechitas.gif"></n:td>
   </n:tr>
 </n:table>
+
+<n:script language="javascript">
+<![CDATA[
+function checkbrowser() {
+
+    if ( (navigator.appName =="Microsoft Internet Explorer") || (navigator.appName =="Opera") ) {
+        document.getElementById("supported-browsers-box").setAttribute("class", "supported-browsers not-supported");
+        alertString = "${i18n:_('The browser you are using')}";
+        alertString += " ("+navigator.appName+") ";
+        alertString += "${i18n:_('is not supported for its use with NavalPlan.')}";
+        alertString += "${i18n:_('Please use some of the compatible browsers: Chrome, Firefox, Safari or Epiphany.')}";
+        window.alert(alertString);
+    }
+}
+
+document.onload = checkbrowser();
+]]>
+</n:script>
 </div>

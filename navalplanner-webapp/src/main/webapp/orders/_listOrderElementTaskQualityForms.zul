@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +31,7 @@
                     <label value="${i18n:_('Assign quality form')}" />
                     <hbox>
                         <bandboxSearch id="bdQualityForms" finder="QualityFormBandboxFinder"
-                            model="@{assignedTaskQualityFormsController.notAssignedQualityForms}" />
+                            model="@{assignedTaskQualityFormsController.notAssignedQualityForms}" widthBandbox="200px" widthListbox="600px" />
                         <button label="${i18n:_('Assign')}"
                             onClick="assignedTaskQualityFormsController.onAssignTaskQualityForm()"
                             style="margin-top: -4px" />

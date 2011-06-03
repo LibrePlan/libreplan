@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +27,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -40,13 +40,13 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
+import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.Milestone;
 import org.zkoss.ganttz.data.Position;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.data.TaskContainer;
 import org.zkoss.ganttz.data.TaskLeaf;
-import org.zkoss.ganttz.data.GanttDiagramGraph.GanttZKDiagramGraph;
 import org.zkoss.ganttz.data.criticalpath.CriticalPathCalculator;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
@@ -60,7 +60,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Window;
 
 public class FunctionalityExposedForExtensions<T> implements IContext<T> {
@@ -91,24 +90,18 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
 
         /**
-         * @param insertionPositionForTop
-         *            the position in which to insert the task at the top level,
-         *            if it must be added to the top level. If it is
-         *            <code>null/code> it is appended to the end
-         * @param task
-         * @param domainObject
-         * @param parent
+         * Registers the task at the provided position.
          */
-        void register(Integer insertionPositionForTop, Task task,
-                T domainObject, TaskContainer parent) {
+        void register(Position position, Task task, T domainObject) {
             fromDomainToTask.put(domainObject, task);
             fromTaskToDomain.put(task, domainObject);
-            if (parent != null) {
-                fromTaskToParent.put(task, parent);
-            } else if (insertionPositionForTop != null) {
-                topLevel.add(insertionPositionForTop, task);
-            } else {
+
+            if (position.isAppendToTop()) {
                 topLevel.add(task);
+            } else if (position.isAtTop()) {
+                topLevel.add(position.getInsertionPosition(), task);
+            } else {
+                fromTaskToParent.put(task, position.getParent());
             }
         }
 
@@ -205,7 +198,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     /**
-     * @param topInsertionPosition
+     * @param insertionPosition
      *            the position in which to register the task at top level. It
      *            can be <code>null</code>
      * @param accumulatedDependencies
@@ -213,41 +206,47 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
      * @param parent
      * @return
      */
-    private Task extractTask(Integer topInsertionPosition,
-            List<DomainDependency<T>> accumulatedDependencies, T data,
-            TaskContainer parent) {
-        ITaskFundamentalProperties adapted = adapter.adapt(data);
+    private Task buildAndRegister(Position position,
+            List<DomainDependency<T>> accumulatedDependencies, T data) {
         accumulatedDependencies.addAll(adapter.getOutcomingDependencies(data));
         accumulatedDependencies.addAll(adapter.getIncomingDependencies(data));
-        final Task result;
-        if (navigator.isLeaf(data)) {
-            if (navigator.isMilestone(data)) {
-                result = new Milestone(adapted);
-            } else {
-                result = new TaskLeaf(adapted);
-            }
-        } else {
-            TaskContainer container = new TaskContainer(adapted, planner
-                    .areContainersExpandedByDefault());
+
+        final Task result = build(data);
+
+        if (!navigator.isLeaf(data)) {
+            TaskContainer container = (TaskContainer) result;
+            int i = 0;
             for (T child : navigator.getChildren(data)) {
-                container.add(extractTask(null, accumulatedDependencies, child,
-                        container));
+                container.add(buildAndRegister(position.down(container, i),
+                        accumulatedDependencies, child));
+                i++;
             }
-            result = container;
         }
-        result
-.setShowingReportedHours(planner.showReportedHoursRightNow());
+
+        result.setShowingReportedHours(planner.showReportedHoursRightNow());
         result.setShowingAdvances(planner.showAdvancesRightNow());
-        mapper.register(topInsertionPosition, result, data, parent);
+
+        mapper.register(position, result, data);
         return result;
+    }
+
+    private Task build(T data) {
+        ITaskFundamentalProperties adapted = adapter.adapt(data);
+        if (navigator.isMilestone(data)) {
+            return new Milestone(adapted);
+        } else if (navigator.isLeaf(data)) {
+            return new TaskLeaf(adapted);
+        } else {
+            return new TaskContainer(adapted,
+                    planner.areContainersExpandedByDefault());
+        }
     }
 
     public void add(Position position, Collection<? extends T> domainObjects) {
         List<DomainDependency<T>> totalDependencies = new ArrayList<DomainDependency<T>>();
         List<Task> tasksCreated = new ArrayList<Task>();
         for (T object : domainObjects) {
-            Task task = extractTask(position.getInsertionPosition(),
-                    totalDependencies, object, position.getParent());
+            Task task = buildAndRegister(position, totalDependencies, object);
             tasksCreated.add(task);
         }
         updateTimeTracker(tasksCreated);
@@ -261,7 +260,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         }
         for (Dependency dependency : DomainDependency.toDependencies(mapper,
                 totalDependencies)) {
-            this.diagramGraph.add(dependency);
+            this.diagramGraph.addWithoutEnforcingConstraints(dependency);
         }
         this.diagramGraph.enforceAllRestrictions();
         this.planner.addTasks(position, tasksCreated);
@@ -288,9 +287,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
 
     @Override
     public void add(Position position, T domainObject) {
-        LinkedList<T> list = new LinkedList<T>();
-        list.add(domainObject);
-        add(position, list);
+        add(position, Collections.singletonList(domainObject));
     }
 
     public IDomainAndBeansMapper<T> getMapper() {
@@ -399,7 +396,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     @Override
     public void showCriticalPath() {
         CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create();
+                .create(configuration.isDependenciesConstraintsHavePriority());
 
         List<Task> criticalPath = criticalPathCalculator
                 .calculateCriticalPath(diagramGraph);
@@ -421,7 +418,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     public List<T> getCriticalPath() {
         List<T> result = new ArrayList<T>();
         CriticalPathCalculator<Task, Dependency> criticalPathCalculator = CriticalPathCalculator
-                .create();
+                .create(configuration.isDependenciesConstraintsHavePriority());
         for (Task each : criticalPathCalculator
                 .calculateCriticalPath(diagramGraph)) {
             result.add(mapper.findAssociatedDomainObject(each));
@@ -476,7 +473,6 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     private HashMap<String, String> buildParameters(Component parent) {
         HashMap<String, String> parameters = new HashMap<String, String>();
 
-        Radiogroup layout = (Radiogroup) parent.getFellow("print_layout");
         Checkbox expanded = (Checkbox) parent.getFellow("print_expanded");
         Checkbox resources = (Checkbox) parent.getFellow("print_resources");
         Checkbox labels = (Checkbox) parent.getFellow("print_labels");
@@ -484,9 +480,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Checkbox reportedHours = (Checkbox) parent
                 .getFellow("print_reported_hours");
 
-        if (layout.getSelectedIndex() == 2) {
-            parameters.put("extension", ".png");
-        }
+        parameters.put("extension", ".png");
         if (expanded.isChecked() == true) {
             parameters.put("expanded", "all");
         }
@@ -562,7 +556,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
     }
 
     @Override
-    public GanttDiagramGraph getGanttDiagramGraph() {
+    public GanttDiagramGraph<Task, Dependency> getGanttDiagramGraph() {
         return diagramGraph;
     }
 

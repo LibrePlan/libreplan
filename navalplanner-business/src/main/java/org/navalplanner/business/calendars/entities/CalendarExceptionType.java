@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,13 +27,17 @@ import java.util.EnumMap;
 
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
+import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureException;
 
 /**
  * Type of an exception day.
@@ -45,11 +50,7 @@ public class CalendarExceptionType extends IntegrationEntity {
 
     private String color;
 
-    // Beware. Not Assignable was intended to mean not over assignable. This
-    // name is kept in order to not break legacy data
-    private Boolean notAssignable = Boolean.TRUE;
-
-    private EffortDuration duration = EffortDuration.zero();
+    private Capacity capacity = Capacity.zero();
 
     public static CalendarExceptionType create() {
         return create(new CalendarExceptionType());
@@ -82,10 +83,12 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public CalendarExceptionType(String name, String color,
-            Boolean notAssignable) {
+            Boolean notOverAssignable) {
         this.name = name;
         this.color = color;
-        this.notAssignable = notAssignable;
+        this.capacity = Capacity.zero();
+        this.capacity = this.capacity.overAssignableWithoutLimit(!BooleanUtils
+                .isTrue(notOverAssignable));
     }
 
     public String getName() {
@@ -104,26 +107,40 @@ public class CalendarExceptionType extends IntegrationEntity {
         this.color = color;
     }
 
+    @NotNull
+    public Capacity getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Capacity capacity) {
+        Validate.notNull(capacity);
+        this.capacity = capacity;
+    }
+
     /**
      * @return If more hours can be assigned on this day.
      */
-    public boolean isOverAssignable() {
-        return BooleanUtils.isFalse(notAssignable);
+    public boolean isOverAssignableWithoutLimit() {
+        return capacity.isOverAssignableWithoutLimit();
     }
 
     public void setOverAssignable(Boolean overAssignable) {
-        this.notAssignable = !overAssignable;
+        this.capacity = capacity.overAssignableWithoutLimit(BooleanUtils
+                .isTrue(overAssignable));
     }
 
     public String getOverAssignableStr() {
-        return isOverAssignable() ? _("Yes") : _("No");
+        return isOverAssignableWithoutLimit() ? _("Yes") : _("No");
     }
 
     public EffortDuration getDuration() {
-        return duration;
+        return capacity.getStandardEffort();
     }
 
-    public String getDurationStr() {
+    private String asString(EffortDuration duration) {
+        if (duration == null) {
+            return "";
+        }
         EnumMap<Granularity, Integer> values = duration.decompose();
         Integer hours = values.get(Granularity.HOURS);
         Integer minutes = values.get(Granularity.MINUTES);
@@ -132,7 +149,7 @@ public class CalendarExceptionType extends IntegrationEntity {
     }
 
     public void setDuration(EffortDuration duration) {
-        this.duration = duration;
+        this.capacity = this.capacity.withStandardEffort(duration);
     }
 
     @Override
@@ -152,11 +169,17 @@ public class CalendarExceptionType extends IntegrationEntity {
                     name);
         } else {
             try {
-                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO.findByName(name);
+                CalendarExceptionType calendarExceptionType = calendarExceptionTypeDAO
+                        .findUniqueByNameAnotherTransaction(name);
                 return calendarExceptionType.getId().equals(getId());
             } catch (InstanceNotFoundException e) {
                 return true;
+            } catch (NonUniqueResultException e) {
+                return false;
+            } catch (HibernateOptimisticLockingFailureException e) {
+                return true;
             }
+
         }
     }
 

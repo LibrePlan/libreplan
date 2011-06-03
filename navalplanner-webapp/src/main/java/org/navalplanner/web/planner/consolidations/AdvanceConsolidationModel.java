@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,10 @@ package org.navalplanner.web.planner.consolidations;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -37,8 +38,8 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.AllocationsSpecified;
 import org.navalplanner.business.planner.entities.ResourceAllocation.DetachDayAssignmentOnRemoval;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
@@ -49,6 +50,7 @@ import org.navalplanner.business.planner.entities.consolidations.ConsolidatedVal
 import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidatedValue;
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -195,70 +197,80 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private void addConsolidatedValue(ConsolidatedValue value) {
-        if (consolidation != null && task != null) {
-            if (!consolidation.isCalculated()) {
-                ((NonCalculatedConsolidation) consolidation)
-                        .addConsolidatedValue((NonCalculatedConsolidatedValue) value);
-            } else {
-                ((CalculatedConsolidation) consolidation)
-                        .addConsolidatedValue((CalculatedConsolidatedValue) value);
-            }
+        if (consolidation == null || task == null
+                || consolidation.getConsolidatedValues().contains(value)) {
+            return;
+        }
+        if (!consolidation.isCalculated()) {
+            ((NonCalculatedConsolidation) consolidation)
+                    .addConsolidatedValue((NonCalculatedConsolidatedValue) value);
+        } else {
+            ((CalculatedConsolidation) consolidation)
+                    .addConsolidatedValue((CalculatedConsolidatedValue) value);
+        }
 
-            LocalDate startInclusive = value.getDate().plusDays(1);
-            LocalDate taskStartDate = LocalDate.fromDateFields(task
-                    .getStartDate());
-            if (startInclusive.compareTo(taskStartDate) < 0) {
-                startInclusive = taskStartDate;
-            }
+        task.updateAssignmentsConsolidatedValues();
 
-            Set<ResourceAllocation<?>> allResourceAllocations = task
-                    .getAllResourceAllocations();
-            for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                for (DayAssignment dayAssignment : resourceAllocation
-                        .getAssignments()) {
-                    if (dayAssignment.getDay().compareTo(startInclusive) < 0) {
-                        dayAssignment.setConsolidated(true);
-                    }
-                }
+        Set<ResourceAllocation<?>> allResourceAllocations = task
+                .getAllResourceAllocations();
+        withDetachOnDayAssignmentRemoval(allResourceAllocations);
 
-                LocalDate endExclusive = LocalDate.fromDateFields(task
-                        .getEndDate());
+        LocalDate endExclusive = LocalDate.fromDateFields(task.getEndDate());
+        if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
+            reassignExpandingTask(allResourceAllocations);
+        } else {
+            reassignAll(endExclusive, allResourceAllocations);
+        }
+    }
 
-                Integer pendingHours = BigDecimal.ONE.subtract(
-                        value.getValue().setScale(2).divide(
-                                new BigDecimal(100), RoundingMode.DOWN))
-                        .multiply(
-                                new BigDecimal(resourceAllocation
-                                        .getOriginalTotalAssigment()))
-                        .intValue();
+    private void withDetachOnDayAssignmentRemoval(
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        for (ResourceAllocation<?> each : allocations) {
+            each.setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
+        }
+    }
 
-                resourceAllocation
-                        .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-
-                if (value.getDate().compareTo(endExclusive.minusDays(1)) >= 0) {
-                    IntraDayDate date = ResourceAllocation.allocating(
-                            Arrays.asList(resourceAllocation
-                                    .asResourcesPerDayModification()))
-                            .untilAllocating(pendingHours);
-                    task.setIntraDayEndDate(date);
-                } else {
-                    reassign(resourceAllocation, startInclusive, endExclusive,
-                            pendingHours);
-                }
-            }
+    private void reassignAll(LocalDate endExclusive,
+            Collection<? extends ResourceAllocation<?>> allocations) {
+        for (ResourceAllocation<?> each : allocations) {
+            EffortDuration pendingEffort = consolidation
+                    .getNotConsolidated(each.getIntendedTotalAssigment());
+            reassign(each, endExclusive, pendingEffort);
         }
     }
 
     private void reassign(ResourceAllocation<?> resourceAllocation,
-            LocalDate startInclusive, LocalDate endExclusive,
-            Integer pendingHours) {
+            LocalDate endExclusive, EffortDuration pendingEffort) {
         if (resourceAllocation instanceof SpecificResourceAllocation) {
             ((SpecificResourceAllocation) resourceAllocation)
-                    .allocateKeepingProportions(startInclusive, endExclusive,
-                            pendingHours);
+                    .allocateWholeAllocationKeepingProportions(pendingEffort,
+                            IntraDayDate.startOfDay(endExclusive));
         } else {
-            resourceAllocation.withPreviousAssociatedResources().onInterval(
-                    startInclusive, endExclusive).allocateHours(pendingHours);
+            resourceAllocation.withPreviousAssociatedResources()
+                    .fromStartUntil(endExclusive)
+                    .allocate(pendingEffort);
+        }
+    }
+
+    private void reassignExpandingTask(
+            Collection<? extends ResourceAllocation<?>> allResourceAllocations) {
+
+        List<IntraDayDate> ends = new ArrayList<IntraDayDate>();
+        for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
+            if (!AllocationsSpecified.isZero(resourceAllocation
+                    .asResourcesPerDayModification().getGoal().getAmount())) {
+                EffortDuration pendingEffort = consolidation
+                        .getNotConsolidated(resourceAllocation
+                                .getIntendedTotalAssigment());
+                IntraDayDate date = ResourceAllocation.allocating(
+                        Arrays.asList(resourceAllocation
+                                .asResourcesPerDayModification()))
+                        .untilAllocating(pendingEffort);
+                ends.add(date);
+            }
+        }
+        if (!ends.isEmpty()) {
+            task.setIntraDayEndDate(Collections.max(ends));
         }
     }
 
@@ -286,70 +298,36 @@ public class AdvanceConsolidationModel implements IAdvanceConsolidationModel {
     }
 
     private void deleteConsolidationIfIsNeeded(AdvanceConsolidationDTO dto) {
-        if (dto.getConsolidatedValue() != null) {
-            if (consolidation != null && task != null) {
-                LocalDate taskEndDate = LocalDate.fromDateFields(task
-                        .getEndDate());
-                LocalDate endExclusive = taskEndDate;
-                if (!consolidation.getConsolidatedValues().isEmpty()) {
-                    endExclusive = consolidation.getConsolidatedValues().last()
-                            .getTaskEndDate();
-                }
-
-                if (!consolidation.isCalculated()) {
-                    ((NonCalculatedConsolidation) consolidation)
-                            .getNonCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
-                    dto.getAdvanceMeasurement()
-                            .getNonCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
-                } else {
-                    ((CalculatedConsolidation) consolidation)
-                            .getCalculatedConsolidatedValues().remove(
-                                    dto.getConsolidatedValue());
-                }
-
-                LocalDate firstDayNotConsolidated = task
-                        .getFirstDayNotConsolidated().getDate();
-                for (DayAssignment dayAssignment : task.getDayAssignments()) {
-                    if (dayAssignment.getDay().compareTo(
-                            firstDayNotConsolidated) >= 0) {
-                        dayAssignment.setConsolidated(false);
-                    }
-                }
-
-                Set<ResourceAllocation<?>> allResourceAllocations = task
-                        .getAllResourceAllocations();
-                for (ResourceAllocation<?> resourceAllocation : allResourceAllocations) {
-                    resourceAllocation
-                            .setOnDayAssignmentRemoval(new DetachDayAssignmentOnRemoval());
-                    Integer pendingHours = resourceAllocation
-                            .getOriginalTotalAssigment();
-                    if (!consolidation.getConsolidatedValues().isEmpty()) {
-                        BigDecimal lastConslidation = task.getConsolidation()
-                                .getConsolidatedValues().last().getValue();
-                        pendingHours = BigDecimal.ONE.subtract(
-                                lastConslidation.divide(new BigDecimal(100),
-                                        RoundingMode.DOWN)).multiply(
-                                new BigDecimal(pendingHours)).intValue();
-                    }
-                    if (!taskEndDate.equals(endExclusive)) {
-                        if ((taskEndDate != null) && (endExclusive != null)
-                                && (taskEndDate.compareTo(endExclusive) <= 0)) {
-                            reassign(resourceAllocation, taskEndDate,
-                                    endExclusive, 0);
-                        } else {
-                            reassign(resourceAllocation, endExclusive,
-                                    taskEndDate, 0);
-                        }
-                        task.setEndDate(endExclusive.toDateTimeAtStartOfDay()
-                                .toDate());
-                    }
-                    reassign(resourceAllocation, firstDayNotConsolidated,
-                            endExclusive, pendingHours);
-                }
-            }
+        if (dto.getConsolidatedValue() == null || consolidation == null
+                || task == null) {
+            return;
         }
+
+        if (!consolidation.getConsolidatedValues().isEmpty()) {
+            LocalDate endExclusive = consolidation.getConsolidatedValues()
+                    .last()
+                    .getTaskEndDate();
+            task.setEndDate(endExclusive.toDateTimeAtStartOfDay().toDate());
+        }
+        if (!consolidation.isCalculated()) {
+            ((NonCalculatedConsolidation) consolidation)
+                    .getNonCalculatedConsolidatedValues().remove(
+                            dto.getConsolidatedValue());
+            dto.getAdvanceMeasurement().getNonCalculatedConsolidatedValues()
+                    .remove(dto.getConsolidatedValue());
+        } else {
+            ((CalculatedConsolidation) consolidation)
+                    .getCalculatedConsolidatedValues().remove(
+                            dto.getConsolidatedValue());
+        }
+
+        task.updateAssignmentsConsolidatedValues();
+
+        Set<ResourceAllocation<?>> allResourceAllocations = task
+                .getAllResourceAllocations();
+        withDetachOnDayAssignmentRemoval(allResourceAllocations);
+
+        reassignAll(task.getEndAsLocalDate(), allResourceAllocations);
     }
 
     private void updateConsolidationInAdvanceIfIsNeeded() {

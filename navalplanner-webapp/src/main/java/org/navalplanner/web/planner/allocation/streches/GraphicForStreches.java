@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,7 +30,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
 import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
@@ -40,9 +41,9 @@ import org.zkoss.zul.XYModel;
  */
 public abstract class GraphicForStreches implements IGraphicGenerator {
 
-    public static IGraphicGenerator forType(Type type) {
+    public static IGraphicGenerator forType(StretchesFunctionTypeEnum type) {
         switch (type) {
-        case DEFAULT:
+        case STRETCHES:
             return new ForDefaultStreches();
         case INTERPOLATED:
             return new ForInterpolation();
@@ -54,26 +55,27 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
     @Override
     public XYModel getAccumulatedHoursChartData(
             IStretchesFunctionModel stretchesFunctionModel) {
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        List<Stretch> stretches = stretchesFunctionModel.getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return new SimpleXYModel();
-        } else {
-            return getAccumulatedHoursChartData(stretches,
-                    stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
-                            stretchesFunctionModel.getAllocationHours()));
         }
+        return getAccumulatedHoursChartData(stretches,
+                stretchesFunctionModel.getTaskStartDate(), new BigDecimal(
+                        stretchesFunctionModel.getAllocationHours()));
     }
 
     @Override
     public XYModel getDedicationChart(
             IStretchesFunctionModel stretchesFunctionModel) {
-        List<Stretch> stretches = stretchesFunctionModel.getStretches();
+        List<Stretch> stretches = stretchesFunctionModel
+                .getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return new SimpleXYModel();
         }
-        return getDedicationChart(stretches, stretchesFunctionModel
-                .getTaskStartDate(), new BigDecimal(stretchesFunctionModel
-                .getAllocationHours()), stretchesFunctionModel.getTaskCalendar());
+        return getDedicationChart(stretches,
+                stretchesFunctionModel.getTaskStartDate(),
+                new BigDecimal(stretchesFunctionModel.getAllocationHours()),
+                stretchesFunctionModel.getTaskCalendar());
     }
 
     protected abstract XYModel getDedicationChart(List<Stretch> stretches,
@@ -160,8 +162,8 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
 
         @Override
         public boolean areChartsEnabled(IStretchesFunctionModel model) {
-            return canComputeChartFrom(model.getStretches(), model
-                    .getTaskStartDate());
+            return canComputeChartFrom(model.getStretchesPlusConsolidated(),
+                    model.getTaskStartDate());
         }
 
         @Override
@@ -203,7 +205,7 @@ public abstract class GraphicForStreches implements IGraphicGenerator {
             double[] hourPoints = Interval.getHoursPointsFor(taskHours
                     .intValue(), intervals);
             final Stretch lastStretch = stretches.get(stretches.size() - 1);
-            return StretchesFunction.Type.hoursForEachDayUsingSplines(
+            return StretchesFunctionTypeEnum.hoursForEachDayUsingSplines(
                     dayPoints, hourPoints, startDate, lastStretch.getDate());
         }
 

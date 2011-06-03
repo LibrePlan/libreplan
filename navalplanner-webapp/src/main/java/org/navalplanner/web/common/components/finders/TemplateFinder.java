@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,8 +19,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package org.navalplanner.web.common.components.finders;
-
-import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.List;
 
@@ -48,7 +47,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
 
     @Override
     public String[] getHeaders() {
-        return new String[] { _("Code"), _("Name") };
+        return new String[] { "Code", "Name" };
     }
 
     @Override
@@ -95,10 +94,12 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
         final Listcell codeCell = new Listcell();
         codeCell.setLabel(template.getCode());
         codeCell.setParent(item);
+        codeCell.setStyle("width:200px");
 
         final Listcell nameCell = new Listcell();
         nameCell.setParent(item);
         nameCell.setLabel(template.getName());
+        nameCell.setStyle("width:300px");
     }
 
 }

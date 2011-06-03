@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +22,7 @@
 package org.navalplanner.business.calendars.entities;
 
 import org.apache.commons.lang.Validate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
@@ -43,7 +45,8 @@ public class SameWorkHoursEveryDay implements ICalendar {
 
     @Override
     public EffortDuration getCapacityOn(PartialDay partialDay) {
-        return partialDay.limitDuration(EffortDuration.hours(hours));
+        return partialDay.limitWorkingDay(getCapacityWithOvertime(
+                partialDay.getDate()).getStandardEffort());
     }
 
     @Override
@@ -60,6 +63,12 @@ public class SameWorkHoursEveryDay implements ICalendar {
     @Override
     public AvailabilityTimeLine getAvailability() {
         return AvailabilityTimeLine.allValid();
+    }
+
+    @Override
+    public Capacity getCapacityWithOvertime(LocalDate day) {
+        return Capacity.create(EffortDuration.hours(hours))
+                .overAssignableWithoutLimit();
     }
 
 }

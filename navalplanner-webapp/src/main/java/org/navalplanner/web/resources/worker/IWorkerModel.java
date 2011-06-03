@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,6 @@ package org.navalplanner.web.resources.worker;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -31,9 +31,7 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.ICriterion;
 import org.navalplanner.business.resources.entities.ICriterionType;
-import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.common.IIntegrationEntityModel;
 import org.navalplanner.web.resources.search.ResourcePredicate;
@@ -124,8 +122,6 @@ public interface IWorkerModel extends IIntegrationEntityModel {
 
     void setWorker(Worker worker);
 
-    Set<Resource> getSetOfResourcesSatisfying(ICriterion criterion);
-
     List<BaseCalendar> getBaseCalendars();
 
     void setCalendar(ResourceCalendar resourceCalendar);
@@ -147,5 +143,7 @@ public interface IWorkerModel extends IIntegrationEntityModel {
     boolean canRemove(Worker worker);
 
     void confirmRemove(Worker worker) throws InstanceNotFoundException;
+
+    void removeCalendar();
 
 }

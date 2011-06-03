@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -86,6 +87,10 @@ public class TaskQualityFormItem implements INewObject {
     @NotNull(message = "position not specified")
     public Integer getPosition() {
         return position;
+    }
+
+    public String getStringPosition() {
+        return position == null ? "" : new Integer(position + 1).toString();
     }
 
     private void setPosition(Integer position) {

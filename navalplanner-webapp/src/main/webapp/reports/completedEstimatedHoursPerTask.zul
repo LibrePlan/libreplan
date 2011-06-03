@@ -78,7 +78,9 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdLabels" finder="LabelBandboxFinder"
-                            model="@{controller.allLabels}" />
+                            model="@{controller.allLabels}"
+                            widthListbox="380px"
+                            widthBandbox="350px" />
                         <button label="${i18n:_('Add')}"
                             onClick="controller.onSelectLabel()"
                             style="margin-top: -4px" />
@@ -117,7 +119,9 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdCriterions" finder="CriterionBandboxFinder"
-                            model="@{controller.allCriterions}" />
+                            model="@{controller.allCriterions}"
+                            widthListbox="380px"
+                            widthBandbox="350px" />
                         <button label="${i18n:_('Add')}"
                             onClick="controller.onSelectCriterion()"
                             style="margin-top: -4px" />
@@ -179,8 +183,7 @@
         </hbox>
         <separator spacing="10px" orient="horizontal" />
 
-        <button label="Show" onClick="controller.showReport(report)" />
-        
+        <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
         <jasperreportcomponent id="report" />
 
     </window>

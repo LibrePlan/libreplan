@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -63,6 +64,7 @@ import org.navalplanner.business.materials.entities.MaterialAssignment;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -1070,11 +1072,11 @@ public class OrderElementServiceTest {
 
         List<ConstraintViolationDTO> constraintViolations = instanceConstraintViolationsList
                 .get(0).constraintViolations;
-        // Mandatory fields: date, value
-        assertThat(constraintViolations.size(), equalTo(2));
+        // Mandatory fields: date
+        assertThat(constraintViolations.size(), equalTo(1));
         for (ConstraintViolationDTO constraintViolationDTO : constraintViolations) {
-            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date"),
-                    mustEnd("value")));
+            System.out.println("### constraintViolationDTO.fieldName: " + constraintViolationDTO.fieldName);
+            assertThat(constraintViolationDTO.fieldName, anyOf(mustEnd("date")));
         }
 
         try {

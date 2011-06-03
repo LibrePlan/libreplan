@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,7 @@ package org.navalplanner.web.orders;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -106,11 +108,18 @@ public class ManageOrderElementAdvancesController extends
     }
 
     public List<AdvanceMeasurement> getAdvanceMeasurements() {
-        return manageOrderElementAdvancesModel.getAdvanceMeasurements();
+        List<AdvanceMeasurement> measurements = manageOrderElementAdvancesModel
+                .getAdvanceMeasurements();
+        Collections.reverse(measurements);
+        return measurements;
     }
 
     public List<AdvanceAssignment> getAdvanceAssignments() {
         return manageOrderElementAdvancesModel.getAdvanceAssignments();
+    }
+
+    public void cancel() {
+        manageOrderElementAdvancesModel.cancel();
     }
 
     public boolean close()  {
@@ -153,6 +162,7 @@ public class ManageOrderElementAdvancesController extends
         setOrderElementModel(orderElementModel);
         manageOrderElementAdvancesModel.initEdit(getOrderElement());
         selectedAdvances.clear();
+        selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
     }
@@ -160,6 +170,7 @@ public class ManageOrderElementAdvancesController extends
     public void openWindow(OrderElement orderElement) {
         manageOrderElementAdvancesModel.initEdit(orderElement);
         selectedAdvances.clear();
+        selectedAdvances.addAll(getAdvanceAssignments());
         createAndLoadBindings();
         selectSpreadAdvanceLine();
     }
@@ -260,9 +271,11 @@ public class ManageOrderElementAdvancesController extends
     public void goToCreateLineAdvanceAssignment() {
         findErrorsInMeasurements();
         boolean fineResult = manageOrderElementAdvancesModel
-                .addNewLineAdvaceAssignment();
+                .addNewLineAdvanceAssignment();
         if (fineResult) {
-            selectAdvanceLine(getAdvanceAssignments().size() - 1);
+            int position = getAdvanceAssignments().size() - 1;
+            selectAdvanceLine(position);
+            selectedAdvances.add(getAdvanceAssignments().get(position));
         } else {
             showMessageNotAddMoreAdvances();
         }
@@ -290,6 +303,7 @@ public class ManageOrderElementAdvancesController extends
         } else {
             manageOrderElementAdvancesModel
                     .removeLineAdvanceAssignment(advance);
+            selectedAdvances.remove(advance);
             if (indexSelectedItem == editAdvances.getIndexOfItem(listItem)) {
                 selectSpreadAdvanceLine();
             } else {
@@ -635,6 +649,7 @@ public class ManageOrderElementAdvancesController extends
         final AdvanceAssignment advance = (AdvanceAssignment) listItem
                 .getValue();
         final Checkbox chartCheckbox = new Checkbox();
+
         chartCheckbox.setChecked(selectedAdvances.contains(advance));
         chartCheckbox.addEventListener(Events.ON_CHECK, new EventListener() {
             @Override

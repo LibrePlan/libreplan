@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,7 +62,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treechildren;
@@ -76,6 +76,7 @@ import org.zkoss.zul.impl.api.InputElement;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class OrderElementTreeController extends TreeController<OrderElement> {
 
@@ -100,6 +101,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     @Resource
     private IOrderTemplatesControllerEntryPoints orderTemplates;
 
+    private OrderElementOperations operationsForOrderElement;
+
     private final IMessagesForUser messagesForUser;
 
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
@@ -118,6 +121,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         this.orderModel = orderModel;
         this.orderElementController = orderElementController;
         this.messagesForUser = messagesForUser;
+        initializeOperationsForOrderElement();
+    }
+
+    /**
+     * Initializes operationsForOrderTemplate. A reference to variables tree and
+     * orderTemplates will be set later in doAfterCompose()
+     */
+    private void initializeOperationsForOrderElement() {
+        operationsForOrderElement = OrderElementOperations.build()
+            .treeController(this)
+            .orderModel(this.orderModel)
+            .orderElementController(this.orderElementController);
     }
 
     public OrderElementController getOrderElementController() {
@@ -129,93 +144,36 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         return orderModel.getOrderElementTreeModel();
     }
 
-    public void createTemplateFromSelectedOrderElement() {
-        if (tree.getSelectedCount() == 1) {
-            createTemplate(getSelectedNode());
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    /**
+     * Operations for each node
+     */
+
+    public void editSelectedElement() {
+        operationsForOrderElement.editSelectedElement();
     }
 
-    public void editSelectedOrderElement() {
-        if (tree.getSelectedCount() == 1) {
-            showEditionOrderElement(tree.getSelectedItem());
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    public void createTemplateFromSelectedElement() {
+        operationsForOrderElement.createTemplateFromSelectedElement();
     }
 
-    public void moveSelectedOrderElementUp() {
-        if (tree.getSelectedCount() == 1) {
-            Treeitem item =  tree.getSelectedItem();
-            up((OrderElement)item.getValue());
-            Treeitem brother = (Treeitem) item.getPreviousSibling();
-            if (brother != null) {
-                brother.setSelected(true);
-            }
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    public void moveSelectedElementUp() {
+        operationsForOrderElement.moveSelectedElementUp();
     }
 
-    public void moveSelectedOrderElementDown() {
-        if (tree.getSelectedCount() == 1) {
-            Treeitem item =  tree.getSelectedItem();
-            down((OrderElement)item.getValue());
-            Treeitem brother = (Treeitem) item.getNextSibling();
-            if (brother != null) {
-                brother.setSelected(true);
-            }
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    public void moveSelectedElementDown() {
+        operationsForOrderElement.moveSelectedElementDown();
     }
 
-    public void indentSelectedOrderElement() {
-        if (tree.getSelectedCount() == 1) {
-            indent(getSelectedNode());
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    public void indentSelectedElement() {
+        operationsForOrderElement.indentSelectedElement();
     }
 
-    public void unindentSelectedOrderElement() {
-        if (tree.getSelectedCount() == 1) {
-            unindent(getSelectedNode());
-        } else {
-            showSelectAnElementMessageBox();
-        }
+    public void unindentSelectedElement() {
+        operationsForOrderElement.unindentSelectedElement();
     }
 
-    public void deleteSelectedOrderElement() {
-        if (tree.getSelectedCount() == 1) {
-            remove(getSelectedNode());
-        } else {
-            showSelectAnElementMessageBox();
-        }
-    }
-
-    private void showSelectAnElementMessageBox() {
-        try {
-            Messagebox.show(_("Choose a task "
-                    + "to operate on it"));
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean isTemplateCreationConfirmed() {
-        try {
-            int status = Messagebox
-                    .show(
-                            _("Still not saved changes would be lost."
-                                    + " Are you sure you want to go to create a template?"),
-                            "Confirm", Messagebox.YES | Messagebox.NO,
-                            Messagebox.QUESTION);
-            return Messagebox.YES == status;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+    public void deleteSelectedElement() {
+        operationsForOrderElement.deleteSelectedElement();
     }
 
     public void createFromTemplate() {
@@ -229,30 +187,6 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                         getModel().addNewlyAddedChildrenOf(parent);
                     }
                 });
-    }
-
-    private void createTemplate(OrderElement selectedNode) {
-        if (!isTemplateCreationConfirmed()) {
-            return;
-        }
-        if (!selectedNode.isNewObject()) {
-            orderTemplates.goToCreateTemplateFrom(selectedNode);
-        } else {
-            notifyTemplateCantBeCreated();
-        }
-    }
-
-    private void notifyTemplateCantBeCreated() {
-        try {
-            Messagebox
-                    .show(
-                            _("Templates can only be created from already existent tasks.\n"
-                                    + "Newly tasks cannot be used."),
-                            _("Operation cannot be done"), Messagebox.OK,
-                            Messagebox.INFORMATION);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     protected void filterByPredicateIfAny() {
@@ -323,6 +257,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
+        operationsForOrderElement.tree(tree)
+                .orderTemplates(this.orderTemplates);
     }
 
     private void appendExpandCollapseButton() {
@@ -331,6 +267,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         // Is already added?
         Button button = (Button) ComponentsFinder.findById("expandAllButton", children);
         if (button != null) {
+            if (button.getSclass().equals("planner-command clicked")) {
+                button.setSclass("planner-command");
+                button.invalidate();
+            }
             return;
         }
 
@@ -657,7 +597,16 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         IOrderElementModel model = orderModel
                 .getOrderElementModel(currentOrderElement);
         orderElementController.openWindow(model);
-        getRenderer().updateHoursFor(currentOrderElement);
+        refreshRow(item);
+    }
+
+    public void refreshRow(Treeitem item) {
+        try {
+            getRenderer().updateHoursFor((OrderElement) item.getValue());
+            getRenderer().render(item, item.getValue());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public Treeitem getTreeitemByOrderElement(OrderElement element) {
@@ -711,14 +660,13 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     }
 
     @Override
-    protected void remove(OrderElement element) {
+    public void remove(OrderElement element) {
         boolean alreadyInUse = orderModel.isAlreadyInUse(element);
         if (alreadyInUse) {
             messagesForUser
                     .showMessage(
                             Level.ERROR,
-                            _(
-                                    "You can not remove the task \"{0}\" because of this or any of its children are already in use in some work reports",
+                            _("You can not remove the task \"{0}\" because of this or any of its children are already in use in some work reports",
                                     element.getName()));
         } else {
             super.remove(element);

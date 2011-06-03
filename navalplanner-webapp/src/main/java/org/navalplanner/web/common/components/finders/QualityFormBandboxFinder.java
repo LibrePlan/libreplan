@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +20,6 @@
  */
 
 package org.navalplanner.web.common.components.finders;
-
-import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
@@ -50,6 +49,13 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     private IQualityFormDAO qualityFormDAO;
 
     private final String headers[] = { _("Name"), _("Type") };
+
+    /**
+     * Forces to mark the string as needing translation
+     */
+    private static String _(String string) {
+        return string;
+    }
 
     @Override
     @Transactional(readOnly = true)

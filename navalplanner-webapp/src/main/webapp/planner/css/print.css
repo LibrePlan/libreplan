@@ -64,4 +64,22 @@ a.ruta,
     display: inline !important;
 }
 
+
+.border-container .taskgroup_start,
+.border-container .taskgroup_end {
+    repeat-y: none;
+}
+
+#listtasks .milestone_end {
+    repeat-y: none;
+}
+
+.main-area .taskdetailsContainer {
+    overflow-x: hidden !important;
+}
+
+.z-south-colpsd {
+    display:none;
+}
+
 /* ------ Calculated body width and height added via CutyPrint CSS generator ------ */

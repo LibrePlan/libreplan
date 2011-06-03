@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -91,6 +92,8 @@ public class TemplateFinderPopup extends
         }
         bandboxSearch = new BandboxSearch();
         bandboxSearch.setFinder(finderName);
+        bandboxSearch.setWidthBandbox("300px");
+        bandboxSearch.setWidthListbox("600px");
         finderPlaceholder.appendChild(bandboxSearch);
         bandboxSearch.afterCompose();
         popup.open(ref, position);
@@ -155,7 +158,7 @@ public class TemplateFinderPopup extends
                 onCancel();
             }
         });
-        finderPlaceholder = (Component) getFellow("finderPlaceholder");
+        finderPlaceholder = getFellow("finderPlaceholder");
         popup = (Popup) getFellow("finderPopup");
         caption = (Caption) getFellow("finderCaption");
         caption.setLabel(captionLabel);

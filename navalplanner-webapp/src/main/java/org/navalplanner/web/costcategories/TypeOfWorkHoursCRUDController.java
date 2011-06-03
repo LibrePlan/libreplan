@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +26,7 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ConcurrentModificationException;
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.ConstraintChecker;
@@ -33,10 +35,12 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -47,6 +51,9 @@ import org.zkoss.zul.api.Window;
 @SuppressWarnings("serial")
 public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implements
         ITypeOfWorkHoursCRUDController {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(TypeOfWorkHoursCRUDController.class);
 
     private Window createWindow;
 
@@ -60,11 +67,14 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
 
     private Component messagesContainer;
 
+    private NewDataSortableGrid listing;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+        listing = (NewDataSortableGrid) listWindow.getFellowIfAny("listing");
         getVisibility().showOnly(listWindow);
     }
 
@@ -146,6 +156,47 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
             }
         }
         Util.reloadBindings(createWindow);
+    }
+
+    public void confirmDelete(TypeOfWorkHours typeOfWorkHours) {
+        if (!isReferencedByOtherEntities(typeOfWorkHours)) {
+            int result = showConfirmDeleteWorkHoursType(typeOfWorkHours);
+            if (result == Messagebox.OK) {
+                typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
+                Util.reloadBindings(listing);
+            }
+        }
+    }
+
+    private boolean isReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            typeOfWorkHoursModel.checkIsReferencedByOtherEntities(typeOfWorkHours);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteWorkHoursTypeDialog(e.getInvalidValue()
+                    .getMessage(), typeOfWorkHours);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteWorkHoursTypeDialog(String message,
+            TypeOfWorkHours typeOfWorkHours) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on showing warning message removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
+        }
+    }
+
+    private int showConfirmDeleteWorkHoursType(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            return Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
+                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(_("Error on removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
+        }
+        return Messagebox.CANCEL;
     }
 
 }

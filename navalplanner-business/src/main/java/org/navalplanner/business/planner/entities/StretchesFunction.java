@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 package org.navalplanner.business.planner.entities;
+
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -30,160 +34,19 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
-import org.apache.commons.math.FunctionEvaluationException;
-import org.apache.commons.math.analysis.SplineInterpolator;
-import org.apache.commons.math.analysis.UnivariateRealFunction;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.Valid;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
-import org.navalplanner.business.common.ProportionalDistributor;
 
 /**
- * Assignment function by stretches.
+ * @author Diego Pino García <dpino@igalia.com>
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ *
+ *         Assignment function by stretches.
+ *
  */
 public class StretchesFunction extends AssignmentFunction {
-
-    public enum Type {
-        DEFAULT {
-            @Override
-            public void apply(ResourceAllocation<?> allocation,
-                    List<Interval> intervalsDefinedByStreches,
-                    LocalDate startInclusive, LocalDate endExclusive,
-                    int totalHours) {
-                Interval.apply(allocation, intervalsDefinedByStreches,
-                        startInclusive, endExclusive, totalHours);
-
-            }
-        },
-        INTERPOLATED {
-            @Override
-            public void apply(ResourceAllocation<?> allocation,
-                    List<Interval> intervalsDefinedByStreches,
-                    LocalDate startInclusive, LocalDate endExclusive,
-                    int totalHours) {
-                double[] x = Interval.getDayPointsFor(startInclusive,
-                        intervalsDefinedByStreches);
-                assert x.length == 1 + intervalsDefinedByStreches.size();
-                double[] y = Interval.getHoursPointsFor(totalHours,
-                        intervalsDefinedByStreches);
-                assert y.length == 1 + intervalsDefinedByStreches.size();
-                int[] hoursForEachDay = hoursForEachDayUsingSplines(x, y,
-                        startInclusive, endExclusive);
-                int[] reallyAssigned = getReallyAssigned(allocation,
-                        startInclusive, hoursForEachDay);
-                // Because of calendars, really assigned hours can be less than
-                // the hours for each day specified by the interpolation. The
-                // remainder must be distributed.
-                distributeRemainder(allocation, startInclusive, totalHours,
-                        reallyAssigned);
-
-            }
-
-            private int[] getReallyAssigned(ResourceAllocation<?> allocation,
-                    LocalDate startInclusive, int[] hoursForEachDay) {
-                int[] reallyAssigned = new int[hoursForEachDay.length];
-                for (int i = 0; i < hoursForEachDay.length; i++) {
-                    LocalDate day = startInclusive.plusDays(i);
-                    LocalDate nextDay = day.plusDays(1);
-                    allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
-                            .allocateHours(hoursForEachDay[i]);
-                    reallyAssigned[i] = allocation.getAssignedHours(day,
-                            nextDay);
-                }
-                return reallyAssigned;
-            }
-
-            private void distributeRemainder(ResourceAllocation<?> allocation,
-                    LocalDate startInclusive, int totalHours,
-                    int[] reallyAssigned) {
-                final int remainder = totalHours - sum(reallyAssigned);
-                if (remainder == 0) {
-                    return;
-                }
-                int[] perDay = distributeRemainder(reallyAssigned, remainder);
-                for (int i = 0; i < perDay.length; i++) {
-                    if (perDay[i] == 0) {
-                        continue;
-                    }
-                    final int newHours = perDay[i] + reallyAssigned[i];
-                    LocalDate day = startInclusive.plusDays(i);
-                    LocalDate nextDay = day.plusDays(1);
-                    allocation.withPreviousAssociatedResources()
-                            .onInterval(day, nextDay)
-                            .allocateHours(newHours);
-                }
-            }
-
-            private int[] distributeRemainder(int[] hoursForEachDay,
-                    int remainder) {
-                ProportionalDistributor remainderDistributor = ProportionalDistributor
-                        .create(hoursForEachDay);
-                return remainderDistributor.distribute(remainder);
-            }
-        };
-
-        public static int[] hoursForEachDayUsingSplines(double[] x, double[] y,
-                LocalDate startInclusive, LocalDate endExclusive) {
-            UnivariateRealFunction accumulatingFunction = new SplineInterpolator()
-                    .interpolate(x, y);
-            int[] extractAccumulated = extractAccumulated(accumulatingFunction,
-                    startInclusive, endExclusive);
-            return extractHoursShouldAssignForEachDay(ValleyFiller
-                    .fillValley(extractAccumulated));
-        }
-
-        private static int[] extractAccumulated(
-                UnivariateRealFunction accumulatedFunction,
-                LocalDate startInclusive, LocalDate endExclusive) {
-            int[] result = new int[Days.daysBetween(startInclusive,
-                    endExclusive).getDays()];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = evaluate(accumulatedFunction, i + 1);
-            }
-            return result;
-        }
-
-        private static int[] extractHoursShouldAssignForEachDay(
-                int[] accumulated) {
-            int[] result = new int[accumulated.length];
-            int previous = 0;
-            for (int i = 0; i < result.length; i++) {
-                final int current = accumulated[i];
-                result[i] = current - previous;
-                previous = current;
-            }
-            return result;
-        }
-
-        private static int evaluate(UnivariateRealFunction accumulatedFunction,
-                int x) {
-            try {
-                return (int) accumulatedFunction.value(x);
-            } catch (FunctionEvaluationException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-
-        public void applyTo(ResourceAllocation<?> resourceAllocation,
-                StretchesFunction stretchesFunction) {
-            List<Interval> intervalsDefinedByStreches = stretchesFunction
-                    .getIntervalsDefinedByStreches();
-            int totalHours = resourceAllocation.getAssignedHours();
-            Task task = resourceAllocation.getTask();
-            LocalDate start = LocalDate.fromDateFields(task.getStartDate());
-            LocalDate end = LocalDate.fromDateFields(task.getEndDate());
-            apply(resourceAllocation, intervalsDefinedByStreches, start, end,
-                    totalHours);
-        }
-
-        protected abstract void apply(ResourceAllocation<?> allocation,
-                List<Interval> intervalsDefinedByStreches,
-                LocalDate startInclusive, LocalDate endExclusive, int totalHours);
-    }
 
     public static class Interval {
 
@@ -192,6 +55,20 @@ public class StretchesFunction extends AssignmentFunction {
         private LocalDate end;
 
         private final BigDecimal loadProportion;
+
+        private boolean consolidated = false;
+
+        public static Interval create(BigDecimal loadProportion, LocalDate start,
+                LocalDate end, boolean consolidated) {
+            Interval result = create(loadProportion, start, end);
+            result.consolidated(consolidated);
+            return result;
+        }
+
+        public static Interval create(BigDecimal loadProportion, LocalDate start,
+                LocalDate end) {
+            return new Interval(loadProportion, start, end);
+        }
 
         public Interval(BigDecimal loadProportion, LocalDate start,
                 LocalDate end) {
@@ -254,11 +131,17 @@ public class StretchesFunction extends AssignmentFunction {
         }
 
         private void apply(ResourceAllocation<?> resourceAllocation,
-                LocalDate startInclusive, LocalDate endExclusive,
+                LocalDate startInclusive, LocalDate taskEnd,
                 int intervalHours) {
+            Validate.isTrue(!isConsolidated());
+
+            // End has to be exclusive on last Stretch
+            LocalDate endDate = getEnd();
+            if (endDate.equals(taskEnd)) {
+                endDate = endDate.plusDays(1);
+            }
             resourceAllocation.withPreviousAssociatedResources()
-                    .onInterval(getStartFor(startInclusive),
-                                getEnd())
+                    .onIntervalWithinTask(getStartFor(startInclusive), endDate)
                     .allocateHours(intervalHours);
         }
 
@@ -269,6 +152,8 @@ public class StretchesFunction extends AssignmentFunction {
             if (intervalsDefinedByStreches.isEmpty()) {
                 return;
             }
+            Validate.isTrue(totalHours == allocation.getNonConsolidatedHours());
+
             int[] hoursPerInterval = getHoursPerInterval(
                     intervalsDefinedByStreches, totalHours);
             int remainder = totalHours - sum(hoursPerInterval);
@@ -278,7 +163,6 @@ public class StretchesFunction extends AssignmentFunction {
                 interval.apply(allocation, allocationStart, allocationEnd,
                         hoursPerInterval[i++]);
             }
-
         }
 
         private static int[] getHoursPerInterval(
@@ -299,32 +183,61 @@ public class StretchesFunction extends AssignmentFunction {
             return result;
         }
 
+        public String toString() {
+            return String.format("[%s, %s]: %s ", start, end, loadProportion);
+        }
+
+        public void consolidated(boolean value) {
+            consolidated = value;
+        }
+
+        public boolean isConsolidated() {
+            return consolidated;
+        }
+
     }
 
-    private static int sum(int[] array) {
-        int result = 0;
-        for (int each : array) {
-            result += each;
-        }
-        return result;
-    }
+    private List<Stretch> stretches = new ArrayList<Stretch>();
+
+    private StretchesFunctionTypeEnum type;
+
+    // Transient field. Not stored
+    private StretchesFunctionTypeEnum desiredType;
+
+    // Transient. Calculated from resourceAllocation
+    private Stretch consolidatedStretch;
+
+    // Transient. Used to calculate read-only last stretch
+    private LocalDate taskEndDate;
 
     public static StretchesFunction create() {
         return (StretchesFunction) create(new StretchesFunction());
     }
 
+    /**
+     * Constructor for hibernate. Do not use!
+     */
+    protected StretchesFunction() {
+
+    }
+
     public static List<Interval> intervalsFor(
             Collection<? extends Stretch> streches) {
         ArrayList<Interval> result = new ArrayList<Interval>();
-        LocalDate previous = null;
-        BigDecimal sumOfProportions = new BigDecimal(0);
+        LocalDate previous = null, stretchDate = null;
+        BigDecimal sumOfProportions = BigDecimal.ZERO, loadedProportion = BigDecimal.ZERO;
+
         for (Stretch each : streches) {
-            LocalDate strechDate = each.getDate();
-            result.add(new Interval(each.getAmountWorkPercentage().subtract(
-                    sumOfProportions), previous,
-                    strechDate));
+            stretchDate = each.getDate();
+            loadedProportion = each.getAmountWorkPercentage().subtract(
+                    sumOfProportions);
+            if (loadedProportion.signum() < 0) {
+                loadedProportion = BigDecimal.ZERO;
+            }
+            result.add(Interval.create(loadedProportion, previous,
+                    stretchDate, each.isConsolidated()));
             sumOfProportions = each.getAmountWorkPercentage();
-            previous = strechDate;
+            previous = stretchDate;
         }
         return result;
     }
@@ -333,69 +246,52 @@ public class StretchesFunction extends AssignmentFunction {
         return list.get(list.size() - 1);
     }
 
-    /**
-     * Constructor for hibernate. Do not use!
-     */
-    public StretchesFunction() {
-    }
-
-    private List<Stretch> stretches = new ArrayList<Stretch>();
-
-    private Type type;
-
-    /**
-     * This is a transient field. Not stored
-     */
-    private Type desiredType;
-
     public StretchesFunction copy() {
         StretchesFunction result = StretchesFunction.create();
         result.resetToStrechesFrom(this);
         result.type = type;
         result.desiredType = desiredType;
+        result.consolidatedStretch = consolidatedStretch;
+        result.taskEndDate = taskEndDate;
         return result;
     }
 
     public void resetToStrechesFrom(StretchesFunction from) {
         this.removeAllStretches();
-        for (Stretch each : from.getStretches()) {
-            Stretch newStretch = new Stretch();
-            newStretch.setDate(each.getDate());
-            newStretch.setLengthPercentage(each.getLengthPercentage());
-            newStretch.setAmountWorkPercentage(each
-                    .getAmountWorkPercentage());
-            this.addStretch(newStretch);
+        for (Stretch each : from.getStretchesDefinedByUser()) {
+            this.addStretch(Stretch.copy(each));
         }
+        this.consolidatedStretch = from.consolidatedStretch;
     }
 
-    public void setStretches(List<Stretch> stretches) {
-        this.stretches = stretches;
-    }
-
-    private void sortStretches() {
-        Collections.sort(stretches, new Comparator<Stretch>() {
-            @Override
-            public int compare(Stretch o1, Stretch o2) {
-                return o1.getDate().compareTo(o2.getDate());
-            }
-        });
+    public List<Stretch> getStretchesDefinedByUser() {
+        return Collections.unmodifiableList(Stretch.sortByDate(stretches));
     }
 
     @Valid
     public List<Stretch> getStretches() {
-        sortStretches();
-        return Collections.unmodifiableList(stretches);
+        List<Stretch> result = new ArrayList<Stretch>(stretches);
+        if (taskEndDate != null) {
+            result.add(getLastStretch());
+        }
+        return Collections.unmodifiableList(Stretch.sortByDate(result));
     }
 
-    public Type getType() {
-        return type == null ? Type.DEFAULT : type;
+    private Stretch getLastStretch() {
+        Stretch result = Stretch.create(taskEndDate, BigDecimal.ONE, BigDecimal.ONE);
+        result.readOnly(true);
+        return result;
     }
 
-    public Type getDesiredType() {
+    public StretchesFunctionTypeEnum getType() {
+        return type == null ? StretchesFunctionTypeEnum.STRETCHES : type;
+    }
+
+    public StretchesFunctionTypeEnum getDesiredType() {
         return desiredType == null ? getType() : desiredType;
     }
 
-    public void changeTypeTo(Type type) {
+    public void changeTypeTo(StretchesFunctionTypeEnum type) {
         desiredType = type;
     }
 
@@ -413,19 +309,18 @@ public class StretchesFunction extends AssignmentFunction {
 
     @AssertTrue(message = "At least one stretch is needed")
     public boolean checkNoEmpty() {
-        return !stretches.isEmpty();
+        return !getStretchesPlusConsolidated().isEmpty();
     }
 
-    @AssertTrue(message = "Some stretch has higher or equal values than the "
+    @AssertTrue(message = "Some stretch has lower or equal values than the "
             + "previous stretch")
     public boolean checkStretchesOrder() {
-        if (stretches.isEmpty()) {
+        List<Stretch> stretchesPlusConsolidated = getStretchesPlusConsolidated();
+        if (stretchesPlusConsolidated.isEmpty()) {
             return false;
         }
 
-        sortStretches();
-
-        Iterator<Stretch> iterator = stretches.iterator();
+        Iterator<Stretch> iterator = stretchesPlusConsolidated.iterator();
         Stretch previous = iterator.next();
         while (iterator.hasNext()) {
             Stretch current = iterator.next();
@@ -445,14 +340,22 @@ public class StretchesFunction extends AssignmentFunction {
         return true;
     }
 
+    public List<Stretch> getStretchesPlusConsolidated() {
+        List<Stretch> result = new ArrayList<Stretch>();
+        result.addAll(getStretches());
+        if (consolidatedStretch != null) {
+            result.add(consolidatedStretch);
+        }
+        return Collections.unmodifiableList(Stretch.sortByDate(result));
+    }
+
     @AssertTrue(message = "Last stretch should have one hundred percent for "
             + "length and amount of work percentage")
     public boolean checkOneHundredPercent() {
+        List<Stretch> stretches = getStretchesPlusConsolidated();
         if (stretches.isEmpty()) {
             return false;
         }
-        sortStretches();
-
         Stretch lastStretch = stretches.get(stretches.size() - 1);
         if (lastStretch.getLengthPercentage().compareTo(BigDecimal.ONE) != 0) {
             return false;
@@ -460,7 +363,6 @@ public class StretchesFunction extends AssignmentFunction {
         if (lastStretch.getAmountWorkPercentage().compareTo(BigDecimal.ONE) != 0) {
             return false;
         }
-
         return true;
     }
 
@@ -469,13 +371,22 @@ public class StretchesFunction extends AssignmentFunction {
         if (!resourceAllocation.hasAssignments()) {
             return;
         }
+        // Is 100% consolidated
+        if (resourceAllocation.getFirstNonConsolidatedDate() == null) {
+            return;
+        }
+        taskEndDate = getTaskEndDate(resourceAllocation);
         getDesiredType().applyTo(resourceAllocation, this);
         type = getDesiredType();
     }
 
+    private LocalDate getTaskEndDate(ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation.getTask().getEndAsLocalDate();
+    }
+
     @Override
     public String getName() {
-        if (StretchesFunction.Type.INTERPOLATED.equals(type)) {
+        if (StretchesFunctionTypeEnum.INTERPOLATED.equals(type)) {
             return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
         } else {
             return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
@@ -483,17 +394,27 @@ public class StretchesFunction extends AssignmentFunction {
     }
 
     public List<Interval> getIntervalsDefinedByStreches() {
+        List<Stretch> stretches = stretchesFor(type);
         if (stretches.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Interval> result = intervalsFor(stretches);
+        checkStretchesSumOneHundredPercent();
+        return intervalsFor(stretches);
+    }
+
+    private List<Stretch> stretchesFor(StretchesFunctionTypeEnum type) {
+        return (getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED)) ? getStretchesPlusConsolidated()
+                : getStretches();
+    }
+
+    private void checkStretchesSumOneHundredPercent() {
+        List<Stretch> stretches = getStretchesPlusConsolidated();
         BigDecimal sumOfProportions = stretches.isEmpty() ? BigDecimal.ZERO
                 : last(stretches).getAmountWorkPercentage();
         BigDecimal left = calculateLeftFor(sumOfProportions);
         if (!left.equals(BigDecimal.ZERO)) {
-            throw new IllegalStateException("the streches must sum the 100%");
+            throw new IllegalStateException(_("Stretches must sum 100%"));
         }
-        return result;
     }
 
     private BigDecimal calculateLeftFor(BigDecimal sumOfProportions) {
@@ -502,8 +423,34 @@ public class StretchesFunction extends AssignmentFunction {
         return left;
     }
 
-    public boolean ifInterpolatedMustHaveAtLeastTwoStreches() {
-        return getDesiredType() != Type.INTERPOLATED || stretches.size() >= 2;
+    public boolean checkHasAtLeastTwoStretches() {
+        return getStretchesPlusConsolidated().size() >= 2;
+    }
+
+    public boolean checkFirstIntervalIsPosteriorToDate(LocalDate date) {
+        List<Interval> intervals = StretchesFunction
+                .intervalsFor(getStretchesPlusConsolidated());
+        if (intervals.isEmpty()) {
+            return false;
+        }
+        Interval first = intervals.get(0);
+        return first.getEnd().compareTo(date) > 0;
+    }
+
+    public boolean isInterpolated() {
+        return getDesiredType().equals(StretchesFunctionTypeEnum.INTERPOLATED);
+    }
+
+    public void setConsolidatedStretch(Stretch stretch) {
+        consolidatedStretch = stretch;
+    }
+
+    public Stretch getConsolidatedStretch() {
+        return consolidatedStretch;
+    }
+
+    public void setTaskEndDate(LocalDate taskEndDate) {
+        this.taskEndDate = taskEndDate;
     }
 
 }

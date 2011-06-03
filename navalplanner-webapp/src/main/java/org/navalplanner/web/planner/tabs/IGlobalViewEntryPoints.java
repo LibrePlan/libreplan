@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -50,13 +51,18 @@ public interface IGlobalViewEntryPoints {
     @EntryPoint( { "orderElement", "order" })
     public void goToOrderElementDetails(OrderElement orderElement, Order order);
 
+    @EntryPoint("limiting_resources")
     void goToCompanyLimitingResources();
 
+    @EntryPoint("order_details")
     void goToOrderDetails(Order order);
 
+    @EntryPoint("order_load")
     void goToResourcesLoad(Order order);
 
+    @EntryPoint("order_advanced_allocation")
     void goToAdvancedAllocation(Order order);
 
+    @EntryPoint("create_order_from_template")
     void goToCreateotherOrderFromTemplate(OrderTemplate template);
 }

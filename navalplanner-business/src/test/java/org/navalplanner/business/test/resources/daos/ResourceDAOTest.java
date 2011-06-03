@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,7 @@ import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,10 +43,13 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.CriterionType;
@@ -52,6 +57,7 @@ import org.navalplanner.business.resources.entities.Interval;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.NotTransactional;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,10 +77,16 @@ public class ResourceDAOTest {
     private IResourceDAO resourceDAO;
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private ICriterionDAO criterionDAO;
 
     @Autowired
-    private ICriterionDAO criterionDAO;
+    private IResourcesSearcher resourcesSearcher;
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private SessionFactory sessionFactory;
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
@@ -107,7 +119,7 @@ public class ResourceDAOTest {
         Worker worker = Worker.create();
         worker.setFirstName("First name");
         worker.setSurname("Surname");
-        worker.setNif("NIF");
+        worker.setNif("NIF" + UUID.randomUUID().toString());
         return worker;
     }
 
@@ -115,10 +127,53 @@ public class ResourceDAOTest {
     public void testResourceIsRelatedWithAllCriterions() {
         Collection<Criterion> criterions = createCriterions();
         createAndSaveResourceSatisfyingAllCriterions(criterions);
-        List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterionsAtSomePoint(criterions);
+        List<Resource> result = resourcesSearcher.searchBoth()
+                .byCriteria(criterions).execute();
         assertNotNull(result);
         assertEquals(1, result.size());
+    }
+
+    @Test
+    @NotTransactional
+    public void theHierarchyOfCriterionsIsConsidered() {
+        final Criterion[] parentCriteron = { null };
+        Resource worker = transactionService
+                .runOnTransaction(new IOnTransaction<Resource>() {
+                    @Override
+                    public Resource execute() {
+                        Worker result = givenValidWorker();
+                        CriterionType type = createCriterionType("testType");
+                        Criterion parent = createCriterion("parent", type);
+                        parentCriteron[0] = parent;
+                        Criterion child = createCriterion("child", type);
+                        child.setParent(parent);
+                        addSatisfactionsOn(result,
+                                Interval.from(new LocalDate(1970, 1, 1)), child);
+                        return result;
+                    }
+        });
+        final Criterion parent = transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<Criterion>() {
+
+                    @Override
+                    public Criterion execute() {
+                        return criterionDAO
+                                .findExistingEntity(parentCriteron[0].getId());
+                    }
+                });
+        List<Resource> resources = transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<List<Resource>>() {
+
+                    @Override
+                    public List<Resource> execute() {
+                        return resourcesSearcher.searchBoth()
+                                .byCriteria(Collections.singleton(parent))
+                                .execute();
+                    }
+                });
+        assertThat(resources.size(), equalTo(1));
+        Resource resource = resources.get(0);
+        assertThat(resource.getId(), equalTo(worker.getId()));
     }
 
     private Collection<Criterion> createCriterions() {
@@ -148,14 +203,20 @@ public class ResourceDAOTest {
     private Worker createAndSaveResourceSatisfyingAllCriterions(final Collection<Criterion> criterions) {
         Worker result = givenValidWorker();
         Interval interval = Interval.range(new LocalDate(1970, 1, 1), null);
+        addSatisfactionsOn(result, interval,
+                criterions.toArray(new Criterion[] {}));
+        return result;
+    }
+
+    private void addSatisfactionsOn(Worker worker, Interval interval,
+            final Criterion... criterions) {
         Set<CriterionSatisfaction> satisfactions = new HashSet<CriterionSatisfaction>();
         for (Criterion each : criterions) {
-            satisfactions.add(CriterionSatisfaction.create(each, result,
+            satisfactions.add(CriterionSatisfaction.create(each, worker,
                     interval));
         }
-        result.addSatisfactions(satisfactions);
-        resourceDAO.save(result);
-        return result;
+        worker.addSatisfactions(satisfactions);
+        resourceDAO.save(worker);
     }
 
     @Test
@@ -166,8 +227,8 @@ public class ResourceDAOTest {
         // Modify criterions collection
         criterions.add(createCriterion("criterion3"));
 
-        List<Resource> result = resourceDAO
-                .findSatisfyingAllCriterionsAtSomePoint(criterions);
+        List<Resource> result = resourcesSearcher.searchBoth()
+                .byCriteria(criterions).execute();
         assertNotNull(result);
         assertThat(result.size(), not(equalTo(1)));
     }

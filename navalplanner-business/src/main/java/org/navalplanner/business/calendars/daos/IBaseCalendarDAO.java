@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,11 +25,13 @@ import java.util.List;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
+import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
  * Contract for {@link BaseCalendarDAO}
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public interface IBaseCalendarDAO extends
         IIntegrationEntityDAO<BaseCalendar> {
@@ -42,5 +45,7 @@ public interface IBaseCalendarDAO extends
     List<BaseCalendar> findByName(String name);
 
     boolean thereIsOtherWithSameName(BaseCalendar baseCalendar);
+
+    void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
 
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,8 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -71,12 +74,26 @@ public class AggregateOfResourceAllocations {
         return sum;
     }
 
-    public int getIntendedHours() {
-        int sum = 0;
-        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
-            sum += resourceAllocation.getIntendedHours();
-        }
-        return sum;
+    public EffortDuration getTotalEffort() {
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> each) {
+                        return each.getAssignedEffort();
+                    }
+                });
+    }
+
+    public EffortDuration getNonConsolidatedEffort() {
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> each) {
+                        return each.getEffortForReassignation();
+                    }
+                });
     }
 
     public Map<ResourceAllocation<?>, ResourcesPerDay> getResourcesPerDay() {
@@ -97,12 +114,17 @@ public class AggregateOfResourceAllocations {
         return ResourceAllocation.sortedByStartDate(result);
     }
 
-    public int hoursBetween(LocalDate startDate, LocalDate endDate) {
-        int sum = 0;
-        for (ResourceAllocation<?> r : resourceAllocations) {
-            sum += r.getAssignedHours(startDate, endDate);
-        }
-        return sum;
+    public EffortDuration effortBetween(final LocalDate startInclusive,
+            final LocalDate endExclusive) {
+        return EffortDuration.sum(resourceAllocations,
+                new IEffortFrom<ResourceAllocation<?>>() {
+
+                    @Override
+                    public EffortDuration from(ResourceAllocation<?> value) {
+                        return value.getAssignedDuration(startInclusive,
+                                endExclusive);
+                    }
+                });
     }
 
     private LocalDate getStartAsLocalDate() {
@@ -112,6 +134,7 @@ public class AggregateOfResourceAllocations {
 
     public IntraDayDate getStart() {
         if (isEmpty()) {
+            // FIXME Review Bug #906
             throw new IllegalStateException("the aggregate is empty");
         }
         return getAllocationsSortedByStartDate().get(0).getIntraDayStartDate();
@@ -131,6 +154,7 @@ public class AggregateOfResourceAllocations {
      */
     public IntraDayDate getEnd() {
         if (isEmpty()) {
+            // FIXME Review Bug #906
             throw new IllegalStateException("the aggregate is empty");
         }
         IntraDayDate result = null;

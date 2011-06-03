@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,24 +23,29 @@ package org.navalplanner.web.common.components;
 
 import java.util.List;
 
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
+import org.navalplanner.business.resources.daos.IResourcesSearcher.IResourcesQuery;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.I18nHelper;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.navalplanner.web.resources.search.IResourceSearchModel;
-import org.navalplanner.web.resources.search.IResourceSearchModel.IResourcesQuery;
 import org.navalplanner.web.resources.search.NewAllocationSelectorController;
-import org.zkoss.zul.api.Radio;
-import org.zkoss.zul.api.Radiogroup;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 
 /**
- * ZK macro component for searching {@link Worker} entities
- *
  * @author Diego Pino García <dpino@igalia.com>
+ *
+ *         ZK macro component for searching {@link Worker} entities
+ *
  */
 @SuppressWarnings("serial")
 public class NewAllocationSelector extends AllocationSelector {
+
+    private NewAllocationSelectorController selectorController;
+
+    private ResourceAllocationBehaviour behaviour;
 
     public enum AllocationType {
         GENERIC_WORKERS(_("generic workers allocation")) {
@@ -53,7 +59,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchWorkers();
             }
 
@@ -75,7 +81,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchMachines();
             }
 
@@ -94,7 +100,7 @@ public class NewAllocationSelector extends AllocationSelector {
 
             @Override
             public IResourcesQuery<?> doQueryOn(
-                    IResourceSearchModel resourceSearchModel) {
+                    IResourcesSearcher resourceSearchModel) {
                 return resourceSearchModel.searchBoth();
             }
 
@@ -103,7 +109,6 @@ public class NewAllocationSelector extends AllocationSelector {
                 throw new UnsupportedOperationException();
             }
         };
-
 
         /**
          * Forces to mark the string as needing translation
@@ -122,19 +127,10 @@ public class NewAllocationSelector extends AllocationSelector {
             return I18nHelper._(name);
         }
 
-        public static AllocationType getSelected(Radiogroup radioGroup) {
-            Radio selectedItemApi = radioGroup.getSelectedItemApi();
-            if (selectedItemApi == null) {
-                return null;
-            }
-            String name = selectedItemApi.getValue();
-            return AllocationType.valueOf(name);
-        }
-
         public void doTheSelectionOn(Radiogroup radioGroup) {
             for (int i = 0; i < radioGroup.getItemCount(); i++) {
-                Radio radio = radioGroup.getItemAtIndexApi(i);
-                if (name().equals(radio.getValue())) {
+                Radio radio = radioGroup.getItemAtIndex(i);
+                if (name.equals(radio.getLabel())) {
                     radioGroup.setSelectedIndex(i);
                     break;
                 }
@@ -146,18 +142,26 @@ public class NewAllocationSelector extends AllocationSelector {
                 INewAllocationsAdder allocationsAdder);
 
         public abstract IResourcesQuery<?> doQueryOn(
-                IResourceSearchModel resourceSearchModel);
+                IResourcesSearcher resourceSearchModel);
 
         public abstract String asCaption(List<Criterion> criterions);
-    }
+
+    }   // AllocationType
 
     public NewAllocationSelectorController getController() {
-        return (NewAllocationSelectorController) this
-                .getVariable("selectorController", true);
+        if (selectorController == null) {
+            selectorController = new NewAllocationSelectorController(behaviour);
+            try {
+                selectorController.doAfterCompose(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return selectorController;
     }
 
-    public void allowSelectMultipleResources(boolean multiple) {
-        getController().allowSelectMultipleResources(multiple);
+    public void setBehaviour(String behaviour) {
+        this.behaviour = ResourceAllocationBehaviour.valueOf(behaviour);
     }
 
 }

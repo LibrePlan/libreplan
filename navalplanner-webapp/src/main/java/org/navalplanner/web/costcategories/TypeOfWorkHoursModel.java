@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +30,7 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.daos.IHourCostDAO;
 import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.web.common.IntegrationEntityModel;
@@ -41,7 +43,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Model for UI operations related to {@link TypeOfWorkHours}
+ *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -55,12 +59,31 @@ public class TypeOfWorkHoursModel extends IntegrationEntityModel implements
     private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     @Autowired
+    private IHourCostDAO hourCostDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
         typeOfWorkHoursDAO.save(typeOfWorkHours);
+    }
+
+    @Override
+    @Transactional
+    public void confirmRemove(TypeOfWorkHours typeOfWorkHours) {
+        try {
+            typeOfWorkHoursDAO.remove(typeOfWorkHours.getId());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void checkIsReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) throws ValidationException {
+        typeOfWorkHoursDAO.checkIsReferencedByOtherEntities(typeOfWorkHours);
     }
 
     @Override
@@ -114,4 +137,5 @@ public class TypeOfWorkHoursModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.typeOfWorkHours;
     }
+
 }

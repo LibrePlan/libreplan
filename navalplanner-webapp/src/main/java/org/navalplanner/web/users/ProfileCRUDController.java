@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,6 +47,7 @@ import org.zkoss.zul.api.Window;
  * Controller for CRUD actions over a {@link Profile}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
 public class ProfileCRUDController extends GenericForwardComposer implements
@@ -175,22 +177,57 @@ public class ProfileCRUDController extends GenericForwardComposer implements
     }
 
     public void removeProfile(Profile profile) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting this profile. Are you sure?"), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                profileModel.confirmRemove(profile);
+        if (!isReferencedByOtherEntities(profile)) {
+            int result = showConfirmDeleteProfile(profile);
+            if (result == Messagebox.OK) {
+                try {
+                    profileModel.confirmRemove(profile);
+                    goToList();
+                } catch (InstanceNotFoundException e) {
+                    messagesForUser
+                            .showMessage(
+                                    Level.ERROR,
+                                    _("Cannot delete profile: it does not exist anymore"));
+                    LOG.error(_("Error removing element: ", profile.getId()), e);
+                }
             }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", profile.getId()), e);
-        } catch (InstanceNotFoundException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, _("Cannot delete profile: it does not exist anymore"));
-            LOG.error(_("Error removing element: ", profile.getId()), e);
         }
-        goToList();
+    }
+
+    private boolean isReferencedByOtherEntities(Profile profile) {
+        try {
+            profileModel.checkIsReferencedByOtherEntities(profile);
+            return false;
+        } catch (ValidationException e) {
+            showCannotDeleteProfileDialog(e.getInvalidValue().getMessage(),
+                    profile);
+        }
+        return true;
+    }
+
+    private void showCannotDeleteProfileDialog(String message, Profile profile) {
+        try {
+            Messagebox.show(_(message), _("Warning"), Messagebox.OK,
+                    Messagebox.EXCLAMATION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing warning message removing typeOfWorkHours: ",
+                            profile.getId()), e);
+        }
+    }
+
+    private int showConfirmDeleteProfile(Profile profile) {
+        try {
+            return Messagebox.show(
+                    _("Confirm deleting this profile. Are you sure?"),
+                    _("Delete"), Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing removing element: ", profile.getId()),
+                    e);
+        }
+        return Messagebox.CANCEL;
     }
 
     private OnlyOneVisible getVisibility() {

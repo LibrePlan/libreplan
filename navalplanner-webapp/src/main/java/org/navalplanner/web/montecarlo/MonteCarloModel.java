@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,6 +40,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Task;
@@ -86,52 +89,78 @@ public class MonteCarloModel implements IMonteCarloModel {
 
     private String orderName = "";
 
-    private List<TaskElement> tasksInCriticalPath;
+    private List<Task> tasksInCriticalPath;
 
     @Override
     @Transactional(readOnly = true)
     public void setCriticalPath(List<TaskElement> tasksInCriticalPath) {
+        if (tasksInCriticalPath.isEmpty()) {
+            return;
+        }
+        this.tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
+        Collections.sort(this.tasksInCriticalPath, Task.getByStartDateComparator());
+        initializeTasksInOrder(getOrderFor(this.tasksInCriticalPath));
+        initializeOrderNameFor(this.tasksInCriticalPath);
+        feedCriticalPaths(this.tasksInCriticalPath);
+    }
 
-        tasksInCriticalPath = onlyTasks(tasksInCriticalPath);
-        initializeTasks(tasksInCriticalPath);
-        this.tasksInCriticalPath = tasksInCriticalPath;
-        initializeOrderName(tasksInCriticalPath);
+    /**
+     * @param tasksInCriticalPath Cannot be null or empty
+     * @return
+     */
+    private Order getOrderFor(List<Task> tasksInCriticalPath) {
+        return tasksInCriticalPath.get(0).getOrderElement().getOrder();
+    }
 
+    private void feedCriticalPaths(List<Task> tasksInCriticalPath) {
+        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(tasksInCriticalPath);
         int i = 1;
+
         criticalPaths.clear();
-        List<List<Task>> allCriticalPaths = buildAllPossibleCriticalPaths(sortByStartDate(this.tasksInCriticalPath));
         for (List<Task> path : allCriticalPaths) {
             criticalPaths.put(CRITICAL_PATH + " " + i++,
                     toMonteCarloTaskList(path));
         }
     }
 
-    private void initializeTasks(List<TaskElement> taskElements) {
-        for (TaskElement each : taskElements) {
-            initializeTaskElement(each);
+    /**
+     * Calculating all the critical paths, may need to explore other tasks that
+     * are not part of the tasks that are on the critical path. So it's
+     * necessary to initialize all the tasks in the order, otherwise a lazy
+     * initialization may happen
+     *
+     * @param root
+     */
+    private void initializeTasksInOrder(Order root) {
+        initializeTask(root);
+        for (OrderElement each: root.getAllChildren()) {
+            Hibernate.initialize(each);
+            initializeTask(each);
         }
     }
 
-    private void initializeTaskElement(TaskElement taskElement) {
-        if (taskElement == null) {
-            return;
+    private void initializeTask(OrderElement orderElement) {
+        TaskElement task = orderElement.getAssociatedTaskElement();
+        if (task != null) {
+            taskDAO.reattach(task);
+            task.getCalendar();
+            initializeDependenciesFor(task);
         }
-        taskDAO.reattach(taskElement);
-        Hibernate.initialize(taskElement);
-        initializeTaskElement(taskElement.getParent());
-        initializeDependencies(taskElement);
     }
 
-    private void initializeDependencies(TaskElement taskElement) {
-        for (Dependency each : taskElement.getDependenciesWithThisDestination()) {
+    private void initializeDependenciesFor(TaskElement task) {
+        Set<Dependency> dependencies = task
+                .getDependenciesWithThisDestination();
+        Hibernate.initialize(dependencies);
+        for (Dependency each : dependencies) {
             Hibernate.initialize(each.getOrigin());
             Hibernate.initialize(each.getDestination());
         }
     }
 
-    private void initializeOrderName(List<TaskElement> tasksInCriticalPath) {
-        orderName = tasksInCriticalPath.isEmpty() ? "" : tasksInCriticalPath
-                .get(0).getOrderElement().getOrder().getName();
+    private void initializeOrderNameFor(List<Task> tasksInCriticalPath) {
+        orderName = tasksInCriticalPath.isEmpty() ? "" : getOrderFor(
+                tasksInCriticalPath).getName();
     }
 
     @Override
@@ -149,13 +178,8 @@ public class MonteCarloModel implements IMonteCarloModel {
         return criticalPaths.get(name);
     }
 
-    private List sortByStartDate(List tasks) {
-        Collections.sort(tasks, Task.getByStartDateComparator());
-        return tasks;
-    }
-
-    private List<TaskElement> onlyTasks(List<TaskElement> tasks) {
-        List<TaskElement> result = new ArrayList<TaskElement>();
+    private List<Task> onlyTasks(List<TaskElement> tasks) {
+        List<Task> result = new ArrayList<Task>();
         for (TaskElement each : tasks) {
             if (each instanceof Task) {
                 result.add((Task) each);

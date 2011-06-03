@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.zkoss.zkforge</groupId>
+  <artifactId>timeplotz-modified</artifactId>
+  <version>1.0_2_4</version>
+  <packaging>jar</packaging>
+  <name>The Timeplot Component for ZK</name>
+  <url>http://www.zkoss.org</url>
+  <description>The Timeplot Component for ZK 2.2.0 or later</description>
+  <licenses>
+    <license>
+      <name>GNU General Public License, Version 2.0</name>
+      <url>http://www.gnu.org/licenses/gpl.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <dependencies>
+  </dependencies>
+</project> 

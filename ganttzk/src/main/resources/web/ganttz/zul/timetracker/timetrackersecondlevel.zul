@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,18 +29,12 @@
                 </n:th>
             </n:tr>
             <n:tr id="watermark">
-                <n:td class="timetracker_column${(each.even and (top.zoomLevel != 'DETAIL_FOUR'))?'_even':''}${(each.bankHoliday?' bankHoliday':'')}${(each.currentPeriod?' timetracker_column_today':' ')}${(each.deadlinePeriod?' timetracker_column_deadline':'')}"
+                <n:td class="${(top.weekLevel)?'week-level':''} timetracker_column${(each.even)?'_even':''}${(each.bankHoliday?' bankHoliday':'')}"
                     forEach="${top.detailsSecondLevel}"
-                    style="background-position: ${each.backgroundOffset}; width:${each.size}px;">
-                    <n:div if="${each.currentPeriod and each.deadlinePeriod}"  class="today_deadline" style="background-position: ${each.currentDayOffset}px" />
-                    <n:table class="week_element" width="100%" height="100%" if="${top.zoomLevel == 'DETAIL_FOUR'}">
-                    <n:tr>
-                        <n:td/><n:td/><n:td/><n:td/><n:td/>
-                        <n:td class="weekend" />
-                        <n:td class="weekend" />
-                    </n:tr>
-                  </n:table>
-
+                    style="width: ${each.size}px;background-position: ${each.bankHolidayWeek}; ">
+                    <n:div if="${each.currentPeriod and !(each.deadlinePeriod)}" class="timetracker_column_today" style="background-position: ${each.currentDayOffset}px; width:auto;height:100%" />
+                    <n:div if="${each.deadlinePeriod and !(each.currentPeriod)}" class="timetracker_column_deadline" style="background-position: ${each.deadlineOffset}px; width:auto;height:100%" />
+                    <n:div if="${each.currentPeriod and each.deadlinePeriod}" class="timetracker_column_today_deadline" style="background-position: ${each.currentDayOffset}px 0, ${each.deadlineOffset}px 0; width:auto;height:100%" />
                 </n:td>
             </n:tr>
         </n:table>

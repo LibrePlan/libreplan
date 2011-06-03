@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +21,8 @@
 
 package org.navalplanner.business.costcategories.entities;
 
+import static org.navalplanner.business.i18n.I18nHelper._;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,10 +39,12 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
 
 /**
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 public class CostCategory extends IntegrationEntity {
 
@@ -84,6 +89,99 @@ public class CostCategory extends IntegrationEntity {
 
     public static CostCategory create(String name) {
         return (CostCategory) create(new CostCategory(name));
+    }
+
+    public static void validateHourCostsOverlap(Set<HourCost> hoursCosts)
+            throws ValidationException {
+        List<HourCost> listHourCosts = new ArrayList<HourCost>(hoursCosts);
+        for (int i = 0; i < listHourCosts.size(); i++) {
+            LocalDate initDate = listHourCosts.get(i).getInitDate();
+            LocalDate endDate = listHourCosts.get(i).getEndDate();
+            for (int j = i + 1; j < listHourCosts.size(); j++) {
+                HourCost listElement = listHourCosts.get(j);
+                if (listElement.getType() == null
+                        || listHourCosts.get(i).getType() == null) {
+                    // this is not exactly an overlapping but a
+                    // problem with missing compulsory fields
+                    throw ValidationException.invalidValue(
+                            _("Hours cost type cannot be empty or null"),
+                            listElement);
+                }
+                if (listElement.getType().getId()
+                        .equals(listHourCosts.get(i).getType().getId())) {
+                    if (initDate == null || listElement.getInitDate() == null) {
+                        // this is not exactly an overlapping but a
+                        // problem with missing compulsory fields
+                        throw ValidationException.invalidValue(
+                                _("Init date cannot be empty or null"),
+                                listElement);
+                    }
+                    if (endDate == null && listElement.getEndDate() == null) {
+                        throw ValidationException.invalidValue(
+                                _("End date cannot be empty or null"),
+                                listElement);
+                    } else if ((endDate == null && listElement.getEndDate()
+                            .compareTo(initDate) >= 0)
+                            || (listElement.getEndDate() == null && listElement
+                                    .getInitDate().compareTo(endDate) <= 0)) {
+                        throw ValidationException
+                                .invalidValue(
+                                        _("Two hour costs with the same type overlap in time"),
+                                        listElement);
+                    } else if ((endDate != null && listElement.getEndDate() != null)
+                            && ((listElement.getEndDate().compareTo(initDate) >= 0 && listElement
+                                    .getEndDate().compareTo(endDate) <= 0) || (listElement
+                                    .getInitDate().compareTo(initDate) >= 0 && listElement
+                                    .getInitDate().compareTo(endDate) <= 0))) {
+                        throw ValidationException
+                                .invalidValue(
+                                        _("Two hour costs with the same type overlap in time"),
+                                        listElement);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void validateCostCategoryOverlapping(
+            List<ResourcesCostCategoryAssignment> costCategoryAssignments) {
+
+        for (int i = 0; i < costCategoryAssignments.size(); i++) {
+            LocalDate initDate = costCategoryAssignments.get(i).getInitDate();
+            LocalDate endDate = costCategoryAssignments.get(i).getEndDate();
+            for (int j = i + 1; j < costCategoryAssignments.size(); j++) {
+                ResourcesCostCategoryAssignment costCategory = costCategoryAssignments
+                        .get(j);
+                if (endDate == null && costCategory.getEndDate() == null) {
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
+                } else if ((endDate == null && costCategory.getEndDate()
+                        .compareTo(initDate) >= 0)
+                        || (costCategory.getEndDate() == null && costCategory
+                                .getInitDate().compareTo(endDate) <= 0)) {
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
+                } else if ((endDate != null && costCategory.getEndDate() != null)
+                        && ((costCategory.getEndDate().compareTo(initDate) >= 0 && // (1)
+                                                                                   // listElement.getEndDate()
+                                                                                   // inside
+                                                                                   // [initDate,
+                                                                                   // endDate]
+                        costCategory.getEndDate().compareTo(endDate) <= 0)
+                                || (costCategory.getInitDate().compareTo(
+                                        initDate) >= 0 && // (2)
+                                                          // listElement.getInitDate()
+                                                          // inside [initDate,
+                                                          // endDate]
+                                costCategory.getInitDate().compareTo(endDate) <= 0) || (costCategory
+                                .getInitDate().compareTo(initDate) <= 0 && // (3)
+                                                                           // [listElement.getInitDate(),
+                                                                           // listElement.getEndDate()]
+                        costCategory.getEndDate().compareTo(endDate) >= 0))) { // contains
+                                                                               // [initDate,
+                                                                               // endDate]
+                    throw ValidationException.invalidValue(_("Some cost category assignments overlap in time"), costCategory);
+                }
+            }
+        }
     }
 
     protected CostCategory(String name) {
@@ -168,42 +266,12 @@ public class CostCategory extends IntegrationEntity {
 
     @AssertFalse(message="Two hour costs with the same type overlap in time")
     public boolean checkHourCostsOverlap() {
-        List<HourCost> listHourCosts = new ArrayList<HourCost>();
-        listHourCosts.addAll(getHourCosts());
-        for(int i=0; i<listHourCosts.size(); i++) {
-            LocalDate initDate = listHourCosts.get(i).getInitDate();
-            LocalDate endDate = listHourCosts.get(i).getEndDate();
-            for(int j=i+1; j<listHourCosts.size(); j++) {
-                HourCost listElement = listHourCosts.get(j);
-                if (listElement.getType() == null || listHourCosts.get(i).getType() == null) {
-                    //this is not exactly an overlapping but a
-                    //problem with missing compulsory fields
-                    return true;
-                }
-                if(listElement.getType().getId().equals(listHourCosts.get(i).getType().getId())) {
-                    if (initDate == null || listElement.getInitDate() == null) {
-                        //this is not exactly an overlapping but a
-                        //problem with missing compulsory fields
-                        return true;
-                    }
-                    if (endDate == null && listElement.getEndDate() == null) {
-                        return true;
-                    }
-                    else if((endDate == null && listElement.getEndDate().compareTo(initDate)>=0) ||
-                            (listElement.getEndDate() == null && listElement.getInitDate().compareTo(endDate)<=0)) {
-                        return true;
-                    }
-                    else if((endDate != null && listElement.getEndDate() != null) &&
-                            ((listElement.getEndDate().compareTo(initDate)>=0 &&
-                            listElement.getEndDate().compareTo(endDate)<=0) ||
-                            (listElement.getInitDate().compareTo(initDate)>=0 &&
-                                    listElement.getInitDate().compareTo(endDate)<=0))) {
-                        return true;
-                    }
-                }
-            }
+        try {
+            validateHourCostsOverlap(getHourCosts());
+            return false;
+        } catch (ValidationException e) {
+            return true;
         }
-        return false;
     }
 
     @Override
@@ -242,4 +310,5 @@ public class CostCategory extends IntegrationEntity {
     public Integer getLastHourCostSequenceCode() {
         return lastHourCostSequenceCode;
     }
+
 }

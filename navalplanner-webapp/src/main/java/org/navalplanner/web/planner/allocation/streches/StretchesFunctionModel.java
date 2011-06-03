@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +25,9 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,33 +41,27 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.StretchesFunction.Interval;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
+import org.navalplanner.business.planner.entities.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.util.Locales;
 
 /**
- * Model for UI operations related to {@link StretchesFunction} configuration.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
+ *
+ *         Model for UI operations related to {@link StretchesFunction}
+ *         configuration.
+ *
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class StretchesFunctionModel implements IStretchesFunctionModel {
-
-    public static StretchesFunction createDefaultStretchesFunction(Date endDate) {
-        StretchesFunction stretchesFunction = StretchesFunction.create();
-        Stretch stretch = new Stretch();
-        stretch.setDate(new LocalDate(endDate));
-        stretch.setLengthPercentage(BigDecimal.ONE);
-        stretch.setAmountWorkPercentage(BigDecimal.ONE);
-        stretchesFunction.addStretch(stretch);
-        return stretchesFunction;
-    }
 
     /**
      * Conversation state
@@ -93,17 +90,34 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     public void init(
             StretchesFunction stretchesFunction,
             ResourceAllocation<?> resourceAllocation,
-            org.navalplanner.business.planner.entities.StretchesFunction.Type type) {
+            StretchesFunctionTypeEnum type) {
         if (stretchesFunction != null) {
             assignmentFunctionDAO.reattach(stretchesFunction);
-            this.originalStretchesFunction = stretchesFunction;
-            this.stretchesFunction = stretchesFunction.copy();
-            this.stretchesFunction.changeTypeTo(type);
+
+            // Initialize resourceAllocation and task
             this.resourceAllocation = resourceAllocation;
             this.task = resourceAllocation.getTask();
             forceLoadData();
             this.taskEndDate = task.getEndDate();
+
+            // Initialize stretchesFunction
+            stretchesFunction.setTaskEndDate(task.getEndAsLocalDate());
+            this.originalStretchesFunction = stretchesFunction;
+            this.stretchesFunction = stretchesFunction.copy();
+            this.stretchesFunction.changeTypeTo(type);
+            addConsolidatedStretchIfAny();
         }
+    }
+
+    private void addConsolidatedStretchIfAny() {
+        Stretch consolidated = consolidatedStretchFor(resourceAllocation);
+        if (consolidated != null) {
+            stretchesFunction.setConsolidatedStretch(consolidated);
+        }
+    }
+
+    private Stretch consolidatedStretchFor(ResourceAllocation<?> resourceAllocation) {
+        return Stretch.buildFromConsolidatedProgress(resourceAllocation);
     }
 
     private void forceLoadData() {
@@ -114,11 +128,53 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     }
 
     @Override
-    public List<Stretch> getStretches() {
+    public List<Stretch> getStretchesDefinedByUser() {
         if (stretchesFunction == null) {
-            return new ArrayList<Stretch>();
+            return Collections.emptyList();
         }
         return stretchesFunction.getStretches();
+    }
+
+    @Override
+    public List<Stretch> getAllStretches() {
+        if (stretchesFunction == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(allStretches());
+    }
+
+    /**
+     * Returns an empty stretch plus the stretches from stretchesFunction and
+     * the consolidated stretch if any
+     *
+     * @return
+     */
+    private List<Stretch> allStretches() {
+        List<Stretch> result = new ArrayList<Stretch>();
+        result.add(firstStretch());
+        result.addAll(stretchesFunction.getStretchesPlusConsolidated());
+        return result;
+    }
+
+    @Override
+    public List<Stretch> getStretchesPlusConsolidated() {
+        if (stretchesFunction == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(stretchesFunction
+                .getStretchesPlusConsolidated());
+    }
+
+    /**
+     * Defines an initial read-only stretch with 0% hours worked and 0% progress
+     *
+     * @return
+     */
+    private Stretch firstStretch() {
+        Stretch result = Stretch.create(task.getStartAsLocalDate(),
+                BigDecimal.ZERO, BigDecimal.ZERO);
+        result.readOnly(true);
+        return result;
     }
 
     @Override
@@ -138,17 +194,12 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
                         _("Last stretch should have one hundred percent for "
                                 + "length and amount of work percentage"));
             }
-            if (!stretchesFunction.ifInterpolatedMustHaveAtLeastTwoStreches()) {
-                throw new ValidationException(
-                        _("For interpolation at least two stretches are needed"));
-            }
-            if (stretchesFunction.getDesiredType() == Type.INTERPOLATED) {
-                if (!atLeastTwoStreches(getStretches())) {
+            if (stretchesFunction.isInterpolated()) {
+                if (!stretchesFunction.checkHasAtLeastTwoStretches()) {
                     throw new ValidationException(
                             _("There must be at least 2 stretches for doing interpolation"));
                 }
-                if (!theFirstIntervalIsPosteriorToFirstDay(getStretches(),
-                        getTaskStartDate())) {
+                if (!stretchesFunction.checkFirstIntervalIsPosteriorToDate(getTaskStartDate())) {
                     throw new ValidationException(
                             _("The first stretch must be after the first day for doing interpolation"));
                 }
@@ -176,6 +227,9 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     private static boolean theFirstIntervalIsPosteriorToFirstDay(
             List<Stretch> stretches, LocalDate start) {
         List<Interval> intervals = StretchesFunction.intervalsFor(stretches);
+        if (intervals.isEmpty()) {
+            return false;
+        }
         Interval first = intervals.get(0);
         return first.getEnd().compareTo(start) > 0;
     }
@@ -188,10 +242,29 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
     @Override
     public void addStretch() {
         if (stretchesFunction != null) {
-            Stretch stretch = new Stretch();
-            stretch.setDate(new LocalDate(task.getStartDate()));
-            stretchesFunction.addStretch(stretch);
+            stretchesFunction.addStretch(newStretch());
         }
+    }
+
+    private Stretch newStretch() {
+        LocalDate startDate = getTaskStartDate();
+        BigDecimal amountWorkPercent = BigDecimal.ZERO;
+
+        Stretch consolidatedStretch = stretchesFunction
+                .getConsolidatedStretch();
+        if (consolidatedStretch != null) {
+            startDate = consolidatedStretch.getDate().plusDays(1);
+            amountWorkPercent = consolidatedStretch.getAmountWorkPercentage().add(BigDecimal.ONE.divide(BigDecimal.valueOf(100)));
+        }
+        return Stretch.create(startDate, task, amountWorkPercent);
+    }
+
+    @Override
+    public LocalDate getTaskStartDate() {
+        if (task == null) {
+            return null;
+        }
+        return task.getStartAsLocalDate();
     }
 
     @Override
@@ -211,7 +284,14 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
             throws IllegalArgumentException {
         if (date.compareTo(task.getStartDate()) < 0) {
             throw new IllegalArgumentException(
-                    _("Stretch date should be greater or equals than task start date"));
+                    _("Stretch date must not be less than task start date: "
+                            + sameFormatAsDefaultZK(task.getStartDate())));
+        }
+
+        if (date.compareTo(taskEndDate) > 0) {
+            throw new IllegalArgumentException(
+                    _("Stretch date must not be greater than the task's end date: "
+                            + sameFormatAsDefaultZK(taskEndDate)));
         }
 
         stretch.setDate(new LocalDate(date));
@@ -223,6 +303,13 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         } else {
             calculatePercentage(stretch);
         }
+    }
+
+    private String sameFormatAsDefaultZK(Date date) {
+        DateFormat zkDefaultDateFormatter = DateFormat.getDateInstance(
+                DateFormat.DEFAULT, Locales.getCurrent());
+        DateFormat formatter = zkDefaultDateFormatter;
+        return formatter.format(date);
     }
 
     private void recalculateStretchesPercentages() {
@@ -259,14 +346,6 @@ public class StretchesFunctionModel implements IStretchesFunctionModel {
         long stretchDate = startDate + lengthPercentage.multiply(
                 new BigDecimal(endDate - startDate)).longValue();
         stretch.setDate(new LocalDate(stretchDate));
-    }
-
-    @Override
-    public LocalDate getTaskStartDate() {
-        if (task == null) {
-            return null;
-        }
-        return new LocalDate(task.getStartDate());
     }
 
     @Override

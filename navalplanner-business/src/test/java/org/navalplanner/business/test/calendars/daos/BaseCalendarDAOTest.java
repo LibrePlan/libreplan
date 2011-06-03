@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,6 +30,7 @@ import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONF
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 
@@ -82,10 +84,14 @@ public class BaseCalendarDAOTest {
     private IResourceDAO resourceDAO;
 
     @Resource
+    private IDataBootstrap configurationBootstrap;
+
+    @Resource
     private IDataBootstrap calendarBootstrap;
 
     @Before
     public void loadRequiredData() {
+        configurationBootstrap.loadRequiredData();
         calendarBootstrap.loadRequiredData();
     }
 
@@ -314,6 +320,51 @@ public class BaseCalendarDAOTest {
 
         baseCalendars = baseCalendarDAO.getBaseCalendars();
         assertThat(baseCalendars.size(), equalTo(previous + 2));
+    }
+
+    @Test(expected = ValidationException.class)
+    public void doNotAllowToSaveCalendarWithZeroHours() {
+        BaseCalendar calendar = BaseCalendar.create("calendar-"
+                + UUID.randomUUID());
+        calendar.setName("calendar-name-" + UUID.randomUUID());
+        baseCalendarDAO.save(calendar);
+    }
+
+    @Test
+    public void testSaveAndRemoveCalendar() {
+        BaseCalendar calendar = BaseCalendarTest.createBasicCalendar();
+        baseCalendarDAO.save(calendar);
+        try {
+            baseCalendarDAO.remove(calendar.getId());
+        } catch (InstanceNotFoundException e) {
+
+        }
+        assertTrue(!baseCalendarDAO.exists(calendar.getId()));
+    }
+
+    @Test
+    public void testSaveAndRemoveResourceCalendar() {
+        Worker worker = ResourceDAOTest.givenValidWorker();
+        ResourceCalendar resourceCalendar = ResourceCalendar.create();
+        addChristmasAsExceptionDay(resourceCalendar);
+        resourceCalendar.setName("testResourceCalendar");
+        BaseCalendarTest.setHoursForAllDays(resourceCalendar, 8);
+        worker.setCalendar(resourceCalendar);
+
+        // Resource calendar was saved whe worker was saved
+        resourceDAO.save(worker);
+        resourceCalendar = worker.getCalendar();
+        assertTrue(resourceCalendar.getId() != null);
+
+        // Unset calendar from resource and save should remove calendar
+        try {
+            baseCalendarDAO.remove(resourceCalendar.getId());
+            worker.setCalendar(null);
+            resourceDAO.save(worker);
+        } catch (InstanceNotFoundException e) {
+
+        }
+        assertTrue(!baseCalendarDAO.exists(resourceCalendar.getId()));
     }
 
 }

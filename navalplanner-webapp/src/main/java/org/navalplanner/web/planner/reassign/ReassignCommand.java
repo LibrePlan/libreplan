@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -35,7 +37,7 @@ import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.ICriterionTypeDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.web.planner.order.PlanningState;
@@ -44,9 +46,9 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
+import org.zkoss.ganttz.data.Dependency;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDiagramGraph;
-import org.zkoss.ganttz.data.GanttDiagramGraph.DeferedNotifier;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.util.IAction;
@@ -55,7 +57,11 @@ import org.zkoss.ganttz.util.LongOperationFeedback.IBackGroundOperation;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdate;
 import org.zkoss.ganttz.util.LongOperationFeedback.IDesktopUpdatesEmitter;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Messagebox;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -70,7 +76,7 @@ public class ReassignCommand implements IReassignCommand {
     private IAdHocTransactionService transactionService;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
@@ -110,10 +116,11 @@ public class ReassignCommand implements IReassignCommand {
             @Override
             public void doOperation(
                     final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
-                updater.doUpdate(showStart(reassignations.size()));
-                DeferedNotifier notifications = null;
+                updater.doUpdate(busyStart(reassignations.size()));
+                GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifications = null;
                 try {
-                    GanttDiagramGraph ganttDiagramGraph = context.getGanttDiagramGraph();
+                    GanttDiagramGraph<Task, Dependency> ganttDiagramGraph = context
+                            .getGanttDiagramGraph();
                     notifications = ganttDiagramGraph
                             .manualNotificationOn(doReassignations(
                                     ganttDiagramGraph, reassignations, updater));
@@ -121,9 +128,26 @@ public class ReassignCommand implements IReassignCommand {
                     if (notifications != null) {
                         // null if error
                         updater.doUpdate(and(doNotifications(notifications),
-                                reloadCharts(context), showEnd()));
+                                reloadCharts(context), busyEnd(),
+                                tellUserOnEnd(context, Messagebox.INFORMATION,
+                                        new Callable<String>() {
+
+                                    @Override
+                                    public String call() throws Exception {
+                                        return _("{0} reassignations finished",
+                                                reassignations.size());
+                                    }
+                                })));
                     } else {
-                        updater.doUpdate(showEnd());
+                        updater.doUpdate(and(busyEnd(),
+                                tellUserOnEnd(context, Messagebox.EXCLAMATION,
+                                        new Callable<String>() {
+
+                                    @Override
+                                    public String call() throws Exception {
+                                        return _("It couldn't complete all the reassignations");
+                                    }
+                                })));
                     }
                 }
             }
@@ -131,7 +155,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IAction doReassignations(final GanttDiagramGraph diagramGraph,
+    private IAction doReassignations(final GanttDiagramGraph<Task, Dependency> diagramGraph,
             final List<WithAssociatedEntity> reassignations,
             final IDesktopUpdatesEmitter<IDesktopUpdate> updater) {
         return new IAction() {
@@ -158,7 +182,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate showStart(final int total) {
+    private IDesktopUpdate busyStart(final int total) {
         return new IDesktopUpdate() {
             @Override
             public void doUpdate() {
@@ -186,7 +210,8 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate doNotifications(final DeferedNotifier notifier) {
+    private IDesktopUpdate doNotifications(
+            final GanttDiagramGraph<Task, Dependency>.DeferedNotifier notifier) {
         return new IDesktopUpdate() {
             @Override
             public void doUpdate() {
@@ -195,7 +220,7 @@ public class ReassignCommand implements IReassignCommand {
         };
     }
 
-    private IDesktopUpdate showEnd() {
+    private IDesktopUpdate busyEnd() {
         return new IDesktopUpdate() {
 
             @Override
@@ -203,6 +228,47 @@ public class ReassignCommand implements IReassignCommand {
                 Clients.showBusy(null, false);
             }
         };
+    }
+
+    private IDesktopUpdate tellUserOnEnd(final IContext<TaskElement> context,
+            String icon, final Callable<String> message) {
+        // using callable so the message is built inside a zk execution and the
+        // locale is correctly retrieved
+
+        return new IDesktopUpdate() {
+
+            @Override
+            public void doUpdate() {
+                final org.zkoss.zk.ui.Component relativeTo = context
+                        .getRelativeTo();
+                final String eventName = "onLater";
+
+                Events.echoEvent(eventName, relativeTo, null);
+
+                relativeTo.addEventListener(eventName, new EventListener() {
+
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        relativeTo.removeEventListener(eventName, this);
+                        try {
+                            Messagebox.show(resolve(message),
+                                    _("Reassignation"),
+                                    Messagebox.OK, Messagebox.INFORMATION);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    private <T> T resolve(Callable<T> callable) {
+        try {
+            return callable.call();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static class WithAssociatedEntity {
@@ -285,7 +351,8 @@ public class ReassignCommand implements IReassignCommand {
 
     private void reassign(TaskElement taskElement) {
         org.navalplanner.business.planner.entities.Task t = (org.navalplanner.business.planner.entities.Task) taskElement;
-        t.reassignAllocationsWithNewResources(planningState.getCurrentScenario(), resourceDAO);
+        t.reassignAllocationsWithNewResources(
+                planningState.getCurrentScenario(), resourcesSearcher);
     }
 
     @Override

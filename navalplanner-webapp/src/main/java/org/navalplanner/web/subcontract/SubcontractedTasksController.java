@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -159,24 +161,26 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             Button exportButton = new Button(_("XML"));
             exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
+                IServletRequestHandler requestHandler = new IServletRequestHandler() {
+
+                    @Override
+                    public void handle(HttpServletRequest request,
+                            HttpServletResponse response)
+                            throws ServletException, IOException {
+                        response.setContentType("text/xml");
+                        String xml = subcontractedTasksModel
+                                .exportXML(subcontractedTaskData);
+                        response.getWriter().write(xml);
+                    }
+
+                };
+
                 @Override
                 public void onEvent(Event event) throws Exception {
                     String uri = CallbackServlet.registerAndCreateURLFor(
                             (HttpServletRequest) Executions.getCurrent()
-                                    .getNativeRequest(),
-                            new IServletRequestHandler() {
-
-                                @Override
-                                public void handle(HttpServletRequest request,
-                                        HttpServletResponse response)
-                                        throws ServletException, IOException {
-                                    response.setContentType("text/xml");
-                                    String xml = subcontractedTasksModel
-                                            .exportXML(subcontractedTaskData);
-                                    response.getWriter().write(xml);
-                                }
-
-                            }, false);
+                                    .getNativeRequest(), requestHandler, false,
+                            DisposalMode.WHEN_NO_LONGER_REFERENCED);
 
                     Executions.getCurrent().sendRedirect(uri, "_blank");
                 }

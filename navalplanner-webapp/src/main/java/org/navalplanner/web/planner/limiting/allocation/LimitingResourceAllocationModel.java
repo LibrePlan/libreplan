@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,14 +29,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.orders.daos.IHoursGroupDAO;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
@@ -51,6 +57,8 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**
  * Provides logical operations for limiting resource assignations in @{Task}
@@ -76,19 +84,52 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Autowired
     private IResourceDAO resourceDAO;
 
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    private IContextWithPlannerTask<TaskElement> context;
+
     private Task task;
 
-    private List<LimitingAllocationRow> limitingAllocationRows = new ArrayList<LimitingAllocationRow>();
-
     private PlanningState planningState;
+
+    private List<LimitingAllocationRow> limitingAllocationRows = new ArrayList<LimitingAllocationRow>();
 
     private LimitingResourceAllocationController limitingResourceAllocationController;
 
     @Override
-    public void init(Task task, PlanningState planningState) {
+    @Transactional(readOnly=true)
+    public void init(IContextWithPlannerTask<TaskElement> context, Task task,
+            PlanningState planningState) {
+        this.context = context;
         this.task = task;
         this.planningState = planningState;
+
+        initializeCriteria(task);
         limitingAllocationRows = LimitingAllocationRow.toRows(task);
+    }
+
+    private void initializeCriteria(Task task) {
+        for (ResourceAllocation<?> each: task.getLimitingResourceAllocations()) {
+            if (isGeneric(each)) {
+                initializeCriteria((GenericResourceAllocation) each);
+            }
+        }
+    }
+
+    private boolean isGeneric(ResourceAllocation<?> resourceAllocation) {
+        return resourceAllocation instanceof GenericResourceAllocation;
+    }
+
+    private void initializeCriteria(GenericResourceAllocation generic) {
+        for (Criterion each : generic.getCriterions()) {
+            initializeCriterion(each);
+        }
+    }
+
+    private void initializeCriterion(Criterion criterion) {
+        criterionDAO.reattach(criterion);
+        Hibernate.initialize(criterion.getType());
     }
 
     @Override
@@ -105,6 +146,7 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     public void addGeneric(ResourceEnum resourceType,
             Collection<? extends Criterion> criteria,
             Collection<? extends Resource> resources) {
+
         if (resources.isEmpty()) {
             getMessagesForUser()
                     .showMessage(Level.ERROR,
@@ -314,12 +356,42 @@ public class LimitingResourceAllocationModel implements ILimitingResourceAllocat
     @Override
     @Transactional(readOnly=true)
     public void confirmSave() {
-        taskDAO.reattach(task);
-        ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
-        if (resourceAllocation != null && resourceAllocation.isNewObject()) {
-            addAssociatedLimitingResourceQueueElement(task, resourceAllocation);
+        applyAllocationWithDateChangesNotification(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                taskDAO.reattach(task);
+
+                ResourceAllocation<?> resourceAllocation = getAssociatedResourceAllocation();
+                if (resourceAllocation != null) {
+                    if (resourceAllocation.isNewObject()) {
+                        addAssociatedLimitingResourceQueueElement(task,
+                                resourceAllocation);
+                    } else {
+                        if (!resourceAllocation.hasAssignments()) {
+                            task.resizeToHours(resourceAllocation
+                                    .getIntendedTotalHours());
+                        }
+                    }
+                }
+                taskDAO.save(task);
+                return null;
+            }
+        });
+    }
+
+    private void applyAllocationWithDateChangesNotification(
+            IOnTransaction<?> allocationDoer) {
+        if (context != null) {
+            org.zkoss.ganttz.data.Task ganttTask = context.getTask();
+            GanttDate previousStartDate = ganttTask.getBeginDate();
+            GanttDate previousEnd = ganttTask.getEndDate();
+            transactionService.runOnReadOnlyTransaction(allocationDoer);
+            ganttTask.fireChangesForPreviousValues(previousStartDate,
+                    previousEnd);
+        } else {
+            // Update hours of a Task from Limiting Resource view
+            transactionService.runOnReadOnlyTransaction(allocationDoer);
         }
-        taskDAO.save(task);
     }
 
     private void addAssociatedLimitingResourceQueueElement(Task task, ResourceAllocation<?> resourceAllocation) {

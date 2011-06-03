@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,18 +24,22 @@ package org.navalplanner.business.planner.entities;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.BaseEntity;
 
 /**
  *
- * @author Diego Pino García<dpino@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  *
- *         This is an object, directly associated with a TaskGroup with no parent
- *         (TaskRoot element), which is used to stored data about the whole
+ *         This is a class, directly associated with a TaskGroup with no parent
+ *         (TaskRoot element), which is used to store data about the whole
  *         scheduling
  *
  */
 public class PlanningData extends BaseEntity {
+
+    private static Log LOG = LogFactory.getLog(PlanningData.class);
 
     public static PlanningData create(TaskGroup rootTask) {
         return new PlanningData(rootTask);
@@ -46,7 +51,7 @@ public class PlanningData extends BaseEntity {
 
     private BigDecimal progressByNumHours;
 
-    protected PlanningData() {
+    public PlanningData() {
 
     }
 
@@ -63,6 +68,10 @@ public class PlanningData extends BaseEntity {
     }
 
     public void update(List<Task> criticalPath) {
+        if (criticalPath.isEmpty()) {
+            LOG.warn("it can't be updated because the critical path provided is empty");
+            return;
+        }
         progressByDuration = calculateByDuration(criticalPath);
         progressByNumHours = calculateByNumHours(criticalPath);
     }
@@ -79,7 +88,21 @@ public class PlanningData extends BaseEntity {
             totalDuration = totalDuration + duration;
             totalProgress = totalProgress.add(progress);
         }
-        return totalProgress.divide(BigDecimal.valueOf(totalDuration), 8,
+        return divide(totalProgress, totalDuration);
+    }
+
+    /**
+     * Prevents division by zero
+     *
+     * @param numerator
+     * @param denominator
+     * @return
+     */
+    private BigDecimal divide(BigDecimal numerator, Integer denominator) {
+        if (Integer.valueOf(0).equals(denominator)) {
+            return BigDecimal.ZERO;
+        }
+        return numerator.divide(BigDecimal.valueOf(denominator), 8,
                 BigDecimal.ROUND_HALF_EVEN);
     }
 
@@ -98,8 +121,7 @@ public class PlanningData extends BaseEntity {
             totalNumHours += numHours;
             totalProgress = totalProgress.add(progress);
         }
-        return totalProgress.divide(BigDecimal.valueOf(totalNumHours), 8,
-                BigDecimal.ROUND_HALF_EVEN);
+        return divide(totalProgress, totalNumHours);
     }
 
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -87,5 +88,18 @@ public interface ILabelTypeModel extends IIntegrationEntityModel {
      * @param value
      */
     boolean labelNameIsUnique(String value);
+
+    /**
+     * Check is {@link Label} name is not empty
+     * @param value
+     */
+    void validateNameNotEmpty(String name) throws ValidationException;
+
+    /**
+     * Check is {@link Label} name is unique
+     * @param value
+     */
+    void thereIsOtherWithSameNameAndType(String name)
+            throws ValidationException;
 
 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -103,11 +104,12 @@ public class ReportAdvancesController extends GenericForwardComposer {
             appendLabel(row, toString(order.getCustomerReference()));
             appendLabel(row, order.getName());
 
-            Set<DirectAdvanceAssignment> allDirectAdvanceAssignments = order
-                    .getDirectAdvanceAssignmentsOfSubcontractedOrderElements();
+            DirectAdvanceAssignment directAdvanceAssignment = order
+                    .getDirectAdvanceAssignmentOfTypeSubcontractor();
 
             AdvanceMeasurement lastAdvanceMeasurementReported = reportAdvancesModel
-                    .getLastAdvanceMeasurementReported(allDirectAdvanceAssignments);
+                    .getLastAdvanceMeasurementReported(directAdvanceAssignment);
+
             if (lastAdvanceMeasurementReported != null) {
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurementReported.getValue()));
@@ -117,7 +119,8 @@ public class ReportAdvancesController extends GenericForwardComposer {
             }
 
             AdvanceMeasurement lastAdvanceMeasurement = reportAdvancesModel
-                    .getLastAdvanceMeasurement(allDirectAdvanceAssignments);
+                    .getLastAdvanceMeasurement(directAdvanceAssignment);
+
             if (lastAdvanceMeasurement != null) {
                 appendLabel(row, toString(lastAdvanceMeasurement.getDate()));
                 appendLabel(row, toString(lastAdvanceMeasurement.getValue()));
@@ -127,7 +130,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
             }
 
             if (reportAdvancesModel
-                    .isAnyAdvanceMeasurementNotReported(allDirectAdvanceAssignments)) {
+                    .isAnyAdvanceMeasurementNotReported(directAdvanceAssignment)) {
                 appendLabel(row, _("Pending update"));
                 appendOperations(row, order, false);
             } else {
@@ -162,24 +165,25 @@ public class ReportAdvancesController extends GenericForwardComposer {
             Button exportButton = new Button(_("XML"));
             exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
+                IServletRequestHandler requestHandler = new IServletRequestHandler() {
+
+                    @Override
+                    public void handle(HttpServletRequest request,
+                            HttpServletResponse response)
+                            throws ServletException, IOException {
+                        response.setContentType("text/xml");
+                        String xml = reportAdvancesModel.exportXML(order);
+                        response.getWriter().write(xml);
+                    }
+
+                };
+
                 @Override
                 public void onEvent(Event event) throws Exception {
                     String uri = CallbackServlet.registerAndCreateURLFor(
                             (HttpServletRequest) Executions.getCurrent()
-                                    .getNativeRequest(),
-                            new IServletRequestHandler() {
-
-                                @Override
-                                public void handle(HttpServletRequest request,
-                                        HttpServletResponse response)
-                                        throws ServletException, IOException {
-                                    response.setContentType("text/xml");
-                                    String xml = reportAdvancesModel
-                                            .exportXML(order);
-                                    response.getWriter().write(xml);
-                                }
-
-                            }, false);
+                                    .getNativeRequest(), requestHandler, false,
+                            DisposalMode.WHEN_NO_LONGER_REFERENCED);
 
                     Executions.getCurrent().sendRedirect(uri, "_blank");
                 }

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -248,7 +249,7 @@ public class MachineCRUDController extends GenericForwardComposer {
             throw new RuntimeException(e);
         }
 
-        baseCalendarEditionController.setSelectedDay(new Date());
+        baseCalendarEditionController.setSelectedDay(new LocalDate());
         Util.reloadBindings(editCalendarWindow);
         Util.reloadBindings(createNewVersionWindow);
     }
@@ -396,8 +397,8 @@ public class MachineCRUDController extends GenericForwardComposer {
 
             @Override
             public void cancel() {
+                machineModel.removeCalendar();
                 resourceCalendarModel.cancel();
-                machineModel.setCalendarOfMachine(null);
                 reloadWindow();
             }
 
@@ -411,6 +412,11 @@ public class MachineCRUDController extends GenericForwardComposer {
                     machineModel.setCalendarOfMachine(calendar);
                 }
                 reloadWindow();
+            }
+
+            @Override
+            public void saveAndContinue() {
+                save();
             }
 
         };
@@ -593,7 +599,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     public void setLimitingResource(LimitingResourceEnum option) {
         Machine machine = getMachine();
         if (machine != null) {
-            machine.setLimitingResource(LimitingResourceEnum.LIMITING_RESOURCE.equals(option));
+            machine.setResourceType(LimitingResourceEnum.toResourceType(option));
         }
     }
 
@@ -647,7 +653,7 @@ public class MachineCRUDController extends GenericForwardComposer {
                 final Machine machine = (Machine) data;
                 row.setValue(machine);
 
-                row.addEventListener(Events.ON_DOUBLE_CLICK,
+                row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
                             public void onEvent(Event event) throws Exception {

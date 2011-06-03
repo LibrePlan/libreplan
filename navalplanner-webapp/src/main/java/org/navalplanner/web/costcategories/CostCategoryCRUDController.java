@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,23 +43,28 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.Autocomplete;
+import org.navalplanner.web.util.ValidationExceptionPrinter;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Hbox;
 import org.zkoss.zul.api.Window;
@@ -67,6 +73,7 @@ import org.zkoss.zul.api.Window;
  * Controller for CRUD actions over a {@link CostCategory}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
 public class CostCategoryCRUDController extends GenericForwardComposer
@@ -89,6 +96,8 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     private Grid listHourCosts;
 
     private Grid listCostCategories;
+
+    private ListModel allHoursType;
 
     private HourCostListRenderer hourCostListRenderer = new HourCostListRenderer();
 
@@ -121,6 +130,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 }
             }
         });
+        initializeHoursType();
+    }
+
+    private void initializeHoursType() {
+        allHoursType = new SimpleListModel(costCategoryModel.getAllHoursType());
     }
 
     @Override
@@ -163,18 +177,55 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     public boolean save() {
-        if(!ConstraintChecker.isValid(createWindow)) {
+        if (!ConstraintChecker.isValid(createWindow)) {
             return false;
         }
+
+        try {
+            costCategoryModel.validateHourCostsOverlap();
+        } catch (ValidationException e) {
+            ValidationExceptionPrinter.showAt(listHourCosts, e);
+        }
+
         try {
             costCategoryModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Cost category saved"));
+            messagesForUser.showMessage(Level.INFO, _("Cost category saved"));
             return true;
         } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
+            showInvalidValues(e);
         }
         return false;
+    }
+
+    private void showInvalidValues(ValidationException e) {
+        Object value = e.getInvalidValue().getBean();
+        if (value instanceof HourCost) {
+            showInvalidValue((HourCost) value);
+        }
+        messagesForUser.showInvalidValues(e);
+    }
+
+    private void showInvalidValue(HourCost hourCost) {
+        Row row = ComponentsFinder.findRowByValue(listHourCosts, hourCost);
+        if (row != null) {
+            if (hourCost.getType() == null) {
+                Listbox workHoursType = getWorkHoursType(row);
+                String message = workHoursType.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
+                        : _("The type of hours cannot be null");
+                throw new WrongValueException(getWorkHoursType(row), message);
+            }
+            if (hourCost.getPriceCost() == null) {
+                throw new WrongValueException(getPricePerHour(row), _("Cannot be null or empty"));
+            }
+        }
+    }
+
+    private Listbox getWorkHoursType(Row row) {
+        return (Listbox) row.getChildren().get(1);
+    }
+
+    private Component getPricePerHour(Row row) {
+        return (Component) row.getChildren().get(2);
     }
 
     public CostCategory getCostCategory() {
@@ -235,41 +286,68 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     }
 
     /**
-     * Append a Autocomplete @{link TypeOfWorkHours} to row
+     * Append Selectbox of @{link TypeOfWorkHours} to row
+     *
      * @param row
      */
-    private void appendAutocompleteType(final Row row) {
-        final Autocomplete autocomplete = new Autocomplete();
-        autocomplete.setAutodrop(true);
-        autocomplete.applyProperties();
-        autocomplete.setFinder("TypeOfWorkHoursFinder");
-        autocomplete.setConstraint("no empty:" + _("A type must be selected"));
+    private void appendHoursType(final Row row) {
+        final HourCost hourCost = (HourCost) row.getValue();
+        final Listbox lbHoursType = new Listbox();
+        lbHoursType.setMold("select");
+        lbHoursType.setModel(allHoursType);
+        lbHoursType.renderAll();
+        lbHoursType.applyProperties();
 
-        // Getter, show type selected
-        if (getTypeOfWorkHours(row) != null) {
-            autocomplete.setSelectedItem(getTypeOfWorkHours(row));
+        if (lbHoursType.getItems().isEmpty()) {
+            row.appendChild(lbHoursType);
+            return;
         }
 
-        // Setter, set type selected to HourCost.type
-        autocomplete.addEventListener("onSelect", new EventListener() {
+        // First time is rendered, select first item
+        TypeOfWorkHours type = hourCost.getType();
+        if (hourCost.isNewObject() && type == null) {
+            Listitem item = lbHoursType.getItemAtIndex(0);
+            item.setSelected(true);
+            setHoursType(hourCost, item);
+        } else {
+            // If hoursCost has a type, select item with that type
+            Listitem item = ComponentsFinder.findItemByValue(lbHoursType, type);
+            if (item != null) {
+                lbHoursType.selectItem(item);
+            }
+        }
+
+        lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                final Comboitem comboitem = autocomplete.getSelectedItem();
-
-                if(comboitem != null) {
-                    // Update hourCost
-                    HourCost hourCost = (HourCost) row.getValue();
-                    hourCost.setType((TypeOfWorkHours) comboitem.getValue());
-                    row.setValue(hourCost);
-
-                    // Update the hourPrice in the hourCost
-                    hourCost.setPriceCost(((TypeOfWorkHours) comboitem.getValue()).getDefaultPrice());
-                    Util.reloadBindings(listHourCosts);
+                Listitem item = lbHoursType.getSelectedItem();
+                if (item != null) {
+                    setHoursType((HourCost) row.getValue(), item);
                 }
             }
+
         });
-        row.appendChild(autocomplete);
+
+        row.appendChild(lbHoursType);
+    }
+
+    private void setHoursType(HourCost hourCost, Listitem item) {
+        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item
+                .getValue() : null;
+        hourCost.setType(value);
+        if (value != null) {
+            final BigDecimal defaultPrice = value.getDefaultPrice();
+            final Decimalbox dbPricePerHour = (Decimalbox) item.getParent().getNextSibling();
+            hourCost.setPriceCost(defaultPrice);
+            if (dbPricePerHour != null) {
+                dbPricePerHour.setValue(defaultPrice);
+            }
+        } else {
+            hourCost.setPriceCost(BigDecimal.ZERO);
+            throw new WrongValueException(item.getParent(),
+                    _("Please, select an item"));
+        }
     }
 
     /**
@@ -347,7 +425,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             public void onEvent(Event event) throws Exception {
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
-                Datebox endDateBox = (Datebox) row.getChildren().get(3);
+                Datebox endDateBox = (Datebox) row.getChildren().get(4);
                 endDateBox.setConstraint("after " +
                         String.format("%04d", initDate.getYear()) +
                         String.format("%02d", initDate.getMonthOfYear()) +
@@ -372,8 +450,11 @@ public class CostCategoryCRUDController extends GenericForwardComposer
                 if (dateTime != null) {
                     return new Date(dateTime.getYear()-1900,
                             dateTime.getMonthOfYear()-1,dateTime.getDayOfMonth());
+                } else {
+                    Date now = new Date();
+                    hourCost.setInitDate(new LocalDate(now));
+                    return now;
                 }
-                return null;
             }
 
         }, new Util.Setter<Date>() {
@@ -528,7 +609,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
 
             // Create boxes
             appendTextboxCode(row);
-            appendAutocompleteType(row);
+            appendHoursType(row);
             appendDecimalboxCost(row);
             appendDateboxInitDate(row);
             appendDateboxEndDate(row);

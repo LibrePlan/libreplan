@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +24,8 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.navalplanner.business.common.Registry;
 
 /**
  * This class defines some criterion types known a priori<br />
@@ -154,4 +157,9 @@ public enum PredefinedCriterionTypes implements ICriterionType<Criterion> {
     }
 
     public abstract List<String> getPredefined();
+
+    public CriterionType getCriterionType() {
+        return Registry.getCriterionTypeDAO().findByName(getName());
+    }
+
 }

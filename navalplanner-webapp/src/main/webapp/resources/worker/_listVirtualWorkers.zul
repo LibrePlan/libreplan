@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,7 +37,7 @@
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='virtualWorker'}" value="@{virtualWorker}" onDoubleClick="controller.goToEditVirtualWorkerForm(self.value);">
+            <row self="@{each='virtualWorker'}" value="@{virtualWorker}" onClick="controller.goToEditVirtualWorkerForm(self.value);">
                 <label value="@{virtualWorker.firstName}" />
                 <label value="@{virtualWorker.calendar.capacity}" />
                 <label value="@{virtualWorker.observations}" maxlength="40"/>

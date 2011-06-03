@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,10 @@
 package org.navalplanner.business.test.orders.entities;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
@@ -59,11 +63,13 @@ import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
 import org.navalplanner.business.advance.exceptions.DuplicateValueTrueReportGlobalAdvanceException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLine;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
+import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionType;
 import org.navalplanner.business.resources.entities.ResourceEnum;
@@ -227,6 +233,11 @@ public class OrderElementTest {
                 maxValue, advanceType);
         advanceAssignment.setReportGlobalAdvance(reportGlobalAdvance);
 
+        if (reportGlobalAdvance) {
+            if (orderElement.getReportGlobalAdvanceAssignment() != null) {
+                orderElement.removeReportGlobalAdvanceAssignment();
+            }
+        }
         orderElement.addAdvanceAssignment(advanceAssignment);
         advanceAssignment.addAdvanceMeasurements(advanceMeasurement);
         advanceMeasurement.setAdvanceAssignment(advanceAssignment);
@@ -1092,6 +1103,76 @@ public class OrderElementTest {
                 break;
             }
         }
+    }
+
+    @Test
+    public  void checkChangeIndirectCriterionToInvalid() {
+        Order order = Order.create();
+        order.useSchedulingDataFor(mockedOrderVersion);
+        OrderLineGroup container1 = OrderLineGroup.create();
+        container1.useSchedulingDataFor(mockedOrderVersion);
+        order.add(container1);
+        OrderLineGroup container2 = OrderLineGroup.create();
+        container2.useSchedulingDataFor(mockedOrderVersion);
+        container1.add(container2);
+        OrderLine line = OrderLine.createOrderLineWithUnfixedPercentage(100);
+        line.useSchedulingDataFor(mockedOrderVersion);
+        container2.add(line);
+
+        CriterionType type = CriterionType.create("", "");
+        type.setResource(ResourceEnum.WORKER);
+        CriterionRequirement requirement = DirectCriterionRequirement
+                .create(Criterion.create(type));
+        order.addDirectCriterionRequirement(requirement);
+
+        assertThat(container2.getCriterionRequirements().size(), equalTo(1));
+        IndirectCriterionRequirement requirementAtContainer = (IndirectCriterionRequirement) container2
+                .getCriterionRequirements().iterator().next();
+
+        container2.setValidCriterionRequirement(requirementAtContainer, false);
+
+        assertThat(container1.getCriterionRequirements().size(), equalTo(1));
+        assertTrue(container1.getCriterionRequirements().iterator().next()
+                .isValid());
+
+        assertThat(container2.getCriterionRequirements().size(), equalTo(1));
+        assertFalse(container2.getCriterionRequirements().iterator().next()
+                .isValid());
+
+        assertThat(line.getCriterionRequirements().size(), equalTo(1));
+        assertFalse(line.getCriterionRequirements().iterator().next().isValid());
+
+        assertThat(line.getHoursGroups().size(), equalTo(1));
+        assertThat(line.getHoursGroups().get(0).getCriterionRequirements()
+                .size(), equalTo(1));
+        assertFalse(line.getHoursGroups().get(0).getCriterionRequirements()
+                .iterator().next().isValid());
+    }
+
+    @Test
+    public void checkSpreadAdvanceInOrderLine()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
+        OrderLine orderLine = givenOrderLine("element", "element-code", 100);
+
+        AdvanceType advanceType1 = PredefinedAdvancedTypes.PERCENTAGE.getType();
+        AdvanceType advanceType2 = PredefinedAdvancedTypes.UNITS.getType();
+
+        addAvanceAssignmentWithoutMeasurement(orderLine, advanceType1,
+                BigDecimal.TEN, true);
+        addAvanceAssignmentWithoutMeasurement(orderLine, advanceType2,
+                BigDecimal.TEN, false);
+
+        assertThat(orderLine.getReportGlobalAdvanceAssignment()
+                .getAdvanceType(), equalTo(advanceType1));
+        assertNotNull(orderLine.getReportGlobalAdvanceAssignment());
+
+        orderLine.removeAdvanceAssignment(orderLine
+                .getAdvanceAssignmentByType(advanceType1));
+
+        assertNotNull(orderLine.getReportGlobalAdvanceAssignment());
+        assertThat(orderLine.getReportGlobalAdvanceAssignment()
+                .getAdvanceType(), equalTo(advanceType2));
     }
 
 }

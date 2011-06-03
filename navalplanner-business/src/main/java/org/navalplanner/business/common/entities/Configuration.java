@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -70,6 +71,16 @@ public class Configuration extends BaseEntity {
     private Boolean generateCodeForCalendarExceptionType = true;
 
     private Boolean generateCodeForCostCategory = true;
+
+    private Boolean changedDefaultAdminPassword = false;
+
+    private Boolean changedDefaultUserPassword = false;
+
+    private Boolean changedDefaultWsreaderPassword = false;
+
+    private Boolean changedDefaultWswriterPassword = false;
+
+    private Boolean autocompleteLogin = true;
 
     private ProgressType progressType = ProgressType.SPREAD_PROGRESS;
 
@@ -263,4 +274,50 @@ public class Configuration extends BaseEntity {
         return companyLogoURL;
     }
 
+    public void setChangedDefaultAdminPassword(
+            Boolean changedDefaultAdminPassword) {
+        this.changedDefaultAdminPassword = changedDefaultAdminPassword;
+    }
+
+    public Boolean getChangedDefaultAdminPassword() {
+        return changedDefaultAdminPassword == null ? false
+                : changedDefaultAdminPassword;
+    }
+
+    public void setChangedDefaultUserPassword(Boolean changedDefaultUserPassword) {
+        this.changedDefaultUserPassword = changedDefaultUserPassword;
+    }
+
+    public Boolean getChangedDefaultUserPassword() {
+        return changedDefaultUserPassword != null ? changedDefaultUserPassword
+                : false;
+    }
+
+    public void setChangedDefaultWsreaderPassword(
+            Boolean changedDefaultWsreaderPassword) {
+        this.changedDefaultWsreaderPassword = changedDefaultWsreaderPassword;
+    }
+
+    public Boolean getChangedDefaultWsreaderPassword() {
+        return changedDefaultWsreaderPassword != null ? changedDefaultWsreaderPassword
+                : false;
+    }
+
+    public void setChangedDefaultWswriterPassword(
+            Boolean changedDefaultWswriterPassword) {
+        this.changedDefaultWswriterPassword = changedDefaultWswriterPassword;
+    }
+
+    public Boolean getChangedDefaultWswriterPassword() {
+        return changedDefaultWswriterPassword != null ? changedDefaultWswriterPassword
+                : false;
+    }
+
+    public Boolean isAutocompleteLogin() {
+        return this.autocompleteLogin != null ? this.autocompleteLogin : true;
+    }
+
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        this.autocompleteLogin = autocompleteLogin;
+    }
 }

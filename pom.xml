@@ -5,7 +5,7 @@
     <groupId>org.navalplanner</groupId>
     <artifactId>navalplanner</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.1</version>
+    <version>1.1.0</version>
     <name>NavalPlan</name>
 
     <!--
@@ -34,6 +34,8 @@
         <testDataSource.user>${dataSource.user}</testDataSource.user>
         <testDataSource.password>${dataSource.password}</testDataSource.password>
         <databasetable.prefix>public.</databasetable.prefix>
+
+        <default.passwordsControl>true</default.passwordsControl>
     </properties>
 
     <!--
@@ -465,11 +467,6 @@
                 <artifactId>jcommon</artifactId>
                 <version>1.0.16</version>
             </dependency>
-            <dependency>
-                <groupId>jfree</groupId>
-                <artifactId>jfreechart-igalia</artifactId>
-                <version>0.0.1</version>
-            </dependency>
             <!-- Joda Time -->
             <dependency>
                 <groupId>joda-time</groupId>
@@ -626,12 +623,12 @@
                 <directory>../src/main/jetty</directory>
                 <includes>
                     <include>jetty-env.xml</include>
-                    <include>log4j.properties</include>
                 </includes>
                 <targetPath>../jetty</targetPath>
                 <filtering>true</filtering>
             </resource>
 
+            <!-- Report bundle directories -->
             <resource>
                 <directory>../navalplanner-webapp/src/main/jasper/workingArrangementsPerOrder_Bundle/</directory>
             </resource>
@@ -767,12 +764,6 @@
                         </connector>
                     </connectors>
                     -->
-                    <systemProperties>
-                        <systemProperty>
-                            <name>log4j.configuration</name>
-                            <value>file:./target/jetty/log4j.properties</value>
-                        </systemProperty>
-                    </systemProperties>
                 </configuration>
 
                 <dependencies>

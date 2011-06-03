@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,9 +56,10 @@ import org.zkoss.zk.ui.util.Composer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
-import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Vbox;
 
 /**
@@ -144,8 +146,8 @@ public class CompanyPlanningController implements Composer {
         if (cbProgressTypes == null) {
             cbProgressTypes = (Combobox) planner.getFellow("cbProgressTypes");
         }
-        cbProgressTypes.setModel(new ListModelList(ProgressType.getAll()));
-
+        cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
+        cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
 
         // FIXME: Select default configuration option
         // cbProgressTypes.renderAll();
@@ -171,6 +173,16 @@ public class CompanyPlanningController implements Composer {
         });
 
         cbProgressTypes.setVisible(true);
+    }
+
+    private class ProgressTypeRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) throws Exception {
+            ProgressType progressType = (ProgressType) data;
+            item.setValue(progressType);
+            item.setLabel(_(progressType.getValue()));
+        }
     }
 
     private Comboitem findListitemValue(Combobox listbox, ProgressType value) {

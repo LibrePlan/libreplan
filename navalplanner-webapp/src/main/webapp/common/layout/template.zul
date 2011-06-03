@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,6 +24,8 @@
 <?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/perspectives.css"?>
 <?component name="customMenu" inline="true" macroURI="_customMenu.zul"?>
+<?xel-method prefix="project" name="passwd_control" class="org.navalplanner.business.common.Configuration"
+signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="button" extends="button" mold="trendy"?>
@@ -32,11 +35,17 @@
 <![CDATA[
     contextPath = Executions.getCurrent().getContextPath();
     templateCtrl = templateController;
+    idAdminUser = templateController.getIdAdminUser();
+    idUser = templateController.getIdUser();
+    idWsreader = templateController.getIdWsreaderUser();
+    idWswriter = templateController.getIdWswriterUser();
 ]]>
 </zscript>
 
+
 <div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
 
+<timer repeats="true" running="true" delay="20000" onTimer=""/>
 <borderlayout height="100%" width="100%" >
 <north border="none">
 <n:div>
@@ -60,7 +69,6 @@
   </n:table></n:td>
   </n:tr>
 </n:table>
-
 
       <n:div class="user-area">
           <n:table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -105,12 +113,7 @@
     <borderlayout width="auto" height="100%">
     <!-- borderlayout class="main-layout" height="2000px" width="2000px"-->
     <west class="perspectives-column" width="90px">
-        <n:div>
-        <vbox pack="center" align="center" width="90px" height="30px">
-            <label class="perspectives-label">${i18n:_('Perspectives')}</label>
-        </vbox>
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
-        </n:div>
     </west>
 
     <center self="@{insert(content)}"  class="main-area"/>
@@ -123,6 +126,34 @@
   <n:tr class="footer">
     <n:td height="40" align="left" valign="bottom">
         <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
+    </n:td>
+    <n:td  valign="center">
+        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdadmin"
+            class="footer-messages-area"
+            style="display:${templateCtrl.defaultPasswdAdminVisible}">
+            <div>
+                <n:span>${i18n:_("The admin's account password remains the default one. This is unsecure")}.</n:span>
+                <n:a class="command" href="${contextPath}/users/users.zul#edit%3D${idAdminUser}">[${i18n:_('Change the password')}]</n:a>
+            </div>
+        </n:div>
+        <n:div if="${project:passwd_control()}" id="warningDefaultPasswdOthers"
+            class="footer-messages-area"
+            style="display:${templateCtrl.defaultPasswdVisible}">
+            <div>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idUser}"
+                    id="warningDefaultPasswduser"
+                    style="display:${templateCtrl.defaultPasswdUserVisible}">[user]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idWsreader}"
+                    id="warningDefaultPasswdwsreader"
+                    style="display:${templateCtrl.defaultPasswdWsreaderVisible}">[wsreader]</n:a>
+                <n:a href="${contextPath}/users/users.zul#edit%3D${idWswriter}"
+                    id="warningDefaultPasswdwswriter"
+                    style="display:${templateCtrl.defaultPasswdWswriterVisible}">[wswriter]</n:a>
+                <n:span class="footer-messages-area">
+                    ${i18n:_('default password were not changed')}.
+                </n:span>
+            </div>
+        </n:div>
     </n:td>
     <n:td height="40" align="right" valign="bottom">
         <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>

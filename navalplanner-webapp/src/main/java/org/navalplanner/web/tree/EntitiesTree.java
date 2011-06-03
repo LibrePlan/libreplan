@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -139,7 +140,6 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
         ITreeParentNode<T> container = turnIntoContainerIfNeeded(parent);
         container.add(element.getThis());
         addToTree(container.getThis(), element);
-        added(parent, element, container);
     }
 
     private void addOrderElementAt(ITreeNode<T> destinationNode,
@@ -152,11 +152,7 @@ public abstract class EntitiesTree<T extends ITreeNode<T>> {
             // children, so it should be redrawn
             tree.sendContentsChangedEventFor(container.getThis());
         }
-        added(destinationNode, elementToAdd, container);
     }
-
-    protected abstract void added(ITreeNode<T> destination, ITreeNode<T> added,
-            ITreeParentNode<T> turnedIntoContainer);
 
     private ITreeParentNode<T> turnIntoContainerIfNeeded(
             ITreeNode<T> selectedForTurningIntoContainer) {

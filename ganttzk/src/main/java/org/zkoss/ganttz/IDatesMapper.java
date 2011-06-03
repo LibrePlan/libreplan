@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,8 +21,10 @@
 
 package org.zkoss.ganttz;
 
+import org.apache.commons.lang.math.Fraction;
 import org.joda.time.LocalDate;
 import org.joda.time.ReadableDuration;
+import org.zkoss.ganttz.util.Interval;
 
 public interface IDatesMapper {
 
@@ -41,4 +44,7 @@ public interface IDatesMapper {
 
     int getHorizontalSize();
 
+    Fraction getPixelsPerDay();
+
+    Interval getInterval();
 }

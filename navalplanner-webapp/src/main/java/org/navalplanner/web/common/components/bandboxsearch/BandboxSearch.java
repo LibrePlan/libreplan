@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +20,8 @@
  */
 
 package org.navalplanner.web.common.components.bandboxsearch;
+
+import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,6 @@ import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Listbox;
-
 @SuppressWarnings("serial")
 public class BandboxSearch extends HtmlMacroComponent {
 
@@ -135,14 +137,15 @@ public class BandboxSearch extends HtmlMacroComponent {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                bandbox.close();
+                close();
             }
         });
         listbox.addEventListener(Events.ON_OK, new EventListener() {
 
             @Override
             public void onEvent(Event event) throws Exception {
-                bandbox.close();
+                pickElementFromList();
+                close();
             }
         });
 
@@ -200,7 +203,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         clearHeaderIfNecessary();
         final String[] headers = finder.getHeaders();
         for (int i = 0; i < headers.length; i++) {
-            listhead.getChildren().add(new Listheader(headers[i]));
+            listhead.getChildren().add(new Listheader(_(headers[i])));
         }
     }
 
@@ -210,8 +213,9 @@ public class BandboxSearch extends HtmlMacroComponent {
         }
     }
 
-    private Listitem getSelectedItem() {
-        return (Listitem) listbox.getSelectedItems().iterator().next();
+    public Listitem getSelectedItem() {
+        return listbox == null ? null : (Listitem) listbox.getSelectedItems()
+                .iterator().next();
     }
 
     public String getFinder() {
@@ -323,4 +327,9 @@ public class BandboxSearch extends HtmlMacroComponent {
         }
     }
 
+    public void close() {
+        if (bandbox != null) {
+            bandbox.close();
+        }
+    }
 }

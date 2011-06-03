@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,7 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -164,9 +166,8 @@ public class DerivedDayAssignment extends DayAssignment {
     }
 
     @Override
-    public boolean belongsTo(Object allocation) {
-        return allocation != null
-                && parentState.getAllocation().equals(allocation);
+    protected BaseEntity getParent() {
+        return parentState.getAllocation();
     }
 
     @Override

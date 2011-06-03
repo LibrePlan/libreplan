@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,14 +23,37 @@ package org.zkoss.ganttz.data.resourceload;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.zkoss.ganttz.util.Interval;
 
 public class LoadTimeLine {
+
+    @SuppressWarnings("unchecked")
+    private static final Comparator<LocalDate> nullSafeComparator = ComparatorUtils
+            .nullLowComparator(ComparatorUtils.naturalComparator());
+
+    public static Comparator<LoadTimeLine> byStartAndEndDate() {
+        return new Comparator<LoadTimeLine>() {
+
+            @Override
+            public int compare(LoadTimeLine o1, LoadTimeLine o2) {
+                int result = nullSafeComparator.compare(o1.getStartPeriod(),
+                        o2.getStartPeriod());
+                if (result == 0) {
+                    return nullSafeComparator.compare(o1.getEndPeriod(),
+                            o2.getEndPeriod());
+                }
+                return result;
+
+            }
+        };
+    }
 
     private final String conceptName;
     private final List<LoadPeriod> loadPeriods;
@@ -63,13 +87,13 @@ public class LoadTimeLine {
                 .unmodifiableList(new ArrayList<LoadTimeLine>());
     }
 
-    public LoadTimeLine(LoadTimeLine principal, List<LoadTimeLine> children) {
-        Validate.notEmpty(principal.getConceptName());
-        Validate.notNull(principal.getLoadPeriods());
-        this.loadPeriods = LoadPeriod.sort(principal.getLoadPeriods());
-        this.conceptName = principal.getConceptName();
-        this.timeLineRole = principal.getRole();
-        this.type = principal.getType();
+    public LoadTimeLine(LoadTimeLine main, List<LoadTimeLine> children) {
+        Validate.notEmpty(main.getConceptName());
+        Validate.notNull(main.getLoadPeriods());
+        this.loadPeriods = LoadPeriod.sort(main.getLoadPeriods());
+        this.conceptName = main.getConceptName();
+        this.timeLineRole = main.getRole();
+        this.type = main.getType();
         Validate.notNull(children);
         this.children = Collections
                 .unmodifiableList(new ArrayList<LoadTimeLine>(children));

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="use-capacity-instead-of-effort_duration-and-not_over_assignable" author="ogonzalez">
+        <comment>Convert from duration + notAssignable (not over assignable) to capacity property</comment>
+        <addColumn tableName="calendar_exception_type">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="calendar_exception_type" oldColumnName="duration"
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
+        <update tableName="calendar_exception_type">
+            <column name="allowed_extra_effort" valueNumeric="0" />
+            <where>not_assignable</where>
+        </update>
+        <dropColumn tableName="calendar_exception_type" columnName="not_assignable"/>
+    </changeSet>
+
+    <changeSet id="use-capacity-for-exceptions" author="ogonzalez">
+        <comment>Convert from duration to capacity property for calendar exceptions</comment>
+        <addColumn tableName="calendar_exception">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="calendar_exception" oldColumnName="duration"
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
+        <sql>
+        update calendar_exception SET allowed_extra_effort =
+            (select allowed_extra_effort from calendar_exception_type
+                where calendar_exception_type.id = calendar_exception.calendar_exception_id)
+        </sql>
+    </changeSet>
+
+    <changeSet id="use-capacity-for-capacity-per-day-for-calendar-data" author="ogonzalez">
+        <comment>Convert from duration to capacity in effort per day for CalendarData</comment>
+        <renameTable newTableName="capacity_per_day" oldTableName="effort_per_day" />
+        <addColumn tableName="capacity_per_day">
+            <column name="allowed_extra_effort" type="INTEGER" defaultValue="NULL"/>
+        </addColumn>
+        <renameColumn tableName="capacity_per_day" oldColumnName="effort"
+                      newColumnName="standard_effort" columnDataType="INTEGER"/>
+    </changeSet>
+
+    <changeSet id="by_default_weekends_are_not_overassignable" author="ogonzalez">
+        <comment>By default weekends are not over assignable</comment>
+        <sql>
+        update capacity_per_day SET allowed_extra_effort = 0
+        where day_id IN (5, 6) AND allowed_extra_effort IS NULL
+        </sql>
+    </changeSet>
+
+    <changeSet id="replace-column-limited_resource-with-resource_type" author="jaragunde">
+        <comment>Replace column limited_resource with resource_type in resource table</comment>
+        <addColumn tableName="resource">
+            <column name="resource_type" type="VARCHAR(64)"/>
+        </addColumn>
+        <update tableName="resource">
+            <column name="resource_type" value="NON_LIMITING_RESOURCE"/>
+            <where>limited_resource = false</where>
+        </update>
+        <update tableName="resource">
+            <column name="resource_type" value="LIMITING_RESOURCE"/>
+            <where>limited_resource = true</where>
+        </update>
+        <addNotNullConstraint tableName="resource" columnName="resource_type"
+         columnDataType="VARCHAR(64)" />
+        <dropColumn tableName="resource" columnName="limited_resource"/>
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_admin_password" author="smontes">
+        <comment>Add new column changed_default_admin_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_admin_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_admin_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_admin_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_user_password" author="smontes">
+        <comment>Add new column changed_default_user_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_user_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_user_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_user_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_wsreader_password" author="smontes">
+        <comment>Add new column changed_default_wsreader_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wsreader_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_wsreader_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_wsreader_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-new-column-changed_default_wswriter_password" author="smontes">
+        <comment>Add new column changed_default_wswriter_password with default value FALSE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="changed_default_wswriter_password" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="changed_default_wswriter_password"
+            defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="configuration"
+            columnName="changed_default_wswriter_password"
+            defaultNullValue="FALSE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-intended_resources_per_day-column-to-resource-allocation" author="ogonzalez">
+        <comment>add intended_resources_per_day column to resource-allocation</comment>
+        <addColumn tableName="resource_allocation">
+            <column name="intended_resources_per_day" type="DECIMAL(19,2)" />
+        </addColumn>
+        <sql>update resource_allocation SET intended_resources_per_day = resources_per_day</sql>
+    </changeSet>
+
+    <changeSet id="change-original-total-assignment-to-use-effort-duration" author="ogonzalez">
+        <comment>rename original_total_assignment to intended_total_assignment and now it's interpreted as an EffortDuration</comment>
+        <addColumn tableName="resource_allocation">
+            <column name="intended_total_assignment" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="resource_allocation" columnName="intended_total_assignment"
+            defaultValueNumeric="0" />
+        <sql>UPDATE resource_allocation SET intended_total_assignment = 3600 * original_total_assignment WHERE original_total_assignment IS NOT NULL</sql>
+        <dropColumn tableName="resource_allocation" columnName="original_total_assignment"/>
+    </changeSet>
+
+     <changeSet id="add-intended_non_consolidated_effort" author="ogonzalez">
+        <addColumn tableName="resource_allocation">
+            <column name="intended_non_consolidated_effort" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="resource_allocation" columnName="intended_non_consolidated_effort"
+            defaultValueNumeric="0" />
+        <sql>UPDATE resource_allocation SET intended_non_consolidated_effort = intended_total_assignment</sql>
+    </changeSet>
+
+    <changeSet id="add-effort-duration-to-task-and-milestone" author="mrego">
+        <comment>
+            constraintDate attribute in class TaskPositionConstraint has been changed to IntraDayDate.
+            It is needed to add some columns to store EffortDuration in Task and TaskMilestone.
+        </comment>
+        <addColumn tableName="task">
+            <column name="constraint_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addColumn tableName="task_milestone">
+            <column name="constraint_date_effort_duration" type="INTEGER" />
+        </addColumn>
+        <addDefaultValue tableName="task"
+            columnName="constraint_date_effort_duration"
+            defaultValueNumeric="0" />
+        <addDefaultValue tableName="task_milestone"
+            columnName="constraint_date_effort_duration"
+            defaultValueNumeric="0" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -244,9 +245,21 @@ public class AvailabilityTimeLine {
     public static class Interval implements
             Comparable<Interval> {
 
-        static Interval create(LocalDate start, LocalDate end) {
-            return new Interval(new FixedPoint(start), new FixedPoint(
-                    end));
+        /**
+         * Creates an interval. Null values can be provided.
+         *
+         * @param start
+         *            if <code>null</code> is interpreted as start of time.
+         * @param end
+         *            if <code>null</code> is interpreted as end of time
+         * @return an interval from start to end
+         */
+        public static Interval create(LocalDate start, LocalDate end) {
+            DatePoint startPoint = start == null ? new StartOfTime()
+                    : new FixedPoint(start);
+            DatePoint endPoint = end == null ? new EndOfTime()
+                    : new FixedPoint(end);
+            return new Interval(startPoint, endPoint);
         }
 
         static Interval all() {
@@ -332,6 +345,10 @@ public class AvailabilityTimeLine {
         }
     }
 
+    public interface IVetoer {
+        public boolean isValid(LocalDate date);
+    }
+
     public static AvailabilityTimeLine allValid() {
         return new AvailabilityTimeLine();
     }
@@ -342,28 +359,44 @@ public class AvailabilityTimeLine {
         return result;
     }
 
+    private static IVetoer NO_VETOER = new IVetoer() {
+
+        @Override
+        public boolean isValid(LocalDate date) {
+            return true;
+        }
+    };
+
+    private IVetoer vetoer = NO_VETOER;
+
     private List<Interval> invalids = new ArrayList<Interval>();
 
     private AvailabilityTimeLine() {
     }
 
     public boolean isValid(LocalDate date) {
+        return isValidBasedOnInvaidIntervals(date) && vetoer.isValid(date);
+    }
+
+    private boolean isValidBasedOnInvaidIntervals(LocalDate date) {
         if (invalids.isEmpty()) {
             return true;
         }
+        Interval possibleInterval = findPossibleIntervalFor(date);
+        return possibleInterval == null || !possibleInterval.includes(date);
+    }
+
+    private Interval findPossibleIntervalFor(LocalDate date) {
         Interval point = Interval.point(date);
         int binarySearch = Collections.binarySearch(invalids, point);
         if (binarySearch >= 0) {
-            Interval interval = invalids.get(binarySearch);
-            return !interval.includes(date);
+            return invalids.get(binarySearch);
         } else {
             int insertionPoint = insertionPoint(binarySearch);
             if (insertionPoint == 0) {
-                return true;
+                return null;
             }
-            Interval interval = invalids
-                    .get(insertionPoint - 1);
-            return !interval.includes(date);
+            return invalids.get(insertionPoint - 1);
         }
     }
 
@@ -374,6 +407,19 @@ public class AvailabilityTimeLine {
     public void invalidAt(LocalDate date) {
         Interval point = Interval.point(date);
         insert(point);
+    }
+
+    /**
+     * There are some invalid dates that cannot or are not suitable to be
+     * represented as belonging to invalid intervals. For example if the invalid
+     * dates are an infinite set.
+     *
+     * @param vetoer
+     *            the vetoer to use
+     */
+    public void setVetoer(IVetoer vetoer) {
+        Validate.notNull(vetoer);
+        this.vetoer = vetoer;
     }
 
     private void insert(Interval toBeInserted) {
@@ -477,7 +523,18 @@ public class AvailabilityTimeLine {
         AvailabilityTimeLine result = AvailabilityTimeLine.allValid();
         inserting(result, invalids);
         inserting(result, another.invalids);
+        result.setVetoer(and(this.vetoer, another.vetoer));
         return result;
+    }
+
+    private static IVetoer and(final IVetoer a,
+            final IVetoer b) {
+        return new IVetoer() {
+            @Override
+            public boolean isValid(LocalDate date) {
+                return a.isValid(date) && b.isValid(date);
+            }
+        };
     }
 
     public AvailabilityTimeLine or(AvailabilityTimeLine another) {
@@ -498,7 +555,18 @@ public class AvailabilityTimeLine {
                         FixedPoint.tryExtract(each.getEnd()));
             }
         }
+        result.setVetoer(or(this.vetoer, another.vetoer));
         return result;
+    }
+
+    private static IVetoer or(final IVetoer a,
+            final IVetoer b) {
+        return new IVetoer() {
+            @Override
+            public boolean isValid(LocalDate date) {
+                return a.isValid(date) || b.isValid(date);
+            }
+        };
     }
 
     private static List<Interval> doIntersections(AvailabilityTimeLine one,

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.advance.exceptions.DuplicateAdvanceAssignmentForOrderElementException;
@@ -40,9 +42,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.orders.entities.Order.SchedulingMode;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -68,6 +70,7 @@ import org.navalplanner.web.users.OrderAuthorizationController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
+import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -301,10 +304,14 @@ public class OrderCRUDController extends GenericForwardComposer {
         }
 
         private void fillSchedulingModes() {
-            schedulingMode.appendChild(createCombo(SchedulingMode.FORWARD,
-                    _("Forward"), _("Schedule from start to deadline")));
-            schedulingMode.appendChild(createCombo(SchedulingMode.BACKWARDS,
-                    _("Backwards"), _("Schedule from the deadline to start")));
+            List options = schedulingMode.getChildren();
+            if (options != null && options.isEmpty()) {
+                schedulingMode.appendChild(createCombo(SchedulingMode.FORWARD,
+                        _("Forward"), _("Schedule from start to deadline")));
+                schedulingMode.appendChild(createCombo(
+                        SchedulingMode.BACKWARDS, _("Backwards"),
+                        _("Schedule from the deadline to start")));
+            }
         }
 
         void chooseCurrentSchedulingMode() {
@@ -428,7 +435,8 @@ public class OrderCRUDController extends GenericForwardComposer {
         if (getCurrentTab() != null) {
             // Confirm advances tab.
             if (getCurrentTab().getId().equals("tabAdvances")) {
-                if (!manageOrderElementAdvancesController.save()) {
+                if (manageOrderElementAdvancesController != null
+                        && !manageOrderElementAdvancesController.save()) {
                     resetSelectedTab();
                     selectTab("tabAdvances");
                     return false;
@@ -623,12 +631,16 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     public void saveAndContinue() {
+        saveAndContinue(true);
+    }
+
+    private void saveAndContinue(boolean showSaveMessage) {
 
         Order order = (Order) orderModel.getOrder();
         final boolean isNewObject = order.isNewObject();
         setCurrentTab();
         Tab previousTab = getCurrentTab();
-        final boolean couldSave = save();
+        final boolean couldSave = save(showSaveMessage);
 
         if (couldSave) {
 
@@ -667,11 +679,15 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private void refreshCodeTextboxesOnly() {
-        if(orderElementTreeController != null) {
+        if (orderElementTreeController != null) {
             Map<OrderElement, Textbox> orderElementCodeTextBoxes =
                 orderElementTreeController.getOrderElementCodeTextboxes();
-            for(OrderElement element :orderElementCodeTextBoxes.keySet()) {
-                orderElementCodeTextBoxes.get(element).setValue(element.getCode());
+
+            for (OrderElement element : orderElementCodeTextBoxes.keySet()) {
+                if (element.getId() != null) {
+                    orderElementCodeTextBoxes.get(element).setValue(
+                            element.getCode());
+                }
             }
         }
     }
@@ -685,6 +701,10 @@ public class OrderCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
+        return save(true);
+    }
+
+    private boolean save(boolean showSaveMessage) {
         if (manageOrderElementAdvancesController != null) {
             selectTab("tabAdvances");
             if (!manageOrderElementAdvancesController.save()) {
@@ -717,12 +737,13 @@ public class OrderCRUDController extends GenericForwardComposer {
         try {
             orderModel.save();
             saveOrderAuthorizations();
-
-            try {
-                Messagebox.show(_("Project saved"), _("Information"),
-                        Messagebox.OK, Messagebox.INFORMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            if (showSaveMessage) {
+                try {
+                    Messagebox.show(_("Project saved"), _("Information"),
+                            Messagebox.OK, Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return true;
         } catch (ValidationException e) {
@@ -860,6 +881,23 @@ public class OrderCRUDController extends GenericForwardComposer {
                                     "You can not remove the project \"{0}\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario",
                                     order.getName()));
         } else {
+            if (!StringUtils.isBlank(order.getExternalCode())) {
+                try {
+                    if (Messagebox
+                            .show(
+                                    _("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"),
+                                    _("Confirm"), Messagebox.OK
+                                            | Messagebox.CANCEL,
+                                    Messagebox.QUESTION) == Messagebox.CANCEL) {
+                        return;
+                    }
+                } catch (InterruptedException e) {
+                    messagesForUser.showMessage(Level.ERROR, e.getMessage());
+                    LOG.error(_("Error on showing removing element: ", order
+                            .getId()), e);
+                }
+            }
+
             orderModel.remove(order);
             Util.reloadBindings(self);
             messagesForUser.showMessage(Level.INFO, _("Removed {0}", order
@@ -962,6 +1000,17 @@ public class OrderCRUDController extends GenericForwardComposer {
                         orderModel.setExternalCompany((ExternalCompany) object);
                     }
                 });
+        bdExternalCompanies.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        final Object object = bdExternalCompanies
+                                .getSelectedElement();
+                        orderModel.setExternalCompany((ExternalCompany) object);
+                        bdExternalCompanies.close();
+                    }
+                });
+
     }
 
     public void setupOrderDetails() {
@@ -1029,11 +1078,18 @@ public class OrderCRUDController extends GenericForwardComposer {
         orderModel.prepareForCreate();
     }
 
-    public void editNewCreatedOrder() {
+    private void editNewCreatedOrder() {
         showOrderElementFilter();
         hideCreateButtons();
         prepareEditWindow();
         showEditWindow(_("Create project"));
+    }
+
+    public void editNewCreatedOrder(Window detailsWindow) {
+        editNewCreatedOrder();
+        // close project details window
+        detailsWindow.setVisible(false);
+        saveAndContinue(false);
     }
 
     public ProjectDetailsController getCreationPopup() {
@@ -1103,6 +1159,10 @@ public class OrderCRUDController extends GenericForwardComposer {
             messagesForUser.showMessage(Level.ERROR, e.getMessage());
         }
         Util.reloadBindings(editWindow);
+    }
+
+    public void setCodeAutogeneratedInModel(boolean codeAutogenerated) {
+        orderModel.setCodeAutogenerated(codeAutogenerated);
     }
 
     public OrderStatusEnum[] getOrderStatus() {
@@ -1350,21 +1410,30 @@ public class OrderCRUDController extends GenericForwardComposer {
         saveOrderAndContinueButton.setVisible(!showCreate);
     }
 
-    public void highLight(OrderElement orderElement) {
-        Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
-        if (tab != null) {
-            tab.setSelected(true);
-            Events.sendEvent(new SelectEvent(Events.ON_SELECT, tab, null));
-        }
+    public void highLight(final OrderElement orderElement) {
+        final Tab tab = (Tab) editWindow.getFellowIfAny("tabOrderElements");
+        LongOperationFeedback.executeLater(tab, new Runnable() {
 
-        if ((!(orderElement instanceof Order))
-                && (orderElementTreeController != null)) {
-            final Treeitem item = orderElementTreeController
+            @Override
+            public void run() {
+                if (tab != null) {
+                    tab.setSelected(true);
+                    Events.sendEvent(new SelectEvent(Events.ON_SELECT, tab,
+                            null));
+                }
+
+                if (!(orderElement instanceof Order)
+                        && orderElementTreeController != null) {
+                    final Treeitem item = orderElementTreeController
                     .getTreeitemByOrderElement(orderElement);
-            if (item != null) {
-                orderElementTreeController.showEditionOrderElement(item);
+
+                    if (item != null) {
+                        orderElementTreeController
+                                .showEditionOrderElement(item);
+                    }
+                }
             }
-        }
+        });
     }
 
     /**

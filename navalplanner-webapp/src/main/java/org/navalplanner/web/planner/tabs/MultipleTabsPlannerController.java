@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,8 @@ import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -32,9 +35,10 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.templates.entities.OrderTemplate;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
 import org.navalplanner.web.limitingresources.LimitingResourcesController;
 import org.navalplanner.web.montecarlo.MonteCarloController;
@@ -131,6 +135,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     private Mode mode = Mode.initial();
 
+    @Resource
+    private IGlobalViewEntryPoints globalView;
+
     @Autowired
     private CompanyPlanningController companyPlanningController;
 
@@ -182,6 +189,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private IResourceDAO resourceDAO;
+
+    @Autowired
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -255,14 +265,14 @@ public class MultipleTabsPlannerController implements Composer,
         if (isMontecarloVisible) {
             monteCarloTab = MonteCarloTabCreator.create(mode,
                     monteCarloController, orderPlanningController, breadcrumbs,
-                    resourceDAO);
+                    resourcesSearcher);
         }
 
         final State<Void> typeChanged = typeChangedState();
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
                 .create(mode, transactionService, orderDAO, taskElementDAO,
                         resourceDAO, scenarioManager.getCurrent(),
-                        returnToPlanningTab(), breadcrumbs));
+                        returnToPlanningTab(), breadcrumbs, globalView));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))
@@ -360,14 +370,14 @@ public class MultipleTabsPlannerController implements Composer,
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher.setConfiguration(buildTabsConfiguration());
-        final URLHandler<IGlobalViewEntryPoints> handler = registry
+        final EntryPointsHandler<IGlobalViewEntryPoints> handler = registry
                 .getRedirectorFor(IGlobalViewEntryPoints.class);
         if (!handler.applyIfMatches(this)) {
             planningTab.toggleToNoFeedback();
             goToCompanyScheduling();
             planningTab.toggleToFeedback();
         }
-        handler.registerListener(this, comp.getPage());
+        handler.registerBookmarkListener(this, comp.getPage());
     }
 
     private TabsRegistry getTabsRegistry() {

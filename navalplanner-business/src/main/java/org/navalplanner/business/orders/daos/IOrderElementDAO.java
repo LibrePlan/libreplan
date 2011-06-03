@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +27,6 @@ import java.util.Set;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
@@ -57,16 +57,6 @@ public interface IOrderElementDAO extends IIntegrationEntityDAO<OrderElement> {
      */
     public OrderElement findUniqueByCodeAndParent(OrderElement parent,
             String code) throws InstanceNotFoundException;
-
-    /**
-     * @param orderElement
-     *            the order element for which the parent is searched
-     * @return <code>null</code> if there is no parent for order element, the
-     *         parent of order element loaded from the database otherwise
-     */
-    public OrderElement findParent(OrderElement orderElement);
-
-    public Order loadOrderAvoidingProxyFor(OrderElement orderElement);
 
     /**
      * Returns the number of assigned hours for an {@link OrderElement}.

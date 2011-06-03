@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -51,9 +52,8 @@ import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
@@ -74,13 +74,13 @@ public class CriterionsMachineController extends GenericForwardComposer {
 
     private IAssignedMachineCriterionsModel assignedMachineCriterionsModel;
 
-    private Combobox comboboxFilter;
-
     private Grid listingCriterions;
 
     private IMessagesForUser messages;
 
     private Component messagesContainer;
+
+    private Checkbox criterionFilterCheckbox;
 
     public CriterionsMachineController() {
 
@@ -104,12 +104,15 @@ public class CriterionsMachineController extends GenericForwardComposer {
     }
 
     public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
-        Comboitem comboitem = comboboxFilter.getSelectedItem();
-        if((comboitem != null) && (comboitem.getLabel().equals("in force"))) {
-            return assignedMachineCriterionsModel
-                    .getFilterCriterionSatisfactions();
-            }
-        return assignedMachineCriterionsModel.getAllCriterionSatisfactions();
+        List<CriterionSatisfactionDTO> list = new ArrayList<CriterionSatisfactionDTO>();
+        if (criterionFilterCheckbox.isChecked()) {
+            list.addAll(assignedMachineCriterionsModel
+                    .getFilterCriterionSatisfactions());
+        } else {
+            list.addAll(assignedMachineCriterionsModel
+                    .getAllCriterionSatisfactions());
+        }
+        return list;
     }
 
     public void addCriterionSatisfaction() {
@@ -185,7 +188,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
             }
     }
 
-    public void changeDate(Component comp){
+    public void changeDate(Component comp) {
         CriterionSatisfactionDTO criterionSatisfactionDTO =
             (CriterionSatisfactionDTO)((Row) comp.getParent()).getValue();
         validateCriterionWithItsType(criterionSatisfactionDTO,comp);
@@ -229,6 +232,9 @@ public class CriterionsMachineController extends GenericForwardComposer {
     private void validateStartDate(Component comp, Object value) {
         CriterionSatisfactionDTO criterionSatisfactionDTO = (CriterionSatisfactionDTO) ((Row) comp
                 .getParent()).getValue();
+        if (value == null) {
+            throw new WrongValueException(comp, _("Start date cannot be null"));
+        }
         if (!criterionSatisfactionDTO.isLessToEndDate((Date) value)) {
             throw new WrongValueException(
                     comp,

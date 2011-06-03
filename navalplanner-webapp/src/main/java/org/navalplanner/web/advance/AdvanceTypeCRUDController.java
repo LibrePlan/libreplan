@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -37,6 +38,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
@@ -46,6 +48,8 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Textbox;
+import org.zkoss.zul.impl.InputElement;
 
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
@@ -163,14 +167,34 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
     }
 
     private boolean save() {
-        try {
-            advanceTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, _("Progress type saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-            return false;
+        if (isAllValid()) {
+            try {
+                advanceTypeModel.save();
+                messagesForUser.showMessage(Level.INFO,
+                        _("Progress type saved"));
+                return true;
+            } catch (ValidationException e) {
+                messagesForUser.showInvalidValues(e);
+                return false;
+            }
         }
+        return false;
+    }
+
+    private boolean isAllValid() {
+        Component window = this.getCurrentWindow();
+        Textbox unitName = (Textbox) window.getFellowIfAny("unitName");
+        InputElement defaultMaxValue = (InputElement) window
+                .getFellowIfAny("defaultMaxValue");
+        InputElement precision = (InputElement) window
+                .getFellowIfAny("precision");
+        unitName.setFocus(true);
+        return (isValid(unitName) && isValid(precision) && isValid(defaultMaxValue));
+    }
+
+    private boolean isValid(InputElement inputtext) {
+        inputtext.setFocus(true);
+        return inputtext.isValid();
     }
 
     public void confirmRemove(AdvanceType advanceType) {
@@ -262,12 +286,17 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
 
             @Override
             public void render(Row row, Object data) throws Exception {
-                AdvanceType advanceType = (AdvanceType) data;
-
+                final AdvanceType advanceType = (AdvanceType) data;
                 appendLabelName(row, advanceType);
                 appendCheckboxEnabled(row, advanceType);
                 appendCheckboxPredefined(row, advanceType);
                 appendOperations(row, advanceType);
+                row.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        goToEditForm(advanceType);
+                    }
+                });
             }
 
             private void appendLabelName(Row row, AdvanceType advanceType) {

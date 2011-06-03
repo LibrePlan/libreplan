@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,20 +25,43 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.resources.search.NewAllocationSelectorComboController;
 
 /**
- * ZK macro component for searching {@link Worker} entities
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ *
+ *         ZK macro component for searching {@link Worker} entities
+ *
  */
 @SuppressWarnings("serial")
 public class NewAllocationSelectorCombo extends AllocationSelector {
 
+    private NewAllocationSelectorComboController selectorController;
+
+    private ResourceAllocationBehaviour behaviour;
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+    }
+
     @Override
     public NewAllocationSelectorComboController getController() {
-        return (NewAllocationSelectorComboController) this.getVariable(
-                "controller", true);
+        if (selectorController == null) {
+            selectorController = new NewAllocationSelectorComboController(behaviour);
+            try {
+                selectorController.doAfterCompose(this);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return selectorController;
     }
 
     public void setDisabled(boolean disabled) {
         ((NewAllocationSelectorComboController) getController())
                 .setDisabled(disabled);
     }
+
+    public void setBehaviour(String behaviour) {
+        this.behaviour = ResourceAllocationBehaviour.valueOf(behaviour);
+    }
+
 }

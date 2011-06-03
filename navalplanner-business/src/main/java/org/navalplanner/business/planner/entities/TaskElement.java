@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -46,7 +47,7 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.entities.Dependency.Type;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
@@ -306,8 +307,8 @@ public abstract class TaskElement extends BaseEntity {
     }
 
     public IDatesHandler getDatesHandler(Scenario scenario,
-            IResourceDAO resourceDAO) {
-        return noNullDates(createDatesHandler(scenario, resourceDAO));
+            IResourcesSearcher resourcesSearcher) {
+        return noNullDates(createDatesHandler(scenario, resourcesSearcher));
     }
 
     private IDatesHandler noNullDates(final IDatesHandler decorated) {
@@ -333,7 +334,8 @@ public abstract class TaskElement extends BaseEntity {
         };
     }
 
-    protected abstract IDatesHandler createDatesHandler(Scenario scenario, IResourceDAO resourceDAO);
+    protected abstract IDatesHandler createDatesHandler(Scenario scenario,
+            IResourcesSearcher resourcesSearcher);
 
     public interface IDatesHandler {
 
@@ -520,6 +522,11 @@ public abstract class TaskElement extends BaseEntity {
         return false;
     }
 
+    public boolean isSubcontractedAndWasAlreadySent() {
+        // Just Task could be subcontracted
+        return false;
+    }
+
     public boolean isLimiting() {
         return false;
     }
@@ -638,6 +645,10 @@ public abstract class TaskElement extends BaseEntity {
 
     public Integer getSumOfHoursAllocated() {
         return sumOfHoursAllocated;
+    }
+
+    public String toString() {
+        return getName();
     }
 
 }

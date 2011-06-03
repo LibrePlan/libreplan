@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -231,6 +232,7 @@ class NotBlockingAutoUpdatedSnapshot<T> implements IAutoUpdatedSnapshot<T> {
                     return callable.call();
                 } catch (Exception e) {
                     error = e;
+                    LOG.error("error executing snapshot " + name);
                     throw e;
                 } finally {
                     long timeExecuting = System.currentTimeMillis() - start;

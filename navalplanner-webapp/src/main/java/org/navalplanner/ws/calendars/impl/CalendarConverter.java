@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,6 +41,7 @@ import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -164,9 +166,9 @@ public final class CalendarConverter {
         CalendarData calendarData = CalendarData.createUnvalidated(
                 calendarDataDTO.code, expiringDate, parent);
 
-        Map<Integer, Integer> hoursPerDays = getHoursPerDays(calendarDataDTO.hoursPerDays);
+        Map<Integer, Capacity> capacitiesPerDays = getCapacitiesPerDays(calendarDataDTO.hoursPerDays);
         try {
-            calendarData.updateHourPerDay(hoursPerDays);
+            calendarData.updateCapacitiesPerDay(capacitiesPerDays);
         } catch (IllegalArgumentException e) {
             throw new ValidationException(_(e.getMessage()));
         }
@@ -278,9 +280,9 @@ public final class CalendarConverter {
 
         BaseCalendar parent = findBaseCalendarParent(calendarDataDTO.parentCalendar);
 
-        Map<Integer, Integer> hoursPerDays = getHoursPerDays(calendarDataDTO.hoursPerDays);
+        Map<Integer, Capacity> capacitiesPerDays = getCapacitiesPerDays(calendarDataDTO.hoursPerDays);
         try {
-            calendarData.updateHourPerDay(hoursPerDays);
+            calendarData.updateCapacitiesPerDay(capacitiesPerDays);
         } catch (IllegalArgumentException e) {
             throw new ValidationException(_(e.getMessage()));
         }
@@ -289,15 +291,18 @@ public final class CalendarConverter {
 
     }
 
-    private static Map<Integer, Integer> getHoursPerDays(
+    private static Map<Integer, Capacity> getCapacitiesPerDays(
             List<HoursPerDayDTO> hoursPerDayDTOs) {
-        Map<Integer, Integer> hoursPerDays = new HashMap<Integer, Integer>();
+        Map<Integer, Capacity> result = new HashMap<Integer, Capacity>();
         if (hoursPerDayDTOs != null) {
             for (HoursPerDayDTO hoursPerDayDTO : hoursPerDayDTOs) {
                 try {
                     Integer day = CalendarData.Days.valueOf(hoursPerDayDTO.day)
                         .ordinal();
-                    hoursPerDays.put(day, hoursPerDayDTO.hours);
+                    Capacity capacity = Capacity.create(
+                            EffortDuration.hours(hoursPerDayDTO.hours))
+                            .overAssignableWithoutLimit();
+                    result.put(day, capacity);
                 } catch (IllegalArgumentException e) {
                     throw new ValidationException(_("a day is not valid"));
                 } catch(NullPointerException e){
@@ -305,7 +310,7 @@ public final class CalendarConverter {
                 }
             }
         }
-        return hoursPerDays;
+        return result;
     }
 
     private static BaseCalendar findBaseCalendarParent(String parentCode) {

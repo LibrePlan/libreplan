@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -266,7 +267,7 @@ public class LimitingResourceAllocator {
     }
 
     private static DateAndHour getStartTimeBecauseOfGantt(LimitingResourceQueueElement element) {
-        return new DateAndHour(new LocalDate(element.getEarlierStartDateBecauseOfGantt()), 0);
+        return new DateAndHour(new LocalDate(element.getEarliestStartDateBecauseOfGantt()), 0);
     }
 
     private static Gap createLastGap(

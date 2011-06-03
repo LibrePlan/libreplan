@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,14 +21,14 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Work Report Models')}">
     <grid id="listing" mold="paging" pageSize="10"
-        model="@{controller.workReportTypes}"
+        model="@{controller.workReportTypes}" sclass="clickable-rows"
         onInitRender ="controller.sortWorkReportTypes();">
         <columns>
             <column id="workReportTypeName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
             <column label="${i18n:_('Operations')}" />
         </columns>
         <rows>
-            <row self="@{each='workReportType'}" value="@{workReportType}">
+            <row self="@{each='workReportType'}" value="@{workReportType}" onClick="controller.goToEditNewWorkReportForm(self.value);">
                 <label value="@{workReportType.name}" />
                 <hbox>
 

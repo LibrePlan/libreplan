@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,10 +24,12 @@ package org.navalplanner.web.planner.allocation;
 import java.util.Date;
 import java.util.List;
 
+import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.common.ProportionalDistributor;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
@@ -49,8 +52,10 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
 
     /**
      * Save task
+     *
+     * @return
      */
-    void accept();
+    Flagged<AllocationResult, Warnings> accept();
 
     /**
      * Starts the use case
@@ -71,6 +76,10 @@ public interface IResourceAllocationModel extends INewAllocationsAdder {
     <T> T onAllocationContext(
             IResourceAllocationContext<T> resourceAllocationContext);
 
+    /**
+     * Adds the default allocations, also known as recommended allocation. If it
+     * can't be done <code>null</code> is returned
+     */
     ProportionalDistributor addDefaultAllocations();
 
     Date getTaskEnd();

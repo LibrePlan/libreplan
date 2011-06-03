@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -174,6 +175,15 @@ public class TaskQualityForm extends BaseEntity {
 
     public void setReportAdvance(Boolean reportAdvance) {
         this.reportAdvance = BooleanUtils.toBoolean(reportAdvance);
+    }
+
+    public static TaskQualityForm copy(TaskQualityForm origin,
+            OrderElement orderElement) {
+        TaskQualityForm copy = TaskQualityForm.create(orderElement, origin
+                .getQualityForm());
+        copy.setTaskQualityFormItems(origin.getTaskQualityFormItems());
+        copy.setReportAdvance(origin.isReportAdvance());
+        return copy;
     }
 
 }

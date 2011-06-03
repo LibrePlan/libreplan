@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,11 +21,14 @@
 
 package org.navalplanner.business.planner.entities.consolidations;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.SortedSet;
 
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.planner.entities.Task;
+import org.navalplanner.business.workingday.EffortDuration;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -59,6 +63,45 @@ public abstract class Consolidation extends BaseEntity {
         SortedSet<? extends ConsolidatedValue> consolidatedValues = getConsolidatedValues();
         return (consolidatedValues.isEmpty()) ? null : consolidatedValues
                 .last().getDate();
+    }
+
+    public EffortDuration getNotConsolidated(EffortDuration total) {
+        BigDecimal notConsolidatedProportion = getNotConsolidatedProportion();
+        int notConsolidatedSecons = notConsolidatedProportion.multiply(
+                new BigDecimal(total.getSeconds())).intValue();
+        return EffortDuration.seconds(notConsolidatedSecons);
+    }
+
+    public EffortDuration getTotalFromNotConsolidated(
+            EffortDuration notConsolidated) {
+        if (isCompletelyConsolidated()) {
+            throw new IllegalStateException(
+                    "Can't calculate the total using a completely consolidated consolidation");
+        }
+        BigDecimal notConsolidatedDecimal = new BigDecimal(
+                notConsolidated.getSeconds()).setScale(2);
+        int totalSeconds = notConsolidatedDecimal
+                .divide(getNotConsolidatedProportion(), RoundingMode.DOWN)
+                .intValue();
+        return EffortDuration.seconds(totalSeconds);
+    }
+
+    public boolean isCompletelyConsolidated() {
+        return getNotConsolidatedProportion().signum() == 0;
+    }
+
+    private BigDecimal getNotConsolidatedProportion() {
+        return BigDecimal.ONE.subtract(getConsolidatedProportion());
+    }
+
+    private BigDecimal getConsolidatedProportion() {
+        return getConsolidatedPercentage().setScale(2).divide(
+                new BigDecimal(100), RoundingMode.DOWN);
+    }
+
+    private BigDecimal getConsolidatedPercentage() {
+        return getConsolidatedValues().isEmpty() ? BigDecimal.ZERO
+                : getConsolidatedValues().last().getValue();
     }
 
 }

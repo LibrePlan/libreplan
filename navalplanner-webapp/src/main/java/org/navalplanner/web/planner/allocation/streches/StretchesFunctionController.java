@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +34,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Stretch;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -93,7 +94,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public void setResourceAllocation(ResourceAllocation<?> resourceAllocation,
-            Type type) {
+            StretchesFunctionTypeEnum type) {
         AssignmentFunction assignmentFunction = resourceAllocation
                 .getAssignmentFunction();
         stretchesFunctionModel.init((StretchesFunction) assignmentFunction,
@@ -148,7 +149,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
     }
 
     public List<Stretch> getStretches() {
-        return stretchesFunctionModel.getStretches();
+        return stretchesFunctionModel.getAllStretches();
     }
 
     public StretchesRenderer getStretchesRenderer() {
@@ -266,10 +267,14 @@ public class StretchesFunctionController extends GenericForwardComposer {
      */
     private class StretchesRenderer implements ListitemRenderer {
 
+        private final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+
         @Override
         public void render(Listitem item, Object data) throws Exception {
             Stretch stretch = (Stretch) data;
+
             item.setValue(stretch);
+            item.setDisabled(stretch.isReadOnly());
 
             appendDate(item, stretch);
             appendLengthPercentage(item, stretch);
@@ -310,35 +315,51 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
         private void appendLengthPercentage(Listitem item, final Stretch stretch) {
             final Decimalbox tempDecimalbox = new Decimalbox();
-            Decimalbox decimalbox = Util.bind(tempDecimalbox,
+            final Decimalbox decimalbox = Util.bind(tempDecimalbox,
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
-                            return stretch.getLengthPercentage().multiply(
-                                    new BigDecimal(100));
+                            return fromValueToPercent(scaleBy(stretch.getLengthPercentage(), 4));
                         }
                     }, new Util.Setter<BigDecimal>() {
                         @Override
-                        public void set(BigDecimal value) {
-                            if (value == null) {
-                                value = BigDecimal.ZERO;
+                        public void set(BigDecimal percent) {
+                            if (percent == null) {
+                                percent = BigDecimal.ZERO;
                             }
-                            value = value.setScale(2).divide(
-                                    new BigDecimal(100), RoundingMode.DOWN);
-                            try {
-                                stretchesFunctionModel
-                                        .setStretchLengthPercentage(stretch,
-                                                value);
-                                focusState.focusOn(stretch, Field.LENGTH);
-                                reloadStretchesListAndCharts();
-                            } catch (IllegalArgumentException e) {
-                                throw new WrongValueException(tempDecimalbox, e
-                                        .getMessage());
+                            checkBetweenZeroAndOneHundred(percent);
+                            BigDecimal value = fromPercentToValue(scaleBy(percent, 2));
+                            stretchesFunctionModel.setStretchLengthPercentage(
+                                    stretch, value);
+                            focusState.focusOn(stretch, Field.LENGTH);
+                            reloadStretchesListAndCharts();
+                        }
+
+                        private void checkBetweenZeroAndOneHundred(BigDecimal percent) {
+                            if (percent.toBigInteger().intValue() > 100
+                                    || percent.toBigInteger().intValue() < 0) {
+                                throw new WrongValueException(
+                                        tempDecimalbox,
+                                        _("Length percentage should be between 0 and 100"));
                             }
                         }
+
                     });
             appendChild(item, decimalbox);
             focusState.focusIfApplycableOnLength(stretch, decimalbox);
+        }
+
+        private BigDecimal scaleBy(BigDecimal value, int scale) {
+            return value.setScale(scale, RoundingMode.HALF_UP);
+        }
+
+        private BigDecimal fromValueToPercent(BigDecimal value) {
+            return value.multiply(ONE_HUNDRED);
+        }
+
+        private BigDecimal fromPercentToValue(BigDecimal percent) {
+            return BigDecimal.ZERO.equals(percent) ? BigDecimal.ZERO : percent
+                    .divide(ONE_HUNDRED, RoundingMode.DOWN);
         }
 
         private void appendAmountWorkPercentage(Listitem item,
@@ -348,17 +369,16 @@ public class StretchesFunctionController extends GenericForwardComposer {
                     new Util.Getter<BigDecimal>() {
                         @Override
                         public BigDecimal get() {
-                            return stretch.getAmountWorkPercentage().multiply(
-                                    new BigDecimal(100));
+                            return fromValueToPercent(scaleBy(
+                                    stretch.getAmountWorkPercentage(), 4));
                         }
                     }, new Util.Setter<BigDecimal>() {
                         @Override
-                        public void set(BigDecimal value) {
-                            if(value==null){
-                                value = BigDecimal.ZERO;
+                        public void set(BigDecimal percent) {
+                            if (percent == null) {
+                                percent = BigDecimal.ZERO;
                             }
-                            value = value.setScale(2).divide(
-                                    new BigDecimal(100), RoundingMode.DOWN);
+                            BigDecimal value = fromPercentToValue(scaleBy(percent, 2));
                             try {
                                 stretch.setAmountWorkPercentage(value);
                                 focusState.focusOn(stretch, Field.AMOUNT_WORK);
@@ -375,19 +395,26 @@ public class StretchesFunctionController extends GenericForwardComposer {
         }
 
         private void appendOperations(Listitem item, final Stretch stretch) {
-            Button button = new Button("", "/common/img/ico_borrar1.png");
-            button.setHoverImage("/common/img/ico_borrar.png");
-            button.setSclass("icono");
-            button.setTooltiptext(_("Delete"));
+            Button button;
+            if (item.isDisabled()) {
+                button = new Button("", "/common/img/ico_borrar_out.png");
+                button.setHoverImage("/common/img/ico_borrar_out.png");
+                button.setSclass("icono");
+                button.setDisabled(true);
+            } else {
+                button = new Button("", "/common/img/ico_borrar1.png");
+                button.setHoverImage("/common/img/ico_borrar.png");
+                button.setSclass("icono");
+                button.setTooltiptext(_("Delete"));
 
-            button.addEventListener(Events.ON_CLICK, new EventListener() {
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    stretchesFunctionModel.removeStretch(stretch);
-                    reloadStretchesListAndCharts();
-                }
-            });
-
+                button.addEventListener(Events.ON_CLICK, new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        stretchesFunctionModel.removeStretch(stretch);
+                        reloadStretchesListAndCharts();
+                    }
+                });
+            }
             appendChild(item, button);
         }
 

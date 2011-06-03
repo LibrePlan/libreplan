@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,8 +54,9 @@ import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
-import org.navalplanner.web.common.entrypoints.URLHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.zkoss.ganttz.IPredicate;
+import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -71,6 +73,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Intbox;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -123,6 +126,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
     private BandboxSearch bandboxSelectOrderElementInHead;
 
+    private ListModel allHoursType;
+
     private final static String MOLD = "paging";
 
     private final static int PAGING = 10;
@@ -166,14 +171,19 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        final URLHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
+        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
-        handler.registerListener(this, page);
+        handler.register(this, page);
         initCurrentList();
         if(listType != null) {
             //listType is null in reports -> work report lines
             listType.setSelectedIndex(0);
         }
+        initializeHoursType();
+    }
+
+    private void initializeHoursType() {
+        allHoursType = new SimpleListModel(workReportModel.getAllHoursType());
     }
 
     private void initCurrentList() {
@@ -265,19 +275,25 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 validateWorkReport();
             }
             if (value instanceof WorkReportLine) {
-                validateWorkReportLine((WorkReportLine) invalidValue.getBean());
+                WorkReportLine workReportLine = (WorkReportLine) invalidValue.getBean();
+                Row row = ComponentsFinder.findRowByValue(listWorkReportLines, workReportLine);
+                if (row == null) {
+                    messagesForUser.showInvalidValues(e);
+                } else {
+                    validateWorkReportLine(row, workReportLine);
+                }
             }
         }
     }
 
     private boolean showInvalidProperty() {
-        if (getWorkReport() != null) {
+        WorkReport workReport = getWorkReport();
+        if (workReport != null) {
             if (!validateWorkReport()) {
                 return true;
             }
-            for (WorkReportLine workReportLine : getWorkReport()
-                    .getWorkReportLines()) {
-                if (!validateWorkReportLine(workReportLine)) {
+            for (WorkReportLine each : workReport.getWorkReportLines()) {
+                if (!validateWorkReportLine(each)) {
                     return true;
                 }
             }
@@ -314,146 +330,129 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         return true;
     }
 
+    private boolean validateWorkReportLine(WorkReportLine workReportLine) {
+        Row row = ComponentsFinder.findRowByValue(listWorkReportLines,
+                workReportLine);
+        return row != null ? validateWorkReportLine(row, workReportLine)
+                : false;
+    }
+
     /**
      * Validates {@link WorkReportLine} data constraints
      *
      * @param invalidValue
      */
     @SuppressWarnings("unchecked")
-    private boolean validateWorkReportLine(WorkReportLine workReportLine) {
-        if (listWorkReportLines != null) {
-            // Find which row contains workReportLine inside listBox
-            Row row = findWorkReportLine(listWorkReportLines.getRows().getChildren(),
- workReportLine);
+    private boolean validateWorkReportLine(Row row,
+            WorkReportLine workReportLine) {
 
-            workReportLine = (WorkReportLine) row.getValue();
-            if (row != null) {
-                if (getWorkReportType().getDateIsSharedByLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getDate() == null) {
-                    Datebox date = getDateboxDate(row);
-                    if (date != null) {
-                        String message = _("The date cannot be null");
-                        showInvalidMessage(date, message);
-                    }
-                    return false;
-                }
-
-                if (getWorkReportType().getResourceIsSharedInLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getResource() == null) {
-                    Autocomplete autoResource = getTextboxResource(row);
-                    if (autoResource != null) {
-                        String message = _("The resource cannot be null");
-                        showInvalidMessage(autoResource, message);
-                    }
-                    return false;
-                }
-
-                if (getWorkReportType().getOrderElementIsSharedInLines()) {
-                    if (!validateWorkReport()) {
-                        return false;
-                    }
-                } else if (workReportLine.getOrderElement() == null) {
-                    BandboxSearch bandboxOrder = getTextboxOrder(row);
-                    if (bandboxOrder != null) {
-                        String message = _("The task code cannot be null");
-                        bandboxOrder.clear();
-                        showInvalidMessage(bandboxOrder, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine
-                        .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
-                    Timebox timeStart = getTimeboxStart(row);
-                    if (timeStart != null) {
-                        String message = _("Time Start cannot be null");
-                        showInvalidMessage(timeStart, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine
-                        .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
-                    Timebox timeFinish = getTimeboxFinish(row);
-                    if (timeFinish != null) {
-                        String message = _("Time finish cannot be null");
-                        showInvalidMessage(timeFinish, message);
-                    }
-                    return false;
-                }
-
-                if (workReportLine.getNumHours() == null) {
-                    // Locate TextboxOrder
-                    Intbox txtHours = getIntboxHours(row);
-                    if (txtHours != null) {
-                        String message = _("Hours cannot be null");
-                        showInvalidMessage(txtHours, message);
-                    }
-                    return false;
-                }
-
-                if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
-                    // Locate TextboxOrder
-                    Intbox txtHours = getIntboxHours(row);
-                    if (txtHours != null) {
-                        String message = _("number of hours is not properly calculated based on clock");
-                        showInvalidMessage(txtHours, message);
-                    }
-                    return false;
-                }
-
-                if (workReportLine.getTypeOfWorkHours() == null) {
-                    // Locate TextboxOrder
-                    Autocomplete autoTypeOfHours = getTypeOfHours(row);
-                    if (autoTypeOfHours != null) {
-                        String message = _("The type of hours cannot be null.");
-                        showInvalidMessage(autoTypeOfHours, message);
-                    }
-                    return false;
-                }
-
-                if ((!getWorkReport().isCodeAutogenerated())
-                        && (workReportLine.getCode() == null || workReportLine
-                                .getCode().isEmpty())) {
-                    // Locate TextboxCode
-                    Textbox txtCode = getCode(row);
-                    if (txtCode != null) {
-                        String message = _("The code cannot be empty.");
-                        showInvalidMessage(txtCode, message);
-                    }
-                    return false;
-                }
+        if (getWorkReportType().getDateIsSharedByLines()) {
+            if (!validateWorkReport()) {
+                return false;
             }
+        } else if (workReportLine.getDate() == null) {
+            Datebox date = getDateboxDate(row);
+            if (date != null) {
+                String message = _("The date cannot be null");
+                showInvalidMessage(date, message);
+            }
+            return false;
+        }
+
+        if (getWorkReportType().getResourceIsSharedInLines()) {
+            if (!validateWorkReport()) {
+                return false;
+            }
+        } else if (workReportLine.getResource() == null) {
+            Autocomplete autoResource = getTextboxResource(row);
+            if (autoResource != null) {
+                String message = _("The resource cannot be null");
+                showInvalidMessage(autoResource, message);
+            }
+            return false;
+        }
+
+        if (getWorkReportType().getOrderElementIsSharedInLines()) {
+            if (!validateWorkReport()) {
+                return false;
+            }
+        } else if (workReportLine.getOrderElement() == null) {
+            BandboxSearch bandboxOrder = getTextboxOrder(row);
+            if (bandboxOrder != null) {
+                String message = _("The task code cannot be null");
+                bandboxOrder.clear();
+                showInvalidMessage(bandboxOrder, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine
+                .checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock()) {
+            Timebox timeStart = getTimeboxStart(row);
+            if (timeStart != null) {
+                String message = _("Time Start cannot be null");
+                showInvalidMessage(timeStart, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine
+                .checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock()) {
+            Timebox timeFinish = getTimeboxFinish(row);
+            if (timeFinish != null) {
+                String message = _("Time finish cannot be null");
+                showInvalidMessage(timeFinish, message);
+            }
+            return false;
+        }
+
+        if (workReportLine.getNumHours() == null) {
+            // Locate TextboxOrder
+            Intbox txtHours = getIntboxHours(row);
+            if (txtHours != null) {
+                String message = _("Hours cannot be null");
+                showInvalidMessage(txtHours, message);
+            }
+            return false;
+        }
+
+        if (!workReportLine.checkConstraintHoursCalculatedByClock()) {
+            // Locate TextboxOrder
+            Intbox txtHours = getIntboxHours(row);
+            if (txtHours != null) {
+                String message = _("number of hours is not properly calculated based on clock");
+                showInvalidMessage(txtHours, message);
+            }
+            return false;
+        }
+
+        if (workReportLine.getTypeOfWorkHours() == null) {
+            // Locate TextboxOrder
+            Listbox autoTypeOfHours = getTypeOfHours(row);
+            if (autoTypeOfHours != null) {
+                String message = autoTypeOfHours.getItems().isEmpty() ? _("Type of hours is empty. Please, create some type of hours before proceeding")
+                        : _("The type of hours cannot be null");
+                showInvalidMessage(autoTypeOfHours, message);
+            }
+            return false;
+        }
+
+        if ((!getWorkReport().isCodeAutogenerated())
+                && (workReportLine.getCode() == null || workReportLine
+                        .getCode().isEmpty())) {
+            // Locate TextboxCode
+            Textbox txtCode = getCode(row);
+            if (txtCode != null) {
+                String message = _("The code cannot be empty.");
+                showInvalidMessage(txtCode, message);
+            }
+            return false;
         }
         return true;
     }
 
     private void showInvalidMessage(Component comp, String message) {
         throw new WrongValueException(comp, message);
-    }
-
-    /**
-     * Locates which {@link Row} is bound to {@link WorkReportLine} in
-     * rows
-     *
-     * @param rows
-     * @param workReportLine
-     * @return
-     */
-    private Row findWorkReportLine(List<Row> rows,
-            WorkReportLine workReportLine) {
-        for (Row row : rows) {
-            if (workReportLine.equals(row.getValue())) {
-                return row;
-            }
-        }
-        return null;
     }
 
     /**
@@ -489,10 +488,10 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @param row
      * @return
      */
-    private Autocomplete getTypeOfHours(Row row) {
+    private Listbox getTypeOfHours(Row row) {
         try {
             int position = row.getChildren().size() - 3;
-            return (Autocomplete) row.getChildren().get(position);
+            return (Listbox) row.getChildren().get(position);
         } catch (Exception e) {
             return null;
         }
@@ -653,6 +652,21 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 getWorkReport().setOrderElement(orderElement);
             }
         });
+
+        bandboxSelectOrderElementInHead.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = bandboxSelectOrderElementInHead
+                                .getSelectedItem();
+                        if ((selectedItem != null) && (getWorkReport() != null)) {
+                            getWorkReport().setOrderElement(
+                                    (OrderElement) selectedItem.getValue());
+                        }
+                        bandboxSelectOrderElementInHead.close();
+                    }
+                });
+
     }
 
     private void loadComponentslist(Component window) {
@@ -759,7 +773,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
             if (!getWorkReport().getWorkReportType()
                     .getOrderElementIsSharedInLines()) {
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
-                columnCode.setLabel(_("Project Code"));
+                columnCode.setLabel(_("Task Code"));
                 columnCode.setSclass("order-code-column");
                 columns.appendChild(columnCode);
             }
@@ -929,7 +943,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     private void appendOrderElementInLines(Row row) {
         final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
 
-        BandboxSearch bandboxSearch = BandboxSearch.create(
+        final BandboxSearch bandboxSearch = BandboxSearch.create(
                 "OrderElementBandboxFinder", getOrderElements());
 
         bandboxSearch.setSelectedElement(workReportLine.getOrderElement());
@@ -939,15 +953,27 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        Listitem selectedItem = (Listitem) ((SelectEvent) event)
-                                .getSelectedItems().iterator().next();
-                        OrderElement orderElement = (OrderElement) selectedItem
-                                .getValue();
-                        workReportLine.setOrderElement(orderElement);
+                        Listitem selectedItem = bandboxSearch.getSelectedItem();
+                        setOrderElementInWRL(selectedItem, workReportLine);
+                    }
+                });
+
+        bandboxSearch.setListboxEventListener(Events.ON_OK,
+                new EventListener() {
+                    @Override
+                    public void onEvent(Event event) throws Exception {
+                        Listitem selectedItem = bandboxSearch.getSelectedItem();
+                        setOrderElementInWRL(selectedItem, workReportLine);
+                        bandboxSearch.close();
                     }
                 });
 
         row.appendChild(bandboxSearch);
+    }
+
+    private void setOrderElementInWRL(Listitem selectedItem, WorkReportLine line) {
+        OrderElement orderElement = (OrderElement) selectedItem.getValue();
+        line.setOrderElement(orderElement);
     }
 
     private void appendFieldsAndLabelsInLines(final Row row){
@@ -1131,36 +1157,60 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         row.appendChild(intNumHours);
     }
 
+    /**
+     * Append Selectbox of @{link TypeOfWorkHours} to row
+     *
+     * @param row
+     */
     private void appendHoursType(final Row row) {
-        final WorkReportLine line = (WorkReportLine) row.getValue();
-        final Autocomplete hoursType = new Autocomplete();
-        hoursType.setAutodrop(true);
-        hoursType.applyProperties();
-        hoursType.setFinder("TypeOfWorkHoursFinder");
+        final WorkReportLine workReportLine = (WorkReportLine) row.getValue();
+        final Listbox lbHoursType = new Listbox();
+        lbHoursType.setMold("select");
+        lbHoursType.setModel(allHoursType);
+        lbHoursType.renderAll();
+        lbHoursType.applyProperties();
 
-         if (line.getTypeOfWorkHours() != null) {
-             hoursType.setSelectedItem(line.getTypeOfWorkHours());
-         }
+        if (lbHoursType.getItems().isEmpty()) {
+            row.appendChild(lbHoursType);
+            return;
+        }
 
-        hoursType.addEventListener("onChange", new EventListener() {
+        // First time is rendered, select first item
+        TypeOfWorkHours type = workReportLine.getTypeOfWorkHours();
+        if (workReportLine.isNewObject() && type == null) {
+            Listitem item = lbHoursType.getItemAtIndex(0);
+            item.setSelected(true);
+            setHoursType(workReportLine, item);
+        } else {
+            // If workReportLine has a type, select item with that type
+            Listitem item = ComponentsFinder.findItemByValue(lbHoursType, type);
+            if (item != null) {
+                lbHoursType.selectItem(item);
+            }
+        }
+
+        lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
+
             @Override
             public void onEvent(Event event) throws Exception {
-                changeHoursType(hoursType, row);
+                Listitem item = lbHoursType.getSelectedItem();
+                if (item != null) {
+                    setHoursType((WorkReportLine) row.getValue(), item);
+                }
             }
+
         });
-        row.appendChild(hoursType);
+
+        row.appendChild(lbHoursType);
     }
 
-    private void changeHoursType(final Autocomplete hoursType, final Row row) {
-        final WorkReportLine line = (WorkReportLine) row.getValue();
-        final Comboitem comboitem = hoursType.getSelectedItem();
-        if ((comboitem == null)
-                || ((TypeOfWorkHours) comboitem.getValue() == null)) {
-            line.setTypeOfWorkHours(null);
-            throw new WrongValueException(hoursType,
+    private void setHoursType(WorkReportLine workReportLine, Listitem item) {
+        TypeOfWorkHours value = item != null ? (TypeOfWorkHours) item
+                .getValue() : null;
+        workReportLine.setTypeOfWorkHours(value);
+        if (value == null) {
+            throw new WrongValueException(item.getParent(),
                     _("Please, select an item"));
-        } else {
-            line.setTypeOfWorkHours((TypeOfWorkHours) comboitem.getValue());
         }
     }
 

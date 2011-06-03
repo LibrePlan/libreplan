@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -40,7 +41,7 @@
     <bandbox id="bandbox" autodrop="true">
         <bandpopup>
             <vbox height="50px">
-               <listbox id="listbox" width="200px" height="100px"
+               <listbox id="listbox" width="200px" sclass="bandbox-search" height="100px"
                       vflex="true" model="${arg.model}"
                       action="onClick: closeBandbox(#{listbox})">
                <listhead id="listhead" />

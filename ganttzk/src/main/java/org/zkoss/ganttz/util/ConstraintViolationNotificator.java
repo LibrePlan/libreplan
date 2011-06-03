@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,6 +25,7 @@ import java.util.List;
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -85,5 +87,9 @@ public class ConstraintViolationNotificator<T> {
         constraintViolationListeners.addListener(listener);
     }
 
+    public void addConstraintViolationListener(
+            IConstraintViolationListener<T> listener, Mode mode) {
+        constraintViolationListeners.addListener(listener, mode);
+    }
 
 }

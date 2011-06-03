@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,13 +26,36 @@ import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Resource;
 
 /**
  * @author  Óscar González Fernández <ogonzalez@igalia.com>
  */
 public abstract class AllocationModification {
+
+    public static <T extends AllocationModification> List<T> ofType(
+            Class<T> type,
+            Collection<? extends AllocationModification> modifications) {
+
+        List<T> result = new ArrayList<T>();
+        for (AllocationModification each : modifications) {
+            if (type.isInstance(each)) {
+                result.add(type.cast(each));
+            }
+        }
+        return result;
+    }
+
+    public static boolean allFullfiled(
+            Collection<? extends AllocationModification> modificationsDone) {
+        for (AllocationModification each : modificationsDone) {
+            if (!each.satisfiesModificationRequested()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public static List<ResourceAllocation<?>> getBeingModified(
             Collection<? extends AllocationModification> allocationModifications) {
@@ -42,6 +66,8 @@ public abstract class AllocationModification {
         return result;
     }
 
+    public abstract boolean satisfiesModificationRequested();
+
     /**
      * It ensures that the provided allocations have at least one associated
      * resource. A {@link AllocationModification} doesn't have associated
@@ -49,14 +75,15 @@ public abstract class AllocationModification {
      * unsatisfied generic allocation.
      */
     protected static <T extends AllocationModification> List<T> ensureNoOneWithoutAssociatedResources(
-            Collection<? extends T> modifications, IResourceDAO resourceDAO) {
+            Collection<? extends T> modifications, IResourcesSearcher searcher) {
         List<T> result = new ArrayList<T>();
         for (T each : modifications) {
             if (each.hasNoResources()) {
-                each.withNewResources(resourceDAO);
+                each.withNewResources(searcher);
             }
-            assert !each.hasNoResources();
-            result.add(each);
+            if (!each.hasNoResources()) {
+                result.add(each);
+            }
         }
         return result;
     }
@@ -75,9 +102,27 @@ public abstract class AllocationModification {
         return resourcesOnWhichApplyAllocation.isEmpty();
     }
 
-    protected void withNewResources(IResourceDAO resourceDAO) {
+    public interface IByType<T> {
+
+        public T onResourcesPerDay(ResourcesPerDayModification modification);
+
+        public T onHours(EffortModification modification);
+
+    }
+
+    public <T> T byType(IByType<T> visitor) {
+        if (this instanceof ResourcesPerDayModification) {
+            ResourcesPerDayModification r = (ResourcesPerDayModification) this;
+            return visitor.onResourcesPerDay(r);
+        } else {
+            EffortModification h = (EffortModification) this;
+            return visitor.onHours(h);
+        }
+    }
+
+    protected void withNewResources(IResourcesSearcher resourcesSearcher) {
         resourcesOnWhichApplyAllocation = beingModified
-                .querySuitableResources(resourceDAO);
+                .querySuitableResources(resourcesSearcher);
     }
 
     public ResourceAllocation<?> getBeingModified() {

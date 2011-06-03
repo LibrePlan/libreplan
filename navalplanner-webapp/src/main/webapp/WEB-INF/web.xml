@@ -58,6 +58,10 @@
     </filter-mapping>
 
     <!-- //// -->
+    <listener>
+        <listener-class>org.navalplanner.web.LoggingConfiguration</listener-class>
+    </listener>
+
     <!-- ZK -->
     <listener>
         <description>Used to cleanup when a session is destroyed</description>
@@ -130,8 +134,8 @@
     </servlet-mapping>
 
     <session-config>
-        <!-- -1 means session doesn't timeout -->
-        <session-timeout>-1</session-timeout>
+        <!-- The session timeout is ten minutes. A timer is used to keep the session alive if there is some open page -->
+        <session-timeout>10</session-timeout>
     </session-config>
 
     <welcome-file-list>

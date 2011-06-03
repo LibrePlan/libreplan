@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -51,7 +53,11 @@ import org.navalplanner.business.planner.entities.consolidations.Consolidation;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -72,6 +78,9 @@ import org.zkoss.zul.Label;
  */
 public class AdvancedAllocationTabCreator {
 
+    private static final org.apache.commons.logging.Log LOG = LogFactory
+            .getLog(AdvancedAllocationTabCreator.class);
+
     private final class ResultReceiver implements
             IAdvanceAllocationResultReceiver {
 
@@ -82,13 +91,22 @@ public class AdvancedAllocationTabCreator {
         private Set<Resource> associatedResources;
         private final Scenario currentScenario;
 
-        public ResultReceiver(Scenario currentScenario, Order order, Task task) {
+        private final String retryPage;
+
+        public ResultReceiver(Scenario currentScenario, final Order order,
+                Task task) {
             this.currentScenario = currentScenario;
             this.calculatedValue = task.getCalculatedValue();
             this.allocationResult = AllocationResult.createCurrent(currentScenario, task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
             this.associatedResources = getAssociatedResources(task);
+            this.retryPage = EntryPointsHandler.capturePath(new ICapture() {
+                @Override
+                public void capture() {
+                    globalViewEntryPoints.goToAdvancedAllocation(order);
+                }
+            });
             reattachResources();
             loadNeededDataOfTask();
         }
@@ -123,17 +141,29 @@ public class AdvancedAllocationTabCreator {
             return new IRestrictionSource() {
 
                 @Override
-                public int getTotalHours() {
-                    return aggregate.getTotalHours();
+                public EffortDuration getTotalEffort() {
+                    return aggregate.getTotalEffort();
                 }
 
                 @Override
                 public LocalDate getStart() {
+                    if (aggregate.isEmpty()) {
+                        // FIXME Review Bug #906
+                        LOG.info("the aggregate for task " + task.getName()
+                                + " is empty");
+                        return task.getStartAsLocalDate();
+                    }
                     return aggregate.getStart().getDate();
                 }
 
                 @Override
                 public LocalDate getEnd() {
+                    if (aggregate.isEmpty()) {
+                        // FIXME Review Bug #906
+                        LOG.info("the aggregate for task " + task.getName()
+                                + " is empty");
+                        return task.getEndAsLocalDate();
+                    }
                     return aggregate.getEnd().asExclusiveEnd();
                 }
 
@@ -153,7 +183,11 @@ public class AdvancedAllocationTabCreator {
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
             Validate
                     .isTrue(allocationResult.getAggregate() == modifiedAllocations);
-            adHocTransactionService
+            IAdHocTransactionService withConcurrencyHandling = ConcurrentModificationHandling
+                    .addHandling(retryPage,
+                    IAdHocTransactionService.class, adHocTransactionService);
+
+            withConcurrencyHandling
                     .runOnTransaction(new IOnTransaction<Void>() {
 
                         @Override
@@ -189,7 +223,14 @@ public class AdvancedAllocationTabCreator {
             taskElementDAO.reattach(task);
             allocationResult.applyTo(currentScenario, task);
             taskElementDAO.save(task);
+            makeNewAssignmentsDontPoseAsTransient(task);
             updateParentsPositions(task);
+        }
+
+        private void makeNewAssignmentsDontPoseAsTransient(TaskElement task) {
+            for (DayAssignment each : task.getDayAssignments()) {
+                each.dontPoseAsTransientObjectAnymore();
+            }
         }
 
         private void updateParentsPositions(TaskElement task) {
@@ -213,22 +254,23 @@ public class AdvancedAllocationTabCreator {
     private final IResourceDAO resourceDAO;
     private final Scenario currentScenario;
     private final Component breadcrumbs;
+    private final IGlobalViewEntryPoints globalViewEntryPoints;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
             IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs) {
+            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
                 orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack,
-                breadcrumbs).build();
+                breadcrumbs, globalViewEntryPoints).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
             IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
             IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs) {
+            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
         Validate.notNull(orderDAO);
@@ -236,6 +278,7 @@ public class AdvancedAllocationTabCreator {
         Validate.notNull(onBack);
         Validate.notNull(currentScenario);
         Validate.notNull(breadcrumbs);
+        Validate.notNull(globalViewEntryPoints);
         this.adHocTransactionService = adHocTransactionService;
         this.orderDAO = orderDAO;
         this.mode = mode;
@@ -244,6 +287,7 @@ public class AdvancedAllocationTabCreator {
         this.resourceDAO = resourceDAO;
         this.currentScenario = currentScenario;
         this.breadcrumbs = breadcrumbs;
+        this.globalViewEntryPoints = globalViewEntryPoints;
     }
 
     private ITab build() {

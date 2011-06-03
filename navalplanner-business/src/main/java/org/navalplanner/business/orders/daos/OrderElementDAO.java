@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,7 +41,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.SchedulingDataForVersion;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -112,38 +112,6 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
                     .getName());
         }
         return list.get(0);
-    }
-
-    @Override
-    public OrderElement findParent(OrderElement orderElement) {
-        Query query = getSession().createQuery(
-                "select e.parent from OrderElement e where e.id = :id")
-                .setParameter("id", orderElement.getId());
-        return (OrderElement) query.uniqueResult();
-    }
-
-    @Override
-    public Order loadOrderAvoidingProxyFor(
-            final OrderElement orderElement) {
-        OrderElement order = transactionService
-                .runOnAnotherTransaction(new IOnTransaction<OrderElement>() {
-
-                    @Override
-                    public OrderElement execute() {
-                        OrderElement current = orderElement;
-                        OrderElement result = current;
-                        while (current != null) {
-                            result = current;
-                            current = findParent(current);
-                        }
-                        return result;
-                    }
-                });
-        if (order != null) {
-            return orderDAO.findExistingEntity(order.getId());
-        } else {
-            return null;
-        }
     }
 
     @Override

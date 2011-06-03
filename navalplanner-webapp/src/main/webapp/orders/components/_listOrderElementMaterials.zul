@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,50 +19,58 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <zk>
-<zscript><![CDATA[
+  <zscript><![CDATA[
     Object[] materialStatus = org.navalplanner.business.materials.entities.MaterialStatusEnum
                             .values();
     materialAssignmentComponent = self;
     assignedMaterialsController = materialAssignmentComponent.controller;
 ]]>
 </zscript>
-<vbox apply="${assignedMaterialsController}" width="100%">
+
+<vbox apply="${assignedMaterialsController}" sclass="orderelement-materials">
+    <tabbox mold="accordion" id="materialsAccordion" sclass="materials-accordion">
+      <tabs>
+        <tab id="tbAssignedMaterials" />
+        <tab id="tbSearchMaterials" />
+      </tabs>
+      <tabpanels>
+        <tabpanel>
+          <vbox width="100%">
+            <!-- Categories -->
+            <vbox style="display:none;">
+              <panel title="${i18n:_('Categories')}" border="normal">
+                <panelchildren>
+                  <button label="${i18n:_('Unselect')}"
+                    onClick="assignedMaterialsController.clearSelectionCategoriesTree()" />
+                  <separator spacing="5px" orient="horizontal" />
+                  <tree id="categoriesTree" fixedLayout="false"
+                    width="280px" rows="10" vflex="true" multiple="false"
+                    onSelect="assignedMaterialsController.refreshMaterialAssigments()">
+                    <treecols>
+                      <treecol label="Name" />
+                      <treecol label="Units" width="50px" />
+                      <treecol label="Price" width="50px" />
+                    </treecols>
+                  </tree>
+                </panelchildren>
+              </panel>
+            </vbox>
+
+            <groupbox style="margin-top: 5px" closable="false">
+              <caption label="${i18n:_('Required materials')}" />
 
 
-    <tabbox mold="accordion">
-        <tabs>
-            <tab id="tbAssignedMaterials" label="${i18n:_('Materials')}" image="common/img/collapse.gif"/>
-            <tab label="${i18n:_('Material search')}" image="common/img/collapse.gif"/>
-        </tabs>
-        <tabpanels>
-            <tabpanel>
-                <hbox>
-                    <!-- Categories  -->
-                    <vbox>
-                        <panel title="${i18n:_('Categories')}" border="normal">
-                            <panelchildren>
-                                <button label="${i18n:_('Unselect')}"
-                                        onClick="assignedMaterialsController.clearSelectionCategoriesTree()" />
-                                <separator spacing="5px" orient="horizontal" />
-                                <tree id="categoriesTree"
-                                        fixedLayout="false"
-                                        width="280px" rows="10" vflex="true" multiple="false"
-                                        onSelect="assignedMaterialsController.refreshMaterialAssigments()">
-                                    <treecols>
-                                        <treecol label="Name" />
-                                        <treecol label="Units" width="50px" />
-                                        <treecol label="Price" width="50px" />
-                                    </treecols>
-                                </tree>
-                            </panelchildren>
-                        </panel>
-                    </vbox>
+              <button label="${i18n:_('Add materials')}" style="margin-bottom: 5px"
+                onClick="materialsAccordion.setSelectedIndex(1);" />
 
-                    <!-- Materials -->
-                    <vbox id="assignmentsBox">
-                    </vbox>
-                </hbox>
-            </tabpanel>
+
+              <!-- Materials -->
+              <vbox id="assignmentsBox" width="100%">
+              </vbox>
+            </groupbox>
+
+          </vbox>
+        </tabpanel>
 
             <tabpanel>
                 <!-- Material search -->
@@ -126,11 +135,16 @@
                             </panelchildren>
                         </panel>
                     </vbox>
-
                 </hbox>
-            </tabpanel>
-        </tabpanels>
+
+          <button label="${i18n:_('Assign materials')}" sclass="global-action"
+            onClick="assignedMaterialsController.assignSelectedMaterials()" />
+          <button label="${i18n:_('Cancel')}" sclass="global-action"
+            onClick="materialsAccordion.setSelectedIndex(0);" />
+
+        </tabpanel>
+      </tabpanels>
     </tabbox>
 
-</vbox>
+  </vbox>
 </zk>

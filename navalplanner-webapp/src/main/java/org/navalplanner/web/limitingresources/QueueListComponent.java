@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -76,7 +77,7 @@ public class QueueListComponent extends XulElement implements
 
     private void insertAsComponent(LimitingResourceQueue queue) {
         QueueComponent component = QueueComponent.create(this, timeTracker, queue);
-        this.appendChild(component);
+        appendChild(component);
         fromQueueToComponent.put(queue, component);
     }
 
@@ -123,9 +124,6 @@ public class QueueListComponent extends XulElement implements
 
             @Override
             public void zoomLevelChanged(ZoomLevel detailLevel) {
-
-                invalidate();
-                afterCompose();
                 response(null, new AuInvoke(QueueListComponent.this,
                         "adjustTimeTrackerSize"));
                 response(null, new AuInvoke(QueueListComponent.this,
@@ -139,8 +137,6 @@ public class QueueListComponent extends XulElement implements
         for (QueueComponent each : fromQueueToComponent.values()) {
             each.afterCompose();
         }
-        response(null, new AuInvoke(QueueListComponent.this,
-                "adjustResourceLoadRows"));
     }
 
     public List<QueueTask> getQueueTasks() {

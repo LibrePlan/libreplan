@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +34,9 @@ import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -42,13 +45,14 @@ import org.navalplanner.business.planner.entities.Dependency;
 import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -173,7 +177,7 @@ public class TemplateModel implements ITemplateModel {
     private IUserDAO userDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private IResourcesSearcher resourcesSearcher;
 
     @Autowired
     private IAdHocTransactionService transactionService;
@@ -366,7 +370,7 @@ public class TemplateModel implements ITemplateModel {
         copyAssignments(order, from, to);
         installDependenciesEnforcer(order, TemplateModelAdapter.create(to,
                 asLocalDate(order.getInitDate()),
-                asLocalDate(order.getDeadline()), resourceDAO));
+                asLocalDate(order.getDeadline()), resourcesSearcher));
         doReassignations(order, to);
         doTheSaving(order);
     }
@@ -416,7 +420,8 @@ public class TemplateModel implements ITemplateModel {
 
     private void doReassignations(Order order, Scenario scenario) {
         for (Task each : getTasksFrom(order)) {
-            each.reassignAllocationsWithNewResources(scenario, resourceDAO);
+            each.reassignAllocationsWithNewResources(scenario,
+                    resourcesSearcher);
         }
     }
 
@@ -450,4 +455,26 @@ public class TemplateModel implements ITemplateModel {
         return configurationDAO.getConfiguration().isScenariosVisible();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasChangedDefaultPassword(MandatoryUser user) {
+        return user.hasChangedDefaultPassword(configurationDAO.getConfiguration());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean adminPasswordChangedAndSomeOtherNotChanged() {
+        return MandatoryUser.adminChangedAndSomeOtherNotChanged(configurationDAO.getConfiguration());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public String getIdUser(String login) {
+        try {
+            return Registry.getUserDAO().findByLoginName(login).getId()
+                    .toString();
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
 }

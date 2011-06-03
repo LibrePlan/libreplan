@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,14 +29,18 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.daos.IAdvanceAssignmentDAO;
@@ -61,14 +66,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.zul.SimpleXYModel;
 import org.zkoss.zul.XYModel;
+
 /**
  * Service to manage the advance of a selected order element
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class ManageOrderElementAdvancesModel implements
         IManageOrderElementAdvancesModel {
+
+    private static final Log LOG = LogFactory
+            .getLog(ManageOrderElementAdvancesModel.class);
 
     @Autowired
     private final IAdvanceTypeDAO advanceTypeDAO;
@@ -85,6 +96,8 @@ public class ManageOrderElementAdvancesModel implements
     private List<AdvanceAssignment> listAdvanceAssignments;
 
     private List<AdvanceType> listAdvanceTypes;
+
+    private CancelOperation cancelOperation = new CancelOperation();
 
     @Autowired
     public ManageOrderElementAdvancesModel(
@@ -141,13 +154,15 @@ public class ManageOrderElementAdvancesModel implements
     public void refreshChangesFromOrderElement() {
         List<AdvanceAssignment> listAdvanceAssignmentsCopy = new ArrayList<AdvanceAssignment>(
                 listAdvanceAssignments);
-        fillVariables();
+        fillAdvanceAssignmentList();
         for (AdvanceAssignment advance : listAdvanceAssignmentsCopy) {
             if ((!listAdvanceAssignments.contains(advance))
-                    && (advance instanceof DirectAdvanceAssignment)) {
+                    && (advance instanceof DirectAdvanceAssignment)
+                    && (!advance.getAdvanceType().isQualityForm())) {
                 listAdvanceAssignments.add(advance);
             }
         }
+
     }
 
     @Override
@@ -216,7 +231,7 @@ public class ManageOrderElementAdvancesModel implements
             loadAdvanceTypes();
             reattachmentOrderElement();
             forceLoadAdvanceAssignmentsAndMeasurements();
-            fillVariables();
+            fillAdvanceAssignmentList();
         }
     }
 
@@ -232,8 +247,15 @@ public class ManageOrderElementAdvancesModel implements
                     .getIndirectAdvanceAssignments()) {
             each.getCalculatedConsolidation().size();
             each.getAdvanceType().getUnitName();
-            forceLoadAdvanceConsolidatedValues(orderElement
-                    .calculateFakeDirectAdvanceAssignment(each));
+            DirectAdvanceAssignment fakedDirect = orderElement
+                    .calculateFakeDirectAdvanceAssignment(each);
+            if (fakedDirect != null) {
+                forceLoadAdvanceConsolidatedValues(fakedDirect);
+            } else {
+                LOG
+                        .warn("Fake direct advance assignment shouldn't be NULL for type '"
+                                + each.getAdvanceType().getUnitName() + "'");
+            }
         }
 
     }
@@ -249,41 +271,47 @@ public class ManageOrderElementAdvancesModel implements
         orderElementDAO.reattach(orderElement);
     }
 
-    private void fillVariables() {
-        this.listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
+    private void fillAdvanceAssignmentList() {
+        listAdvanceAssignments = new ArrayList<AdvanceAssignment>();
 
-        for (DirectAdvanceAssignment each : this.orderElement
+        for (DirectAdvanceAssignment each : orderElement
                 .getDirectAdvanceAssignments()) {
-            this.listAdvanceAssignments.add(each);
+            listAdvanceAssignments.add(each);
         }
-
         for (IndirectAdvanceAssignment each : orderElement
                 .getIndirectAdvanceAssignments()) {
-                this.listAdvanceAssignments.add(each);
-            }
+            listAdvanceAssignments.add(each);
+        }
     }
 
     @Override
-    public boolean addNewLineAdvaceAssignment() {
-        DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
-        newAdvance.setOrderElement(this.orderElement);
+    public void cancel() {
+        cancelOperation.restoreOriginalState();
+    }
 
-        /*
-         * set the first advance type of the list as the default
-         */
+    @Override
+    public boolean addNewLineAdvanceAssignment() {
+        DirectAdvanceAssignment newAdvance = DirectAdvanceAssignment.create();
+        newAdvance.setOrderElement(orderElement);
+
+        // Set first advance type of the list as default
         List<AdvanceType> listAdvanceType = getPossibleAdvanceTypes(newAdvance);
-        if (!listAdvanceType.isEmpty()) {
-            newAdvance.setAdvanceType(listAdvanceType.get(0));
-            newAdvance.setMaxValue(getMaxValue(listAdvanceType.get(0)));
-        } else {
+        if (listAdvanceType.isEmpty()) {
             return false;
         }
 
-        if (listAdvanceAssignments.isEmpty()) {
-            newAdvance.setReportGlobalAdvance(true);
-        }
+        // Create new progress type and add it to list
+        final AdvanceType progressType = first(listAdvanceType);
+        newAdvance.setAdvanceType(progressType);
+        newAdvance.setMaxValue(getMaxValue(progressType));
+        newAdvance.setReportGlobalAdvance(listAdvanceAssignments.isEmpty());
         listAdvanceAssignments.add(newAdvance);
+
         return true;
+    }
+
+    private AdvanceType first(List<AdvanceType> listAdvanceType) {
+        return listAdvanceType.get(0);
     }
 
     @Override
@@ -306,30 +334,41 @@ public class ManageOrderElementAdvancesModel implements
 
     @Override
     public AdvanceMeasurement addNewLineAdvaceMeasurement() {
-        if (this.advanceAssignment != null) {
-            AdvanceMeasurement newMeasurement = AdvanceMeasurement.create();
-            newMeasurement.setDate(new LocalDate());
-            newMeasurement.setAdvanceAssignment(this.advanceAssignment);
-            if (!this.advanceAssignment.addAdvanceMeasurements(
-                    newMeasurement)) {
-                newMeasurement.setDate(null);
-                this.advanceAssignment.addAdvanceMeasurements(newMeasurement);
-            }
+        if (advanceAssignment != null) {
+            AdvanceMeasurement newMeasurement = createMeasurement();
+            addMeasurement(advanceAssignment, newMeasurement);
             return newMeasurement;
         }
         return null;
     }
 
+    private AdvanceMeasurement createMeasurement() {
+        AdvanceMeasurement result = AdvanceMeasurement.create();
+        result.setDate(new LocalDate());
+        result.setAdvanceAssignment(advanceAssignment);
+        return result;
+    }
+
+    private void addMeasurement(AdvanceAssignment assignment, AdvanceMeasurement measurement) {
+        if (!advanceAssignment.addAdvanceMeasurements(measurement)) {
+            measurement.setDate(null);
+            advanceAssignment.addAdvanceMeasurements(measurement);
+        }
+        cancelOperation.markAsAdded(measurement);
+    }
+
     @Override
     public void removeLineAdvanceAssignment(AdvanceAssignment advance) {
+        advance.setOrderElement(null);
         this.listAdvanceAssignments.remove(advance);
         orderElement.removeAdvanceAssignment(advance);
         this.advanceAssignment = null;
     }
 
     @Override
-    public void removeLineAdvanceMeasurement(AdvanceMeasurement advance) {
-        this.advanceAssignment.removeAdvanceMeasurements(advance);
+    public void removeLineAdvanceMeasurement(AdvanceMeasurement measurement) {
+        cancelOperation.markAsRemoved(measurement);
+        this.advanceAssignment.removeAdvanceMeasurement(measurement);
     }
 
     @Override
@@ -340,8 +379,9 @@ public class ManageOrderElementAdvancesModel implements
         }
         List<AdvanceType> advanceTypes = new ArrayList<AdvanceType>();
         for (AdvanceType advanceType : this.listAdvanceTypes) {
-            if (advanceType.getUnitName().equals(
-                    PredefinedAdvancedTypes.CHILDREN.getTypeName())) {
+            if ((advanceType.getUnitName()
+                    .equals(PredefinedAdvancedTypes.CHILDREN.getTypeName()))
+                    || (advanceType.isQualityForm())) {
                 continue;
             }
             if (existsAdvanceTypeAlreadyInThisOrderElement(advanceType)) {
@@ -433,6 +473,7 @@ public class ManageOrderElementAdvancesModel implements
         orderElementDAO.checkVersion(orderElement);
         reattachmentOrderElement();
         validateBasicData();
+        cancelOperation.clear();
     }
 
     private void validateBasicData()  throws InstanceNotFoundException,
@@ -481,6 +522,9 @@ public class ManageOrderElementAdvancesModel implements
             DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException{
+        if (newAdvanceAssignment.getReportGlobalAdvance()) {
+            this.orderElement.removeReportGlobalAdvanceAssignment();
+        }
         this.orderElement.addAdvanceAssignment(newAdvanceAssignment);
     }
 
@@ -644,21 +688,24 @@ public class ManageOrderElementAdvancesModel implements
             } else {
                 directAdvanceAssignment = calculateFakeDirectAdvanceAssignment((IndirectAdvanceAssignment) each);
             }
-            String title = getInfoAdvanceAssignment(directAdvanceAssignment);
-            SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment
-                    .getAdvanceMeasurements();
-            if (listAdvanceMeasurements.size() > 1) {
-                for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
-                    BigDecimal value = advanceMeasurement.getValue();
-                    if ((selectedAdvances.size() > 1) && (value != null)) {
-                        BigDecimal maxValue = directAdvanceAssignment
-                                .getMaxValue();
-                        value = value.divide(maxValue, RoundingMode.DOWN);
-                    }
-                    LocalDate date = advanceMeasurement.getDate();
-                    if ((value != null) && (date != null)) {
-                        xymodel.addValue(title, Long.valueOf(date
-                                .toDateTimeAtStartOfDay().getMillis()), value);
+            if (directAdvanceAssignment != null) {
+                String title = getInfoAdvanceAssignment(directAdvanceAssignment);
+                SortedSet<AdvanceMeasurement> listAdvanceMeasurements = directAdvanceAssignment
+                        .getAdvanceMeasurements();
+                if (listAdvanceMeasurements.size() > 1) {
+                    for (AdvanceMeasurement advanceMeasurement : listAdvanceMeasurements) {
+                        BigDecimal value = advanceMeasurement.getValue();
+                        if ((selectedAdvances.size() > 1) && (value != null)) {
+                            BigDecimal maxValue = directAdvanceAssignment
+                                    .getMaxValue();
+                            value = value.divide(maxValue, RoundingMode.DOWN);
+                        }
+                        LocalDate date = advanceMeasurement.getDate();
+                        if ((value != null) && (date != null)) {
+                            xymodel.addValue(title, Long.valueOf(date
+                                    .toDateTimeAtStartOfDay().getMillis()),
+                                    value);
+                        }
                     }
                 }
             }
@@ -793,6 +840,80 @@ public class ManageOrderElementAdvancesModel implements
             }
         }
         return false;
+    }
+
+    /**
+     * @author Diego Pino García <dpino@igalia.com>
+     *
+     *      Keeps track of added and removed measurements. When the cancel button is
+     *      pressed, restores the original state of the advance assignments
+     *
+     */
+    private class CancelOperation {
+
+        private Set<AdvanceMeasurement> addedMeasurements = new HashSet<AdvanceMeasurement>();
+
+        private Map<AdvanceAssignment, Set<AdvanceMeasurement>> removedMeasurements = new HashMap<AdvanceAssignment, Set<AdvanceMeasurement>>();
+
+        public void restoreOriginalState() {
+            removeAddedMeasurements();
+            addRemovedMeasurements();
+            clear();
+        }
+
+        private void clear() {
+            addedMeasurements.clear();
+            removedMeasurements.clear();
+        }
+
+        private void removeAddedMeasurements() {
+            for (AdvanceAssignment each : removedMeasurements.keySet()) {
+                if (each instanceof DirectAdvanceAssignment) {
+                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) each;
+                    directAdvanceAssignment
+                            .addAdvanceMeasurements(removedMeasurements
+                                    .get(each));
+                }
+            }
+            removedMeasurements.clear();
+        }
+
+        private void addRemovedMeasurements() {
+            for (AdvanceMeasurement each : addedMeasurements) {
+                AdvanceAssignment assignment = each.getAdvanceAssignment();
+                if (assignment instanceof DirectAdvanceAssignment) {
+                    DirectAdvanceAssignment directAdvanceAssignment = (DirectAdvanceAssignment) assignment;
+                    directAdvanceAssignment.removeAdvanceMeasurement(each);
+                }
+            }
+            addedMeasurements.clear();
+        }
+
+        /**
+         * Keeps track of new measurement added to {@link AdvanceAssignment}. If
+         * the user later clicks cancel these elements will be removed
+         *
+         * @param measurement
+         */
+        public void markAsAdded(AdvanceMeasurement measurement) {
+            addedMeasurements.add(measurement);
+        }
+
+        /**
+         * Keeps track of measurement removed from {@link AdvanceAssignment}. If
+         * the user later clicks cancel these elements will be added back again
+         *
+         * @param measurement
+         */
+        public void markAsRemoved(AdvanceMeasurement measurement) {
+            AdvanceAssignment assignment = measurement.getAdvanceAssignment();
+            if (!removedMeasurements.containsKey(assignment)) {
+                removedMeasurements.put(assignment, new HashSet<AdvanceMeasurement>());
+            }
+            Set<AdvanceMeasurement> measurements = removedMeasurements.get(assignment);
+            measurements.add(measurement);
+        }
+
     }
 
 }

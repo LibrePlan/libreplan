@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +22,14 @@
 package org.navalplanner.business.planner.entities.allocationalgorithms;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.business.workingday.EffortDuration.min;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
@@ -37,8 +40,10 @@ import org.navalplanner.business.planner.entities.AvailabilityCalculator;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.IEffortDistributor;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator.IAssignmentsCreator;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -79,13 +84,6 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-                EffortDuration limit) {
-            return genericAllocation.createAssignmentsAtDay(getResources(),
-                    day, getGoal(), limit);
-        }
-
-        @Override
         public AvailabilityTimeLine getAvailability() {
             return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
                     (Collection<? extends Criterion>) genericAllocation
@@ -94,7 +92,7 @@ public abstract class ResourcesPerDayModification extends
 
         @Override
         public String getNoValidPeriodsMessage() {
-            String firstLine = _("There are no days available due to not satisfying the criterions.");
+            String firstLine = _("There are no days available due to not satisfying the criteria.");
             String secondLine = _("Another possibility is that the resources don't have days available due to their calendars.");
             return firstLine + "\n" + secondLine;
         }
@@ -102,7 +100,7 @@ public abstract class ResourcesPerDayModification extends
         @Override
         public String getNoValidPeriodsMessageDueToIntersectionMessage() {
             String firstLine = _("There are no days available in the days marked available by the task calendar.");
-            String secondLine = _("Maybe the criterions are not satisfied in those days.");
+            String secondLine = _("Maybe the criteria are not satisfied in those days.");
             return firstLine + "\n" + secondLine;
         }
 
@@ -117,6 +115,16 @@ public abstract class ResourcesPerDayModification extends
                 calendar.add(calendarFor(each));
             }
             return calendar;
+        }
+
+        @Override
+        protected ResourceAllocation<?> getResourceAllocation() {
+            return genericAllocation;
+        }
+
+        @Override
+        protected IEffortDistributor<?> toEffortDistributor() {
+            return genericAllocation.createEffortDistributor(getResources());
         }
 
     }
@@ -152,13 +160,6 @@ public abstract class ResourcesPerDayModification extends
         }
 
         @Override
-        public List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-                EffortDuration limit) {
-            return resourceAllocation.createAssignmentsAtDay(day, getGoal(),
-                    limit);
-        }
-
-        @Override
         public AvailabilityTimeLine getAvailability() {
             Resource resource = getAssociatedResource();
             return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
@@ -183,28 +184,41 @@ public abstract class ResourcesPerDayModification extends
             return calendarFor(getAssociatedResource());
         }
 
+        @Override
+        protected ResourceAllocation<?> getResourceAllocation() {
+            return resourceAllocation;
+        }
+
+        @Override
+        protected IEffortDistributor<?> toEffortDistributor() {
+            return resourceAllocation.createEffortDistributor();
+        }
+
     }
 
     public static ResourcesPerDayModification create(
             GenericResourceAllocation resourceAllocation,
-            ResourcesPerDay resourcesPerDay, List<Resource> resources) {
-        return new OnGenericAllocation(resourceAllocation,
-                resourcesPerDay, resources);
+            ResourcesPerDay resourcesPerDay, List<? extends Resource> resources) {
+        Validate.isTrue(!resourcesPerDay.isZero());
+        return new OnGenericAllocation(resourceAllocation, resourcesPerDay,
+                resources);
     }
 
     public static List<ResourcesPerDayModification> withNewResources(
-            List<ResourceAllocation<?>> allocations, IResourceDAO resourceDAO) {
+            List<ResourceAllocation<?>> allocations,
+            IResourcesSearcher resourcesSearcher) {
         List<ResourcesPerDayModification> result = fromExistent(allocations,
-                resourceDAO);
+                resourcesSearcher);
         for (ResourcesPerDayModification each : result) {
-            each.withNewResources(resourceDAO);
+            each.withNewResources(resourcesSearcher);
         }
-        return result;
+        return ensureNoOneWithoutAssociatedResources(result, resourcesSearcher);
     }
 
     public static ResourcesPerDayModification create(
             SpecificResourceAllocation resourceAllocation,
             ResourcesPerDay resourcesPerDay) {
+        Validate.isTrue(!resourcesPerDay.isZero());
         return new OnSpecificAllocation(resourceAllocation,
                 resourcesPerDay, Collections.singletonList(resourceAllocation
                         .getResource()));
@@ -212,12 +226,16 @@ public abstract class ResourcesPerDayModification extends
 
     public static List<ResourcesPerDayModification> fromExistent(
             Collection<? extends ResourceAllocation<?>> allocations,
-            IResourceDAO resourcesDAO) {
+            IResourcesSearcher resourcesSearcher) {
         List<ResourcesPerDayModification> result = new ArrayList<ResourcesPerDayModification>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
-            result.add(resourceAllocation.asResourcesPerDayModification());
+            ResourcesPerDayModification modification = resourceAllocation
+                    .asResourcesPerDayModification();
+            if (modification != null) {
+                result.add(modification);
+            }
         }
-        return ensureNoOneWithoutAssociatedResources(result, resourcesDAO);
+        return ensureNoOneWithoutAssociatedResources(result, resourcesSearcher);
     }
 
     protected static ICalendar calendarFor(Resource associatedResource) {
@@ -248,8 +266,34 @@ public abstract class ResourcesPerDayModification extends
 
     public abstract void applyAllocationFromEndUntil(LocalDate start);
 
-    public abstract List<DayAssignment> createAssignmentsAtDay(PartialDay day,
-            EffortDuration limit);
+    public IAssignmentsCreator createAssignmentsCreator() {
+
+        return new IAssignmentsCreator() {
+
+            final IEffortDistributor<?> effortDistributor = toEffortDistributor();
+
+            @Override
+            public List<? extends DayAssignment> createAssignmentsAtDay(
+                    PartialDay day, EffortDuration limit,
+                    ResourcesPerDay resourcesPerDay) {
+                EffortDuration toDistribute = getResourceAllocation()
+                        .calculateTotalToDistribute(day, getGoal());
+                EffortDuration effortLimited = min(limit, toDistribute);
+                PartialDay distributeOn = day;
+                if (effortLimited.equals(limit)) {
+                    IntraDayDate start = day.getStart();
+                    distributeOn = new PartialDay(start, start.increaseBy(
+                            resourcesPerDay, effortLimited));
+                }
+                return effortDistributor.distributeForDay(distributeOn,
+                        effortLimited);
+            }
+        };
+    }
+
+    protected abstract ResourceAllocation<?> getResourceAllocation();
+
+    protected abstract IEffortDistributor<?> toEffortDistributor();
 
     public abstract AvailabilityTimeLine getAvailability();
 
@@ -267,6 +311,12 @@ public abstract class ResourcesPerDayModification extends
     public EffortDuration durationAtDay(PartialDay day) {
         return getBeingModified().getAllocationCalendar().asDurationOn(day,
                 goal);
+    }
+
+    @Override
+    public boolean satisfiesModificationRequested() {
+        return getGoal().equals(
+                getBeingModified().getNonConsolidatedResourcePerDay());
     }
 
 }

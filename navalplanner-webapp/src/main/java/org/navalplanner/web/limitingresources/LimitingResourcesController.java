@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -93,8 +94,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
-    private org.zkoss.zk.ui.Component parent;
-
     private LimitingResourcesPanel limitingResourcesPanel;
 
     private TimeTracker timeTracker;
@@ -120,11 +119,10 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     @Override
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
-        this.parent = comp;
-        reload();
+        super.doAfterCompose(comp);
     }
 
-    private void reload() {
+    public void reload() {
         transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
 
             @Override
@@ -137,7 +135,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 // FIXME: Temporary fix, it seems the page was already rendered,
                 // so
                 // clear it all as it's going to be rendered again
-                parent.getChildren().clear();
+                self.getChildren().clear();
 
                 limitingResourceQueueModel.initGlobalView();
 
@@ -145,7 +143,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
                 timeTracker = buildTimeTracker();
                 limitingResourcesPanel = buildLimitingResourcesPanel();
 
-                parent.appendChild(limitingResourcesPanel);
+                self.appendChild(limitingResourcesPanel);
                 limitingResourcesPanel.afterCompose();
 
                 cbSelectAll = (Checkbox) limitingResourcesPanel
@@ -204,7 +202,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         return timeTracker = new TimeTracker(limitingResourceQueueModel
                 .getViewInterval(), ZoomLevel.DETAIL_THREE,
                 SeveralModificators.create(),
-                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),parent);
+                SeveralModificators.create(BankHolidaysMarker.create(getDefaultCalendar())),self);
     }
 
     private BaseCalendar getDefaultCalendar() {
@@ -240,7 +238,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
         final Order order = limitingResourceQueueModel.getOrderByTask(task);
         return new LimitingResourceQueueElementDTO(element, order
                 .getName(), task.getName(), element
-                .getEarlierStartDateBecauseOfGantt());
+                .getEarliestStartDateBecauseOfGantt());
     }
 
     public static String getResourceOrCriteria(
@@ -251,7 +249,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             return (resource != null) ? resource.getName() : "";
         } else if (resourceAllocation instanceof GenericResourceAllocation) {
             GenericResourceAllocation genericAllocation = (GenericResourceAllocation) resourceAllocation;
-            return Criterion.getCaptionForCriterionsFrom(genericAllocation);
+            return Criterion.getCaptionFor(genericAllocation);
         }
         return StringUtils.EMPTY;
     }
@@ -321,9 +319,6 @@ public class LimitingResourcesController extends GenericForwardComposer {
 
     }
 
-    public void filterBy(Order order) {
-    }
-
     public void saveQueues() {
         limitingResourceQueueModel.confirm();
         notifyUserThatSavingIsDone();
@@ -389,7 +384,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             LimitingResourceQueueElement dest) {
 
         dest.setEarlierStartDateBecauseOfGantt(source
-                .getEarlierStartDateBecauseOfGantt());
+                .getEarliestStartDateBecauseOfGantt());
 
         for (LimitingResourceQueueDependency each : source
                 .getDependenciesAsOrigin()) {
@@ -418,6 +413,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
         @Override
         public void render(Row row, Object data) throws Exception {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
+
+            row.setValue(data);
 
             row.appendChild(automaticQueueing(element));
             row.appendChild(label(element.getOrderName()));
@@ -513,32 +510,16 @@ public class LimitingResourcesController extends GenericForwardComposer {
         private void assignLimitingResourceQueueElement(
                 LimitingResourceQueueElementDTO dto) {
 
-            LimitingResourceQueueElement element = dto.getOriginal();
             List<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
-                    .assignLimitingResourceQueueElement(element);
-            if (!inserted.isEmpty()) {
-                reloadUnassignedLimitingResourceQueueElements();
-                for (LimitingResourceQueueElement each : inserted) {
-                    // FIXME visually wrong if an element jumps from a queue to
-                    // another
-                    LimitingResourceQueue queue = each.getLimitingResourceQueue();
-                    // Remove all dependency components associated to element
-                    limitingResourcesPanel.removeDependenciesFor(each);
-                    // Dependencies will be created again on refreshing queue
-                    limitingResourcesPanel.refreshQueue(queue);
-                }
-            } else {
-                showErrorMessage(_("Cannot allocate selected element. There is not any queue " +
-                        "that matches resource allocation criteria at any interval of time"));
-            }
-        }
+                    .assignLimitingResourceQueueElement(dto.getOriginal());
 
-        private void showErrorMessage(String error) {
-            try {
-                Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
-            } catch (InterruptedException e) {
-
+            if (inserted.isEmpty()) {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue "
+                        + "that matches resource allocation criteria at any interval of time"));
+                return;
             }
+            limitingResourcesPanel.refreshQueues((LimitingResourceQueue.queuesOf(inserted)));
+            reloadUnassignedLimitingResourceQueueElements();
         }
 
         private Checkbox automaticQueueing(
@@ -559,13 +540,16 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void unschedule(QueueTask task) {
-        limitingResourceQueueModel.unschedule(task.getLimitingResourceQueueElement());
+        LimitingResourceQueueElement queueElement = task.getLimitingResourceQueueElement();
+        LimitingResourceQueue queue = queueElement.getLimitingResourceQueue();
+
+        limitingResourceQueueModel.unschedule(queueElement);
+        limitingResourcesPanel.refreshQueue(queue);
         reloadUnassignedLimitingResourceQueueElements();
     }
 
     public boolean moveTask(LimitingResourceQueueElement element) {
         showManualAllocationWindow(element);
-        limitingResourcesPanel.reloadComponent();
         return getManualAllocationWindowStatus() == Messagebox.OK;
     }
 
@@ -601,7 +585,48 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     public void assignAllSelectedElements() {
+        List<LimitingResourceQueueElement> elements = getAllSelectedQueueElements();
+        if (!elements.isEmpty()) {
+            Set<LimitingResourceQueueElement> inserted = limitingResourceQueueModel
+                    .assignLimitingResourceQueueElements(elements);
+            clearSelectAllCheckbox();
 
+            if (inserted.isEmpty()) {
+                showErrorMessage(_("Cannot allocate selected element. There is not any queue "
+                        + "that matches resource allocation criteria at any interval of time"));
+                return;
+            }
+            limitingResourcesPanel.refreshQueues(LimitingResourceQueue.queuesOf(inserted));
+            reloadUnassignedLimitingResourceQueueElements();
+        }
+    }
+
+    private void clearSelectAllCheckbox() {
+        cbSelectAll.setChecked(false);
+    }
+
+    private List<LimitingResourceQueueElement> getAllSelectedQueueElements() {
+        List<LimitingResourceQueueElement> result = new ArrayList<LimitingResourceQueueElement>();
+
+        final Rows rows = gridUnassignedLimitingResourceQueueElements.getRows();
+        for (Object each : rows.getChildren()) {
+            final Row row = (Row) each;
+            Checkbox cbAutoQueueing = getAutoQueueing(row);
+            if (cbAutoQueueing.isChecked()) {
+                LimitingResourceQueueElementDTO dto = (LimitingResourceQueueElementDTO) row
+                        .getValue();
+                result.add((LimitingResourceQueueElement) dto.getOriginal());
+            }
+        }
+        return result;
+    }
+
+    private void showErrorMessage(String error) {
+        try {
+            Messagebox.show(error, _("Error"), Messagebox.OK, Messagebox.ERROR);
+        } catch (InterruptedException e) {
+
+        }
     }
 
 }

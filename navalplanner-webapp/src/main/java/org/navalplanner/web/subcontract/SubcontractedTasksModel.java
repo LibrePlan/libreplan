@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -36,6 +37,7 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.daos.ISubcontractedTaskDataDAO;
@@ -80,6 +82,9 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     @Override
@@ -102,8 +107,8 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
     @Transactional(readOnly = true)
     public String getOrderCode(SubcontractedTaskData subcontractedTaskData) {
         Task task = subcontractedTaskData.getTask();
-        OrderElement orderElement = orderElementDAO
-                .loadOrderAvoidingProxyFor(task.getOrderElement());
+        OrderElement orderElement = orderDAO.loadOrderAvoidingProxyFor(task
+                .getOrderElement());
         return orderElement.getOrder().getCode();
     }
 
@@ -142,15 +147,15 @@ public class SubcontractedTasksModel implements ISubcontractedTasksModel {
 
         NaiveTrustProvider.setAlwaysTrust(true);
 
-        WebClient client = WebClient.create(externalCompany.getAppURI());
-
-        client.path("ws/rest/subcontract");
-
-        Util.addAuthorizationHeader(client, externalCompany
-                .getOurCompanyLogin(), externalCompany
-                .getOurCompanyPassword());
-
         try {
+            WebClient client = WebClient.create(externalCompany.getAppURI());
+
+            client.path("ws/rest/subcontract");
+
+            Util.addAuthorizationHeader(client, externalCompany
+                    .getOurCompanyLogin(), externalCompany
+                    .getOurCompanyPassword());
+
             InstanceConstraintViolationsListDTO instanceConstraintViolationsListDTO = client
                     .post(subcontractedTaskDataDTO,
                             InstanceConstraintViolationsListDTO.class);

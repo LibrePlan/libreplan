@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,6 +43,7 @@ import org.zkoss.ganttz.data.GanttDiagramGraph.INotificationAfterDependenciesEnf
 import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.ConstraintViolationNotificator;
+import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 
 /**
  * This class contains the information of a task. It can be modified and
@@ -388,8 +390,8 @@ public abstract class Task implements ITaskFundamentalProperties {
     }
 
     public void addConstraintViolationListener(
-            IConstraintViolationListener<GanttDate> listener) {
-        violationNotificator.addConstraintViolationListener(listener);
+            IConstraintViolationListener<GanttDate> listener, Mode mode) {
+        violationNotificator.addConstraintViolationListener(listener, mode);
     }
 
     public void addReloadListener(

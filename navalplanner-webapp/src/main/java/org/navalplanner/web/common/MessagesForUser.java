@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,6 +21,7 @@
 
 package org.navalplanner.web.common;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -45,9 +47,55 @@ import org.zkoss.zul.Label;
 public class MessagesForUser extends GenericForwardComposer implements
         IMessagesForUser {
 
-    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2; // 2
+    // 2 seconds
+    private static final long DEFAULT_MINIMUM_VISUALIZATION_TIME_MILLIS = 1000 * 2;
 
-    // seconds
+    private static final class PreviousMessagesDiscarder implements
+            EventInterceptor {
+
+        private final WeakReference<MessagesForUser> messagesForUserRef;
+
+        public PreviousMessagesDiscarder(MessagesForUser messagesForUser) {
+            this.messagesForUserRef = new WeakReference<MessagesForUser>(
+                    messagesForUser);
+        }
+
+        @Override
+        public void afterProcessEvent(Event event) {
+        }
+
+        @Override
+        public Event beforePostEvent(Event event) {
+            return event;
+        }
+
+        @Override
+        public Event beforeProcessEvent(Event event) {
+            MessagesForUser messagesForUser = messagesForUserRef.get();
+            if (messagesForUser == null) {
+                return event;
+            }
+
+            if (event.getName().equals(DETACH_EVENT_NAME)
+                    || messagesForUser.pendingToDetach.isEmpty()) {
+                return event;
+            }
+            long currentTime = System.currentTimeMillis();
+            ComponentHolderTimestamped currrent = null;
+            while ((currrent = messagesForUser.pendingToDetach.peek()) != null
+                    && currrent
+                            .minimumVisualizationTimeSurpased(currentTime)) {
+                currrent.component.detach();
+                messagesForUser.pendingToDetach.poll();
+            }
+            return event;
+        }
+
+        @Override
+        public Event beforeSendEvent(Event event) {
+            return event;
+        }
+    }
 
     private class ComponentHolderTimestamped {
         private final Component component;
@@ -79,39 +127,8 @@ public class MessagesForUser extends GenericForwardComposer implements
             long minimumVisualizationTimeMilliseconds) {
         this.container = container;
         this.minimumVisualizationTimeMilliseconds = minimumVisualizationTimeMilliseconds;
-        container.getPage().getDesktop().addListener(new EventInterceptor() {
-
-            @Override
-            public void afterProcessEvent(Event event) {
-            }
-
-            @Override
-            public Event beforePostEvent(Event event) {
-                return event;
-            }
-
-            @Override
-            public Event beforeProcessEvent(Event event) {
-                if (event.getName().equals(DETACH_EVENT_NAME)
-                        || pendingToDetach.isEmpty()) {
-                    return event;
-                }
-                long currentTime = System.currentTimeMillis();
-                ComponentHolderTimestamped currrent = null;
-                while ((currrent = pendingToDetach.peek()) != null
-                        && currrent
-                                .minimumVisualizationTimeSurpased(currentTime)) {
-                    currrent.component.detach();
-                    pendingToDetach.poll();
-                }
-                return event;
-            }
-
-            @Override
-            public Event beforeSendEvent(Event event) {
-                return event;
-            }
-        });
+        container.getPage().getDesktop()
+                .addListener(new PreviousMessagesDiscarder(this));
     }
 
     @Override

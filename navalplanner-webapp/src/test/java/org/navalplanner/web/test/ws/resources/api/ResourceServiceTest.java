@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -193,7 +194,7 @@ public class ResourceServiceTest {
         saveResource(w1);
 
         /*
-         * Create a worker DTO with the same first name, surname, and nif as
+         * Create a worker DTO with the same first name, surname, and ID as
          * the previous one.
          */
         WorkerDTO w2 = new WorkerDTO(w1.getFirstName(), w1.getSurname(),
@@ -894,7 +895,7 @@ constraintViolations
 
             @Override
             public BaseCalendar execute() {
-                BaseCalendar baseCalendar = BaseCalendar.create();
+                BaseCalendar baseCalendar = BaseCalendar.createBasicCalendar();
                 baseCalendar.setName(getUniqueName());
                 baseCalendarDAO.save(baseCalendar);
                 return baseCalendar;

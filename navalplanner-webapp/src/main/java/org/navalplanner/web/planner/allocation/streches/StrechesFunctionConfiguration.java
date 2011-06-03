@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +25,7 @@ import java.util.HashMap;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.StretchesFunction;
-import org.navalplanner.business.planner.entities.StretchesFunction.Type;
+import org.navalplanner.business.planner.entities.StretchesFunctionTypeEnum;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.IAssignmentFunctionConfiguration;
 import org.navalplanner.web.planner.allocation.streches.StretchesFunctionController.IGraphicGenerator;
@@ -68,7 +69,7 @@ public abstract class StrechesFunctionConfiguration implements
         return GraphicForStreches.forType(getType());
     }
 
-    protected abstract Type getType();
+    protected abstract StretchesFunctionTypeEnum getType();
 
     protected abstract boolean getChartsEnabled();
 
@@ -92,11 +93,8 @@ public abstract class StrechesFunctionConfiguration implements
     }
 
     @Override
-    public void applyDefaultFunction(ResourceAllocation<?> resourceAllocation) {
-        StretchesFunction stretchesFunction = StretchesFunctionModel
-                .createDefaultStretchesFunction(resourceAllocation.getTask()
-                        .getEndDate());
-        resourceAllocation.setAssignmentFunction(stretchesFunction);
+    public void applyOn(ResourceAllocation<?> resourceAllocation) {
+        resourceAllocation.setAssignmentFunction(StretchesFunction.create());
     }
 
 }

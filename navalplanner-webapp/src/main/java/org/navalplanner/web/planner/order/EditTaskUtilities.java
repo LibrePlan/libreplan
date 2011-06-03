@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,11 +21,15 @@
 
 package org.navalplanner.web.planner.order;
 
+import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
+import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.SubcontractedTaskData;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -46,6 +51,9 @@ public class EditTaskUtilities implements IEditTaskUtilities {
     @Autowired
     private ITaskElementDAO taskElementDAO;
 
+    @Autowired
+    private IBaseCalendarDAO baseCalendarDAO;
+
     @Override
     @Transactional(readOnly = true)
     public void reattach(TaskElement taskElement) {
@@ -61,6 +69,7 @@ public class EditTaskUtilities implements IEditTaskUtilities {
                         .getSubcontractedTaskData());
             }
         }
+        reattachAndLoadCalendar(taskElement);
     }
 
     private void forceLoadHoursGroup(Task task) {
@@ -70,6 +79,28 @@ public class EditTaskUtilities implements IEditTaskUtilities {
     private void forceLoadExternalCompany(
             SubcontractedTaskData subcontractedTaskData) {
         subcontractedTaskData.getExternalCompany().getName();
+    }
+
+    private void reattachAndLoadCalendar(TaskElement taskElement) {
+        BaseCalendar calendar = taskElement.getCalendar();
+        if (calendar == null) {
+            return;
+        }
+        baseCalendarDAO.reattach(calendar);
+        forceLoadCalendar(calendar);
+        calendar.getCapacityOn(
+                PartialDay.wholeDay(taskElement.getIntraDayStartDate()
+                        .getDate()));
+    }
+
+    private void forceLoadCalendar(BaseCalendar baseCalendar) {
+        for (CalendarData calendarData : baseCalendar.getCalendarDataVersions()) {
+            calendarData.getHoursPerDay().size();
+            if (calendarData.getParent() != null) {
+                forceLoadCalendar(calendarData.getParent());
+            }
+        }
+        baseCalendar.getExceptions().size();
     }
 
 }

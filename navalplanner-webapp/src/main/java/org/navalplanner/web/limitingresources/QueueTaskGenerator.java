@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,7 +35,6 @@ import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificDayAssignment;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionCompounder;
 import org.navalplanner.business.resources.entities.ICriterion;
@@ -83,25 +83,6 @@ abstract class QueueTaskGenerator {
                     criterion);
         }
 
-    }
-
-    public static QueueTaskGeneratorFactory onCriterion(
-            final Criterion criterion, final IResourceDAO resourcesDAO) {
-        return new QueueTaskGeneratorFactory() {
-
-            @Override
-            public QueueTaskGenerator create(ResourceAllocation<?> allocation) {
-                return new QueueTaskGeneratorOnCriterion(criterion,
-                        allocation, findResources(criterion, resourcesDAO));
-            }
-
-            private List<Resource> findResources(final Criterion criterion,
-                    final IResourceDAO resourcesDAO) {
-                return resourcesDAO
-                        .findSatisfyingAllCriterionsAtSomePoint(Collections
-                                .singletonList(criterion));
-            }
-        };
     }
 
     protected final LocalDate start;

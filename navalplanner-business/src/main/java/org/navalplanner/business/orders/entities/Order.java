@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -29,9 +30,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
+import org.navalplanner.business.advance.entities.AdvanceType;
+import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
@@ -514,6 +519,23 @@ public class Order extends OrderLineGroup {
             }
         }
         return false;
+    }
+
+    @Override
+    public OrderLine toLeaf() {
+        throw new UnsupportedOperationException(
+                "Order can not be converted to leaf");
+    }
+
+    public DirectAdvanceAssignment getDirectAdvanceAssignmentOfTypeSubcontractor() {
+        if (StringUtils.isBlank(getExternalCode())) {
+            return null;
+        }
+
+        AdvanceType advanceType = PredefinedAdvancedTypes.SUBCONTRACTOR
+                .getType();
+
+        return getAdvanceAssignmentByType(advanceType);
     }
 
 }

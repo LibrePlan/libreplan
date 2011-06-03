@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +20,11 @@
  */
 package org.navalplanner.business.workingday;
 
+import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -37,6 +41,10 @@ import org.joda.time.Days;
 import org.joda.time.LocalDate;
 
 /**
+ * <p>
+ * Instances of this class represent values so immutable objects are used. In
+ * order to do modifications new instances must be created.
+ * </p>
  * <p>
  * A date type that represents a point inside a working day. This doesn't
  * translate directly to a concrete DateTime because the working day can start
@@ -106,6 +114,26 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         return date;
     }
 
+    /**
+     * <p>
+     * The duration elapsed projected to a day allocated with one resource per
+     * day.
+     * </p>
+     * <p>
+     * So, for example, if 8 hours are elapsed and the resources per day are 2,
+     * this value should be 4. If 4 hours are elapsed and the resources per day
+     * are 0.5, this value should be 8.
+     * <p>
+     * More generally, this value is the effort applied on {@link #date} divided
+     * by the resources per day being applied.
+     * </p>
+     * <p>
+     * This amount is useful in order to determine how much spare room for work
+     * is left on {@link #date}.
+     * </p>
+     *
+     * @return that duration
+     */
     public EffortDuration getEffortDuration() {
         return effortDuration == null ? EffortDuration.zero() : effortDuration;
     }
@@ -211,8 +239,8 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
 
         /**
          * <p>
-         * Limits the duration that can be worked in a day taking into account
-         * this day duration.
+         * Limits the standard duration that can be worked in a day taking into
+         * account this day duration.
          * </p>
          * <ul>
          * <li>
@@ -223,22 +251,24 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
          * duration</li>
          * <li>If the day has an end, the duration must not surpass this end</li>
          * </ul>
-         * @param duration
+         *
+         * @param standardWorkingDayDuration
          * @return a duration that can be employed taking into consideration
          *         this day
          */
-        public EffortDuration limitDuration(EffortDuration duration) {
+        public EffortDuration limitWorkingDay(
+                EffortDuration standardWorkingDayDuration) {
             if (isWholeDay()) {
-                return duration;
+                return standardWorkingDayDuration;
             }
             EffortDuration alreadyElapsedInDay = start.getEffortDuration();
-            if (alreadyElapsedInDay.compareTo(duration) >= 0) {
+            if (alreadyElapsedInDay.compareTo(standardWorkingDayDuration) >= 0) {
                 return zero();
             }
-            EffortDuration durationLimitedByEnd = duration;
+            EffortDuration durationLimitedByEnd = standardWorkingDayDuration;
             if (!end.getEffortDuration().isZero()) {
-                durationLimitedByEnd = EffortDuration
-                        .min(end.getEffortDuration(), duration);
+                durationLimitedByEnd = EffortDuration.min(
+                        end.getEffortDuration(), standardWorkingDayDuration);
             }
             return durationLimitedByEnd.minus(alreadyElapsedInDay);
         }
@@ -385,6 +415,56 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
      */
     public LocalDate roundDown() {
         return date;
+    }
+
+    /**
+     * Calculates a new {@link IntraDayDate} adding {@link EffortDuration
+     * effort} to {@link IntraDayDate this}. It considers the provided
+     * {@link ResourcesPerDay resourcesPerDay}, so if the resources per day is
+     * big the effort taken will be less. The date will stay the same, i.e. the
+     * returned {@link IntraDayDate} is on the same day.
+     *
+     * @param resourcesPerDay
+     * @param effort
+     * @return a new {@link IntraDayDate}
+     */
+    public IntraDayDate increaseBy(ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+        EffortDuration newEnd = this.getEffortDuration().plus(
+                calculateProportionalDuration(resourcesPerDay,
+                        effort));
+        return IntraDayDate.create(getDate(), newEnd);
+    }
+
+    private EffortDuration calculateProportionalDuration(
+            ResourcesPerDay resourcesPerDay, EffortDuration effort) {
+        int seconds = effort.getSeconds();
+        BigDecimal end = new BigDecimal(seconds).divide(
+                resourcesPerDay.getAmount(),
+                RoundingMode.HALF_UP);
+        return seconds(end.intValue());
+    }
+
+    /**
+     * The same as
+     * {@link IntraDayDate#increaseBy(ResourcesPerDay, EffortDuration)} but
+     * decreasing the effort. The date will stay the same, i.e. the returned
+     * {@link IntraDayDate} is on the same day.
+     *
+     * @see IntraDayDate#increaseBy(ResourcesPerDay, EffortDuration)
+     * @param resourcesPerDay
+     * @param effort
+     * @return a new {@link IntraDayDate}
+     */
+    public IntraDayDate decreaseBy(ResourcesPerDay resourcesPerDay,
+            EffortDuration effort) {
+        EffortDuration proportionalDuration = calculateProportionalDuration(
+                resourcesPerDay, effort);
+        if (getEffortDuration().compareTo(proportionalDuration) > 0) {
+            return IntraDayDate.create(getDate(),
+                    getEffortDuration().minus(proportionalDuration));
+        } else {
+            return IntraDayDate.startOfDay(getDate());
+        }
     }
 
 }

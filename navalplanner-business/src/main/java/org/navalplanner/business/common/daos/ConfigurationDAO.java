@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,12 @@ package org.navalplanner.business.common.daos;
 
 import java.util.List;
 
+import org.hibernate.Query;
 import org.navalplanner.business.common.entities.Configuration;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -51,6 +54,18 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
     @Transactional(readOnly = true)
     public Configuration getConfigurationWithReadOnlyTransaction() {
         return getConfiguration();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void saveChangedDefaultPassword(String user, boolean change) {
+        user = user.substring(0, 1).toUpperCase()
+                + user.substring(1).toLowerCase();
+        String sql = "UPDATE Configuration e SET e.changedDefault" + user
+                + "Password = :change";
+        Query query = getSession().createQuery(sql);
+        query.setParameter("change", change);
+        query.executeUpdate();
     }
 
 }

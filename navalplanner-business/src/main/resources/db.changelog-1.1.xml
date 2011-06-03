@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+    <changeSet id="add-new-column-enabled-autocomplete-login" author="smontes">
+        <comment>Add new column enabled_autocomplete_login with default value TRUE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="enabled_autocomplete_login" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="enabled_autocomplete_login"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="enabled_autocomplete_login"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -57,6 +58,7 @@ import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.common.IntegrationEntityModel;
+import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -70,6 +72,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@OnConcurrentModification(goToPage = "/resources/machine/machines.zul")
 public class MachineModel extends IntegrationEntityModel implements
         IMachineModel {
     private static Log LOG = LogFactory.getLog(MachineModel.class);
@@ -85,6 +88,7 @@ public class MachineModel extends IntegrationEntityModel implements
      *
      */
     private Machine machine;
+    private ResourceCalendar calendarToRemove = null;
     private Map<Long, Criterion> criterions = new HashMap<Long, Criterion>();
     private Map<Long, Worker> workers = new HashMap<Long, Worker>();
     private List<Machine> machineList = new ArrayList<Machine>();
@@ -258,7 +262,20 @@ public class MachineModel extends IntegrationEntityModel implements
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        removeCalendarIfNeeded();
         resourceDAO.save(machine);
+    }
+
+    private void removeCalendarIfNeeded() {
+        if (calendarToRemove != null) {
+            try {
+                resourceDAO.reattach(machine);
+                baseCalendarDAO.remove(calendarToRemove.getId());
+                calendarToRemove = null;
+            } catch (InstanceNotFoundException e) {
+                LOG.error("Couldn't remove calendar");
+            }
+        }
     }
 
     @Override
@@ -376,4 +393,11 @@ public class MachineModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.machine;
     }
+
+    @Override
+    public void removeCalendar() {
+        calendarToRemove = machine.getCalendar();
+        machine.setCalendar(null);
+    }
+
 }

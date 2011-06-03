@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
@@ -46,5 +48,8 @@ public interface IWorkReportLineDAO extends
     List<WorkReportLine> findFilteredByDate(Date start, Date end);
 
     List<WorkReportLine> findByResources(List<Resource> resourcesList);
+
+    List<WorkReportLineDTO> findByOrderElementGroupByResourceAndHourTypeAndDate(
+            OrderElement orderElement);
 
 }

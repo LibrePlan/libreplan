@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?component name="criterions" inline="true" macroURI="_machineCriterions.zul"?>
+<?component name="criterions" inline="true" macroURI="../_criterions.zul"?>
 <?component name="resourceCalendar" inline="true" macroURI="_calendar.zul"?>
 <?component name="machineConfigurationUnits" inline="true" macroURI="_machineConfigurationUnits.zul"?>
 <?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>

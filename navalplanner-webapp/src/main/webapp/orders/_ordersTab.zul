@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +28,8 @@
     <borderlayout sclass="orderslayout" width="auto" apply="${orderController}">
        <north height="30px" border="0" sclass="toolbar-box">
        <hbox align="center" id="toolbar">
-            <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Order')}" caption="${i18n:_('Choosing Template')}" />
+            <templateFinderPopup id="templateFinderPopup" acceptButtonLabel="${i18n:_('Create Order')}"
+                caption="${i18n:_('Choosing Template')}" />
 
             <button id="createOrderButton" image="/common/img/ico_add.png" sclass="planner-icon"
              tooltiptext="${i18n:_('Create New Project')}" onClick="controller.goToCreateForm()"

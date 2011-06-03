@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,11 +35,16 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
 
     private INewAllocationsAdder allocationsAdder;
 
+    protected abstract AllocationSelectorController getController();
+
+    @Override
+    public void afterCompose() {
+        super.afterCompose();
+    }
+
     public void clearAll() {
         getController().clearAll();
     }
-
-    protected abstract AllocationSelectorController getController();
 
     public void addChoosen() {
         getController().addTo(allocationsAdder);
@@ -49,10 +55,6 @@ public abstract class AllocationSelector extends HtmlMacroComponent {
         if (getController() != null) {
             getController().clearAll();
         }
-    }
-
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        getController().setLimitingResourceFilter(limitingResource);
     }
 
 }

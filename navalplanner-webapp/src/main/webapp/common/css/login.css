@@ -96,6 +96,18 @@ a.ayuda:hover {
     font-size: 9px;
 }
 
+body .not-supported {
+    color: #FF0000;
+    font-size: 10px;
+    margin-top: 15px;
+    height:50px;
+    padding: 10px;
+    border: solid 1px #ee0000;
+    background-color: #eecccc;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+}
+
 .navalplan-version {
     float: right;
     color: #009900;

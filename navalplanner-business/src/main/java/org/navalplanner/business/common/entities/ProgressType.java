@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,9 +33,9 @@ import java.util.List;
 */
 public enum ProgressType {
 
-    SPREAD_PROGRESS(_("Spread progress")),
-    CRITICAL_PATH_DURATION(_("Critical path by duration")),
-    CRITICAL_PATH_NUMHOURS(_("Critical path by number of hours"));
+    SPREAD_PROGRESS(_("Progress with all tasks by hours")),
+    CRITICAL_PATH_DURATION(_("Progress with critical path tasks by hours")),
+    CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by duration"));
 
     private String value;
 

@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,7 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Companies List')}">
     <newdatasortablegrid id="listing" model="@{controller.companiesDTO}" mold="paging"
-        pageSize="10"
+        pageSize="10" sclass="clickable-rows"
         onInitRender="controller.sortByDefaultByName();">
         <columns sizable="true">
             <newdatasortablecolumn id="columnName" label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="descending"/>
@@ -31,7 +32,7 @@
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='company'}" value="@{company}">
+            <row self="@{each='company'}" value="@{company}" onClick="controller.goToEditForm(self.value)">
                 <label value="@{company.name}" />
                 <label value="@{company.nif}" />
                 <checkbox checked="@{company.client}" disabled="true" />

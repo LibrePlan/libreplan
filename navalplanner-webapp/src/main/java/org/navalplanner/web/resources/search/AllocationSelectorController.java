@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,11 @@ package org.navalplanner.web.resources.search;
 
 import java.util.List;
 
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.INewAllocationsAdder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 
 /**
@@ -35,10 +37,11 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 public abstract class AllocationSelectorController extends
         GenericForwardComposer {
 
-    @Autowired
-    protected IResourceSearchModel resourceSearchModel;
+    // injected by name
+    protected IResourcesSearcher resourcesSearcher;
 
-    protected boolean limitingResource = false;
+    // injected by name
+    protected ResourceAllocationBehaviour behaviour;
 
     public AllocationSelectorController() {
 
@@ -56,9 +59,5 @@ public abstract class AllocationSelectorController extends
     public abstract void clearAll();
 
     public abstract void addTo(INewAllocationsAdder allocationsAdder);
-
-    public void setLimitingResourceFilter(boolean limitingResource) {
-        this.limitingResource = limitingResource;
-    }
 
 }

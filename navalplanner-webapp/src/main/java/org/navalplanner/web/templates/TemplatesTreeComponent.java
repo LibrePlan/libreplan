@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -78,6 +79,15 @@ public class TemplatesTreeComponent extends TreeComponent {
         result.add(schedulingStateColumn);
         result.add(codeColumn);
         result.add(nameAndDescriptionColumn);
+        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
+
+            @Override
+            protected void doCell(TemplatesTreeRenderer renderer,
+                    Treeitem item, OrderElementTemplate currentElement) {
+                renderer.addHoursCell(currentElement);
+            }
+
+        });
         result.add(new TemplatesTreeColumn(
                 _("Must start after (days since beginning project)"),
                 "estimated_init") {
@@ -86,15 +96,6 @@ public class TemplatesTreeComponent extends TreeComponent {
             protected void doCell(TemplatesTreeRenderer renderer,
                     Treeitem item, OrderElementTemplate currentElement) {
                 renderer.addInitCell(currentElement);
-            }
-
-        });
-        result.add(new TemplatesTreeColumn(_("Hours"), "hours") {
-
-            @Override
-            protected void doCell(TemplatesTreeRenderer renderer,
-                    Treeitem item, OrderElementTemplate currentElement) {
-                renderer.addHoursCell(currentElement);
             }
 
         });

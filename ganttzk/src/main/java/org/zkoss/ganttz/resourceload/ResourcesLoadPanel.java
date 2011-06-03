@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,12 +26,14 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.TimeTrackerComponent;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
+import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.MutableTreeModel;
@@ -73,6 +76,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private MutableTreeModel<LoadTimeLine> treeModel;
 
     private TimeTracker timeTracker;
+
+    private LocalDate previousStart;
+
+    private Interval previousInterval;
 
     private final Component componentOnWhichGiveFeedback;
 
@@ -188,15 +195,39 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     }
 
     public void setZoomLevel(final ZoomLevel zoomLevel) {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.setZoomLevel(zoomLevel);
     }
 
     public void zoomIncrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.zoomIncrease();
     }
 
     public void zoomDecrease() {
+        savePreviousData();
+        getTimeTrackerComponent().updateDayScroll();
         timeTracker.zoomDecrease();
+    }
+
+    private void savePreviousData() {
+        TimeTracker timeTracker = getTimeTrackerComponent().getTimeTracker();
+        this.previousStart = timeTracker.getRealInterval().getStart();
+        this.previousInterval = timeTracker.getMapper().getInterval();
+    }
+
+    public LocalDate getPreviousStart() {
+        return previousStart;
+    }
+
+    public Interval getPreviousInterval() {
+        return previousInterval;
+    }
+
+    public TimeTrackerComponent getTimeTrackerComponent() {
+        return timeTrackerComponent;
     }
 
     public void add(final IToolbarCommand... commands) {
@@ -282,10 +313,33 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
             TimeTracker timeTracker) {
         return new TimeTrackerComponent(timeTracker) {
             @Override
-            protected void scrollHorizontalPercentage(int pixelsDisplacement) {
+            protected void scrollHorizontalPercentage(int daysDisplacement) {
                 response("", new AuInvoke(resourceLoadList,
-                        "adjustScrollHorizontalPosition", pixelsDisplacement
-                                + ""));
+                        "scroll_horizontal", daysDisplacement + ""));
+                moveCurrentPositionScroll();
+            }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // get the previous data.
+                LocalDate previousStart = getPreviousStart();
+
+                // get the current data
+                int diffDays = getTimeTrackerComponent().getDiffDays(
+                        previousStart);
+                double pixelPerDay = getTimeTrackerComponent().getPixelPerDay();
+
+                response("move_scroll", new AuInvoke(resourceLoadList,
+                        "move_scroll", "" + diffDays, "" + pixelPerDay));
+            }
+
+            protected void updateCurrentDayScroll() {
+                double previousPixelPerDay = getTimeTracker().getMapper()
+                        .getPixelsPerDay().doubleValue();
+
+                response("update_day_scroll", new AuInvoke(resourceLoadList,
+                        "update_day_scroll", "" + previousPixelPerDay));
+
             }
         };
     }
@@ -329,6 +383,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
         this.visibleChart = expandResourceLoadViewCharts;
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
+        savePreviousData();
     }
 
     public void clearComponents() {
@@ -345,6 +400,18 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
          @Override
          protected void scrollHorizontalPercentage(int pixelsDisplacement) {
          }
+
+            @Override
+            protected void moveCurrentPositionScroll() {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            protected void updateCurrentDayScroll() {
+                // TODO Auto-generated method stub
+
+            }
         };
     }
 

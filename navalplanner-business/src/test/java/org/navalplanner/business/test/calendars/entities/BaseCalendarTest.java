@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,12 +35,16 @@ import java.util.Set;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Tests for {@link BaseCalendar}.
@@ -79,16 +84,26 @@ public class BaseCalendarTest {
 
         calendar.setName("Test");
 
-        EffortDuration eightHours = hours(8);
-        calendar.setDurationAt(Days.MONDAY, eightHours);
-        calendar.setDurationAt(Days.TUESDAY, eightHours);
-        calendar.setDurationAt(Days.WEDNESDAY, eightHours);
-        calendar.setDurationAt(Days.THURSDAY, eightHours);
-        calendar.setDurationAt(Days.FRIDAY, eightHours);
-        calendar.setDurationAt(Days.SATURDAY, EffortDuration.zero());
-        calendar.setDurationAt(Days.SUNDAY, EffortDuration.zero());
+        Capacity eightHours = withNormalDuration(hours(8));
+        calendar.setCapacityAt(Days.MONDAY, eightHours);
+        calendar.setCapacityAt(Days.TUESDAY, eightHours);
+        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
+        calendar.setCapacityAt(Days.THURSDAY, eightHours);
+        calendar.setCapacityAt(Days.FRIDAY, eightHours);
+        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
+        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
 
         return calendar;
+    }
+
+    /**
+     * Creates a {@link Capacity} with normal {@link EffortDuration} and no
+     * extra hours limit
+     * @param effort
+     * @return
+     */
+    private static Capacity withNormalDuration(EffortDuration effort) {
+        return Capacity.create(effort).overAssignableWithoutLimit();
     }
 
     private BaseCalendar calendarFixture;
@@ -121,7 +136,7 @@ public class BaseCalendarTest {
 
     private void initializeAllToZeroHours(BaseCalendar calendar) {
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, EffortDuration.zero());
+            calendar.setCapacityAt(each, Capacity.zero());
         }
     }
 
@@ -306,8 +321,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setDurationAt(Days.WEDNESDAY, hours(4));
-        calendar.setDurationAt(Days.SUNDAY, hours(4));
+        calendar.setCapacityAt(Days.WEDNESDAY, withNormalDuration(hours(4)));
+        calendar.setCapacityAt(Days.SUNDAY, withNormalDuration(hours(4)));
 
         assertThat(calendar.getCapacityOn(wholeDay(WEDNESDAY_LOCAL_DATE)),
                 equalTo(hours(4)));
@@ -328,8 +343,8 @@ public class BaseCalendarTest {
         BaseCalendar calendar = createBasicCalendar();
         calendar.newVersion(MONDAY_LOCAL_DATE);
 
-        calendar.setDurationAt(Days.MONDAY, hours(1));
-        calendar.setDurationAt(Days.SUNDAY, hours(2));
+        calendar.setCapacityAt(Days.MONDAY, withNormalDuration(hours(1)));
+        calendar.setCapacityAt(Days.SUNDAY, withNormalDuration(hours(2)));
 
         assertThat(calendar.getCapacityOn(wholeDay(MONDAY_LOCAL_DATE)),
                 equalTo(hours(1)));
@@ -382,9 +397,10 @@ public class BaseCalendarTest {
 
         calendar.newVersion(CHRISTMAS_DAY_LOCAL_DATE.plusDays(1));
 
+        CalendarExceptionType type = createCalendarExceptionType();
         calendar.updateExceptionDay(CHRISTMAS_DAY_LOCAL_DATE.plusYears(1),
-                hours(8),
-                createCalendarExceptionType());
+                Capacity.create(hours(8)).withAllowedExtraEffort(
+                        type.getCapacity().getAllowedExtraEffort()), type);
 
         assertThat(calendar.getCapacityOn(wholeDay(CHRISTMAS_DAY_LOCAL_DATE
                 .plusYears(1))), equalTo(hours(8)));
@@ -394,9 +410,9 @@ public class BaseCalendarTest {
     }
 
     public static void setHoursForAllDays(BaseCalendar calendar, Integer hours) {
-        EffortDuration duration = hours(hours);
+        Capacity capacity = withNormalDuration(hours(hours));
         for (Days each : Days.values()) {
-            calendar.setDurationAt(each, duration);
+            calendar.setCapacityAt(each, capacity);
         }
     }
 
@@ -591,7 +607,7 @@ public class BaseCalendarTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetHoursInvalid() {
         BaseCalendar calendar = createBasicCalendar();
-        calendar.setDurationAt(Days.MONDAY, hours(-5));
+        calendar.setCapacityAt(Days.MONDAY, withNormalDuration(hours(-5)));
     }
 
     @Test
@@ -760,4 +776,164 @@ public class BaseCalendarTest {
         assertTrue(nonWorkableDays.contains(SUNDAY_LOCAL_DATE));
     }
 
+    @Test
+    public void aCalendarHasAMethodToConvertAnAmountOfResourcesPerDayToAEffortDuration() {
+        BaseCalendar calendar = createBasicCalendar();
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(16)));
+    }
+
+    @Test
+    public void asDurationOnRespectsTheOverAssignablePropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .overAssignableWithoutLimit());
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(16)));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getCapacityWithOvertimeMustNotBeCalledWithANullDate() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.getCapacityWithOvertime(null);
+    }
+
+    @Test
+    public void getCapacityWithOvertimeOnReturnsTheCapacityForThatDay() {
+        BaseCalendar calendar = createBasicCalendar();
+        Capacity capacitySet = Capacity.create(hours(8))
+                .overAssignableWithoutLimit();
+
+        calendar.setCapacityAt(Days.MONDAY, capacitySet);
+        assertThat(calendar.getCapacityWithOvertime(MONDAY_LOCAL_DATE),
+                equalTo(capacitySet));
+    }
+
+    @Test
+    public void asDurationOnRespectsTheNotOverAssignablePropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .notOverAssignableWithoutLimit());
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(8)));
+    }
+
+    @Test
+    public void DurationOnRespectsTheExtraEffortPropertyOfCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(8))
+                .withAllowedExtraEffort(hours(2)));
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(8)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(10)));
+
+    }
+
+    private void addExceptionOn(BaseCalendar calendar, LocalDate onDate,
+            Capacity capacity) {
+        calendar.addExceptionDay(CalendarException.create(onDate, capacity,
+                createCalendarExceptionType()));
+    }
+
+    @Test
+    public void asDurationOnRespectsAnOverAssignableCalendarException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
+                .overAssignableWithoutLimit());
+
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(1)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(2)));
+    }
+
+    @Test
+    public void asDurationOnRespectsANotOverAssignableCalendarException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(1))
+                .notOverAssignableWithoutLimit());
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(1)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(1)));
+    }
+
+    @Test
+    public void asDurationOnRespectsCapacityExtraEffort() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(2))
+                .withAllowedExtraEffort(hours(3)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(1)), equalTo(hours(2)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(2)), equalTo(hours(4)));
+        assertThat(calendar.asDurationOn(
+                PartialDay.wholeDay(MONDAY_LOCAL_DATE),
+                ResourcesPerDay.amount(3)), equalTo(hours(5)));
+    }
+
+    @Test
+    public void canWorkOnRespectsTheCapacityOfTheException() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
+                .withAllowedExtraEffort(hours(0)));
+
+        assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void canWorkOnRespectsIsOverAssignable() {
+        BaseCalendar calendar = createBasicCalendar();
+        addExceptionOn(calendar, MONDAY_LOCAL_DATE, Capacity.create(hours(0))
+                .overAssignableWithoutLimit());
+
+        assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void canWorkOnRespectsCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .overAssignableWithoutLimit());
+
+        assertTrue(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .notOverAssignableWithoutLimit());
+        assertFalse(calendar.canWorkOn(MONDAY_LOCAL_DATE));
+    }
+
+    @Test
+    public void theAvailabilityTimeLineTakesIntoAccountTheDaysItCannotWorkDueToCalendarData() {
+        BaseCalendar calendar = createBasicCalendar();
+        calendar.setCapacityAt(Days.MONDAY, Capacity.create(hours(0))
+                .notOverAssignableWithoutLimit());
+
+        AvailabilityTimeLine availability = calendar.getAvailability();
+        assertFalse(availability.isValid(MONDAY_LOCAL_DATE));
+    }
 }

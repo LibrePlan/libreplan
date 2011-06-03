@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,19 +32,26 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.Validate;
+import org.hibernate.Hibernate;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
+import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
+import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.workreports.daos.IWorkReportDAO;
 import org.navalplanner.business.workreports.daos.IWorkReportTypeDAO;
 import org.navalplanner.business.workreports.entities.WorkReport;
@@ -82,13 +90,22 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private IOrderElementDAO orderElementDAO;
 
     @Autowired
+    private IOrderDAO orderDAO;
+
+    @Autowired
     private IWorkerDAO workerDAO;
 
     @Autowired
     private ILabelDAO labelDAO;
 
     @Autowired
+    private IScenarioManager scenarioManager;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
+
+    @Autowired
+    private ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
 
     private WorkReportType workReportType;
 
@@ -212,8 +229,21 @@ public class WorkReportModel extends IntegrationEntityModel implements
     private void forceLoadPrincipalDataWorkReportLines(WorkReportLine line) {
         line.getNumHours();
         line.getResource().getShortDescription();
-        line.getOrderElement().getName();
         line.getTypeOfWorkHours().getName();
+        initalizeOrderElement(line.getOrderElement());
+    }
+
+    private void initalizeOrderElement(OrderElement orderElement) {
+        Hibernate.initialize(orderElement);
+        initalizeOrder(orderElement);
+    }
+
+    private void initalizeOrder(OrderElement orderElement) {
+        OrderLineGroup parent = orderElement.getParent();
+        while (parent != null) {
+            Hibernate.initialize(parent);
+            parent = parent.getParent();
+        }
     }
 
     private void forceLoadWorkReportTypeFromDB(WorkReportType workReportType) {
@@ -317,13 +347,15 @@ public class WorkReportModel extends IntegrationEntityModel implements
 
     private List<WorkReport> getAllWorkReports() {
         List<WorkReport> result = new ArrayList<WorkReport>();
-        for (WorkReport each : workReportDAO.list(WorkReport.class)) {
+        for (WorkReport each : workReportDAO
+                .allWorkReportsWithAssociatedOrdersUnproxied()) {
             each.getWorkReportType().getName();
             if (each.getResource() != null) {
                 each.getResource().getShortDescription();
             }
             if (each.getOrderElement() != null) {
                 each.getOrderElement().getName();
+                each.getOrderElement().getOrder();
             }
             result.add(each);
         }
@@ -586,4 +618,11 @@ public class WorkReportModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.workReport;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TypeOfWorkHours> getAllHoursType() {
+        return typeOfWorkHoursDAO.hoursTypeByNameAsc();
+    }
+
 }

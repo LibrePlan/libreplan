@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -297,7 +298,8 @@ public class TaskElementTest {
         };
     }
 
-    private static Matcher<TaskPositionConstraint> hasValue(final LocalDate value) {
+    private static Matcher<TaskPositionConstraint> hasValue(
+            final LocalDate value) {
         return new BaseMatcher<TaskPositionConstraint>() {
 
             @Override
@@ -305,7 +307,8 @@ public class TaskElementTest {
                 if (object instanceof TaskPositionConstraint) {
                     TaskPositionConstraint startConstraint = (TaskPositionConstraint) object;
                     LocalDate constraintDate = startConstraint
-                            .getConstraintDate();
+                            .getConstraintDate().toDateTimeAtStartOfDay()
+                            .toLocalDate();
                     boolean bothNotNull = value != null
                                                 && constraintDate != null;
                     return value == constraintDate || bothNotNull

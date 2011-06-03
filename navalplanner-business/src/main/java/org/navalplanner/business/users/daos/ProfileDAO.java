@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,11 +21,17 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
+import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Hibernate DAO for the <code>Profile</code> entity.
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Diego Pino García <dpino@igalia.com>
  */
 @Repository
 public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
@@ -77,6 +85,38 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
     public Profile findByProfileNameAnotherTransaction(String profileName)
             throws InstanceNotFoundException {
         return findByProfileName(profileName);
+    }
+
+    @Override
+    public void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException {
+        checkHasUsers(profile);
+        checkHasOrderAuthorizations(profile);
+    }
+
+    private void checkHasOrderAuthorizations(Profile profile) {
+        List orderAuthorizations = getSession()
+                .createCriteria(ProfileOrderAuthorization.class)
+                .add(Restrictions.eq("profile", profile)).list();
+        if (!orderAuthorizations.isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete profile. It is being used at this moment by some order authorizations.",
+                            profile);
+        }
+    }
+
+    private void checkHasUsers(Profile profile) {
+        // Query against a collection of elements
+        // http://community.jboss.org/message/353859#353859
+        Query query = getSession().createQuery(
+                "FROM User user JOIN user.profiles up WHERE up IN (:profiles)");
+        query.setParameterList("profiles", Collections.singleton(profile));
+        if (!query.list().isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete profile. It is being used at this moment by some users.",
+                            profile);
+        }
     }
 
 }

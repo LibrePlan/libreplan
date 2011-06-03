@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,6 @@
 
 package org.navalplanner.web.planner.order;
 
-import static org.navalplanner.business.common.AdHocTransactionService.readOnlyProxy;
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,14 +40,18 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.HoursGroup;
@@ -82,6 +87,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -124,6 +130,8 @@ import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
 import org.zkoss.ganttz.data.GanttDiagramGraph.IGraphChangeListener;
 import org.zkoss.ganttz.extensions.ICommand;
+import org.zkoss.ganttz.extensions.ICommandOnTask;
+import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IDetailItemModificator;
@@ -137,7 +145,6 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -160,11 +167,10 @@ import org.zkoss.zul.Vbox;
 public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
-
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FDBE13"; // Orange
-
-    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#AA80d5"; // Violet
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
+                                                                       // green
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
+    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#98D471"; // Green
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
@@ -322,6 +328,31 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
+    private static class NullSeparatorCommandOnTask<T> implements
+            ICommandOnTask<T> {
+
+        @Override
+        public String getName() {
+            return "separator";
+        }
+
+        @Override
+        public String getIcon() {
+            return null;
+        }
+
+        @Override
+        public boolean isApplicableTo(T task) {
+            return true;
+        }
+
+        @Override
+        public void doAction(IContextWithPlannerTask<T> context, T task) {
+            // Do nothing
+        }
+
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void setConfigurationToPlanner(final Planner planner, Order order,
@@ -350,23 +381,27 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.addGlobalCommand(buildReassigningCommand());
 
-        final IResourceAllocationCommand resourceAllocationCommand =
-            buildResourceAllocationCommand(editTaskController);
-        configuration.addCommandOnTask(resourceAllocationCommand);
+        NullSeparatorCommandOnTask<TaskElement> separator = new NullSeparatorCommandOnTask<TaskElement>();
+
+        final IResourceAllocationCommand resourceAllocationCommand = buildResourceAllocationCommand(editTaskController);
+
+        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+
+        // Build context menu
         configuration.addCommandOnTask(buildMilestoneCommand());
         configuration.addCommandOnTask(buildDeleteMilestoneCommand());
-        configuration
-                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
+        configuration.addCommandOnTask(separator);
         configuration
                 .addCommandOnTask(buildTaskPropertiesCommand(editTaskController));
-
-        final IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand =
-            buildAdvanceAssignmentPlanningCommand(advanceAssignmentPlanningController);
+        configuration.addCommandOnTask(resourceAllocationCommand);
+        configuration
+                .addCommandOnTask(buildSubcontractCommand(editTaskController));
+        configuration
+                .addCommandOnTask(buildCalendarAllocationCommand(calendarAllocationController));
+        configuration.addCommandOnTask(separator);
         configuration.addCommandOnTask(advanceAssignmentPlanningCommand);
         configuration
                 .addCommandOnTask(buildAdvanceConsolidationCommand(advanceConsolidationController));
-        configuration
-                .addCommandOnTask(buildSubcontractCommand(editTaskController));
 
         configuration.setDoubleClickCommand(resourceAllocationCommand);
         addPrintSupport(configuration, order);
@@ -398,14 +433,41 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         // Append tab panels
         chartComponent.appendChild(chartTabpanels);
+        ChangeHooker changeHooker = new ChangeHooker(configuration, saveCommand);
 
-        setupLoadChart(chartLoadTimeplot, planner, configuration, saveCommand);
-        setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller, planner, configuration, saveCommand);
-        setupOverallProgress(saveCommand);
+        setupLoadChart(chartLoadTimeplot, planner, changeHooker);
+        setupEarnedValueChart(chartEarnedValueTimeplot, earnedValueChartFiller,
+                planner, changeHooker);
+        setupOverallProgress(planner, changeHooker);
+        setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
         overallProgressContent = new OverAllProgressContent(overallProgressTab);
-        overallProgressContent.refresh();
+        overallProgressContent.updateAndRefresh();
+    }
+
+    private void setupAdvanceAssignmentPlanningController(final Planner planner,
+            AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
+
+        advanceAssignmentPlanningController.reloadOverallProgressListener(new IReloadChartListener() {
+
+            @Override
+            public void reloadChart() {
+                Registry.getTransactionService().runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+
+                    @Override
+                    public Void execute() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return null;
+                        }
+                        if (planner.isVisibleChart()) {
+                            overallProgressContent.updateAndRefresh();
+                        }
+                        return null;
+                    }
+                });
+            }
+        });
     }
 
     private Tabpanel createOverallProgressTab(
@@ -498,40 +560,118 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner,
-            PlannerConfiguration<TaskElement> configuration,
-            ISaveCommand saveCommand) {
+            ChangeHooker changeHooker) {
         Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
                 orderReloaded), chartLoadTimeplot, planner);
-        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
-                loadChart);
+        refillLoadChartWhenNeeded(changeHooker, planner, loadChart);
     }
 
     private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
-            Planner planner, PlannerConfiguration<TaskElement> configuration,
-            ISaveCommand saveCommand) {
+            Planner planner, ChangeHooker changeHooker) {
         Chart earnedValueChart = setupChart(orderReloaded,
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
-        refillLoadChartWhenNeeded(configuration, planner, saveCommand,
-                earnedValueChart);
+        refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
     }
 
-    private void setupOverallProgress(final ISaveCommand saveCommand) {
+    private void setupOverallProgress(final Planner planner,
+            ChangeHooker changeHooker) {
 
-        // Refresh progress chart after saving
-        saveCommand.addListener(new IAfterSaveListener() {
-            @Override
-            public void onAfterSave() {
-                transactionService.runOnTransaction(new IOnTransaction<Void>() {
+        changeHooker.withReadOnlyTransactionWraping().hookInto(
+                EnumSet.allOf(ChangeTypes.class), new IReloadChartListener() {
+
                     @Override
-                    public Void execute() {
-                        overallProgressContent.refresh();
-                        return null;
+                    public void reloadChart() {
+                        if (isExecutingOutsideZKExecution()) {
+                            return;
+                        }
+                        if (planner.isVisibleChart()) {
+                            overallProgressContent.updateAndRefresh();
+                        }
                     }
-                });
+      });
+    }
+
+    enum ChangeTypes {
+        ON_SAVE, ON_RELOAD_CHART_REQUESTED, ON_GRAPH_CHANGED;
+    }
+
+    class ChangeHooker {
+
+        private PlannerConfiguration<TaskElement> configuration;
+
+        private ISaveCommand saveCommand;
+
+        private boolean wrapOnReadOnlyTransaction = false;
+
+        ChangeHooker(PlannerConfiguration<TaskElement> configuration,
+                final ISaveCommand saveCommand) {
+            Validate.notNull(configuration);
+            this.configuration = configuration;
+            this.saveCommand = saveCommand;
+        }
+
+        ChangeHooker withReadOnlyTransactionWraping() {
+            ChangeHooker result = new ChangeHooker(configuration, saveCommand);
+            result.wrapOnReadOnlyTransaction = true;
+            return result;
+        }
+
+        void hookInto(EnumSet<ChangeTypes> reloadOn,
+                IReloadChartListener reloadChart) {
+            Validate.notNull(reloadChart);
+            hookIntoImpl(wrapIfNeeded(reloadChart), reloadOn);
+        }
+
+        private IReloadChartListener wrapIfNeeded(
+                IReloadChartListener reloadChart) {
+            if (!wrapOnReadOnlyTransaction) {
+                return reloadChart;
             }
-        });
+            return AdHocTransactionService.readOnlyProxy(transactionService,
+                    IReloadChartListener.class, reloadChart);
+        }
+
+        private void hookIntoImpl(IReloadChartListener reloadChart,
+                EnumSet<ChangeTypes> reloadOn) {
+            if (saveCommand != null
+                    && reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED)) {
+                hookIntoSaveCommand(reloadChart);
+            }
+            if (reloadOn.contains(ChangeTypes.ON_RELOAD_CHART_REQUESTED)) {
+                hookIntoReloadChartRequested(reloadChart);
+            }
+            if (reloadOn.contains(ChangeTypes.ON_GRAPH_CHANGED)) {
+                hookIntoGraphChanged(reloadChart);
+            }
+        }
+
+        private void hookIntoSaveCommand(final IReloadChartListener reloadChart) {
+            IAfterSaveListener afterSaveListener = new IAfterSaveListener() {
+                @Override
+                public void onAfterSave() {
+                    reloadChart.reloadChart();
+                }
+            };
+            saveCommand.addListener(afterSaveListener);
+        }
+
+        private void hookIntoReloadChartRequested(
+                IReloadChartListener reloadChart) {
+            configuration.addReloadChartListener(reloadChart);
+        }
+
+        private void hookIntoGraphChanged(final IReloadChartListener reloadChart) {
+            configuration
+                    .addPostGraphChangeListener(new IGraphChangeListener() {
+
+                        @Override
+                        public void execute() {
+                            reloadChart.reloadChart();
+                        }
+                    });
+        }
 
     }
 
@@ -632,6 +772,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         };
     }
 
+    private void dateInfutureMessage(Datebox datebox) {
+        Date value = datebox.getValue();
+        Date today = LocalDate.fromDateFields(new Date())
+                .toDateTimeAtStartOfDay().toDate();
+        if (value != null && (value.compareTo(today) > 0)) {
+            throw new WrongValueException(datebox, _("date in future"));
+        }
+    }
+
     private void appendEventListenerToDateboxIndicators(
             final OrderEarnedValueChartFiller earnedValueChartFiller,
             final Vbox vbox, final Datebox datebox) {
@@ -645,6 +794,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 vbox.removeChild(child);
                 vbox.appendChild(getEarnedValueChartConfigurableLegend(
                         earnedValueChartFiller, date));
+                dateInfutureMessage(datebox);
             }
 
         });
@@ -761,20 +911,18 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
     }
 
-    private void refillLoadChartWhenNeeded(
-            PlannerConfiguration<?> configuration, final Planner planner,
-            ISaveCommand saveCommand, final Chart loadChart) {
+    private void refillLoadChartWhenNeeded(ChangeHooker changeHooker,
+            final Planner planner, final Chart loadChart) {
         planner.getTimeTracker().addZoomListener(
                 fillOnZoomChange(loadChart, planner));
         planner
                 .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
-        if(saveCommand != null) {
-            saveCommand.addListener(fillChartOnSave(loadChart, planner));
-        }
-        configuration.addPostGraphChangeListener(readOnlyProxy(
-                transactionService, IGraphChangeListener.class, new IGraphChangeListener() {
+
+        changeHooker.withReadOnlyTransactionWraping().hookInto(
+                EnumSet.allOf(ChangeTypes.class), new IReloadChartListener() {
+
                     @Override
-                    public void execute() {
+                    public void reloadChart() {
                         if (isExecutingOutsideZKExecution()) {
                             return;
                         }
@@ -782,16 +930,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                             loadChart.fillChart();
                         }
                     }
-                }));
-        configuration.addReloadChartListener(readOnlyProxy(transactionService,
-                IReloadChartListener.class, new IReloadChartListener() {
-                    @Override
-                    public void reloadChart() {
-                        if (planner.isVisibleChart()) {
-                            loadChart.fillChart();
-                        }
-                    }
-                }));
+                });
     }
 
     private boolean isExecutingOutsideZKExecution() {
@@ -838,7 +977,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             PlannerConfiguration<TaskElement> configuration,
             boolean writingAllowed) {
         if (writingAllowed) {
-            ISaveCommand result = buildSaveCommand();
+            ISaveCommand result = buildSaveCommand(configuration);
             configuration.addGlobalCommand(result);
             return result;
         }
@@ -900,8 +1039,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return resourceAllocationCommand;
     }
 
-    private ISaveCommand buildSaveCommand() {
+    private ISaveCommand buildSaveCommand(
+            PlannerConfiguration<TaskElement> configuration) {
         ISaveCommand saveCommand = getSaveCommand();
+        saveCommand.setConfiguration(configuration);
         saveCommand.setState(planningState);
         return saveCommand;
     }
@@ -971,27 +1112,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         keepAliveZoomListeners.add(zoomListener);
 
         return zoomListener;
-    }
-
-    private IAfterSaveListener fillChartOnSave(final Chart loadChart,
-            final Planner planner) {
-        IAfterSaveListener result = new IAfterSaveListener() {
-
-                    @Override
-            public void onAfterSave() {
-                    transactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                            @Override
-                            public Void execute() {
-                                if (planner.isVisibleChart()) {
-                                    loadChart.fillChart();
-                                }
-                                return null;
-                            }
-                        });
-            }
-        };
-        return result;
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(
@@ -1378,13 +1498,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         private EffortDuration getSumCapacities(
                 SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
                 LocalDate date) {
-            PartialDay day = PartialDay.wholeDay(date);
-            EffortDuration result = zero();
-            for (Resource resource : orderDayAssignmentsGrouped.get(date)
-                    .keySet()) {
-                result = result.plus(calendarCapacityFor(resource, day));
-            }
-            return result;
+
+            final PartialDay day = PartialDay.wholeDay(date);
+
+            return EffortDuration.sum(orderDayAssignmentsGrouped.get(date)
+                    .keySet(), new IEffortFrom<Resource>() {
+
+                @Override
+                public EffortDuration from(Resource resource) {
+                    return calendarCapacityFor(resource, day);
+                }
+            });
         }
 
         private EffortDuration retrieveTotalDurationForResource(
@@ -1545,35 +1669,39 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private Label lbAdvancePercentage;
 
-        private Button btnRefresh;
-
-
         public OverAllProgressContent(Tabpanel tabpanel) {
-            progressCriticalPathByDuration = (Progressmeter) tabpanel.getFellow("progressCriticalPathByDuration");
-            lbCriticalPathByDuration = (Label) tabpanel.getFellow("lbCriticalPathByDuration");
-            progressCriticalPathByNumHours = (Progressmeter) tabpanel.getFellow("progressCriticalPathByNumHours");
-            lbCriticalPathByNumHours = (Label) tabpanel.getFellow("lbCriticalPathByNumHours");
-            progressAdvancePercentage = (Progressmeter) tabpanel.getFellow("progressAdvancePercentage");
-            lbAdvancePercentage = (Label) tabpanel.getFellow("lbAdvancePercentage");
-            btnRefresh = (Button) tabpanel.getFellow("btnRefresh");
-            btnRefresh.addEventListener(Events.ON_CLICK, new EventListener() {
+            initializeProgressCriticalPathByDuration(tabpanel);
+            initializeProgressCriticalPathByNumHours(tabpanel);
+            initializeProgressAdvancePercentage(tabpanel);
 
-                @Override
-                public void onEvent(Event event) throws Exception {
-                    if (planningState.isEmpty()) {
-                        return;
-                    }
-                    transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                        @Override
-                        public Void execute() {
-                            update();
-                            refresh();
-                            return null;
-                        }
-                    });
-                }
-            });
+            tabpanel.setVariable("overall_progress_content", this, true);
+        }
+
+        private void initializeProgressCriticalPathByNumHours(Tabpanel tabpanel) {
+            progressCriticalPathByNumHours = (Progressmeter) tabpanel
+                    .getFellow("progressCriticalPathByNumHours");
+            lbCriticalPathByNumHours = (Label) tabpanel
+                    .getFellow("lbCriticalPathByNumHours");
+            ((Label) tabpanel.getFellow("textCriticalPathByNumHours"))
+                    .setValue(_(ProgressType.CRITICAL_PATH_NUMHOURS.toString()));
+        }
+
+        private void initializeProgressCriticalPathByDuration(Tabpanel tabpanel) {
+            progressCriticalPathByDuration = (Progressmeter) tabpanel
+                    .getFellow("progressCriticalPathByDuration");
+            lbCriticalPathByDuration = (Label) tabpanel
+                    .getFellow("lbCriticalPathByDuration");
+            ((Label) tabpanel.getFellow("textCriticalPathByDuration"))
+                    .setValue(_(ProgressType.CRITICAL_PATH_DURATION.toString()));
+        }
+
+        public void initializeProgressAdvancePercentage(Tabpanel tabpanel) {
+            progressAdvancePercentage = (Progressmeter) tabpanel
+                    .getFellow("progressAdvancePercentage");
+            lbAdvancePercentage = (Label) tabpanel
+                    .getFellow("lbAdvancePercentage");
+            ((Label) tabpanel.getFellow("textAdvancePercentage"))
+                    .setValue(_(ProgressType.SPREAD_PROGRESS.toString()));
         }
 
         public void refresh() {
@@ -1589,16 +1717,22 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     .getCriticalPathProgressByNumHours());
         }
 
+        private void updateAndRefresh() {
+            update();
+            refresh();
+        }
+
         private void update() {
             TaskGroup rootTask = planningState.getRootTask();
             updateCriticalPathProgress(rootTask);
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            taskElementDAO.save(rootTask);
-            rootTask
-                    .updateCriticalPathProgress((List<TaskElement>) planningState
-                            .getPlanner().getCriticalPath());
+            Planner planner = planningState.getPlanner();
+            if (planner != null) {
+                rootTask.updateCriticalPathProgress((List<TaskElement>) planner
+                        .getCriticalPath());
+            }
         }
 
         private void setAdvancePercentage(BigDecimal value) {

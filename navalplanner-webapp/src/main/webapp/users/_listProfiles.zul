@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,13 +21,13 @@
 
 <window id="${arg.top_id}" title="${i18n:_('Profiles List')}">
     <newdatasortablegrid id="listing" model="@{controller.profiles}" mold="paging"
-        pageSize="10">
+        pageSize="10" sclass="clickable-rows">
         <columns sizable="true">
             <newdatasortablecolumn label="${i18n:_('Profile name')}" sort="auto(profileName)" />
             <newdatasortablecolumn label="${i18n:_('Actions')}" />
         </columns>
         <rows>
-            <row self="@{each='profile'}" value="@{profile}">
+            <row self="@{each='profile'}" value="@{profile}" onClick="controller.goToEditForm(self.value);">
                 <label value="@{profile.profileName}" />
                 <hbox>
                     <button sclass="icono" image="/common/img/ico_editar1.png"

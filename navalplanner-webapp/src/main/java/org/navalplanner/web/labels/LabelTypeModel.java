@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +34,7 @@ import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -57,6 +59,9 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     private ILabelTypeDAO labelTypeDAO;
 
     @Autowired
+    private ILabelDAO labelDAO;
+
+    @Autowired
     private IConfigurationDAO configurationDAO;
 
     private LabelType labelType;
@@ -68,7 +73,23 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     @Override
     @Transactional(readOnly=true)
     public List<LabelType> getLabelTypes() {
-        return labelTypeDAO.getAll();
+        List<LabelType> result = labelTypeDAO.getAll();
+        initializeLabelTypes(result);
+        return result;
+    }
+
+    private void initializeLabelTypes(List<LabelType> labelTypes) {
+        for (LabelType each: labelTypes) {
+            initializeLabels(each.getLabels());
+        }
+    }
+
+    private Set<Label> initializeLabels(Set<Label> labels) {
+        for (Label each : labels) {
+            labelDAO.reattach(each);
+            each.getOrderElements().size();
+        }
+        return labels;
     }
 
     @Override
@@ -188,7 +209,7 @@ public class LabelTypeModel extends IntegrationEntityModel implements
         // Safe copy
         List<Label> labels = new ArrayList<Label>();
         if (labelType != null) {
-            labels.addAll(labelType.getLabels());
+            labels.addAll(initializeLabels(labelType.getLabels()));
         }
         return labels;
     }
@@ -229,4 +250,28 @@ public class LabelTypeModel extends IntegrationEntityModel implements
     public IntegrationEntity getCurrentEntity() {
         return this.labelType;
     }
+
+    @Override
+    public void thereIsOtherWithSameNameAndType(String name)
+            throws ValidationException {
+        for (Label label : labelType.getLabels()) {
+            if (name.equals(label.getName())) {
+                InvalidValue[] invalidValues = { new InvalidValue(
+                        _("Already exists other " + "label with the same name"),
+                        LabelType.class, "name", name, getLabelType()) };
+                throw new ValidationException(invalidValues);
+            }
+        }
+    }
+
+    @Override
+    public void validateNameNotEmpty(String name) throws ValidationException {
+        if (name.isEmpty()) {
+            InvalidValue[] invalidValues = { new InvalidValue(
+                    _("The name of the label is empty."), LabelType.class,
+                    "name", "", getLabelType()) };
+            throw new ValidationException(invalidValues);
+        }
+    }
+
 }

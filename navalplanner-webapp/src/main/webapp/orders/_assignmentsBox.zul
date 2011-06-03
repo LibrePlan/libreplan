@@ -3,6 +3,7 @@
 
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
+  Copyright (C) 2010-2011 Igalia, S.L.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -18,21 +19,19 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<panel title="${i18n:_('Materials')}" border="normal" width="600px">
-    <panelchildren>
         <newdatasortablegrid id="gridMaterials"
             fixedLayout="false"
-            model="@{assignedMaterialsController.assignedMaterials}">
+            model="@{assignedMaterialsController.assignedMaterials}" >
             <columns>
                 <newdatasortablecolumn label="${i18n:_('Code')}" />
-                <newdatasortablecolumn label="${i18n:_('Date')}" />
+                <newdatasortablecolumn label="${i18n:_('Receipt date')}" />
                 <newdatasortablecolumn label="${i18n:_('Units')}" />
                 <newdatasortablecolumn label="${i18n:_('Unit type')}" />
                 <newdatasortablecolumn label="${i18n:_('Unit price')}" />
                 <newdatasortablecolumn label="${i18n:_('Total price')}" />
                 <newdatasortablecolumn label="${i18n:_('Category')}" />
                 <newdatasortablecolumn label="${i18n:_('Status')}" />
-                <newdatasortablecolumn label="" />
+                <newdatasortablecolumn label="${i18n:_('Op.')}" />
             </columns>
             <rows>
                 <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
@@ -68,5 +67,3 @@
                 </row>
             </rows>
         </newdatasortablegrid>
-    </panelchildren>
-</panel>

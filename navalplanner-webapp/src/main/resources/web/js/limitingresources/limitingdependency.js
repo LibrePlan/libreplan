@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,9 +43,11 @@ zkLimitingDependency.destination = function(dependency) {
 /* ----------- Generic Limiting dependency draw function ---------- */
 zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 	var xorig = orig[0];
-	var yorig = orig[1] - zkLimitingDependencies.CORNER;
+	var yorig = orig[1];
 	var xend = dest[0];
-	var yend = dest[1] - zkLimitingDependencies.CORNER;
+	var yend = dest[1];
+
+	var width = Math.abs(xend - xorig);
 
 	if (yend == yorig) {
 		yend = yend + zkLimitingDependencies.HEIGHT;
@@ -55,7 +58,6 @@ zkLimitingDependencies.newdraw = function(arrow, orig, dest, param) {
 		yorig = yorig + zkLimitingDependencies.HEIGHT;
 	}
 
-	var width = Math.abs(xend - xorig);
 	var height = Math.abs(yorig - yend);
 
 	// --------- First segment -----------
@@ -124,17 +126,8 @@ zkLimitingDependency.draw = function(dependency) {
         if ( (posOrig != null) && (posDest != null) ) {
                 var orig = zkLimitingDependencies.findPos(posOrig);
                 var dest = zkLimitingDependencies.findPos(posDest);
-
-                var verticalSeparation = 15;
-                switch (dependency.getAttribute('type')) {
-                        case zkLimitingDependencies.constants.START_START:
-                                verticalSeparation = 20;
-                                orig[0] = orig[0] - zkLimitingDependencies.CORNER;
-                                dest[0] = dest[0] - zkLimitingDependencies.CORNER;
-                                break;
-                        case zkLimitingDependencies.constants.END_END:
-                                verticalSeparation = 25;
-                }
+                orig[0] = Math.max(orig[0], orig[0] + this.origin(dependency).offsetWidth - zkLimitingDependencies.CORNER);
+                var verticalSeparation = zkLimitingDependencies.ROW_HEIGHT;
                 zkLimitingDependencies.newdraw(dependency, orig, dest, verticalSeparation);
         }
 }

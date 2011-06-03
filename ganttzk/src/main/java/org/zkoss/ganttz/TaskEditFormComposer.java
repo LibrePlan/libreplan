@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,6 +23,7 @@ package org.zkoss.ganttz;
 
 import java.util.Date;
 
+import org.joda.time.LocalDate;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.Task;
 import org.zkoss.zk.ui.Component;
@@ -103,12 +105,19 @@ public class TaskEditFormComposer extends GenericForwardComposer {
         TaskDTO result = new TaskDTO();
 
         result.name = task.getName();
-        result.beginDate = task.getBeginDate().toDayRoundedDate();
-        result.endDate = task.getEndDate().toDayRoundedDate();
+        result.beginDate = asDate(task.getBeginDate().toLocalDate());
+        result.endDate = asDate(task.getEndDate().asExclusiveEnd());
         result.notes = task.getNotes();
         result.deadlineDate = task.getDeadline();
 
         return result;
+    }
+
+    private Date asDate(LocalDate localDate) {
+        if (localDate == null) {
+            return null;
+        }
+        return localDate.toDateTimeAtStartOfDay().toDate();
     }
 
     private void copyFromDTO(TaskDTO taskDTO, Task currentTask,

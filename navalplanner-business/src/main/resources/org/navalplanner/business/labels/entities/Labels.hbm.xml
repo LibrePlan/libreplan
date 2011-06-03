@@ -21,11 +21,11 @@
         index="idx_label_on_label_type"/>
 	</properties>
 
-    <!-- Assess this mapping -->
-    <set name="orderElements" table="order_element_label" cascade="all" inverse="true">
+    <set name="orderElements" table="order_element_label" cascade="none" inverse="true">
         <key column="label_id" not-null="false"/>
         <many-to-many column="order_element_id" class="org.navalplanner.business.orders.entities.OrderElement"/>
     </set>
+
 </class>
 
 <!-- LabelType -->
@@ -46,7 +46,7 @@
         column="last_label_sequence_code" />
 
     <!-- Indexed the other side -->
-    <set name="labels" inverse="false" cascade="all">
+    <set name="labels" inverse="false" cascade="all-delete-orphan">
         <cache usage="nonstrict-read-write"/>
         <key column="label_type_id"/>
         <one-to-many class="Label"/>

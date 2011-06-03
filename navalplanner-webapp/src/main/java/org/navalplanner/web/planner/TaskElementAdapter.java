@@ -3,6 +3,7 @@
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
+ * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,8 +40,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
@@ -64,24 +65,25 @@ import org.navalplanner.business.orders.entities.OrderStatusEnum;
 import org.navalplanner.business.planner.daos.IResourceAllocationDAO;
 import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.Dependency;
+import org.navalplanner.business.planner.entities.Dependency.Type;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ITaskPositionConstrained;
 import org.navalplanner.business.planner.entities.PositionConstraintType;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
-import org.navalplanner.business.planner.entities.Dependency.Type;
-import org.navalplanner.business.planner.entities.ResourceAllocation.Direction;
-import org.navalplanner.business.planner.entities.TaskElement.IDatesHandler;
 import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
+import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,10 +94,10 @@ import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
-import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.GanttDate.Cases;
 import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
+import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
 /**
  * Responsible of adaptating a {@link TaskElement} into a
@@ -182,7 +184,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
     private IResourceAllocationDAO resourceAllocationDAO;
 
     @Autowired
-    private IResourceDAO resourceDAO;
+    private IResourcesSearcher searcher;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -254,13 +256,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         });
     }
 
-    public static LocalDate toLocalDate(GanttDate date) {
-        if (date == null) {
-            return null;
-        }
-        return toIntraDay(date).getDate();
-    }
-
     static class GanttDateAdapter extends CustomDate {
 
         private static final int DAY_MILLISECONDS = (int) Days.days(1)
@@ -293,6 +288,16 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @Override
         public Date toDayRoundedDate() {
             return date.toDateTimeAtStartOfDay().toDate();
+        }
+
+        @Override
+        public LocalDate toLocalDate() {
+            return date.getDate();
+        }
+
+        @Override
+        public LocalDate asExclusiveEnd() {
+            return date.asExclusiveEnd();
         }
 
         @Override
@@ -442,7 +447,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
 
         IDatesHandler getDatesHandler(TaskElement taskElement) {
-            return taskElement.getDatesHandler(currentScenario, resourceDAO);
+            return taskElement.getDatesHandler(currentScenario, searcher);
         }
 
         private void updateTaskPositionConstraint(GanttDate endDate) {
@@ -454,7 +459,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                         .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
                         || constraintType
                                 .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
-                    task.explicityMoved(toLocalDate(endDate));
+                    task.explicityMoved(toIntraDay(endDate));
                 }
             }
         }
@@ -603,12 +608,17 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 BigDecimal advancePercentage) {
             IntraDayDate start = taskElement.getIntraDayStartDate();
             IntraDayDate end = taskElement.getIntraDayEndDate();
-            BaseCalendar calendar = taskElement.getCalendar();
+            final BaseCalendar calendar = taskElement.getCalendar();
             Iterable<PartialDay> daysUntil = start.daysUntil(end);
-            EffortDuration total = zero();
-            for (PartialDay each : daysUntil) {
-                total = total.plus(calendar.getCapacityOn(each));
-            }
+
+            EffortDuration total = EffortDuration.sum(daysUntil,
+                    new IEffortFrom<PartialDay>() {
+                        @Override
+                        public EffortDuration from(PartialDay each) {
+                            return calendar.getCapacityOn(each);
+                        }
+                    });
+
             BigDecimal totalAsSeconds = new BigDecimal(total
                     .getSeconds());
             EffortDuration advanceLeft = seconds(advancePercentage.multiply(
@@ -911,11 +921,11 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
                 if (task.getPositionConstraint().isConstraintAppliedToStart()) {
                     setBeginDate(newStart);
-                    task.explicityMoved(toLocalDate(newStart));
+                    task.explicityMoved(toIntraDay(newStart));
                 } else {
                     GanttDate newEnd = inferEndFrom(newStart);
                     setEndDate(newEnd);
-                    task.explicityMoved(toLocalDate(newEnd));
+                    task.explicityMoved(toIntraDay(newEnd));
                 }
             }
         }
