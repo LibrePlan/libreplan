@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-03 10:22+0200\n"
+"POT-Creation-Date: 2011-06-03 12:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2558,6 +2558,10 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:222
 msgid "Create new work week"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/common/layout/template.zul:134
+msgid "The admin's account password remains the default one. This is unsecure"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:713
@@ -5110,12 +5114,12 @@ msgstr ""
 msgid "SV"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
-msgid "Filter work reports"
-msgstr ""
-
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:83
 msgid "Our company login"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
+msgid "Filter work reports"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:395

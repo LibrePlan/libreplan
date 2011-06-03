@@ -36,7 +36,7 @@ use HTML::Entities;
 
 my $DEBUG = 0;
 my $TOKEN = 'i18n:_';
-my @REG_EXPS = qw(i18n:_{1,2}\\('(.*?)'.*?\\) <i18n\s.*?value=["'](.*?)["']);
+my @REG_EXPS = qw(i18n:_{1,2}\\('(.*?)'.*?\\) <i18n\s.*?value='(.*?)' i18n:_{1,2}\\("(.*?)".*?\\) <i18n\s.*?value="(.*?)");
 my $DEFAULT_KEYS_FILE = "./keys.pot";
 my %ENTRIES;
 
