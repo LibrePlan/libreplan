@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-03 10:22+0200\n"
+"POT-Creation-Date: 2011-06-03 12:50+0200\n"
 "PO-Revision-Date: 2011-06-03 11:56+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
@@ -2632,6 +2632,12 @@ msgstr ""
 msgid "Create new work week"
 msgstr "Crear nueva semana de trabajo"
 
+#: navalplanner-webapp/src/main/webapp/common/layout/template.zul:134
+msgid "The admin's account password remains the default one. This is unsecure"
+msgstr ""
+"La contraseña de la cuenta de admin sigue siendo la contraseña por defecto. "
+"Esto no es seguro"
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:713
 #: navalplanner-business/src/main/java/org/navalplanner/business/resources/entities/ResourceType.java:34
 msgid "LIMITING RESOURCE"
@@ -5240,13 +5246,13 @@ msgstr "Optimista"
 msgid "SV"
 msgstr "SV"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
-msgid "Filter work reports"
-msgstr "Filtrar partes de trabajo"
-
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:83
 msgid "Our company login"
 msgstr "Nombre de usuario de nuestra empresa"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
+msgid "Filter work reports"
+msgstr "Filtrar partes de trabajo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:395
 msgid ""
@@ -7166,35 +7172,3 @@ msgstr "No puede modificar esta secuencia de entidade, ya está en uso"
 #, java-format
 msgid "number of digits must be between {0} and {1}"
 msgstr "el número de dígitos debe estar entre {0} y {1}"
-
-#~ msgid "START_NOT_EARLIER_THAN"
-#~ msgstr "COMENZAR_NO_ANTES_DE"
-
-#~ msgid "AS_SOON_AS_POSSIBLE"
-#~ msgstr "TAN_PRONTO_COMO_SEA_POSIBLE"
-
-#~ msgid "AS_LATE_AS_POSSIBLE"
-#~ msgstr "TAN_TARDE_COMO_SEA_POSIBLE"
-
-#~ msgid "s"
-#~ msgstr "s"
-
-#~ msgid "FINISH_NOT_LATER_THAN"
-#~ msgstr "ACABAR_NO_DESPUES_DE"
-
-#~ msgid "START_IN_FIXED_DATE"
-#~ msgstr "COMENZAR_EN_FECHA_FIJA"
-
-#~ msgid ""
-#~ "The admin's account password remains the default one. This is unsecure"
-#~ msgstr ""
-#~ "La contraseña de la cuenta de admin sigue siendo la contraseña por "
-#~ "defecto. Esto no es seguro"
-
-#~ msgid ""
-#~ "Some entity sequence was created during the configuration process, it is "
-#~ "impossible to update entity sequence table. Please, try again later"
-#~ msgstr ""
-#~ "Alguna secuencia de entidad se creó durante el proceso de configuración, "
-#~ "es imposible actualizar la tabla de secuencia de entidad. Por favor, "
-#~ "inténtelo de nuevo más tarde"

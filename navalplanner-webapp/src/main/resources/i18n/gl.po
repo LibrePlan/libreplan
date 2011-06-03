@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-03 10:22+0200\n"
-"PO-Revision-Date: 2011-06-03 11:26+0200\n"
+"POT-Creation-Date: 2011-06-03 12:50+0200\n"
+"PO-Revision-Date: 2011-06-03 13:08+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "Language: gl\n"
@@ -2622,6 +2622,12 @@ msgstr ""
 msgid "Create new work week"
 msgstr "Crear nova semana de traballo"
 
+#: navalplanner-webapp/src/main/webapp/common/layout/template.zul:134
+msgid "The admin's account password remains the default one. This is unsecure"
+msgstr ""
+"O contrasinal da conta de admin segue sendo o contrasinal por defecto. Esto "
+"non é seguro"
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resources/worker/WorkerCRUDController.java:713
 #: navalplanner-business/src/main/java/org/navalplanner/business/resources/entities/ResourceType.java:34
 msgid "LIMITING RESOURCE"
@@ -5222,13 +5228,13 @@ msgstr "Optimista"
 msgid "SV"
 msgstr "SV"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
-msgid "Filter work reports"
-msgstr "Filtrar partes de traballo"
-
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:83
 msgid "Our company login"
 msgstr "Nome de usuario da nosa empresa"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
+msgid "Filter work reports"
+msgstr "Filtrar partes de traballo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:395
 msgid ""
