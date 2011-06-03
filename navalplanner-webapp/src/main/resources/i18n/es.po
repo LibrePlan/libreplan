@@ -7152,7 +7152,7 @@ msgid "You can not remove this entity sequence, it is already in use"
 msgstr "No puede borrar está secuencia de entidad, ya está en uso"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
-msgid "Progress with all task tasks by hours"
+msgid "Progress with all tasks by hours"
 msgstr "Progreso con todas las tareas por horas"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:37
