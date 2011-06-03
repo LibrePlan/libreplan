@@ -6963,7 +6963,7 @@ msgid "You can not remove this entity sequence, it is already in use"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
-msgid "Progress with all task tasks by hours"
+msgid "Progress with all tasks by hours"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:37
