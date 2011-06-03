@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-03 10:22+0200\n"
+"POT-Creation-Date: 2011-06-03 12:50+0200\n"
 "PO-Revision-Date: 2011-06-03 11:05+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Galician <>\n"
@@ -43,7 +43,7 @@ msgstr "Inicio"
 msgid "Show reported hours"
 msgstr "Mostrar horas reportadas"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:79
 msgid "Show/Hide Progress"
 msgstr "Mostrar/ocultar progreso"
 
@@ -51,7 +51,7 @@ msgstr "Mostrar/ocultar progreso"
 msgid "by criteria"
 msgstr "por criterios"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:70
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:71
 msgid "Show/Hide reported hours"
 msgstr "Mostrar/ocultar horas reportadas"
 
@@ -128,7 +128,7 @@ msgstr "Ningún"
 msgid "Filter"
 msgstr "Filtro"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:68
 msgid "Flatten/Unflatten tree"
 msgstr "Aplanar/expandir árbore"
 
@@ -149,7 +149,7 @@ msgstr "Nome"
 msgid "Show progress"
 msgstr "Mostrar progreso"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:65
 msgid "Expand/Collapse all"
 msgstr "Expandir/pregar todo"
 
@@ -169,7 +169,7 @@ msgstr "mostrando criterios"
 msgid "Month"
 msgstr "Mes"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:62
 msgid "Show/Hide resources"
 msgstr "Mostrar/ocultar recursos"
 
@@ -205,7 +205,7 @@ msgstr "mostrando recursos"
 msgid "Load: {0}%"
 msgstr "Carga: {0}%"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:59
 msgid "Show/Hide labels"
 msgstr "Mostrar/ocultar etiquetas"
 
@@ -213,7 +213,7 @@ msgstr "Mostrar/ocultar etiquetas"
 msgid "Hour"
 msgstr "Hora"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:115
 #: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
 msgid "Graphics"
 msgstr "Gráficas"
