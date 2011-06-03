@@ -3,6 +3,7 @@
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
 # Copyright (C) 2010-2011 Igalia, S.L.
+# This file is distributed under the same license as the NavalPlan package.
 # Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2009, 2010.
 # Manuel Rego Casasnovas <mrego@igalia.com>, 2010, 2011.
 #
@@ -233,7 +234,7 @@ msgstr "Gráfico de dedicación"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:701
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:728
 msgid "Progress that are reported by quality forms can not be modified"
-msgstr "O avance notificado por formularios de calidade non se pode modificar"
+msgstr "O progreso notificado por formularios de calidade non se pode modificar"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/common/impl/OrderElementConverter.java:748
 msgid "Not the same hours group, impossible to update"

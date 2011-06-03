@@ -55,7 +55,8 @@ planner = self;
                     tooltiptext="${i18n:_('Show/Hide Critical path')}"
                     sclass="planner-command" />
                 <button id="showAllLabels" onClick="planner.showAllLabels();"
-                    image="/common/img/ico_labels.png" tooltiptext="${i18n:_('Show/Hide labels')}"
+                    image="/common/img/ico_labels.png"
+                    tooltiptext="${i18n:_('Show/Hide labels')}"
                     sclass="planner-command show-labels" />
                 <button id="showAllResources" onClick="planner.showAllResources();"
                     image="/common/img/ico_resources.png" tooltiptext="${i18n:_('Show/Hide resources')}"
