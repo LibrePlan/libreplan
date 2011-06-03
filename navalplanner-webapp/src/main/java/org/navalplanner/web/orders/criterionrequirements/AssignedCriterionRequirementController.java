@@ -247,7 +247,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             try {
                 int status = Messagebox
                     .show(
-                            _("Are you sure of changing the resource type? You will lose the criterions with different resource type."),
+                            _("Are you sure of changing the resource type? You will lose the criteria with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
 

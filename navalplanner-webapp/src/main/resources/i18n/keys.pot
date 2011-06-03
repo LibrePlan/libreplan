@@ -372,7 +372,7 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:730
 msgid ""
-"The periods available depend on the satisfaction of the criterions by the "
+"The periods available depend on the satisfaction of the criteria by the "
 "resources and their calendars."
 msgstr ""
 
@@ -4509,7 +4509,7 @@ msgid "Company data"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/orders/_listHoursGroupCriterionRequirement.zul:22
-msgid "Criterions Requirement"
+msgid "Criteria Requirement"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/materials/UnitTypeController.java:215
@@ -5021,7 +5021,7 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:250
 msgid ""
-"Are you sure of changing the resource type? You will lose the criterions "
+"Are you sure of changing the resource type? You will lose the criteria "
 "with different resource type."
 msgstr ""
 
@@ -6713,7 +6713,7 @@ msgid "Sigmoid"
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:95
-msgid "There are no days available due to not satisfying the criterions."
+msgid "There are no days available due to not satisfying the criteria."
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:96
@@ -6729,7 +6729,7 @@ msgid ""
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:103
-msgid "Maybe the criterions are not satisfied in those days."
+msgid "Maybe the criteria are not satisfied in those days."
 msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/planner/entities/allocationalgorithms/ResourcesPerDayModification.java:170
