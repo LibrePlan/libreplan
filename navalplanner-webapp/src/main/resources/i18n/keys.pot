@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-02 17:56+0200\n"
+"POT-Creation-Date: 2011-06-03 10:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -582,7 +582,7 @@ msgstr ""
 msgid "External code"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:47
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:48
 msgid "Edit selected task"
 msgstr ""
 
@@ -1373,7 +1373,7 @@ msgstr ""
 msgid "the code must be not null or not empty"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:34
+#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:35
 msgid "Create New Project"
 msgstr ""
 
@@ -1738,7 +1738,7 @@ msgstr ""
 msgid "there must be {0} effort instead of {1}"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:41
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:42
 msgid "Add From Template"
 msgstr ""
 
@@ -2748,7 +2748,7 @@ msgstr ""
 msgid "Progress type saved"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:72
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:73
 msgid "Delete selected task"
 msgstr ""
 
@@ -3235,7 +3235,7 @@ msgid ""
 "date"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:42
+#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:43
 msgid "Save Project"
 msgstr ""
 
@@ -3417,7 +3417,7 @@ msgstr ""
 msgid "Duration"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:38
+#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:39
 msgid "Create From Template"
 msgstr ""
 
@@ -3574,7 +3574,7 @@ msgstr ""
 msgid "Exist other workReportType with the same code."
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:64
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:65
 msgid "Unindent selected task"
 msgstr ""
 
@@ -3740,7 +3740,7 @@ msgstr ""
 msgid "Work Report"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:68
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:69
 msgid "Indent selected task"
 msgstr ""
 
@@ -3998,7 +3998,7 @@ msgstr ""
 msgid "Reference date"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:45
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:46
 msgid "Selected node:"
 msgstr ""
 
@@ -4484,7 +4484,7 @@ msgstr ""
 msgid "Time filter"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:60
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:61
 msgid "Move selected task up"
 msgstr ""
 
@@ -4537,7 +4537,7 @@ msgstr ""
 msgid "Hours Management"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:32
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:33
 msgid "New task:"
 msgstr ""
 
@@ -4802,6 +4802,11 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/planner/taskpanels/_tabPanelNonLimitingResourceAllocation.zul:59
 #: navalplanner-webapp/src/main/webapp/planner/taskpanels/_tabPanelLimitingResourceAllocation.zul:52
 msgid "Allocations"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/orders/_ordersTab.zul:32
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:32
+msgid "Choosing Template"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderElementBandboxFinder.java:52
@@ -5075,7 +5080,7 @@ msgstr ""
 msgid "Extra Effort"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:56
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:57
 msgid "Move selected task down"
 msgstr ""
 
@@ -5393,7 +5398,7 @@ msgstr ""
 msgid "Overall progress"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:51
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:52
 msgid "Create template from selected task"
 msgstr ""
 
@@ -5828,7 +5833,7 @@ msgstr ""
 msgid "Multiple values per resource"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:35
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:36
 msgid "Hours:"
 msgstr ""
 

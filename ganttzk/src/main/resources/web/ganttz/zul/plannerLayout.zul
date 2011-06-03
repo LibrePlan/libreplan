@@ -32,7 +32,8 @@ planner = self;
 
             <!--  Commands -->
             <templateFinderPopup id="templateFinderPopup"
-                acceptButtonLabel="${i18n:_('Create Project')}" caption="${i18n:_('Choosing Template')}" />
+                acceptButtonLabel="${i18n:_('Create Project')}"
+                caption="${i18n:_('Choosing Template')}" />
             <button onClick="planner.invalidate()" image="/common/img/ico_refresh.png"
                 tooltiptext="${i18n:_('Refresh')}" visible="false" />
             <button id="btnPrint" onClick="planner.print()"

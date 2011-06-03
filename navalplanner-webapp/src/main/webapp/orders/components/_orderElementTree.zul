@@ -28,7 +28,8 @@
 
         <hbox valign="pack" style="margin-bottom:4px;" width="100%">
         <hbox valign="pack">
-            <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
+            <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}"
+                caption="${i18n:_('Choosing Template')}" />
             <label value="${i18n:_('New task:')}" />
             <textbox value="" id="newOrderElementName" width="150px"
                 onOK="treeController.addElement(self.parent);" disabled="true" />
