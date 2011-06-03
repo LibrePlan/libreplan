@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-11 18:16+0200\n"
-"PO-Revision-Date: 2011-04-08 11:11+0200\n"
+"POT-Creation-Date: 2011-06-03 10:22+0200\n"
+"PO-Revision-Date: 2011-06-03 11:04+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -56,7 +56,7 @@ msgid "Show/Hide reported hours"
 msgstr "Mostrar/ocultar horas reportardas"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:45
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -108,6 +108,10 @@ msgstr "filtrando por nombre"
 msgid "End"
 msgstr "Fin"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
+msgid "Choosing Template"
+msgstr "Selección de plantilla"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
 msgstr "cambiando zoom"
@@ -120,7 +124,7 @@ msgstr "Trimestre"
 msgid "None"
 msgstr "Ninguno"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:44
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
 msgid "Filter"
 msgstr "Filtro"
 
@@ -132,12 +136,12 @@ msgstr "Aplanar/expandir árbol"
 msgid "Project"
 msgstr "Proyecto"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:51
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
 msgid "Name filter"
 msgstr "Filtro por nombres"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:69
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:68
 msgid "Name"
 msgstr "Nombre"
 
@@ -149,7 +153,7 @@ msgstr "Mostrar progreso"
 msgid "Expand/Collapse all"
 msgstr "Expandir/plegar todo"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:35
 msgid "Create Project"
 msgstr "Crear proyecto"
 
@@ -210,7 +214,7 @@ msgid "Hour"
 msgstr "Hora"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:92
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
 msgid "Graphics"
 msgstr "Gráficas"
 
