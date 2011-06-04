@@ -709,9 +709,6 @@ Steps:
 
     @Override
     protected JRDataSource getDataSource() {
-        return new JRBeanCollectionDataSource(resourcesListReportModel
-                .getResourcesListReportDTOs());
-
         List<ResourcesListReportDTO> dtos = resourcesListReportModel
                 .getResourcesListReportDTOs();
         if (dtos.isEmpty()) {
