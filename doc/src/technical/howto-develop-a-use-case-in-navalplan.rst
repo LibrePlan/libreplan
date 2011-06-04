@@ -1,6 +1,6 @@
----------------------------------------
-How To Develop An Use Case In NavalPlan
----------------------------------------
+--------------------------------------
+How To Develop A Use Case In NavalPlan
+--------------------------------------
 
 .. sectnum::
 
@@ -12,7 +12,7 @@ How To Develop An Use Case In NavalPlan
   Commons Attribution-ShareAlike 3.0 licence, available in
   http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  This is a guide about how to develop an use case in NavalPlan_. Following the
+  This is a guide about how to develop a use case in NavalPlan_. Following the
   different sections of this document you will end up developing a complete
   CRUD_ (create, read, update and delete) use case in the project.
 
@@ -2341,7 +2341,7 @@ following content::
 
 Now you are ready to test your web service. If you go to this URL
 http://localhost:8080/navalplanner-webapp/ws/rest/stretchesfunctiontemplates/,
-and login with an user that has permission to access web services (e.g. user
+and login with a user that has permission to access web services (e.g. user
 ``wsreader`` with password ``wsreader``) you will get a XML with the list of
 ``StretchesFunctionTemplate`` stored in the application.
 
