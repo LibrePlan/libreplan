@@ -142,7 +142,7 @@ consta el ejercicio para realizar la subcontratación son los siguientes:
 
    * Crear una nueva tarea en el proyecto denominada *Subcontratación pruebas*.
      La tarea consistirá en 100h de pruebas.
-   * Crear una dependencia *FIN-COMIENZO* desde la tarea de *Modulo de facturas*
+   * Crear una dependencia *FIN-INICIO* desde la tarea de *Modulo de facturas*
      como origen hacia la tarea.
    * Realizar la subcontratación con los siguientes datos:
        * Empresa a la que se subcontrata: Empresa subcontratada.
@@ -193,9 +193,9 @@ Crear un nuevo proyecto de planificación con los siguientes datos:
 
     * Acceder a la planificación del proyecto:
 
-        * Establecer dependencia entre tarea 3 y tarea 4 de tipo Inicio-Fin.
-        * Establecer dependencia entre tarea 2 y tarea 3 de tipo Inicio-Fin.
-        * Establecer dependencia entre tarea 1 y tarea 2 de tipo Inicio-Fin.
+        * Establecer dependencia entre tarea 3 y tarea 4 de tipo *FIN-INICIO*.
+        * Establecer dependencia entre tarea 2 y tarea 3 de tipo *FIN-INICIO*.
+        * Establecer dependencia entre tarea 1 y tarea 2 de tipo *FIN-INICIO*.
 
     * ¿Cómo se van colocando las tareas?  ___________________________________________
     * Realizar las siguientes asignaciones de recursos:
