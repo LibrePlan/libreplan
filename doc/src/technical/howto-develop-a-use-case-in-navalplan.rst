@@ -415,6 +415,17 @@ Then you will have the following files:
   always use these interface classes. Spring framework instantiates a class for
   each interface type and injects it in the corresponding variable.
 
+.. NOTE::
+
+  As you can see DAO class is being defined as a singleton with the following
+  line::
+
+    @Scope(BeanDefinition.SCOPE_SINGLETON)
+
+  This is because of DAO classes are not going to store any state variable, so
+  methods only depends on parameters. Thus, just an instance of a DAO class is
+  enough for any place where it is used.
+
 Summarizing, persistence layer encapsulates all operations related to Hibernate
 communication for retrieving, querying and storing entities on database.
 Therefore, you will not need to use Hibernate API directly in NavalPlan source
@@ -1227,6 +1238,15 @@ This is the way provided by ZK to do something similar to dependency injection,
 in order to use model from controller (which is not inside Spring context). This
 is why ``@Autowired`` is not needed, but on the other hand you need to use a
 specific name for variable.
+
+.. NOTE::
+
+  Model classes are defined with prototype scope::
+
+    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+
+  The reason is that models are going to keep conversation state in a variable,
+  so in that case new instance are going to be needed every time model is used.
 
 
 Developing the conversation
