@@ -671,13 +671,17 @@ public abstract class AllocationRow {
     }
 
     private void loadResourcesPerDayFrom(ResourceAllocation<?> allocation) {
+        setResourcesPerDayEditedValue(extractEditedValueFrom(allocation));
+    }
+
+    private ResourcesPerDay extractEditedValueFrom(
+            ResourceAllocation<?> allocation) {
         if (allocation == null) {
-            setResourcesPerDayEditedValue(ResourcesPerDay.amount(0));
+            return ResourcesPerDay.amount(0);
         }
         boolean useIntention = currentCalculatedValue != CalculatedValue.RESOURCES_PER_DAY;
-        setResourcesPerDayEditedValue(useIntention ? allocation
-                .getIntendedResourcesPerDay() : allocation
-                .getNonConsolidatedResourcePerDay());
+        return useIntention ? allocation.getIntendedResourcesPerDay()
+                : allocation.getNonConsolidatedResourcePerDay();
     }
 
     public abstract ResourceEnum getType();
