@@ -567,9 +567,6 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
      * Returns the last specified resources per day
      */
     public ResourcesPerDay getIntendedResourcesPerDay() {
-        if (getTask().getCalculatedValue() == CalculatedValue.RESOURCES_PER_DAY) {
-            return null;
-        }
         return intendedResourcesPerDay;
     }
 
