@@ -343,7 +343,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
             if (dbPricePerHour != null) {
                 dbPricePerHour.setValue(defaultPrice);
             }
-        } else {
+        } else if (item != null) {
             hourCost.setPriceCost(BigDecimal.ZERO);
             throw new WrongValueException(item.getParent(),
                     _("Please, select an item"));
