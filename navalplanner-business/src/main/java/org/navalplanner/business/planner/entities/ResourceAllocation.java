@@ -854,7 +854,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                     .getRightSlice(durationsByDay);
             AvailabilityTimeLine availability = getAvailability();
             List<T> assignments = createAssignments(interval, availability,
-                    rightSlice.toArray(new EffortDuration[0]));
+                    rightSlice.toArray(new EffortDuration[rightSlice.size()]));
             interval.resetAssignments(assignments);
         }
 
@@ -880,7 +880,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                             .getRightSlice(durationsByDay);
                     AvailabilityTimeLine availability = getAvailability();
                     createAssignments(interval, availability,
-                            rightSlice.toArray(new EffortDuration[0]));
+                            rightSlice.toArray(new EffortDuration[rightSlice
+                                    .size()]));
                 }
 
             };

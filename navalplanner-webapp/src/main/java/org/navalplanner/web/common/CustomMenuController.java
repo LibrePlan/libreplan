@@ -218,7 +218,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private CustomMenuController topItem(String name, String url,
             String helpUri, Collection<? extends CustomMenuItem> items) {
-        return topItem(name, url, helpUri, items.toArray(new CustomMenuItem[0]));
+        return topItem(name, url, helpUri,
+                items.toArray(new CustomMenuItem[items.size()]));
     }
 
     private CustomMenuController topItem(String name, String url,

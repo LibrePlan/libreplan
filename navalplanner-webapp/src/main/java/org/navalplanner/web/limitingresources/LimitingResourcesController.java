@@ -195,7 +195,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     private void addCommands(LimitingResourcesPanel limitingResourcesPanel) {
-        limitingResourcesPanel.add(commands.toArray(new IToolbarCommand[0]));
+        limitingResourcesPanel.add(commands
+                .toArray(new IToolbarCommand[commands.size()]));
     }
 
     private TimeTracker buildTimeTracker() {

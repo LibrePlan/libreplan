@@ -255,7 +255,8 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
-        resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
+        resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[commands
+                .size()]));
     }
 
     private TimeTracker buildTimeTracker() {
