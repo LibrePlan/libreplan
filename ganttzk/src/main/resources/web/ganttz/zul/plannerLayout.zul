@@ -53,7 +53,7 @@
             <hbox sclass="view-options">
                 <button id="showCriticalPath" onClick="planner.showCriticalPath();"
                     image="/common/img/ico_criticalpath.png"
-                    tooltiptext="${ganttzk_i18n:_('Show/Hide Critical path')}"
+                    tooltiptext="${ganttzk_i18n:_('Show/Hide critical path')}"
                     sclass="planner-command" />
                 <button id="showAllLabels" onClick="planner.showAllLabels();"
                     image="/common/img/ico_labels.png"
@@ -77,7 +77,7 @@
             <hbox class="show-advances" align="center">
                 <button id="showAdvances" onClick="planner.showAdvances();"
                     image="/common/img/ico_progress.png" style="width:46px"
-                    tooltiptext="${ganttzk_i18n:_('Show/Hide Progress')}"
+                    tooltiptext="${ganttzk_i18n:_('Show/Hide progress')}"
                     sclass="planner-command" />
                 <combobox id="cbProgressTypes" width="1px"
                     visible="false" sclass="progress-types" />
