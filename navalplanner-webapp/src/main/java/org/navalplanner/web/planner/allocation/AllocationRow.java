@@ -436,7 +436,8 @@ public abstract class AllocationRow {
     public abstract boolean isGeneric();
 
     public boolean isEmptyResourcesPerDay() {
-        return getResourcesPerDayEditedValue().isZero();
+        return getResourcesPerDayEditedValue() == null
+                || getResourcesPerDayEditedValue().isZero();
     }
 
     public abstract List<Resource> getAssociatedResources();
