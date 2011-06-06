@@ -18,13 +18,14 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
+<?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
+    signature="java.lang.String _(java.lang.String name)" ?>
 
 <borderlayout width="auto" height="100%" class="inner-layout">
     <north height="32px" border="0" sclass="toolbar-box">
         <zscript><![CDATA[
-planner = self;
-]]>
+            planner = self;
+        ]]>
         </zscript>
 
         <hbox align="center" id="toolbar">
@@ -32,17 +33,17 @@ planner = self;
 
             <!--  Commands -->
             <templateFinderPopup id="templateFinderPopup"
-                acceptButtonLabel="${i18n:_('Create Project')}"
-                caption="${i18n:_('Choosing Template')}" />
+                acceptButtonLabel="${ganttzk_i18n:_('Create Project')}"
+                caption="${ganttzk_i18n:_('Choosing Template')}" />
             <button onClick="planner.invalidate()" image="/common/img/ico_refresh.png"
-                tooltiptext="${i18n:_('Refresh')}" visible="false" />
+                tooltiptext="${ganttzk_i18n:_('Refresh')}" visible="false" />
             <button id="btnPrint" onClick="planner.print()"
-                image="/common/img/ico_print.png" tooltiptext="${i18n:_('Print')}" />
+                image="/common/img/ico_print.png" tooltiptext="${ganttzk_i18n:_('Print')}" />
 
             <separator />
 
             <!--  Visualization modes -->
-            <label>${i18n:_('Zoom')}:</label>
+            <label>${ganttzk_i18n:_('Zoom')}:</label>
             <listbox id="listZoomLevels" mold="select" rows="1"
                 model="${planner.zoomLevels}" onSelect="planner.setZoomLevel(self.selectedItem.value);">
             </listbox>
@@ -52,23 +53,23 @@ planner = self;
             <hbox sclass="view-options">
                 <button id="showCriticalPath" onClick="planner.showCriticalPath();"
                     image="/common/img/ico_criticalpath.png"
-                    tooltiptext="${i18n:_('Show/Hide Critical path')}"
+                    tooltiptext="${ganttzk_i18n:_('Show/Hide Critical path')}"
                     sclass="planner-command" />
                 <button id="showAllLabels" onClick="planner.showAllLabels();"
                     image="/common/img/ico_labels.png"
-                    tooltiptext="${i18n:_('Show/Hide labels')}"
+                    tooltiptext="${ganttzk_i18n:_('Show/Hide labels')}"
                     sclass="planner-command show-labels" />
                 <button id="showAllResources" onClick="planner.showAllResources();"
-                    image="/common/img/ico_resources.png" tooltiptext="${i18n:_('Show/Hide resources')}"
+                    image="/common/img/ico_resources.png" tooltiptext="${ganttzk_i18n:_('Show/Hide resources')}"
                     sclass="planner-command show-resources" />
                 <button id="expandAll" onClick="planner.expandAll();"
-                    image="/common/img/ico_expand.png" tooltiptext="${i18n:_('Expand/Collapse all')}"
+                    image="/common/img/ico_expand.png" tooltiptext="${ganttzk_i18n:_('Expand/Collapse all')}"
                     sclass="planner-command" />
                 <button id="flattenTree" onClick="planner.flattenTree();"
-                    image="/common/img/ico_flatten.png" tooltiptext="${i18n:_('Flatten/Unflatten tree')}"
+                    image="/common/img/ico_flatten.png" tooltiptext="${ganttzk_i18n:_('Flatten/Unflatten tree')}"
                     sclass="planner-command" />
                 <button id="showReportedHours" onClick="planner.showReportedHours();"
-                    image="/common/img/ico_costs.png" tooltiptext="${i18n:_('Show/Hide reported hours')}"
+                    image="/common/img/ico_costs.png" tooltiptext="${ganttzk_i18n:_('Show/Hide reported hours')}"
                     sclass="planner-command" />
 
             </hbox>
@@ -76,7 +77,7 @@ planner = self;
             <hbox class="show-advances" align="center">
                 <button id="showAdvances" onClick="planner.showAdvances();"
                     image="/common/img/ico_progress.png" style="width:46px"
-                    tooltiptext="${i18n:_('Show/Hide Progress')}"
+                    tooltiptext="${ganttzk_i18n:_('Show/Hide Progress')}"
                     sclass="planner-command" />
                 <combobox id="cbProgressTypes" width="1px"
                     visible="false" sclass="progress-types" />
@@ -112,7 +113,7 @@ planner = self;
             </center>
         </borderlayout>
     </center>
-    <south collapsible="true" title="${i18n:_('Graphics')}"
+    <south collapsible="true" title="${ganttzk_i18n:_('Graphics')}"
         sclass="scheduling-graphics" id="graphics"
         onOpen="planner.changeChartVisibility(event.open);" height="200px">
         <div id="insertionPointChart" />
