@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-03 12:50+0200\n"
+"POT-Creation-Date: 2011-06-06 22:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,11 +70,11 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:109
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:150
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:122
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:99
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:138
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:101
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:142
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:91
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:119
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:159
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:121
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:163
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:97
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:139
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:180
@@ -368,12 +368,6 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/reassign/ReassignCommand.java:255
 msgid "Reassignation"
-msgstr ""
-
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:730
-msgid ""
-"The periods available depend on the satisfaction of the criteria by the "
-"resources and their calendars."
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/TemplatesTree.java:42
@@ -892,6 +886,12 @@ msgstr ""
 msgid "Time period saved"
 msgstr ""
 
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:250
+msgid ""
+"Are you sure of changing the resource type? You will lose the criteria with "
+"different resource type."
+msgstr ""
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/HoursWorkedPerWorkerController.java:305
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/CompletedEstimatedHoursPerTaskController.java:168
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/WorkingProgressPerTaskController.java:164
@@ -965,7 +965,7 @@ msgstr ""
 msgid "Hour costs"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:713
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:718
 msgid "there are no valid periods for this calendar"
 msgstr ""
 
@@ -1114,8 +1114,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:193
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:166
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:107
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:182
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:202
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:186
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:206
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:225
 #: navalplanner-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:163
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:185
@@ -1194,7 +1194,7 @@ msgid "both {0} of category {1} and {2} of category {3} have the same code"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/TemplatesTreeController.java:236
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:863
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:869
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:567
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:896
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:322
@@ -1432,6 +1432,10 @@ msgstr ""
 msgid "Standard Effort"
 msgstr ""
 
+#: navalplanner-webapp/src/main/webapp/orders/_listHoursGroupCriterionRequirement.zul:22
+msgid "Criteria Requirement"
+msgstr ""
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/subcontract/ReportAdvancesController.java:134
 msgid "Pending update"
 msgstr ""
@@ -1500,7 +1504,7 @@ msgstr ""
 msgid "Please, select a project"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:851
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:857
 msgid "Name: {0}"
 msgstr ""
 
@@ -1625,8 +1629,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:197
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:170
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:112
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:186
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:206
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:190
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:210
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:230
 #: navalplanner-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:167
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:189
@@ -1828,8 +1832,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:192
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:165
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:106
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:181
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:201
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:185
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:205
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:224
 #: navalplanner-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:162
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:184
@@ -1891,8 +1895,8 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:178
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:92
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:167
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:189
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:171
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:193
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:208
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:170
 msgid "Output format:"
@@ -2256,7 +2260,7 @@ msgstr ""
 msgid "Work done from starting date:"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:859
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:865
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderFilterEnum.java:31
 #: navalplanner-webapp/src/main/webapp/subcontract/reportAdvances.zul:50
 #: navalplanner-webapp/src/main/webapp/subcontract/subcontractedTasks.zul:53
@@ -2573,7 +2577,7 @@ msgstr ""
 msgid "Subcontratation"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:534
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:535
 msgid "{0} cannot be fulfilled"
 msgstr ""
 
@@ -2960,8 +2964,8 @@ msgstr ""
 msgid "From Today"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:1054
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:1069
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:1060
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:1075
 msgid "{0} not supported yet"
 msgstr ""
 
@@ -3006,8 +3010,8 @@ msgid "Assigned criterion requirements"
 msgstr ""
 
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:127
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:117
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:138
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:119
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:140
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:157
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:119
 msgid "Filter by criteria"
@@ -3283,11 +3287,11 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:108
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:149
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:119
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:98
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:137
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:100
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:141
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:89
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:118
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:158
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:120
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:162
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:94
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:138
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:179
@@ -4052,7 +4056,7 @@ msgstr ""
 msgid "User disabled"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:728
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:733
 msgid "In the available periods {0} only {1} hours are available."
 msgstr ""
 
@@ -4269,7 +4273,7 @@ msgstr ""
 msgid "Create Virtual Workers Group"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:855
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:861
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:885
 msgid "Hours invested"
 msgstr ""
@@ -4508,10 +4512,6 @@ msgstr ""
 msgid "Company data"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/orders/_listHoursGroupCriterionRequirement.zul:22
-msgid "Criteria Requirement"
-msgstr ""
-
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/materials/UnitTypeController.java:215
 msgid "Unit type code cannot be empty"
 msgstr ""
@@ -4720,7 +4720,7 @@ msgstr ""
 msgid "ACWP"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:731
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:736
 msgid "The periods available depend on the resource's calendar."
 msgstr ""
 
@@ -4933,7 +4933,7 @@ msgstr ""
 msgid "missing code in a hour cost"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:816
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:822
 msgid "All workers"
 msgstr ""
 
@@ -5017,12 +5017,6 @@ msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportTypeCRUDController.java:996
 msgid "The index fields and labels must be uniques and consecutives"
-msgstr ""
-
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/criterionrequirements/AssignedCriterionRequirementController.java:250
-msgid ""
-"Are you sure of changing the resource type? You will lose the criteria "
-"with different resource type."
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/chart/EarnedValueChartFiller.java:130
@@ -5114,12 +5108,12 @@ msgstr ""
 msgid "SV"
 msgstr ""
 
-#: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:83
-msgid "Our company login"
-msgstr ""
-
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportCRUDController.java:1483
 msgid "Filter work reports"
+msgstr ""
+
+#: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:83
+msgid "Our company login"
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:395
@@ -5128,7 +5122,7 @@ msgid ""
 "the Configuration window before."
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:852
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:858
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:587
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:884
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:319
@@ -5541,8 +5535,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:190
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:163
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:104
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:179
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:199
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:183
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:203
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:222
 #: navalplanner-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:160
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:182
@@ -5577,6 +5571,12 @@ msgstr ""
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/resources/entities/CriterionType.java:425
 msgid "criterion names must be unique inside a criterion type"
+msgstr ""
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:735
+msgid ""
+"The periods available depend on the satisfaction of the criteria by the "
+"resources and their calendars."
 msgstr ""
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/tree/TreeComponent.java:79
@@ -5889,8 +5889,8 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:168
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:141
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:82
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:157
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:179
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:161
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:183
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:198
 #: navalplanner-webapp/src/main/webapp/reports/timeLineMaterialReport.zul:139
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:160
@@ -6023,11 +6023,11 @@ msgstr ""
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/QualityFormBandboxFinder.java:51
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:107
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:148
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:97
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:136
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:99
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:140
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:87
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:117
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:157
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:119
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:161
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:137
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:178
 #: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:99
@@ -6163,11 +6163,11 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:96
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:137
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:109
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:86
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:125
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:88
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:129
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:77
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:107
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:146
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:109
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:150
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:84
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:126
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:167
@@ -6364,7 +6364,7 @@ msgstr ""
 msgid "Subcontract price"
 msgstr ""
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:739
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/allocation/AllocationRow.java:744
 msgid "Resources per day are zero"
 msgstr ""
 
@@ -6499,10 +6499,10 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:117
 #: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:158
 #: navalplanner-webapp/src/main/webapp/reports/schedulingProgressPerOrderReport.zul:131
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:107
-#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:146
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:127
-#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:167
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:109
+#: navalplanner-webapp/src/main/webapp/reports/completedEstimatedHoursPerTask.zul:150
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:129
+#: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerReport.zul:171
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:106
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:147
 #: navalplanner-webapp/src/main/webapp/reports/orderCostsPerResource.zul:188
