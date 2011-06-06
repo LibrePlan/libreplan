@@ -238,7 +238,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
         bdExternalCompanies.setListboxEventListener(Events.ON_SELECT,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         final Object object = bdExternalCompanies
                                 .getSelectedElement();
                         getOrder().setCustomer((ExternalCompany) object);
@@ -247,7 +247,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
         bdExternalCompanies.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         final Object object = bdExternalCompanies
                                 .getSelectedElement();
                         getOrder().setCustomer((ExternalCompany) object);
@@ -256,7 +256,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
                 });
         txtName.addEventListener(Events.ON_OK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 accept();
             }
         });

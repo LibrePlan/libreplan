@@ -67,7 +67,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateActiveEntitySequence() throws Exception {
+    public void testCreateActiveEntitySequence() {
         try {
             entitySequenceDAO.save(givenEntitySequence("prefix-"
                     + UUID.randomUUID(), EntityNameEnum.CALENDAR, true));
@@ -80,7 +80,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateEntitySequenceWithEmptyPrefix() throws Exception {
+    public void testCreateEntitySequenceWithEmptyPrefix() {
         try {
             entitySequenceDAO.save(givenEntitySequence("",
                     EntityNameEnum.CALENDAR, true));
@@ -92,8 +92,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateEntitySequenceWithPrefixWithWhiteSpace()
-            throws Exception {
+    public void testCreateEntitySequenceWithPrefixWithWhiteSpace() {
         try {
             entitySequenceDAO.save(givenEntitySequence(
                     "prefix with white spaces", EntityNameEnum.CALENDAR, true));
@@ -105,7 +104,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateEntitySequenceWithEmptyEntityName() throws Exception {
+    public void testCreateEntitySequenceWithEmptyEntityName() {
         try {
             entitySequenceDAO.save(givenEntitySequence("prefix-"
                     + UUID.randomUUID(), null, false));
@@ -117,8 +116,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateEntitySequenceWithNumberOfDigitsNotSpecified()
-            throws Exception {
+    public void testCreateEntitySequenceWithNumberOfDigitsNotSpecified() {
         try {
             EntitySequence entitySequence = givenEntitySequence("prefix-"
                     + UUID.randomUUID(), EntityNameEnum.CRITERION, true);
@@ -132,8 +130,7 @@ public class EntitySequenceTest {
     }
 
     @Test
-    public void testCreateEntitySequenceWithNumberOfDigitsOutRange()
-            throws Exception {
+    public void testCreateEntitySequenceWithNumberOfDigitsOutRange() {
         try {
             EntitySequence entitySequence = givenEntitySequence("prefix-"
                     + UUID.randomUUID(), EntityNameEnum.CRITERION, true);

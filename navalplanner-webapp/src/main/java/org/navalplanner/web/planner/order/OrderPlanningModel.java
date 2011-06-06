@@ -788,7 +788,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 LocalDate date = new LocalDate(datebox.getValue());
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
@@ -897,7 +897,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     transactionService
                             .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                                 @Override

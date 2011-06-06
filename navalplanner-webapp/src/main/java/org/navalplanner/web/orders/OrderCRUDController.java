@@ -332,7 +332,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             schedulingMode.addEventListener(Events.ON_SELECT,
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             SchedulingMode chosen = (SchedulingMode) schedulingMode
                                     .getSelectedItem().getValue();
                             if (chosen != null) {
@@ -372,7 +372,7 @@ public class OrderCRUDController extends GenericForwardComposer {
                 .getFellow("listOrderStatus");
         listOrderStatus.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 updateDisabilitiesOnInterface();
             }
         });
@@ -416,7 +416,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         tree.setModel(orderElementTreeController.getTreeModel());
         tree.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 //undo the work done by this event
                 //to be able to control it from the ON_CLICK event
                 tree.clearSelection();
@@ -454,7 +454,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedHoursToOrderElementController assignedHoursController;
 
-    public void setupAssignedHoursToOrderElementController() throws Exception {
+    public void setupAssignedHoursToOrderElementController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -473,7 +473,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private ManageOrderElementAdvancesController manageOrderElementAdvancesController;
 
-    public void setupManageOrderElementAdvancesController() throws Exception {
+    public void setupManageOrderElementAdvancesController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -495,8 +495,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedLabelsToOrderElementController assignedLabelsController;
 
-    public void setupAssignedLabelsToOrderElementController()
-    throws Exception {
+    public void setupAssignedLabelsToOrderElementController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -514,8 +513,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedCriterionRequirementToOrderElementController assignedCriterionRequirementController;
 
-    public void setupAssignedCriterionRequirementsToOrderElementController()
-            throws Exception {
+    public void setupAssignedCriterionRequirementsToOrderElementController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -537,8 +535,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedMaterialsToOrderElementController assignedMaterialsController;
 
-    public void setupAssignedMaterialsToOrderElementController()
-            throws Exception {
+    public void setupAssignedMaterialsToOrderElementController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -557,7 +554,7 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private AssignedTaskQualityFormsToOrderElementController assignedTaskQualityFormController;
 
-    public void setupAssignedTaskQualityFormsToOrderElementController() throws Exception {
+    public void setupAssignedTaskQualityFormsToOrderElementController() {
         if (!confirmLastTab()) {
             return;
         }
@@ -995,7 +992,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         bdExternalCompanies.setListboxEventListener(
                 Events.ON_SELECT, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         final Object object = bdExternalCompanies
                                 .getSelectedElement();
                         orderModel.setExternalCompany((ExternalCompany) object);
@@ -1004,7 +1001,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         bdExternalCompanies.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         final Object object = bdExternalCompanies
                                 .getSelectedElement();
                         orderModel.setExternalCompany((ExternalCompany) object);
@@ -1128,7 +1125,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             BaseCalendar calendar = (BaseCalendar) data;
             item.setLabel(calendar.getName());
             item.setValue(calendar);
@@ -1181,7 +1178,7 @@ public class OrderCRUDController extends GenericForwardComposer {
     public class OrdersRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
 
             final Order order = (Order) data;
             row.setValue(order);
@@ -1199,7 +1196,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             row.setTooltiptext(getTooltipText(order));
             row.addEventListener("onClick", new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToEditForm(order);
                 }
             });
@@ -1252,7 +1249,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         buttonEdit.setTooltiptext(_("Edit"));
         buttonEdit.addEventListener("onClick",new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 goToEditForm(order);
             }
         });
@@ -1268,7 +1265,7 @@ public class OrderCRUDController extends GenericForwardComposer {
             buttonDelete.setTooltiptext(_("Delete"));
             buttonDelete.addEventListener("onClick",new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     confirmRemove(order);
                 }
             });
@@ -1284,7 +1281,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         buttonPlan.setTooltiptext(_("See scheduling"));
         buttonPlan.addEventListener("onClick",new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 schedule(order);
             }
         });
@@ -1299,7 +1296,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         buttonDerived.setTooltiptext(_("Create Template"));
         buttonDerived.addEventListener("onClick", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 createTemplate(order);
             }
         });

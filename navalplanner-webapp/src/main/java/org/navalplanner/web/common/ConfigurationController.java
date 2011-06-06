@@ -108,7 +108,7 @@ public class ConfigurationController extends GenericForwardComposer {
         defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Listitem selectedItem = (Listitem) ((SelectEvent) event)
                                 .getSelectedItems().iterator().next();
                         setDefaultCalendar((BaseCalendar) selectedItem
@@ -131,7 +131,7 @@ public class ConfigurationController extends GenericForwardComposer {
         lbTypeProgress.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Listitem selectedItem = getSelectedItem((SelectEvent) event);
                 if (selectedItem != null) {
                     ProgressType progressType = (ProgressType) selectedItem.getValue();
@@ -447,7 +447,7 @@ public class ConfigurationController extends GenericForwardComposer {
     private static class ProgressTypeRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setLabel(_(progressType.getValue()));
         }
@@ -456,7 +456,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public class EntitySequenceGroupRenderer implements RowRenderer {
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
 
             EntitySequence entitySequence = (EntitySequence) data;
             final EntityNameEnum entityName = entitySequence.getEntityName();
@@ -472,7 +472,7 @@ public class ConfigurationController extends GenericForwardComposer {
                                 .getSequenceLiteral())));
                 group.addEventListener(Events.ON_OPEN, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         onOpenGroup(entityName, group.isOpen());
                     }
                 });
@@ -607,7 +607,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     .createRemoveButton(new EventListener() {
 
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             if (isLastOne(entitySequence)) {
                                 showMessageNotDelete();
                             } else {

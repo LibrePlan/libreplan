@@ -107,7 +107,7 @@ public class MultipleTabsPlannerController implements Composer,
                     }
 
                     @Override
-                    public void doAction() throws Exception {
+                    public void doAction() {
                         proxiedTab.show();
                     }
                 });
@@ -313,7 +313,7 @@ public class MultipleTabsPlannerController implements Composer,
             private EventListener showPlanningTab() {
                 return new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         getTabsRegistry().show(planningTab);
                     }
                 };
@@ -367,7 +367,7 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     @Transactional(readOnly=true)
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         Planner.registerNeededScripts();
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");

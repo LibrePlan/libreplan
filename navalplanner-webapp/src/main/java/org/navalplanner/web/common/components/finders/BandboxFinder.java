@@ -78,7 +78,7 @@ public abstract class BandboxFinder implements IBandboxFinder {
     private final ListitemRenderer _defRend = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             item.setLabel(objectToString(data));
             item.setValue(data);
         }

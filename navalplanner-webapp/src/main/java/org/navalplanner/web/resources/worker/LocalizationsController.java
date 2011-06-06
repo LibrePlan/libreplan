@@ -92,7 +92,7 @@ public class LocalizationsController extends GenericForwardComposer {
         unassignButton.addEventListener("onClick", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 workerModel.unassignSatisfactions(
                         extractValuesOf(activeSatisfactions.getSelectedItems(),
                                 CriterionSatisfaction.class));
@@ -103,7 +103,7 @@ public class LocalizationsController extends GenericForwardComposer {
         assignButton.addEventListener("onClick", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Set<Listitem> selectedItems = criterionsNotAssigned
                         .getSelectedItems();
                 workerModel.assignCriteria(

@@ -81,7 +81,7 @@ public class Autocomplete extends Combobox {
         autocomplete.addEventListener("onChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 String text = autocomplete.getValue();
                 Object object = getItemByText(text);
                 autocomplete.setSelectedItem(object);

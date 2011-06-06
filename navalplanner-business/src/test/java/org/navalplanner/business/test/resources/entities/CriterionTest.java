@@ -47,7 +47,7 @@ import org.navalplanner.business.resources.entities.Worker;
 
 public class CriterionTest {
     @Test
-    public void testCreateWithAType() throws Exception {
+    public void testCreateWithAType() {
         Criterion firedCriterion = PredefinedCriterionTypes.WORK_RELATIONSHIP
                 .createCriterion("fired");
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP
@@ -55,7 +55,7 @@ public class CriterionTest {
     }
 
     @Test
-    public void testCompounding() throws Exception {
+    public void testCompounding() {
         Worker worker1 = Worker.create();
         Worker worker2 = Worker.create();
 
@@ -122,12 +122,12 @@ public class CriterionTest {
     }
 
     @Test
-    public void testEmptyMatchesAll() throws Exception {
+    public void testEmptyMatchesAll() {
         assertTrue(build().getResult().isSatisfiedBy(Worker.create()));
     }
 
     @Test
-    public void testSimpleNegation() throws Exception {
+    public void testSimpleNegation() {
         Worker worker1 = Worker.create();
         Worker worker2 = Worker.create();
         Worker worker3 = Worker.create();
@@ -144,7 +144,7 @@ public class CriterionTest {
     }
 
     @Test
-    public void testNegateAnd() throws Exception {
+    public void testNegateAnd() {
         Worker worker1 = Worker.create();
         Worker worker2 = Worker.create();
         Worker worker3 = Worker.create();
@@ -157,7 +157,7 @@ public class CriterionTest {
     }
 
     @Test
-    public void testOr() throws Exception {
+    public void testOr() {
         Worker worker1 = Worker.create();
         Worker worker2 = Worker.create();
         Worker worker3 = Worker.create();
@@ -173,7 +173,7 @@ public class CriterionTest {
     }
 
     @Test
-    public void testOrHasLessPrecendenceThanAnd() throws Exception {
+    public void testOrHasLessPrecendenceThanAnd() {
         Worker worker1 = Worker.create();
         Worker worker2 = Worker.create();
         Worker worker3 = Worker.create();
@@ -189,7 +189,7 @@ public class CriterionTest {
     }
 
     @Test
-    public void testCanBeRelatedTo() throws Exception {
+    public void testCanBeRelatedTo() {
         assertTrue(PredefinedCriterionTypes.LOCATION_GROUP
                 .criterionCanBeRelatedTo(Worker.class));
         assertTrue(PredefinedCriterionTypes.WORK_RELATIONSHIP

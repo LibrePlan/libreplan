@@ -77,7 +77,7 @@ public class TemplatesTreeController extends
                     _("Edit"), "/common/img/ico_editar.png", "icono",
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             Treeitem item = getTreeitem(event.getTarget());
                             operationsForOrderTemplate.showEditElement(item);
                         }

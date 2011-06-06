@@ -1001,7 +1001,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         return new Callable<PairOfLists<Row, Row>>() {
 
             @Override
-            public PairOfLists<Row, Row> call() throws Exception {
+            public PairOfLists<Row, Row> call() {
                 List<Row> rows = getRows();
                 return new PairOfLists<Row, Row>(rows, rows);
             }
@@ -1183,7 +1183,7 @@ class Row {
                 new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         EffortDuration value = effortDurationBox
                                 .getEffortDurationValue();
 
@@ -1252,7 +1252,8 @@ class Row {
                 new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event)
+                            throws InterruptedException {
                         final String currentValue = assignmentFunctionsCombo.getValue();
                         if (currentValue.equals(getPreviousValue())) {
                             return;
@@ -1467,7 +1468,7 @@ class Row {
         button.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
                         .getSelectedItem().getValue();
                 configuration.goToConfigure();
@@ -1558,7 +1559,7 @@ class Row {
         component.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 EffortDuration value = effortBox.getEffortDurationValue();
                 LocalDate startDate = restriction.limitStartDate(item
                         .getStartDate().toLocalDate());

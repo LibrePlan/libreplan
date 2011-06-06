@@ -178,14 +178,14 @@ public class MachineCRUDController extends GenericForwardComposer {
         criterionsController.doAfterCompose(comp);
     }
 
-    private void setupConfigurationController() throws Exception {
+    private void setupConfigurationController() {
         configurationUnits = editWindow.getFellow("configurationUnits");
         configurationController = (MachineConfigurationController) configurationUnits
                 .getVariable("configurationController", true);
     }
 
     private void setupResourcesCostCategoryAssignmentController(Component comp)
-    throws Exception {
+ {
         Component costCategoryAssignmentContainer =
             editWindow.getFellowIfAny("costCategoryAssignmentContainer");
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
@@ -459,7 +459,7 @@ public class MachineCRUDController extends GenericForwardComposer {
     private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             BaseCalendar calendar = (BaseCalendar) data;
             item.setLabel(calendar.getName());
             item.setValue(calendar);
@@ -649,14 +649,14 @@ public class MachineCRUDController extends GenericForwardComposer {
         return new RowRenderer() {
 
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data) {
                 final Machine machine = (Machine) data;
                 row.setValue(machine);
 
                 row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
-                            public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                                 goToEditForm(machine);
                             }
                         });
@@ -670,13 +670,13 @@ public class MachineCRUDController extends GenericForwardComposer {
                 Hbox hbox = new Hbox();
                 hbox.appendChild(Util.createEditButton(new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditForm(machine);
                     }
                 }));
                 hbox.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         confirmRemove(machine);
                     }
                 }));

@@ -107,7 +107,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         }
 
         @Override
-        public void render(Treeitem item, Object data) throws Exception {
+        public void render(Treeitem item, Object data) {
             final CriterionDTO criterionForThisRow = (CriterionDTO) data;
             item.setValue(data);
 
@@ -156,7 +156,7 @@ public class CriterionTreeController extends GenericForwardComposer {
 
             checkboxActive.addEventListener(Events.ON_CHECK,new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                     getModel().updateEnabledCriterions(criterionForThisRow.isActive(),criterionForThisRow);
                     reloadTree();
                 }
@@ -210,7 +210,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             upbutton.setSclass("icono");
             upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     getModel().down(criterionForThisRow);
                     reloadTree();
                 }
@@ -222,7 +222,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             downbutton.setSclass("icono");
             downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     getModel().up(criterionForThisRow);
                     reloadTree();
                 }
@@ -233,7 +233,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             if(getModel().getCriterionType().allowHierarchy()){
                     indentbutton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                            public void onEvent(Event event) {
                     getModel().indent(criterionForThisRow);
                     reloadTree();
                 }
@@ -246,7 +246,7 @@ public class CriterionTreeController extends GenericForwardComposer {
                 unindentbutton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                            public void onEvent(Event event) {
                             getModel().unindent(criterionForThisRow);
                             reloadTree();
                         }
@@ -258,7 +258,7 @@ public class CriterionTreeController extends GenericForwardComposer {
             if (criterionsModel.isDeletable(criterionForThisRow.getCriterion())) {
             removebutton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+                            public void onEvent(Event event) {
                 getModel().removeNode(criterionForThisRow);
                                 if (!criterionForThisRow.isNewObject()) {
                                     criterionsModel
@@ -275,7 +275,7 @@ public class CriterionTreeController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(org.zkoss.zk.ui.event.Event arg0)
-                        throws Exception {
+ {
                     DropEvent dropEvent = (DropEvent) arg0;
                     move((Component) dropEvent.getTarget(),
                             (Component) dropEvent.getDragged());
@@ -407,7 +407,7 @@ public class CriterionTreeController extends GenericForwardComposer {
         Util.reloadBindings(tree);
     }
 
-    private String getName() throws ValidationException{
+    private String getName() {
         String name = criterionName.getValue();
         getModel().thereIsOtherWithSameNameAndType(name);
         getModel().validateNameNotEmpty(name);

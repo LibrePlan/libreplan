@@ -96,7 +96,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
     private class SubcontractedTasksRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             SubcontractedTaskData subcontractedTaskData = (SubcontractedTaskData) data;
             row.setValue(subcontractedTaskData);
 
@@ -176,7 +176,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
                 };
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     String uri = CallbackServlet.registerAndCreateURLFor(
                             (HttpServletRequest) Executions.getCurrent()
                                     .getNativeRequest(), requestHandler, false,
@@ -196,7 +196,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             sendButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     try {
                         subcontractedTasksModel
                                 .sendToSubcontractor(subcontractedTaskData);

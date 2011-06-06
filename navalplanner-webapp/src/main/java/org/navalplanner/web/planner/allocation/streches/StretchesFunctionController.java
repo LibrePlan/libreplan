@@ -270,7 +270,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
         private final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Stretch stretch = (Stretch) data;
 
             item.setValue(stretch);
@@ -409,7 +409,7 @@ public class StretchesFunctionController extends GenericForwardComposer {
 
                 button.addEventListener(Events.ON_CLICK, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         stretchesFunctionModel.removeStretch(stretch);
                         reloadStretchesListAndCharts();
                     }

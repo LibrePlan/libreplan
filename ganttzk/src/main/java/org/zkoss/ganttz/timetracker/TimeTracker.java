@@ -234,7 +234,7 @@ public class TimeTracker {
                 new ILongOperation() {
 
                     @Override
-                    public void doAction() throws Exception {
+                    public void doAction() {
                         invalidatingChangeHappened();
                     }
 

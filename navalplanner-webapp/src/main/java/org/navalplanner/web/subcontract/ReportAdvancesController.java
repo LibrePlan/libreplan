@@ -96,7 +96,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
     private class ReportAdvancesOrderRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             Order order = (Order) data;
             row.setValue(order);
 
@@ -179,7 +179,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
                 };
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     String uri = CallbackServlet.registerAndCreateURLFor(
                             (HttpServletRequest) Executions.getCurrent()
                                     .getNativeRequest(), requestHandler, false,
@@ -199,7 +199,7 @@ public class ReportAdvancesController extends GenericForwardComposer {
             sendButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     try {
                         reportAdvancesModel.sendAdvanceMeasurements(order);
                         messagesForUser.showMessage(Level.INFO,

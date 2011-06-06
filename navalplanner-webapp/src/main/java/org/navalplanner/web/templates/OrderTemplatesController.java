@@ -319,7 +319,7 @@ public class OrderTemplatesController extends GenericForwardComposer implements
     private void controlSelectionWithOnClick(final Tree tree) {
         tree.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 //undo the work done by this event
                 //to be able to control it from the ON_CLICK event
                 tree.clearSelection();

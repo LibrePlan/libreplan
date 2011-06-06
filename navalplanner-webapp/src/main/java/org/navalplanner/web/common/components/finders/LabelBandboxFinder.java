@@ -108,7 +108,7 @@ public class LabelBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private final ListitemRenderer labelRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Label label = (Label) data;
 
             item.setValue(data);

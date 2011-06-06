@@ -213,7 +213,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         Button result = new Button();
         result.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 c.doAction();
             }
         });

@@ -112,7 +112,7 @@ public class QualityFormBandboxFinder extends BandboxFinder implements
     private final ListitemRenderer qualityFormRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             QualityForm qualityForm = (QualityForm) data;
             item.setValue(data);
 

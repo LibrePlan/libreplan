@@ -44,8 +44,8 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -292,7 +292,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     public class DescriptionFieldRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
 
             final DescriptionField descriptionField = (DescriptionField) data;
             row.setValue(descriptionField);
@@ -391,7 +391,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         listPosition.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 changePositionDescriptionField(listPosition
                             .getSelectedItem(), descriptionField);
                 Util.reloadBindings(listDescriptionFields);
@@ -407,7 +407,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 removeDescriptionField(descriptionField);
             }
         });
@@ -475,7 +475,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     public class WorkReportLabelTypeAssigmentRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
 
             final WorkReportLabelTypeAssigment workReportLabelTypeAssigment = (WorkReportLabelTypeAssigment) data;
             row.setValue(workReportLabelTypeAssigment);
@@ -523,7 +523,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         comboLabelTypes.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 changeLabelType(comboLabelTypes.getSelectedItem(),
                         workReportLabelTypeAssigment);
                 validateIfExistTheSameLabelType(comboLabelTypes,
@@ -551,7 +551,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         comboLabels.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 changeLabel(comboLabels.getSelectedItem(),
                         workReportLabelTypeAssigment);
                 Util.reloadBindings(listWorkReportLabelTypeAssigments);
@@ -574,7 +574,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         listPosition.addEventListener(Events.ON_SELECT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 changePositionLabel(listPosition.getSelectedItem(),
                             workReportLabelTypeAssigment);
                 Util.reloadBindings(listWorkReportLabelTypeAssigments);
@@ -591,7 +591,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
         removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 removeWorkReportLabelTypeAssigment(workReportLabelTypeAssigment);
             }
         });
@@ -909,7 +909,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     public class OrderedFieldsAndLabelsRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             row.setValue(data);
 
             String name = _("Unallocated name");
@@ -956,7 +956,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         downbutton.setSclass("icono");
         downbutton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 boolean intoHeading = intoHeading(row.getGrid());
                 workReportTypeModel.upFieldOrLabel(row.getValue(), intoHeading);
                 Util.reloadBindings(row.getGrid());
@@ -969,7 +969,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         upbutton.setSclass("icono");
         upbutton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 boolean intoHeading = intoHeading(row.getGrid());
                 workReportTypeModel.downFieldOrLabel(row.getValue(),
                         intoHeading);

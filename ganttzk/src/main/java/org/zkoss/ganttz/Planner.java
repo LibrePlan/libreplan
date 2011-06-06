@@ -286,7 +286,7 @@ public class Planner extends HtmlMacroComponent  {
             }
 
             @Override
-            public void doAction() throws Exception {
+            public void doAction() {
                 ganttPanel.zoomIncrease();
             }
         });
@@ -303,7 +303,7 @@ public class Planner extends HtmlMacroComponent  {
             }
 
             @Override
-            public void doAction() throws Exception {
+            public void doAction() {
                 ganttPanel.zoomDecrease();
             }
         });
@@ -497,7 +497,7 @@ public class Planner extends HtmlMacroComponent  {
         westContainer.addEventListener(Events.ON_SIZE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Clients.evalJavaScript("zkTaskContainer.legendResize();");
 
             }

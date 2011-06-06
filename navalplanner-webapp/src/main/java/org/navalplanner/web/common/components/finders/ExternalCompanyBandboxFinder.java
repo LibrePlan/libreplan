@@ -107,7 +107,7 @@ public class ExternalCompanyBandboxFinder extends BandboxFinder implements
     private final ListitemRenderer externalCompanyRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             ExternalCompany externalCompany = (ExternalCompany) data;
 
             item.setValue(data);

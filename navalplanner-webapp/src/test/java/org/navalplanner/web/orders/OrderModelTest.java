@@ -245,7 +245,7 @@ public class OrderModelTest {
     @Ignore("Test ignored until having the possibility to have a user " +
             "session from tests")
     @Test
-    public void testListing() throws Exception {
+    public void testListing() {
         List<Order> list = orderModel.getOrders();
         Order order = createValidOrder();
         order.setCustomer(createValidExternalCompany());
@@ -255,7 +255,7 @@ public class OrderModelTest {
     }
 
     @Test
-    public void testRemove() throws Exception {
+    public void testRemove() {
         Order order = createValidOrder();
         orderModel.setOrder(order);
         orderModel.save();
@@ -274,7 +274,7 @@ public class OrderModelTest {
     }
 
     @Test
-    public void testFind() throws Exception {
+    public void testFind() throws InstanceNotFoundException {
         Order order = createValidOrder();
         orderModel.setOrder(order);
         orderModel.save();
@@ -375,7 +375,7 @@ public class OrderModelTest {
 
     @Test
     @NotTransactional
-    public void testAddingOrderElement() throws Exception {
+    public void testAddingOrderElement() {
         final Order order = adHocTransaction
                 .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
                     @Override
@@ -430,7 +430,7 @@ public class OrderModelTest {
 
     @Test
     @NotTransactional
-    public void testManyToManyHoursGroupCriterionMapping() throws Exception {
+    public void testManyToManyHoursGroupCriterionMapping() {
         givenCriterion();
         final Order order = adHocTransaction
                 .runOnReadOnlyTransaction(new IOnTransaction<Order>() {
@@ -521,7 +521,7 @@ public class OrderModelTest {
     }
 
     @Test(expected = ValidationException.class)
-    public void testAtLeastOneHoursGroup() throws Exception {
+    public void testAtLeastOneHoursGroup() {
         Order order = createValidOrder();
 
         OrderLine orderLine = OrderLine.create();

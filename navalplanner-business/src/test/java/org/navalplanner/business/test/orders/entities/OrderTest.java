@@ -63,7 +63,7 @@ public class OrderTest {
     }
 
     @Test
-    public void testAddingOrderElement() throws Exception {
+    public void testAddingOrderElement() {
         Order order = Order.create();
         order.useSchedulingDataFor(mockedOrderVersion);
         OrderLineGroup container = OrderLineGroup.create();
@@ -74,7 +74,7 @@ public class OrderTest {
     }
 
     @Test
-    public void testPreservesOrder() throws Exception {
+    public void testPreservesOrder() {
         OrderLineGroup container = OrderLineGroup.create();
         container.useSchedulingDataFor(mockedOrderVersion);
         OrderLine[] created = new OrderLine[100];

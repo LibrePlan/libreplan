@@ -180,7 +180,7 @@ public class TaskList extends XulElement implements AfterCompose {
         taskComponent.addEventListener("onDoubleClick", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 doubleClickCommand.doAction(taskComponent);
             }
         });
@@ -190,7 +190,7 @@ public class TaskList extends XulElement implements AfterCompose {
         taskComponent.addEventListener("onRightClick", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 try {
                     getContextMenuFor(taskComponent).open(taskComponent);
                 } catch (Exception e) {

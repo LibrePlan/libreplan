@@ -49,7 +49,7 @@ public class ViewSwitcher implements Composer {
     private boolean isInPlanningOrder = false;
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.parent = comp;
         isInPlanningOrder = true;
     }

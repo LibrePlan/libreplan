@@ -114,7 +114,7 @@ public class CriterionDAOTest {
     }
 
     @Test
-    public void afterSavingACriterionItExists() throws Exception {
+    public void afterSavingACriterionItExists() {
         givenACriterionWithAnExistentType();
         criterionDAO.save(criterion);
         assertTrue(criterionDAO.exists(criterion.getId()));

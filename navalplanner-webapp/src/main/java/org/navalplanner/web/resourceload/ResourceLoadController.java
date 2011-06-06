@@ -151,7 +151,7 @@ public class ResourceLoadController implements Composer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.parent = comp;
     }
 
@@ -328,7 +328,7 @@ public class ResourceLoadController implements Composer {
         button.setTooltip(_("Filter by worker"));
         button.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if(currentFilterByResources) {
                     filterResourcesFromBandbox();
                 }
@@ -354,7 +354,7 @@ public class ResourceLoadController implements Composer {
         initDate.setWidth("75px");
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 resourceLoadModel.setInitDateFilter(LocalDate
                         .fromDateFields(initDate.getValue()));
                 reload(currentFilterByResources);
@@ -365,7 +365,7 @@ public class ResourceLoadController implements Composer {
         endDate.setWidth("75px");
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 resourceLoadModel.setEndDateFilter(LocalDate
                         .fromDateFields(endDate.getValue()));
                 reload(currentFilterByResources);

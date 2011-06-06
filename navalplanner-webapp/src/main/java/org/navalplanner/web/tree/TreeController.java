@@ -362,7 +362,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     private Treerow treerow = getCurrentTreeRow();
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Navigation navigation = Navigation
                                 .getIntentFrom((KeyEvent) event);
                         moveFocusTo(inputElement, navigation, treerow);
@@ -565,7 +565,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 private Treeitem item = (Treeitem) getCurrentTreeRow().getParent();
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     item.setSelected(true);
                     Util.reloadBindings(item.getParent());
                 }
@@ -611,7 +611,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         @Override
-        public void render(final Treeitem item, Object data) throws Exception {
+        public void render(final Treeitem item, Object data) {
             item.setValue(data);
             applySnapshot(item);
             currentTreeRow = getTreeRowWithoutChildrenFor(item);
@@ -677,8 +677,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         private void onDropMoveFromDraggedToTarget() {
             currentTreeRow.addEventListener("onDrop", new EventListener() {
                 @Override
-                public void onEvent(org.zkoss.zk.ui.event.Event event)
-                        throws Exception {
+                public void onEvent(org.zkoss.zk.ui.event.Event event) {
                     DropEvent dropEvent = (DropEvent) event;
                     move((Component) dropEvent.getTarget(),
                             (Component) dropEvent.getDragged());
@@ -696,7 +695,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                     schedulingStateToggler);
             cell.addEventListener("onDoubleClick", new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
 
                     markModifiedTreeitem((Treerow) cell.getParent());
                     onDoubleClickForSchedulingStateCell(currentElement);
@@ -707,7 +706,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 private Treeitem item = (Treeitem) getCurrentTreeRow().getParent();
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     item.getTree().toggleItemSelection(item);
                 }
             });
@@ -852,7 +851,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 final T currentElement) {
             EventListener downButtonListener = new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     down(currentElement);
                 }
             };
@@ -873,7 +872,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected Button createUpButton(final Treeitem item, final T element) {
             EventListener upButtonListener = new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     up(element);
                 }
             };
@@ -895,7 +894,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
                 final T element) {
             EventListener unindentListener = new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     unindent(element);
                 }
             };
@@ -916,7 +915,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected Button createIndentButton(final Treeitem item, final T element) {
             EventListener indentListener = new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     indent(element);
                 }
             };
@@ -937,7 +936,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         protected Button createRemoveButton(final T currentElement) {
             EventListener removeListener = new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     remove(currentElement);
                     filterByPredicateIfAny();
                 }
@@ -969,7 +968,7 @@ public abstract class TreeController<T extends ITreeNode<T>> extends
         }
 
         @Override
-        public void doCatch(Throwable ex) throws Throwable {
+        public void doCatch(Throwable ex) {
 
         }
 

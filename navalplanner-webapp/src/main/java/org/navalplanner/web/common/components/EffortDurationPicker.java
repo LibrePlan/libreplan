@@ -137,7 +137,7 @@ public class EffortDurationPicker extends Hbox {
             Spinner... spinners) {
         EventListener listener = new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 notifySetterOfChange(setter);
             }
         };

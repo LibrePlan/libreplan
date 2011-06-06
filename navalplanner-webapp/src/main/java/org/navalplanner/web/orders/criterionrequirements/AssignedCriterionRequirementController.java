@@ -619,7 +619,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
     public class HoursGroupListitemRender implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final HoursGroup hoursGroup = (HoursGroup) data;
 
             // Criterion Requirements hours Group

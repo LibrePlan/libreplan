@@ -158,7 +158,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void savingTheOrderSavesAlsoTheAddedAssignments() throws Exception {
+    public void savingTheOrderSavesAlsoTheAddedAssignments()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order order = createValidOrder();
         OrderElement orderLine = createValidLeaf("OrderLineA", "1k1k1k1k");
 
@@ -188,7 +190,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void addingSeveralAssignmentsOfDifferentTypes() throws Exception {
+    public void addingSeveralAssignmentsOfDifferentTypes()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order order = createValidOrder();
         OrderLine orderLine = createValidLeaf("OrderLineA", "1111111");
 
@@ -210,7 +214,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test
     public void cannotAddDuplicatedAssignment()
-            throws Exception {
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderLine orderLine = createValidLeaf("OrderLineA", "22222222");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -232,7 +237,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void cannotAddTwoAssignmetsWithGlobalReportValue() throws Exception {
+    public void cannotAddTwoAssignmetsWithGlobalReportValue()
+            throws DuplicateAdvanceAssignmentForOrderElementException,
+            DuplicateValueTrueReportGlobalAdvanceException {
         OrderLine orderLine = createValidLeaf("OrderLineA", "101010101");
 
         AdvanceType advanceTypeA = createAndSaveType("tipoA");
@@ -255,7 +262,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void addingAssignmentsOfAnotherTypeToSon() throws Exception {
+    public void addingAssignmentsOfAnotherTypeToSon()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order validOrder = createValidOrder();
         OrderLineGroup container = OrderLineGroup.create();
         validOrder.add(container);
@@ -286,7 +295,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test
     public void addingAnAdvanceAssignmentIncreasesTheNumberOfAdvanceAssignments()
-            throws Exception {
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order validOrder = createValidOrder();
         final OrderLineGroup container = OrderLineGroup.create();
         validOrder.add(container);
@@ -306,7 +316,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void cannotAddDuplicatedAssignmentToSon() throws Exception {
+    public void cannotAddDuplicatedAssignmentToSon()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order validOrder = createValidOrder();
         final OrderLineGroup father = OrderLineGroup.create();
         validOrder.add(father);
@@ -334,7 +346,9 @@ public class AddAdvanceAssignmentsToOrderElementTest {
     }
 
     @Test
-    public void cannotAddDuplicateAssignmentToGrandParent() throws Exception {
+    public void cannotAddDuplicateAssignmentToGrandParent()
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         Order validOrder = createValidOrder();
         OrderLineGroup parent = OrderLineGroup.create();
         validOrder.add(parent);
@@ -369,7 +383,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test(expected = DuplicateAdvanceAssignmentForOrderElementException.class)
     public void addingAnotherAdvanceAssignmentWithAnEquivalentTypeButDifferentInstance()
-            throws Exception {
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
 
         final Order order = createValidOrder();
         final OrderLine line = createValidLeaf("GranSon", "75757");
@@ -406,7 +421,8 @@ public class AddAdvanceAssignmentsToOrderElementTest {
 
     @Test(expected = DuplicateValueTrueReportGlobalAdvanceException.class)
     public void cannotAddTwoAssignmetsDirectAndIndirectWithGlobalReportValue()
-            throws Exception {
+            throws DuplicateValueTrueReportGlobalAdvanceException,
+            DuplicateAdvanceAssignmentForOrderElementException {
         OrderLineGroup orderLineGroup = OrderLineGroup.create();
         orderLineGroup.setName("test");
         orderLineGroup.setCode("1");

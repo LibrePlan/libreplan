@@ -116,7 +116,7 @@ public class MenuBuilder<T extends XulElement> {
         result.addEventListener("onOpen", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 OpenEvent openEvent = (OpenEvent) event;
                 referenced = (T) openEvent.getReference();
             }
@@ -126,7 +126,7 @@ public class MenuBuilder<T extends XulElement> {
                 Menuitem menuItem = item.createMenuItem();
                 menuItem.addEventListener("onClick", new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         ItemAction<T> action = item.action;
                         action.onEvent(referenced, event);
                     }

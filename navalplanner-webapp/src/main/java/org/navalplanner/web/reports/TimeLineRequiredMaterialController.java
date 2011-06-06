@@ -258,7 +258,7 @@ public class TimeLineRequiredMaterialController extends
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) throws Exception {
+        public void render(Treeitem ti, Object node) {
             Label lblName = null;
             if (node instanceof MaterialCategory) {
                 final MaterialCategory materialCategory = (MaterialCategory) node;

@@ -145,7 +145,7 @@ public class TemplateFinderPopup extends
         acceptButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 onAccept();
             }
         });
@@ -154,7 +154,7 @@ public class TemplateFinderPopup extends
         cancelButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 onCancel();
             }
         });

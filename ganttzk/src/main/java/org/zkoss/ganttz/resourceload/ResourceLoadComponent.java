@@ -97,7 +97,7 @@ public class ResourceLoadComponent extends XulElement {
     private void addDoubleClickAction(final Div div, final LoadTimeLine loadLine) {
         div.addEventListener("onDoubleClick", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 schedule(loadLine);
             }
         });
@@ -107,7 +107,7 @@ public class ResourceLoadComponent extends XulElement {
             final LoadTimeLine loadLine) {
         div.addEventListener("onRightClick", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 try {
                     getContextMenuFor(divs, div, loadLine).open(div);
                 } catch (Exception e) {

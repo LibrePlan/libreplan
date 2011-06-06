@@ -104,7 +104,7 @@ public class MonteCarloController extends GenericForwardComposer {
         lbCriticalPaths.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 reloadGridCritialPathTasks();
             }
 
@@ -113,7 +113,7 @@ public class MonteCarloController extends GenericForwardComposer {
         btnRunMonteCarlo.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 validateRowsPercentages();
                 IBackGroundOperation<IDesktopUpdate> operation = new IBackGroundOperation<IDesktopUpdate>() {
 
@@ -306,7 +306,7 @@ public class MonteCarloController extends GenericForwardComposer {
     private static class CriticalPathTasksRender implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             row.setValue(data);
 
             MonteCarloTask task = (MonteCarloTask) data;

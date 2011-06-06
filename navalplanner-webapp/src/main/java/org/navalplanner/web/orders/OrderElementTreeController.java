@@ -282,7 +282,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         expandAllButton.setImage("/common/img/ico_expand.png");
         expandAllButton.addEventListener("onClick", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (expandAllButton.getSclass().equals("planner-command")) {
                     expandAll();
                     expandAllButton.setSclass("planner-command clicked");
@@ -472,7 +472,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                     _("Edit"), "/common/img/ico_editar.png", "icono",
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             showEditionOrderElement(item);
                         }
                     });

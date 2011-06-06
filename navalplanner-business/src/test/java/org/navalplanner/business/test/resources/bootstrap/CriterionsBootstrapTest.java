@@ -66,7 +66,7 @@ public class CriterionsBootstrapTest {
     }
 
     @Test
-    public void testBootstrap() throws Exception {
+    public void testBootstrap() {
         givenNoSomePredefinedCriterionExists();
         criterionsBootstrap.loadRequiredData();
         thenAllSomePredefinedCriterionsExist();

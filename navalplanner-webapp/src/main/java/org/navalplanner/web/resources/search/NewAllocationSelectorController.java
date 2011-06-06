@@ -112,7 +112,7 @@ public class NewAllocationSelectorController extends
                 // Whenever an element of the tree is selected, a search query
                 // is executed, refreshing the results into the workers listbox
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     searchResources("", getSelectedCriterions());
                     showSelectedAllocations();
                 }
@@ -127,7 +127,7 @@ public class NewAllocationSelectorController extends
                 new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (isGenericType()) {
                     returnToSpecificDueToResourceSelection();
                 }
@@ -144,7 +144,7 @@ public class NewAllocationSelectorController extends
                 new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Radio radio = (Radio) event.getTarget();
                         if (radio == null) {
                             return;
@@ -474,7 +474,7 @@ public class NewAllocationSelectorController extends
     private static class ResourceListRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             item.setValue((Resource) data);
 
             appendLabelResource(item);
@@ -517,7 +517,7 @@ public class NewAllocationSelectorController extends
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) throws Exception {
+        public void render(Treeitem ti, Object node) {
             Treecell tc = new Treecell(Objects.toString(node));
             Treerow tr = null;
             ti.setValue(node);

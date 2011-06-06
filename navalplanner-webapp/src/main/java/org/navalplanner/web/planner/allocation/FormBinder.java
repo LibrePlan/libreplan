@@ -99,7 +99,7 @@ public class FormBinder {
     private EventListener onChangeEnableApply = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             Component target = event.getTarget();
             if (target instanceof InputElement) {
                 InputElement inputElement = (InputElement) target;
@@ -137,7 +137,7 @@ public class FormBinder {
     private EventListener hoursRowInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (effortInput.isDisabled()) {
                 effortInput.setValue(sumAllEffortFromInputs(rows));
             }
@@ -147,7 +147,7 @@ public class FormBinder {
     private EventListener resourcesPerDayRowInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (allResourcesPerDay.isDisabled()) {
                 sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
             }
@@ -157,7 +157,7 @@ public class FormBinder {
     private EventListener allHoursInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (!effortInput.isDisabled()) {
                 distributeHoursFromTotalToRows();
             }
@@ -167,7 +167,7 @@ public class FormBinder {
     private EventListener allResourcesPerDayChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (!allResourcesPerDay.isDisabled()) {
                 distributeResourcesPerDayToRows();
             }
@@ -295,7 +295,7 @@ public class FormBinder {
                     new EventListener() {
 
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
                             if (allocationRowsHandler.isForwardsAllocation()) {
@@ -550,7 +550,7 @@ public class FormBinder {
         applyButtonListener = new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 doApply();
                 FormBinder.this.applyButton.setDisabled(true);
             }
@@ -575,7 +575,7 @@ public class FormBinder {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 applyButton.setDisabled(false);
             }
         });
@@ -661,7 +661,7 @@ public class FormBinder {
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         activatingRecommendedAllocation();
                     }
                 });
@@ -670,7 +670,7 @@ public class FormBinder {
     public EventListener getRecommendedAllocationListener() {
         return new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 activatingRecommendedAllocation();
             }
         };

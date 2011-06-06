@@ -293,7 +293,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) throws Exception {
+        public void render(Treeitem ti, Object node) {
             final MaterialCategory materialCategory = (MaterialCategory) node;
 
             Label lblName = new Label(materialCategory.getName());
@@ -313,7 +313,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
             cellName.addEventListener("onClick", new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     getModel().searchMaterials("", materialCategory);
                     Util.reloadBindings(lbFoundMaterials);
                 }
@@ -333,7 +333,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) throws Exception {
+        public void render(Treeitem ti, Object node) {
             final MaterialCategory materialCategory = (MaterialCategory) node;
 
             Label lblName = new Label(materialCategory.getName());
@@ -537,7 +537,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
      */
     public class UnitTypeListRenderer implements ListitemRenderer {
         @Override
-        public void render(Listitem listItem, Object data) throws Exception {
+        public void render(Listitem listItem, Object data) {
             final UnitType unitType = (UnitType) data;
             listItem.setValue(unitType);
 

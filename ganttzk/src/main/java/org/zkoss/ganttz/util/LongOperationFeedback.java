@@ -95,7 +95,7 @@ public class LongOperationFeedback {
         component.addEventListener(eventName, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 try {
                     runnable.run();
                 } finally {

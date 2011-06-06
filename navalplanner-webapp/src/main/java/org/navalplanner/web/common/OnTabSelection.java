@@ -52,7 +52,7 @@ public class OnTabSelection {
         tabBox.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 SelectEvent e = (SelectEvent) event;
                 for (Object each : e.getSelectedItems()) {
                     if (tabs.get(each) != null) {

@@ -117,7 +117,7 @@ public class TabsRegistry {
                     new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     if (_("Limiting resources").equals(t.getName())) {
                         Executions.sendRedirect("/planner/index.zul;limiting_resources");
                     } else {

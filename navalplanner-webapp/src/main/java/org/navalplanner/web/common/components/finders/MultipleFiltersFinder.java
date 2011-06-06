@@ -195,7 +195,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
     private final ListitemRenderer filterPairRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             FilterPair filterPair = (FilterPair) data;
             item.setValue(data);
 

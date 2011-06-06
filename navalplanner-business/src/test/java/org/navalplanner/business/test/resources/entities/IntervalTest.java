@@ -33,18 +33,18 @@ import org.navalplanner.business.test.resources.daos.CriterionSatisfactionDAOTes
 public class IntervalTest {
 
     @Test(expected = IllegalArgumentException.class)
-    public void testStartDateMustBeBeforeThanEndDate() throws Exception {
+    public void testStartDateMustBeBeforeThanEndDate() {
         Interval.range(CriterionSatisfactionDAOTest.year(2000),
                 CriterionSatisfactionDAOTest.year(1999));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testStartDateMustBeNotNull() throws Exception {
+    public void testStartDateMustBeNotNull() {
         Interval.range(null, CriterionSatisfactionDAOTest.year(1999));
     }
 
     @Test
-    public void intervalCanBeOpenEnded() throws Exception {
+    public void intervalCanBeOpenEnded() {
         Interval.range(CriterionSatisfactionDAOTest.year(1990), null);
     }
 
@@ -68,7 +68,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testPointsOnlyContainsThemselves() throws Exception {
+    public void testPointsOnlyContainsThemselves() {
         Interval point = Interval
                 .point(CriterionSatisfactionDAOTest.year(1990));
         assertTrue(point.contains(CriterionSatisfactionDAOTest.year(1990)));
@@ -77,7 +77,7 @@ public class IntervalTest {
 
     @Test
     public void testIntervalsAreStartInclusiveAndEndExclusive()
-            throws Exception {
+            {
         Interval range = Interval.range(year(1990), year(2000));
         assertTrue(range.contains(year(1990)));
         assertFalse(range.contains(year(2000)));
@@ -86,7 +86,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testIncludes() throws Exception {
+    public void testIncludes() {
         Interval bigRange = Interval.range(year(1990), year(2000));
         Interval included = Interval.range(year(1990), year(1998));
         Interval point = Interval.point(year(1996));
@@ -96,7 +96,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testStartPointDoesntOverlapsWithRange() throws Exception {
+    public void testStartPointDoesntOverlapsWithRange() {
         Interval range = Interval.range(year(1990), year(2005));
         Interval openEndedRange = Interval.from(year(1990));
         Interval point = Interval.point(year(1990));
@@ -136,7 +136,7 @@ public class IntervalTest {
 
     @Test
     public void testIntervalFinishingAtTheStartOfOtherDontOverlap()
-            throws Exception {
+            {
         Interval range = Interval.range(year(2000), year(2005));
         Interval from = Interval.from(year(2000));
         Interval before = Interval.range(year(1995), year(2000));
@@ -159,7 +159,7 @@ public class IntervalTest {
     }
 
     @Test
-    public void testCreatingPointWithRange() throws Exception {
+    public void testCreatingPointWithRange() {
         Interval point = Interval.point(year(1990));
         Interval range = Interval.range(year(1990), year(1990));
         assertEquals(point, range);

@@ -303,7 +303,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             ((South) planner.getFellow("graphics")).addEventListener("onOpen",
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         transactionService
                         .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                             @Override
@@ -378,7 +378,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 LocalDate date = new LocalDate(datebox.getValue());
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
@@ -559,7 +559,7 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     transactionService
                             .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                                 @Override

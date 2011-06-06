@@ -293,7 +293,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
                 new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         PositionConstraintType constraint = (PositionConstraintType) startConstraintTypes
                                 .getSelectedItemApi().getValue();
                         constraintTypeChoosen(constraint);
@@ -303,7 +303,7 @@ public class TaskPropertiesController extends GenericForwardComposer {
         lbResourceAllocationType.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 SelectEvent se = (SelectEvent) event;
 
                 final ResourceAllocationTypeEnum oldState = getOldState();

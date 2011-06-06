@@ -165,7 +165,7 @@ public class MessagesForUser extends GenericForwardComposer implements
         messageEntry.addEventListener(DETACH_EVENT_NAME, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 pendingToDetach.offer(new ComponentHolderTimestamped(
                         messageEntry));
             }

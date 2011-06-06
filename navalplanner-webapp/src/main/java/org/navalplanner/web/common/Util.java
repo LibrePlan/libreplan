@@ -161,7 +161,7 @@ public class Util {
         textBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue();
                 setter.set(value);
@@ -205,7 +205,7 @@ public class Util {
         comboBox.addEventListener("onSelect", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(comboBox.getSelectedItem());
                 comboBox.setSelectedItem(getter.get());
             }
@@ -247,7 +247,7 @@ public class Util {
         intBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue().trim();
                 if (value.isEmpty()) {
@@ -294,7 +294,7 @@ public class Util {
         dateBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(dateBox.getValue());
                 dateBox.setValue(getter.get());
             }
@@ -336,7 +336,7 @@ public class Util {
         timeBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(timeBox.getValue());
                 timeBox.setValue(getter.get());
             }
@@ -380,7 +380,7 @@ public class Util {
         decimalBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(decimalBox.getValue());
                 decimalBox.setValue(getter.get());
             }
@@ -423,7 +423,7 @@ public class Util {
         checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(checkBox.isChecked());
                 checkBox.setChecked(getter.get());
             }
@@ -466,7 +466,7 @@ public class Util {
         radio.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(radio.isSelected());
                 radio.setChecked(getter.get());
             }
@@ -510,7 +510,7 @@ public class Util {
         bandBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue();
                 setter.set(value);

@@ -116,7 +116,7 @@ public class ResourceTest {
     }
 
     @Test
-    public void testRetrieveActiveCriterionsForCriterionType() throws Exception {
+    public void testRetrieveActiveCriterionsForCriterionType() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> criterionType = createTypeThatMatches(criterion);
@@ -136,7 +136,7 @@ public class ResourceTest {
     }
 
     @Test
-    public void testActiveCriterions() throws Exception {
+    public void testActiveCriterions() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> type = createTypeThatMatches(criterion,
@@ -196,7 +196,7 @@ public class ResourceTest {
 
     @Test
     public void testRetrieveSatisfactionsInIntervalForCriterionType()
-            throws Exception {
+            {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> criterionType = createTypeThatMatches(criterion);
         CriterionWithItsType criterionWithItsType = new CriterionWithItsType(
@@ -226,7 +226,7 @@ public class ResourceTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void invalidadCriterionWithItsTypeNotAllowd() throws Exception {
+    public void invalidadCriterionWithItsTypeNotAllowd() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
         ICriterionType<Criterion> criterionType = createTypeThatMatches(criterion);
@@ -272,7 +272,7 @@ public class ResourceTest {
     }
 
     @Test
-    public void testAddAtDate() throws Exception {
+    public void testAddAtDate() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Criterion otherCriterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
@@ -441,7 +441,7 @@ public class ResourceTest {
                 criterionType, criterion), intervalE));
     }
 
-    public void testAddCriterionSatisfaction() throws Exception {
+    public void testAddCriterionSatisfaction() {
         Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
         ICriterionType<Criterion> criterionType = createTypeThatMatches(false,

@@ -511,7 +511,7 @@ public class FunctionalityExposedForExtensions<T> implements IContext<T> {
         Button printButton = (Button) printProperties.getFellow("printButton");
         printButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 printProperties.detach();
                 configuration.print(buildParameters(printProperties),planner);
             }

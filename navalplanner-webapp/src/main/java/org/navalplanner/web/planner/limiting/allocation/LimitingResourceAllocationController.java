@@ -181,7 +181,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
     public class GridLimitingAllocationRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             LimitingAllocationRow resourceAllocation = (LimitingAllocationRow) data;
 
             row.appendChild(label(resourceAllocation.getAllocationTypeStr()));
@@ -248,7 +248,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             listbox.addEventListener("onSelect", new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     String priority = getSelectedValue((Listbox) event.getTarget());
                     resourceAllocation.setPriorityStr(priority);
                 }

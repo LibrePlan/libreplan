@@ -114,7 +114,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         listCostCategories.addEventListener("onInitRender", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                 listCostCategories.renderAll();
 
                 final Rows rows = listCostCategories.getRows();
@@ -320,7 +320,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Listitem item = lbHoursType.getSelectedItem();
                 if (item != null) {
                     setHoursType((HourCost) row.getValue(), item);
@@ -362,7 +362,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 confirmRemove((HourCost) row.getValue());
             }
         });
@@ -422,7 +422,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         initDateBox.addEventListener("onChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((HourCost)row.getValue()).getInitDate();
                 Datebox endDateBox = (Datebox) row.getChildren().get(4);
@@ -602,7 +602,7 @@ public class CostCategoryCRUDController extends GenericForwardComposer
     public class HourCostListRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             HourCost hourCost = (HourCost) data;
 
             row.setValue(hourCost);

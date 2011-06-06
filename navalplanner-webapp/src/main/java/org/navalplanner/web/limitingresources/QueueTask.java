@@ -58,7 +58,7 @@ public class QueueTask extends Div {
         final String taskUid = this.getUuid();
         this.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Clients
                         .evalJavaScript("zkLimitingDependencies.toggleDependenciesForQueueElement('"
                                 + taskUid + "')");

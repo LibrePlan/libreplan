@@ -107,7 +107,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         gridLabels.addEventListener("onInitRender", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 gridLabels.renderAll();
 
                 final Rows rows = gridLabels.getRows();
@@ -141,7 +141,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         gridLabelTypes.addEventListener("onInitRender", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 gridLabelTypes.renderAll();
 
                 final Rows rows = gridLabelTypes.getRows();

@@ -92,7 +92,7 @@ public class OrderElementController extends GenericForwardComposer {
         setupDetailsOrderElementController();
     }
 
-    private void setupDetailsOrderElementController() throws Exception {
+    private void setupDetailsOrderElementController() {
         detailsController = (DetailsOrderElementController)
         orderElementDetails.getVariable("detailsController", true);
     }
@@ -102,7 +102,7 @@ public class OrderElementController extends GenericForwardComposer {
         Util.reloadBindings(comp);
     }
 
-    public void setupAssignedHoursToOrderElementController() throws Exception {
+    public void setupAssignedHoursToOrderElementController() {
         if (assignedHoursToOrderElementController == null) {
             assignedHoursToOrderElementController = (AssignedHoursToOrderElementController) orderElementHours
                     .getVariable("assignedHoursToOrderElementController", true);
@@ -122,7 +122,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void setupManageOrderElementAdvancesController()
-            throws Exception {
+            {
         if (manageOrderElementAdvancesController == null) {
             manageOrderElementAdvancesController = (ManageOrderElementAdvancesController) orderElementAdvances
                     .getVariable("manageOrderElementAdvancesController", true);
@@ -135,7 +135,7 @@ public class OrderElementController extends GenericForwardComposer {
         }
     }
 
-    public void setupAssignedLabelsToOrderElementController()throws Exception {
+    public void setupAssignedLabelsToOrderElementController(){
         if (assignedLabelsController == null) {
             assignedLabelsController = orderElementLabels.getController();
             assignedLabelsController.openWindow(orderElementModel);
@@ -145,7 +145,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void setupAssignedCriterionRequirementToOrderElementController()
-            throws Exception {
+            {
         if (assignedCriterionRequirementController == null) {
             assignedCriterionRequirementController = (AssignedCriterionRequirementToOrderElementController) orderElementCriterionRequirements
                     .getVariable("assignedCriterionRequirementController", true);
@@ -157,7 +157,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void setupAssignedMaterialsToOrderElementController()
-            throws Exception {
+            {
         if (assignedMaterialsController == null) {
             assignedMaterialsController = orderElementMaterials.getController();
             assignedMaterialsController.openWindow(getOrderElement());
@@ -167,7 +167,7 @@ public class OrderElementController extends GenericForwardComposer {
     }
 
     public void setupAssignedTaskQualityFormsToOrderElementController()
-            throws Exception {
+            {
         if (assignedTaskQualityFormsController == null) {
             assignedTaskQualityFormsController = (AssignedTaskQualityFormsToOrderElementController) orderElementTaskQualityForms
                 .getVariable("assignedTaskQualityFormsController", true);

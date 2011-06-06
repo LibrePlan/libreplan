@@ -111,7 +111,7 @@ public class TimeTrackedTableWithLeftPane<A, B> {
         return new Callable<List<B>>() {
 
             @Override
-            public List<B> call() throws Exception {
+            public List<B> call() {
                 return loadPairOfListsFromCallable().getSecond();
             }
         };

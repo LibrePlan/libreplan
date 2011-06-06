@@ -616,7 +616,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private class ResourceAllocationRenderer implements RowRenderer {
 
         @Override
-        public void render(Row item, Object data) throws Exception {
+        public void render(Row item, Object data) {
             if (data instanceof AllocationRow) {
                 AllocationRow row = (AllocationRow) data;
                 renderResourceAllocation(item, row);
@@ -626,7 +626,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
         }
 
         private void renderResourceAllocation(Row row, final AllocationRow data)
-                throws Exception {
+                {
             row.setValue(data);
             append(row, data.createDetail());
             append(row, new Label(data.getName()));
@@ -653,7 +653,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
             deleteButton.addEventListener("onClick", new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     removeAllocation(data);
                 }
             });

@@ -173,7 +173,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     public class ResourceListRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final Resource resource = (Resource) data;
             item.setValue(resource);
 
@@ -233,7 +233,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 onRemoveResource((Resource) item.getValue());
             }
         });

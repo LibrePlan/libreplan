@@ -107,7 +107,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 Treeitem item) {
             item.addEventListener("onOpen", new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     OpenEvent openEvent = (OpenEvent) event;
                     taskBean.setExpanded(openEvent.isOpen());
                 }

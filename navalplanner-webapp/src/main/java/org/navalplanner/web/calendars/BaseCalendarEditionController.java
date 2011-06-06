@@ -233,7 +233,7 @@ public abstract class BaseCalendarEditionController extends
         exceptionTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Comboitem selectedItem = getSelectedItem((SelectEvent) event);
                 if (selectedItem != null) {
                     updateWithCapacityFrom(getValue(selectedItem));
@@ -301,7 +301,7 @@ public abstract class BaseCalendarEditionController extends
         parentCalendars.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 BaseCalendar selected = (BaseCalendar) parentCalendars
                         .getSelectedItem().getValue();
                 baseCalendarModel.setParent(selected);
@@ -341,7 +341,7 @@ public abstract class BaseCalendarEditionController extends
     public class HoursPerDayRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final Days day = (Days) data;
 
             addLabelCell(item, day);
@@ -396,7 +396,7 @@ public abstract class BaseCalendarEditionController extends
                         new EventListener() {
 
                             @Override
-                            public void onEvent(Event event) throws Exception {
+                            public void onEvent(Event event) {
                                 reloadCurrentWindow();
                             }
 
@@ -710,7 +710,7 @@ public abstract class BaseCalendarEditionController extends
     public class HistoryVersionsRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             CalendarData calendarData = (CalendarData) data;
             item.setValue(calendarData);
 
@@ -786,7 +786,7 @@ public abstract class BaseCalendarEditionController extends
                     _("Delete"), "/common/img/ico_borrar.png", "icono",
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             baseCalendarModel.removeCalendarData(calendarData);
                             reloadCurrentWindow();
                         }
@@ -814,7 +814,7 @@ public abstract class BaseCalendarEditionController extends
         private void addEventListener(Listitem item) {
             item.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     Listitem item = (Listitem) event.getTarget();
                     CalendarData calendarData = (CalendarData) item.getValue();
 
@@ -928,7 +928,7 @@ public abstract class BaseCalendarEditionController extends
     public class CalendarExceptionRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             CalendarException calendarException = (CalendarException) data;
             item.setValue(calendarException);
 
@@ -1044,7 +1044,7 @@ public abstract class BaseCalendarEditionController extends
                     _("Delete"), "/common/img/ico_borrar.png", "icono",
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             baseCalendarModel
                                     .removeException(calendarException
                                     .getDate());
@@ -1144,7 +1144,7 @@ public abstract class BaseCalendarEditionController extends
     public class CalendarAvailabilityRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             CalendarAvailability calendarAvailability = (CalendarAvailability) data;
             item.setValue(calendarAvailability);
 
@@ -1295,7 +1295,7 @@ public abstract class BaseCalendarEditionController extends
                     _("Delete"), "/common/img/ico_borrar.png", "icono",
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             baseCalendarModel
                                     .removeCalendarAvailability(calendarAvailability);
                             reloadDayInformation();

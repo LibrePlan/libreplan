@@ -285,7 +285,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
         return new RowRenderer() {
 
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data) {
                 final AdvanceType advanceType = (AdvanceType) data;
                 appendLabelName(row, advanceType);
                 appendCheckboxEnabled(row, advanceType);
@@ -293,7 +293,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                 appendOperations(row, advanceType);
                 row.addEventListener(Events.ON_CLICK, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditForm(advanceType);
                     }
                 });
@@ -324,7 +324,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                 hbox.appendChild(Util.createEditButton(new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditForm(advanceType);
                     }
                 }));
@@ -333,7 +333,7 @@ public class AdvanceTypeCRUDController extends GenericForwardComposer {
                         .createRemoveButton(new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                            public void onEvent(Event event) {
                         confirmRemove(advanceType);
                     }
                 });

@@ -158,7 +158,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 new ILongOperation() {
 
                     @Override
-                    public void doAction() throws Exception {
+                    public void doAction() {
                         applyFilter();
                     }
 
@@ -252,7 +252,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         Button result = new Button();
         result.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 c.doAction();
             }
         });
@@ -506,7 +506,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 new ILongOperation() {
 
             @Override
-            public void doAction() throws Exception {
+            public void doAction() {
                 if(paginationType == PaginationType.INTERNAL_PAGINATION) {
                     //if the pagination is internal, we are in charge of repainting the graph
                     treeModel = createModelForTree();

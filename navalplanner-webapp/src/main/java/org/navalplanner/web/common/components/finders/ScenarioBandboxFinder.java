@@ -91,7 +91,7 @@ public class ScenarioBandboxFinder extends BandboxFinder implements IBandboxFind
     private final ListitemRenderer scenarioRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Scenario scenario = (Scenario) data;
             item.setValue(scenario);
 

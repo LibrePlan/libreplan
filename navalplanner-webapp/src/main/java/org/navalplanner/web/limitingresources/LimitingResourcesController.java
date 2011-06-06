@@ -415,7 +415,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private class LimitingResourceQueueElementsRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
             row.setValue(data);
@@ -446,7 +446,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     LimitingResourceQueueElement queueElement = element.getOriginal();
 
                     editResourceAllocation(queueElement);
@@ -465,7 +465,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     showManualAllocationWindow(element.getOriginal());
                 }
             });
@@ -480,7 +480,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     removeUnassignedLimitingResourceQueueElement(element);
                 }
             });
@@ -504,7 +504,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     assignLimitingResourceQueueElement(element);
                 }
             });

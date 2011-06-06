@@ -159,7 +159,7 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 planner.updateCompletion(getSelectedProgressType().toString());
             }
 
@@ -175,7 +175,7 @@ public class CompanyPlanningController implements Composer {
     private static class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));

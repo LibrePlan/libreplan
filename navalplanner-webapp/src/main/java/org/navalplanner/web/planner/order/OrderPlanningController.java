@@ -157,7 +157,7 @@ public class OrderPlanningController implements Composer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.planner = (Planner) comp;
         String zoomLevelParameter = null;
         if ((parameters != null) && (parameters.get("zoom") != null)
@@ -245,7 +245,7 @@ public class OrderPlanningController implements Composer {
         LongOperationFeedback.execute(orderElementFilter, new ILongOperation() {
 
             @Override
-            public void doAction() throws Exception {
+            public void doAction() {
                 model.forceLoadLabelsAndCriterionRequirements();
 
                 final IContext<?> context = planner.getContext();
