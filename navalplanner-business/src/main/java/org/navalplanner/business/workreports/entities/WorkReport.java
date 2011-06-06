@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
@@ -325,10 +326,7 @@ public class WorkReport extends IntegrationEntity {
 
     public Label getLabelByType(LabelType type)
             throws InstanceNotFoundException {
-
-        if (type == null) {
-            throw new InstanceNotFoundException(type, LabelType.class.getName());
-        }
+        Validate.notNull(type);
 
         for (Label l : this.labels) {
             if (l.getType().getId().equals(type.getId())) {

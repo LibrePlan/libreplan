@@ -137,12 +137,10 @@ public abstract class AssignedMaterialsModel<T, A> implements
 
         categoryDAO.reattach(materialCategory);
         final MaterialCategory parent = materialCategory.getParent();
-        if (parent == null) {
-            if (!materialCategories.contains(parent, materialCategory)) {
+        if (!materialCategories.contains(parent, materialCategory)) {
+            if (parent == null) {
                 materialCategories.addToRoot(materialCategory);
-            }
-        } else {
-            if (!materialCategories.contains(parent, materialCategory)) {
+            } else {
                 addCategory(materialCategories, parent);
                 materialCategories.add(parent, materialCategory);
             }

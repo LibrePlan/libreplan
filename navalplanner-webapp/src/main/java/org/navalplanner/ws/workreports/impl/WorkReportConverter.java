@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
@@ -597,9 +598,7 @@ public final class WorkReportConverter {
     private static Label getLabelByLabelType(Set<Label> labels, LabelType type)
             throws InstanceNotFoundException {
 
-        if (type == null) {
-            throw new InstanceNotFoundException(type, LabelType.class.getName());
-        }
+        Validate.notNull(type);
 
         for (Label l : labels) {
             if (l.getType().equals(type)) {

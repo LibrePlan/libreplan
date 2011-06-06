@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
@@ -77,10 +78,7 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
     @Override
     public CostCategory findUniqueByCode(String code)
             throws InstanceNotFoundException {
-        if (code == null) {
-            throw new InstanceNotFoundException(code, CostCategory.class
-                    .getName());
-        }
+        Validate.notNull(code);
 
         Criteria c = getSession().createCriteria(CostCategory.class).add(
                 Restrictions.eq("code", code).ignoreCase());

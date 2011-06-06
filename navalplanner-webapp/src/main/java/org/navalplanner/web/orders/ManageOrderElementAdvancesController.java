@@ -1361,7 +1361,7 @@ public class ManageOrderElementAdvancesController extends
                 .canRemoveOrChange(advanceMeasurement))) {
             if (value == null) {
                 advanceMeasurement.setDate(null);
-                ((Datebox) comp).setValue(value);
+                ((Datebox) comp).setValue(null);
                 throw new WrongValueException(comp,
                         _("The date is not valid, the date must be not empty"));
             } else {
