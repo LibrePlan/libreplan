@@ -633,7 +633,7 @@ public abstract class TaskElement extends BaseEntity {
                 each.getType());
     }
 
-    private Integer sumOfHoursAllocated = new Integer(0);
+    private Integer sumOfHoursAllocated = 0;
 
     public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
         this.sumOfHoursAllocated = sumOfHoursAllocated;

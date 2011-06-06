@@ -31,10 +31,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -427,7 +427,7 @@ public class ResourceLoadController implements Composer {
                 Comboitem item = new Comboitem();
                 item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
                 item.setDescription(firstName + " - " + lastName);
-                item.setValue(new Integer(position));
+                item.setValue(position);
                 filterByNameCombo.appendChild(item);
                 if(resourceLoadModel.getPageFilterPosition() == position) {
                     filterByNameCombo.setSelectedItemApi(item);

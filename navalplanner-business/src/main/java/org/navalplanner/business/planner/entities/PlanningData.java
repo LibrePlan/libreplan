@@ -77,13 +77,13 @@ public class PlanningData extends BaseEntity {
     }
 
     private BigDecimal calculateByDuration(List<Task> criticalPath) {
-        Integer totalDuration = new Integer(0), duration;
-        BigDecimal totalProgress = BigDecimal.ZERO, progress;
+        int totalDuration = 0;
+        BigDecimal totalProgress = BigDecimal.ZERO;
 
         for (Task each : criticalPath) {
-            duration = each.getWorkableDays();
-            progress = each.getAdvancePercentage();
-            progress = progress.multiply(BigDecimal.valueOf(duration));
+            int duration = each.getWorkableDays();
+            BigDecimal progress = each.getAdvancePercentage().multiply(
+                    BigDecimal.valueOf(duration));
 
             totalDuration = totalDuration + duration;
             totalProgress = totalProgress.add(progress);
@@ -98,8 +98,8 @@ public class PlanningData extends BaseEntity {
      * @param denominator
      * @return
      */
-    private BigDecimal divide(BigDecimal numerator, Integer denominator) {
-        if (Integer.valueOf(0).equals(denominator)) {
+    private BigDecimal divide(BigDecimal numerator, int denominator) {
+        if (denominator == 0) {
             return BigDecimal.ZERO;
         }
         return numerator.divide(BigDecimal.valueOf(denominator), 8,

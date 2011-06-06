@@ -504,8 +504,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return BigDecimal.ZERO;
             }
 
-            Integer totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
-                    .getSumChargedHours().getTotalChargedHours() : new Integer(0);
+            int totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
+                    .getSumChargedHours().getTotalChargedHours() : 0;
             BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
 
             BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())

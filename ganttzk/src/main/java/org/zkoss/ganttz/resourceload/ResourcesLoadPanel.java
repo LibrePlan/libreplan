@@ -35,10 +35,10 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
+import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
-import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
@@ -444,7 +444,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                 Comboitem item = new Comboitem();
                 item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
                 item.setDescription(firstName + " - " + lastName);
-                item.setValue(new Integer(position));
+                item.setValue(position);
                 filterByNameCombo.appendChild(item);
                 position = newPosition;
             }

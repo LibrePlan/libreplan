@@ -344,13 +344,15 @@ public class QueueComponent extends XulElement implements
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = new Long((24 - workableHours)
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue();
+        int shadeWidth = Long.valueOf(
+                (24 - workableHours)
+                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel()).intValue();
 
-        int shadeLeft = new Long((workableHours - queueElement.getEndHour())
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue()
+        int shadeLeft = Long.valueOf(
+                (workableHours - queueElement.getEndHour())
+                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel()).intValue()
                 + shadeWidth;
         ;
 

@@ -179,7 +179,7 @@ public class LimitingAllocationRow {
     }
 
     public String getPriorityStr() {
-        return (new Integer(getPriority()).toString());
+        return Integer.valueOf(getPriority()).toString();
     }
 
     public void setPriorityStr(String priority) {

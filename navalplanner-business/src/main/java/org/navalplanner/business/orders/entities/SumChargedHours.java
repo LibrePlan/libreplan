@@ -30,9 +30,9 @@ import org.navalplanner.business.common.BaseEntity;
  */
 public class SumChargedHours extends BaseEntity {
 
-    private Integer directChargedHours = new Integer(0);
+    private Integer directChargedHours = 0;
 
-    private Integer indirectChargedHours = new Integer(0);
+    private Integer indirectChargedHours = 0;
 
     protected SumChargedHours() {}
 

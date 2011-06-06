@@ -40,7 +40,7 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
             return false;
         }
 
-        Integer newTotal = 0;
+        int newTotal = 0;
 
         for (HoursGroup hoursGroup : hoursGroups) {
             if (hoursGroup.isFixedPercentage()) {
@@ -50,7 +50,7 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
             }
         }
 
-        if (newTotal.compareTo(total) > 0) {
+        if (newTotal > total) {
             return false;
         }
 
@@ -252,7 +252,7 @@ public abstract class HoursGroupHandler<T> implements IHoursGroupHandler<T> {
     public void setWorkHours(T orderLine, Integer workHours) throws IllegalArgumentException {
 
         if (workHours == null) {
-            workHours = new Integer(0);
+            workHours = 0;
         }
 
         if (workHours < 0) {

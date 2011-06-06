@@ -526,7 +526,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     public void setStatus(int status) {
-        self.setVariable("status", new Integer(status), true);
+        self.setVariable("status", Integer.valueOf(status), true);
     }
 
     private class QueueRenderer implements ListitemRenderer {

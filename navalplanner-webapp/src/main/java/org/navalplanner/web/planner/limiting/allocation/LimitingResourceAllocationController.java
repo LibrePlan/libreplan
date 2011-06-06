@@ -37,13 +37,10 @@ import org.navalplanner.web.planner.allocation.TaskInformation;
 import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
 import org.navalplanner.web.planner.order.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
-import org.navalplanner.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
-import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -231,7 +228,7 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
             Listbox result = listbox();
             for (int i = 1; i <= 10; i++) {
                 Listitem item = new Listitem();
-                Listcell cell = new Listcell(new Integer(i).toString());
+                Listcell cell = new Listcell(i + "");
                 cell.setParent(item);
                 if (i == selectedValue) {
                     item.setSelected(true);

@@ -172,7 +172,7 @@ public class SubcontractServiceREST implements ISubcontractService {
                     });
         } catch (ValidationException e) {
             InstanceConstraintViolationsDTO violation = ConstraintViolationConverter
-                    .toDTO(new InstanceConstraintViolationsDTOId(new Long(1),
+                    .toDTO(new InstanceConstraintViolationsDTOId(Long.valueOf(1),
                             orderElementDTO.code, OrderDTO.ENTITY_TYPE), e);
             throw new ViolationError(violation);
         }
