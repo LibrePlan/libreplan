@@ -321,13 +321,11 @@ public final class OrderElementConverter {
                     }
                 } else { // criterionRequirementDTO instanceof
                     // IndirectCriterionRequirementDTO
-                    if (criterion != null) {
-                        IndirectCriterionRequirement indirectCriterionRequirement = getIndirectCriterionRequirementByCriterion(
-                                criterionRequirable, criterion);
-                        if (indirectCriterionRequirement != null) {
-                            indirectCriterionRequirement
-                                    .setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
-                        }
+                    IndirectCriterionRequirement indirectCriterionRequirement = getIndirectCriterionRequirementByCriterion(
+                            criterionRequirable, criterion);
+                    if (indirectCriterionRequirement != null) {
+                        indirectCriterionRequirement
+                                .setValid(((IndirectCriterionRequirementDTO) criterionRequirementDTO).valid);
                     }
                 }
             } else {

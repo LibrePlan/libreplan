@@ -545,11 +545,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             return;
         }
         ResourcesPerDay resourcesPerDay = calculateResourcesPerDayFromAssignments(getAssignments());
-        if (resourcesPerDay == null) {
-            this.resourcesPerDay = ResourcesPerDay.amount(0);
-        } else {
-            this.resourcesPerDay = resourcesPerDay;
-        }
+        assert resourcesPerDay != null;
+        this.resourcesPerDay = resourcesPerDay;
     }
 
     protected void setResourcesPerDayToAmount(int amount) {
