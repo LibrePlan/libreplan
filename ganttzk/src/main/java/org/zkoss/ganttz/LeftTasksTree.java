@@ -120,7 +120,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
         return task.isLeaf() || task.isExpanded();
     }
 
-    private final class DetailsForBeans {
+    private static final class DetailsForBeans {
+
         private Map<Task, LeftTasksTreeRow> map = new HashMap<Task, LeftTasksTreeRow>();
 
         private Set<Task> focusRequested = new HashSet<Task>();

@@ -147,7 +147,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         return result;
     }
 
-    private class TaskStatusEnumComparator implements Comparator<TaskStatusEnum> {
+    private static class TaskStatusEnumComparator implements
+            Comparator<TaskStatusEnum> {
 
         @Override
         public int compare(TaskStatusEnum arg0, TaskStatusEnum arg1) {

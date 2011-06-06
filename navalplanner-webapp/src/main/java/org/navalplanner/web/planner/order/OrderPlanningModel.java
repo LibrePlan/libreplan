@@ -284,7 +284,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
-    private final class ReturningNewAssignments implements
+    private static final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
 
         private Set<DayAssignment> previousAssignmentsSet;
@@ -307,8 +307,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private final class TaskElementNavigator implements
+    private static final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
+
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
             return object.getChildren();

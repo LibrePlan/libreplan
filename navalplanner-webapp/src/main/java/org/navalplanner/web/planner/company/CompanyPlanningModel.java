@@ -67,8 +67,8 @@ import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
-import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
+import org.navalplanner.web.planner.chart.IChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -169,8 +169,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         this.tabs = entryPoints;
     }
 
-    private final class TaskElementNavigator implements
+    private static final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
+
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
             return null;

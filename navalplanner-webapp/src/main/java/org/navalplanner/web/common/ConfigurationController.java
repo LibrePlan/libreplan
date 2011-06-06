@@ -444,7 +444,7 @@ public class ConfigurationController extends GenericForwardComposer {
         return progressTypeRenderer;
     }
 
-    private class ProgressTypeRenderer implements ListitemRenderer {
+    private static class ProgressTypeRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
@@ -702,11 +702,11 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    public class EntitySequenceComparator implements Comparator {
+    public static class EntitySequenceComparator implements
+            Comparator<EntitySequence> {
+
         @Override
-        public int compare(Object o1, Object o2) {
-            EntitySequence seq1 = (EntitySequence) o1;
-            EntitySequence seq2 = (EntitySequence) o2;
+        public int compare(EntitySequence seq1, EntitySequence seq2) {
             return seq1.getEntityName().compareTo(seq2.getEntityName());
         }
     }

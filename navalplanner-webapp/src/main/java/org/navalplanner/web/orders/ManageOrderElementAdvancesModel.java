@@ -849,7 +849,7 @@ public class ManageOrderElementAdvancesModel implements
      *      pressed, restores the original state of the advance assignments
      *
      */
-    private class CancelOperation {
+    private static class CancelOperation {
 
         private Set<AdvanceMeasurement> addedMeasurements = new HashSet<AdvanceMeasurement>();
 

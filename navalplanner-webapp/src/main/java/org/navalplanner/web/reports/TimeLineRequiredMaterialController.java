@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -253,7 +252,7 @@ public class TimeLineRequiredMaterialController extends
         return new MaterialCategoryRenderer();
     }
 
-    private class MaterialCategoryRenderer implements TreeitemRenderer {
+    private static class MaterialCategoryRenderer implements TreeitemRenderer {
 
         /**
          * Copied verbatim from org.zkoss.zul.Tree;

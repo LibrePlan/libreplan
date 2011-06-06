@@ -370,7 +370,7 @@ public class NewAllocationSelectorController extends
      *         Encapsulates {@link SimpleTreeNode}
      *
      */
-    private class CriterionTreeNode extends SimpleTreeNode {
+    private static class CriterionTreeNode extends SimpleTreeNode {
 
         public CriterionTreeNode(Object data, List<CriterionTreeNode> children) {
             super(data, children);
@@ -471,7 +471,7 @@ public class NewAllocationSelectorController extends
      *
      *         Render for listBoxResources
      */
-    private class ResourceListRenderer implements ListitemRenderer {
+    private static class ResourceListRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
@@ -511,7 +511,7 @@ public class NewAllocationSelectorController extends
      *         Finally, I tried this solution and it works
      *
      */
-    private class CriterionRenderer implements TreeitemRenderer {
+    private static class CriterionRenderer implements TreeitemRenderer {
 
         /**
          * Copied verbatim from org.zkoss.zul.Tree;

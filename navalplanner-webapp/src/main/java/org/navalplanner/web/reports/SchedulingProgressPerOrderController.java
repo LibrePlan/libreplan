@@ -26,7 +26,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -216,7 +215,7 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
         super.showReport(jasperreport);
     }
 
-    public class AdvanceTypeDTO {
+    public static class AdvanceTypeDTO {
 
         private String name;
 

@@ -114,8 +114,9 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private static final String DEFAULT_TAB = "tabOrderElements";
 
-    private final class LabelCreatorForInvalidValues implements
+    private static final class LabelCreatorForInvalidValues implements
             IMessagesForUser.ICustomLabelCreator {
+
         @Override
         public Component createLabelFor(
                 InvalidValue invalidValue) {

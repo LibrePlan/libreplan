@@ -535,7 +535,7 @@ public class MaterialsController extends
      * RowRenderer for a @{UnitType} element
      * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
      */
-    public class UnitTypeListRenderer implements ListitemRenderer {
+    public static class UnitTypeListRenderer implements ListitemRenderer {
         @Override
         public void render(Listitem listItem, Object data) throws Exception {
             final UnitType unitType = (UnitType) data;

@@ -260,7 +260,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
      * @author Diego Pino Garcia <dpino@igalia.com>
      *
      */
-    public class LimitingResourceQueueElementDTO implements Comparable<LimitingResourceQueueElementDTO> {
+    public static class LimitingResourceQueueElementDTO implements
+            Comparable<LimitingResourceQueueElementDTO> {
 
         private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 

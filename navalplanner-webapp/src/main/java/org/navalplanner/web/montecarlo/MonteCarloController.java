@@ -303,7 +303,7 @@ public class MonteCarloController extends GenericForwardComposer {
         }
     }
 
-    private class CriticalPathTasksRender implements RowRenderer {
+    private static class CriticalPathTasksRender implements RowRenderer {
 
         @Override
         public void render(Row row, Object data) throws Exception {

@@ -473,7 +473,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         return candidateGapRenderer;
     }
 
-    private class CandidateGapRenderer implements ListitemRenderer {
+    private static class CandidateGapRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {
@@ -529,7 +529,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         self.setVariable("status", Integer.valueOf(status), true);
     }
 
-    private class QueueRenderer implements ListitemRenderer {
+    private static class QueueRenderer implements ListitemRenderer {
 
         @Override
         public void render(Listitem item, Object data) throws Exception {

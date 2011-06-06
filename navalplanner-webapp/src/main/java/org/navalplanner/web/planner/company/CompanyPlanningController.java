@@ -172,7 +172,7 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.setVisible(true);
     }
 
-    private class ProgressTypeRenderer implements ComboitemRenderer {
+    private static class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
         public void render(Comboitem item, Object data) throws Exception {
