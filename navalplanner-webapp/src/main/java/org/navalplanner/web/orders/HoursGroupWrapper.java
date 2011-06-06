@@ -43,6 +43,9 @@ import org.navalplanner.business.templates.entities.OrderLineGroupTemplate;
 /**
  * Wrapper represents the handled data in the form of assigning criterion
  * requirement.
+ *
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class HoursGroupWrapper implements INewObject,

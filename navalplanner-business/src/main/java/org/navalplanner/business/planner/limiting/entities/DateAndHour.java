@@ -27,6 +27,8 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -87,6 +89,21 @@ public class DateAndHour implements Comparable<DateAndHour> {
         int compareDate = date.compareTo(getDate(time));
         return (compareDate != 0) ? compareDate : compareHour(time
                 .getHour());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof DateAndHour) {
+            DateAndHour other = (DateAndHour) obj;
+            return new EqualsBuilder().append(date, other.date)
+                    .append(hour, other.hour).isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(date).append(hour).toHashCode();
     }
 
     private LocalDate getDate(DateAndHour dateAndHour) {

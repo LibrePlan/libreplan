@@ -27,8 +27,9 @@ import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * Note: this class has a natural ordering that is inconsistent with equals.
  *
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class MaterialAssignmentTemplate extends BaseEntity implements
         Comparable<MaterialAssignmentTemplate> {

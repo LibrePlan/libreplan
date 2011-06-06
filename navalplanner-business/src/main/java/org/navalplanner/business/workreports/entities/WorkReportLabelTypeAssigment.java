@@ -27,6 +27,8 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 
 /**
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class WorkReportLabelTypeAssigment extends BaseEntity implements

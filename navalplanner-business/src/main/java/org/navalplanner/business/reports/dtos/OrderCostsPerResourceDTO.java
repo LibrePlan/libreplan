@@ -32,6 +32,10 @@ import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
+
+/**
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ */
 public class OrderCostsPerResourceDTO implements
         Comparable<OrderCostsPerResourceDTO> {
 

@@ -30,8 +30,9 @@ import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  *
- * @author Diego Pino Garcia <dpino@igalia.com>
+ * Note: this class has a natural ordering that is inconsistent with equals.
  *
+ * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public class MaterialAssignment extends BaseEntity implements Comparable {
 

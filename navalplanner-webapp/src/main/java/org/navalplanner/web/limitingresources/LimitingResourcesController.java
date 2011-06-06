@@ -257,6 +257,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     /**
      * DTO for list of unassigned {@link LimitingResourceQueueElement}
      *
+     * Note: this class has a natural ordering that is inconsistent with equals.
+     *
      * @author Diego Pino Garcia <dpino@igalia.com>
      *
      */

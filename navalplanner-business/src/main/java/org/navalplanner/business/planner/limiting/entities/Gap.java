@@ -50,6 +50,7 @@ import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
+ * Note: this class has a natural ordering that is inconsistent with equals.
  *
  * @author Diego Pino Garcia <dpino@igalia.com>
  *

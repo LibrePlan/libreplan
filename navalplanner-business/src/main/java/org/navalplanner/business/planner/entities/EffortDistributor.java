@@ -240,6 +240,9 @@ public class EffortDistributor {
 
     }
 
+    /**
+     * Note: this class has a natural ordering that is inconsistent with equals.
+     */
     private static class ResourceWithAvailableCapacity implements
             Comparable<ResourceWithAvailableCapacity> {
 

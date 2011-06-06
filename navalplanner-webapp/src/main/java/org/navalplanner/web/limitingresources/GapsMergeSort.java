@@ -39,6 +39,10 @@ public class GapsMergeSort {
     private GapsMergeSort() {
     }
 
+    /**
+     * Note: this class has a natural ordering that is inconsistent with equals.
+     *
+     */
     private static class CurrentGap implements Comparable<CurrentGap> {
 
         static List<CurrentGap> convert(
