@@ -1,6 +1,79 @@
 NEWS
 ====
 
+Version 1.1.1 (07 Jun 2011)
+---------------------------
+
+First minor version for 1.1.x cycle with lots of bugfixes. The most important
+ones:
+
+* Fixed several memory leaks which will make application use less memory now.
+* Improved log system configuration.
+* Solved a translation issue with some strings in the Gantt view.
+* Resolved some bugs moving tasks due to new dependencies.
+
+Changes
+~~~~~~~
+
+* Updated TODO file with roadmap for 1.2 version.
+* Changed OpenJDK dependency in Debian package for default-jdk or default-jre.
+* [i18n] Fixed wrong translation of project in some reports.
+* [i18n] Fixed uppercase/lowercases incoherences.
+* [Bug #1084] Fix bug
+* [Bug #789] Script for parsing ZUL files should look for 'ganttzk_i18n' tag too
+* [Bug #789] Renamed 'i18n' prefix in ganttzk to 'ganttzk_i18n'
+* Fix possible NPE
+* Fix NPE if provided allocation is null
+* [Bug #1083] Fix bug
+* [Bug #1014] add borders in the table of the report of worked hours per each
+  resource.
+* [Bug #1014] include the name of the assigned task to each report line, in the
+  report worked hours per each resource.
+* [Bug #1014] return the date time at start of day to perform the grouping by
+  date correctly.
+* Avoid NPE if editedValue is null
+* [Bug #1013] increase the width in filter search box.
+* [Bug #1086] Fix bug
+* Changed test to avoid it fails if it's launched on Saturday.
+* [i18n] Fixed typo in progress with all tasks.
+* [i18n] Fixed typo in "criterions" using "criteria".
+* [i18n] Updated Spanish and Galician translations.
+* [i18n] Fixed issue in keys generator and updated keys.pot files.
+* [i18n] Updated Spanish and Galician translations.
+* [i18n] Fixed translation of "progress" to Galician and Spanish.
+* [i18n] Marked "Choosing template" for translate.
+* [i18n] Changed "order sequence" for "entity sequence"
+* [i18n] Updated keys.pot files
+* Fixed two translation issues.
+* [Bug #1082] Fix bug
+* Revert "Fix bug"
+* [Bug #954] Fix bug
+* Revert "[Bug #954] Handle concurrency support in Configuration window"
+* The new support for parametrizing the clearing of handlers is used
+* Now the clearing behaviour can be parametrized
+* More aggresive discarding of sessions and desktops
+* [Bug #1080] Fixed issue with Montecarlo method when critical path has more
+  than 10 tasks.
+* [Bug #1079] Fixed lazy exception initializing parent calendar too.
+* Improve toString message
+* Fix bug
+* [Bug #1074] check if exists indicators of the earned value for that date.
+* [Bug #1076] Fixed NullPointerException going to Gantt view when project is
+  not scheduled.
+* Reduce the time that request handlers are kept around in CallbackServlet
+* Fix memory leak in TemplateController
+* Refactor password not changed controller code
+* Allow to GC the page before the desktop is discarded
+* Don't let the thread local hang forever in the threads local map
+* Fix leak
+* Remove unnecessary timers.
+* Reduce the live time of desktops
+* Fix memory leak
+* Determine the log directory dinamically
+* Use asynchronous appender
+* Move default log4j.properties to application
+
+
 Version 1.1.0 (19 May 2011)
 ---------------------------
 
