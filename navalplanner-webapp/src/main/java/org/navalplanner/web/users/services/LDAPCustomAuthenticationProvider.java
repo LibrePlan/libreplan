@@ -27,9 +27,6 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ldap.CommunicationException;
-import org.springframework.ldap.ServiceUnavailableException;
-import org.springframework.ldap.UncategorizedLdapException;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
@@ -227,44 +224,16 @@ public class LDAPCustomAuthenticationProvider extends
                         throw new BadCredentialsException(
                                 "User is not in LDAP.");
                     }
-                } catch (CommunicationException ce) {
-                    // This exception captures when LDAP is not reachable.
+                } catch (Exception e) {
+                    // This exception captures when LDAP authentication is not
+                    // possible
                     // We must in this case try to authenticate against DB.
-                    // LDAP is not enabled we must check if the LDAP user is in
-                    // DB
                     if (authenticateInDatabase(authentication, username, user)) {
                         // user credentials are ok
                         return getUserDetailsService().loadUserByUsername(
                                 username);
                     } else {
-                        throw new BadCredentialsException(
-                                "Authenticating LDAP user against LDAP. Maybe LDAP is out of service. "
-                                        + "Credentials are not the same as in database.");
-                    }
-                } catch (UncategorizedLdapException ule) {
-                    // This exception captures when LDAP URL is malformed
-                    // this should never occur, but we check it to try
-                    // database authentication.
-                    if (authenticateInDatabase(authentication, username, user)) {
-                        // user credentials are ok
-                        return getUserDetailsService().loadUserByUsername(
-                                username);
-                    } else {
-                        throw new BadCredentialsException(
-                                "LDAP url is malformed. Trying to authenticate against DB. "
-                                        + "Credentials are not the same as in database");
-                    }
-                } catch (ServiceUnavailableException sua) {
-                    // This exception captures when LDAP is not available
-                    // We try database authentication.
-                    if (authenticateInDatabase(authentication, username, user)) {
-                        // user credentials are ok
-                        return getUserDetailsService().loadUserByUsername(
-                                username);
-                    } else {
-                        throw new BadCredentialsException(
-                                "LDAP is out of service. Trying to authenticate against DB. "
-                                        + "Credentials are not the same as in database");
+                        throw new BadCredentialsException(e.getMessage());
                     }
                 }
             } else {
