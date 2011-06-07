@@ -1,65 +1,57 @@
 TODO
 ====
 
-Version 1.1 - 2011w14
+Version 1.2 - 2011w36
 ---------------------
 
 Dates
 ~~~~~
 
-* *IRC coordination meeting*: 2011w2
-* *Feature freeze*: 2011w11
-* *Release date*: 2011w14
+* *IRC coordination meeting*: 2011w26
+* *Feature freeze*: 2011w31
+* *Release date*: 2011w36
 
 Features
 ~~~~~~~~
 
-* Printing support improvement.
-* Help improvement.
-* Chromium browser complete support.
-* Limiting resources. New appropriative insertion algorithm.
-* Resource levelling.
-* Over allocation control.
-* Heuristics in general allocations.
-* Allocation functions (steps, S-curve) in simple allocation pop-up and some
-  usability improvements.
-* Support of intraday operations. Possibility to establish not integer number of
-  hours in allocations, task work (hours, minutes, seconds).
-* Advance allocation fix.
+* *Very high priority*
 
-Small tasks
-~~~~~~~~~~~
+  * Start to use new name LibrePlan with a new logo
+  * Merge and finish migration for ZK5 version
+  * Fix allocation model
 
-* Dependency violation mark in Gantt chart.
-* Default login auto-completion configuration.
-* Entity Identification improvement in reports (e.g. inclusion of both task and
-  project names in *Work report lines report*)
+* *High priority*
 
+  * Help improvement (documentation)
+  * Fix last issues on printing
+  * Prevent perspective change without saving
 
-Version 1.2 - 2011w27
----------------------
+* *Normal priority*
 
-Dates
-~~~~~
+  * Fix issues in templates when using related entities like criteria,
+    progresses, ...
+  * Translation issues (common problems and specific issues with Galician)
+  * LDAP integration
 
-* *IRC coordination meeting*: 2011w15
-* *Feature freeze*: 2011w24
-* *Release date*: 2011w27
+* *Low priority*
 
-Features
-~~~~~~~~
+  * New feature for simple users. Users would be related to application
+    resources, and would be able to specify hours, progresses, ... on their
+    assigned tasks
+  * Improve subcontractor system
 
-* Resource load view performance improvement.
-* Gantt window performance improvement.
-* Dependency type ``START-TO-FINISH``.
-* Dependencies with lag.
-* Periodic allocation schemes.
-* Earned value improvements.
-* Critical chain project management critical chain paradigm in project planning.
-* Interface to resolve allocation conflicts.
-* Add export/import operations for different format files from other projects
-  like OpenProj, MicrosoftProject, ...
-* Documentation attachment.
+* *Minor tasks*
+
+  * Default login auto-completion configuration
+  * Permissions enhancements
+  * Show information about current entity being edited
+  * Improvements on work reports: allow specify minutes, add button to copy
+    work report line
+  * Add an operation to reassign a single task
+  * Web services: Add method to export only one entity by code
+  * Report: Add a new report which allows to check progress by task in a
+    project (tasks could be filtered by criteria, labels, ...)
+  * Save language per user in user configuration
 
 
 Future
