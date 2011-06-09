@@ -213,6 +213,18 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return new AllocationsSpecified(resourceAllocations);
     }
 
+    private static void checkStartLessOrEqualToEnd(IntraDayDate startInclusive,
+            IntraDayDate endExclusive) {
+        Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
+                "the end must be equal or posterior to the start");
+    }
+
+    private static void checkStartLessOrEqualToEnd(LocalDate start,
+            LocalDate end) {
+        Validate.isTrue(start.compareTo(end) <= 0,
+                "the end must be equal or posterior to the start");
+    }
+
     /**
      * Needed for doing fluent interface calls:
      * <ul>
@@ -442,7 +454,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public void allocateUntil(LocalDate end) {
             Validate.notNull(end);
-            Validate.isTrue(!end.isBefore(new LocalDate(task.getStartDate())));
+            checkStartLessOrEqualToEnd(task.getStartAsLocalDate(), end);
             for (EffortModification each : hoursModifications) {
                 each.allocateUntil(end);
             }
@@ -450,7 +462,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         public void allocateFromEndUntil(LocalDate start) {
             Validate.notNull(start);
-            Validate.isTrue(start.isBefore(task.getEndAsLocalDate()));
+            checkStartLessOrEqualToEnd(start, task.getEndAsLocalDate());
             for (EffortModification each : hoursModifications) {
                 each.allocateFromEndUntil(start);
             }
@@ -743,8 +755,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
         private Iterable<PartialDay> getDays(IntraDayDate startInclusive,
                 IntraDayDate endExclusive) {
-            Validate.isTrue(startInclusive.compareTo(endExclusive) <= 0,
-                    "the end must be equal or posterior than start");
+            checkStartLessOrEqualToEnd(startInclusive, endExclusive);
             Iterable<PartialDay> daysUntil = startInclusive
                     .daysUntil(endExclusive);
             return daysUntil;
@@ -778,7 +789,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public IAllocateEffortOnInterval onIntervalWithinTask(
                 final LocalDate start, final LocalDate end) {
-            checkStartBeforeOrEqualEnd(start, end);
+            checkStartLessOrEqualToEnd(start, end);
             return new OnSubIntervalAllocator(
                     new AllocationIntervalInsideTask(start, end));
         }
@@ -786,7 +797,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public IAllocateEffortOnInterval onIntervalWithinTask(
                 IntraDayDate start, IntraDayDate end) {
-            checkStartBeforeOrEqualEnd(start, end);
+            checkStartLessOrEqualToEnd(start, end);
             return new OnSubIntervalAllocator(new AllocationIntervalInsideTask(
                     start, end));
         }
@@ -794,7 +805,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public IAllocateEffortOnInterval onInterval(
                 final LocalDate startInclusive, final LocalDate endExclusive) {
-            checkStartBeforeOrEqualEnd(startInclusive, endExclusive);
+            checkStartLessOrEqualToEnd(startInclusive, endExclusive);
             return new OnSubIntervalAllocator(new AllocationInterval(
                     startInclusive, endExclusive));
         }
@@ -802,21 +813,10 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         @Override
         public IAllocateEffortOnInterval onInterval(IntraDayDate start,
                 IntraDayDate end) {
-            checkStartBeforeOrEqualEnd(start, end);
+            checkStartLessOrEqualToEnd(start, end);
             return new OnSubIntervalAllocator(
                     new AllocationInterval(start,
                     end));
-        }
-
-        private void checkStartBeforeOrEqualEnd(LocalDate start, LocalDate end) {
-            Validate.isTrue(start.compareTo(end) <= 0,
-                    "the end must be equal or posterior than start");
-        }
-
-        private void checkStartBeforeOrEqualEnd(IntraDayDate start,
-                IntraDayDate end) {
-            Validate.isTrue(start.compareTo(end) <= 0,
-                    "the end must be equal or posterior than start");
         }
 
         private class OnSubIntervalAllocator implements
