@@ -31,6 +31,7 @@ import static org.navalplanner.web.planner.allocation.AllocationRow.sumAllTotalE
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +62,7 @@ import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
+import org.zkoss.zk.au.out.AuWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -291,6 +293,9 @@ public class FormBinder {
             this.labelTaskEnd = labelTaskEnd;
             this.taskPropertiesController = taskPropertiesController;
             initializeDateAndDurationFieldsFromTaskOriginalValues();
+            final LocalDate firstPossibleDay = getTask()
+                    .getFirstDayNotConsolidated().nextDayAtStart()
+                    .asExclusiveEnd();
             Util.ensureUniqueListeners(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
 
@@ -299,19 +304,51 @@ public class FormBinder {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
                             if (allocationRowsHandler.isForwardsAllocation()) {
-                                LocalDate newEndDate = task
-                                        .calculateEndGivenWorkableDays(workableDays);
+                                LocalDate newEnd = ensureItIsAfterConsolidation(
+                                        task.calculateEndGivenWorkableDays(workableDays));
+                                updateWorkableDaysIfNecessary(workableDays,
+                                        getTask().getStartAsLocalDate(), newEnd);
                                 taskPropertiesController
-                                        .updateTaskEndDate(newEndDate);
-                                showValueOfDateOn(labelTaskEnd, newEndDate);
+                                        .updateTaskEndDate(newEnd);
+                                showValueOfDateOn(labelTaskEnd, newEnd);
                             } else {
-                                LocalDate newStart = task
-                                        .calculateStartGivenWorkableDays(workableDays);
+                                LocalDate newStart = ensureItIsAfterConsolidation(task
+                                        .calculateStartGivenWorkableDays(workableDays));
+                                updateWorkableDaysIfNecessary(workableDays,
+                                        newStart, task.getIntraDayEndDate()
+                                                .asExclusiveEnd());
                                 taskPropertiesController
                                         .updateTaskStartDate(newStart);
                                 showValueOfDateOn(labelTaskStart, newStart);
                             }
                         }
+
+                        private void updateWorkableDaysIfNecessary(
+                                int specifiedWorkableDays,
+                                LocalDate allocationStart,
+                                LocalDate allocationEnd) {
+                            Integer effectiveWorkableDays = getTask()
+                                    .getWorkableDaysFrom(allocationStart,
+                                            allocationEnd);
+                            if (!effectiveWorkableDays
+                                    .equals(specifiedWorkableDays)) {
+                                Clients.response(new AuWrongValue(
+                                        taskWorkableDays,
+                                        _("The original workable days value {0}, "
+                                                + "is prevented because consolidated values cannot be modified",
+                                                specifiedWorkableDays)));
+                                taskWorkableDays
+                                        .setValue(effectiveWorkableDays);
+                            }
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        private LocalDate ensureItIsAfterConsolidation(
+                                LocalDate newDate) {
+                            return Collections.max(Arrays.asList(newDate,
+                                    firstPossibleDay));
+                        }
+
                     }, onChangeEnableApply);
             applyDisabledRules();
         }
