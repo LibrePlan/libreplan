@@ -7,12 +7,23 @@ read loginName
 printf "Password: "
 read password
 
-baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
-certificate=$DEVELOPMENT_CERTIFICATE
+baseServiceURL=$DEMO_BASE_SERVICE_URL
+certificate=$DEMO_CERTIFICATE
 
 if [ "$1" = "--prod" ]; then
     baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
     certificate=$PRODUCTION_CERTIFICATE
+    if [ "$#" = 4 ]; then
+        resourceCode=$2
+        startDate=$3
+        endDate=$4
+    else
+        startDate=$2
+        endDate=$3
+    fi
+elif [ "$1" = "--dev" ]; then
+   baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
+   certificate=$DEVELOPMENT_CERTIFICATE
     if [ "$#" = 4 ]; then
         resourceCode=$2
         startDate=$3
