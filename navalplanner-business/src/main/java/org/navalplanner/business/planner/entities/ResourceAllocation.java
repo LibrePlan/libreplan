@@ -774,7 +774,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             private AllocateResourcesPerDayOnInterval(
                     IntraDayDate startInclusive, IntraDayDate endExclusive) {
                 this.startInclusive = startInclusive;
-                this.endExclusive = endExclusive;
+                this.endExclusive = IntraDayDate.max(startInclusive,
+                        endExclusive);
             }
 
             @Override

@@ -456,8 +456,8 @@ public class GenericResourceAllocationTest {
         assertThat(orderedAssignmentsFor, haveHours(hoursPerDay, hoursPerDay));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void whenAllocatingUntilSomeEndDateTheEndDateMustNotBeBeforeTaskStart() {
+    @Test
+    public void whenAllocatingUntilSomeEndDateBeforeTheStartNothingIsDone() {
         LocalDate start = new LocalDate(2006, 10, 5);
         givenTaskWithStartAndEnd(toInterval(start, Period.days(4)));
         givenGenericResourceAllocationForTask(task);
@@ -467,6 +467,9 @@ public class GenericResourceAllocationTest {
         genericResourceAllocation.forResources(Arrays.asList(worker1))
                 .resourcesPerDayUntil(start.minusDays(1))
                 .allocate(resourcesPerDay);
+
+        assertTrue(genericResourceAllocation.getOrderedAssignmentsFor(worker1)
+                .isEmpty());
     }
 
     @Test(expected = IllegalArgumentException.class)
