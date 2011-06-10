@@ -139,21 +139,18 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     boolean isParent(BaseCalendar calendar);
 
-    Date getExpiringDate();
-
-    void setExpiringDate(LocalDate date);
-
     LocalDate getDateValidFrom();
 
     void setDateValidFrom(LocalDate date);
 
     List<CalendarData> getHistoryVersions();
 
-    void createNewVersion(LocalDate date);
+    void createNewVersion(LocalDate startDate, LocalDate expiringDate,
+            BaseCalendar baseCalendar);
 
-    boolean isLastVersion();
+    boolean isLastVersion(LocalDate selectedDate);
 
-    boolean isFirstVersion();
+    boolean isFirstVersion(LocalDate selectedDate);
 
     String getName();
 
@@ -213,5 +210,10 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
     boolean isOwnException(CalendarException exception);
 
     void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
+
+    boolean checkAndChangeStartDate(CalendarData version, LocalDate newStartDate);
+
+    boolean checkChangeExpiringDate(CalendarData version,
+            LocalDate newExpiringDate);
 
 }

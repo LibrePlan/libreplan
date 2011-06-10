@@ -23,7 +23,6 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -404,27 +403,6 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public Date getExpiringDate() {
-        if ((getBaseCalendar() != null)
-                && (getBaseCalendar().getExpiringDate(selectedDate) != null)) {
-            return getBaseCalendar().getExpiringDate(selectedDate).minusDays(1)
-                    .toDateTimeAtStartOfDay()
-                    .toDate();
-        }
-
-        return null;
-    }
-
-    @Override
-    public void setExpiringDate(LocalDate date) {
-        if ((getBaseCalendar() != null)
-                && (getBaseCalendar().getExpiringDate(selectedDate) != null)) {
-            getBaseCalendar()
-                    .setExpiringDate(date, selectedDate);
-        }
-    }
-
-    @Override
     public LocalDate getDateValidFrom() {
         if (getBaseCalendar() != null) {
             LocalDate validFromDate = getBaseCalendar().getValidFrom(
@@ -451,14 +429,19 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public void createNewVersion(LocalDate date) {
+    public void createNewVersion(LocalDate startDate, LocalDate expiringDate,
+            BaseCalendar baseCalendar) {
         if (getBaseCalendar() != null) {
-            getBaseCalendar().newVersion(date);
+            if (expiringDate != null) {
+                expiringDate = expiringDate.plusDays(1);
+            }
+            getBaseCalendar().newVersion(startDate, expiringDate,
+                    baseCalendar);
         }
     }
 
     @Override
-    public boolean isLastVersion() {
+    public boolean isLastVersion(LocalDate selectedDate) {
         if (getBaseCalendar() != null) {
             return getBaseCalendar().isLastVersion(selectedDate);
         }
@@ -466,9 +449,46 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public boolean isFirstVersion() {
+    public boolean isFirstVersion(LocalDate selectedDate) {
         if (getBaseCalendar() != null) {
             return getBaseCalendar().isFirstVersion(selectedDate);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkAndChangeStartDate(CalendarData version,
+            LocalDate newStartDate) {
+        CalendarData prevVersion = getBaseCalendar().getPrevious(version);
+        if ((newStartDate != null) && (prevVersion != null)) {
+            if (getBaseCalendar().getPrevious(prevVersion) == null) {
+                return true;
+            }
+            LocalDate prevStartDate = getBaseCalendar()
+                    .getPrevious(prevVersion).getExpiringDate();
+            if ((prevStartDate == null)
+                    || ((newStartDate
+                            .compareTo(prevStartDate) > 0))) {
+                prevVersion.setExpiringDate(newStartDate);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean checkChangeExpiringDate(CalendarData version,
+            LocalDate newExpiringDate) {
+        Integer index = getBaseCalendar().getCalendarDataVersions().indexOf(
+                version);
+        if ((newExpiringDate != null)
+                && (index < getBaseCalendar().getCalendarDataVersions().size() - 1)) {
+            LocalDate nextExpiringDate = getBaseCalendar()
+                    .getCalendarDataVersions().get(index + 1).getExpiringDate();
+            if ((nextExpiringDate == null)
+                    || (newExpiringDate.compareTo(nextExpiringDate) < 0)) {
+                return true;
+            }
         }
         return false;
     }

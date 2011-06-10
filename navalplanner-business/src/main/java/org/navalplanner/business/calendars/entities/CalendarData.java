@@ -21,7 +21,10 @@
 
 package org.navalplanner.business.calendars.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.hours;
+
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -42,6 +45,19 @@ public class CalendarData extends IntegrationEntity {
     public static CalendarData create() {
         return create(new CalendarData());
     }
+
+    public static final Comparator<CalendarData> BY_EXPIRING_DATE_COMPARATOR = new Comparator<CalendarData>() {
+        @Override
+        public int compare(CalendarData o1, CalendarData o2) {
+            if (o2.getExpiringDate() != null && o1.getExpiringDate() != null) {
+                return o1.getExpiringDate().compareTo(o2.getExpiringDate());
+            }
+            if (o1.getExpiringDate() == null) {
+                return 1;
+            }
+            return -1;
+        }
+    };
 
     public static CalendarData createUnvalidated(String code,
             LocalDate expiringDate, BaseCalendar parent) {

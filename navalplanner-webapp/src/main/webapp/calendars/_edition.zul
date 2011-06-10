@@ -228,39 +228,12 @@
 
                     <caption label="${i18n:_('Work weeks list')}" />
 
-                    <hbox align="middle">
-                      <label value="${i18n:_('Type')}:" />
-                      <label
-                        value="@{calendarController.editionController.calendarType}" />
-                      <combobox id="parentCalendars"
-                        visible="@{calendarController.editionController.isDerived}">
-                        <comboitem self="@{each='baseCalnedar'}"
-                          value="@{baseCalnedar}" label="@{baseCalnedar.name}" />
-                      </combobox>
-
-                      <hbox
-                        visible="@{calendarController.editionController.isEditing}"
-                        align="middle">
-                        <label value="${i18n:_('Valid from')}" />
-                        <datebox id="dateValidFrom"
-                          value="@{calendarController.editionController.dateValidFrom}"
-                          disabled="@{calendarController.editionController.isFirstVersion}" />
-                        <label value="${i18n:_('to')}" />
-                        <datebox id="expiringDate"
-                          value="@{calendarController.editionController.expiringDate}"
-                          disabled="@{calendarController.editionController.isLastVersion}" />
-                      </hbox>
-                    </hbox>
-
-
-
                     <listbox id="historyInformation"
                       model="@{calendarController.editionController.historyVersions}"
                       itemRenderer="@{calendarController.editionController.historyVersionsRenderer}"
                       sizedByContent="true">
                       <listhead>
-                        <listheader label="${i18n:_('Parent')}"
-                          width="80px" />
+                        <listheader label="${i18n:_('Parent')}" width="80px"/>
                         <listheader label="${i18n:_('Valid from')}"
                           width="80px" />
                         <listheader label="${i18n:_('Expiry date')}"

@@ -23,9 +23,12 @@ package org.navalplanner.web.calendars;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.util.Date;
+
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;

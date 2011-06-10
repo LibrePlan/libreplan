@@ -25,6 +25,7 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,10 +46,10 @@ import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
+import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -72,6 +73,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public static BaseCalendar createBasicCalendar() {
         BaseCalendar calendar = create();
+        resetDefaultCapacities(calendar);
+        return calendar;
+    }
+
+    private static void resetDefaultCapacities(BaseCalendar calendar) {
         Capacity eightHours = Capacity.create(hours(8))
                 .overAssignableWithoutLimit();
         calendar.setCapacityAt(Days.MONDAY, eightHours);
@@ -81,7 +87,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         calendar.setCapacityAt(Days.FRIDAY, eightHours);
         calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
         calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
-        return calendar;
     }
 
     public static BaseCalendar createUnvalidated(String code, String name,
@@ -149,6 +154,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     protected BaseCalendar(CalendarData calendarData) {
         calendarDataVersions.add(calendarData);
+        Collections.sort(calendarDataVersions,
+                CalendarData.BY_EXPIRING_DATE_COMPARATOR);
     }
 
     public void setName(String name) {
@@ -389,19 +396,133 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
      * new calendar will be used from that date onwards.
      */
     public void newVersion(LocalDate date) throws IllegalArgumentException {
+        BaseCalendar lastParent = null;
+        if (getLastCalendarData() != null) {
+            lastParent = getLastCalendarData().getParent();
+        }
+        CalendarData newCalendarData = createLastVersion(date);
+        newCalendarData.setParent(lastParent);
+    }
+
+    public CalendarData createNewVersionInsideIntersection(LocalDate startDate,
+            LocalDate expiringDate) {
+        for (CalendarData nextVersion : calendarDataVersions) {
+            if ((nextVersion.getExpiringDate() == null)
+                    || (expiringDate.compareTo(nextVersion.getExpiringDate()) < 0)) {
+                int index = calendarDataVersions.indexOf(nextVersion);
+                if (index > 0) {
+                    CalendarData prevVersion = calendarDataVersions
+                            .get(index - 1);
+
+                    if (startDate.compareTo(prevVersion.getExpiringDate()) >= 0) {
+                        prevVersion.setExpiringDate(startDate);
+
+                        CalendarData newCalendarData = CalendarData.create();
+                        newCalendarData.setExpiringDate(expiringDate);
+                        calendarDataVersions.add(newCalendarData);
+                        Collections.sort(calendarDataVersions,
+                                CalendarData.BY_EXPIRING_DATE_COMPARATOR);
+                        return newCalendarData;
+                    }else{
+                        throw new IllegalArgumentException(
+                                "the new version includes a whole version already exists");
+                    }
+                } else {
+                    throw new IllegalArgumentException(
+                            "the new version will be the first one, and the start date must be empty");
+                }
+            }
+        }
+        throw new IllegalArgumentException(
+                "the new version will be the last one, and the expiring date must be empty");
+    }
+
+    public CalendarData createLastVersion(LocalDate startDate)
+            throws IllegalArgumentException {
         CalendarData calendarData = getCalendarDataBeforeTheLastIfAny();
         if ((calendarData.getExpiringDate() != null)
-                && (date.compareTo(calendarData.getExpiringDate()) <= 0)) {
+                && (startDate.compareTo(calendarData.getExpiringDate()) <= 0)) {
             throw new IllegalArgumentException(
                     "Version date must be greater than expiring date of "
                             + "all versions of this calendar");
         }
 
-        getLastCalendarData().setExpiringDate(date);
+        getLastCalendarData().setExpiringDate(startDate);
 
         CalendarData newCalendarData = CalendarData.create();
-        newCalendarData.setParent(getLastCalendarData().getParent());
         calendarDataVersions.add(newCalendarData);
+        Collections.sort(calendarDataVersions,
+                CalendarData.BY_EXPIRING_DATE_COMPARATOR);
+        return newCalendarData;
+    }
+
+    public CalendarData createFirstVersion(LocalDate expiringDate)
+            throws IllegalArgumentException {
+        CalendarData firstVersion = getFirstCalendarData();
+        if ((firstVersion.getExpiringDate() != null)
+                && (expiringDate.compareTo(firstVersion.getExpiringDate()) >= 0)) {
+            throw new IllegalArgumentException(
+                    "Version expiring date must be lower than expiring date of "
+                            + "all versions of this calendar");
+        }
+
+        CalendarData newCalendarData = CalendarData.create();
+        newCalendarData.setExpiringDate(expiringDate);
+        calendarDataVersions.add(newCalendarData);
+        Collections.sort(calendarDataVersions,
+                CalendarData.BY_EXPIRING_DATE_COMPARATOR);
+        return newCalendarData;
+    }
+
+    public void newVersion(LocalDate startDate, LocalDate expiringDate,
+            BaseCalendar parent) throws IllegalArgumentException {
+
+        CalendarData newCalendarData;
+        if (startDate != null && expiringDate != null) {
+            if (startDate.compareTo(expiringDate) > 0) {
+                throw new IllegalArgumentException(
+                        "the start date must be lower than expiring date");
+            }
+            if (calendarDataVersions.size() == 1) {
+                BaseCalendar lastParent = getLastCalendarData().getParent();
+                newCalendarData = createLastVersion(startDate);
+                createLastVersion(expiringDate).setParent(lastParent);
+            } else {
+                newCalendarData = createNewVersionInsideIntersection(startDate,
+                        expiringDate);
+            }
+        } else if (startDate != null) {
+            newCalendarData = createLastVersion(startDate);
+        } else if (expiringDate != null) {
+            newCalendarData = createFirstVersion(expiringDate);
+        } else {
+            throw new IllegalArgumentException(
+                    "At least the start date must be specified");
+        }
+
+        if (parent != null) {
+            newCalendarData.setParent(parent);
+        } else {
+            newCalendarData.setParent(getLastCalendarData().getParent());
+        }
+
+        resetDefaultCapacities(newCalendarData);
+    }
+
+    private void resetDefaultCapacities(CalendarData version){
+        if(version.getParent() == null){
+            CalendarData.resetDefaultCapacities(version);
+        }else{
+            BaseCalendar parent = version.getParent();
+            CalendarData currentVersion = parent.getCalendarData(LocalDate
+                    .fromDateFields(new Date()));
+            if (currentVersion != null) {
+                for (Days day : Days.values()) {
+                    version.setCapacityAt(day, currentVersion
+                            .getCapacityOn(day));
+                }
+            }
+        }
     }
 
     public void addNewVersion(CalendarData version){
@@ -412,6 +533,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
             else{
                 calendarDataVersions.add(version);
+                Collections.sort(calendarDataVersions,
+                        CalendarData.BY_EXPIRING_DATE_COMPARATOR);
                 return;
             }
         }
@@ -438,6 +561,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         }
 
         calendarDataVersions.add(version);
+        Collections.sort(calendarDataVersions,
+                CalendarData.BY_EXPIRING_DATE_COMPARATOR);
 
     }
 
@@ -500,6 +625,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             return null;
         }
         return calendarDataVersions.get(calendarDataVersions.size() - 1);
+    }
+
+    public CalendarData getFirstCalendarData() {
+        if (calendarDataVersions.isEmpty()) {
+            return null;
+        }
+        return calendarDataVersions.get(0);
     }
 
     public void setCapacityAt(Days day, Capacity capacity) {
@@ -579,6 +711,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     private CalendarData getPreviousCalendarData(LocalDate date) {
         CalendarData calendarData = getCalendarData(date);
+        return getPrevious(calendarData);
+    }
+
+    public CalendarData getPrevious(CalendarData calendarData) {
         Integer index = calendarDataVersions.indexOf(calendarData) - 1;
         if (index < 0) {
             return null;

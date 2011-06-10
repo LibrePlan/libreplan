@@ -20,14 +20,34 @@
 -->
 
 <window visible="@{calendarController.editionController.creatingNewVersion}"
-    id="createNewVersion" title="${i18n:_('Create new version')}" >
+    id="createNewVersion" title="${i18n:_('Create new version')}" width="350px">
     <vbox>
-        <label value="${i18n:_('Select the date from which the new version will be valid')}" />
-        <hbox>
-            <label value="${i18n:_('Valid from')}" />
-            <datebox id="dateValidFromNewVersion"
-                value="@{calendarController.editionController.dateValidFromNewVersion}"/>
+        <label value="${i18n:_('Select the base calendar from which the new version will derive')}"
+            visible="@{calendarController.editionController.isDerived}"/>
+        <hbox align="right" visible="@{calendarController.editionController.isDerived}">
+                      <label value="${i18n:_('Type')}:"/>
+                      <label value="@{calendarController.editionController.calendarType}"/>
+                      <combobox id="parentCalendars"
+                        model="@{calendarController.editionController.parentCalendars}">
+                        <comboitem self="@{each='baseCalnedar'}"
+                          value="@{baseCalnedar}" label="@{baseCalnedar.name}" />
+                      </combobox>
         </hbox>
+         <separator spacing="5px"/>
+        <label value="${i18n:_('Select the date from which the new version will be valid')}" />
+        <separator spacing="2px"/>
+        <hbox visible="@{calendarController.editionController.isEditing}"
+            align="right">
+            <label value="${i18n:_('Valid from')}" />
+            <datebox id="startDateValidFromNewVersion"
+                value="@{calendarController.editionController.dateValidFromNewVersion}"
+                disabled="@{calendarController.editionController.isFirstVersion(self.value)}" />
+            <label value="${i18n:_('to')}" />
+            <datebox id="expiringDateValidFromNewVersion"
+                value="@{calendarController.editionController.dateValidToNewVersion}"
+                disabled="@{calendarController.editionController.isLastVersion(self.value)}" />
+        </hbox>
+         <separator spacing="5px"/>
         <hbox>
             <button label="${i18n:_('Create')}"
                 onClick="calendarController.editionController.acceptCreateNewVersion();" />
