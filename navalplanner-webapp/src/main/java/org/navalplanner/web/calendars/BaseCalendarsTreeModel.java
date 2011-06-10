@@ -22,10 +22,12 @@
 package org.navalplanner.web.calendars;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.zkoss.zul.SimpleTreeModel;
 import org.zkoss.zul.SimpleTreeNode;
@@ -83,7 +85,8 @@ public class BaseCalendarsTreeModel extends SimpleTreeModel {
         }
 
         for (BaseCalendar derived : derivedCalendars) {
-            BaseCalendar parent = derived.getParent();
+            BaseCalendar parent = derived.getCalendarData(
+                    LocalDate.fromDateFields(new Date())).getParent();
             List<BaseCalendar> siblings = result.get(parent);
 
             if (siblings == null) {

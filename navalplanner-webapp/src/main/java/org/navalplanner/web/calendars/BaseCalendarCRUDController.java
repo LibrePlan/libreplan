@@ -296,6 +296,30 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             nameTreecell.appendChild(nameLabel);
             treerow.appendChild(nameTreecell);
 
+            // append start date of the current work week
+            Treecell startDateTreecell = new Treecell();
+            Label startDateLabel = new Label();
+            CalendarData version = baseCalendar.getCalendarData(LocalDate
+                    .fromDateFields(new Date()));
+            CalendarData prevVersion = baseCalendar.getPrevious(version);
+            if ((prevVersion != null)
+                    && (prevVersion.getExpiringDate() != null)) {
+                startDateLabel.setValue(prevVersion
+                        .getExpiringDate().toString());
+            }
+            startDateTreecell.appendChild(startDateLabel);
+            treerow.appendChild(startDateTreecell);
+
+            // append expiring date of the current work week
+            Treecell expiringDateTreecell = new Treecell();
+            Label expiringDateLabel = new Label();
+            if (version.getExpiringDate() != null) {
+                expiringDateLabel
+                        .setValue(version.getExpiringDate().toString());
+            }
+            expiringDateTreecell.appendChild(expiringDateLabel);
+            treerow.appendChild(expiringDateTreecell);
+
             Treecell operationsTreecell = new Treecell();
 
             Button createDerivedButton = new Button();

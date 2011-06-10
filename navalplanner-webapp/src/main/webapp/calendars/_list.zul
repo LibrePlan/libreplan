@@ -25,6 +25,8 @@
         zclass="z-dottree">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
+            <treecol label="${i18n:_('Start date')}" align="center"/>
+            <treecol label="${i18n:_('Expiring date')}" align="center"/>
             <treecol label="${i18n:_('Operations')}" />
         </treecols>
     </tree>
