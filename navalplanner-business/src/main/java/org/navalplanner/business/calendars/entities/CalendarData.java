@@ -237,4 +237,16 @@ public class CalendarData extends IntegrationEntity {
         return Registry.getCalendarDataDAO();
     }
 
+    public static void resetDefaultCapacities(CalendarData calendar) {
+        Capacity eightHours = Capacity.create(hours(8))
+                .overAssignableWithoutLimit();
+        calendar.setCapacityAt(Days.MONDAY, eightHours);
+        calendar.setCapacityAt(Days.TUESDAY, eightHours);
+        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
+        calendar.setCapacityAt(Days.THURSDAY, eightHours);
+        calendar.setCapacityAt(Days.FRIDAY, eightHours);
+        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
+        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
+    }
+
 }
