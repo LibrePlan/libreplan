@@ -1,120 +1,220 @@
-Installation instructions
-=========================
+Install
+=======
 
-Visit the wiki for an updated version of these instructions:
-http://wiki.navalplan.org/twiki/bin/view/NavalPlan/InstallNavalPlan.
+This is a guide about how to install *NavalPlan* project in your system. If you
+want to know how to compile it manually see ``HACKING`` file.
 
-Database creation
------------------
-
-* Current databases supported: PostgreSQL (default) and MySQL.
-
-* For PostgreSQL and MySQL:
-
-  - Create a database with name ``navaldev`` (for development)::
-
-      CREATE DATABASE navaldev;
-
-  - Create a database with name ``navaldevtest`` (for the test fase in
-    development)::
-
-      CREATE DATABASE navaldevtest;
-
-  - Create user ``naval`` with password ``naval`` with necessary privileges for
-    accessing (creating tables, selecting data from tables, etc.) the
-    previous databases:
-
-    + PostgreSQL::
-
-        CREATE USER naval WITH PASSWORD 'naval';
-        GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
-        GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
-
-    + MySQL::
-
-        GRANT ALL ON navaldev.* to 'naval'@'localhost' identified by 'naval';
-        GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
+.. contents::
 
 
-Compilation
------------
+NavalPlan automatic installation
+--------------------------------
 
-* Execute the following commands::
-
-    cd navalplan
-
-    mvn install
-
-    cd navalplanner-webapp
-
-    mvn jetty:run
-
-* Access to http://localhost:8080/navalplanner-webapp.
-
-* To install the web application in a web container, use the WAR file:
-  ``navalplanner-webapp/target/navalplanner-webapp.war``.
-
-* *Notes for using other databases*:
-
-  + MySQL:
-
-    - Remember to start MySQL with ``--default-table-type=InnoDB`` option for
-      enabling support for transactions.
-
-    - Use ``mvn -Pdev,mysql <<goal|fase>>``::
-
-        e.g. mvn -Pdev,mysql install
-
-
-Profiles
---------
-
-Check ``<profiles>`` section in the root ``pom.xml`` to see the profile-based
-approach used in the project. The default profiles (the one assumed by the above
-instructions) are ``dev`` and ``postgresql`` (meaning "use PostgreSQL assuming a
-development environment").
-
-
-Print
------
-
-Printing system is based on a tool that produces several output formats
-rendering the specified URLs with the WebKit engine. To be able to print local
-diagrams this tool and a lightweight X server must be installed.
-
-The capturing tool is CutyCapt [1]_, which has to be either compiled or
-installed from an external package. Once compiled from the tarball the binary
-CutyCapt must be located under ``/usr/bin/`` to be available to the application.
-
-X virtual framebuffer xvfb [2]_ package needs to be installed for the
-application running on a non-desktop server is capable of launching an X
-instance to create the print capture of the selected page.
-
-.. [1] http://cutycapt.sourceforge.net/
-.. [2] http://www.xfree86.org/4.0.1/Xvfb.1.html
-
-
-User Documentation
-------------------
-
-User documentation is done in *reStructuredText*. It is necessary to have
-installed the following packages:
-
-   * ``automake`` package in order to be able to execute ``make``.
-   * ``python-docutils`` package version 0.4 or higher.
-   * ``texlive-latex-base`` package in order to have ``pdflatex`` available.
-
-
-Compilation
+Ubuntu PPAs
 ~~~~~~~~~~~
 
-The compilation is included in Maven build. If you execute ``mvn install``
-documentation is generated.
+There are Ubuntu PPAs for different versions (Lucid, Maverick and Natty), you
+can find more info in the following URL:
+https://launchpad.net/~libreplan/+archive/ppa
 
-* For manual compilation, inside ``doc/src/es``, ``doc/src/gl`` or
-  ``doc/src/es`` directories:
+Instructions::
 
-    make html
-    make pdf
+  $ sudo add-apt-repository ppa:libreplan/ppa
+  $ sudo apt-get update
+  $ sudo apt-get install navalplan
 
-* Output is created in ``doc/src/es/html`` and ``/doc/src/es/pdf`` directories.
+
+Debian packages
+~~~~~~~~~~~~~~~
+
+There are Debian packages for Squeeze (i386 and amd64), you can download them
+from: http://sourceforge.net/projects/navalplan/files/NavalPlan/
+
+Instructions:
+
+* Download the package::
+
+    $ wget http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1-1_amd64.deb
+
+* Install package::
+
+    # dpkg -i navalplan_1.1.1-1_amd64.deb
+
+* Install dependencies::
+
+    # apt-get install -f
+
+
+NavalPlan manual installation
+-----------------------------
+
+Debian/Ubuntu
+~~~~~~~~~~~~~
+
+* Install requirements::
+
+    # apt-get install openjdk-6-jre postgresql postgresql-client tomcat6 libpg-java ttf-freefont cutycapt xvfb
+
+* Connect to database::
+
+    # su postgres -c psql
+
+* Use SQL sentences to create database::
+
+    CREATE DATABASE navalplan;
+    CREATE USER navalplan WITH PASSWORD 'navalplan';
+    GRANT ALL PRIVILEGES ON DATABASE navalplan TO naval;
+
+* Download database installation script::
+
+    $ wget -O install.sql "http://navalplan.git.sourceforge.net/git/gitweb.cgi?p=navalplan/navalplan;a=blob_plain;f=scripts/database/install.sql;hb=HEAD"
+
+* Create database structure::
+
+    $ psql -h localhost -U navalplan -W navalplan < install.sql
+
+* Download ``.war`` file from SourceForge.net::
+
+    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+
+* Create a new file ``/etc/tomcat6/Catalina/localhost/navalplan.xml`` (file
+  name has to match with ``.war`` name) with database configuration for
+  Tomcat 6::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <Context antiJARLocking="true" path="">
+        <Resource name="jdbc/navalplanner-ds" auth="Container"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            username="navalplan" password="navalplan"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost/navalplan" />
+    </Context>
+
+* Add a new Tomcat 6 policy file ``/etc/tomcat6/policy.d/51navalplan.policy``
+  with the following content::
+
+    grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp/-" {
+       permission java.security.AllPermission;
+    };
+    grant codeBase "file:/var/lib/tomcat6/webapps/navalplanner-webapp.war" {
+       permission java.security.AllPermission;
+    };
+
+* Add next lines to Tomcat 6 policy file
+  ``/etc/tomcat6/policy.d/03catalina.policy`` file::
+
+    grant codeBase "file:${catalina.home}/bin/tomcat-juli.jar" {
+      ...
+      // begin:navalplan
+      permission java.io.FilePermission "${catalina.base}${file.separator}webapps${file.separator}navalplanner-webapp${file.separator}WEB-INF${file.separator}classes${file.separator}logging.properties", "read";
+      // end:navalplan
+      ...
+    };
+
+* Add link to Java JDBC driver for PostgreSQL in Tomcat6 libraries directory::
+
+    # ln -s /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+
+* Copy war to Tomcat 6 web applications directory::
+
+    # cp navalplan.war /var/lib/tomcat6/webapps/
+
+* Restart Tomcat 6::
+
+    # /etc/init.d/tomcat6 restart
+
+* Go to http://localhost:8080/navalplan/
+
+
+openSUSE
+~~~~~~~~
+
+* Install requirements::
+
+    # zypper install java-1_6_0-openjdk postgresql-server postgresql tomcat6 freefont xorg-x11-server
+
+* JDBC Driver manual installation:
+
+    # cd /usr/share/java/
+    # wget http://jdbc.postgresql.org/download/postgresql-9.0-801.jdbc3.jar
+    # mv postgresql-9.0-801.jdbc3.jar postgresql-jdbc3.jar
+
+* Follow instructions at ``HACKING`` file to compile and install CutyCapt
+
+* Start database service::
+
+    # /etc/init.d/postgresql start
+
+* Connect to database::
+
+    # su postgres -c psql
+
+* Use SQL sentences::
+
+    CREATE DATABASE navalplan;
+    CREATE USER navalplan WITH PASSWORD 'navalplan';
+    GRANT ALL PRIVILEGES ON DATABASE navalplan TO navalplan;
+
+* Set ``postgres`` user password::
+
+    ALTER USER postgres WITH PASSWORD 'postgres';
+
+* Edit ``/var/lib/pgsql/data/pg_hba.conf`` and replace ``ident`` by ``md5``
+
+* Restart database service::
+
+    # /etc/init.d/postgresql restart
+
+* Download database installation script::
+
+    $ wget -O install.sql "http://navalplan.git.sourceforge.net/git/gitweb.cgi?p=navalplan/navalplan;a=blob_plain;f=scripts/database/install.sql;hb=HEAD"
+
+* Create database structure::
+
+    $ psql -h localhost -U navalplan -W navalplan < install.sql
+
+* Download ``.war`` file from SourceForge.net::
+
+    $ wget -O navalplan.war http://downloads.sourceforge.net/project/navalplan/NavalPlan/navalplan_1.1.1.war
+
+* Create a new file ``/etc/tomcat6/Catalina/localhost/navalplan.xml`` (file
+  name has to match with ``.war`` name) with database configuration for
+  Tomcat 6::
+
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <Context antiJARLocking="true" path="">
+        <Resource name="jdbc/navalplanner-ds" auth="Container"
+            type="javax.sql.DataSource"
+            maxActive="100" maxIdle="30" maxWait="10000"
+            username="navalplan" password="navalplan"
+            driverClassName="org.postgresql.Driver"
+            url="jdbc:postgresql://localhost/navalplan" />
+    </Context>
+
+* Add link to Java JDBC driver for PostgreSQL in Tomcat6 libraries directory::
+
+    # ln -s /usr/share/java/postgresql-jdbc3.jar /usr/share/tomcat6/lib/
+
+* Copy war to Tomcat 6 web applications directory::
+
+    # cp navalplan.war /srv/tomcat6/webapps/
+
+* Restart Tomcat 6::
+
+    # /etc/init.d/tomcat6 restart
+
+* Go to http://localhost:8080/navalplan/
+
+
+Logs
+----
+
+Since *NavalPlan 1.1.1* log system is configured automatically creating a new
+folder under ``/var/log/tomcat6/`` with ``.war`` name. For example:
+``/var/log/tomcat6/navalplan.war``.
+
+Inside this new directory there will be two files (``navalplan.log`` and
+``navalplan-error.log``) that will be rotated every day.
