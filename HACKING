@@ -1,7 +1,376 @@
 Hacking
 =======
 
-If you want to hack on the *NavalPlan* project you should visit the wiki where
-you can find all the information related with project development.
+This is a guide about how to start hacking on *NavalPlan* project. If you want
+more information about *NavalPlan* development you should visit the wiki
+available at: http://wiki.navalplan.org/.
 
-*NavalPlan* wiki is available at: http://wiki.navalplan.org/.
+.. contents::
+
+
+Compilation requirements
+------------------------
+
+* *Git* - Version Control System
+
+  Needed to clone source code repository
+
+* *Maven 2* - Java software project management and comprehension tool
+
+  Needed to build and compile the project
+
+* *JDK 6* - Java Development Kit
+
+  Project depends on Java 6 and JDK is needed in order to compile it
+
+* *PostgreSQL* - Object-relational SQL database
+
+  Database server
+
+* *Python Docutils* - Utilities for the documentation of Python modules
+
+  Used to generate HTMLs help files from RST files (reStructuredText)
+
+* *Make* - An utility for Directing compilation
+
+  Needed to compile the help
+
+* *gettext* - GNU Internationalization utilities
+
+  Used for i18n support in the project
+
+* *GNU FreeFont* - Freefont Serif, Sans and Mono Truetype fonts
+
+  Font family used in reports
+
+* *CutyCapt* - Utility to capture WebKit's rendering of a web page
+
+  Required for printing
+
+
+NavalPlan compilation
+---------------------
+
+Debian/Ubuntu
+~~~~~~~~~~~~~
+
+* Install requirements::
+
+    # apt-get install git-core maven2 openjdk-6-jdk postgresql postgresql-client python-docutils make gettext ttf-freefont cutycapt
+
+* Connect to database::
+
+    # su postgres -c psql
+
+* Use SQL sentences::
+
+    CREATE DATABASE navaldev;
+    CREATE DATABASE navaldevtest;
+    CREATE USER naval WITH PASSWORD 'naval';
+    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
+    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+
+* Download source code::
+
+    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+
+* Compile project::
+
+    $ mvn clean install
+
+* Launch application::
+
+    $ cd navalplanner-webapp/
+    $ mvn jetty:run
+
+* Go to http://localhost:8080/navalplanner-webapp/
+
+Fedora
+~~~~~~
+
+* Install requirements::
+
+    # yum install git maven java-1.6.0-openjdk postgresql postgresql-server python-docutils make gettext gnu-free-fonts-compat
+
+* Start database service::
+
+    # service postgresql initdb
+    # service postgresql start
+
+* Connect to database::
+
+    # su postgres -c psql
+
+* Use SQL sentences::
+
+    CREATE DATABASE navaldev;
+    CREATE DATABASE navaldevtest;
+    CREATE USER naval WITH PASSWORD 'naval';
+    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
+    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+
+* Set ``postgres`` user password::
+
+    ALTER USER postgres WITH PASSWORD 'postgres';
+
+* Edit ``/var/lib/pgsql/data/pg_hba.conf`` and replace ``ident`` by ``md5``
+
+* Reload database configuration::
+
+    # service postgresql reload
+
+* Download source code::
+
+    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+
+* Compile project::
+
+    $ mvn clean install
+
+* Launch application::
+
+    $ cd navalplanner-webapp/
+    $ mvn jetty:run
+
+* Go to http://localhost:8080/navalplanner-webapp/
+
+openSUSE
+~~~~~~~~
+
+* Install requirements::
+
+    # zypper install git-core java-1_6_0-openjdk-devel postgresql-server postgresql docutils make gettext-tools freefont
+
+* Install Maven::
+
+    # cd /opt/
+    # wget http://www.apache.org/dist//maven/binaries/apache-maven-2.2.1-bin.tar.gz
+    # tar -xzvf apache-maven-2.2.1-bin.tar.gz
+
+  Edit ``/etc/bash.bashrc.local`` and add the following lines::
+
+    export M2_HOME=/opt/apache-maven-2.2.1
+    export M2=$M2_HOME/bin
+    export PATH=$M2:$PATH
+
+* Start database service::
+
+    # /etc/init.d/postgresql start
+
+* Connect to database::
+
+    # su postgres -c psql
+
+* Use SQL sentences::
+
+    CREATE DATABASE navaldev;
+    CREATE DATABASE navaldevtest;
+    CREATE USER naval WITH PASSWORD 'naval';
+    GRANT ALL PRIVILEGES ON DATABASE navaldev TO naval;
+    GRANT ALL PRIVILEGES ON DATABASE navaldevtest TO naval;
+
+* Set ``postgres`` user password::
+
+    ALTER USER postgres WITH PASSWORD 'postgres';
+
+* Edit ``/var/lib/pgsql/data/pg_hba.conf`` and replace ``ident`` by ``md5``
+
+* Restart database service::
+
+    # /etc/init.d/postgresql restart
+
+* Download source code::
+
+    $ git clone git://navalplan.git.sourceforge.net/gitroot/navalplan/navalplan
+
+* Compile project::
+
+    $ mvn clean install
+
+* Launch application::
+
+    $ cd navalplanner-webapp/
+    $ mvn jetty:run
+
+* Go to http://localhost:8080/navalplanner-webapp/
+
+
+CutyCapt compilation
+--------------------
+
+Like *CutyCapt* is not packaged for all distributions here are the instructions.
+
+Ubuntu/Debian
+~~~~~~~~~~~~~
+
+* Install requirements::
+
+    # apt-get install subversion libqt4-dev libqtwebkit-dev qt4-qmake g++ make
+
+  In Ubuntu Lucid 10.04 remove ``libqtwebkit-dev`` package.
+
+* Download source code::
+
+    $ svn co https://cutycapt.svn.sourceforge.net/svnroot/cutycapt cutycapt
+
+* Compile::
+
+    $ cd CutyCapt
+    $ qmake CutyCapt.pro
+    $ make
+
+* Install::
+
+    $ make install
+
+Fedora
+~~~~~~
+
+* Install requirements::
+
+    # yum install subversion qt-devel qt-webkit-devel gcc-c++ make
+
+* Download source code::
+
+    $ svn co https://cutycapt.svn.sourceforge.net/svnroot/cutycapt cutycapt
+
+* Compile::
+
+    $ cd cutycapt/CutyCapt
+    $ qmake-qt4 CutyCapt.pro
+    $ make
+
+* Install::
+
+    # cp CutyCapt /user/bin/
+
+openSUSE
+~~~~~~~~
+
+* Install requirements::
+
+    # zypper install subversion libqt4-devel libQtWebKit-devel gcc-c++ make
+
+* Download source code::
+
+    $ svn co https://cutycapt.svn.sourceforge.net/svnroot/cutycapt cutycapt
+
+* Compile::
+
+    $ cd cutycapt/CutyCapt
+    $ qmake-qt4 CutyCapt.pro
+    $ make
+
+* Install::
+
+    # cp CutyCapt /user/bin/
+
+
+Compilation profiles
+--------------------
+
+There are different compilation profiles in *NavalPlan*. Check ``<profiles>``
+section in root ``pom.xml`` to see the different profiles (there are also some
+profiles defined in ``pom.xml`` of business and webapp modules).
+
+* *dev* - Development environment (default)
+
+  It uses databases ``navaldev`` and ``navaldevtest``.
+
+* *prod* - Production environment
+
+  Unlike *dev* it uses database ``navalprod`` and `navalprodtest``.
+
+  It is needed to use it in combination with *postgresql* or *mysql* profiles.
+
+  This is usually used while testing the stable branch in the repository. This
+  allows developers to easily manage 2 different databases one for last
+  development in master branch and another for bugfixing over stable branch.
+
+* *postgresql* - PostgreSQL database (default)
+
+  It uses PostgreSQL database server getting database names from *dev* or *prod*
+  profiles.
+
+* *mysql* - MySQL database
+
+  It uses MySQL database server getting database names from *dev* or *prod*
+  profiles.
+
+* *reports* - JasperReports (default)
+
+  If it is active *NavalPlan* reports are compiled.
+
+  It is useful to disable this profile to save compilation time during
+  development.
+
+* *userguide* - User documentation (default)
+
+  If it is active *NavalPlan* help is compiled and HTML files are generated.
+
+  User documentation is written in *reStructuredText* and it is generated
+  automatically thanks to this profile.
+
+  Like for *reports*, it is useful deactivate this profile during development
+  to save compilation time.
+
+* *liquibase-update* - Liquibase update (default)
+
+  If it is active Liquibase changes are applied in the database.
+
+* *liquibase-updatesql* - Liquibase update SQL
+
+  If it is active it is generated a file with SQL sentences for Liquibase
+  changes needed to apply on database.
+
+  This is used to generate upgrade files in releases.
+
+How to use profiles
+~~~~~~~~~~~~~~~~~~~
+
+Profiles active by default are used always if not deactivated. In order to
+activate or deactivate a profile you should use parameter ``-P`` for Maven
+command. For example:
+
+* Deactivate *reports* and *userguide* to save compilation time::
+
+    mvn -P-reports,-userguide clean install
+
+* Use production environment::
+
+    mvn -Pprod,postgresql clean install
+
+
+Tests
+-----
+
+*NavalPlan* has a lot of JUnit test that by default are passed when you compile
+the project with Maven. You can use ``-DskipTests`` to avoid tests are passed
+always. Anyway, you should check that tests are not broken before sending or
+pushing a patch.
+
+::
+
+  mvn -DskipTests clean install
+
+
+MySQL
+-----
+
+For MySQL users here are specific instructions.
+
+* SQL sentences to create database::
+
+    CREATE DATABASE navaldev;
+    CREATE DATABASE navaldevtest;
+    GRANT ALL ON navaldev.* to 'naval'@'localhost' identified by 'naval';
+    GRANT ALL ON navaldevtest.* to 'naval'@'localhost' identified by 'naval';
+
+* Compile project::
+
+    $ mvn -Pdev,mysql clean install
+
+* Launch application::
+
+    $ cd navalplanner-webapp/
+    $ mvn -Pdev,mysql jetty:run
