@@ -139,26 +139,6 @@
             </properties>
         </profile>
 
-        <!-- HSQLDB profile -->
-        <profile>
-            <id>hsqldb</id>
-            <properties>
-                <!-- JDBC driver properties -->
-                <jdbcDriver.groupId>hsqldb</jdbcDriver.groupId>
-                <jdbcDriver.artifactId>hsqldb</jdbcDriver.artifactId>
-                <jdbcDriver.version>1.8.0.7</jdbcDriver.version>
-                <jdbcDriver.className>org.hsqldb.jdbcDriver</jdbcDriver.className>
-                <!-- Data source properties -->
-                <dataSource.user>sa</dataSource.user>
-                <dataSource.password />
-                <dataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode};shutdown=true</dataSource.url>
-                <testDataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
-                <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
-                <databasetable.prefix></databasetable.prefix>
-            </properties>
-        </profile>
-
     </profiles>
 
     <!--
