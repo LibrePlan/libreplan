@@ -152,7 +152,9 @@ public class TaskComponent extends Div implements AfterCompose {
                 if (command.equals("onUpdatePosition")){
                     ta = retrieveTaskComponent(request);
 
-                    ta.doUpdatePosition((Integer) retrieveData(request, "left"), (Integer) retrieveData(request, "top"));
+                    ta.doUpdatePosition(
+                            toInteger(retrieveData(request, "left")),
+                            toInteger(retrieveData(request, "top")));
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
@@ -160,7 +162,7 @@ public class TaskComponent extends Div implements AfterCompose {
                 if (command.equals("onUpdateWidth")){
                     ta = retrieveTaskComponent(request);
 
-                    ta.doUpdateSize((Integer) retrieveData(request, "width"));
+                    ta.doUpdateSize(toInteger(retrieveData(request, "width")));
                     Events.postEvent(new Event(getId(), ta, request.getData()));
 
                     return true;
@@ -174,6 +176,10 @@ public class TaskComponent extends Div implements AfterCompose {
                     return true;
                 }
                 return false;
+            }
+
+            private int toInteger(Object valueFromRequestData) {
+                return ((Number) valueFromRequestData).intValue();
             }
 
             private TaskComponent retrieveTaskComponent(AuRequest request){
