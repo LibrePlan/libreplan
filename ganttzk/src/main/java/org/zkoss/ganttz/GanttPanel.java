@@ -87,6 +87,7 @@ public class GanttPanel extends XulElement implements AfterCompose {
                 moveCurrentPositionScroll();
             }
 
+            // FIXME: this is quite awful, it should be simple
             @Override
             protected void moveCurrentPositionScroll() {
                 // get the previous data.

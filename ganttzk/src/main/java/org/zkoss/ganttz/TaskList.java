@@ -49,7 +49,6 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.MenuBuilder;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
-import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.ext.AfterCompose;
@@ -285,7 +284,6 @@ public class TaskList extends XulElement implements AfterCompose {
                     for (TaskComponent taskComponent : getTaskComponents()) {
                         taskComponent.zoomChanged();
                     }
-                    adjustZoomColumnsHeight();
                     adjustZoomPositionScroll();
                 }
             };
@@ -332,10 +330,6 @@ public class TaskList extends XulElement implements AfterCompose {
 
     GanttPanel getGanttPanel() {
         return (GanttPanel) getParent();
-    }
-
-    public void adjustZoomColumnsHeight() {
-        response("adjust_height", new AuInvoke(TaskList.this, "adjust_height"));
     }
 
     private void adjustZoomPositionScroll() {
