@@ -135,7 +135,7 @@ openSUSE
 
     # zypper install java-1_6_0-openjdk postgresql-server postgresql tomcat6 freefont xorg-x11-server
 
-* JDBC Driver manual installation:
+* JDBC Driver manual installation::
 
     # cd /usr/share/java/
     # wget http://jdbc.postgresql.org/download/postgresql-9.0-801.jdbc3.jar
@@ -151,7 +151,7 @@ openSUSE
 
     # su postgres -c psql
 
-* Use SQL sentences::
+* SQL sentences to create database::
 
     CREATE DATABASE navalplan;
     CREATE USER navalplan WITH PASSWORD 'navalplan';
