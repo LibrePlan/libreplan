@@ -457,14 +457,13 @@ public class TemplateModel implements ITemplateModel {
     @Override
     @Transactional(readOnly = true)
     public boolean hasChangedDefaultPassword(MandatoryUser user) {
-        return user.hasChangedDefaultPasswordOrDisabled(configurationDAO
-                .getConfiguration());
+        return user.hasChangedDefaultPasswordOrDisabled();
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean adminPasswordChangedAndSomeOtherNotChanged() {
-        return MandatoryUser.adminChangedAndSomeOtherNotChanged(configurationDAO.getConfiguration());
+        return MandatoryUser.adminChangedAndSomeOtherNotChanged();
     }
 
     @Override

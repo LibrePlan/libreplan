@@ -42,8 +42,8 @@ public enum MandatoryUser {
 
     USER(new ArrayList<UserRole>()) {
         @Override
-        public boolean hasChangedDefaultPassword(Configuration configuration) {
-            return configuration.getChangedDefaultUserPassword();
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultUserPassword();
         }
     },
     ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
@@ -52,39 +52,40 @@ public enum MandatoryUser {
             UserRole.ROLE_CREATE_ORDER)) {
 
         @Override
-        public boolean hasChangedDefaultPassword(Configuration configuration) {
-            return configuration.getChangedDefaultAdminPassword();
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
         }
     },
     WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
         @Override
-        public boolean hasChangedDefaultPassword(Configuration configuration) {
-            return configuration.getChangedDefaultWsreaderPassword();
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultWsreaderPassword();
         }
     },
     WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER, UserRole.ROLE_WS_WRITER)) {
         @Override
-        public boolean hasChangedDefaultPassword(Configuration configuration) {
-            return configuration.getChangedDefaultWswriterPassword();
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultWswriterPassword();
         }
     };
 
-    public static boolean adminChangedAndSomeOtherNotChanged(
-            Configuration configuration) {
-        return ADMIN.hasChangedDefaultPasswordOrDisabled(configuration)
-                && someKeepsDefaultPassword(configuration,
-                        allExcept(ADMIN));
+    public static boolean adminChangedAndSomeOtherNotChanged() {
+        return ADMIN.hasChangedDefaultPasswordOrDisabled()
+                && someKeepsDefaultPassword(allExcept(ADMIN));
     }
 
     public static boolean someKeepsDefaultPassword(
-            Configuration configuration,
             Collection<MandatoryUser> mandatoryUsers) {
         for (MandatoryUser each : mandatoryUsers) {
-            if (!each.hasChangedDefaultPasswordOrDisabled(configuration)) {
+            if (!each.hasChangedDefaultPasswordOrDisabled()) {
                 return true;
             }
         }
         return false;
+    }
+
+    private static Configuration getConfiguration() {
+        return Registry.getConfigurationDAO().getConfiguration();
     }
 
     private Set<UserRole> initialRoles;
@@ -93,13 +94,11 @@ public enum MandatoryUser {
         this.initialRoles = new HashSet<UserRole>(initialUserRoles);
     }
 
-    public boolean hasChangedDefaultPasswordOrDisabled(
-            Configuration configuration) {
-        return isDisabled() || hasChangedDefaultPassword(configuration);
+    public boolean hasChangedDefaultPasswordOrDisabled() {
+        return isDisabled() || hasChangedDefaultPassword();
     }
 
-    protected abstract boolean hasChangedDefaultPassword(
-            Configuration configuration);
+    protected abstract boolean hasChangedDefaultPassword();
 
     public String getLoginName() {
         return this.name().toLowerCase();
