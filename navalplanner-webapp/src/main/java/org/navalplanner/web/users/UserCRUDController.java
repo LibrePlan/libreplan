@@ -38,8 +38,10 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -170,11 +172,32 @@ public class UserCRUDController extends GenericForwardComposer implements
             userModel.confirmSave();
             messagesForUser.showMessage(Level.INFO,
                     _("User saved"));
+            showOrHideDefaultPasswordWarnings();
             return true;
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
         return false;
+    }
+
+    /**
+     * It calls a JavaScript method to show or hide the default password
+     * warnings if the user has changed the password or has been disabled
+     */
+    private void showOrHideDefaultPasswordWarnings() {
+        boolean adminNotDefaultPassword = userModel
+                .hasChangedDefaultPasswordOrDisabled(MandatoryUser.ADMIN);
+        boolean userNotDefaultPassword = userModel
+                .hasChangedDefaultPasswordOrDisabled(MandatoryUser.USER);
+        boolean wsreaderNotDefaultPassword = userModel
+                .hasChangedDefaultPasswordOrDisabled(MandatoryUser.WSREADER);
+        boolean wswriterNotDefaultPassword = userModel
+                .hasChangedDefaultPasswordOrDisabled(MandatoryUser.WSWRITER);
+
+        Clients.evalJavaScript("showOrHideDefaultPasswordWarnings("
+                + adminNotDefaultPassword + ", " + userNotDefaultPassword
+                + ", " + wsreaderNotDefaultPassword + ", "
+                + wswriterNotDefaultPassword + ");");
     }
 
     public User getUser() {

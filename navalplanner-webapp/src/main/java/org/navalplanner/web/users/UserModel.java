@@ -248,4 +248,11 @@ public class UserModel implements IUserModel {
     public String getClearNewPassword() {
         return clearNewPassword;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser user) {
+        return user.hasChangedDefaultPasswordOrDisabled();
+    }
+
 }
