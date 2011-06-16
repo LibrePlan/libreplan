@@ -27,7 +27,6 @@ import java.util.List;
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.Configuration;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -57,9 +56,6 @@ public class UserModel implements IUserModel {
     private IUserDAO userDAO;
 
     @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
     private User user;
@@ -83,11 +79,9 @@ public class UserModel implements IUserModel {
         }
     }
 
-    private UserCRUDController ctlr;
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        this.ctlr = ctlr;
         try {
             // user.getLoginName() has to be validated before encoding password,
             // because it must exist to perform the encoding
