@@ -28,7 +28,9 @@ import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.entities.UserRole;
 
 /**
@@ -69,7 +71,7 @@ public enum MandatoryUser {
 
     public static boolean adminChangedAndSomeOtherNotChanged(
             Configuration configuration) {
-        return ADMIN.hasChangedDefaultPassword(configuration)
+        return ADMIN.hasChangedDefaultPasswordOrDisabled(configuration)
                 && someKeepsDefaultPassword(configuration,
                         allExcept(ADMIN));
     }
@@ -78,7 +80,7 @@ public enum MandatoryUser {
             Configuration configuration,
             Collection<MandatoryUser> mandatoryUsers) {
         for (MandatoryUser each : mandatoryUsers) {
-            if (!each.hasChangedDefaultPassword(configuration)) {
+            if (!each.hasChangedDefaultPasswordOrDisabled(configuration)) {
                 return true;
             }
         }
@@ -91,7 +93,12 @@ public enum MandatoryUser {
         this.initialRoles = new HashSet<UserRole>(initialUserRoles);
     }
 
-    public abstract boolean hasChangedDefaultPassword(
+    public boolean hasChangedDefaultPasswordOrDisabled(
+            Configuration configuration) {
+        return isDisabled() || hasChangedDefaultPassword(configuration);
+    }
+
+    protected abstract boolean hasChangedDefaultPassword(
             Configuration configuration);
 
     public String getLoginName() {
@@ -108,6 +115,15 @@ public enum MandatoryUser {
 
     public static EnumSet<MandatoryUser> allExcept(MandatoryUser mandatoryUser) {
         return EnumSet.complementOf(EnumSet.of(mandatoryUser));
+    }
+
+    public boolean isDisabled() {
+        try {
+            return Registry.getUserDAO().findByLoginName(getLoginName())
+                    .isDisabled();
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
 }

@@ -42,7 +42,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Model for UI operations related to {@link User}
@@ -147,44 +146,6 @@ public class UserModel implements IUserModel {
         // save the field changedDefaultAdminPassword in configuration.
         Registry.getConfigurationDAO().saveChangedDefaultPassword(
                 user.getLoginName(), changedPasswd);
-
-        String displayA = null;
-        String displayO = null;
-        String displayU = null;
-        String login = null;
-
-        // show or hide the warning
-        displayO = isWarningDefaultPasswdOthersVisible();
-        if (user.equals(MandatoryUser.ADMIN)) {
-            displayA = isWarningDefaultPasswdAdminVisible(user,changedPasswd);
-        }else{
-            displayU = isWarningDefaultPasswordOtherUser(changedPasswd,
-                    displayO);
-            login = user.getLoginName();
-        }
-        Clients.evalJavaScript("showOrHideWarnings('" + displayA + "', '"
-                + displayO + "', '" + login + "', '" + displayU + "');");
-    }
-
-    private String isWarningDefaultPasswordOtherUser(boolean changedPasswd,
-            String displayO) {
-        if (displayO.equals("inline")) {
-            return changedPasswd ? "none" : "inline";
-        }
-        return null;
-    }
-
-    private String isWarningDefaultPasswdAdminVisible(MandatoryUser user, boolean changedPasswd){
-        if (user.equals(MandatoryUser.ADMIN)) {
-            return changedPasswd ? "none" : "inline";
-        }
-        return null;
-    }
-
-    private String isWarningDefaultPasswdOthersVisible() {
-        return MandatoryUser
-                .adminChangedAndSomeOtherNotChanged(configurationDAO
-                        .getConfiguration()) ? "inline" : "none";
     }
 
     @Override

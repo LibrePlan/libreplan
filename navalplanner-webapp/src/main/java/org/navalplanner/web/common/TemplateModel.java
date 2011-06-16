@@ -36,7 +36,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
-import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -458,7 +457,8 @@ public class TemplateModel implements ITemplateModel {
     @Override
     @Transactional(readOnly = true)
     public boolean hasChangedDefaultPassword(MandatoryUser user) {
-        return user.hasChangedDefaultPassword(configurationDAO.getConfiguration());
+        return user.hasChangedDefaultPasswordOrDisabled(configurationDAO
+                .getConfiguration());
     }
 
     @Override
