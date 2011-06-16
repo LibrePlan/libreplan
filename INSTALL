@@ -2,7 +2,8 @@ Install
 =======
 
 This is a guide about how to install *NavalPlan* project in your system. If you
-want to know how to compile it manually see ``HACKING`` file.
+want to upgrade your *NavalPlan* version see ``UPDATE`` file. If you want to
+know how to compile it manually see ``HACKING`` file.
 
 .. contents::
 
@@ -67,7 +68,7 @@ Debian/Ubuntu
 
 * Download database installation script::
 
-    $ wget -O install.sql "http://navalplan.git.sourceforge.net/git/gitweb.cgi?p=navalplan/navalplan;a=blob_plain;f=scripts/database/install.sql;hb=HEAD"
+    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
 
 * Create database structure::
 
@@ -169,7 +170,7 @@ openSUSE
 
 * Download database installation script::
 
-    $ wget -O install.sql "http://navalplan.git.sourceforge.net/git/gitweb.cgi?p=navalplan/navalplan;a=blob_plain;f=scripts/database/install.sql;hb=HEAD"
+    $ wget -O install.sql http://downloads.sourceforge.net/project/navalplan/NavalPlan/install_1.1.1.sql
 
 * Create database structure::
 
