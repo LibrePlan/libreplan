@@ -406,7 +406,10 @@ public class OrderCRUDController extends GenericForwardComposer {
             orderElementsTree.useController(orderElementTreeController);
             orderElementTreeController.setReadOnly(readOnly);
 
-            setTreeRenderer(orderElementsTree);
+            Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
+            tree.setModel(null);
+            tree.setTreeitemRenderer(orderElementTreeController.getRenderer());
+
             reloadTree(orderElementsTree);
         }
     }
@@ -422,11 +425,6 @@ public class OrderCRUDController extends GenericForwardComposer {
                 tree.clearSelection();
             }
         });
-    }
-
-    private void setTreeRenderer(TreeComponent orderElementsTree) {
-        final Tree tree = (Tree) orderElementsTree.getFellowIfAny("tree");
-        tree.setTreeitemRenderer(orderElementTreeController.getRenderer());
     }
 
     /*
