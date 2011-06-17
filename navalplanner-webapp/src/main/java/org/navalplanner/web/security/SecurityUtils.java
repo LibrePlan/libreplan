@@ -27,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
+import org.navalplanner.web.users.services.CustomUser;
+import org.springframework.security.context.SecurityContextHolder;
 import org.zkoss.zk.ui.Executions;
 
 /**
@@ -34,6 +36,7 @@ import org.zkoss.zk.ui.Executions;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
 public final class SecurityUtils {
 
@@ -53,4 +56,8 @@ public final class SecurityUtils {
         return principal.getName();
     }
 
+    public final static CustomUser getLoggedUser() {
+        return (CustomUser) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+    }
 }
