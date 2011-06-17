@@ -28,10 +28,9 @@ import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.web.security.SecurityUtils;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.Authentication;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -52,32 +51,33 @@ public class CurrentUserScenarioAwareManager implements IScenarioManager {
     @Override
     @Transactional(readOnly = true)
     public Scenario getCurrent() {
-        Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-        Scenario scenario = authentication == null ? scenariosBootstrap
-                .getMain() : getScenarioFrom(authentication);
+        Scenario scenario = scenarioAssociatedToLoggedUser();
+        return reload(scenario);
+    }
 
+    private Scenario scenarioAssociatedToLoggedUser() {
+        CustomUser loggedUser = SecurityUtils.getLoggedUser();
+        if (loggedUser == null) {
+            return scenariosBootstrap.getMain();
+        }
+        return loggedUser.getScenario();
+    }
+
+    private Scenario reload(Scenario scenario) {
         if (scenario.getId() == null) {
             return scenario;
         }
-
-        scenario = scenarioDAO.findExistingEntity(scenario.getId());
-        forceLoad(scenario);
-        return scenario;
+        return forceLoad(scenarioDAO.findExistingEntity(scenario.getId()));
     }
 
-    private void forceLoad(Scenario scenario) {
+    private Scenario forceLoad(Scenario scenario) {
         scenarioDAO.reattach(scenario);
         Set<Order> orders = scenario.getOrders().keySet();
         for (Order order : orders) {
             orderDAO.reattach(order);
             order.getName();
         }
-    }
-
-    private Scenario getScenarioFrom(Authentication authentication) {
-        CustomUser user = (CustomUser) authentication.getPrincipal();
-        return user.getScenario();
+        return scenario;
     }
 
 }

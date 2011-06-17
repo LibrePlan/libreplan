@@ -51,12 +51,12 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.security.SecurityUtils;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -231,8 +231,9 @@ public class TemplateModel implements ITemplateModel {
     private void associateToUser(Scenario scenario, User user) {
         user.setLastConnectedScenario(scenario);
         userDAO.save(user);
-        CustomUser customUser = (CustomUser) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        CustomUser customUser = SecurityUtils.getLoggedUser();
+        assert customUser != null : "user must be logged for this method to be called";
+
         customUser.setScenario(scenario);
     }
 
