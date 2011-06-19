@@ -1,92 +1,145 @@
-+ It's recommended to have "tidy" available in your system.
+WEB SERVICES
+============
 
-+ chmod u+x *.sh
+Inside ``scripts/rest-clients/`` folder of NavalPlan source code, you can find
+several scripts to test NavalPlan web services. There are web services for
+most import entities in the application. And if needed more could be easily
+developed.
 
-+ When working with the local application:
+All integration entities (NavalPlan entities that can be exported and/or
+imported) has a common attribute called ``code``. This field would be the one
+used to share information between NavalPlan and other systems or other NavalPlan
+instances.
 
-  * Get XML Schema for any service:
+NavalPlan web services are REST based. But, they are just using two HTTP
+methods with the following meaning:
 
-    - get-xml-schema.sh <service-path>
+* ``GET``: Used to extract information from NavalPlan. For each case they will
+  return a list with all the entities. For example, resources web service will
+  return a list with all application resources.
 
-    Example:
-    - get-xml-schema.sh criteriontypes
+  This is current behaviour for ``GET`` services, but it could be expanded to
+  just return one entity sending the code as a GET parameter.
 
-  * [Optional] For clarity: remove "navaldev" database + reload Jetty.
+* ``POST``: Used to add and update information in NavalPlan. These services will
+  receive a XML file with a list of entities. For each entity there could be 2
+  different cases:
 
-  * Import criterion types:
+  * If it already exists: Update entity with new data.
+  * If it does not exist: Add the new entity.
 
-    - import-criterions-types.sh criterion-types-sample.xml
-      (authenticate with wswriter/wswriter)
+These means that delete is not allowed from web services, in that way only new
+info could be added or updated. This is because of entities are related with
+others and remove operation could be dangerous. Then if necessary, the
+recommendation would be add a field to disable such entity.
 
-    - Check the returned errors are consistent with the comments in
-      criterion-types-sample.xml.
 
-    - Repeat with criterion-types-update-sample.xml (for updating some
-      criterion types).
+Requirements
+------------
 
-  * Export criterion types:
+These scripts are written in bash so you need to be running a bash terminal to
+use them.
 
-    - export-criterion-types.sh (authenticate with wsreader/wsreader)
+Moreover, it is recommended to have Tidy available in your system. You can
+install it with the following command in Debian based distributions::
 
-  * Import label types:
+  # apt-get install tidy
 
-    - import-label-types.sh label-sample.xml
-      (authenticate with wswriter/wswriter)
+In openSUSE with::
 
-    - Check the returned errors are consistent with the comments in
-      label-sample.xml.
+  # zypper install tidy
 
-  * Export label types:
+Or in Fedora with::
 
-    - export-label-types.sh (authenticate with wsreader/wsreader)
+  # yum install tidy
 
-  * Import type of work hours:
 
-    - import-type-work-hours.sh type-work-hours-sample.xml
-      (authenticate with wswriter/wswriter)
+Default credentials
+-------------------
 
-  * Export type of work hours:
+In order to test these scripts you will need an user with reader and writer
+permissions for web services of NavalPlan. Default users and passwords are:
 
-    - export-type-work-hours.sh (authenticate with wsreader/wsreader)
+* Reader permission:
 
-  * Import resources:
+  * User: ``wsreader``
+  * Password: ``wsreader``
 
-    - import-resources.sh resources-sample-mini.xml (or resources-sample.xml)
-      (authenticate with wswriter/wswriter)
+* Writer permission:
 
-    - Check the returned errors are consistent with the comments in
-      resources-sample.xml.
+  * User: ``wswriter``
+  * Password: ``wswriter``
 
-    - Repeat with resources-update-sample.xml (resources-sample-mini.xml
-      must be previously imported).
 
-  * Export order elements:
+Common parameters
+-----------------
 
-    - export-order-element.sh (authenticate with wsreader/wsreader)
+There are already defined several parameters to be used in the scripts to define
+the server to execute the tests:
 
-  * Import orders:
+Demo environment (``without parameters``) - default
 
-    - import-order-elements.sh order-elements-sample.xml (authenticate with wswriter/wswriter)
+  Use server where demo is launched using the following URL:
+  ``http://demo.navalplan.org/navalplan-demo/``
 
-  * Export resources hours:
+  Example::
 
-    - export-resources-hours.sh 2010-01-01 2010-12-31 (authenticate with
-      wsreader/wsreader)
+    $ ./export-resources.sh
 
-    - export-resources-hours.sh 21654685 2010-01-01 2010-12-31 (authenticate
-      with wsreader/wsreader)
+Production environment (``--prod``)
 
-  * Export calendar exception types:
+  Use server deployed with Tomcat in a production deployment in the following
+  URL: ``http://localhost:8080/navalplan/``
 
-    - export-calendar-exception-types.sh (authenticate with wsreader/wsreader)
+  Example::
 
-  * Export calendars:
+    $ ./export-resources.sh --prod
 
-    - export-calendars.sh (authenticate with wsreader/wsreader)
+Development environment (``--dev``)
 
-+ When working with the online demo add "--prod" argument to every command.
+  Use server deployed with Jetty during development in the following URL:
+  ``http://localhost:8080/navalplanner-webapp/``
+
+  Example::
+
+    $ ./export-resources.sh --reader
+
+
+XML Schemas
+-----------
+
+To get XML schema use the following script::
+
+  $ get-xml-schema.sh <service-path>
+
 Example:
 
-  * import-criterions-types.sh --prod criterion-types-sample.xml
-    (authenticate with wswriter/wswriter)
+  $ get-xml-schema.sh resources
 
+
+Export scripts
+--------------
+
+There several scripts to just get information from NavalPlan system. They always
+start with ``export-`` prefix. These scripts usually don't need any parameter
+(apart from the one to select the environment). They will return a XML output
+with the data requested.
+
+Example::
+
+  $ ./export-resources.sh
+
+
+Import scripts
+--------------
+
+As for the previous point, in order to insert data in NavalPlan system thought
+web services there are several scripts with prefix ``import-``. In this case,
+these scripts need a special parameter, that would be a XML file with data to be
+inserted in NavalPlan. There are usually files with ``-sample`` suffix as
+example data. Again, output for these scripts is a XMl message with the possible
+errors trying to insert the data in the system.
+
+Example::
+
+  $ ./import-resources.sh resources-sample.xml
