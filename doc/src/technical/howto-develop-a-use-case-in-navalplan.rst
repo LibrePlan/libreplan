@@ -2397,27 +2397,11 @@ Then for this example you will create a script called
 ``export-stretches-function-templates.sh``, that will be very similar to the
 rest of export scripts just changing web service path::
 
- #!/bin/sh
+  #!/bin/sh
 
- . ./rest-common-env.sh
+  . ./rest-common-env.sh
 
- printf "Login name: "
- read loginName
- printf "Password: "
- read password
-
- if [ "$1" = "--prod" ]; then
-     baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
-     certificate=$PRODUCTION_CERTIFICATE
- else
-    baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
-    certificate=$DEVELOPMENT_CERTIFICATE
- fi
-
- authorization=`./base64.sh $loginName:$password`
-
- curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
-     $baseServiceURL/stretchesfunctiontemplates | tidy -xml -i -q -utf8
+  . ./export.sh stretchesfunctiontemplates $*
 
 Script will request user and password in order to access to web service, so you
 could use ``wsreader`` user to check that it works properly.
