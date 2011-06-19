@@ -25,7 +25,7 @@ if [ "$file" = "" ]; then
     exit 1
 fi
 
-authorization=`./base64.sh $loginName:$password`
+authorization=`echo -n "$loginName:$password" | base64`
 
 curl -sv -X POST $certificate -d @$file \
     --header "Content-type: application/xml" \

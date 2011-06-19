@@ -53,7 +53,7 @@ if [ "$endDate" = "" ]; then
     exit 1
 fi
 
-authorization=`./base64.sh $loginName:$password`
+authorization=`echo -n "$loginName:$password" | base64`
 
 if [ "$resourceCode" = "" ]; then
     serviceURIWithParams="$baseServiceURL/resourceshours/$startDate/$endDate/"

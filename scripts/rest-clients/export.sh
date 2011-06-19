@@ -18,7 +18,7 @@ else
    certificate=$DEMO_CERTIFICATE
 fi
 
-authorization=`./base64.sh $loginName:$password`
+authorization=`echo -n "$loginName:$password" | base64`
 
 curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
     $baseServiceURL/$1 | tidy -xml -i -q -utf8
