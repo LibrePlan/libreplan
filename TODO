@@ -63,8 +63,7 @@ Future
 * New features in Gantt window.
 * Complex features disabled by default.
 * Quick start wizard.
-* Integration services scripts that don't depend on Ruby (maybe directly with
-  Java).
+* Integration services scripts directly with Java.
 * ZK 5 migration.
 * Permission enhancements.
 * *Exit without saving* detection.

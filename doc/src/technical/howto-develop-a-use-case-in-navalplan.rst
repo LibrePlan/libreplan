@@ -2387,11 +2387,11 @@ created in project repository inside ``scripts/rest-clients`` directory.
 
 .. NOTE::
 
-  Currently these scripts depends on Tidy and Ruby to be installed in your
+  Currently these scripts depends on Tidy to be installed in your
   system. You could install them in a Debian based distribution with the
   following command as root::
 
-    apt-get install tidy ruby
+    apt-get install tidy
 
 Then for this example you will create a script called
 ``export-stretches-function-templates.sh``, that will be very similar to the

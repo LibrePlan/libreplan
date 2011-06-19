@@ -1,7 +1,5 @@
 + Check you have "tidy" available from the command line.
 
-+ Check you have "/usr/bin/ruby".
-
 + chmod u+x *.sh
 
 + When working with the local application:
