@@ -20,5 +20,11 @@ fi
 
 authorization=`echo -n "$loginName:$password" | base64`
 
-curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
-    $baseServiceURL/$1 | tidy -xml -i -q -utf8
+result=`curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
+    $baseServiceURL/$1`
+
+if hash tidy &> /dev/null; then
+    echo $result | tidy -xml -i -q -utf8
+else
+    echo $result
+fi

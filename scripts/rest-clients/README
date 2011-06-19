@@ -1,4 +1,4 @@
-+ Check you have "tidy" available from the command line.
++ It's recommended to have "tidy" available in your system.
 
 + chmod u+x *.sh
 

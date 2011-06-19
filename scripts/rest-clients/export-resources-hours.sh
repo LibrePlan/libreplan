@@ -61,5 +61,11 @@ else
     serviceURIWithParams="$baseServiceURL/resourceshours/$resourceCode/$startDate/$endDate/"
 fi
 
-curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
-    $serviceURIWithParams | tidy -xml -i -q -utf8
+result=`curl -sv -X GET $certificate --header "Authorization: Basic $authorization" \
+    $serviceURIWithParams`
+
+if hash tidy &> /dev/null; then
+    echo $result | tidy -xml -i -q -utf8
+else
+    echo $result
+fi

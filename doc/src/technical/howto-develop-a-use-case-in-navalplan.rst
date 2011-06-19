@@ -2387,9 +2387,9 @@ created in project repository inside ``scripts/rest-clients`` directory.
 
 .. NOTE::
 
-  Currently these scripts depends on Tidy to be installed in your
-  system. You could install them in a Debian based distribution with the
-  following command as root::
+  Currently these scripts recommends Tidy to be installed in your system
+  for a better output. You could install them in a Debian based distribution
+  with the following command as root::
 
     apt-get install tidy
 
