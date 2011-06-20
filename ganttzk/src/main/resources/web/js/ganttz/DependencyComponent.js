@@ -10,6 +10,9 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         this.$supers('bind_', arguments);
         this.setupArrow_();
     },
+    setCSSClass: function(newClass) {
+        this.$n().setAttribute("class", newClass);
+    },
     draw : function(){throw "draw method must be overwriten by extending classes"},
     drawArrow_ : function(coordOrig, coordDest){
         switch(this.getDependencyType())
