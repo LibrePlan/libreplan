@@ -148,7 +148,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     }
 
     public void redrawDependency() {
-        response("zoomChanged", new AuInvoke(this, "draw"));
+        response("redrawDependency" + getId(), new AuInvoke(this, "draw"));
     }
 
     public boolean contains(Task task) {
