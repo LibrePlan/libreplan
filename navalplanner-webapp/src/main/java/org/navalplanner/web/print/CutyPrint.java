@@ -212,6 +212,10 @@ public class CutyPrint {
         // Destination complete absolute path
         captureString += " --out=" + absolutePath + filename;
 
+        // User language
+        captureString += " --header=Accept-Language:"
+                + Locales.getCurrent().getLanguage();
+
         try {
             // CutyCapt command execution
             LOG.warn(captureString);
