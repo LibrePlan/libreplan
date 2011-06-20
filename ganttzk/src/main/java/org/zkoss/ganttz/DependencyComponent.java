@@ -97,8 +97,13 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         return violated ? "violated-dependency" : "dependency";
     }
 
+    private boolean listenerAdded = false;
+
     @Override
     public void afterCompose() {
+        if (listenerAdded) {
+            return;
+        }
         PropertyChangeListener listener = new PropertyChangeListener() {
 
             @Override
@@ -108,6 +113,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         };
         this.source.getTask().addFundamentalPropertiesChangeListener(listener);
         this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
+        listenerAdded = true;
     }
 
     /**

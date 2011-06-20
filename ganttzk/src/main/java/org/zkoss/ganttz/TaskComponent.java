@@ -446,10 +446,6 @@ public class TaskComponent extends Div implements AfterCompose {
         setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
-        DependencyList dependencyList = getDependencyList();
-        if (dependencyList != null) {
-            dependencyList.redrawDependenciesConnectedTo(this);
-        }
         updateDeadline();
         updateCompletionIfPossible();
         updateClass();
