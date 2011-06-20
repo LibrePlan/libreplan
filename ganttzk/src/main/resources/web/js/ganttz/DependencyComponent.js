@@ -218,7 +218,6 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
     },
     bind_ : function(){
         this.$supers('bind_', arguments);
-        this._initializeProperties();
         //this.setupArrow_();
         /*maybe move this listener to the $init method*/
         YAHOO.util.Event.onDOMReady(this.proxy(function() {
@@ -227,37 +226,37 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
             ganttz.TaskComponent.$(this.getIdTaskEnd()).addRelatedDependency(this);
         }));
     },
-    draw : function(){
-        var orig = this.findPos_(this._origin);
-        var dest = this.findPos_(this._destination);
+    draw : function() {
+        this._withOriginAndDestination(function(origin, destination) {
+            var orig = this.findPos_(origin);
+            var dest = this.findPos_(destination);
+            // This corner case may depend on dependence type
+            var offsetX = origin.outerWidth() - ganttz.TaskComponent.CORNER_WIDTH;
+            var separation = orig.left + origin.outerWidth() - dest.left;
 
-        // This corner case may depend on dependence type
-        var offsetX = this._origin.outerWidth() - ganttz.TaskComponent.CORNER_WIDTH;
-        var separation = orig.left + this._origin.outerWidth() - dest.left;
+            if (separation > 0) {
+                offsetX = offsetX - separation;
+            }
+            if (this.getDependencyType() == this.$class.END_START
+                    || this.getDependencyType() == null) {
+                orig.left = orig.left + Math.max(0, offsetX);
+            } else if (this.getDependencyType() == this.$class.END_END) {
+                orig.left = orig.left + origin.outerWidth();
+                dest.left = dest.left + destination.outerWidth();
+            }
 
-        if (separation > 0) {
-            offsetX = offsetX - separation;
-        }
-        if (this.getDependencyType() == this.$class.END_START
-                || this.getDependencyType() == null) {
-            orig.left = orig.left + Math.max(0, offsetX);
-        } else if (this.getDependencyType() == this.$class.END_END) {
-            orig.left = orig.left + this._origin.outerWidth();
-            dest.left = dest.left + this._destination.outerWidth();
-        }
+            orig.top = orig.top + ganttz.TaskComponent.HEIGHT;
+            dest.top = dest.top + ganttz.TaskComponent.HALF_HEIGHT;
 
-        orig.top = orig.top + ganttz.TaskComponent.HEIGHT;
-        dest.top = dest.top + ganttz.TaskComponent.HALF_HEIGHT;
+            if (orig.top > dest.top) {
+                orig.top = orig.top - ganttz.TaskComponent.HEIGHT;
+            }
 
-        if (orig.top > dest.top) {
-            orig.top = orig.top - ganttz.TaskComponent.HEIGHT;
-        }
-
-        this.drawArrow_(orig, dest);
+            this.drawArrow_(orig, dest);
+        });
     },
-    _initializeProperties : function(){
-        this._origin = jq('#' + this.getIdTaskOrig());
-        this._destination = jq('#' + this.getIdTaskEnd());
+    _withOriginAndDestination : function(f) {
+        f.call(this, jq('#' + this.getIdTaskOrig()), jq('#' + this.getIdTaskEnd()));
     }
 },{});
 
