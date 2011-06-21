@@ -380,6 +380,16 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
+    public BaseCalendar getCurrentParent() {
+        if (getBaseCalendar() == null) {
+            return null;
+        }
+        CalendarData version = getBaseCalendar().getCalendarData(
+                LocalDate.fromDateFields(new Date()));
+        return version != null ? version.getParent() : null;
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public void setParent(BaseCalendar parent) {
         try {

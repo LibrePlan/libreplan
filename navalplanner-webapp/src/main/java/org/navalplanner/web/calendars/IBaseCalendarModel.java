@@ -215,4 +215,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
     boolean checkChangeExpiringDate(CalendarData version,
             LocalDate newExpiringDate);
 
+    BaseCalendar getCurrentParent();
+
 }

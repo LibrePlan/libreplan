@@ -1225,7 +1225,7 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public String getNameParentCalendar() {
-        BaseCalendar parent = baseCalendarModel.getParent();
+        BaseCalendar parent = baseCalendarModel.getCurrentParent();
         if (parent != null) {
             return parent.getName();
         }
