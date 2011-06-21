@@ -165,7 +165,7 @@ public class BaseCalendarModelTest {
 
             @Override
             public void onExistentCalendar(BaseCalendar calendar) {
-                baseCalendarModel.createNewVersion(date);
+                baseCalendarModel.createNewVersion(date, null, null);
                 setCapacity(baseCalendarModel.getBaseCalendar(), capacity);
             }
         }, new IOnExistentCalendar() {
@@ -212,7 +212,8 @@ public class BaseCalendarModelTest {
         setCapacity(baseCalendarModel.getBaseCalendar(),
                 Capacity.create(hours(8)));
         BaseCalendar parent = baseCalendarModel.getBaseCalendar();
-        baseCalendarModel.createNewVersion(new LocalDate().plusMonths(1));
+        baseCalendarModel.createNewVersion(new LocalDate().plusMonths(1), null,
+                null);
         BaseCalendar parentNewVersion = baseCalendarModel.getBaseCalendar();
         baseCalendarModel.confirmSave();
 
