@@ -949,6 +949,9 @@ public abstract class BaseCalendarEditionController extends
         if (isDerived()) {
             Combobox parentCalendars = (Combobox) createNewVersionWindow
                     .getFellow("parentCalendars");
+            if (parentCalendars.getSelectedItem() == null) {
+                return;
+            }
             selected = (BaseCalendar) parentCalendars.getSelectedItem()
                     .getValue();
         }
