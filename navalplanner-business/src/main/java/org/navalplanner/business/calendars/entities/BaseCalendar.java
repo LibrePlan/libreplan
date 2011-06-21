@@ -424,11 +424,13 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                                 .getExpiringDate();
                         BaseCalendar oldParent = nextVersion.getParent();
 
-                        if (startDate.compareTo(prevExpiringDate) > 0) {
+                        if ((prevExpiringDate == null)
+                                || (startDate.compareTo(prevExpiringDate) > 0)) {
                             CalendarData prevCalendarData = CalendarData
                                     .create();
                             prevCalendarData.setExpiringDate(startDate);
                             prevCalendarData.setParent(oldParent);
+                            resetDefaultCapacities(prevCalendarData);
                             calendarDataVersions.add(prevCalendarData);
                         } else {
                             prevVersion.setExpiringDate(startDate);
@@ -438,7 +440,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                         newCalendarData.setExpiringDate(expiringDate);
                         calendarDataVersions.add(newCalendarData);
 
-                        if (expiringDate.compareTo(nextExpiringDate) >= 0) {
+                        if ((nextExpiringDate != null)
+                                && (expiringDate.compareTo(nextExpiringDate) >= 0)) {
                             calendarDataVersions.remove(nextVersion);
                         }
 
@@ -460,6 +463,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             LocalDate expiringDate, CalendarData prevVersion,
             CalendarData nextVersion) {
         if ((startDate.compareTo(prevVersion.getExpiringDate()) <= 0)
+                && (nextVersion.getExpiringDate() != null)
                 && (expiringDate.compareTo(nextVersion.getExpiringDate()) >= 0)) {
             return true;
         }
@@ -524,7 +528,9 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             if (calendarDataVersions.size() == 1) {
                 BaseCalendar lastParent = getLastCalendarData().getParent();
                 newCalendarData = createLastVersion(startDate);
-                createLastVersion(expiringDate).setParent(lastParent);
+                CalendarData newLastVersion = createLastVersion(expiringDate);
+                newLastVersion.setParent(lastParent);
+                resetDefaultCapacities(newLastVersion);
             } else {
                 newCalendarData = createNewVersionInsideIntersection(startDate,
                         expiringDate);
