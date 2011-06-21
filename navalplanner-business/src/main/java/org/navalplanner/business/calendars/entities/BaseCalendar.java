@@ -448,7 +448,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
                     }
                 } else {
                     throw new IllegalArgumentException(
-                            "the new version will be the first one, and the start date must be empty");
+                            "Wrong start date : the new version will be the first one, and the start date must be empty");
                 }
             }
         }
@@ -480,7 +480,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         if ((calendarData.getExpiringDate() != null)
                 && (startDate.compareTo(calendarData.getExpiringDate()) <= 0)) {
             throw new IllegalArgumentException(
-                    "Version date must be greater than expiring date of "
+                    "Wrong start date : Version date must be greater than expiring date of "
                             + "all versions of this calendar");
         }
 
@@ -498,8 +498,9 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         CalendarData firstVersion = getFirstCalendarData();
         if ((firstVersion.getExpiringDate() != null)
                 && (expiringDate.compareTo(firstVersion.getExpiringDate()) >= 0)) {
+
             throw new IllegalArgumentException(
-                    "Version expiring date must be lower than expiring date of "
+                    "Wrong expiring date : Version expiring date must be lower than expiring date of "
                             + "all versions of this calendar");
         }
 

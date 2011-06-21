@@ -957,7 +957,12 @@ public abstract class BaseCalendarEditionController extends
             baseCalendarModel.createNewVersion(startDate, expiringDate,
                     selected);
         } catch (IllegalArgumentException e) {
-            throw new WrongValueException(compStartDate, e.getMessage());
+            if (e.getMessage().contains("Wrong expiring date")) {
+                throw new WrongValueException(compExpiringDate, _(e
+                        .getMessage()));
+            } else {
+                throw new WrongValueException(compStartDate, _(e.getMessage()));
+            }
         }
 
         Clients.closeErrorBox(compStartDate);
