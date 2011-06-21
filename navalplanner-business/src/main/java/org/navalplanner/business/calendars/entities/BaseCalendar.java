@@ -816,18 +816,17 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
 
     public void removeCalendarData(CalendarData calendarData)
             throws IllegalArgumentException {
+        if (this.getCalendarDataVersions().size() <= 1) {
+            throw new IllegalArgumentException(
+                    "You can not remove the last calendar data");
+        }
+
         CalendarData lastCalendarData = getLastCalendarData();
         if (calendarData.equals(lastCalendarData)) {
-            LocalDate validFrom = getValidFrom(calendarData);
-            if (validFrom == null) {
-                throw new IllegalArgumentException(
-                        "You can not remove the current calendar data");
-            }
-            calendarDataVersions.remove(lastCalendarData);
+            calendarDataVersions.remove(calendarData);
             getLastCalendarData().removeExpiringDate();
         } else {
-            throw new IllegalArgumentException(
-                    "You just can remove the last calendar data");
+            calendarDataVersions.remove(calendarData);
         }
     }
 

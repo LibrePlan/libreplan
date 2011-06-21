@@ -853,13 +853,11 @@ public abstract class BaseCalendarEditionController extends
                         @Override
                         public void onEvent(Event event) {
                             baseCalendarModel.removeCalendarData(calendarData);
-                            reloadCurrentWindow();
+                            reloadWorkWeeksList();
                         }
                     });
-            LocalDate validFrom = baseCalendarModel.getValidFrom(calendarData);
-            if ((validFrom == null)
-                    || (!baseCalendarModel.getLastCalendarData().equals(
-                            calendarData))) {
+            if (baseCalendarModel.getBaseCalendar().getCalendarDataVersions()
+                    .size() == 1) {
                 result.setDisabled(true);
             } else {
                 result.setDisabled(false);
