@@ -233,7 +233,8 @@
                       itemRenderer="@{calendarController.editionController.historyVersionsRenderer}"
                       sizedByContent="true">
                       <listhead>
-                        <listheader label="${i18n:_('Parent')}" width="80px"/>
+                        <listheader label="${i18n:_('Parent')}" width="80px"
+                            visible="@{calendarController.editionController.isDerived}"/>
                         <listheader label="${i18n:_('Valid from')}"
                           width="80px" />
                         <listheader label="${i18n:_('Expiry date')}"
