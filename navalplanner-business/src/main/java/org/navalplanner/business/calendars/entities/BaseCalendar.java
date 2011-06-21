@@ -408,24 +408,43 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             LocalDate expiringDate) {
         for (CalendarData nextVersion : calendarDataVersions) {
             if ((nextVersion.getExpiringDate() == null)
-                    || (expiringDate.compareTo(nextVersion.getExpiringDate()) < 0)) {
+                    || (expiringDate.compareTo(nextVersion.getExpiringDate()) <= 0)) {
                 int index = calendarDataVersions.indexOf(nextVersion);
                 if (index > 0) {
                     CalendarData prevVersion = calendarDataVersions
                             .get(index - 1);
+                    if (newIntervalIncludeAnotherWorkWeek(startDate,
+                            expiringDate, prevVersion, nextVersion)) {
+                        throw new IllegalArgumentException(
+                                "the new version includes a whole version already exists");
+                    } else {
+                        LocalDate prevExpiringDate = prevVersion
+                                .getExpiringDate();
+                        LocalDate nextExpiringDate = nextVersion
+                                .getExpiringDate();
+                        BaseCalendar oldParent = nextVersion.getParent();
 
-                    if (startDate.compareTo(prevVersion.getExpiringDate()) >= 0) {
-                        prevVersion.setExpiringDate(startDate);
+                        if (startDate.compareTo(prevExpiringDate) > 0) {
+                            CalendarData prevCalendarData = CalendarData
+                                    .create();
+                            prevCalendarData.setExpiringDate(startDate);
+                            prevCalendarData.setParent(oldParent);
+                            calendarDataVersions.add(prevCalendarData);
+                        } else {
+                            prevVersion.setExpiringDate(startDate);
+                        }
 
                         CalendarData newCalendarData = CalendarData.create();
                         newCalendarData.setExpiringDate(expiringDate);
                         calendarDataVersions.add(newCalendarData);
+
+                        if (expiringDate.compareTo(nextExpiringDate) >= 0) {
+                            calendarDataVersions.remove(nextVersion);
+                        }
+
                         Collections.sort(calendarDataVersions,
                                 CalendarData.BY_EXPIRING_DATE_COMPARATOR);
                         return newCalendarData;
-                    }else{
-                        throw new IllegalArgumentException(
-                                "the new version includes a whole version already exists");
                     }
                 } else {
                     throw new IllegalArgumentException(
@@ -434,7 +453,25 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
         }
         throw new IllegalArgumentException(
-                "the new version will be the last one, and the expiring date must be empty");
+                "Wrong expiring date : the new version will be the last one, and the expiring date must be empty");
+    }
+
+    public boolean newIntervalIncludeAnotherWorkWeek(LocalDate startDate,
+            LocalDate expiringDate, CalendarData prevVersion,
+            CalendarData nextVersion) {
+        if ((startDate.compareTo(prevVersion.getExpiringDate()) <= 0)
+                && (expiringDate.compareTo(nextVersion.getExpiringDate()) >= 0)) {
+            return true;
+        }
+        int indexPrevOfPrev = calendarDataVersions.indexOf(prevVersion);
+        if (indexPrevOfPrev > 0) {
+            CalendarData prevOfPrev = (CalendarData) calendarDataVersions
+                    .get(indexPrevOfPrev - 1);
+            if (startDate.compareTo(prevOfPrev.getExpiringDate()) <= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public CalendarData createLastVersion(LocalDate startDate)
