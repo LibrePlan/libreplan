@@ -18,15 +18,27 @@
  */
 package org.navalplanner.web.users.services;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
+import org.navalplanner.business.common.entities.ConfigurationRolesLDAP;
 import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.core.AttributesMapper;
+import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
@@ -180,40 +192,66 @@ public class LDAPCustomAuthenticationProvider extends
                             userNavalplan.setPassword(encodedPassword);
                             userNavalplan.setNavalplanUser(false);
                             userNavalplan.setDisabled(false);
-                            userNavalplan.addRole(UserRole.ROLE_ADMINISTRATION);
+                            List<String> roles = getMatchedRoles(
+                                    configuration, ldapTemplate, username);
+                            for (String role : roles) {
+                                userNavalplan.addRole(UserRole.valueOf(
+                                        UserRole.class, role));
+                            }
                             transactionService
-                                    .runOnTransaction(new IOnTransaction() {
+                                    .runOnTransaction(new IOnTransaction<Void>() {
                                         @Override
-                                        public Object execute() {
+                                        public Void execute() {
                                             userDAO.save(userNavalplan);
-                                            return true;
+                                            return null;
                                         }
                                     });
                         } else {
                             // user exists in NavalPlan
+                            // We must match the LDAPRoles with
+                            // LibrePlanRoles
+                            // The user must have the roles from LDAP
+                            if (configuration.getLdapSaveRolesDB()) {
+                                List<String> roles = getMatchedRoles(
+                                        configuration, ldapTemplate, username);
+                                for (String role : roles) {
+                                    if (!user.getRoles().contains(
+                                            UserRole.valueOf(UserRole.class,
+                                                    role))) {
+                                        user.addRole(UserRole.valueOf(
+                                                UserRole.class, role));
+                                    }
+                                }
+                                Set<UserRole> oldRoles = new HashSet<UserRole>();
+                                oldRoles.addAll(user.getRoles());
+                                for (UserRole role : oldRoles) {
+                                    if (!roles.contains(role.name())) {
+                                        user.removeRole(role);
+                                    }
+                                }
+                            }
                             if (configuration.isLdapSavePasswordsDB()) {
                                 // We must test if user had password in
-                                // database,
-                                // because the configuration
+                                // database, because the configuration
                                 // of importing passwords could be changed after
-                                // the
-                                // import of the user
-                                // so the password could be null in database.
+                                // the import of the user so the password could
+                                // be null in database.
+
                                 if (null == user.getPassword()
                                         || !(user.getPassword()
                                                 .equals(encodedPassword))) {
                                     user.setPassword(encodedPassword);
-                                    final User userNavalplan = user;
-                                    transactionService
-                                            .runOnTransaction(new IOnTransaction() {
-                                                @Override
-                                                public Object execute() {
-                                                    userDAO.save(userNavalplan);
-                                                    return true;
-                                                }
-                                            });
                                 }
                             }
+                            final User userNavalplan = user;
+                            transactionService
+                                    .runOnTransaction(new IOnTransaction<Void>() {
+                                        @Override
+                                        public Void execute() {
+                                            userDAO.save(userNavalplan);
+                                            return null;
+                                        }
+                                    });
                         }
                         // Gets and returns user from DB once authenticated
                         // against
@@ -257,6 +295,62 @@ public class LDAPCustomAuthenticationProvider extends
         return (null != user && null != user.getPassword() && encodedPassword
                 .equals(user
                 .getPassword()));
+    }
+
+    private List<String> getMatchedRoles(LDAPConfiguration configuration,
+            LdapTemplate ldapTemplate, String username) {
+
+        final LDAPConfiguration ldapConfig = configuration;
+        String groupsPath = configuration.getLdapGroupPath();
+        String roleProperty = configuration.getLdapRoleProperty();
+        List<ConfigurationRolesLDAP> rolesLdap = configuration
+                .getConfigurationRolesLdap();
+
+        List<String> rolesReturn = new ArrayList<String>();
+
+        if (null == groupsPath || groupsPath.isEmpty()) {
+            // The LDAP has a node strategy for groups,
+            // we must check the roleProperty in user node.
+            for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
+                // We must make a search for each role-matching in nodes
+                List resultsSearch = ldapTemplate.search(
+                        DistinguishedName.EMPTY_PATH,
+                                new EqualsFilter(
+                                roleProperty, roleLDAP.getRoleLdap())
+                                .toString(), new AttributesMapper() {
+
+                            @Override
+                            public Object mapFromAttributes(
+                                    Attributes attributes)
+                                    throws NamingException {
+                                return attributes.get(ldapConfig
+                                        .getLdapUserId());
+                            }
+                        });
+                for (Object resultsIter : resultsSearch) {
+                    Attribute atrib = (Attribute) resultsIter;
+                    if (atrib.contains(username)) {
+                        rolesReturn.add(roleLDAP.getRoleLibreplan());
+                    }
+                }
+            }
+        } else {
+            // The LDAP has a branch strategy for groups
+            // we must check if the user is in one of the groups.
+
+            for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
+                // We must make a search for each role matching
+                DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
+                        .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
+                if (adapter.attributeExists(roleProperty)) {
+                    Attributes atrs = adapter.getAttributes();
+                    if (atrs.get(roleProperty).contains(username)) {
+                        rolesReturn.add(roleLdap.getRoleLibreplan());
+                    }
+                }
+            }
+        }
+        return rolesReturn;
     }
 
     public DBPasswordEncoderService getPasswordEncoderService() {

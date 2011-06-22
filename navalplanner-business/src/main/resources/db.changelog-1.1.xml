@@ -9,36 +9,42 @@
             <column name="ldap_host" type="VARCHAR(255)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-port" author="calvarinop">
         <comment>Add new column to store ldap port</comment>
         <addColumn tableName="configuration">
             <column name="ldap_port" type="VARCHAR(5)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-base" author="calvarinop">
         <comment>Add new column to store ldap base</comment>
         <addColumn tableName="configuration">
             <column name="ldap_base" type="VARCHAR(255)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-userdn" author="calvarinop">
         <comment>Add new column to store ldap userdn</comment>
         <addColumn tableName="configuration">
             <column name="ldap_userdn" type="VARCHAR(255)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-password" author="calvarinop">
         <comment>Add new column to store ldap password</comment>
         <addColumn tableName="configuration">
             <column name="ldap_password" type="VARCHAR(255)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-userid" author="calvarinop">
         <comment>Add new column to store ldap userid</comment>
         <addColumn tableName="configuration">
             <column name="ldap_userid" type="VARCHAR(255)" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-save-password-db"
         author="calvarinop">
         <comment>Add new column to store ldap passwords in database</comment>
@@ -46,6 +52,7 @@
             <column name="ldap_save_password_db" type="BOOLEAN" />
         </addColumn>
     </changeSet>
+
     <changeSet id="add-new-column-ldap-auth-enabled" author="calvarinop">
         <comment>Add new column to store ldap authentication enabled</comment>
         <addColumn tableName="configuration">
@@ -60,12 +67,14 @@
             <column name="navalplan_user" type="BOOLEAN" />
         </addColumn>
     </changeSet>
+
     <changeSet id="delete-constraint-not-null-user-password"
         author="idiazt">
         <comment>Delete constraint not null for user password</comment>
         <dropNotNullConstraint tableName="user_table"
             columnName="password" columnDataType="VARCHAR(255)" />
     </changeSet>
+
     <changeSet id="set-default-value-navalplan-user" author="idiazt">
         <addDefaultValue tableName="user_table"
            columnName="navalplan_user"
@@ -75,6 +84,7 @@
            defaultNullValue="TRUE"
            columnDataType="BOOLEAN" />
     </changeSet>
+
     <changeSet id="set-default-value-ldap-save-password-db" author="idiazt">
         <addDefaultValue tableName="configuration"
            columnName="ldap_save_password_db"
@@ -84,6 +94,7 @@
            defaultNullValue="TRUE"
            columnDataType="BOOLEAN" />
     </changeSet>
+
     <changeSet id="set-default-value-ldap-auth-enabled" author="idiazt">
         <addDefaultValue tableName="configuration"
            columnName="ldap_auth_enabled"
@@ -93,4 +104,49 @@
            defaultNullValue="FALSE"
            columnDataType="BOOLEAN" />
     </changeSet>
+
+    <changeSet id="add-new-column-ldap-save-roles-db" author="calvarinop">
+        <comment>Add new column to store ldap roles in database</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_save_roles_db" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration"
+           columnName="ldap_save_roles_db"
+           defaultValueBoolean="FALSE" />
+       <addNotNullConstraint tableName="configuration"
+           columnName="ldap_save_roles_db"
+           defaultNullValue="FALSE"
+           columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="create-new-table-matching-roles" author="calvarinop">
+        <comment>Add table to store the matching between LDAP roles and LibrePlan roles</comment>
+        <createTable tableName="configuration_roles_ldap">
+            <column name="role_libreplan" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="role_ldap" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="id_configuration" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role_matching_id" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="id_configuration" baseTableName="configuration_roles_ldap" constraintName="id_configuration_fkey" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="configuration" referencesUniqueColumn="false"/>
+
+        <comment>Add new column to store ldap group path</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_group_path" type="VARCHAR(255)" />
+        </addColumn>
+
+        <comment>Add new column to store ldap role property</comment>
+        <addColumn tableName="configuration">
+            <column name="ldap_role_property" type="VARCHAR(255)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

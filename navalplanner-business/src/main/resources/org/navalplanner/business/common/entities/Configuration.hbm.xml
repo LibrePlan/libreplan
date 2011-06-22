@@ -65,6 +65,7 @@
 
         <property name="scenariosVisible" not-null="true"
             column="scenarios_visible" />
+
         <component name="ldapConfiguration" class="org.navalplanner.business.common.entities.LDAPConfiguration">
             <property name="ldapHost" column="ldap_Host"/>
             <property name="ldapPort" column="ldap_port"/>
@@ -72,9 +73,25 @@
             <property name="ldapUserDn" column="ldap_userdn"/>
             <property name="ldapPassword" column="ldap_password"/>
             <property name="ldapUserId" column="ldap_userid"/>
+            <property name="ldapGroupPath" column="ldap_group_path"/>
+            <property name="ldapRoleProperty" column="ldap_role_property"/>
             <property name="ldapSavePasswordsDB" column="ldap_save_password_db" not-null="true"/>
             <property name="ldapAuthEnabled" column="ldap_auth_enabled" not-null="true"/>
+            <property name="ldapSaveRolesDB" column="ldap_save_roles_db" not-null="true"/>
+
+            <list name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
+                <key column="id_configuration" />
+                <list-index column="role_matching_id" />
+                <composite-element class="ConfigurationRolesLDAP">
+                    <property name="roleLdap" column="role_ldap"
+                        not-null="true" />
+                    <property name="roleLibreplan" column="role_libreplan"
+                        not-null="true" />
+                </composite-element>
+            </list>
+
         </component>
+
     </class>
 
 </hibernate-mapping>

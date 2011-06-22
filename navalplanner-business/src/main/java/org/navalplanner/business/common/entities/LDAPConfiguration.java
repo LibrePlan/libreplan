@@ -19,15 +19,21 @@
 
 package org.navalplanner.business.common.entities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.users.entities.UserRole;
 
 /**
  *
  * This entity will be used to store the LDAP connection properties for
  * authentication
  *
- * @author Ignacio Diaz <ignacio.diaz@comtecsf.es>
- * @author Cristina Alvarino <cristina.alvarino@comtecsf.es>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
+ * @author Cristina Alvarino Perez<cristina.alvarino@comtecsf.es>
  *
  */
 public class LDAPConfiguration extends BaseEntity {
@@ -49,11 +55,23 @@ public class LDAPConfiguration extends BaseEntity {
 
     private String ldapPassword;
 
+    private String ldapGroupPath;
+
+    private String ldapRoleProperty;
+
     // LDAP passwords will be imported to DB or not
     private Boolean ldapSavePasswordsDB = true;
 
     // LDAP Authentication will be used or not
     private Boolean ldapAuthEnabled = false;
+
+    // LDAP roles will be used or not
+    private Boolean ldapSaveRolesDB = false;
+
+    // A list which stores the matching between LDAP roles and LibrePlan roles
+    private List<ConfigurationRolesLDAP> configurationRolesLdap = new ArrayList<ConfigurationRolesLDAP>();
+
+    private Map<String, List<String>> mapMatchingRoles = new HashMap<String, List<String>>();
 
     public String getLdapUserId() {
         return ldapUserId;
@@ -119,4 +137,64 @@ public class LDAPConfiguration extends BaseEntity {
         this.ldapAuthEnabled = ldapAuthEnabled;
     }
 
+    public Boolean getLdapSaveRolesDB() {
+        return ldapSaveRolesDB;
+    }
+
+    public void setLdapSaveRolesDB(Boolean ldapSaveRolesDB) {
+        this.ldapSaveRolesDB = ldapSaveRolesDB;
+    }
+
+    public Boolean getLdapSavePasswordsDB() {
+        return ldapSavePasswordsDB;
+    }
+
+    public String getLdapGroupPath() {
+        return ldapGroupPath;
+    }
+
+    public void setLdapGroupPath(String ldapGroupPath) {
+        this.ldapGroupPath = ldapGroupPath;
+    }
+
+    public String getLdapRoleProperty() {
+        return ldapRoleProperty;
+    }
+
+    public void setLdapRoleProperty(String ldapRoleProperty) {
+        this.ldapRoleProperty = ldapRoleProperty;
+    }
+
+    public List<ConfigurationRolesLDAP> getConfigurationRolesLdap() {
+        return configurationRolesLdap;
+    }
+
+    public void setConfigurationRolesLdap(
+            List<ConfigurationRolesLDAP> configurationRolesLdap) {
+        this.configurationRolesLdap = configurationRolesLdap;
+    }
+
+    public Map<String, List<String>> getMapMatchingRoles() {
+
+        for (UserRole role : UserRole.values()) {
+
+            List<String> listRolesLdap = new ArrayList<String>();
+            for (ConfigurationRolesLDAP roleLdap : this.configurationRolesLdap) {
+
+                // if the role of librePlan is equals to role stored in
+                // configurationLdap, it is added to list
+                if (roleLdap != null
+                        && role.name().equals(roleLdap.getRoleLibreplan())) {
+                    listRolesLdap.add(roleLdap.getRoleLdap());
+                }
+            }
+            mapMatchingRoles.put(role.name(), listRolesLdap);
+        }
+
+        return mapMatchingRoles;
+    }
+
+    public void setMapMatchingRoles(Map<String, List<String>> mapMatchingRoles) {
+        this.mapMatchingRoles = mapMatchingRoles;
+    }
 }

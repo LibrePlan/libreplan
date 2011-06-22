@@ -24,6 +24,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -31,15 +32,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.business.common.entities.ConfigurationRolesLDAP;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.entities.LDAPConfiguration;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
@@ -78,7 +82,8 @@ import org.zkoss.zul.api.Window;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Cristina Alavrino Perez <cristina.alvarino@comtecsf.es>
+ * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
 public class ConfigurationController extends GenericForwardComposer {
 
@@ -111,6 +116,12 @@ public class ConfigurationController extends GenericForwardComposer {
 
     private Map<EntityNameEnum, Boolean> mapOpenedGroups = new HashMap<EntityNameEnum, Boolean>();
 
+    private Component ldapRoles;
+
+    private UserRole roles;
+
+    private Grid configurationRoles;
+
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
@@ -137,6 +148,7 @@ public class ConfigurationController extends GenericForwardComposer {
             scenariosVisible
                     .setTooltiptext(_("Scenarios must be enabled as more elements than master exist"));
         }
+        showLdapRoles();
     }
 
     private void initializeProgressTypeList() {
@@ -800,5 +812,85 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
         configurationModel.setLdapConfiguration(ldapConfiguration);
+    }
+
+    public void showLdapRoles() {
+        ldapRoles.setVisible(configurationModel.getLdapConfiguration()
+                .getLdapSaveRolesDB());
+    }
+
+    public RowRenderer getAllUserRolesRenderer() {
+        return new RowRenderer() {
+            @Override
+            public void render(Row row, Object data) throws Exception {
+
+                final UserRole role = (UserRole) data;
+                row.appendChild(new Label(role.getDisplayName()));
+
+                final Textbox tempTextbox = new Textbox();
+                Textbox textbox = Util.bind(tempTextbox, new Util.Getter<String>() {
+                    @Override
+                    public String get() {
+                        List<String> listRoles = configurationModel.
+                            getLdapConfiguration().getMapMatchingRoles().get(role.name());
+                        return StringUtils.join(listRoles, ";");
+                    }
+                }, new Util.Setter<String>() {
+                    @Override
+                    public void set(String value) {
+                                Map<String, List<String>> mapRoles = configurationModel
+                                        .getLdapConfiguration()
+                                        .getMapMatchingRoles();
+                                mapRoles.put(role.name(),
+                                        Arrays
+                                            .asList(StringUtils.split(value)));
+                                // Add the list of roles to the configuration
+                                // getting the values from map
+                                List<ConfigurationRolesLDAP> oldRoles = configurationModel
+                                        .getLdapConfiguration()
+                                        .getConfigurationRolesLdap();
+                                List<ConfigurationRolesLDAP> newRoles = new ArrayList<ConfigurationRolesLDAP>();
+                                for (String roleLdap : mapRoles.get(role.name())) {
+                                    ConfigurationRolesLDAP configurationRoleLdap = new ConfigurationRolesLDAP();
+                                    configurationRoleLdap.setRoleLdap(roleLdap);
+                                    configurationRoleLdap.setRoleLibreplan(role
+                                            .name());
+                                    newRoles.add(configurationRoleLdap);
+                                }
+                                for (ConfigurationRolesLDAP oldRole : oldRoles) {
+                                    boolean isRoleAdded = false;
+                                    if (oldRole.getRoleLibreplan().equals(
+                                            role.name()))
+                                        isRoleAdded = true;
+                                    for (ConfigurationRolesLDAP addedRole : newRoles) {
+                                        if (addedRole.getRoleLibreplan()
+                                                .equals(oldRole
+                                                        .getRoleLibreplan())
+                                                && addedRole.getRoleLdap()
+                                                        .equals(oldRole
+                                                                .getRoleLdap())) {
+                                            isRoleAdded = true;
+                                        }
+                                    }
+                                    if (!isRoleAdded)
+                                        newRoles.add(oldRole);
+                                }
+                                configurationModel.getLdapConfiguration()
+                                        .setConfigurationRolesLdap(newRoles);
+
+                    }
+                });
+                textbox.setWidth("300px");
+                row.appendChild(textbox);
+            }
+        };
+    }
+
+    public UserRole[] getRoles() {
+        return roles.values();
+    }
+
+    public void setRoles(UserRole roles) {
+        this.roles = roles;
     }
 }

@@ -250,64 +250,133 @@
                 </tabpanel>
 
                 <tabpanel id="panelLDAPConfiguration">
-                    <grid>
-                        <columns>
-                            <column width="200px" />
-                            <column />
-                        </columns>
-                        <rows>
-                            <row>
-                                <label value="${i18n:_('Host:')}" />
-                                <hbox>
-                                    <textbox id="ldapHost" value="@{configurationController.ldapConfiguration.ldapHost}"  width="300px"/>
-                                    <label value="${i18n:__('Example: {0}', 'ldap://localhost')}" />
-                                </hbox>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Port:')}" />
-                                <hbox>
-                                    <textbox id="ldapPort" value="@{configurationController.ldapConfiguration.ldapPort}"  width="300px"/>
-                                    <label value="${i18n:__('Example: {0}', '389')}" />
-                                </hbox>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Base:')}" />
-                                <hbox>
-                                    <textbox id="ldapBase" value="@{configurationController.ldapConfiguration.ldapBase}"  width="300px"/>
-                                    <label value="${i18n:__('Example: {0}', 'dc=example,dc=org')}" />
-                                </hbox>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('UserDn:')}" />
-                                <hbox>
-                                    <textbox id="ldapUserDn" value="@{configurationController.ldapConfiguration.ldapUserDn}"  width="300px"/>
-                                    <label value="${i18n:__('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
-                                </hbox>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('UserId:')}" />
-                                <hbox>
-                                    <textbox id="ldapUserId" value="@{configurationController.ldapConfiguration.ldapUserId}"  width="300px"/>
-                                    <label value="${i18n:__('Example: {0}', 'uid')}" />
-                                </hbox>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Password:')}" />
-                                <textbox id="ldapPassword" value="@{configurationController.ldapConfiguration.ldapPassword}" type="password"  width="300px"/>
-                            </row>
-                            <row>
-                                <label value="${i18n:_('Save passwords in database')}" />
-                                <checkbox id="ldapSavePasswordsDB" checked="@{configurationController.ldapConfiguration.ldapSavePasswordsDB}" />
-                            </row>
-                            <row>
-                                <label value="${i18n:_('LDAP Authentication enabled')}" />
-                                <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
-                            </row>
-                        </rows>
-                    </grid>
-                    <separator />
-                    <button label="${i18n:_('Test LDAP connection')}"
-		                onClick="configurationController.testLDAPConnection()" />
+
+                    <!-- Activation -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Activation')}" />
+                        <label value="${i18n:_('LDAP Authentication enabled')}" />
+                        <checkbox id="ldapAuthEnabled" checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                    </groupbox>
+
+                    <!-- Configuration -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Configuration')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Host:')}" />
+                                    <hbox>
+                                        <textbox id="ldapHost" value="@{configurationController.ldapConfiguration.ldapHost}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'ldap://localhost')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Port:')}" />
+                                    <hbox>
+                                        <textbox id="ldapPort" value="@{configurationController.ldapConfiguration.ldapPort}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', '389')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Base:')}" />
+                                    <hbox>
+                                        <textbox id="ldapBase" value="@{configurationController.ldapConfiguration.ldapBase}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'dc=example,dc=org')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('UserDn:')}" />
+                                    <hbox>
+                                        <textbox id="ldapUserDn" value="@{configurationController.ldapConfiguration.ldapUserDn}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password:')}" />
+                                    <textbox id="ldapPassword" value="@{configurationController.ldapConfiguration.ldapPassword}" type="password"  width="300px"/>
+                                </row>
+                            </rows>
+                        </grid>
+                        <separator />
+                        <button label="${i18n:_('Test LDAP connection')}"
+                            onClick="configurationController.testLDAPConnection()" />
+                        <separator />
+                    </groupbox>
+
+                    <!-- Authentication -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Authentication')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('UserId:')}" />
+                                    <hbox>
+                                        <textbox id="ldapUserId" value="@{configurationController.ldapConfiguration.ldapUserId}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'uid')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Save passwords in database')}" />
+                                    <checkbox id="ldapSavePasswordsDB" checked="@{configurationController.ldapConfiguration.ldapSavePasswordsDB}" />
+                                </row>
+                                <row>
+                                </row>
+                            </rows>
+                        </grid>
+
+                    </groupbox>
+
+                    <!-- Authorization -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Authorization')}" />
+                        <grid>
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('Import LDAP roles')}" />
+                                    <checkbox id="ldapSaveRolesDB" checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" onCheck="configurationController.showLdapRoles()"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Group path:')}" />
+                                    <hbox>
+                                        <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'ou=devel,ou=groups (If it is empty, a node strategy is used.)')}" />
+                                    </hbox>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Role property:')}" />
+                                    <hbox>
+                                        <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
+                                        <label value="${i18n:__('Example: {0}', 'memberUid')}" />
+                                    </hbox>
+                                </row>
+                            </rows>
+                        </grid>
+                        <separator />
+                        <separator />
+                        <vbox id="ldapRoles" visible="false">
+                            <grid id="configurationRoles"
+                                model="@{configurationController.roles}"
+                                rowRenderer="@{configurationController.allUserRolesRenderer}"
+                                mold="paging" pageSize="10" fixedLayout="true">
+                                <columns>
+                                    <column label="${i18n:_('Role DB')}" width="200px" />
+                                    <column label="${i18n:_('LDAP Roles')}" />
+                                </columns>
+                            </grid>
+                        </vbox>
+                    </groupbox>
                 </tabpanel>
             </tabpanels>
         </tabbox>

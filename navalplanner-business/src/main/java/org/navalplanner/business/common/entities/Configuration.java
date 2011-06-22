@@ -33,6 +33,7 @@ import org.navalplanner.business.common.BaseEntity;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
 public class Configuration extends BaseEntity {
 
@@ -381,5 +382,4 @@ public class Configuration extends BaseEntity {
     public void setLdapConfiguration(LDAPConfiguration ldapConfiguration) {
         this.ldapConfiguration = ldapConfiguration;
     }
-
 }

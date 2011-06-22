@@ -27,7 +27,7 @@
         <property name="navalplanUser" column="navalplan_user" not-null="true"/>
 
         <!-- Index created in a database-object section -->
-        <set name="roles" table="roles_table">
+        <set name="roles" table="roles_table" lazy="false">
             <key column="user_id"/>
             <element>
                 <type name="org.hibernate.type.EnumType">
