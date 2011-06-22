@@ -216,11 +216,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 TaskElement
                 .getByStartDateComparator());
         TaskElement latest = Collections.max(configuration.getData(),
-                TaskElement.getByEndDateComparator());
+                TaskElement.getByEndAndDeadlineDateComparator());
 
-        LocalDate startDate = LocalDate.fromDateFields(earliest
-                .getStartDate());
-        LocalDate endDate = LocalDate.fromDateFields(latest.getEndDate());
+        LocalDate startDate = earliest.getStartAsLocalDate();
+        LocalDate endDate = latest.getBiggestAmongEndOrDeadline();
         return ZoomLevel.getDefaultZoomByDates(startDate, endDate);
     }
 
