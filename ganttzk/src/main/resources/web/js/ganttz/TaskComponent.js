@@ -125,14 +125,17 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
                         return ganttz.DependencyComponentBase.$(dep);
                     });
         });
+        var drawDependencies = common.Common.memoize(25, function() {
+            relatedDependencies().forEach(function(dependency) {
+                dependency.draw();
+            });
+        });
         dragdropregion.on('dragEvent', this.proxy(function(ev) {
             // Slight overload. It could be more efficent to overwrite the YUI
             // method
             // that is setting the top property
                 jq(this.$n()).css('top','');
-                relatedDependencies().forEach(function(dependency) {
-                    dependency.draw();
-                });
+                drawDependencies();
             }), null, false);
          // Register the event endDragEvent
         dragdropregion.on('endDragEvent', this.proxy(function(ev) {
