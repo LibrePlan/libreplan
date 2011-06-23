@@ -222,8 +222,6 @@ ganttz.DependencyComponent = zk.$extends(ganttz.DependencyComponentBase,{
         /*maybe move this listener to the $init method*/
         YAHOO.util.Event.onDOMReady(this.proxy(function() {
             this.draw();
-            ganttz.TaskComponent.$(this.getIdTaskOrig()).addRelatedDependency(this);
-            ganttz.TaskComponent.$(this.getIdTaskEnd()).addRelatedDependency(this);
         }));
     },
     draw : function() {

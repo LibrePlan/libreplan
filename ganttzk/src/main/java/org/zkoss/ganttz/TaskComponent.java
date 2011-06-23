@@ -105,7 +105,6 @@ public class TaskComponent extends Div implements AfterCompose {
         setContext("idContextMenuTaskAssignment");
         this.task = task;
         setClass(calculateCSSClass());
-
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = Constraint

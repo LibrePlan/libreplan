@@ -114,23 +114,25 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     consolidateNewDependency : function(task){
         zAu.send(new zk.Event(this, 'onAddDependency', {dependencyId : task.id}));
     },
-    addRelatedDependency : function(dependency){
-        if(this._dependencies == undefined) this._dependencies = [];
-        this._dependencies.push(dependency);
-    },
     _addDragDrop : function(){
         var dragdropregion = this._getDragDropRegion();
-
+        var thisTaskId = this.$n().id;
+        var relatedDependencies = common.Common.memoize(3000, function() {
+            return jq('.dependency[idtaskorig='+ thisTaskId + ']')
+                    .add('.dependency[idtaskend='+ thisTaskId + ']')
+                    .get()
+                    .map(function(dep) {
+                        return ganttz.DependencyComponentBase.$(dep);
+                    });
+        });
         dragdropregion.on('dragEvent', this.proxy(function(ev) {
             // Slight overload. It could be more efficent to overwrite the YUI
             // method
             // that is setting the top property
                 jq(this.$n()).css('top','');
-                if (this._dependencies != undefined) {
-                    jq.each(this._dependencies, function(index, dependency){
-                        dependency.draw();
-                    });
-                }
+                relatedDependencies().forEach(function(dependency) {
+                    dependency.draw();
+                });
             }), null, false);
          // Register the event endDragEvent
         dragdropregion.on('endDragEvent', this.proxy(function(ev) {
