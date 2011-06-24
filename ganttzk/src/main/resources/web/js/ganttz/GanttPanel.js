@@ -9,6 +9,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     $init : function(){
         this.$supers('$init', arguments);
         this.$class.setInstance(this);
+        common.Common.mixInDayPositionRestorer(this);
     },
     bind_ : function(evt){
         this.$supers('bind_', arguments);
@@ -22,6 +23,10 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
         this.domUnlisten_(this._rightpannellayout, 'onScroll', '_listenToScroll');
         this.domUnlisten_(this.$n(), 'onMousemove', '_calcXY');
         this.$supers('unbind_', arguments);
+    },
+    _divsToRestoreDayInto: function() {
+        var first = jq("#ganttpanel").get(0);
+        return [first, first.parentNode, first.parentNode.parentNode];
     },
     timeplotContainerRescroll : function(){
         this._timeplotcontainer.each(jq.proxy(function(index, element){
@@ -61,60 +66,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
     },
     reScrollX : function(px){
         jq('#ganttpanel_inner_scroller_x').width(px);
-    },
-    /**
-     * Scrolls horizontally the ganttpanel when the zoom has resized the component
-     * width.
-     */
-    scroll_horizontal: function(daysDisplacement) {
-        scrollDay = daysDisplacement;
-    },
-
-    // FIXME: this is quite awful, it should be simple
-    update_day_scroll: function(previousPixelPerDay) {
-        this._fromPixelToDay(previousPixelPerDay);
-    },
-    move_scroll: function(diffDays, pixelPerDay) {
-        this._fromDayToPixel(diffDays,pixelPerDay);
-    },
-    _fromPixelToDay: function(previousPixelPerDay) {
-        var div1 = document.getElementById ("ganttpanel").parentNode;
-        var div2 = div1.parentNode;
-        var div3 = div2.parentNode;
-
-        var maxHPosition = div3.scrollWidth - div3.clientWidth;
-        if( maxHPosition > 0 ){
-            var proportion = div3.scrollWidth / maxHPosition;
-            var positionInScroll = div3.scrollLeft;
-            var positionInPx = positionInScroll * proportion;
-            if(positionInPx > 0){
-                var position = positionInPx / previousPixelPerDay;
-                var day = position;
-                this.scrollDay = position;
-            }
-        }
-    },
-    _fromDayToPixel: function(diffDays,pixelPerDay) {
-        var div1 = document.getElementById ("ganttpanel").parentNode;
-        var div2 = div1.parentNode;
-        var div3 = div2.parentNode;
-
-        var day = this.scrollDay;
-        day += parseInt(diffDays);
-        var newPosInPx = parseInt(day * pixelPerDay);
-        var maxHPosition = div3.scrollWidth - div3.clientWidth;
-        var newProportion = div3.scrollWidth / maxHPosition;
-        if( newProportion > 0){
-            var newPosInScroll = newPosInPx / newProportion;
-            if(newPosInScroll < 0){
-                newPosInScroll = 0;
-            }
-            div1.scrollLeft = newPosInScroll;
-            div2.scrollLeft = newPosInScroll;
-            div3.scrollLeft = newPosInScroll;
-        }
     }
-
 },{
     getInstance : function(){
         return this._instance;

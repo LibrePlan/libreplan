@@ -4,6 +4,7 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
     $init : function(){
         this.$supers('$init', arguments);
         this.$class.setInstance(this);
+        common.Common.mixInDayPositionRestorer(this);
     },
     bind_ : function(evt){
         this.$supers('bind_', arguments);
@@ -14,6 +15,10 @@ ganttz.resourceload.ResourceLoadList = zk.$extends(zk.Widget,{
         this.domUnlisten_(jq(window), 'onResize', 'adjustTimeTrackerSize');
         this.domUnlisten_(jq('.rightpanellayout div:first'), 'onScroll', '_listenToScroll');
         this.$supers('unbind_', arguments);
+    },
+    _divsToRestoreDayInto: function() {
+        var first = this.$n();
+        return [first, first.parentNode, first.parentNode.parentNode];
     },
     recalculateTimeTrackerHeight : function(){
         var DOMResourceLoadList = jq('.resourceloadlist');
