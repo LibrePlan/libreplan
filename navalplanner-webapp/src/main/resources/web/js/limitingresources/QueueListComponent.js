@@ -1,6 +1,20 @@
 zk.$package("limitingresources");
 
 limitingresources.QueueListComponent = zk.$extends(zk.Widget,{
+    $init: function() {
+        this.$supers('$init', arguments);
+        common.Common.mixInDayPositionRestorer(this);
+    },
+    bind_: function() {
+        this.$supers('bind_', arguments);
+    },
+    unbind_ : function() {
+        this.$supers('unbind_', arguments);
+    },
+    _divsToRestoreDayInto: function() {
+        var first = this.$n();
+        return [first, first.parentNode, first.parentNode.parentNode];
+    },
 	adjustResourceLoadRows : function() {
 		var width = jq('.rightpanellayout #timetracker .z-grid-header :first').innerWidth();
 		jq('.row_resourceload').each(function(index, element){
