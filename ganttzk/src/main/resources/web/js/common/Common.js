@@ -4,7 +4,7 @@ common.Common = zk.$extends(zk.Widget,{},{
 
 	webAppContextPath : function(){ return window.location.pathname.split( '/' )[1];},
 
-	memoize: function(timeoutTimeMillis, functionToExecute) {
+	throttle: function(timeoutTimeMillis, functionToExecute) {
 	    var lastTimeCalled = null;
 	    var cachedResult = null;
 	    return function() {

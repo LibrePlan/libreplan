@@ -117,7 +117,7 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     _addDragDrop : function(){
         var dragdropregion = this._getDragDropRegion();
         var thisTaskId = this.$n().id;
-        var relatedDependencies = common.Common.memoize(3000, function() {
+        var relatedDependencies = common.Common.throttle(3000, function() {
             return jq('.dependency[idtaskorig='+ thisTaskId + ']')
                     .add('.dependency[idtaskend='+ thisTaskId + ']')
                     .get()
@@ -125,7 +125,7 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
                         return ganttz.DependencyComponentBase.$(dep);
                     });
         });
-        var drawDependencies = common.Common.memoize(25, function() {
+        var drawDependencies = common.Common.throttle(25, function() {
             relatedDependencies().forEach(function(dependency) {
                 dependency.draw();
             });
