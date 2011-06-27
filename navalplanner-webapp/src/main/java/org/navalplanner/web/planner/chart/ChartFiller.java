@@ -33,10 +33,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -302,10 +302,47 @@ public abstract class ChartFiller implements IChartFiller {
         @Override
         protected void fillInnerValues(PrintWriter writer, LocalDate firstDay,
                 LocalDate lastDay) {
+            if (isZoomByDayOrWeek()) {
+                fillInnerValuesByDay(writer, firstDay, lastDay);
+            } else {
+                fillInnerValuesByWeek(writer, firstDay, lastDay);
+            }
+        }
+
+        protected void fillInnerValuesByDay(PrintWriter writer,
+                LocalDate firstDay, LocalDate lastDay) {
             for (LocalDate day : getDays()) {
                 BigDecimal hours = getHoursForDay(day);
                 printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
             }
+        }
+
+        protected void fillInnerValuesByWeek(PrintWriter writer,
+                LocalDate firstDay, LocalDate lastDay) {
+            for (LocalDate day = firstDay; day.compareTo(lastDay) <= 0; day = getFinishWeek(day)) {
+                BigDecimal hours = getHoursForWeek(day, getFinishWeek(day));
+                printIntervalLine(writer, day, hours, false);
+            }
+        }
+
+        protected BigDecimal getHoursForWeek(LocalDate firstDay,
+                LocalDate lastDay) {
+            BigDecimal averageHours = BigDecimal.ZERO;
+            int numDays = 0;
+            for (LocalDate day = firstDay; day.compareTo(lastDay) < 0; day = nextDay(day)) {
+                BigDecimal hours = getHoursForDay(day);
+                averageHours = averageHours.add(hours);
+                numDays++;
+            }
+            BigDecimal result = (numDays > 0) ? averageHours
+                    .divide(new BigDecimal(numDays))
+                    : BigDecimal.ZERO;
+            return result;
+        }
+
+        protected LocalDate getFinishWeek(LocalDate day) {
+            return day.plusDays(8 - day.getDayOfWeek())
+                    .toDateTimeAtStartOfDay().toLocalDate();
         }
 
     }
