@@ -37,7 +37,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.entities.Configuration;
-import org.navalplanner.business.common.entities.ConfigurationRolesLDAP;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.entities.LDAPConfiguration;
@@ -838,46 +837,12 @@ public class ConfigurationController extends GenericForwardComposer {
                 }, new Util.Setter<String>() {
                     @Override
                     public void set(String value) {
-                                Map<String, List<String>> mapRoles = configurationModel
+                                configurationModel
                                         .getLdapConfiguration()
-                                        .getMapMatchingRoles();
-                                mapRoles.put(role.name(),
-                                        Arrays
-                                            .asList(StringUtils.split(value)));
-                                // Add the list of roles to the configuration
-                                // getting the values from map
-                                List<ConfigurationRolesLDAP> oldRoles = configurationModel
-                                        .getLdapConfiguration()
-                                        .getConfigurationRolesLdap();
-                                List<ConfigurationRolesLDAP> newRoles = new ArrayList<ConfigurationRolesLDAP>();
-                                for (String roleLdap : mapRoles.get(role.name())) {
-                                    ConfigurationRolesLDAP configurationRoleLdap = new ConfigurationRolesLDAP();
-                                    configurationRoleLdap.setRoleLdap(roleLdap);
-                                    configurationRoleLdap.setRoleLibreplan(role
-                                            .name());
-                                    newRoles.add(configurationRoleLdap);
-                                }
-                                for (ConfigurationRolesLDAP oldRole : oldRoles) {
-                                    boolean isRoleAdded = false;
-                                    if (oldRole.getRoleLibreplan().equals(
-                                            role.name()))
-                                        isRoleAdded = true;
-                                    for (ConfigurationRolesLDAP addedRole : newRoles) {
-                                        if (addedRole.getRoleLibreplan()
-                                                .equals(oldRole
-                                                        .getRoleLibreplan())
-                                                && addedRole.getRoleLdap()
-                                                        .equals(oldRole
-                                                                .getRoleLdap())) {
-                                            isRoleAdded = true;
-                                        }
-                                    }
-                                    if (!isRoleAdded)
-                                        newRoles.add(oldRole);
-                                }
-                                configurationModel.getLdapConfiguration()
-                                        .setConfigurationRolesLdap(newRoles);
-
+                                        .setConfigurationRolesLdap(
+                                                role.name(),
+                                                Arrays.asList(StringUtils
+                                                        .split(value, ";")));
                     }
                 });
                 textbox.setWidth("300px");

@@ -20,6 +20,7 @@
 package org.navalplanner.business.common.entities;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -166,12 +167,30 @@ public class LDAPConfiguration extends BaseEntity {
     }
 
     public List<ConfigurationRolesLDAP> getConfigurationRolesLdap() {
-        return configurationRolesLdap;
+        return Collections.unmodifiableList(configurationRolesLdap);
     }
 
     public void setConfigurationRolesLdap(
-            List<ConfigurationRolesLDAP> configurationRolesLdap) {
-        this.configurationRolesLdap = configurationRolesLdap;
+            String roleLibreplan, List<String> rolesLdap) {
+        removeConfigurationRolesLdapForRoleLibreplan(roleLibreplan);
+
+        for (String roleLdap : rolesLdap) {
+            ConfigurationRolesLDAP configuration = new ConfigurationRolesLDAP();
+            configuration.setRoleLibreplan(roleLibreplan);
+            configuration.setRoleLdap(roleLdap);
+            configurationRolesLdap.add(configuration);
+        }
+    }
+
+    private void removeConfigurationRolesLdapForRoleLibreplan(
+            String roleLibreplan) {
+        List<ConfigurationRolesLDAP> toRemove = new ArrayList<ConfigurationRolesLDAP>();
+        for (ConfigurationRolesLDAP each : configurationRolesLdap) {
+            if (each.getRoleLibreplan().equals(roleLibreplan)) {
+                toRemove.add(each);
+            }
+        }
+        configurationRolesLdap.removeAll(toRemove);
     }
 
     public Map<String, List<String>> getMapMatchingRoles() {
@@ -197,4 +216,5 @@ public class LDAPConfiguration extends BaseEntity {
     public void setMapMatchingRoles(Map<String, List<String>> mapMatchingRoles) {
         this.mapMatchingRoles = mapMatchingRoles;
     }
+
 }
