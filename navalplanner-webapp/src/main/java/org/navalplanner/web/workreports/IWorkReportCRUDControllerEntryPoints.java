@@ -30,16 +30,13 @@ import org.navalplanner.web.common.entrypoints.EntryPoints;
 public interface IWorkReportCRUDControllerEntryPoints {
 
     @EntryPoint("editDTO")
-    public abstract void goToEditForm(WorkReportDTO workReportDTO)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+    public abstract void goToEditForm(WorkReportDTO workReportDTO);
 
     @EntryPoint("edit")
-    public abstract void goToEditForm(WorkReport workReport)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+    public abstract void goToEditForm(WorkReport workReport);
 
     @EntryPoint("create")
-    public abstract void goToCreateForm(WorkReportType workReportType)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException;
+    public abstract void goToCreateForm(WorkReportType workReportType);
 
     @EntryPoint("list")
     public abstract void goToList();

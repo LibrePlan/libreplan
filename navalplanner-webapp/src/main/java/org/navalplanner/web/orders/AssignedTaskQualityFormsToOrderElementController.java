@@ -336,17 +336,14 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         }
     }
 
-    private void appendDetails(Row row, TaskQualityForm taskQualityForm)
-            throws ClassNotFoundException, InstantiationException,
-            IllegalAccessException {
+    private void appendDetails(Row row, TaskQualityForm taskQualityForm) {
         Detail details = new Detail();
         details.setParent(row);
         details.appendChild(appendGridItems(row, taskQualityForm));
         details.setOpen(false);
     }
 
-    private Grid appendGridItems(Row row, TaskQualityForm taskQualityForm)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private Grid appendGridItems(Row row, TaskQualityForm taskQualityForm) {
         Grid gridItems = new Grid();
 
         gridItems.setMold("paging");
@@ -362,8 +359,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         return gridItems;
     }
 
-    private void renderColumns(Grid gridItems)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void renderColumns(Grid gridItems) {
 
         Columns columns = gridItems.getColumns();
         // Create listhead first time is rendered
@@ -377,7 +373,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         // Add static headers
         Column columnName = new Column();
         columnName.setLabel(_("Name"));
-        columnName.setSort("auto=(name)");
+        Util.setSort(columnName, "auto=(name)");
         columnName.setSortDirection("ascending");
         columns.appendChild(columnName);
 

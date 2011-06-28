@@ -53,8 +53,8 @@ import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -605,8 +605,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    public void goToCreateForm(WorkReportType workReportType)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void goToCreateForm(WorkReportType workReportType) {
         cameBackList = false;
         workReportModel.initCreate(workReportType);
         prepareWorkReportList();
@@ -616,13 +615,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
     }
 
-    public void goToEditForm(WorkReportDTO workReportDTO)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void goToEditForm(WorkReportDTO workReportDTO) {
         workReportModel.setListingQuery(false);
         goToEditForm(workReportDTO.getWorkReport());
     }
 
-    public void goToEditForm(WorkReport workReport) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+    public void goToEditForm(WorkReport workReport) {
         workReportModel.initEdit(workReport);
         createWindow.setTitle(_("Edit Work Report"));
         loadComponents(createWindow);
@@ -702,8 +700,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @throws ClassNotFoundException
      *
      */
-    private void prepareWorkReportList()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void prepareWorkReportList() {
         /*
          * The only way to clean the listhead, is to clean all its attributes
          * and children The paging component cannot be removed manually. It is
@@ -733,8 +730,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * @throws InstantiationException
      * @throws ClassNotFoundException
      */
-    private void appendColumns(Grid grid) throws
-    ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void appendColumns(Grid grid) {
 
         Columns columns = grid.getColumns();
         // Create listhead first time is rendered
@@ -751,7 +747,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 NewDataSortableColumn columnDate = new NewDataSortableColumn();
                 columnDate.setLabel(_("Date"));
                 columnDate.setSclass("date-column");
-                columnDate.setSort("auto=(date)");
+                Util.setSort(columnDate, "auto=(date)");
                 columnDate.setSortDirection("ascending");
 
                 columnDate.addEventListener("onSort", new EventListener() {

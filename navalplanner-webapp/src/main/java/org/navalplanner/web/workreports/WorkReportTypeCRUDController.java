@@ -44,8 +44,8 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -265,8 +265,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
         }
     }
 
-    public void goToEditNewWorkReportForm(WorkReportType workReportType)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void goToEditNewWorkReportForm(WorkReportType workReportType) {
         workReportCRUD.goToCreateForm(workReportType);
     }
 
