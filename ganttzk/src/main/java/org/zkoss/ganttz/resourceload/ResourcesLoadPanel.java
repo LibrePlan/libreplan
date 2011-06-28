@@ -37,10 +37,8 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.MutableTreeModel;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -128,7 +126,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-        registerNeededScripts();
     }
 
     public ListModel getFilters() {
@@ -276,15 +273,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
         return toolbar;
-    }
-
-    private void registerNeededScripts() {
-        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
@@ -513,7 +501,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                     timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
                     resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
                     leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-                    registerNeededScripts();
                 }
                 nameFilterListener.fireEvent(new IListenerNotification<IPaginationFilterChangedListener>() {
                     @Override
