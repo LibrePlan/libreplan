@@ -44,6 +44,8 @@ public class User extends BaseEntity {
 
     private String password="";
 
+    private Language applicationLanguage = Language.BROWSER_LANGUAGE;
+
     private Set<UserRole> roles = new HashSet<UserRole>();
 
     private Set<Profile> profiles = new HashSet<Profile>();
@@ -195,6 +197,14 @@ public class User extends BaseEntity {
 
     public Scenario getLastConnectedScenario() {
         return lastConnectedScenario;
+    }
+
+    public Language getApplicationLanguage() {
+        return applicationLanguage;
+    }
+
+    public void setApplicationLanguage(Language applicationLanguage) {
+        this.applicationLanguage = applicationLanguage;
     }
 
 }

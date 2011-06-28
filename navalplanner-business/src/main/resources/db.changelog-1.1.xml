@@ -18,4 +18,11 @@
             columnDataType="BOOLEAN" />
     </changeSet>
 
+    <changeSet id="add-application-language" author="calvarinop">
+        <comment>Add new column to store the language of application for this user</comment>
+        <addColumn tableName="user_table">
+            <column name="application_language" type="INTEGER" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -19,11 +19,15 @@
             </generator>
         </id>
         <version name="version" access="property" type="long" />
-        <property name="loginName" not-null="true" unique="true"
-            column="login_name" />
+        <property name="loginName" not-null="true" unique="true" column="login_name" />
         <property name="password" not-null="true"/>
         <property name="email"/>
         <property name="disabled"/>
+        <property name="applicationLanguage" column="application_language">
+            <type name="org.hibernate.type.EnumType">
+                <param name="enumClass">org.navalplanner.business.users.entities.Language</param>
+            </type>
+        </property>
 
         <!-- Index created in a database-object section -->
         <set name="roles" table="roles_table">

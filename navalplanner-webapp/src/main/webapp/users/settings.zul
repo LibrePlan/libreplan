@@ -1,0 +1,61 @@
+<!--
+  This file is part of NavalPlan
+
+  Copyright (C) 2011 ComtecSF, S.L.
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with this program.  If not, see
+  <http://www.gnu.org/licenses/>.
+ -->
+
+<?page title="${i18n:_('NavalPlan: Settings')}"?>
+<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+<?page  id="List"?>
+<?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan.css"?>
+<?link rel="stylesheet" type="text/css" href="/common/css/navalplan_zk.css"?>
+<?link rel="stylesheet" type="text/css" href="/resources/css/resources.css"?>
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+<zk>
+    <window id="settingsWindow" self="@{define(content)}"
+        apply="org.navalplanner.web.users.SettingsController"
+        title="${i18n:_('User settings')}">
+
+        <vbox id="messagesContainer" />
+
+        <tabbox>
+            <tabs>
+                <tab label="${i18n:_('Data')}" />
+            </tabs>
+            <tabpanels>
+                <tabpanel>
+                    <!-- Data -->
+                    <groupbox style="margin-top: 5px" closable="false">
+                        <hbox>
+                            <label value="${i18n:_('Select language:')}" />
+                            <combobox id="applicationLanguage">
+                            </combobox>
+                        </hbox>
+
+                        <hbox>
+                            <button label="${i18n:_('Save')}"
+                                sclass="save-button global-action"
+                                onClick="settingsController.save()" />
+                        </hbox>
+                    </groupbox>
+                </tabpanel>
+            </tabpanels>
+        </tabbox>
+    </window>
+</zk>
