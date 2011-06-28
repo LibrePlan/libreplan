@@ -85,6 +85,8 @@ public class LDAPConfiguration extends BaseEntity {
 
     private Map<String, List<String>> mapMatchingRoles = new HashMap<String, List<String>>();
 
+    private String ldapSearchQuery;
+
     public String getLdapUserId() {
         return ldapUserId;
     }
@@ -226,4 +228,18 @@ public class LDAPConfiguration extends BaseEntity {
         this.mapMatchingRoles = mapMatchingRoles;
     }
 
+    /**
+     * @return the ldapSearchQuery
+     */
+    public String getLdapSearchQuery() {
+        return ldapSearchQuery;
+    }
+
+    /**
+     * @param ldapSearchQuery
+     *            the ldapSearchQuery to set
+     */
+    public void setLdapSearchQuery(String ldapSearchQuery) {
+        this.ldapSearchQuery = ldapSearchQuery;
+    }
 }

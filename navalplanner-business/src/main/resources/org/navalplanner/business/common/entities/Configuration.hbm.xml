@@ -78,6 +78,7 @@
             <property name="ldapSavePasswordsDB" column="ldap_save_password_db" not-null="true"/>
             <property name="ldapAuthEnabled" column="ldap_auth_enabled" not-null="true"/>
             <property name="ldapSaveRolesDB" column="ldap_save_roles_db" not-null="true"/>
+            <property name="ldapSearchQuery" column="ldap_search_query"/>
 
             <list name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
                 <key column="id_configuration" />
