@@ -55,7 +55,7 @@ public class SettingsController extends GenericForwardComposer {
         public void render(org.zkoss.zul.Listitem item, Object data)
                 throws Exception {
             Language language = (Language) data;
-            item.setLabel(language.getDisplayName());
+            item.setLabel(_(language.getDisplayName()));
         }
     };
 
