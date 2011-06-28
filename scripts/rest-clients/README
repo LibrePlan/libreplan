@@ -1,12 +1,31 @@
-WEB SERVICES
+Web Services
 ============
+
+.. sectnum::
+
+:Author: Manuel Rego Casasnovas
+:Contact: rego@igalia.com
+:Date: 28/06/2011
+:Copyright:
+  Some rights reserved. This document is distributed under the Creative
+  Commons Attribution-ShareAlike 3.0 licence, available in
+  http://creativecommons.org/licenses/by-sa/3.0/.
+:Abstract:
+  Basic documentation about NavalPlan web services usage.
+
+
+.. contents:: Table of Contents
+
+
+Introduction
+------------
 
 Inside ``scripts/rest-clients/`` folder of NavalPlan source code, you can find
 several scripts to test NavalPlan web services. There are web services for
 most import entities in the application. And if needed more could be easily
 developed.
 
-All integration entities (NavalPlan entities that can be exported and/or
+All *integration entities* (NavalPlan entities that can be exported and/or
 imported) has a common attribute called ``code``. This field would be the one
 used to share information between NavalPlan and other systems or other NavalPlan
 instances.
@@ -58,7 +77,7 @@ Default credentials
 -------------------
 
 In order to test these scripts you will need an user with reader and writer
-permissions for web services of NavalPlan. Default users and passwords are:
+permissions for web services of NavalPlan. Default credentials are:
 
 * Reader permission:
 
@@ -89,7 +108,8 @@ Demo environment (``without parameters``) - default
 Production environment (``--prod``)
 
   Use server deployed with Tomcat in a production deployment in the following
-  URL: ``http://localhost:8080/navalplan/``
+  URL: ``http://localhost:8080/navalplan/`` (the installation done by Debian
+  package).
 
   Example::
 
@@ -102,7 +122,7 @@ Development environment (``--dev``)
 
   Example::
 
-    $ ./export-resources.sh --reader
+    $ ./export-resources.sh --dev
 
 
 XML Schemas
@@ -112,7 +132,7 @@ To get XML schema use the following script::
 
   $ get-xml-schema.sh <service-path>
 
-Example:
+Example::
 
   $ get-xml-schema.sh resources
 
@@ -137,7 +157,7 @@ As for the previous point, in order to insert data in NavalPlan system thought
 web services there are several scripts with prefix ``import-``. In this case,
 these scripts need a special parameter, that would be a XML file with data to be
 inserted in NavalPlan. There are usually files with ``-sample`` suffix as
-example data. Again, output for these scripts is a XMl message with the possible
+example data. Again, output for these scripts is a XML message with the possible
 errors trying to insert the data in the system.
 
 Example::
