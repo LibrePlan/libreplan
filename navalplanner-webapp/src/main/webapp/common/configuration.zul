@@ -365,7 +365,7 @@
                                     <label value="${i18n:_('Role search query:')}" />
                                     <hbox>
                                         <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'uid=[@user_id],ou=groups,ou=people,dc=example,dc=org')}" />
+                                        <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=groups,ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
                             </rows>

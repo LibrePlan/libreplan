@@ -92,6 +92,8 @@ public class LDAPCustomAuthenticationProvider extends
 
     private static final String COLON = ":";
 
+    private static final String USER_ID_SUBSTITUTION = "[USER_ID]";
+
     @Override
     protected void additionalAuthenticationChecks(UserDetails arg0,
             UsernamePasswordAuthenticationToken arg1)
@@ -303,7 +305,7 @@ public class LDAPCustomAuthenticationProvider extends
             LdapTemplate ldapTemplate, String username) {
 
         String queryRoles = configuration.getLdapSearchQuery().replace(
-                "[@user_id]", username);
+                USER_ID_SUBSTITUTION, username);
 
         final LDAPConfiguration ldapConfig = configuration;
         String groupsPath = configuration.getLdapGroupPath();
