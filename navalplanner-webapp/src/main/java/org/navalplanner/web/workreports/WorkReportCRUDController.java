@@ -842,8 +842,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         reloadWorkReportLines();
     }
 
-    private void removeWorkReportLine(WorkReportLine workReportLine)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void removeWorkReportLine(WorkReportLine workReportLine) {
         workReportModel.removeWorkReportLine(workReportLine);
         reloadWorkReportLines();
     }
@@ -1238,8 +1237,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         row.appendChild(delete);
     }
 
-    public void confirmRemove(WorkReportLine workReportLine)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void confirmRemove(WorkReportLine workReportLine) {
         try {
             int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", getWorkReportLineName(workReportLine)), _("Delete"),
                     Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
@@ -1721,13 +1719,9 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * Methods improved the work report edition and creation.Executed on
      * pressing New work report button Creates a new work report for a type, and
      * added it to the work report list
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
      */
 
-    public void onCreateNewWorkReport()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void onCreateNewWorkReport() {
         Listitem selectedItem = listTypeToAssign.getSelectedItem();
         if (selectedItem == null) {
             throw new WrongValueException(listTypeToAssign,
@@ -1755,16 +1749,14 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         this.firstType = firstType;
     }
 
-    public void newWorkReportWithSameType()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void newWorkReportWithSameType() {
         if (save()) {
             goToCreateForm(workReportModel.getWorkReportType());
             cameBackList = true;
         }
     }
 
-    public void onCheckGenerateCode(Event e)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
         if(ce.isChecked()) {
             //we have to auto-generate the code for new objects
