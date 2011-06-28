@@ -19,6 +19,7 @@
 package org.navalplanner.web.users.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -300,6 +302,9 @@ public class LDAPCustomAuthenticationProvider extends
     private List<String> getMatchedRoles(LDAPConfiguration configuration,
             LdapTemplate ldapTemplate, String username) {
 
+        String queryRoles = configuration.getLdapSearchQuery().replace(
+                "[@user_id]", username);
+
         final LDAPConfiguration ldapConfig = configuration;
         String groupsPath = configuration.getLdapGroupPath();
         String roleProperty = configuration.getLdapRoleProperty();
@@ -313,23 +318,27 @@ public class LDAPCustomAuthenticationProvider extends
             // we must check the roleProperty in user node.
             for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
                 // We must make a search for each role-matching in nodes
-                List resultsSearch = ldapTemplate.search(
-                        DistinguishedName.EMPTY_PATH,
-                                new EqualsFilter(
-                                roleProperty, roleLDAP.getRoleLdap())
-                                .toString(), new AttributesMapper() {
+                List<String> rolesToCheck = Arrays.asList(StringUtils.split(
+                        roleLDAP.getRoleLdap(), ";"));
+                List resultsSearch = new ArrayList();
+                for (String role : rolesToCheck) {
+                    resultsSearch.addAll(ldapTemplate.search(
+                            DistinguishedName.EMPTY_PATH, new EqualsFilter(
+                                    roleProperty, roleLDAP.getRoleLdap())
+                                    .toString(), new AttributesMapper() {
 
-                            @Override
-                            public Object mapFromAttributes(
-                                    Attributes attributes)
-                                    throws NamingException {
-                                return attributes.get(ldapConfig
-                                        .getLdapUserId());
-                            }
-                        });
+                                @Override
+                                public Object mapFromAttributes(
+                                        Attributes attributes)
+                                        throws NamingException {
+                                    return attributes.get(ldapConfig
+                                            .getLdapUserId());
+                                }
+                            }));
+                }
                 for (Object resultsIter : resultsSearch) {
                     Attribute atrib = (Attribute) resultsIter;
-                    if (atrib.contains(username)) {
+                    if (atrib.contains(queryRoles)) {
                         rolesReturn.add(roleLDAP.getRoleLibreplan());
                     }
                 }
@@ -340,12 +349,16 @@ public class LDAPCustomAuthenticationProvider extends
 
             for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
                 // We must make a search for each role matching
-                DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
-                        .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
-                if (adapter.attributeExists(roleProperty)) {
-                    Attributes atrs = adapter.getAttributes();
-                    if (atrs.get(roleProperty).contains(username)) {
-                        rolesReturn.add(roleLdap.getRoleLibreplan());
+                List<String> rolesToCheck = Arrays.asList(StringUtils.split(
+                        roleLdap.getRoleLdap(), ";"));
+                for (String role : rolesToCheck) {
+                    DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
+                            .lookup(role + "," + groupsPath);
+                    if (adapter.attributeExists(roleProperty)) {
+                        Attributes atrs = adapter.getAttributes();
+                        if (atrs.get(roleProperty).contains(queryRoles)) {
+                            rolesReturn.add(roleLdap.getRoleLibreplan());
+                        }
                     }
                 }
             }
