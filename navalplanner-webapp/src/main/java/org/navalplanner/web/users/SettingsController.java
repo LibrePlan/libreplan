@@ -25,16 +25,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Language;
-import org.navalplanner.business.users.entities.User;
 import org.navalplanner.web.common.ConfigurationController;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.security.SecurityUtils;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ListitemRenderer;
 
 /**
  * Controller for user settings
@@ -51,45 +48,33 @@ public class SettingsController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
-    private Combobox applicationLanguage;
-
     private ISettingsModel settingsModel;
+
+    public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
+        @Override
+        public void render(org.zkoss.zul.Listitem item, Object data)
+                throws Exception {
+            Language language = (Language) data;
+            item.setLabel(language.getDisplayName());
+        }
+    };
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("settingsController", this, true);
         messages = new MessagesForUser(messagesContainer);
-
-        User user = settingsModel.findByLoginUser(SecurityUtils
-                .getSessionUserLoginName());
-
-        settingsModel.initEdit(user);
-
-        appendAllLanguages(applicationLanguage);
-
-        applicationLanguage.setSelectedIndex(settingsModel.getUser()
-                .getApplicationLanguage().ordinal());
+        settingsModel.initEditLoggedUser();
     }
 
-    private void appendAllLanguages(Combobox combo) {
-        for (Language language : getLanguageNames()) {
-            Comboitem item = combo.appendItem(_(language.getDisplayName()));
-            item.setValue(language);
-        }
-    }
-
-    public Language[] getLanguageNames() {
+    public Language[] getLanguages() {
         return Language.values();
     }
 
     public boolean save() {
         try {
-            settingsModel.setApplicationLanguage(getSelectedLanguage());
             settingsModel.confirmSave();
             messages.showMessage(Level.INFO, _("Settings saved"));
-            applicationLanguage.setSelectedItem(applicationLanguage
-                    .getSelectedItem());
             return true;
         } catch (ValidationException e) {
             messages.showInvalidValues(e);
@@ -97,16 +82,16 @@ public class SettingsController extends GenericForwardComposer {
         return false;
     }
 
-    private Language getSelectedLanguage() {
-        Comboitem selectedItem = applicationLanguage.getSelectedItem();
-        if (selectedItem != null) {
-            return (Language) selectedItem.getValue();
-        }
-        return null;
+    public void setSelectedLanguage(Language language) {
+        settingsModel.setApplicationLanguage(language);
     }
 
-    private User getUser()
-    {
-        return settingsModel.getUser();
+    public Language getSelectedLanguage() {
+        return settingsModel.getApplicationLanguage();
     }
+
+    public static ListitemRenderer getLanguagesRenderer() {
+        return languagesRenderer;
+    }
+
 }

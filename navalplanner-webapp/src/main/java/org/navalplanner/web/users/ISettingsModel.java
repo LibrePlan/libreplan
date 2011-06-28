@@ -20,7 +20,6 @@ package org.navalplanner.web.users;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Language;
-import org.navalplanner.business.users.entities.User;
 
 /**
  * Model for UI operations related to user settings
@@ -34,12 +33,8 @@ public interface ISettingsModel {
 
     Language getApplicationLanguage();
 
-    User findByLoginUser(String login);
-
-    void initEdit(User user);
+    void initEditLoggedUser();
 
     void confirmSave() throws ValidationException;
-
-    User getUser();
 
 }

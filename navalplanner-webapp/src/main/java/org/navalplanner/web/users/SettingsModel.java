@@ -18,7 +18,6 @@
  */
 package org.navalplanner.web.users;
 
-import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -27,6 +26,7 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
+import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -59,9 +59,7 @@ public class SettingsModel implements ISettingsModel {
         this.user.setApplicationLanguage(applicationLanguage);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public User findByLoginUser(String login) {
+    private User findByLoginUser(String login) {
         try {
             return user = userDAO.findByLoginName(login);
         } catch (InstanceNotFoundException e) {
@@ -71,8 +69,8 @@ public class SettingsModel implements ISettingsModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initEdit(User user) {
-        Validate.notNull(user);
+    public void initEditLoggedUser() {
+        User user = findByLoginUser(SecurityUtils.getSessionUserLoginName());
         this.user = getFromDB(user);
     }
 
@@ -105,11 +103,6 @@ public class SettingsModel implements ISettingsModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         userDAO.save(user);
-    }
-
-    @Override
-    public User getUser() {
-        return this.user;
     }
 
 }

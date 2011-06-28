@@ -44,8 +44,11 @@
                     <groupbox style="margin-top: 5px" closable="false">
                         <hbox>
                             <label value="${i18n:_('Select language:')}" />
-                            <combobox id="applicationLanguage">
-                            </combobox>
+                            <listbox id="applicationLanguage"
+                                    model="@{settingsController.languages}"
+                                    itemRenderer="@{settingsController.languagesRenderer}"
+                                    selectedItem="@{settingsController.selectedLanguage}"
+                                    mold="select" />
                         </hbox>
 
                         <hbox>
