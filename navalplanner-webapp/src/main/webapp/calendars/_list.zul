@@ -25,9 +25,9 @@
         zclass="z-dottree">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
-            <treecol label="${i18n:_('Start date')}" align="center"/>
-            <treecol label="${i18n:_('Expiring date')}" align="center"/>
-            <treecol label="${i18n:_('Operations')}" />
+            <treecol label="${i18n:_('From date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_('Up to date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_('Operations')}" width="150px" align="center"/>
         </treecols>
     </tree>
     <button id="show_create_form" onClick="calendarController.goToCreateForm();"
