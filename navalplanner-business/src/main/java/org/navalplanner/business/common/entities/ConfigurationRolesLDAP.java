@@ -26,7 +26,7 @@ import org.hibernate.validator.NotEmpty;
  * LDAP roles and LibrePlan roles this will be used in LDAP configuration tab of
  * the Configuration screen.
  *
- * This class is a component of LdapConfiguration class
+ * This class is a component of {@link LDAPConfiguration} class
  *
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
@@ -37,22 +37,19 @@ public class ConfigurationRolesLDAP {
 
     private String roleLibreplan;
 
+    public ConfigurationRolesLDAP(String roleLdap, String roleLibreplan) {
+        this.roleLdap = roleLdap;
+        this.roleLibreplan = roleLibreplan;
+    }
+
     @NotEmpty(message = "role ldap not specified")
     public String getRoleLdap() {
         return roleLdap;
     }
 
-    public void setRoleLdap(String roleLdap) {
-        this.roleLdap = roleLdap;
-    }
-
     @NotEmpty(message = "role libreplan not specified")
     public String getRoleLibreplan() {
         return roleLibreplan;
-    }
-
-    public void setRoleLibreplan(String roleLibreplan) {
-        this.roleLibreplan = roleLibreplan;
     }
 
 }

@@ -69,7 +69,18 @@ public class LDAPConfiguration extends BaseEntity {
     // LDAP roles will be used or not
     private Boolean ldapSaveRolesDB = false;
 
-    // A list which stores the matching between LDAP roles and LibrePlan roles
+    /**
+     * A list which stores the matching between LDAP roles and LibrePlan roles.
+     * {@link ConfigurationRolesLDAP} is a component.
+     *
+     * For each matching a new {@link ConfigurationRolesLDAP} would be stored in
+     * this list.
+     *
+     * E.g., if we have that ROLE_ADMINISTRATION in LibrePlan matches with
+     * admins and editors roles in LDAP there will be 2 objects of
+     * {@link ConfigurationRolesLDAP} class: ROLE_ADMINISTRATION - admins and
+     * ROLE_ADMINISTRATION - editors
+     */
     private List<ConfigurationRolesLDAP> configurationRolesLdap = new ArrayList<ConfigurationRolesLDAP>();
 
     private Map<String, List<String>> mapMatchingRoles = new HashMap<String, List<String>>();
@@ -175,10 +186,8 @@ public class LDAPConfiguration extends BaseEntity {
         removeConfigurationRolesLdapForRoleLibreplan(roleLibreplan);
 
         for (String roleLdap : rolesLdap) {
-            ConfigurationRolesLDAP configuration = new ConfigurationRolesLDAP();
-            configuration.setRoleLibreplan(roleLibreplan);
-            configuration.setRoleLdap(roleLdap);
-            configurationRolesLdap.add(configuration);
+            configurationRolesLdap.add(new ConfigurationRolesLDAP(roleLdap,
+                    roleLibreplan));
         }
     }
 
