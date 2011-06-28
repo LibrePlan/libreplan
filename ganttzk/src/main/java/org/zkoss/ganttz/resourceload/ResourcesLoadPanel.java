@@ -37,17 +37,14 @@ import org.zkoss.ganttz.util.Interval;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.MutableTreeModel;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.ListModel;
@@ -55,6 +52,7 @@ import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.api.Combobox;
 import org.zkoss.zul.api.Listbox;
+import org.zkoss.zul.api.South;
 public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public interface IToolbarCommand {
@@ -128,7 +126,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
         resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-        registerNeededScripts();
     }
 
     public ListModel getFilters() {
@@ -276,15 +273,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private Component getToolbar() {
         Component toolbar = getFellow("toolbar");
         return toolbar;
-    }
-
-    private void registerNeededScripts() {
-        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     private MutableTreeModel<LoadTimeLine> createModelForTree() {
@@ -513,7 +501,6 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
                     timeTrackerComponent = timeTrackerForResourcesLoadPanel(timeTracker);
                     resourceLoadList = new ResourceLoadList(timeTracker, treeModel);
                     leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
-                    registerNeededScripts();
                 }
                 nameFilterListener.fireEvent(new IListenerNotification<IPaginationFilterChangedListener>() {
                     @Override

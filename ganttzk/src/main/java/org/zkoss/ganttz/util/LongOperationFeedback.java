@@ -39,6 +39,7 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 
+
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  *
@@ -71,7 +72,7 @@ public class LongOperationFeedback {
             return;
         }
 
-        Clients.showBusy(longOperation.getName(), true);
+        Clients.showBusy(longOperation.getName());
         executeLater(component, new Runnable() {
             public void run() {
                 try {
@@ -81,7 +82,7 @@ public class LongOperationFeedback {
                     throw new RuntimeException(e);
                 } finally {
                     alreadyInside.remove();
-                    Clients.showBusy(null, false);
+                    Clients.clearBusy();
                 }
             }
         });
@@ -99,6 +100,7 @@ public class LongOperationFeedback {
                 try {
                     runnable.run();
                 } finally {
+                    Clients.clearBusy();
                     component.removeEventListener(eventName, this);
                 }
             }

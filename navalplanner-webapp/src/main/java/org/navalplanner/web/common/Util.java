@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -48,6 +50,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Checkbox;
+import org.zkoss.zul.api.Column;
 
 /**
  * Utilities class. <br />
@@ -56,6 +59,8 @@ import org.zkoss.zul.api.Checkbox;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Util {
+
+    private static final Log LOG = LogFactory.getLog(Util.class);
 
     private Util() {
     }
@@ -612,6 +617,15 @@ public class Util {
         }
         for (EventListener each : uniqueListeners) {
             component.addEventListener(eventName, each);
+        }
+    }
+
+    public static void setSort(Column column, String sortSpec) {
+        try {
+            column.setSort(sortSpec);
+        } catch (Exception e) {
+            LOG.error("failed to set sort property for: " + column + " with: "
+                    + sortSpec, e);
         }
     }
 

@@ -54,7 +54,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.TabSwitcher;
 import org.zkoss.ganttz.TabsRegistry;
 import org.zkoss.ganttz.TabsRegistry.IBeforeShowAction;
@@ -368,7 +367,6 @@ public class MultipleTabsPlannerController implements Composer,
     @Override
     @Transactional(readOnly=true)
     public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
-        Planner.registerNeededScripts();
         tabsSwitcher = (TabSwitcher) comp;
         breadcrumbs = comp.getPage().getFellow("breadcrumbs");
         tabsSwitcher.setConfiguration(buildTabsConfiguration());

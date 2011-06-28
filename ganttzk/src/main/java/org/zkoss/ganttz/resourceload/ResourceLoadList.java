@@ -35,16 +35,14 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.HtmlMacroComponent;
-import org.zkoss.zk.ui.ext.AfterCompose;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * Component to include a list of ResourceLoads inside the ResourcesLoadPanel.
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  */
-public class ResourceLoadList extends HtmlMacroComponent implements
-        AfterCompose {
+public class ResourceLoadList extends XulElement {
 
     private final IZoomLevelChangedListener zoomListener;
 
@@ -97,8 +95,8 @@ public class ResourceLoadList extends HtmlMacroComponent implements
         for (LoadTimeLine l : line.getAllChildren()) {
             getComponentFor(l).detach();
         }
-        Clients
-                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
+
+        Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private ResourceLoadComponent getComponentFor(LoadTimeLine l) {
@@ -119,19 +117,14 @@ public class ResourceLoadList extends HtmlMacroComponent implements
             insertBefore(child, nextSibling);
             nextSibling = child;
         }
-        Clients
-                .evalJavaScript("zkResourcesLoadList.recalculateTimetrackerHeight();");
+
+        Clients.evalJavaScript(getWidgetClass() + ".getInstance().recalculateTimeTrackerHeight();");
     }
 
     private List<LoadTimeLine> getChildrenReverseOrderFor(LoadTimeLine line) {
         List<LoadTimeLine> childrenOf = line.getAllChildren();
         Collections.reverse(childrenOf);
         return childrenOf;
-    }
-
-    @Override
-    public void afterCompose() {
-        super.afterCompose();
     }
 
     public void addSeeScheduledOfListener(

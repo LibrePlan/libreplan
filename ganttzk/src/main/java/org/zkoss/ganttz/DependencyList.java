@@ -25,7 +25,6 @@ import static org.zkoss.ganttz.i18n.I18nHelper._;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -105,6 +104,7 @@ public class DependencyList extends XulElement implements AfterCompose {
         void toggleDependencyExistence(boolean visible) {
             if (visible) {
                 appendChild(dependencyComponent);
+                dependencyComponent.afterCompose();
                 addContextMenu(dependencyComponent);
             } else {
                 removeChild(dependencyComponent);
@@ -263,24 +263,6 @@ public class DependencyList extends XulElement implements AfterCompose {
 
     private TimeTrackerComponent getTimeTrackerComponent() {
         return getGanttPanel().getTimeTrackerComponent();
-    }
-
-    public void redrawDependenciesConnectedTo(TaskComponent taskComponent) {
-        redrawDependencyComponents(getDependencyComponentsConnectedTo(taskComponent));
-    }
-
-    private List<DependencyComponent> getDependencyComponentsConnectedTo(
-            TaskComponent taskComponent) {
-        ArrayList<DependencyComponent> result = new ArrayList<DependencyComponent>();
-        List<DependencyComponent> dependencies = getDependencyComponents();
-        for (DependencyComponent dependencyComponent : dependencies) {
-            if (dependencyComponent.getSource().equals(taskComponent)
-                    || dependencyComponent.getDestination().equals(
-                            taskComponent)) {
-                result.add(dependencyComponent);
-            }
-        }
-        return result;
     }
 
     public void redrawDependencies() {

@@ -20,7 +20,7 @@
 -->
 
 <zk>
-    <vbox>
+    <vbox apply="${selectorController}">
 
         <groupbox style="margin-top: 5px" closable="false">
 
@@ -29,7 +29,7 @@
             <hbox>
 
                 <!-- Criteria -->
-                <vbox sclass="allocation-criterion-selector" width="100%">
+                <vbox sclass="allocation-criterion-selector">
 
                     <tree id="criterionsTree" width="420px"
                             height="340px" vflex="true" multiple="true"

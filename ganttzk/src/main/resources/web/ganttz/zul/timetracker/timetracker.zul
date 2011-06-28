@@ -27,29 +27,6 @@ top = self;
 </zscript>
 
 <div>
-<n:script language="javascript">
-
-function getHorizontalScroll(timetracker) {
-    return document.getElementById('${top.timeTrackerId}').scrollLeft;
-}
-
-function onIncrease(timetracker) {
-   zkau.send( {
-       uuid : timetracker.id,
-       cmd : "onIncrease",
-       data : [ getHorizontalScroll(timetracker) ]
-   });
-}
-
-function onDecrease(timetracker) {
-   zkau.send( {
-       uuid : timetracker.id,
-       cmd : "onDecrease",
-       data : [ getHorizontalScroll(timetracker) ]
-   });
-}
-
-</n:script>
 <n:div id="${top.timeTrackerId}">
     <vbox>
         <grid id="firstleveldetails" width="${top.horizontalSizePixels}px;">

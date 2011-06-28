@@ -553,7 +553,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<GenericResourceAllocation>> entry : byTask
                 .entrySet()) {
-
             Task task = entry.getKey();
 
             Map<Set<Criterion>, List<GenericResourceAllocation>> mapSameCriteria = getAllocationsWithSameCriteria((entry

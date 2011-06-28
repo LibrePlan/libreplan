@@ -497,6 +497,8 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
     private void refreshQueueComponents() {
         queueListComponent.invalidate();
         queueListComponent.afterCompose();
+        queueListComponent.refreshQueues();
+        rebuildDependencies();
     }
 
     private class PaginatorFilter implements IDetailItemFilter {
@@ -651,4 +653,7 @@ public class LimitingResourcesPanel extends HtmlMacroComponent {
         return previousInterval;
     }
 
+    public String getWidgetClass() {
+        return "limitingresources.LimitingResourcesPanel";
+    }
 }

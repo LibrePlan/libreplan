@@ -81,7 +81,6 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
-import org.zkoss.zkex.zul.LayoutRegion;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -89,6 +88,7 @@ import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.LayoutRegion;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
@@ -409,7 +409,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
     private static final int VERTICAL_MAX_ELEMENTS = 25;
 
     private IMessagesForUser messages;
-    private LayoutRegion insertionPointTimetracker;
+    private Component insertionPointTimetracker;
     private Div insertionPointLeftPanel;
     private LayoutRegion insertionPointRightPanel;
 
@@ -649,7 +649,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
             }
         });
         timeTrackerComponent = new TimeTrackerComponentWithoutColumns(
-                timeTracker, "timeTracker");
+                timeTracker, "timetrackerheader");
         timeTrackedTableWithLeftPane = new TimeTrackedTableWithLeftPane<Row, Row>(
                 getDataSource(), getColumnsForLeft(), getLeftRenderer(),
                 getRightRenderer(), timeTracker);

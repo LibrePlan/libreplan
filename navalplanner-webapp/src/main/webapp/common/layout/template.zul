@@ -28,7 +28,7 @@
 signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
-
+<?component name="button" extends="button" mold="trendy"?>
 
 <zk>
 <zscript>
@@ -49,8 +49,6 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
 <borderlayout height="100%" width="100%" >
 <north border="none">
 <n:div>
-
-<scripts />
 
 <n:table width="100%" border="0" cellpadding="0" cellspacing="0">
   <n:tr>
@@ -79,7 +77,8 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
                 <button onClick="templateCtrl.changeScenario();"
                     label="${templateCtrl.scenario.name}" />
                 <window id="changeScenarioWindow" visible="false"
-                    title="${i18n:_('Change scenario')}">
+                    title="${i18n:_('Change scenario')}"
+                    style="width : 240px;">
                     <div id="messagesContainer" />
                     <grid>
                         <rows>

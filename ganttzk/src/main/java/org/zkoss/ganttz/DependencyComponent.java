@@ -24,6 +24,7 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 import org.apache.commons.lang.Validate;
 import org.zkoss.ganttz.data.Dependency;
@@ -35,6 +36,7 @@ import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.impl.XulElement;
 
 /**
@@ -95,8 +97,13 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         return violated ? "violated-dependency" : "dependency";
     }
 
+    private boolean listenerAdded = false;
+
     @Override
     public void afterCompose() {
+        if (listenerAdded) {
+            return;
+        }
         PropertyChangeListener listener = new PropertyChangeListener() {
 
             @Override
@@ -106,6 +113,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         };
         this.source.getTask().addFundamentalPropertiesChangeListener(listener);
         this.destination.getTask().addFundamentalPropertiesChangeListener(listener);
+        listenerAdded = true;
     }
 
     /**
@@ -140,7 +148,7 @@ public class DependencyComponent extends XulElement implements AfterCompose {
     }
 
     public void redrawDependency() {
-        response("zoomChanged", new AuInvoke(this, "draw"));
+        response("redrawDependency" + getId(), new AuInvoke(this, "draw"));
     }
 
     public boolean contains(Task task) {
@@ -170,6 +178,14 @@ public class DependencyComponent extends XulElement implements AfterCompose {
         Task destinationTask = destination.getTask();
         return sourceTask.equals(dependency.getSource())
                 && destinationTask.equals(dependency.getDestination());
+    }
+
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        super.renderProperties(renderer);
+
+        render(renderer, "_idTaskOrig", getIdTaskOrig());
+        render(renderer, "_idTaskEnd", getIdTaskEnd());
+        render(renderer, "_dependencyType", getDependencyType());
     }
 
     public boolean hasLimitingTasks() {

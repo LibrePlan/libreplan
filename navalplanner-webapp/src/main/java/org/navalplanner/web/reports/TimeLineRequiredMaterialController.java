@@ -38,7 +38,6 @@ import org.navalplanner.business.materials.entities.MaterialCategory;
 import org.navalplanner.business.materials.entities.MaterialStatusEnum;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -51,6 +50,8 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
@@ -187,7 +188,7 @@ public class TimeLineRequiredMaterialController extends
         return result;
     }
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         super.showReport(jasperreport);
     }
 

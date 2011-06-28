@@ -414,6 +414,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         setDeselectedClass(button);
         button.addEventListener(Events.ON_CLICK, doNotCallTwice(button,
                 eventListener));
+        button.setMold("trendy");
         insertionPoint.appendChild(button);
         insertionPoint.appendChild(separator());
         return button;

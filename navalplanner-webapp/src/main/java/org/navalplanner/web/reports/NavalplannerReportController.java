@@ -30,12 +30,14 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
 
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.zkoss.util.Locales;
+import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Toolbarbutton;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  *
@@ -66,22 +68,33 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
 
     private final String DEFAULT_LANG = "en";
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         final String type = outputFormat.getOutputFormat();
 
-        NavalplannerReport report = new NavalplannerReport(jasperreport,
-                getReportName());
-        report.setDatasource(getDataSource());
-        report.setParameters(getParameters());
-        report.show(type);
+//        NavalplannerReport report = new NavalplannerReport(jasperreport,
+//                getReportName());
+//        report.setDatasource(getDataSource());
+//        report.setParameters(getParameters());
+//        report.show(type);
 
-        String URI = report.show(type);
+        jasperreport.setSrc(getReportName());
+        jasperreport.setDatasource(getDataSource());
+        jasperreport.setParameters(getParameters());
+        jasperreport.setType(type);
+
+
         if (type.equals(HTML)) {
             URItext.setStyle("display: none");
-            Executions.getCurrent().sendRedirect(URI, "_blank");
+            Executions.getCurrent().sendRedirect(jasperreport.getReportUrl(), "_blank");
         } else {
-            URItext.setStyle("display: inline");
-            URIlink.setHref(URI);
+            /*
+             * We cant use FileDownload.save(<url>) as it creates a new url
+             * where the resource can't be find so we have to create ourselves
+             * the download request
+             * */
+            Executions.getCurrent().addAuResponse(new AuDownload(jasperreport.getReportUrl()));
+          URItext.setStyle("display: inline");
+          URIlink.setHref(jasperreport.getReportUrl());
         }
     }
 

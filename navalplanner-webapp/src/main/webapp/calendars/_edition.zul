@@ -70,8 +70,7 @@
           </rows>
         </grid>
 
-        <hbox width="100%">
-
+    <hbox width="100%" pack="stretch">
           <vbox id="dayInformation" width="100%">
 
             <calendarhighlighteddays id="calendarWidget"
@@ -177,7 +176,7 @@
                       model="@{calendarController.editionController.calendarExceptions}"
                       itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
                       onSelect="calendarController.editionController.onSelectException(event)"
-                      rows="4">
+                      rows="4" width="400px">
                       <listhead>
                         <listheader label="${i18n:_('Day')}" />
                         <listheader label="${i18n:_('Exception Type')}" />
@@ -203,7 +202,8 @@
                   <listbox id="hoursPerDay"
                     style="margin-right: 5px;margin-left:5px;"
                     model="@{calendarController.editionController.getHoursPerDay}"
-                    itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
+                    itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}"
+                    sizedByContent="true">
                     <listhead>
                       <listheader label="${i18n:_('Day of week')}"
                         width="80px" />
@@ -256,7 +256,8 @@
 
                     <listbox id="historyInformation"
                       model="@{calendarController.editionController.historyVersions}"
-                      itemRenderer="@{calendarController.editionController.historyVersionsRenderer}">
+                      itemRenderer="@{calendarController.editionController.historyVersionsRenderer}"
+                      sizedByContent="true">
                       <listhead>
                         <listheader label="${i18n:_('Parent')}"
                           width="80px" />
@@ -277,7 +278,7 @@
 
               <tabpanel>
 
-                <vbox>
+                <vbox width="100%">
                   <listbox id="calendarAvailabilities"
                     model="@{calendarController.editionController.getCalendarAvailabilities}"
                     itemRenderer="@{calendarController.editionController.calendarAvailabilityRenderer}">

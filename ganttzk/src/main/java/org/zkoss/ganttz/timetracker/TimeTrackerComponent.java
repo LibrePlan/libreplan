@@ -30,9 +30,6 @@ import org.zkoss.ganttz.timetracker.zoom.DetailItem;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.TimeTrackerState;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
-import org.zkoss.zk.au.ComponentCommand;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
@@ -46,6 +43,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
     private IZoomLevelChangedListener zoomListener;
     private final String secondLevelZul;
     private String timeTrackerElementId;
+    private int scrollLeft;
 
     public TimeTrackerComponent(TimeTracker timeTracker) {
         this(timeTracker,
@@ -63,6 +61,7 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
             public void zoomLevelChanged(ZoomLevel detailLevel) {
                 if (isInPage()) {
                     recreate();
+                    changeDetailLevel(getDaysFor(scrollLeft));
                 }
             }
         };
@@ -82,9 +81,15 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
         return timeTrackerElementId;
     }
 
+    /*
+     *  fsanjurjo: I'm temporary changing the name of this method
+     *  (from afterCompose to compose) to get it called after calling recreate().
+     *  To understand why, please read this: http://www.zkoss.org/forum/listComment/14905
+     *  Also renamed the call to its parent.
+     * */
     @Override
-    public void afterCompose() {
-        super.afterCompose();
+    public void compose() {
+        super.compose();
         Component fellow = getFellow("firstleveldetails");
         addSecondLevels(fellow.getParent());
     }
@@ -114,49 +119,6 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     private TimeTrackerState getTimeTrackerState() {
         return getTimeTracker().getTimeTrackerState();
-    }
-
-    private Command _onincreasecmd = new ComponentCommand("onIncrease", 0) {
-
-        protected void process(AuRequest request) {
-            String[] requestData = request.getData();
-            int pixelsOffset = Integer.parseInt(requestData[0]);
-            onIncrease(pixelsOffset);
-        }
-
-    };
-
-    private Command _ondecreasecmd = new ComponentCommand("onDecrease", 0) {
-
-        protected void process(AuRequest request) {
-            String[] requestData = request.getData();
-            int pixelsOffset = Integer.parseInt(requestData[0]);
-            onDecrease(pixelsOffset);
-        }
-
-    };
-
-    private Command[] commands = { _onincreasecmd, _ondecreasecmd };
-
-    public Command getCommand(String cmdId) {
-        for (Command command : commands) {
-            if (command.getId().equals(cmdId)) {
-                return command;
-            }
-        }
-        return super.getCommand(cmdId);
-    }
-
-    public void onIncrease(int offset) {
-        double daysOffset = getDaysFor(offset);
-        getTimeTracker().zoomIncrease();
-        changeDetailLevel(daysOffset);
-    }
-
-    public void onDecrease(int offset) {
-        double daysOffset = getDaysFor(offset);
-        getTimeTracker().zoomDecrease();
-        changeDetailLevel(daysOffset);
     }
 
     public TimeTracker getTimeTracker() {
@@ -196,6 +158,15 @@ public abstract class TimeTrackerComponent extends HtmlMacroComponent {
 
     public boolean getWeekLevel() {
         return timeTracker.getDetailLevel() == ZoomLevel.DETAIL_FOUR;
+    }
+
+    public void setZoomLevel(ZoomLevel zoomlevel, int scrollLeft){
+        this.scrollLeft = scrollLeft;
+        getTimeTracker().setZoomLevel(zoomlevel);
+    }
+
+    public String getWidgetClass(){
+        return getDefinition().getDefaultWidgetClass();
     }
 
 }

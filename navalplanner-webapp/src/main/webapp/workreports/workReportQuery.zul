@@ -116,7 +116,7 @@
                 </tabs>
                 <tabpanels>
                     <tabpanel>
-                        <vbox>
+                        <vbox width="100%">
 
                     <panel title="${i18n:_('Heading Fields')}" border="normal"
                             style="overflow:auto">

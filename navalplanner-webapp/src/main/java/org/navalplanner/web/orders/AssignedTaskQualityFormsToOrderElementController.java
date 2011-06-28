@@ -373,7 +373,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         // Add static headers
         Column columnName = new Column();
         columnName.setLabel(_("Name"));
-        columnName.setSort("auto=(name)");
+        Util.setSort(columnName, "auto=(name)");
         columnName.setSortDirection("ascending");
         columns.appendChild(columnName);
 

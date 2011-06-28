@@ -56,8 +56,6 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
 import org.zkoss.ganttz.timetracker.OnColumnsRowRenderer;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -135,16 +133,6 @@ public class ResourceAllocationController extends GenericForwardComposer {
     private Button advancedSearchButton;
 
     private Window editTaskWindow;
-
-    public static void registerNeededScripts() {
-        getScriptsRegister()
-                .register(ScriptsRequiredByAdvancedAllocation.class);
-    }
-
-    private static IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
-    }
 
     private EditTaskController editTaskController;
 

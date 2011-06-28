@@ -1489,7 +1489,6 @@ Changes
 * [Bug #809] Fixed marking to translate missing label.
 * Fixed wrong e-mail on debian/changelog.
 
-
 Version 1.0.1 (14 Jan 2011)
 ---------------------------
 

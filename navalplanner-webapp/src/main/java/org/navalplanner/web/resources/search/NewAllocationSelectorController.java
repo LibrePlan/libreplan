@@ -106,6 +106,7 @@ public class NewAllocationSelectorController extends
     }
 
     private void initializeCriteriaTree() {
+        // Initialize criteria tree
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
 
@@ -140,6 +141,9 @@ public class NewAllocationSelectorController extends
 
     private void initializeAllocationTypeSelector() {
         // Add onCheck listener
+        listBoxResources.setItemRenderer(getListitemRenderer());
+
+        // Initialize radio group of selector types
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
@@ -360,10 +364,6 @@ public class NewAllocationSelectorController extends
         return result;
     }
 
-    public boolean isAllowSelectMultipleResources() {
-        return behaviour.allowMultipleSelection();
-    }
-
     /**
      * @author Diego Pino García <dpino@igalia.com>
      *
@@ -536,6 +536,14 @@ public class NewAllocationSelectorController extends
 
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
+    }
+
+    public void allowSelectMultipleResources(boolean multiple) {
+        listBoxResources.setMultiple(multiple);
+    }
+
+    public boolean isAllowSelectMultipleResources() {
+        return listBoxResources.isMultiple();
     }
 
 }

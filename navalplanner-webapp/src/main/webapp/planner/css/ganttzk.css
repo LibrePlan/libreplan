@@ -187,6 +187,7 @@
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
+    z-index : 99;
 }
 
 /* Task lane properties */
@@ -614,7 +615,7 @@ tr.z-vbox-sep {
     border-bottom: 1px dotted #CCCCCC;
 }
 
-.resourceloadleftpane .z-tree-row .z-label {
+.resourceloadleftpane .z-treerow .z-label {
     height:18px;
     padding-bottom:0;
     vertical-align:bottom;
@@ -677,7 +678,7 @@ tr.z-vbox-sep {
     border-collapse: collapse;
 }
 
-.resourceloadleftpane div.z-tree-cell-cnt {
+.resourceloadleftpane div.z-treecell-cnt {
     paddding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;
 }
@@ -758,7 +759,7 @@ tr.z-vbox-sep {
     display: none;
 }
 
-.limitingresources .z-tree-row {
+.limitingresources .z-treerow {
     height: 35px;
 }
 
@@ -766,7 +767,7 @@ tr.z-vbox-sep {
     margin-top: -4px;
 }
 
-.limitingresources td.z-tree-cell {
+.limitingresources td.z-treecell {
     paddding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;
 }
@@ -816,6 +817,7 @@ div.limitingresourcesleftpane  {
 
 .timetrackergap {
     position: relative;
+    left : 0px;
 }
 
 .timetrackergap {
@@ -830,7 +832,7 @@ div.limitingresourcesleftpane  {
     width: 100%;
 }
 
-.listdetails div.z-tree-cell-cnt {
+.listdetails div.z-treecell-cnt {
     padding: 0px;
 }
 

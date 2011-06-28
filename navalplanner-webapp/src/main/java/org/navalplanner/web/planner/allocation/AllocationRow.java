@@ -419,7 +419,7 @@ public abstract class AllocationRow {
 
     private void setUnknownResourcesPerDay() {
         this.editedValue = null;
-        this.intendedResourcesPerDayInput.setValue(null);
+        this.intendedResourcesPerDayInput.setValue((BigDecimal) null);
         clearRealResourcesPerDay();
     }
 

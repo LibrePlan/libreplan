@@ -546,8 +546,9 @@ public class ResourceLoadController implements Composer {
 
         Tabpanels chartTabpanels = new Tabpanels();
         Tabpanel loadChartPannel = new Tabpanel();
-        CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-                buildLoadChart());
+        // avoid adding Timeplot since it has some pending issues
+         CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+         buildLoadChart());
         chartTabpanels.appendChild(loadChartPannel);
         chartComponent.appendChild(chartTabpanels);
 
@@ -659,9 +660,9 @@ public class ResourceLoadController implements Composer {
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");

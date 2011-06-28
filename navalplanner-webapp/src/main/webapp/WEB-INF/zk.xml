@@ -33,4 +33,20 @@
 		</value>
 	</preference>
 
+
+    <system-config>
+        <disable-event-thread>false</disable-event-thread>
+    </system-config>
+
+
+    <library-property>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>trendy</value>
+    </library-property>
+
+    <library-property>
+        <name>org.zkoss.zul.chart.engine.class</name>
+        <value>com.igalia.java.zk.components.JFreeChartEngine</value>
+    </library-property>
+
 </zk>

@@ -55,33 +55,26 @@ import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
 import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.zk.au.AuRequest;
+import org.zkoss.zk.au.AuService;
+import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zkex.zul.api.South;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.South;
 
 public class Planner extends HtmlMacroComponent  {
-
-    public static void registerNeededScripts() {
-        IScriptsRegister register = getScriptsRegister();
-        register.register(ScriptsRequiredByPlanner.class);
-    }
-
-    private static IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
-    }
 
     public static boolean guessContainersExpandedByDefaultGivenPrintParameters(
             Map<String, String> printParameters) {
@@ -174,7 +167,6 @@ public class Planner extends HtmlMacroComponent  {
             .create();
 
     public Planner() {
-        registerNeededScripts();
     }
 
     TaskList getTaskList() {
@@ -265,13 +257,13 @@ public class Planner extends HtmlMacroComponent  {
         return new SimpleListModel(selectableZoomlevels);
     }
 
-    public void setZoomLevel(final ZoomLevel zoomLevel) {
+    public void setZoomLevel(final ZoomLevel zoomLevel, int scrollLeft) {
         if (ganttPanel == null) {
             return;
         }
         this.fixedZoomByUser = true;
         initialZoomLevel = zoomLevel;
-        ganttPanel.setZoomLevel(zoomLevel);
+        ganttPanel.setZoomLevel(zoomLevel, scrollLeft);
     }
 
     public void zoomIncrease() {
@@ -373,6 +365,35 @@ public class Planner extends HtmlMacroComponent  {
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
+
+        setAuService(new AuService(){
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                String[] requestData;
+                int zoomindex;
+                int scrollLeft;
+
+                if (command.equals("onZoomLevelChange")){
+                    zoomindex=  (Integer) retrieveData(request, "zoomindex");
+                    scrollLeft = (Integer) retrieveData(request, "scrollLeft");
+
+                    setZoomLevel((ZoomLevel)((Listbox)getFellow("listZoomLevels"))
+                            .getModel().getElementAt(zoomindex),
+                            scrollLeft);
+                    return true;
+                }
+                return false;
+            }
+
+            private Object retrieveData(AuRequest request, String key){
+                Object value = request.getData().get(key);
+                if ( value == null)
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
+                            new Object[] { key, this });
+
+                return value;
+            }
+        });
     }
 
     private void resettingPreviousComponentsToNull() {
@@ -484,7 +505,7 @@ public class Planner extends HtmlMacroComponent  {
         getDependencyList().taskRemoved(task);
         leftPane.taskRemoved(task);
         setHeight(getHeight());// forcing smart update
-        taskList.adjustZoomColumnsHeight();
+        ganttPanel.adjustZoomColumnsHeight();
         getDependencyList().redrawDependencies();
     }
 
@@ -605,10 +626,10 @@ public class Planner extends HtmlMacroComponent  {
     public void showAllLabels() {
         Button showAllLabelsButton = (Button) getFellow("showAllLabels");
         if (isShowingLabels) {
-            Clients.evalJavaScript("zkTasklist.hideAllTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideAllTaskLabels()");
             showAllLabelsButton.setSclass("planner-command show-labels");
         } else {
-            Clients.evalJavaScript("zkTasklist.showAllTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showAllTaskLabels()");
             showAllLabelsButton
                     .setSclass("planner-command show-labels clicked");
         }
@@ -618,10 +639,10 @@ public class Planner extends HtmlMacroComponent  {
     public void showAllResources() {
         Button showAllLabelsButton = (Button) getFellow("showAllResources");
         if (isShowingResources) {
-            Clients.evalJavaScript("zkTasklist.hideResourceTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().hideResourceTooltips()");
             showAllLabelsButton.setSclass("planner-command show-resources");
         } else {
-            Clients.evalJavaScript("zkTasklist.showResourceTooltips();");
+            Clients.evalJavaScript("ganttz.TaskList.getInstance().showResourceTooltips()");
             showAllLabelsButton
             .setSclass("planner-command show-resources clicked");
         }
@@ -818,6 +839,10 @@ public class Planner extends HtmlMacroComponent  {
             }
         }
         return null;
+    }
+
+    public String getWidgetClass(){
+        return getDefinition().getDefaultWidgetClass();
     }
 
     public List getCriticalPath() {

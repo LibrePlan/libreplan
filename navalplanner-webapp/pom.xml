@@ -49,6 +49,20 @@
                             </dependency>
                         </dependencies>
                     </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.1.2</version>
+                        <executions>
+                            <execution>
+                                <id>default</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
@@ -170,6 +184,16 @@
         <dependency>
           <groupId>jasperreports</groupId>
           <artifactId>jasperreports</artifactId>
+        </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jasperreportcomponent</artifactId>
+        </dependency>
+        <!-- GPL Jasperreport Component for ZK -->
+        <dependency>
+          <groupId>com.igalia.java.zk.components</groupId>
+          <artifactId>jfreechartengine</artifactId>
         </dependency>
         <!-- Gettext commons -->
         <dependency>
@@ -298,12 +322,12 @@
         </dependency>
         <!-- ZK Timeplot -->
         <dependency>
-            <groupId>org.zkoss.zkforge.timeline</groupId>
+            <groupId>org.zkoss.zkforge</groupId>
             <artifactId>timelinez</artifactId>
         </dependency>
         <dependency>
             <groupId>org.zkoss.zkforge</groupId>
-            <artifactId>timeplotz-modified</artifactId>
+            <artifactId>timeplotz</artifactId>
         </dependency>
    </dependencies>
 </project>

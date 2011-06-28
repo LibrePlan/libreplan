@@ -23,6 +23,7 @@ package org.zkoss.ganttz.resourceload;
 
 import static org.zkoss.ganttz.i18n.I18nHelper._;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +43,7 @@ import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Menupopup;
 import org.zkoss.zul.impl.XulElement;
@@ -105,6 +107,15 @@ public class ResourceLoadComponent extends XulElement {
 
     private void addContextMenu(final List<Div> divs, final Div div,
             final LoadTimeLine loadLine) {
+        /*
+         * This EventListener could be replaced with
+         * div.setContext(getContextMenuFor(divs, div, loadLine)) but
+         * on this case this is not valid as we'll got an exception.
+         * As this component (ResourceLoadComponent) hasn't be added to
+         * a page yet, its getPage() method will return null and a
+         * non-null page is required by MenuBuilder or a NullPointerException
+         * will be raised.
+         * */
         div.addEventListener("onRightClick", new EventListener() {
             @Override
             public void onEvent(Event event) {
@@ -211,6 +222,13 @@ public class ResourceLoadComponent extends XulElement {
     private static int getStartPixels(IDatesMapper datesMapper,
             LoadPeriod loadPeriod) {
         return datesMapper.toPixels(loadPeriod.getStart());
+    }
+
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        render(renderer, "_resourceLoadName", getResourceLoadName());
+        render(renderer, "_resourceLoadType", getResourceLoadType());
+
+        super.renderProperties(renderer);
     }
 
 }

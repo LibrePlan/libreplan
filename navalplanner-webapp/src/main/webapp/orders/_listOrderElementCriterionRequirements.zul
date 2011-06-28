@@ -26,7 +26,7 @@
 ]]>
 </zscript>
 
-<vbox apply="${criterionRequirementsController}">
+<vbox apply="${criterionRequirementsController}" width="100%">
 
 <panel title="${i18n:_('Assigned criterion requirements')}" border="normal"
         style="overflow:auto" >

@@ -740,7 +740,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 NewDataSortableColumn columnDate = new NewDataSortableColumn();
                 columnDate.setLabel(_("Date"));
                 columnDate.setSclass("date-column");
-                columnDate.setSort("auto=(date)");
+                Util.setSort(columnDate, "auto=(date)");
                 columnDate.setSortDirection("ascending");
 
                 columnDate.addEventListener("onSort", new EventListener() {

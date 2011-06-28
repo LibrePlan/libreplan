@@ -81,7 +81,8 @@
 
             <center sclass="taskspanel">
                 <borderlayout>
-                    <north border="0" sclass="timetrackergap" height="31px" id="insertionPointTimetracker" />
+                    <north border="0"><div sclass="timetrackergap" id="insertionPointTimetracker"></div></north>
+                    <!-- <north border="0" sclass="timetrackergap" height="31px" id="insertionPointTimetracker" /> -->
                     <center style="overflow-y:auto;overflow-x:auto;" border="0" sclass="advanced-assignment-area rightpanellayout taskspanelgap" id="insertionPointRightPanel" />
                 </borderlayout>
             </center>

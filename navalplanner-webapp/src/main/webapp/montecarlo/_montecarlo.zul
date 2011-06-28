@@ -61,12 +61,12 @@
             <hbox>
                 <grid>
                     <columns>
-                        <column width="200px" />
-                        <column />
+                        <column width="200px"/>
+                        <column width="150px"/>
                     </columns>
                     <rows>
                         <row>
-                            <label value="${i18n:_('Critical path')}" />
+                            <label value="${i18n:_('Critical path')}"/>
                             <listbox id="lbCriticalPaths" mold="select"/>
                         </row>
                     </rows>
@@ -80,8 +80,8 @@
                 <grid>
                     <columns>
                         <column width="200px" />
-                        <column />
-                        <column />
+                        <column width="220px"/>
+                        <column width="200px"/>
                     </columns>
                     <rows>
                         <row spans="1,3">

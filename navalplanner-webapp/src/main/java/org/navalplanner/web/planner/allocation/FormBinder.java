@@ -735,7 +735,7 @@ public class FormBinder {
 
     private void resetStateForResourcesPerDayInputsWhenDoingRecommendedAllocation() {
         if (allResourcesPerDay.isDisabled()) {
-            allResourcesPerDay.setValue(null);
+            allResourcesPerDay.setValue((BigDecimal) null);
             AllocationRow.unknownResourcesPerDay(rows);
         } else {
             allResourcesPerDay.setValue(BigDecimal.ZERO);
