@@ -239,8 +239,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    public void saveAndContinue()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void saveAndContinue() {
         if (save()) {
             goToEditForm(getWorkReport());
         }
@@ -695,9 +694,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * modified (the data model changes), and it's rendered again. Deleting
      * previous settings and re-establishing the settings again each time the
      * list is rendered, solve those problems.
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
      *
      */
     private void prepareWorkReportList() {
@@ -726,9 +722,6 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * Appends list headers to {@link WorkReportLine} list
      *
      * @param listBox
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
      */
     private void appendColumns(Grid grid) {
 
@@ -843,12 +836,8 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
      * Adds a new {@link WorkReportLine} to the list of rows
      *
      * @param rows
-     * @throws IllegalAccessException
-     * @throws InstantiationException
-     * @throws ClassNotFoundException
      */
-    public void addWorkReportLine()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void addWorkReportLine() {
         workReportModel.addWorkReportLine();
         reloadWorkReportLines();
     }
@@ -1463,8 +1452,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private void reloadWorkReportLines()
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    private void reloadWorkReportLines() {
         this.prepareWorkReportList();
         Util.reloadBindings(listWorkReportLines);
     }
@@ -1619,8 +1607,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         }
     }
 
-    public void goToEditFormQuery(WorkReportLine line)
-    throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+    public void goToEditFormQuery(WorkReportLine line) {
         workReportModel.setListingQuery(true);
         goToEditForm(line.getWorkReport());
     }
