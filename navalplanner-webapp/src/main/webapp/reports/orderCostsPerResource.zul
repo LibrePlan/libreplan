@@ -225,7 +225,7 @@
 
         <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
 
-        <jasperreportcontroller id="report" />
+        <jasperreportcomponent id="report" />
 
     </window>
 
