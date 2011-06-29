@@ -37,6 +37,12 @@ public class ConfigurationRolesLDAP {
 
     private String roleLibreplan;
 
+    /**
+     * Default constructor for Hibernate. Do not use!
+     */
+    protected ConfigurationRolesLDAP() {
+    }
+
     public ConfigurationRolesLDAP(String roleLdap, String roleLibreplan) {
         this.roleLdap = roleLdap;
         this.roleLibreplan = roleLibreplan;
