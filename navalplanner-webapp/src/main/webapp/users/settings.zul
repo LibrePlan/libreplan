@@ -44,11 +44,37 @@
                     <groupbox style="margin-top: 5px" closable="false">
                         <hbox>
                             <label value="${i18n:_('Select language:')}" />
+
                             <listbox id="applicationLanguage"
                                     model="@{settingsController.languages}"
                                     itemRenderer="@{settingsController.languagesRenderer}"
                                     selectedItem="@{settingsController.selectedLanguage}"
                                     mold="select" />
+                        </hbox>
+                        <separator/>
+                        <hbox>
+                            <label
+                                value="${i18n:_('Planning charts expanded')}" />
+                            <grid>
+                                <columns>
+                                    <column />
+                                    <column />
+                                    <column />
+                                </columns>
+                                <rows>
+                                    <row>
+                                        <checkbox id="expandCompanyPlanningViewCharts"
+                                            label="${i18n:_('Company view')}"
+                                            checked="@{settingsController.expandCompanyPlanningViewCharts}"/>
+                                        <checkbox id="expandOrderPlanningViewCharts"
+                                            label="${i18n:_('Project view')}"
+                                            checked="@{settingsController.expandOrderPlanningViewCharts}"/>
+                                        <checkbox id="expandResourceLoadViewCharts"
+                                            label="${i18n:_('Resource load view')}"
+                                            checked="@{settingsController.expandResourceLoadViewCharts}"/>
+                                    </row>
+                                </rows>
+                            </grid>
                         </hbox>
 
                         <hbox>

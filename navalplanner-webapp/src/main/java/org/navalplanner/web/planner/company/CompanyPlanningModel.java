@@ -215,8 +215,16 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             IPredicate predicate) {
         currentScenario = scenarioManager.getCurrent();
         final PlannerConfiguration<TaskElement> configuration = createConfiguration(predicate);
-        boolean expandPlanningViewChart = configurationDAO.
-                getConfiguration().isExpandCompanyPlanningViewCharts();
+
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        boolean expandPlanningViewChart = user
+                .isExpandCompanyPlanningViewCharts();
         configuration.setExpandPlanningViewCharts(expandPlanningViewChart);
 
         final Tabbox chartComponent = new Tabbox();

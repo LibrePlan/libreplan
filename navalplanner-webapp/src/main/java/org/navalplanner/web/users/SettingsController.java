@@ -48,6 +48,7 @@ public class SettingsController extends GenericForwardComposer {
 
     private Component messagesContainer;
 
+
     private ISettingsModel settingsModel;
 
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
@@ -92,6 +93,37 @@ public class SettingsController extends GenericForwardComposer {
 
     public static ListitemRenderer getLanguagesRenderer() {
         return languagesRenderer;
+    }
+
+    public void setExpandCompanyPlanningViewCharts(
+            boolean expandCompanyPlanningViewCharts) {
+        settingsModel
+                .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
+
+    }
+
+    public boolean isExpandCompanyPlanningViewCharts() {
+        return settingsModel.isExpandCompanyPlanningViewCharts();
+    }
+
+    public void setExpandOrderPlanningViewCharts(
+            boolean expandOrderPlanningViewCharts) {
+        settingsModel
+                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
+    }
+
+    public boolean isExpandOrderPlanningViewCharts() {
+        return settingsModel.isExpandOrderPlanningViewCharts();
+    }
+
+    public void setExpandResourceLoadViewCharts(
+            boolean expandResourceLoadViewCharts) {
+        settingsModel
+                .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
+    }
+
+    public boolean isExpandResourceLoadViewCharts() {
+        return settingsModel.isExpandResourceLoadViewCharts();
     }
 
 }

@@ -153,35 +153,6 @@
                                     </rows>
                                 </grid>
                             </row>
-                            <row>
-                                <label
-                                    value="${i18n:_('Planning charts expanded')}" />
-                                <grid>
-                                    <columns>
-                                        <column width="50%" />
-                                        <column />
-                                    </columns>
-                                    <rows>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('Company view')}"
-                                                checked="@{configurationController.expandCompanyPlanningViewCharts}"
-                                                onCheck="configurationController.reloadGeneralConfiguration();" />
-                                            <checkbox
-                                                label="${i18n:_('Project view')}"
-                                                checked="@{configurationController.expandOrderPlanningViewCharts}"
-                                                onCheck="configurationController.reloadGeneralConfiguration();" />
-                                        </row>
-                                        <row>
-                                            <checkbox
-                                                label="${i18n:_('Resource load view')}"
-                                                checked="@{configurationController.expandResourceLoadViewCharts}"
-                                                onCheck="configurationController.reloadGeneralConfiguration();" />
-                                        </row>
-                                    </rows>
-                                </grid>
-                            </row>
-
                             <!-- Perspectives -->
                             <row>
                                 <label value="${i18n:_('Perspectives')}" />

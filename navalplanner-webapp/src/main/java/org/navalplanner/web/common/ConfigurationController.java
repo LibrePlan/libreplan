@@ -392,35 +392,6 @@ public class ConfigurationController extends GenericForwardComposer {
         reloadEntitySequences();
     }
 
-    public void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts) {
-        configurationModel
-                .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
-    }
-
-    public Boolean isExpandCompanyPlanningViewCharts() {
-        return configurationModel.isExpandCompanyPlanningViewCharts();
-    }
-
-    public void setExpandOrderPlanningViewCharts(
-            Boolean expandOrderPlanningViewCharts) {
-        configurationModel
-                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
-    }
-
-    public Boolean isExpandOrderPlanningViewCharts() {
-        return configurationModel.isExpandOrderPlanningViewCharts();
-    }
-
-    public void setExpandResourceLoadViewCharts(
-            Boolean expandResourceLoadViewCharts) {
-        configurationModel
-                .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
-    }
-
-    public Boolean isExpandResourceLoadViewCharts() {
-        return configurationModel.isExpandResourceLoadViewCharts();
-    }
 
     public void setMonteCarloMethodTabVisible(
             Boolean expandResourceLoadViewCharts) {

@@ -25,4 +25,30 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="move-columns-from-configuration-table" author="calvarinop">
+        <comment>Move columns from configuration table to user table</comment>
+
+        <addColumn tableName="user_table">
+            <column name="expand_company_planning_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_company_planning_view_charts" defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_company_planning_view_charts" defaultNullValue="FALSE" columnDataType="BOOLEAN" />
+
+        <addColumn tableName="user_table">
+            <column name="expand_order_planning_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_order_planning_view_charts" defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_order_planning_view_charts" defaultNullValue="TRUE" columnDataType="BOOLEAN" />
+
+        <addColumn tableName="user_table">
+            <column name="expand_resource_load_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_resource_load_view_charts" defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_resource_load_view_charts" defaultNullValue="TRUE" columnDataType="BOOLEAN" />
+
+        <dropColumn tableName="configuration" columnName="expand_company_planning_view_charts"/>
+        <dropColumn tableName="configuration" columnName="expand_order_planning_view_charts"/>
+        <dropColumn tableName="configuration" columnName="expand_resource_load_view_charts"/>
+    </changeSet>
+
 </databaseChangeLog>

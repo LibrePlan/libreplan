@@ -18,6 +18,7 @@
  */
 package org.navalplanner.web.users;
 
+import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -103,6 +104,46 @@ public class SettingsModel implements ISettingsModel {
     @Transactional
     public void confirmSave() throws ValidationException {
         userDAO.save(user);
+    }
+
+
+    @Override
+    public boolean isExpandCompanyPlanningViewCharts() {
+        return user.isExpandCompanyPlanningViewCharts();
+    }
+
+    @Override
+    public void setExpandOrderPlanningViewCharts(
+            boolean expandOrderPlanningViewCharts) {
+        if (user != null) {
+            user.setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
+        }
+    }
+
+    @Override
+    public boolean isExpandOrderPlanningViewCharts() {
+        return user.isExpandOrderPlanningViewCharts();
+    }
+
+    @Override
+    public void setExpandResourceLoadViewCharts(
+            boolean expandResourceLoadViewCharts) {
+        if (user != null) {
+            user.setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
+        }
+    }
+
+    @Override
+    public boolean isExpandResourceLoadViewCharts() {
+        return user.isExpandResourceLoadViewCharts();
+    }
+
+    @Override
+    public void setExpandCompanyPlanningViewCharts(
+            boolean expandCompanyPlanningViewCharts) {
+        if (user != null) {
+            user.setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
+        }
     }
 
 }

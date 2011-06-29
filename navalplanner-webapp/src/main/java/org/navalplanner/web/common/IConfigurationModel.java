@@ -95,19 +95,6 @@ public interface IConfigurationModel {
     void removeEntitySequence(EntitySequence entitySequence)
             throws IllegalArgumentException;
 
-    void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts);
-
-    Boolean isExpandCompanyPlanningViewCharts();
-
-    void setExpandOrderPlanningViewCharts(Boolean expandOrderPlanningViewCharts);
-
-    Boolean isExpandOrderPlanningViewCharts();
-
-    void setExpandResourceLoadViewCharts(Boolean expandResourceLoadViewCharts);
-
-    Boolean isExpandResourceLoadViewCharts();
-
     Boolean isMonteCarloMethodTabVisible();
 
     void setMonteCarloMethodTabVisible(Boolean visible);

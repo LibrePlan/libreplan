@@ -56,6 +56,12 @@ public class User extends BaseEntity {
 
     private Scenario lastConnectedScenario;
 
+    private boolean expandCompanyPlanningViewCharts = false;
+
+    private boolean expandOrderPlanningViewCharts = true;
+
+    private boolean expandResourceLoadViewCharts = true;
+
     /**
      * Necessary for Hibernate. Please, do not call it.
      */
@@ -205,6 +211,33 @@ public class User extends BaseEntity {
 
     public void setApplicationLanguage(Language applicationLanguage) {
         this.applicationLanguage = applicationLanguage;
+    }
+
+    public boolean isExpandCompanyPlanningViewCharts() {
+        return expandCompanyPlanningViewCharts;
+    }
+
+    public void setExpandOrderPlanningViewCharts(
+            boolean expandOrderPlanningViewCharts) {
+        this.expandOrderPlanningViewCharts = expandOrderPlanningViewCharts;
+    }
+
+    public boolean isExpandOrderPlanningViewCharts() {
+        return expandOrderPlanningViewCharts;
+    }
+
+    public void setExpandResourceLoadViewCharts(
+            boolean expandResourceLoadViewCharts) {
+        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+    }
+
+    public boolean isExpandResourceLoadViewCharts() {
+        return expandResourceLoadViewCharts;
+    }
+
+    public void setExpandCompanyPlanningViewCharts(
+            boolean expandCompanyPlanningViewCharts) {
+        this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
     }
 
 }

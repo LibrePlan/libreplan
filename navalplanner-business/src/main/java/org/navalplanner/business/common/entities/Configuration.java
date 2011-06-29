@@ -58,12 +58,6 @@ public class Configuration extends BaseEntity {
 
     private Boolean generateCodeForBaseCalendars = true;
 
-    private Boolean expandCompanyPlanningViewCharts = false;
-
-    private Boolean expandOrderPlanningViewCharts = true;
-
-    private Boolean expandResourceLoadViewCharts = true;
-
     private Boolean monteCarloMethodTabVisible = false;
 
     private Boolean generateCodeForWorkReportType = true;
@@ -174,33 +168,6 @@ public class Configuration extends BaseEntity {
 
     public Boolean getGenerateCodeForUnitTypes() {
         return generateCodeForUnitTypes;
-    }
-
-    public void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts) {
-        this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
-    }
-
-    public Boolean isExpandCompanyPlanningViewCharts() {
-        return expandCompanyPlanningViewCharts;
-    }
-
-    public void setExpandOrderPlanningViewCharts(
-            Boolean expandOrderPlanningViewCharts) {
-        this.expandOrderPlanningViewCharts = expandOrderPlanningViewCharts;
-    }
-
-    public Boolean isExpandOrderPlanningViewCharts() {
-        return expandOrderPlanningViewCharts;
-    }
-
-    public void setExpandResourceLoadViewCharts(
-            Boolean expandResourceLoadViewCharts) {
-        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
-    }
-
-    public Boolean isExpandResourceLoadViewCharts() {
-        return expandResourceLoadViewCharts;
     }
 
     public Boolean isMonteCarloMethodTabVisible() {

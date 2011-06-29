@@ -365,8 +365,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(planner, orderReloaded);
-        configuration.setExpandPlanningViewCharts(configurationDAO
-                .getConfiguration().isExpandOrderPlanningViewCharts());
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        configuration.setExpandPlanningViewCharts(user
+                .isExpandOrderPlanningViewCharts());
 
         addAdditional(additional, configuration);
 

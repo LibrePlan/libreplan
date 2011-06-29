@@ -1008,8 +1008,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public boolean isExpandResourceLoadViewCharts() {
-        return configurationDAO.getConfiguration()
-                .isExpandResourceLoadViewCharts();
+
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return user.isExpandResourceLoadViewCharts();
     }
 
 }

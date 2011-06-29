@@ -451,15 +451,6 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts) {
-        if (configuration != null) {
-            configuration
-                    .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
-        }
-    }
-
-    @Override
     public Boolean isMonteCarloMethodTabVisible() {
         if (configuration == null) {
             return null;
@@ -474,48 +465,6 @@ public class ConfigurationModel implements IConfigurationModel {
             configuration
                     .setMonteCarloMethodTabVisible(visible);
         }
-    }
-
-    @Override
-    public Boolean isExpandCompanyPlanningViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandCompanyPlanningViewCharts();
-    }
-
-    @Override
-    public void setExpandOrderPlanningViewCharts(
-            Boolean expandOrderPlanningViewCharts) {
-        if (configuration != null) {
-            configuration
-                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
-        }
-    }
-
-    @Override
-    public Boolean isExpandOrderPlanningViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandOrderPlanningViewCharts();
-    }
-
-    @Override
-    public void setExpandResourceLoadViewCharts(
-            Boolean expandResourceLoadViewCharts) {
-        if (configuration != null) {
-            configuration
-                    .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
-        }
-    }
-
-    @Override
-    public Boolean isExpandResourceLoadViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandResourceLoadViewCharts();
     }
 
     public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {
