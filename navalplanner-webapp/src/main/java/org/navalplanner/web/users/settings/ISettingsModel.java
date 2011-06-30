@@ -16,11 +16,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.users;
+package org.navalplanner.web.users.settings;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Language;
-import org.navalplanner.business.users.entities.User;
 
 /**
  * Model for UI operations related to user settings
@@ -50,5 +49,13 @@ public interface ISettingsModel {
     void setExpandOrderPlanningViewCharts(boolean expandOrderPlanningViewCharts);
 
     boolean isExpandCompanyPlanningViewCharts();
+
+	void setLastName(String lastName);
+
+	String getLastName();
+
+	void setFirstName(String firstName);
+
+	String getFirstName();
 
 }

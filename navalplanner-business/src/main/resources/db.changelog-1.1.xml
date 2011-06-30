@@ -201,4 +201,14 @@
         <dropColumn tableName="configuration" columnName="expand_resource_load_view_charts"/>
     </changeSet>
 
+    <changeSet id="add-new-fields" author="calvarinop">
+        <comment>Add new column to store the first and last name for this user</comment>
+        <addColumn tableName="user_table">
+            <column name="first_name" type="VARCHAR(255)"/>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="last_name" type="VARCHAR(255)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

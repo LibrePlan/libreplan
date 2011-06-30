@@ -340,7 +340,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
 
         topItem(_("My account"), "", "",
-                subItem(_("Settings"), "/users/settings.zul", ""));
+                subItem(_("Settings"), "/settings/settings.zul", ""));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {

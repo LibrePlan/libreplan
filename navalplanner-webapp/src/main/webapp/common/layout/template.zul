@@ -114,7 +114,7 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
         <vbox id="registeredItemsInsertionPoint" width="90px"/>
     </west>
 
-    <center self="@{insert(content)}"  class="main-area"/>
+    <center self="@{insert(content)}" class="main-area" autoscroll="true" />
 
     </borderlayout>
 

@@ -44,6 +44,16 @@
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"/>
                             </row>
                             <row>
+                                <label value="${i18n:_('First name')}:" />
+                                <textbox id="firstName"
+                                    value="@{controller.user.firstName}" width="300px"/>
+                            </row>
+                            <row>
+                                <label value="${i18n:_('Last name')}:" />
+                                <textbox id="lastName"
+                                    value="@{controller.user.lastName}" width="300px"/>
+                            </row>
+                            <row>
                                 <label value="${i18n:_('Password')}:" />
                                 <textbox id="password" type="password"
                                     onChange="controller.setPassword(self.value);" width="300px"/>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.users;
+package org.navalplanner.web.users.settings;
 
 import static org.navalplanner.web.I18nHelper._;
 
@@ -125,5 +125,21 @@ public class SettingsController extends GenericForwardComposer {
     public boolean isExpandResourceLoadViewCharts() {
         return settingsModel.isExpandResourceLoadViewCharts();
     }
+
+	public String getFirstName() {
+		return settingsModel.getFirstName();
+	}
+
+	public void setFirstName(String firstName) {
+		settingsModel.setFirstName(firstName);
+	}
+
+	public String getLastName() {
+		return settingsModel.getLastName();
+	}
+
+	public void setLastName(String lastName) {
+		settingsModel.setLastName(lastName);
+	}
 
 }

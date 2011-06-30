@@ -16,9 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.navalplanner.web.users;
+package org.navalplanner.web.users.settings;
 
-import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -42,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
-@OnConcurrentModification(goToPage = "/users/settings.zul")
+@OnConcurrentModification(goToPage = "/settings/settings.zul")
 public class SettingsModel implements ISettingsModel {
 
     @Autowired
@@ -145,5 +144,29 @@ public class SettingsModel implements ISettingsModel {
             user.setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
         }
     }
+
+	@Override
+	public String getFirstName() {
+		return user.getFirstName();
+	}
+
+	@Override
+	public void setFirstName(String firstName) {
+		if (user != null) {
+			user.setFirstName(firstName);
+		}
+	}
+
+	@Override
+	public String getLastName() {
+		return user.getLastName();
+	}
+
+	@Override
+	public void setLastName(String lastName) {
+		if (user != null) {
+			user.setLastName(lastName);
+		}
+	}
 
 }

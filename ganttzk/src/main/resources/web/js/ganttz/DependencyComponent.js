@@ -118,7 +118,6 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
 
 
         var deparrow = this._findImageElement('arrow');
-        deparrow.attr('src', this.$class.getImagesDir() + "arrow3.png");
         deparrow.css({top : yend - 5, left : xend - 8});
     },
     _drawArrowEndStart : function(coordOrig, coordDest){
@@ -155,23 +154,18 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         depend.css(dependcss);
 
         var deparrow = this._findImageElement('arrow');
-        var deparrowsrc, deparrowcss;
+        var deparrowcss;
         if ( width == 0 ) {
             deparrowcss = {top : (yend - 10) , left : (xend - 5)};
-            deparrowsrc = this.$class.getImagesDir() + "arrow2.png";
             if ( yorig > yend ) {
                 deparrowcss = {top : yend};
-                deparrowsrc = this.$class.getImagesDir() + "arrow4.png";
             }
         } else {
             deparrowcss = {top : (yend -5), left : (xend - 10)};
-            deparrowsrc = this.$class.getImagesDir() + "arrow.png";
             if (width < 0) {
                 deparrowcss = {top : (yend - 5), left : xend}
-                deparrowsrc = this.$class.getImagesDir() + "arrow3.png";
             }
         }
-        deparrow.attr('src', deparrowsrc);
         deparrow.css(deparrowcss);
     },
     findPos_ : function(element){
@@ -180,22 +174,18 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         return {left : (pos2.left - pos1.left), top : (pos2.top - pos1.top)};
     },
     _findImageElement : function(name) {
-        var img = jq('.' + name + '', this.$n());
-        return img;
+        return jq('.' + name + '', this.$n());
     },
     setupArrow_ : function(){
         var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
                             [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
-        var img;
+        var imgDiv;
         var insertPoint = jq(this.$n());
         for ( var i = 0; i < image_data.length; i++) {
-                img = jq(document.createElement('img'));
-                img.attr({
-                    'class' : image_data[i][0] + " extra_padding",
-                    'src'    : this.$class.getImagesDir() + image_data[i][1]
-                });
+                imgDiv = jq(document.createElement('div'));
+                imgDiv.attr('class', image_data[i][0] + " extra_padding");
 
-                insertPoint.append(img);
+                insertPoint.append(imgDiv);
         }
     }
 },{
