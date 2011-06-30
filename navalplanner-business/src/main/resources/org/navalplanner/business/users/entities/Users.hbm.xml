@@ -35,6 +35,8 @@
             column="expand_order_planning_view_charts" />
         <property name="expandResourceLoadViewCharts" not-null="true"
             column="expand_resource_load_view_charts" />
+        <property name="firstName" column="first_name"/>
+        <property name="lastName" column="last_name"/>
 
         <!-- Index created in a database-object section -->
         <set name="roles" table="roles_table">

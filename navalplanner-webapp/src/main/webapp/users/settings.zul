@@ -40,7 +40,30 @@
             </tabs>
             <tabpanels>
                 <tabpanel>
+                    <groupbox>
+                        <caption label="${i18n:_('Personal Data')}" />
+                        <grid fixedLayout="true" id="personalData">
+                            <columns>
+                                <column width="200px" />
+                                <column />
+                            </columns>
+                            <rows>
+                                <row>
+                                    <label value="${i18n:_('First name')}:" />
+                                    <textbox id="firstName"
+                                        value="@{settingsController.firstName}" width="300px"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Last name')}:" />
+                                    <textbox id="lastName"
+                                        value="@{settingsController.lastName}" width="300px"/>
+                                </row>
+                            </rows>
+                        </grid>
+                    </groupbox>
+
                     <groupbox style="margin-top: 5px" closable="false">
+                        <caption label="${i18n:_('Application settings')}" />
                         <grid fixedLayout="true" id="configurationVariables">
                             <columns>
                                 <column width="200px" />
