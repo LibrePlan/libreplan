@@ -221,7 +221,7 @@ Ubuntu/Debian
 
 * Install::
 
-    $ make install
+    # cp CutyCapt /user/bin/cutycapt
 
 Fedora
 ~~~~~~
@@ -242,7 +242,7 @@ Fedora
 
 * Install::
 
-    # cp CutyCapt /user/bin/
+    # cp CutyCapt /user/bin/cutycapt
 
 openSUSE
 ~~~~~~~~
@@ -263,7 +263,7 @@ openSUSE
 
 * Install::
 
-    # cp CutyCapt /user/bin/
+    # cp CutyCapt /user/bin/cutycapt
 
 
 Compilation profiles
