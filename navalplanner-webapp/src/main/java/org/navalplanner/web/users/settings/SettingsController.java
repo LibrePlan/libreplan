@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.web.users;
+package org.navalplanner.web.users.settings;
 
 import static org.navalplanner.web.I18nHelper._;
 

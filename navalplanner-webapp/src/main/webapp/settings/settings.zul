@@ -29,7 +29,7 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <zk>
     <window id="settingsWindow" self="@{define(content)}"
-        apply="org.navalplanner.web.users.SettingsController"
+        apply="org.navalplanner.web.users.settings.SettingsController"
         title="${i18n:_('User settings')}">
 
         <vbox id="messagesContainer" />
