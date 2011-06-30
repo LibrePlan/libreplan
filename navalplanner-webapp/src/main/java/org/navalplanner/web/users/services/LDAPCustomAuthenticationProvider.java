@@ -196,11 +196,13 @@ public class LDAPCustomAuthenticationProvider extends
                             userNavalplan.setPassword(encodedPassword);
                             userNavalplan.setNavalplanUser(false);
                             userNavalplan.setDisabled(false);
-                            List<String> roles = getMatchedRoles(
-                                    configuration, ldapTemplate, username);
-                            for (String role : roles) {
-                                userNavalplan.addRole(UserRole.valueOf(
-                                        UserRole.class, role));
+                            if (configuration.getLdapSaveRolesDB()) {
+                                List<String> roles = getMatchedRoles(
+                                        configuration, ldapTemplate, username);
+                                for (String role : roles) {
+                                    userNavalplan.addRole(UserRole.valueOf(
+                                            UserRole.class, role));
+                                }
                             }
                             transactionService
                                     .runOnTransaction(new IOnTransaction<Void>() {
@@ -306,7 +308,6 @@ public class LDAPCustomAuthenticationProvider extends
 
         String queryRoles = configuration.getLdapSearchQuery().replace(
                 USER_ID_SUBSTITUTION, username);
-
         final LDAPConfiguration ldapConfig = configuration;
         String groupsPath = configuration.getLdapGroupPath();
         String roleProperty = configuration.getLdapRoleProperty();
@@ -315,55 +316,60 @@ public class LDAPCustomAuthenticationProvider extends
 
         List<String> rolesReturn = new ArrayList<String>();
 
-        if (null == groupsPath || groupsPath.isEmpty()) {
-            // The LDAP has a node strategy for groups,
-            // we must check the roleProperty in user node.
-            for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
-                // We must make a search for each role-matching in nodes
-                List<String> rolesToCheck = Arrays.asList(StringUtils.split(
-                        roleLDAP.getRoleLdap(), ";"));
-                List resultsSearch = new ArrayList();
-                for (String role : rolesToCheck) {
-                    resultsSearch.addAll(ldapTemplate.search(
-                            DistinguishedName.EMPTY_PATH, new EqualsFilter(
-                                    roleProperty, roleLDAP.getRoleLdap())
-                                    .toString(), new AttributesMapper() {
+        try {
 
-                                @Override
-                                public Object mapFromAttributes(
-                                        Attributes attributes)
-                                        throws NamingException {
-                                    return attributes.get(ldapConfig
-                                            .getLdapUserId());
-                                }
-                            }));
-                }
-                for (Object resultsIter : resultsSearch) {
-                    Attribute atrib = (Attribute) resultsIter;
-                    if (atrib.contains(queryRoles)) {
-                        rolesReturn.add(roleLDAP.getRoleLibreplan());
+            if (null == groupsPath || groupsPath.isEmpty()) {
+                // The LDAP has a node strategy for groups,
+                // we must check the roleProperty in user node.
+                for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
+                    // We must make a search for each role-matching in nodes
+                    List<String> rolesToCheck = Arrays.asList(StringUtils
+                            .split(roleLDAP.getRoleLdap(), ";"));
+                    List resultsSearch = new ArrayList();
+                    for (String role : rolesToCheck) {
+                        resultsSearch.addAll(ldapTemplate.search(
+                                DistinguishedName.EMPTY_PATH, new EqualsFilter(
+                                        roleProperty, roleLDAP.getRoleLdap())
+                                        .toString(), new AttributesMapper() {
+
+                                    @Override
+                                    public Object mapFromAttributes(
+                                            Attributes attributes)
+                                            throws NamingException {
+                                        return attributes.get(ldapConfig
+                                                .getLdapUserId());
+                                    }
+                                }));
+                    }
+                    for (Object resultsIter : resultsSearch) {
+                        Attribute atrib = (Attribute) resultsIter;
+                        if (atrib.contains(queryRoles)) {
+                            rolesReturn.add(roleLDAP.getRoleLibreplan());
+                        }
                     }
                 }
-            }
-        } else {
-            // The LDAP has a branch strategy for groups
-            // we must check if the user is in one of the groups.
+            } else {
+                // The LDAP has a branch strategy for groups
+                // we must check if the user is in one of the groups.
 
-            for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
-                // We must make a search for each role matching
-                List<String> rolesToCheck = Arrays.asList(StringUtils.split(
-                        roleLdap.getRoleLdap(), ";"));
-                for (String role : rolesToCheck) {
-                    DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
-                            .lookup(role + "," + groupsPath);
-                    if (adapter.attributeExists(roleProperty)) {
-                        Attributes atrs = adapter.getAttributes();
-                        if (atrs.get(roleProperty).contains(queryRoles)) {
-                            rolesReturn.add(roleLdap.getRoleLibreplan());
+                for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
+                    // We must make a search for each role matching
+                    List<String> rolesToCheck = Arrays.asList(StringUtils
+                            .split(roleLdap.getRoleLdap(), ";"));
+                    for (String role : rolesToCheck) {
+                        DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
+                                .lookup(role + "," + groupsPath);
+                        if (adapter.attributeExists(roleProperty)) {
+                            Attributes atrs = adapter.getAttributes();
+                            if (atrs.get(roleProperty).contains(queryRoles)) {
+                                rolesReturn.add(roleLdap.getRoleLibreplan());
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception e) {
+            rolesReturn.clear();
         }
         return rolesReturn;
     }
