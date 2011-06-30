@@ -31,6 +31,7 @@ import static org.navalplanner.web.planner.allocation.AllocationRow.sumAllTotalE
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +62,7 @@ import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
 import org.navalplanner.web.planner.allocation.IResourceAllocationModel.IResourceAllocationContext;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController;
 import org.zkoss.util.Locales;
+import org.zkoss.zk.au.out.AuWrongValue;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -99,7 +101,7 @@ public class FormBinder {
     private EventListener onChangeEnableApply = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             Component target = event.getTarget();
             if (target instanceof InputElement) {
                 InputElement inputElement = (InputElement) target;
@@ -137,7 +139,7 @@ public class FormBinder {
     private EventListener hoursRowInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (effortInput.isDisabled()) {
                 effortInput.setValue(sumAllEffortFromInputs(rows));
             }
@@ -147,7 +149,7 @@ public class FormBinder {
     private EventListener resourcesPerDayRowInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (allResourcesPerDay.isDisabled()) {
                 sumResourcesPerDayFromRowsAndAssignToAllResourcesPerDay();
             }
@@ -157,7 +159,7 @@ public class FormBinder {
     private EventListener allHoursInputChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (!effortInput.isDisabled()) {
                 distributeHoursFromTotalToRows();
             }
@@ -167,7 +169,7 @@ public class FormBinder {
     private EventListener allResourcesPerDayChange = new EventListener() {
 
         @Override
-        public void onEvent(Event event) throws Exception {
+        public void onEvent(Event event) {
             if (!allResourcesPerDay.isDisabled()) {
                 distributeResourcesPerDayToRows();
             }
@@ -291,27 +293,62 @@ public class FormBinder {
             this.labelTaskEnd = labelTaskEnd;
             this.taskPropertiesController = taskPropertiesController;
             initializeDateAndDurationFieldsFromTaskOriginalValues();
+            final LocalDate firstPossibleDay = getTask()
+                    .getFirstDayNotConsolidated().nextDayAtStart()
+                    .asExclusiveEnd();
             Util.ensureUniqueListeners(taskWorkableDays, Events.ON_CHANGE,
                     new EventListener() {
 
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             Task task = getTask();
                             Integer workableDays = taskWorkableDays.getValue();
                             if (allocationRowsHandler.isForwardsAllocation()) {
-                                LocalDate newEndDate = task
-                                        .calculateEndGivenWorkableDays(workableDays);
+                                LocalDate newEnd = ensureItIsAfterConsolidation(
+                                        task.calculateEndGivenWorkableDays(workableDays));
+                                updateWorkableDaysIfNecessary(workableDays,
+                                        getTask().getStartAsLocalDate(), newEnd);
                                 taskPropertiesController
-                                        .updateTaskEndDate(newEndDate);
-                                showValueOfDateOn(labelTaskEnd, newEndDate);
+                                        .updateTaskEndDate(newEnd);
+                                showValueOfDateOn(labelTaskEnd, newEnd);
                             } else {
-                                LocalDate newStart = task
-                                        .calculateStartGivenWorkableDays(workableDays);
+                                LocalDate newStart = ensureItIsAfterConsolidation(task
+                                        .calculateStartGivenWorkableDays(workableDays));
+                                updateWorkableDaysIfNecessary(workableDays,
+                                        newStart, task.getIntraDayEndDate()
+                                                .asExclusiveEnd());
                                 taskPropertiesController
                                         .updateTaskStartDate(newStart);
                                 showValueOfDateOn(labelTaskStart, newStart);
                             }
                         }
+
+                        private void updateWorkableDaysIfNecessary(
+                                int specifiedWorkableDays,
+                                LocalDate allocationStart,
+                                LocalDate allocationEnd) {
+                            Integer effectiveWorkableDays = getTask()
+                                    .getWorkableDaysFrom(allocationStart,
+                                            allocationEnd);
+                            if (!effectiveWorkableDays
+                                    .equals(specifiedWorkableDays)) {
+                                Clients.response(new AuWrongValue(
+                                        taskWorkableDays,
+                                        _("The original workable days value {0}, "
+                                                + "is prevented because consolidated values cannot be modified",
+                                                specifiedWorkableDays)));
+                                taskWorkableDays
+                                        .setValue(effectiveWorkableDays);
+                            }
+                        }
+
+                        @SuppressWarnings("unchecked")
+                        private LocalDate ensureItIsAfterConsolidation(
+                                LocalDate newDate) {
+                            return Collections.max(Arrays.asList(newDate,
+                                    firstPossibleDay));
+                        }
+
                     }, onChangeEnableApply);
             applyDisabledRules();
         }
@@ -550,7 +587,7 @@ public class FormBinder {
         applyButtonListener = new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 doApply();
                 FormBinder.this.applyButton.setDisabled(true);
             }
@@ -575,7 +612,7 @@ public class FormBinder {
         deleteButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 applyButton.setDisabled(false);
             }
         });
@@ -661,7 +698,7 @@ public class FormBinder {
         Util.ensureUniqueListener(recommendedAllocation, Events.ON_CLICK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         activatingRecommendedAllocation();
                     }
                 });
@@ -670,7 +707,7 @@ public class FormBinder {
     public EventListener getRecommendedAllocationListener() {
         return new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 activatingRecommendedAllocation();
             }
         };
@@ -698,7 +735,7 @@ public class FormBinder {
 
     private void resetStateForResourcesPerDayInputsWhenDoingRecommendedAllocation() {
         if (allResourcesPerDay.isDisabled()) {
-            allResourcesPerDay.setValue(null);
+            allResourcesPerDay.setValue((BigDecimal) null);
             AllocationRow.unknownResourcesPerDay(rows);
         } else {
             allResourcesPerDay.setValue(BigDecimal.ZERO);

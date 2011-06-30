@@ -25,9 +25,9 @@
 </zscript>
 
 <vbox width="100%">
-
-        <hbox valign="pack" style="margin-bottom:4px;" width="100%">
-        <hbox valign="pack">
+    <vbox>
+        <hbox pack="center" style="margin-bottom:4px;" width="100%">
+        <hbox pack="center">
             <templateFinderPopup id="templateFinderPopupAtTree" acceptButtonLabel="${i18n:_('Create Task')}" caption="${i18n:_('Choosing Template')}" />
             <label value="${i18n:_('New task:')}" />
             <textbox value="" id="newOrderElementName" width="150px"
@@ -41,7 +41,7 @@
             <button id="btnNewFromTemplate" label="${i18n:_('Add From Template')}"
                 onClick="treeController.createFromTemplate();" disabled="true"
                 visible="${treeComponent.createFromTemplateEnabled}"/>
-        </hbox><hbox style="float:right" valign="pack">
+        </hbox><hbox style="float:right" pack="center">
             <label value="${i18n:_('Selected node:')}" />
             <button id="editOrderElementButton" sclass="icono" image="/common/img/ico_editar1.png"
                 tooltiptext="${i18n:_('Edit selected task')}"
@@ -72,6 +72,7 @@
                 tooltiptext="${i18n:_('Delete selected task')}"
                 onClick="treeController.deleteSelectedElement();" />
         </hbox></hbox>
+    </vbox>
     <vbox width="100%">
         <tree id="tree" height="440px" multiple="false" droppable="true"
             onDrop="treeController.move(self, event.dragged)"

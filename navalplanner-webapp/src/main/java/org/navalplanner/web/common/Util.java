@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -48,6 +50,7 @@ import org.zkoss.zul.Radio;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Timebox;
 import org.zkoss.zul.api.Checkbox;
+import org.zkoss.zul.api.Column;
 
 /**
  * Utilities class. <br />
@@ -56,6 +59,8 @@ import org.zkoss.zul.api.Checkbox;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public class Util {
+
+    private static final Log LOG = LogFactory.getLog(Util.class);
 
     private Util() {
     }
@@ -161,7 +166,7 @@ public class Util {
         textBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue();
                 setter.set(value);
@@ -205,7 +210,7 @@ public class Util {
         comboBox.addEventListener("onSelect", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(comboBox.getSelectedItem());
                 comboBox.setSelectedItem(getter.get());
             }
@@ -247,7 +252,7 @@ public class Util {
         intBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue().trim();
                 if (value.isEmpty()) {
@@ -294,7 +299,7 @@ public class Util {
         dateBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(dateBox.getValue());
                 dateBox.setValue(getter.get());
             }
@@ -336,7 +341,7 @@ public class Util {
         timeBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(timeBox.getValue());
                 timeBox.setValue(getter.get());
             }
@@ -380,7 +385,7 @@ public class Util {
         decimalBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(decimalBox.getValue());
                 decimalBox.setValue(getter.get());
             }
@@ -423,7 +428,7 @@ public class Util {
         checkBox.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(checkBox.isChecked());
                 checkBox.setChecked(getter.get());
             }
@@ -466,7 +471,7 @@ public class Util {
         radio.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 setter.set(radio.isSelected());
                 radio.setChecked(getter.get());
             }
@@ -510,7 +515,7 @@ public class Util {
         bandBox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 InputEvent newInput = (InputEvent) event;
                 String value = newInput.getValue();
                 setter.set(value);
@@ -612,6 +617,15 @@ public class Util {
         }
         for (EventListener each : uniqueListeners) {
             component.addEventListener(eventName, each);
+        }
+    }
+
+    public static void setSort(Column column, String sortSpec) {
+        try {
+            column.setSort(sortSpec);
+        } catch (Exception e) {
+            LOG.error("failed to set sort property for: " + column + " with: "
+                    + sortSpec, e);
         }
     }
 

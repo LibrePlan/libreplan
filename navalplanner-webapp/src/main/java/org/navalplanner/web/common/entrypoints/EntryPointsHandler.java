@@ -312,7 +312,7 @@ public class EntryPointsHandler<T> {
         page.addEventListener("onBookmarkChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 BookmarkEvent bookmarkEvent = (BookmarkEvent) event;
                 String bookmark = bookmarkEvent.getBookmark();
                 applyIfMatches(controller, bookmark);

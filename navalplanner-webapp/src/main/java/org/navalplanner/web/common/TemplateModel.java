@@ -36,7 +36,6 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
-import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
@@ -52,12 +51,12 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.web.security.SecurityUtils;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.CustomUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -232,8 +231,9 @@ public class TemplateModel implements ITemplateModel {
     private void associateToUser(Scenario scenario, User user) {
         user.setLastConnectedScenario(scenario);
         userDAO.save(user);
-        CustomUser customUser = (CustomUser) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
+        CustomUser customUser = SecurityUtils.getLoggedUser();
+        assert customUser != null : "user must be logged for this method to be called";
+
         customUser.setScenario(scenario);
     }
 
@@ -457,21 +457,14 @@ public class TemplateModel implements ITemplateModel {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isChangedDefaultPassword(MandatoryUser user) {
-        Configuration configuration = configurationDAO.getConfiguration();
+    public boolean hasChangedDefaultPassword(MandatoryUser user) {
+        return user.hasChangedDefaultPasswordOrDisabled();
+    }
 
-        switch (user) {
-        case ADMIN:
-            return configuration.getChangedDefaultAdminPassword();
-        case USER:
-            return configuration.getChangedDefaultUserPassword();
-        case WSREADER:
-            return configuration.getChangedDefaultWsreaderPassword();
-        case WSWRITER:
-            return configuration.getChangedDefaultWswriterPassword();
-        }
-        return configurationDAO.getConfiguration()
-                .getChangedDefaultAdminPassword();
+    @Override
+    @Transactional(readOnly = true)
+    public boolean adminPasswordChangedAndSomeOtherNotChanged() {
+        return MandatoryUser.adminChangedAndSomeOtherNotChanged();
     }
 
     @Override

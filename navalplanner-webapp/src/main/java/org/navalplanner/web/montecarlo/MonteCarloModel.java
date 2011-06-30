@@ -449,7 +449,7 @@ public class MonteCarloModel implements IMonteCarloModel {
         return StringUtils.join(result, ",");
     }
 
-    private class MonteCarloCalculation {
+    private static class MonteCarloCalculation {
 
         private Map<MonteCarloTask, Set<EstimationRange>> estimationRangesForTasks = new HashMap<MonteCarloTask, Set<EstimationRange>>();
 

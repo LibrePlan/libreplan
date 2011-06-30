@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static java.util.Arrays.asList;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
@@ -93,15 +94,28 @@ public abstract class TaskElement extends BaseEntity {
         return result;
     }
 
-    public static Comparator<? super TaskElement> getByEndDateComparator() {
-        Comparator<TaskElement> result = new Comparator<TaskElement>() {
+    public static Comparator<? super TaskElement> getByEndAndDeadlineDateComparator() {
+        return new Comparator<TaskElement>() {
 
             @Override
             public int compare(TaskElement o1, TaskElement o2) {
-                return o1.getEndDate().compareTo(o2.getEndDate());
+                return o1.getBiggestAmongEndOrDeadline().compareTo(
+                        o2.getBiggestAmongEndOrDeadline());
             }
+
         };
-        return result;
+    }
+
+    /**
+     * @returns the biggest one among the deadline (if exists) or the end date.
+     */
+    @SuppressWarnings("unchecked")
+    public LocalDate getBiggestAmongEndOrDeadline() {
+        if (this.getDeadline() != null) {
+            return Collections.max(asList(this.getDeadline(),
+                    this.getEndAsLocalDate()));
+        }
+        return this.getEndAsLocalDate();
     }
 
     protected static <T extends TaskElement> T create(T taskElement,
@@ -633,7 +647,7 @@ public abstract class TaskElement extends BaseEntity {
                 each.getType());
     }
 
-    private Integer sumOfHoursAllocated = new Integer(0);
+    private Integer sumOfHoursAllocated = 0;
 
     public void setSumOfHoursAllocated(Integer sumOfHoursAllocated) {
         this.sumOfHoursAllocated = sumOfHoursAllocated;

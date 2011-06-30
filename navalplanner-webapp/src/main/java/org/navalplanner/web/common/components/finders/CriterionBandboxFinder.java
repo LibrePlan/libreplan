@@ -98,7 +98,7 @@ public class CriterionBandboxFinder extends BandboxFinder implements IBandboxFin
     private final ListitemRenderer orderRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Criterion criterion = (Criterion)data;
             item.setValue(criterion);
 

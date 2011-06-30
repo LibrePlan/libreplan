@@ -24,9 +24,13 @@ package org.navalplanner.web.users.bootstrap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.entities.Configuration;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.users.entities.UserRole;
 
 /**
@@ -36,20 +40,65 @@ import org.navalplanner.business.users.entities.UserRole;
  */
 public enum MandatoryUser {
 
-    USER(new ArrayList<UserRole>()),
+    USER(new ArrayList<UserRole>()) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultUserPassword();
+        }
+    },
     ADMIN(Arrays.asList(UserRole.ROLE_ADMINISTRATION,
         UserRole.ROLE_READ_ALL_ORDERS,
         UserRole.ROLE_EDIT_ALL_ORDERS,
-        UserRole.ROLE_CREATE_ORDER)),
-    WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)),
-    WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER,
-        UserRole.ROLE_WS_WRITER));
+            UserRole.ROLE_CREATE_ORDER)) {
+
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultAdminPassword();
+        }
+    },
+    WSREADER(Arrays.asList(UserRole.ROLE_WS_READER)) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultWsreaderPassword();
+        }
+    },
+    WSWRITER(Arrays.asList(UserRole.ROLE_WS_READER, UserRole.ROLE_WS_WRITER)) {
+        @Override
+        public boolean hasChangedDefaultPassword() {
+            return getConfiguration().getChangedDefaultWswriterPassword();
+        }
+    };
+
+    public static boolean adminChangedAndSomeOtherNotChanged() {
+        return ADMIN.hasChangedDefaultPasswordOrDisabled()
+                && someKeepsDefaultPassword(allExcept(ADMIN));
+    }
+
+    public static boolean someKeepsDefaultPassword(
+            Collection<MandatoryUser> mandatoryUsers) {
+        for (MandatoryUser each : mandatoryUsers) {
+            if (!each.hasChangedDefaultPasswordOrDisabled()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Configuration getConfiguration() {
+        return Registry.getConfigurationDAO().getConfiguration();
+    }
 
     private Set<UserRole> initialRoles;
 
     private MandatoryUser(Collection<UserRole> initialUserRoles) {
         this.initialRoles = new HashSet<UserRole>(initialUserRoles);
     }
+
+    public boolean hasChangedDefaultPasswordOrDisabled() {
+        return isDisabled() || hasChangedDefaultPassword();
+    }
+
+    protected abstract boolean hasChangedDefaultPassword();
 
     public String getLoginName() {
         return this.name().toLowerCase();
@@ -61,6 +110,19 @@ public enum MandatoryUser {
 
     public Set<UserRole> getInitialRoles() {
         return initialRoles;
+    }
+
+    public static EnumSet<MandatoryUser> allExcept(MandatoryUser mandatoryUser) {
+        return EnumSet.complementOf(EnumSet.of(mandatoryUser));
+    }
+
+    public boolean isDisabled() {
+        try {
+            return Registry.getUserDAO().findByLoginName(getLoginName())
+                    .isDisabled();
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
 }

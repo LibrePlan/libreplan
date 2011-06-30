@@ -35,6 +35,7 @@ import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.daos.IEntitySequenceDAO;
+import org.navalplanner.business.common.daos.IGenericDAO.Mode;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -48,7 +49,6 @@ import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,14 +149,8 @@ public class ConfigurationModel implements IConfigurationModel {
     @Transactional
     public void confirm() {
         checkEntitySequences();
-        configurationDAO.save(configuration);
-        try {
-
-            storeAndRemoveEntitySequences();
-        } catch (Exception e) {
-            throw new OptimisticLockingFailureException(
-                    _("Some entity sequence was created during the configuration process, it is impossible to update entity sequence table. Please, try again later"));
-        }
+        configurationDAO.save(configuration, Mode.FLUSH_BEFORE_VALIDATION);
+        storeAndRemoveEntitySequences();
     }
 
     private void checkEntitySequences() {
@@ -279,6 +273,28 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setGenerateCodeForCriterion(generateCodeForCriterion);
         }
+    }
+
+    @Override
+    public Boolean isAutocompleteLogin() {
+        if (configuration == null) {
+            return null;
+        }
+        return (configuration.isAutocompleteLogin() && (!configuration
+                .getChangedDefaultAdminPassword()));
+    }
+
+    @Override
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        if (configuration != null) {
+            configuration.setAutocompleteLogin(autocompleteLogin);
+        }
+    }
+
+    @Override
+    public Boolean isChangedDefaultPasswdAdmin() {
+        return configuration != null ? configuration
+                .getChangedDefaultAdminPassword() : false;
     }
 
     @Override
@@ -445,15 +461,6 @@ public class ConfigurationModel implements IConfigurationModel {
     }
 
     @Override
-    public void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts) {
-        if (configuration != null) {
-            configuration
-                    .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
-        }
-    }
-
-    @Override
     public Boolean isMonteCarloMethodTabVisible() {
         if (configuration == null) {
             return null;
@@ -466,48 +473,6 @@ public class ConfigurationModel implements IConfigurationModel {
         if (configuration != null) {
             configuration.setMonteCarloMethodTabVisible(visible);
         }
-    }
-
-    @Override
-    public Boolean isExpandCompanyPlanningViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandCompanyPlanningViewCharts();
-    }
-
-    @Override
-    public void setExpandOrderPlanningViewCharts(
-            Boolean expandOrderPlanningViewCharts) {
-        if (configuration != null) {
-            configuration
-                    .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
-        }
-    }
-
-    @Override
-    public Boolean isExpandOrderPlanningViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandOrderPlanningViewCharts();
-    }
-
-    @Override
-    public void setExpandResourceLoadViewCharts(
-            Boolean expandResourceLoadViewCharts) {
-        if (configuration != null) {
-            configuration
-                    .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
-        }
-    }
-
-    @Override
-    public Boolean isExpandResourceLoadViewCharts() {
-        if (configuration == null) {
-            return null;
-        }
-        return configuration.isExpandResourceLoadViewCharts();
     }
 
     public List<EntitySequence> getEntitySequences(EntityNameEnum entityName) {

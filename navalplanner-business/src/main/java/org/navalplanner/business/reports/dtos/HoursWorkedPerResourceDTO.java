@@ -24,6 +24,7 @@ package org.navalplanner.business.reports.dtos;
 import java.util.Date;
 import java.util.Set;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.resources.entities.Resource;
@@ -44,6 +45,8 @@ public class HoursWorkedPerResourceDTO {
 
     private String orderElementCode;
 
+    private String orderElementName;
+
     private String descriptionValues;
 
     private String labels;
@@ -58,6 +61,7 @@ Resource resource,
         this.clockFinish = workReportLine.getClockFinish();
         this.numHours = workReportLine.getNumHours();
         this.orderElementCode = workReportLine.getOrderElement().getCode();
+        this.orderElementName = workReportLine.getOrderElement().getName();
         this.descriptionValues = descriptionValuesAsString(workReportLine.getDescriptionValues());
         this.labels = labelsAsString(workReportLine.getLabels());
     }
@@ -111,7 +115,7 @@ Resource resource,
     }
 
     public Date getDate() {
-        return date;
+        return LocalDate.fromDateFields(date).toDateTimeAtStartOfDay().toDate();
     }
 
     public void setDate(Date date) {
@@ -124,6 +128,14 @@ Resource resource,
 
     public void setOrderElementCode(String orderElementCode) {
         this.orderElementCode = orderElementCode;
+    }
+
+    public String getOrderElementName() {
+        return orderElementName;
+    }
+
+    public void setOrderElementName(String orderElementName) {
+        this.orderElementName = orderElementName;
     }
 
     public String getDescriptionValues() {

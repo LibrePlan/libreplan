@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +40,6 @@ import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.orders.OrderCRUDController;
 import org.navalplanner.web.orders.OrderElementPredicate;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
-import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
@@ -56,12 +54,10 @@ import org.zkoss.ganttz.extensions.ContextWithPlannerTask;
 import org.zkoss.ganttz.extensions.ICommand;
 import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
-import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.LongOperationFeedback;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
+import org.zkoss.ganttz.util.OnZKDesktopRegistry;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
@@ -115,13 +111,6 @@ public class OrderPlanningController implements Composer {
     private Textbox filterNameOrderElement;
 
     public OrderPlanningController() {
-        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
-        ResourceAllocationController.registerNeededScripts();
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     public List<org.navalplanner.business.planner.entities.TaskElement> getCriticalPath() {
@@ -157,7 +146,7 @@ public class OrderPlanningController implements Composer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.planner = (Planner) comp;
         String zoomLevelParameter = null;
         if ((parameters != null) && (parameters.get("zoom") != null)
@@ -245,7 +234,7 @@ public class OrderPlanningController implements Composer {
         LongOperationFeedback.execute(orderElementFilter, new ILongOperation() {
 
             @Override
-            public void doAction() throws Exception {
+            public void doAction() {
                 model.forceLoadLabelsAndCriterionRequirements();
 
                 final IContext<?> context = planner.getContext();

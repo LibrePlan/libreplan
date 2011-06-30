@@ -24,6 +24,7 @@ package org.navalplanner.business.reports.dtos;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.joda.time.LocalDate;
@@ -44,6 +45,29 @@ import org.navalplanner.business.workreports.entities.WorkReportLine;
  *
  */
 public class WorkingArrangementsPerOrderDTO {
+
+    /**
+     * It returns a new list with the provided assignments such their dates are
+     * inferior to endInclusive or endInclusive is null.
+     *
+     * @param assignments
+     * @param endInclusive
+     * @return a new list with the assignments satisfying the condition
+     */
+    public static List<DayAssignment> removeAfterDate(
+            Collection<? extends DayAssignment> assignments,
+            LocalDate endInclusive) {
+        if (endInclusive == null) {
+            return new ArrayList<DayAssignment>(assignments);
+        }
+        List<DayAssignment> result = new ArrayList<DayAssignment>();
+        for (DayAssignment each : assignments) {
+            if (each.getDay().compareTo(endInclusive) <= 0) {
+                result.add(each);
+            }
+        }
+        return result;
+    }
 
     private IWorkReportLineDAO workReportLineDAO;
 
@@ -140,7 +164,7 @@ public class WorkingArrangementsPerOrderDTO {
     }
 
     private Integer getHoursSpecifiedAtOrder(List<Task> tasks) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         for (Task each: tasks) {
             result += each.getHoursSpecifiedAtOrder();
@@ -149,7 +173,7 @@ public class WorkingArrangementsPerOrderDTO {
     }
 
     public Integer calculatePlannedHours(List<Task> tasks, LocalDate date) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         for (Task each: tasks) {
             result += calculatePlannedHours(each, date);
@@ -157,24 +181,14 @@ public class WorkingArrangementsPerOrderDTO {
         return result;
     }
 
-    public Integer calculatePlannedHours(Task task, LocalDate date) {
-        Integer result = new Integer(0);
-
+    public Integer calculatePlannedHours(Task task, final LocalDate date) {
         final List<DayAssignment> dayAssignments = task.getDayAssignments();
-        if (dayAssignments.isEmpty()) {
-            return result;
-        }
-
-        for (DayAssignment dayAssignment : dayAssignments) {
-            if (date == null || dayAssignment.getDay().compareTo(date) <= 0) {
-                result += dayAssignment.getHours();
-            }
-        }
-        return result;
+        return DayAssignment.sum(removeAfterDate(dayAssignments, date))
+                .roundToHours();
     }
 
     public Integer calculateRealHours(List<Task> tasks, LocalDate date) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         for (Task each: tasks) {
             result += calculateRealHours(each, date);
@@ -183,13 +197,10 @@ public class WorkingArrangementsPerOrderDTO {
     }
 
     public Integer calculateRealHours(Task task, LocalDate date) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(task.getOrderElement());
-        if (workReportLines.isEmpty()) {
-            return result;
-        }
 
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());

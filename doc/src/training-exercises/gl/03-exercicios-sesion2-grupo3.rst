@@ -120,9 +120,9 @@ Acceder ós datos xerais do pedido e modificar o modo de planificación a "Atrá
 
 Acceder á planificación do proxecto:
 
-   * Establecer dependencia entre tarefa 3 e tarefa 4 de tipo Inicio-Fin.
-   * Establecer dependencia entre tarefa 2 e tarefa 3 de tipo Inicio-Fin.
-   * Establecer dependencia entre tarefa 1 e tarefa 2 de tipo Inicio-Fin.
+   * Establecer dependencia entre tarefa 3 e tarefa 4 de tipo *FIN-INICIO*.
+   * Establecer dependencia entre tarefa 2 e tarefa 3 de tipo *FIN-INICIO*.
+   * Establecer dependencia entre tarefa 1 e tarefa 2 de tipo *FIN-INICIO*.
 
 ¿Como se van colocando as tarefas?
 

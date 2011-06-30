@@ -47,7 +47,7 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
     private ListitemRenderer advancesRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             AdvanceAssignmentTemplate assignment = (AdvanceAssignmentTemplate) data;
             append(item, createTypeLabel(assignment));
             append(item, createMaxValueLabel(assignment));

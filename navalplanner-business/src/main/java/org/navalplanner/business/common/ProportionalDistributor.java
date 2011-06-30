@@ -53,6 +53,10 @@ public class ProportionalDistributor {
         return result;
     }
 
+    /**
+     * Note: this class has a natural ordering that is inconsistent with equals.
+     *
+     */
     private static class FractionWithPosition implements
             Comparable<FractionWithPosition> {
 

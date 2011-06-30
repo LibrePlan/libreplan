@@ -216,11 +216,10 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 TaskElement
                 .getByStartDateComparator());
         TaskElement latest = Collections.max(configuration.getData(),
-                TaskElement.getByEndDateComparator());
+                TaskElement.getByEndAndDeadlineDateComparator());
 
-        LocalDate startDate = LocalDate.fromDateFields(earliest
-                .getStartDate());
-        LocalDate endDate = LocalDate.fromDateFields(latest.getEndDate());
+        LocalDate startDate = earliest.getStartAsLocalDate();
+        LocalDate endDate = latest.getBiggestAmongEndOrDeadline();
         return ZoomLevel.getDefaultZoomByDates(startDate, endDate);
     }
 
@@ -284,7 +283,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private OverAllProgressContent overallProgressContent;
 
-    private final class ReturningNewAssignments implements
+    private static final class ReturningNewAssignments implements
             IAssignmentsOnResourceCalculator {
 
         private Set<DayAssignment> previousAssignmentsSet;
@@ -307,8 +306,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     }
 
-    private final class TaskElementNavigator implements
+    private static final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
+
         @Override
         public List<TaskElement> getChildren(TaskElement object) {
             return object.getChildren();
@@ -365,8 +365,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(planner, orderReloaded);
-        configuration.setExpandPlanningViewCharts(configurationDAO
-                .getConfiguration().isExpandOrderPlanningViewCharts());
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        configuration.setExpandPlanningViewCharts(user
+                .isExpandOrderPlanningViewCharts());
 
         addAdditional(additional, configuration);
 
@@ -787,7 +794,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         datebox.addEventListener(Events.ON_CHANGE, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 LocalDate date = new LocalDate(datebox.getValue());
                 org.zkoss.zk.ui.Component child = vbox
                         .getFellow("indicatorsTable");
@@ -896,7 +903,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     transactionService
                             .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
                                 @Override
@@ -1351,7 +1358,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             chart.getChildren().clear();
             chart.invalidate();
 
-            String javascript = "zkTasklist.timeplotcontainer_rescroll();";
+            String javascript = "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
             Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();
@@ -1403,13 +1410,15 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
             // Stacked area: load - otherLoad - max - overload - otherOverload
-            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotOrderOverload, valueGeometry,
                     timeGeometry);
             appendPlotinfo(chart, plotOtherOverload, valueGeometry,
                     timeGeometry);
+            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
+
+
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");
@@ -1726,9 +1735,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            rootTask
-                    .updateCriticalPathProgress((List<TaskElement>) planningState
-                            .getPlanner().getCriticalPath());
+            Planner planner = planningState.getPlanner();
+            if (planner != null) {
+                rootTask.updateCriticalPathProgress((List<TaskElement>) planner
+                        .getCriticalPath());
+            }
         }
 
         private void setAdvancePercentage(BigDecimal value) {

@@ -156,7 +156,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
     public class ScenariosTreeitemRenderer implements TreeitemRenderer {
 
         @Override
-        public void render(final Treeitem item, Object data) throws Exception {
+        public void render(final Treeitem item, Object data) {
             SimpleTreeNode simpleTreeNode = (SimpleTreeNode) data;
             final Scenario scenario = (Scenario) simpleTreeNode.getData();
             item.setValue(data);
@@ -184,7 +184,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
                     new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToCreateDerivedForm(scenario);
                 }
 
@@ -194,7 +194,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             Button editButton = Util.createEditButton(new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToEditForm(scenario);
                 }
 
@@ -204,7 +204,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             Button removeButton = Util.createRemoveButton(new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     scenarioModel.remove(scenario);
                     Util.reloadBindings(listWindow);
                 }
@@ -226,7 +226,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
                     new EventListener() {
 
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             connectTo(scenario);
                         }
 

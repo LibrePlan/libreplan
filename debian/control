@@ -3,14 +3,14 @@ Section: web
 Priority: optional
 Maintainer: Adrian Perez <aperez@igalia.com>
 Build-Depends: debhelper (>= 7.0.50), maven2, python-docutils,
- gettext (>= 0.17), openjdk-6-jdk
+ gettext (>= 0.17), default-jdk
 Standards-Version: 3.8.4
 Homepage: http://www.navalplan.org/en/
 
 Package: navalplan
 Architecture: any
 Depends: cutycapt, postgresql, postgresql-client, xvfb, dbconfig-common, ucf,
- tomcat6, openjdk-6-jre-headless | openjdk-6-jre, libpg-java, ttf-freefont,
+ tomcat6, default-jre-headless | default-jre, libpg-java, ttf-freefont,
  ${misc:Depends}
 Description: Web application for project management.
  NavalPlan is a planning tool for users based on some concepts: company and

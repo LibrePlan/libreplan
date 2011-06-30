@@ -41,7 +41,6 @@
         editController = editTaskController;
     ]]>
     </zscript>
-
     <borderlayout sclass="resourcesloadlayout" width="auto">
 
         <!-- Top control button bar -->

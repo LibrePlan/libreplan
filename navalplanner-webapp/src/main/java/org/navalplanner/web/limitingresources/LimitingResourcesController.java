@@ -195,7 +195,8 @@ public class LimitingResourcesController extends GenericForwardComposer {
     }
 
     private void addCommands(LimitingResourcesPanel limitingResourcesPanel) {
-        limitingResourcesPanel.add(commands.toArray(new IToolbarCommand[0]));
+        limitingResourcesPanel.add(commands
+                .toArray(new IToolbarCommand[commands.size()]));
     }
 
     private TimeTracker buildTimeTracker() {
@@ -257,10 +258,13 @@ public class LimitingResourcesController extends GenericForwardComposer {
     /**
      * DTO for list of unassigned {@link LimitingResourceQueueElement}
      *
+     * Note: this class has a natural ordering that is inconsistent with equals.
+     *
      * @author Diego Pino Garcia <dpino@igalia.com>
      *
      */
-    public class LimitingResourceQueueElementDTO implements Comparable<LimitingResourceQueueElementDTO> {
+    public static class LimitingResourceQueueElementDTO implements
+            Comparable<LimitingResourceQueueElementDTO> {
 
         private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy");
 
@@ -411,7 +415,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
     private class LimitingResourceQueueElementsRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             LimitingResourceQueueElementDTO element = (LimitingResourceQueueElementDTO) data;
 
             row.setValue(data);
@@ -442,7 +446,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     LimitingResourceQueueElement queueElement = element.getOriginal();
 
                     editResourceAllocation(queueElement);
@@ -461,7 +465,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     showManualAllocationWindow(element.getOriginal());
                 }
             });
@@ -476,7 +480,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     removeUnassignedLimitingResourceQueueElement(element);
                 }
             });
@@ -500,7 +504,7 @@ public class LimitingResourcesController extends GenericForwardComposer {
             result.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     assignLimitingResourceQueueElement(element);
                 }
             });

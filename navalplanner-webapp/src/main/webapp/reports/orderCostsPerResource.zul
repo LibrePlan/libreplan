@@ -30,10 +30,6 @@
 <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
     class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
 
-    <?component name="extendedjasperreport"
-    class="org.navalplanner.web.common.components.ExtendedJasperreport"
-    extends="jasperreport" ?>
-
 <zk>
 
     <window self="@{define(content)}"
@@ -229,7 +225,7 @@
 
         <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
 
-        <extendedjasperreport style="display: none" id="report" />
+        <jasperreportcomponent id="report" />
 
     </window>
 

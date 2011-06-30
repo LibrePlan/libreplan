@@ -30,6 +30,9 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
  * This class models a worker.
+ *
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */

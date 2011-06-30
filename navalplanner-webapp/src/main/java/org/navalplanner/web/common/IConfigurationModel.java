@@ -104,19 +104,6 @@ public interface IConfigurationModel {
     void removeEntitySequence(EntitySequence entitySequence)
             throws IllegalArgumentException;
 
-    void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts);
-
-    Boolean isExpandCompanyPlanningViewCharts();
-
-    void setExpandOrderPlanningViewCharts(Boolean expandOrderPlanningViewCharts);
-
-    Boolean isExpandOrderPlanningViewCharts();
-
-    void setExpandResourceLoadViewCharts(Boolean expandResourceLoadViewCharts);
-
-    Boolean isExpandResourceLoadViewCharts();
-
     Boolean isMonteCarloMethodTabVisible();
 
     void setMonteCarloMethodTabVisible(Boolean visible);
@@ -158,4 +145,9 @@ public interface IConfigurationModel {
 
     LDAPConfiguration getLdapConfiguration();
 
+    Boolean isAutocompleteLogin();
+
+    Boolean isChangedDefaultPasswdAdmin();
+
+    void setAutocompleteLogin(Boolean autocompleteLogin);
 }

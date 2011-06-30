@@ -123,7 +123,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         autocomplete.addEventListener("onSelect", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 final Comboitem comboitem = autocomplete.getSelectedItem();
 
                 if(comboitem != null) {
@@ -163,7 +163,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 confirmRemove((ResourcesCostCategoryAssignment) row.getValue());
             }
         });
@@ -184,7 +184,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         initDateBox.addEventListener("onChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 // Updates the constraint of the endDate box with the new date
                 LocalDate initDate = ((ResourcesCostCategoryAssignment)row.getValue()).getInitDate();
                 Datebox endDateBox = (Datebox) row.getChildren().get(2);
@@ -297,7 +297,7 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
     public class CostCategoryAssignmentRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             ResourcesCostCategoryAssignment assignment =
                 (ResourcesCostCategoryAssignment) data;
 

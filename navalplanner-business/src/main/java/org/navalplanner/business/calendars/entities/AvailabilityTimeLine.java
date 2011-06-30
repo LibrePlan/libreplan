@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.joda.time.LocalDate;
 
 /**
@@ -301,6 +302,21 @@ public class AvailabilityTimeLine {
         public int compareTo(Interval other) {
             return this.start.compareTo(other.start) * 2
                     - this.end.compareTo(other.end);
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof Interval) {
+                Interval other = (Interval) obj;
+                return start.equals(other.getStart())
+                        && end.equals(other.getEnd());
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return new HashCodeBuilder().append(start).append(end).toHashCode();
         }
 
         public boolean includes(LocalDate date) {

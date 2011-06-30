@@ -84,14 +84,21 @@ public class GenericDAOHibernate<E extends BaseEntity,
         return entityClass;
     }
 
+    public void save(E entity) throws ValidationException {
+        save(entity, Mode.AUTOMATIC_FLUSH);
+    }
+
     /**
      * It's necessary to save and validate later.
      *
      * Validate may retrieve the entity from DB and put it into the Session, which can eventually lead to
      * a NonUniqueObject exception. Save works here to reattach the object as well as saving.
      */
-    public void save(E entity) throws ValidationException {
+    public void save(E entity, Mode mode) throws ValidationException {
         getSession().saveOrUpdate(entity);
+        if (mode == Mode.FLUSH_BEFORE_VALIDATION) {
+            getSession().flush();
+        }
         entity.validate();
     }
 

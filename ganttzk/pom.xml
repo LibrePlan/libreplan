@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.navalplanner</groupId>
         <artifactId>navalplanner</artifactId>
-        <version>1.1.0</version>
+        <version>1.1.1</version>
     </parent>
     <artifactId>ganttzk</artifactId>
     <packaging>jar</packaging>
@@ -30,6 +30,21 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>default</id>
+                        <phase>package</phase>
+                    <goals>
+                        <goal>jar-no-fork</goal>
+                    </goals>
+                    </execution>
+                </executions>
+
             </plugin>
         </plugins>
     </build>

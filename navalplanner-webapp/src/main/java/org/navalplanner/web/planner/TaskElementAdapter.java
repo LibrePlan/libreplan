@@ -328,8 +328,14 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return Duration.ZERO;
             }
             Fraction fraction = fractionOfWorkingDayFor(effortDuration);
-            return new Duration(fraction.multiplyBy(
-                    Fraction.getFraction(DAY_MILLISECONDS, 1)).intValue());
+            try {
+                return new Duration(fraction.multiplyBy(
+                        Fraction.getFraction(DAY_MILLISECONDS, 1)).intValue());
+            } catch (ArithmeticException e) {
+                // if fraction overflows use floating point arithmetic
+                return new Duration(
+                        (int) (fraction.doubleValue() * DAY_MILLISECONDS));
+            }
         }
 
         @SuppressWarnings("unchecked")
@@ -504,8 +510,8 @@ public class TaskElementAdapter implements ITaskElementAdapter {
                 return BigDecimal.ZERO;
             }
 
-            Integer totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
-                    .getSumChargedHours().getTotalChargedHours() : new Integer(0);
+            int totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
+                    .getSumChargedHours().getTotalChargedHours() : 0;
             BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
 
             BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())

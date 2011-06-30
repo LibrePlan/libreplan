@@ -94,7 +94,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         bandbox.addEventListener("onChanging", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 clearSelectedElement();
                 final String inputText = ((InputEvent) event).getValue();
                 listbox.setModel(getSubModel(inputText));
@@ -106,7 +106,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 int selectedItemIndex = listbox.getSelectedIndex();
                 if (selectedItemIndex != -1) {
                     listbox.getItemAtIndexApi(selectedItemIndex).setFocus(true);
@@ -127,7 +127,7 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 pickElementFromList();
             }
         });
@@ -136,14 +136,14 @@ public class BandboxSearch extends HtmlMacroComponent {
         listbox.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 close();
             }
         });
         listbox.addEventListener(Events.ON_OK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 pickElementFromList();
                 close();
             }

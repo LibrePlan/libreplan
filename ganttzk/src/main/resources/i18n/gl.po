@@ -3,7 +3,7 @@
 # Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
 #                         Desenvolvemento Tecnolóxico de Galicia
 # Copyright (C) 2010-2011 Igalia, S.L.
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the NavalPlan package.
 # Igalia <dpino@igalia.com>, 2009.
 # Jacobo Aragunde Pérez <jaragunde@igalia.com>, 2010.
 # Manuel Rego Casasnovas <mrego@igalia.com>, 2010, 2011.
@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-05-11 18:16+0200\n"
-"PO-Revision-Date: 2011-04-08 11:11+0200\n"
+"POT-Creation-Date: 2011-06-06 22:45+0200\n"
+"PO-Revision-Date: 2011-06-06 22:50+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Galician <>\n"
 "Language: gl\n"
@@ -43,20 +43,16 @@ msgstr "Inicio"
 msgid "Show reported hours"
 msgstr "Mostrar horas reportadas"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
-msgid "Show/Hide Progress"
-msgstr "Mostrar/ocultar progreso"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:92
 msgid "by criteria"
 msgstr "por criterios"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:70
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:72
 msgid "Show/Hide reported hours"
-msgstr "Mostrar/ocultar horas reportadas"
+msgstr "Mostrar/Ocultar horas reportadas"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:45
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:36
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:46
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:35
 msgid "Zoom"
 msgstr "Zoom"
 
@@ -72,6 +68,10 @@ msgstr "A dependencia especificada non está permitida"
 msgid "Set End-End"
 msgstr "Definir Fin-Fin"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:80
+msgid "Show/Hide progress"
+msgstr "Mostrar/Ocultar progreso"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Task"
 msgstr "Tarefa"
@@ -84,7 +84,7 @@ msgstr "por recursos"
 msgid "Criterion"
 msgstr "Criterio"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:40
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
 msgid "Print"
 msgstr "Imprimir"
 
@@ -108,6 +108,10 @@ msgstr "filtrando por nome"
 msgid "End"
 msgstr "Fin"
 
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:37
+msgid "Choosing Template"
+msgstr "Selección de modelo"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/TimeTracker.java:243
 msgid "changing zoom"
 msgstr "cambiando zoom"
@@ -120,24 +124,24 @@ msgstr "Trimestre"
 msgid "None"
 msgstr "Ningún"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:44
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:43
 msgid "Filter"
 msgstr "Filtro"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:67
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:69
 msgid "Flatten/Unflatten tree"
-msgstr "Aplanar/expandir árbore"
+msgstr "Aplanar/Expandir árbore"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/data/resourceload/TimeLineRole.java:58
 msgid "Project"
 msgstr "Proxecto"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:51
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:50
 msgid "Name filter"
 msgstr "Filtro por nomes"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/leftTasksTree.zul:28
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:69
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:68
 msgid "Name"
 msgstr "Nome"
 
@@ -145,9 +149,13 @@ msgstr "Nome"
 msgid "Show progress"
 msgstr "Mostrar progreso"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:64
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:66
 msgid "Expand/Collapse all"
-msgstr "Expandir/pregar todo"
+msgstr "Expandir/Pregar todo"
+
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:56
+msgid "Show/Hide critical path"
+msgstr "Mostrar/Ocultar camiño crítico"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:36
 msgid "Create Project"
@@ -165,9 +173,9 @@ msgstr "mostrando criterios"
 msgid "Month"
 msgstr "Mes"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:61
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:63
 msgid "Show/Hide resources"
-msgstr "Mostrar/ocultar recursos"
+msgstr "Mostrar/Ocultar recursos"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/DependencyList.java:246
 msgid "Set End-Start"
@@ -189,10 +197,6 @@ msgstr "Ocultar horas reportadas"
 msgid "Day"
 msgstr "Día"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:55
-msgid "Show/Hide Critical path"
-msgstr "Ocultar/ocultar camiño crítico"
-
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:142
 msgid "showing resources"
 msgstr "mostrando recursos"
@@ -201,16 +205,16 @@ msgstr "mostrando recursos"
 msgid "Load: {0}%"
 msgstr "Carga: {0}%"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:58
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:60
 msgid "Show/Hide labels"
-msgstr "Mostrar/ocultar etiquetas"
+msgstr "Mostrar/Ocultar etiquetas"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:97
 msgid "Hour"
 msgstr "Hora"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:114
-#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:92
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:116
+#: ganttzk/src/main/resources/web/ganttz/zul/resourcesLoadLayout.zul:91
 msgid "Graphics"
 msgstr "Gráficas"
 
@@ -234,7 +238,7 @@ msgstr "Mostrar tódolos elementos"
 msgid "All"
 msgstr "Todos"
 
-#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:38
+#: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:39
 msgid "Refresh"
 msgstr "Actualizar"
 

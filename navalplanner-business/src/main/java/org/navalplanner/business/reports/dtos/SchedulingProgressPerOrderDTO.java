@@ -21,6 +21,8 @@
 
 package org.navalplanner.business.reports.dtos;
 
+import static org.navalplanner.business.reports.dtos.WorkingArrangementsPerOrderDTO.removeAfterDate;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
@@ -142,7 +144,7 @@ public class SchedulingProgressPerOrderDTO {
     }
 
     private Integer getHoursSpecifiedAtOrder(List<Task> tasks) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         for (Task each: tasks) {
             result += each.getHoursSpecifiedAtOrder();
@@ -151,7 +153,7 @@ public class SchedulingProgressPerOrderDTO {
     }
 
     public Integer calculatePlannedHours(List<Task> tasks, LocalDate date) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         for (Task each: tasks) {
             result += calculatePlannedHours(each, date);
@@ -160,30 +162,16 @@ public class SchedulingProgressPerOrderDTO {
     }
 
     public Integer calculatePlannedHours(Task task, LocalDate date) {
-        Integer result = new Integer(0);
-
         final List<DayAssignment> dayAssignments = task.getDayAssignments();
-        if (dayAssignments.isEmpty()) {
-            return result;
-        }
-
-        for (DayAssignment dayAssignment : dayAssignments) {
-            if (date == null || dayAssignment.getDay().compareTo(date) <= 0) {
-                result += dayAssignment.getHours();
-            }
-        }
-        return result;
+        return DayAssignment.sum(removeAfterDate(dayAssignments, date))
+                .roundToHours();
     }
 
     public Integer calculateRealHours(Order order, LocalDate date) {
-        Integer result = new Integer(0);
+        int result = 0;
 
         final List<WorkReportLine> workReportLines = workReportLineDAO
                 .findByOrderElementAndChildren(order);
-
-        if (workReportLines.isEmpty()) {
-            return result;
-        }
 
         for (WorkReportLine workReportLine : workReportLines) {
             final LocalDate workReportLineDate = new LocalDate(workReportLine.getDate());

@@ -553,7 +553,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
         List<LoadTimeLine> secondLevel = new ArrayList<LoadTimeLine>();
         for (Entry<Task, List<GenericResourceAllocation>> entry : byTask
                 .entrySet()) {
-
             Task task = entry.getKey();
 
             Map<Set<Criterion>, List<GenericResourceAllocation>> mapSameCriteria = getAllocationsWithSameCriteria((entry
@@ -1009,8 +1008,15 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public boolean isExpandResourceLoadViewCharts() {
-        return configurationDAO.getConfiguration()
-                .isExpandResourceLoadViewCharts();
+
+        User user;
+        try {
+            user = this.userDAO.findByLoginName(SecurityUtils
+                    .getSessionUserLoginName());
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        return user.isExpandResourceLoadViewCharts();
     }
 
 }

@@ -147,7 +147,7 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
             addfilterMaterial = true;
         }
 
-        List<OrderElement> allOrders = new ArrayList<OrderElement>();
+        final List<OrderElement> allOrders = new ArrayList<OrderElement>();
         for (Order order : orders) {
             allOrders.add(order);
             allOrders.addAll(order.getAllOrderElements());
@@ -163,7 +163,7 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
             addedWhere = true;
             strQuery += "WHERE materialAssignment.status = :filterStatus ";
         }
-        if (allOrders != null && !allOrders.isEmpty()) {
+        if (!allOrders.isEmpty()) {
             if (addedWhere) {
                 strQuery += "AND orderElement IN (:allOrders) ";
             } else {
@@ -201,7 +201,7 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
         if (filterStatus != null) {
             query.setParameter("filterStatus", filterStatus);
         }
-        if (allOrders != null && !allOrders.isEmpty()) {
+        if (!allOrders.isEmpty()) {
             query.setParameterList("allOrders", allOrders);
         }
         if (categories != null && !categories.isEmpty()) {

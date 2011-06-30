@@ -29,8 +29,12 @@ import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.materials.bootstrap.UnitTypeBootstrap;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
+
 /**
  * Material entity
+ *
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */

@@ -45,6 +45,8 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
 
 /**
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */

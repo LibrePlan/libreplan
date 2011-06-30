@@ -243,8 +243,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<SortedMap<CriterionType, List<Criterion>>> calculateCriterionsMap() {
         return new Callable<SortedMap<CriterionType, List<Criterion>>>() {
             @Override
-            public SortedMap<CriterionType, List<Criterion>> call()
-                    throws Exception {
+            public SortedMap<CriterionType, List<Criterion>> call() {
                 SortedMap<CriterionType, List<Criterion>> result = new TreeMap<CriterionType, List<Criterion>>(
                         getComparatorByName());
                 for (CriterionType criterionType : criterionTypeDAO
@@ -278,7 +277,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<Map<LabelType, List<Label>>> calculateLabelsMap() {
         return new Callable<Map<LabelType,List<Label>>>() {
             @Override
-            public Map<LabelType, List<Label>> call() throws Exception {
+            public Map<LabelType, List<Label>> call() {
                 Map<LabelType, List<Label>> result = new HashMap<LabelType, List<Label>>();
                 for (LabelType labelType : labelTypeDAO.getAll()) {
                     List<Label> labels = new ArrayList<Label>(
@@ -297,7 +296,7 @@ public class PredefinedDatabaseSnapshots {
         return new Callable<List<Worker>>() {
 
             @Override
-            public List<Worker> call() throws Exception {
+            public List<Worker> call() {
                 return workerDAO.getAll();
             }
         };
@@ -309,7 +308,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<CostCategory>> calculateListCostCategories() {
         return new Callable<List<CostCategory>>() {
             @Override
-            public List<CostCategory> call() throws Exception {
+            public List<CostCategory> call() {
                 return costCategoryDAO.findActive();
             }
         };
@@ -318,7 +317,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<Criterion>> calculateListCriterion() {
         return new Callable<List<Criterion>>() {
             @Override
-            public List<Criterion> call() throws Exception {
+            public List<Criterion> call() {
                 return criterionDAO.getAll();
             }
         };
@@ -331,7 +330,7 @@ public class PredefinedDatabaseSnapshots {
         return new Callable<Map<Class<?>, List<Resource>>>() {
 
             @Override
-            public Map<Class<?>, List<Resource>> call() throws Exception {
+            public Map<Class<?>, List<Resource>> call() {
                 Map<Class<?>, List<Resource>> result = new HashMap<Class<?>, List<Resource>>();
                 result.put(Worker.class, Resource
                         .sortByName(new ArrayList<Resource>(resourceDAO
@@ -354,7 +353,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<ExternalCompany>> calculateExternalCompanies() {
         return new Callable<List<ExternalCompany>>() {
             @Override
-            public List<ExternalCompany> call() throws Exception {
+            public List<ExternalCompany> call() {
                 return externalCompanyDAO.getExternalCompaniesAreClient();
             }
         };
@@ -366,7 +365,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<String>> calculateCustomerReferences() {
         return new Callable<List<String>>() {
             @Override
-            public List<String> call() throws Exception {
+            public List<String> call() {
                 // FIXME replace by a HQL query, for god's sake!
                 List<String> result = new ArrayList<String>();
                 for (Order order : orderDAO.getOrders()) {
@@ -383,7 +382,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<String>> calculateOrdersCodes() {
         return new Callable<List<String>>() {
             @Override
-            public List<String> call() throws Exception {
+            public List<String> call() {
                 List<String> result = new ArrayList<String>();
                 for (Order order : orderDAO.getOrders()) {
                     result.add(order.getCode());
@@ -402,8 +401,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<ResourceLoadChartData> calculateResourceLoadChartData() {
         return new Callable<ResourceLoadChartData>() {
             @Override
-            public ResourceLoadChartData call()
-                    throws Exception {
+            public ResourceLoadChartData call() {
 
                 List<DayAssignment> dayAssignments = dayAssignmentDAO.getAllFor(
                         scenarioManager.getCurrent(), null, null);
@@ -420,8 +418,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<List<WorkReportLine>> calculateWorkReportLines() {
         return new Callable<List<WorkReportLine>>() {
             @Override
-            public List<WorkReportLine> call()
-                    throws Exception {
+            public List<WorkReportLine> call() {
                 return workReportLineDAO.list(WorkReportLine.class);
             }
         };
@@ -436,8 +433,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>> calculateEstimatedCostPerTask() {
         return new Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>>() {
             @Override
-            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call()
-                    throws Exception {
+            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call() {
                 Map<TaskElement, SortedMap<LocalDate, BigDecimal>> map =
                     new HashMap<TaskElement, SortedMap<LocalDate,BigDecimal>>();
                 for(TaskElement task : taskElementDAO.list(TaskElement.class)) {
@@ -453,8 +449,7 @@ public class PredefinedDatabaseSnapshots {
     private Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>> calculateAdvanceCostPerTask() {
         return new Callable<Map<TaskElement, SortedMap<LocalDate, BigDecimal>>>() {
             @Override
-            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call()
-                    throws Exception {
+            public Map<TaskElement, SortedMap<LocalDate, BigDecimal>> call() {
                 Map<TaskElement, SortedMap<LocalDate, BigDecimal>> map =
                     new HashMap<TaskElement, SortedMap<LocalDate,BigDecimal>>();
                 for(TaskElement task : taskElementDAO.list(TaskElement.class)) {

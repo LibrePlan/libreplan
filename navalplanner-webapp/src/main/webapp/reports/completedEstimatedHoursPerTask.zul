@@ -30,10 +30,6 @@
 <?component name="combobox_output_format" macroURI="combobox_output_format.zul"
     class="org.navalplanner.web.reports.ComboboxOutputFormat" ?>
 
-<?component name="extendedjasperreport"
-    class="org.navalplanner.web.common.components.ExtendedJasperreport"
-    extends="jasperreport" ?>
-
 <zk>
 
     <window self="@{define(content)}"
@@ -82,7 +78,9 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdLabels" finder="LabelBandboxFinder"
-                            model="@{controller.allLabels}" />
+                            model="@{controller.allLabels}"
+                            widthListbox="380px"
+                            widthBandbox="350px" />
                         <button label="${i18n:_('Add')}"
                             onClick="controller.onSelectLabel()"
                             style="margin-top: -4px" />
@@ -121,7 +119,9 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdCriterions" finder="CriterionBandboxFinder"
-                            model="@{controller.allCriterions}" />
+                            model="@{controller.allCriterions}"
+                            widthListbox="380px"
+                            widthBandbox="350px" />
                         <button label="${i18n:_('Add')}"
                             onClick="controller.onSelectCriterion()"
                             style="margin-top: -4px" />
@@ -184,8 +184,7 @@
         <separator spacing="10px" orient="horizontal" />
 
         <button label="${i18n:_('Show')}" onClick="controller.showReport(report)" />
-
-        <extendedjasperreport style="display: none" id="report" />
+        <jasperreportcomponent id="report" />
 
     </window>
 

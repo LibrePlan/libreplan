@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +37,6 @@ import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskStatusEnum;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -46,6 +44,8 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -124,6 +124,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         Map<String, Object> result = super.getParameters();
 
         result.put("orderName", getSelectedOrder().getName());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         // Task status
         final TaskStatusEnum taskStatus = getSelectedTaskStatus();
@@ -132,7 +134,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         return result;
     }
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         if (getSelectedOrder() == null) {
             throw new WrongValueException(bdOrder, _("Please, select a project"));
         }
@@ -146,7 +148,8 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
         return result;
     }
 
-    private class TaskStatusEnumComparator implements Comparator<TaskStatusEnum> {
+    private static class TaskStatusEnumComparator implements
+            Comparator<TaskStatusEnum> {
 
         @Override
         public int compare(TaskStatusEnum arg0, TaskStatusEnum arg1) {
@@ -211,6 +214,14 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
     public void onRemoveCriterion(Criterion criterion) {
         workingArrangementsPerOrderModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    private String getParameterCriterions() {
+        return workingArrangementsPerOrderModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return workingArrangementsPerOrderModel.getSelectedLabel();
     }
 
 }

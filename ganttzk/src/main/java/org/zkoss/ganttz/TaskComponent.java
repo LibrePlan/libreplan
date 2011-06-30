@@ -23,10 +23,9 @@ package org.zkoss.ganttz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
@@ -43,10 +42,8 @@ import org.zkoss.ganttz.data.constraint.Constraint;
 import org.zkoss.ganttz.data.constraint.Constraint.IConstraintViolationListener;
 import org.zkoss.ganttz.util.WeakReferencedListeners.Mode;
 import org.zkoss.lang.Objects;
-import org.zkoss.xml.HTMLs;
 import org.zkoss.zk.au.AuRequest;
-import org.zkoss.zk.au.Command;
-import org.zkoss.zk.au.ComponentCommand;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.mesg.MZk;
 import org.zkoss.zk.ui.Component;
@@ -54,6 +51,7 @@ import org.zkoss.zk.ui.UiException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 
 /**
@@ -69,94 +67,6 @@ public class TaskComponent extends Div implements AfterCompose {
     private static final int CONSOLIDATED_MARK_HALF_WIDTH = 3;
     private static final int HALF_DEADLINE_MARK = 3;
 
-
-    private static Pattern pixelsSpecificationPattern = Pattern
-            .compile("\\s*(\\d+)px\\s*;?\\s*");
-
-    private static int stripPx(String pixels) {
-        Matcher matcher = pixelsSpecificationPattern.matcher(pixels);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("pixels " + pixels
-                    + " is not valid. It must be "
-                    + pixelsSpecificationPattern.pattern());
-        }
-        return Integer.valueOf(matcher.group(1));
-    }
-
-    private static Command _updatecmd = new ComponentCommand(
-            "onUpdatePosition", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent ta = (TaskComponent) request.getComponent();
-
-            if (ta == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 2) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-
-                ta.doUpdatePosition(requestData[0], requestData[1]);
-                Events.postEvent(new Event(getId(), ta, request.getData()));
-            }
-        }
-
-    };
-
-    private static Command _updatewidthcmd = new ComponentCommand(
-            "onUpdateWidth", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent ta = (TaskComponent) request.getComponent();
-
-            if (ta == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 1) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-
-                ta.doUpdateSize(requestData[0]);
-                Events.postEvent(new Event(getId(), ta, request.getData()));
-            }
-        }
-    };
-
-    private static Command _adddependencycmd = new ComponentCommand(
-            "onAddDependency", 0) {
-
-        protected void process(AuRequest request) {
-
-            final TaskComponent taskComponent = (TaskComponent) request.getComponent();
-
-            if (taskComponent == null) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
-                        this);
-            }
-
-            String[] requestData = request.getData();
-
-            if (requestData == null || requestData.length != 1) {
-                throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
-                        new Object[] { Objects.toString(requestData), this });
-            } else {
-                taskComponent.doAddDependency(requestData[0]);
-                Events.postEvent(new Event(getId(), taskComponent, request.getData()));
-            }
-        }
-    };
 
     protected final IDisabilityConfiguration disabilityConfiguration;
 
@@ -195,7 +105,6 @@ public class TaskComponent extends Div implements AfterCompose {
         setContext("idContextMenuTaskAssignment");
         this.task = task;
         setClass(calculateCSSClass());
-
         setId(UUID.randomUUID().toString());
         this.disabilityConfiguration = disabilityConfiguration;
         taskViolationListener = Constraint
@@ -234,6 +143,64 @@ public class TaskComponent extends Div implements AfterCompose {
 
         };
         this.task.addReloadListener(reloadResourcesTextRequested);
+        setAuService(new AuService(){
+            public boolean service(AuRequest request, boolean everError){
+                String command = request.getCommand();
+                final TaskComponent ta;
+
+                if (command.equals("onUpdatePosition")){
+                    ta = retrieveTaskComponent(request);
+
+                    ta.doUpdatePosition(
+                            toInteger(retrieveData(request, "left")),
+                            toInteger(retrieveData(request, "top")));
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                if (command.equals("onUpdateWidth")){
+                    ta = retrieveTaskComponent(request);
+
+                    ta.doUpdateSize(toInteger(retrieveData(request, "width")));
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                if (command.equals("onAddDependency")){
+                    ta = retrieveTaskComponent(request);
+
+                    ta.doAddDependency((String) retrieveData(request, "dependencyId"));
+                    Events.postEvent(new Event(getId(), ta, request.getData()));
+
+                    return true;
+                }
+                return false;
+            }
+
+            private int toInteger(Object valueFromRequestData) {
+                return ((Number) valueFromRequestData).intValue();
+            }
+
+            private TaskComponent retrieveTaskComponent(AuRequest request){
+                final TaskComponent ta = (TaskComponent) request.getComponent();
+
+                if (ta == null) {
+                    throw new UiException(MZk.ILLEGAL_REQUEST_COMPONENT_REQUIRED,
+                            this);
+                }
+
+                return ta;
+            }
+
+            private Object retrieveData(AuRequest request, String key){
+                Object value = request.getData().get(key);
+                if ( value == null)
+                    throw new UiException(MZk.ILLEGAL_REQUEST_WRONG_DATA,
+                            new Object[] { key, this });
+
+                return value;
+            }
+        });
     }
 
     /* Generate CSS class attribute depending on task properties */
@@ -261,8 +228,7 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     protected void updateClass() {
-        response(null, new AuInvoke(this, "setClass",
-                new Object[] { calculateCSSClass() }));
+        setSclass(calculateCSSClass());
     }
 
     public final void afterCompose() {
@@ -369,20 +335,6 @@ public class TaskComponent extends Div implements AfterCompose {
         return null;
     }
 
-    public Command getCommand(String cmdId) {
-        Command result = null;
-        if ("updatePosition".equals(cmdId)
-                && isMovingTasksEnabled()) {
-            result = _updatecmd;
-        } else if ("updateSize".equals(cmdId)
-                && isResizingTasksEnabled()) {
-            result = _updatewidthcmd;
-        } else if ("addDependency".equals(cmdId)) {
-            result = _adddependencycmd;
-        }
-        return result;
-    }
-
     public boolean isResizingTasksEnabled() {
         return (disabilityConfiguration != null)
                 && disabilityConfiguration.isResizingTasksEnabled()
@@ -395,9 +347,10 @@ public class TaskComponent extends Div implements AfterCompose {
                 && task.canBeExplicitlyMoved();
     }
 
-    void doUpdatePosition(String leftX, String topY) {
+
+    void doUpdatePosition(int leftX, int topY) {
         GanttDate startBeforeMoving = this.task.getBeginDate();
-        LocalDate newPosition = getMapper().toDate(stripPx(leftX));
+        LocalDate newPosition = getMapper().toDate(leftX);
         this.task.moveTo(GanttDate.createFrom(newPosition));
         boolean remainsInOriginalPosition = this.task.getBeginDate().equals(
                 startBeforeMoving);
@@ -406,11 +359,10 @@ public class TaskComponent extends Div implements AfterCompose {
         }
     }
 
-    void doUpdateSize(String size) {
-        int pixels = stripPx(size);
+    void doUpdateSize(int size) {
         DateTime end = new DateTime(this.task.getBeginDate()
                 .toDayRoundedDate().getTime()).plus(getMapper().toDuration(
-                pixels));
+                size));
         this.task.resizeTo(end.toLocalDate());
         updateProperties();
     }
@@ -436,20 +388,26 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     /*
-     * We override the method of getRealStyle to put the color property as part
+     * We override the method of renderProperties to put the color property as part
      * of the style
      */
+    protected void renderProperties(ContentRenderer renderer) throws IOException{
+        if(getColor() != null)
+            setStyle("background-color : " +  getColor());
 
-    protected String getRealStyle() {
+        setWidgetAttribute("movingTasksEnabled",((Boolean)isMovingTasksEnabled()).toString());
+        setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
 
-        final StringBuffer sb = new StringBuffer(super.getRealStyle());
+        /*We can't use setStyle because of restrictions
+         * involved with UiVisualizer#getResponses and the
+         * smartUpdate method (when the request is asynchronous) */
+        render(renderer, "style", "position : absolute");
 
-        if (getColor() != null) {
-            HTMLs.appendStyle(sb, "background-color", getColor());
-        }
-        HTMLs.appendStyle(sb, "position", "absolute");
+        render(renderer, "_labelsText", getLabelsText());
+        render(renderer, "_resourcesText", getResourcesText());
+        render(renderer, "_tooltipText", getTooltipText());
 
-        return sb.toString();
+        super.renderProperties(renderer);
     }
 
     /*
@@ -487,10 +445,6 @@ public class TaskComponent extends Div implements AfterCompose {
         setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
-        DependencyList dependencyList = getDependencyList();
-        if (dependencyList != null) {
-            dependencyList.redrawDependenciesConnectedTo(this);
-        }
         updateDeadline();
         updateCompletionIfPossible();
         updateClass();

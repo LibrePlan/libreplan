@@ -63,7 +63,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
 
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
             new ArrayList<InstanceConstraintViolationsDTO>();
-        Long numItem = new Long(1);
+        long numItem = 1;
 
         for (DTO entityDTO : entityDTOs) {
 

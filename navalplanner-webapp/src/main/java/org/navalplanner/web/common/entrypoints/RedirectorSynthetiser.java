@@ -21,6 +21,8 @@
 
 package org.navalplanner.web.common.entrypoints;
 
+import static org.navalplanner.web.I18nHelper._;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -42,8 +44,6 @@ import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.util.ClassUtils;
 
-import static org.navalplanner.web.I18nHelper._;
-
 /**
  * Creates implemnetations of controllers that sends http redirects to the
  * proper page <br />
@@ -53,7 +53,9 @@ public class RedirectorSynthetiser implements BeanFactoryPostProcessor {
     private static final Log LOG = LogFactory
             .getLog(RedirectorSynthetiser.class);
 
-    private final class SynthetizedImplementation implements InvocationHandler {
+    private static final class SynthetizedImplementation implements
+            InvocationHandler {
+
         private final ConfigurableListableBeanFactory beanFactory;
 
         private final Class<?> pageInterface;

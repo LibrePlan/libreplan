@@ -356,7 +356,7 @@ public class ManageOrderElementAdvancesController extends
 
     public class AdvanceTypeListRenderer implements ListitemRenderer {
          @Override
-         public void render(Listitem listItem, Object data) throws Exception {
+        public void render(Listitem listItem, Object data) {
             final AdvanceAssignment advance = (AdvanceAssignment) data;
             listItem.setValue(advance);
             listItem.setDraggable("true");
@@ -414,7 +414,7 @@ public class ManageOrderElementAdvancesController extends
         comboAdvanceTypes.addEventListener(Events.ON_SELECT,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         setMaxValue(listItem, comboAdvanceTypes);
                         cleanFields(advance);
                         setPercentage();
@@ -495,7 +495,7 @@ public class ManageOrderElementAdvancesController extends
         maxValue.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (manageOrderElementAdvancesModel
                         .hasConsolidatedAdvances(advanceAssignment)) {
                     showMessagesConsolidation(1);
@@ -653,7 +653,7 @@ public class ManageOrderElementAdvancesController extends
         chartCheckbox.setChecked(selectedAdvances.contains(advance));
         chartCheckbox.addEventListener(Events.ON_CHECK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (chartCheckbox.isChecked()) {
                     selectedAdvances.add(advance);
                 } else {
@@ -686,7 +686,7 @@ public class ManageOrderElementAdvancesController extends
         addMeasurementButton.addEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         if (!listItem.equals(editAdvances.getSelectedItem())) {
                             selectAdvanceLine(listItem);
                         }
@@ -716,7 +716,7 @@ public class ManageOrderElementAdvancesController extends
 
         removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 goToRemoveLineAdvanceAssignment(listItem);
             }
         });
@@ -1024,7 +1024,7 @@ public class ManageOrderElementAdvancesController extends
     private class AdvanceMeasurementRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             AdvanceMeasurement advanceMeasurement = (AdvanceMeasurement) data;
 
             item.setValue(advanceMeasurement);
@@ -1048,7 +1048,7 @@ public class ManageOrderElementAdvancesController extends
             value.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
                         updatesValue(value);
@@ -1104,7 +1104,7 @@ public class ManageOrderElementAdvancesController extends
             date.addEventListener(Events.ON_CHANGE, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     if (manageOrderElementAdvancesModel
                             .canRemoveOrChange(advanceMeasurement)) {
                         validateMeasurementDate(date, date.getValue());
@@ -1180,7 +1180,7 @@ public class ManageOrderElementAdvancesController extends
 
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToRemoveLineAdvanceMeasurement(listItem);
                 }
             });
@@ -1361,7 +1361,7 @@ public class ManageOrderElementAdvancesController extends
                 .canRemoveOrChange(advanceMeasurement))) {
             if (value == null) {
                 advanceMeasurement.setDate(null);
-                ((Datebox) comp).setValue(value);
+                ((Datebox) comp).setValue(null);
                 throw new WrongValueException(comp,
                         _("The date is not valid, the date must be not empty"));
             } else {

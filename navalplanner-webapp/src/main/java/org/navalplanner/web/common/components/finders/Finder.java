@@ -84,7 +84,7 @@ public abstract class Finder implements IFinder {
     private class ComboWorkerRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             item.setLabel(_toString(data));
             item.setValue(data);
         }

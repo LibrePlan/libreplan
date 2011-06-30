@@ -84,7 +84,7 @@ public class QualityFormItem implements INewObject {
     }
 
     public String getStringPosition() {
-        return position == null ? "" : new Integer(position + 1).toString();
+        return position == null ? "" : Integer.valueOf(position + 1).toString();
     }
 
     public void setPosition(Integer newPosition) {

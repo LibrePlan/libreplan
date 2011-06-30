@@ -106,13 +106,14 @@ public class NewAllocationSelectorController extends
     }
 
     private void initializeCriteriaTree() {
+        // Initialize criteria tree
         if (criterionsTree != null) {
             criterionsTree.addEventListener("onSelect", new EventListener() {
 
                 // Whenever an element of the tree is selected, a search query
                 // is executed, refreshing the results into the workers listbox
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     searchResources("", getSelectedCriterions());
                     showSelectedAllocations();
                 }
@@ -127,7 +128,7 @@ public class NewAllocationSelectorController extends
                 new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (isGenericType()) {
                     returnToSpecificDueToResourceSelection();
                 }
@@ -140,11 +141,14 @@ public class NewAllocationSelectorController extends
 
     private void initializeAllocationTypeSelector() {
         // Add onCheck listener
+        listBoxResources.setItemRenderer(getListitemRenderer());
+
+        // Initialize radio group of selector types
         allocationTypeSelector.addEventListener(Events.ON_CHECK,
                 new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Radio radio = (Radio) event.getTarget();
                         if (radio == null) {
                             return;
@@ -360,17 +364,13 @@ public class NewAllocationSelectorController extends
         return result;
     }
 
-    public boolean isAllowSelectMultipleResources() {
-        return behaviour.allowMultipleSelection();
-    }
-
     /**
      * @author Diego Pino García <dpino@igalia.com>
      *
      *         Encapsulates {@link SimpleTreeNode}
      *
      */
-    private class CriterionTreeNode extends SimpleTreeNode {
+    private static class CriterionTreeNode extends SimpleTreeNode {
 
         public CriterionTreeNode(Object data, List<CriterionTreeNode> children) {
             super(data, children);
@@ -471,10 +471,10 @@ public class NewAllocationSelectorController extends
      *
      *         Render for listBoxResources
      */
-    private class ResourceListRenderer implements ListitemRenderer {
+    private static class ResourceListRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             item.setValue((Resource) data);
 
             appendLabelResource(item);
@@ -511,13 +511,13 @@ public class NewAllocationSelectorController extends
      *         Finally, I tried this solution and it works
      *
      */
-    private class CriterionRenderer implements TreeitemRenderer {
+    private static class CriterionRenderer implements TreeitemRenderer {
 
         /**
          * Copied verbatim from org.zkoss.zul.Tree;
          */
         @Override
-        public void render(Treeitem ti, Object node) throws Exception {
+        public void render(Treeitem ti, Object node) {
             Treecell tc = new Treecell(Objects.toString(node));
             Treerow tr = null;
             ti.setValue(node);
@@ -536,6 +536,14 @@ public class NewAllocationSelectorController extends
 
     public void addTo(INewAllocationsAdder allocationsAdder) {
         currentAllocationType.addTo(this, allocationsAdder);
+    }
+
+    public void allowSelectMultipleResources(boolean multiple) {
+        listBoxResources.setMultiple(multiple);
+    }
+
+    public boolean isAllowSelectMultipleResources() {
+        return listBoxResources.isMultiple();
     }
 
 }

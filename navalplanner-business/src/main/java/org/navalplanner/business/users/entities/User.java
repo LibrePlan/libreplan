@@ -47,6 +47,8 @@ public class User extends BaseEntity {
 
     private String password = "";
 
+    private Language applicationLanguage = Language.BROWSER_LANGUAGE;
+
     private Set<UserRole> roles = new HashSet<UserRole>();
 
     private Set<Profile> profiles = new HashSet<Profile>();
@@ -59,6 +61,12 @@ public class User extends BaseEntity {
 
     // if a user is a navalplan user or not (ldap)
     private Boolean navalplanUser = true;
+
+    private boolean expandCompanyPlanningViewCharts = false;
+
+    private boolean expandOrderPlanningViewCharts = true;
+
+    private boolean expandResourceLoadViewCharts = true;
 
     /**
      * Necessary for Hibernate. Please, do not call it.
@@ -210,6 +218,41 @@ public class User extends BaseEntity {
 
     public void setNavalplanUser(Boolean navalplanUser) {
         this.navalplanUser = navalplanUser;
+    }
+
+    public Language getApplicationLanguage() {
+        return applicationLanguage;
+    }
+
+    public void setApplicationLanguage(Language applicationLanguage) {
+        this.applicationLanguage = applicationLanguage;
+    }
+
+    public boolean isExpandCompanyPlanningViewCharts() {
+        return expandCompanyPlanningViewCharts;
+    }
+
+    public void setExpandOrderPlanningViewCharts(
+            boolean expandOrderPlanningViewCharts) {
+        this.expandOrderPlanningViewCharts = expandOrderPlanningViewCharts;
+    }
+
+    public boolean isExpandOrderPlanningViewCharts() {
+        return expandOrderPlanningViewCharts;
+    }
+
+    public void setExpandResourceLoadViewCharts(
+            boolean expandResourceLoadViewCharts) {
+        this.expandResourceLoadViewCharts = expandResourceLoadViewCharts;
+    }
+
+    public boolean isExpandResourceLoadViewCharts() {
+        return expandResourceLoadViewCharts;
+    }
+
+    public void setExpandCompanyPlanningViewCharts(
+            boolean expandCompanyPlanningViewCharts) {
+        this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
     }
 
 }

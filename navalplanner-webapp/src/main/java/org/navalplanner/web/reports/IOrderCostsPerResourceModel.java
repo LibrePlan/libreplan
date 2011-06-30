@@ -64,4 +64,8 @@ public interface IOrderCostsPerResourceModel {
     boolean addSelectedCriterion(Criterion criterion);
 
     List<Criterion> getSelectedCriterions();
+
+    String getSelectedCriteria();
+
+    String getSelectedLabel();
 }

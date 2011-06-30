@@ -20,7 +20,8 @@
 -->
 
 <vbox id="${arg.id}"
-        apply="org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController">
+        apply="org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController"
+        width="100%">
     <panel title="${i18n:_('Cost category assignment')}" border="normal">
         <panelchildren>
             <hbox>

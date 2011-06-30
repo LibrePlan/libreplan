@@ -65,7 +65,7 @@ class CommandContextualized<T> {
         result.addEventListener(Events.ON_CLICK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 doAction();
             }
         });

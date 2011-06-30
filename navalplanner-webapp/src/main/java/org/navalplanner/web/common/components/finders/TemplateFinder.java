@@ -55,7 +55,7 @@ public abstract class TemplateFinder<T extends OrderElementTemplate> extends
         return new ListitemRenderer() {
 
             @Override
-            public void render(Listitem item, Object data) throws Exception {
+            public void render(Listitem item, Object data) {
                 T template = type.cast(data);
                 item.setValue(data);
                 generateColumnsForRenderer(item, template);

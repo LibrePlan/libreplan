@@ -74,7 +74,7 @@ MutableTreeModel<LoadTimeLine> modelForTree,
         return new TreeitemRenderer() {
             @Override
             public void render(Treeitem item, Object data)
-                    throws Exception {
+                    {
                 LoadTimeLine line = (LoadTimeLine) data;
                 item.setOpen(false);
                 item.setValue(line);
@@ -111,7 +111,7 @@ MutableTreeModel<LoadTimeLine> modelForTree,
                 buttonPlan.setTooltiptext(_("See scheduling"));
                 buttonPlan.addEventListener("onClick", new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         schedule(taskLine);
                     }
                 });
@@ -134,7 +134,7 @@ MutableTreeModel<LoadTimeLine> modelForTree,
                     final LoadTimeLine line) {
                 item.addEventListener("onOpen", new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         OpenEvent openEvent = (OpenEvent) event;
                         if (openEvent.isOpen()) {
                             List<LoadTimeLine> closed = calculatedClosedItems(item);

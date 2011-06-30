@@ -77,7 +77,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         sourceScenarioBandboxSearch.setListboxEventListener(Events.ON_CLICK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         setSourceScenario();
                     }
                 });
@@ -85,7 +85,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         sourceScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         setSourceScenario();
                     }
                 });
@@ -93,7 +93,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         destinationScenarioBandboxSearch.setListboxEventListener(
                 Events.ON_CLICK, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         setDestinationScenario();
                     }
                 });
@@ -101,7 +101,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         destinationScenarioBandboxSearch.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         setDestinationScenario();
                     }
                 });
@@ -160,7 +160,7 @@ public class TransferOrdersController extends GenericForwardComposer {
         }
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Order order = (Order) data;
             item.setValue(data);
 
@@ -184,7 +184,7 @@ public class TransferOrdersController extends GenericForwardComposer {
             transferButton.addEventListener(Events.ON_CLICK,
                     new EventListener() {
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             try {
                                 transferOrdersModel.transfer(order);
                                 Util.reloadBindings(destinationScenarioOrders);

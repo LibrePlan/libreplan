@@ -143,7 +143,7 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         return new RowRenderer() {
 
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data) {
                 final ProfileOrderAuthorization profileOrderAuthorization = (ProfileOrderAuthorization) data;
 
                 row.appendChild(new Label(profileOrderAuthorization.getProfile().getProfileName()));
@@ -152,7 +152,7 @@ public class OrderAuthorizationController extends GenericForwardComposer{
                 row.appendChild(Util.createRemoveButton(new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         removeOrderAuthorization(profileOrderAuthorization);
                     }
                 }));

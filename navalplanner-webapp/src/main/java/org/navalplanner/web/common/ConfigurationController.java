@@ -58,6 +58,7 @@ import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.ArrayGroupsModel;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
@@ -73,7 +74,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Checkbox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -130,7 +130,7 @@ public class ConfigurationController extends GenericForwardComposer {
         defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Listitem selectedItem = (Listitem) ((SelectEvent) event)
                                 .getSelectedItems().iterator().next();
                         setDefaultCalendar((BaseCalendar) selectedItem
@@ -154,7 +154,7 @@ public class ConfigurationController extends GenericForwardComposer {
         lbTypeProgress.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Listitem selectedItem = getSelectedItem((SelectEvent) event);
                 if (selectedItem != null) {
                     ProgressType progressType = (ProgressType) selectedItem
@@ -432,6 +432,14 @@ public class ConfigurationController extends GenericForwardComposer {
                 .setGenerateCodeForBaseCalendars(generateCodeForBaseCalendars);
     }
 
+    public Boolean isAutocompleteLogin() {
+        return configurationModel.isAutocompleteLogin();
+    }
+
+    public void setAutocompleteLogin(Boolean autocompleteLogin) {
+        configurationModel.setAutocompleteLogin(autocompleteLogin);
+    }
+
     public void removeEntitySequence(EntitySequence entitySequence) {
         try {
             configurationModel.removeEntitySequence(entitySequence);
@@ -442,35 +450,6 @@ public class ConfigurationController extends GenericForwardComposer {
         reloadEntitySequences();
     }
 
-    public void setExpandCompanyPlanningViewCharts(
-            Boolean expandCompanyPlanningViewCharts) {
-        configurationModel
-                .setExpandCompanyPlanningViewCharts(expandCompanyPlanningViewCharts);
-    }
-
-    public Boolean isExpandCompanyPlanningViewCharts() {
-        return configurationModel.isExpandCompanyPlanningViewCharts();
-    }
-
-    public void setExpandOrderPlanningViewCharts(
-            Boolean expandOrderPlanningViewCharts) {
-        configurationModel
-                .setExpandOrderPlanningViewCharts(expandOrderPlanningViewCharts);
-    }
-
-    public Boolean isExpandOrderPlanningViewCharts() {
-        return configurationModel.isExpandOrderPlanningViewCharts();
-    }
-
-    public void setExpandResourceLoadViewCharts(
-            Boolean expandResourceLoadViewCharts) {
-        configurationModel
-                .setExpandResourceLoadViewCharts(expandResourceLoadViewCharts);
-    }
-
-    public Boolean isExpandResourceLoadViewCharts() {
-        return configurationModel.isExpandResourceLoadViewCharts();
-    }
 
     public void setMonteCarloMethodTabVisible(
             Boolean expandResourceLoadViewCharts) {
@@ -494,10 +473,10 @@ public class ConfigurationController extends GenericForwardComposer {
         return progressTypeRenderer;
     }
 
-    private class ProgressTypeRenderer implements ListitemRenderer {
+    private static class ProgressTypeRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setLabel(_(progressType.getValue()));
         }
@@ -506,7 +485,7 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public class EntitySequenceGroupRenderer implements RowRenderer {
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
 
             EntitySequence entitySequence = (EntitySequence) data;
             final EntityNameEnum entityName = entitySequence.getEntityName();
@@ -520,7 +499,7 @@ public class ConfigurationController extends GenericForwardComposer {
                 group.appendChild(new Label(_(entityName.getSequenceLiteral())));
                 group.addEventListener(Events.ON_OPEN, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         onOpenGroup(entityName, group.isOpen());
                     }
                 });
@@ -654,7 +633,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     .createRemoveButton(new EventListener() {
 
                         @Override
-                        public void onEvent(Event event) throws Exception {
+                        public void onEvent(Event event) {
                             if (isLastOne(entitySequence)) {
                                 showMessageNotDelete();
                             } else {
@@ -748,11 +727,11 @@ public class ConfigurationController extends GenericForwardComposer {
         }
     }
 
-    public class EntitySequenceComparator implements Comparator {
+    public static class EntitySequenceComparator implements
+            Comparator<EntitySequence> {
+
         @Override
-        public int compare(Object o1, Object o2) {
-            EntitySequence seq1 = (EntitySequence) o1;
-            EntitySequence seq2 = (EntitySequence) o2;
+        public int compare(EntitySequence seq1, EntitySequence seq2) {
             return seq1.getEntityName().compareTo(seq2.getEntityName());
         }
     }
@@ -858,4 +837,9 @@ public class ConfigurationController extends GenericForwardComposer {
     public void setRoles(UserRole roles) {
         this.roles = roles;
     }
+
+    public boolean isChangedDefaultPasswdAdmin() {
+        return configurationModel.isChangedDefaultPasswdAdmin();
+    }
+
 }

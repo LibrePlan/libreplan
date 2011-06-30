@@ -95,14 +95,14 @@ public class UnitTypeController extends GenericForwardComposer {
 
         return new RowRenderer() {
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data) {
                 final UnitType unitType = (UnitType) data;
 
                 appendUnitTypeName(row, unitType);
                 appendOperations(row, unitType);
                 row.addEventListener(Events.ON_CLICK, new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditFormInEditionMode(unitType);
                     }
                 });
@@ -118,7 +118,7 @@ public class UnitTypeController extends GenericForwardComposer {
                 hbox.appendChild(Util.createEditButton(new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditFormInEditionMode(unitType);
                     }
                 }));
@@ -126,7 +126,7 @@ public class UnitTypeController extends GenericForwardComposer {
                 hbox.appendChild(Util.createRemoveButton(new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         confirmRemove(unitType);
                     }
                 }));
@@ -184,8 +184,7 @@ public class UnitTypeController extends GenericForwardComposer {
         return new Constraint() {
 
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
                     throw new WrongValueException(comp,
@@ -207,8 +206,7 @@ public class UnitTypeController extends GenericForwardComposer {
         return new Constraint() {
 
             @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
+            public void validate(Component comp, Object value) {
                 String strValue = (String) value;
                 if (StringUtils.isBlank(strValue)) {
                     throw new WrongValueException(comp,

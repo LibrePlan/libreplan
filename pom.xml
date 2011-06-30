@@ -5,7 +5,7 @@
     <groupId>org.navalplanner</groupId>
     <artifactId>navalplanner</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1</version>
     <name>NavalPlan</name>
 
     <!--
@@ -139,26 +139,6 @@
             </properties>
         </profile>
 
-        <!-- HSQLDB profile -->
-        <profile>
-            <id>hsqldb</id>
-            <properties>
-                <!-- JDBC driver properties -->
-                <jdbcDriver.groupId>hsqldb</jdbcDriver.groupId>
-                <jdbcDriver.artifactId>hsqldb</jdbcDriver.artifactId>
-                <jdbcDriver.version>1.8.0.7</jdbcDriver.version>
-                <jdbcDriver.className>org.hsqldb.jdbcDriver</jdbcDriver.className>
-                <!-- Data source properties -->
-                <dataSource.user>sa</dataSource.user>
-                <dataSource.password />
-                <dataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode};shutdown=true</dataSource.url>
-                <testDataSource.url>jdbc:hsqldb:target/hsqldb/naval${navalplanner.mode}test;shutdown=true</testDataSource.url>
-                <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.HSQLDialect</hibernate.dialect>
-                <databasetable.prefix></databasetable.prefix>
-            </properties>
-        </profile>
-
     </profiles>
 
     <!--
@@ -166,6 +146,10 @@
     -->
 
     <repositories>
+        <repository>
+            <id>ZK EE Evaluation</id>
+            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+        </repository>
         <!-- Getttext commons -->
         <repository>
             <id>gettext-commons-site</id>
@@ -175,14 +159,6 @@
 		 <id>thirdparty</id>
 		 <url>http://nexus.naval.igalia.com/content/repositories/thirdparty</url>
 	 </repository>
-     <repository>
-        <id>zk repository</id>
-        <url>http://mavensync.zkoss.org/maven2</url>
-     </repository>
-     <repository>
-        <id>professional edition zk repository</id>
-        <url>http://mavensync.zkoss.org/zk/pe-eval/</url>
-     </repository>
     </repositories>
 
      <pluginRepositories>
@@ -208,6 +184,18 @@
               <groupId>jasperreports</groupId>
               <artifactId>jasperreports</artifactId>
               <version>3.7.0</version>
+            </dependency>
+            <!-- GPL Jasperreport Component for ZK -->
+            <dependency>
+              <groupId>com.igalia.java.zk.components</groupId>
+              <artifactId>jasperreportcomponent</artifactId>
+              <version>1.0</version>
+            </dependency>
+            <!-- GPL JFreechartEngine for ZK -->
+            <dependency>
+                <groupId>com.igalia.java.zk.components</groupId>
+                <artifactId>jfreechartengine</artifactId>
+                <version>1.0</version>
             </dependency>
             <!-- Gettext commons -->
             <dependency>
@@ -270,10 +258,10 @@
             </dependency>
 
             <dependency>
-			    <groupId>org.easymock</groupId>
-			    <artifactId>easymockclassextension</artifactId>
-			    <version>2.4</version>
-			    <scope>test</scope>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymockclassextension</artifactId>
+                <version>2.4</version>
+                <scope>test</scope>
             </dependency>
 
             <!-- Spring -->
@@ -419,22 +407,28 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.5</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.jruby</groupId>
+                        <artifactId>jruby</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkex</artifactId>
-                <version>3.6.4</version>
+                <version>5.0.5</version>
             </dependency>
             <!-- JGraphT -->
             <dependency>
@@ -550,13 +544,13 @@
             <!-- ZK Timeplot -->
             <dependency>
                 <groupId>org.zkoss.zkforge</groupId>
-                <artifactId>timeplotz-modified</artifactId>
-                <version>1.0_2_4</version>
+                <artifactId>timeplotz</artifactId>
+                <version>1.1_50_1</version>
             </dependency>
             <dependency>
-                <groupId>org.zkoss.zkforge.timeline</groupId>
+                <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timelinez</artifactId>
-                <version>1.2_1</version>
+                <version>2.3.1_50</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
@@ -609,7 +603,6 @@
                 <directory>../src/main/jetty</directory>
                 <includes>
                     <include>jetty-env.xml</include>
-                    <include>log4j.properties</include>
                 </includes>
                 <targetPath>../jetty</targetPath>
                 <filtering>true</filtering>
@@ -751,12 +744,6 @@
                         </connector>
                     </connectors>
                     -->
-                    <systemProperties>
-                        <systemProperty>
-                            <name>log4j.configuration</name>
-                            <value>file:./target/jetty/log4j.properties</value>
-                        </systemProperty>
-                    </systemProperties>
                 </configuration>
 
                 <dependencies>

@@ -113,7 +113,7 @@
                 </tabs>
                 <tabpanels>
                     <tabpanel>
-                        <vbox>
+                        <vbox width="100%">
 
                     <panel title="${i18n:_('General data')}" border="normal"
                             style="overflow:auto">

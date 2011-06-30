@@ -53,7 +53,7 @@ public class LimitingResourcesLeftPane extends HtmlMacroComponent {
         return new TreeitemRenderer() {
             @Override
             public void render(Treeitem item, Object data)
-                    throws Exception {
+                    {
                 LimitingResourceQueue line = (LimitingResourceQueue) data;
                 item.setOpen(false);
                 item.setValue(line);

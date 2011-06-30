@@ -280,7 +280,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     public class BaseCalendarsTreeitemRenderer implements TreeitemRenderer {
 
         @Override
-        public void render(Treeitem item, Object data) throws Exception {
+        public void render(Treeitem item, Object data) {
             SimpleTreeNode simpleTreeNode = (SimpleTreeNode) data;
             final BaseCalendar baseCalendar = (BaseCalendar) simpleTreeNode
                     .getData();
@@ -305,7 +305,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToCreateDerivedForm(baseCalendar);
                 }
 
@@ -321,7 +321,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                     new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToCreateCopyForm(baseCalendar);
                 }
 
@@ -337,7 +337,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             editButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     goToEditForm(baseCalendar);
                 }
 
@@ -353,7 +353,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             removeButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     confirmRemove(baseCalendar);
                 }
 

@@ -67,4 +67,5 @@ public class ConfigurationDAO extends GenericDAOHibernate<Configuration, Long>
         query.setParameter("change", change);
         query.executeUpdate();
     }
+
 }

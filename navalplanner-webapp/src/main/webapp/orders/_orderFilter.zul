@@ -31,7 +31,7 @@
     <label value="${i18n:_('sub elements')}"/>
     <checkbox id="checkIncludeOrderElements"
         tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}" />
-    <button image="/common/img/ico_filter.png" style="margin-top: -4px"
+    <button mold="trendy" image="/common/img/ico_filter.png" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
         onClick="orderFilterController.onApplyFilter()"/>
 </hbox>

@@ -103,7 +103,7 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.self = comp;
         self.setVariable("manualAllocationController", this, true);
         listAssignableQueues = (Listbox) self.getFellowIfAny("listAssignableQueues");
@@ -234,7 +234,7 @@ public class ManualAllocationController extends GenericForwardComposer {
         listAssignableQueues.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 SelectEvent se = (SelectEvent) event;
 
                 LimitingResourceQueue queue = getSelectedQueue(se);
@@ -473,10 +473,10 @@ public class ManualAllocationController extends GenericForwardComposer {
         return candidateGapRenderer;
     }
 
-    private class CandidateGapRenderer implements ListitemRenderer {
+    private static class CandidateGapRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Gap gap = (Gap) data;
 
             item.setValue(gap);
@@ -526,13 +526,13 @@ public class ManualAllocationController extends GenericForwardComposer {
     }
 
     public void setStatus(int status) {
-        self.setVariable("status", new Integer(status), true);
+        self.setVariable("status", Integer.valueOf(status), true);
     }
 
-    private class QueueRenderer implements ListitemRenderer {
+    private static class QueueRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final LimitingResourceQueue queue = (LimitingResourceQueue) data;
             item.setValue(queue);
 //            item.setLabel("test1");

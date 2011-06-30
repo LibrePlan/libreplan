@@ -58,7 +58,7 @@ public class CriterionSatisfactionTest {
     }
 
     @Test
-    public void canFinishWhenItStarted() throws Exception {
+    public void canFinishWhenItStarted() {
         final Criterion criterion = CriterionDAOTest.createValidCriterion();
         Worker worker = Worker.create("firstName", "surName", "2333232");
         LocalDate start = year(2000);

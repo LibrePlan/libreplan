@@ -41,7 +41,7 @@ import org.zkoss.zul.ListitemRenderer;
 public class EnumsListitemRenderer implements ListitemRenderer {
 
     @Override
-    public void render(Listitem item, Object data) throws Exception {
+    public void render(Listitem item, Object data) {
         item.setValue(data);
         item.appendChild(new Listcell(_(data.toString())));
     }

@@ -218,7 +218,8 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
     private CustomMenuController topItem(String name, String url,
             String helpUri, Collection<? extends CustomMenuItem> items) {
-        return topItem(name, url, helpUri, items.toArray(new CustomMenuItem[0]));
+        return topItem(name, url, helpUri,
+                items.toArray(new CustomMenuItem[items.size()]));
     }
 
     private CustomMenuController topItem(String name, String url,
@@ -337,6 +338,9 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
             subItem(_("Project Costs Per Resource"),"/reports/orderCostsPerResource.zul", "15-informes.html"),
             subItem(_("Task Scheduling Status In Project"),"/reports/workingArrangementsPerOrderReport.zul","15-informes.html"),
             subItem(_("Materials Needs At Date"),"/reports/timeLineMaterialReport.zul","15-informes.html"));
+
+        topItem(_("My account"), "", "",
+                subItem(_("Settings"), "/users/settings.zul", ""));
     }
 
     private Vbox getRegisteredItemsInsertionPoint() {
@@ -410,6 +414,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
         setDeselectedClass(button);
         button.addEventListener(Events.ON_CLICK, doNotCallTwice(button,
                 eventListener));
+        button.setMold("trendy");
         insertionPoint.appendChild(button);
         insertionPoint.appendChild(separator());
         return button;

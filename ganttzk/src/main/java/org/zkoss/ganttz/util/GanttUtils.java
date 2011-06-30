@@ -31,12 +31,13 @@ public class GanttUtils {
     private GanttUtils() {
     }
 
-    public static int getIntFromStylePosition(String position) throws Exception {
+    public static int getIntFromStylePosition(String position) {
 
         String[] tokens = position.split("px");
 
         if (tokens.length != 1) {
-            throw new Exception("Bad formatting for input parameter");
+            throw new IllegalArgumentException(
+                    "Bad formatting for input parameter");
         }
 
         return Integer.parseInt(tokens[0]);

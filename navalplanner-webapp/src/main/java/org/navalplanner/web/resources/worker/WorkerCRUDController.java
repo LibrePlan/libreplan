@@ -47,8 +47,8 @@ import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.costcategories.ResourcesCostCategoryAssignmentController;
 import org.navalplanner.web.resources.search.ResourcePredicate;
 import org.zkoss.zk.ui.Component;
@@ -365,15 +365,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         clearFilterDates();
     }
 
-    private void setupResourcesCostCategoryAssignmentController(Component comp)
-    throws Exception {
+    private void setupResourcesCostCategoryAssignmentController(Component comp) {
         Component costCategoryAssignmentContainer =
             editWindow.getFellowIfAny("costCategoryAssignmentContainer");
         resourcesCostCategoryAssignmentController = (ResourcesCostCategoryAssignmentController)
             costCategoryAssignmentContainer.getVariable("assignmentController", true);
     }
 
-    private void editAsignedCriterions(){
+    private void editAsignedCriterions() {
         try{
             setupCriterionsController();
             criterionsController.prepareForEdit( workerModel.getWorker());
@@ -391,7 +390,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         }
     }
 
-    private void setupCriterionsController()throws Exception {
+    private void setupCriterionsController() throws Exception {
         criterionsController = new CriterionsController(workerModel);
         criterionsController.doAfterCompose(getCurrentWindow().
                 getFellow("criterionsContainer"));
@@ -543,7 +542,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     private class BaseCalendarsComboitemRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             BaseCalendar calendar = (BaseCalendar) data;
             item.setLabel(calendar.getName());
             item.setValue(calendar);
@@ -842,14 +841,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         return new RowRenderer() {
 
             @Override
-            public void render(Row row, Object data) throws Exception {
+            public void render(Row row, Object data) {
                 final Worker worker = (Worker) data;
                 row.setValue(worker);
 
                 row.addEventListener(Events.ON_CLICK,
                         new EventListener() {
                             @Override
-                            public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                                 goToEditForm(worker);
                             }
                         });
@@ -864,13 +863,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 Hbox hbox = new Hbox();
                 hbox.appendChild(Util.createEditButton(new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         goToEditForm(worker);
                     }
                 }));
                 hbox.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         confirmRemove(worker);
                     }
                 }));

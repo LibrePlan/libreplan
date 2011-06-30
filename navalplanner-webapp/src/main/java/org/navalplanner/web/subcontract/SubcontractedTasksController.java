@@ -43,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.servlets.CallbackServlet;
+import org.zkoss.ganttz.servlets.CallbackServlet.DisposalMode;
 import org.zkoss.ganttz.servlets.CallbackServlet.IServletRequestHandler;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -95,7 +96,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
     private class SubcontractedTasksRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             SubcontractedTaskData subcontractedTaskData = (SubcontractedTaskData) data;
             row.setValue(subcontractedTaskData);
 
@@ -160,24 +161,26 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             Button exportButton = new Button(_("XML"));
             exportButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
+                IServletRequestHandler requestHandler = new IServletRequestHandler() {
+
+                    @Override
+                    public void handle(HttpServletRequest request,
+                            HttpServletResponse response)
+                            throws ServletException, IOException {
+                        response.setContentType("text/xml");
+                        String xml = subcontractedTasksModel
+                                .exportXML(subcontractedTaskData);
+                        response.getWriter().write(xml);
+                    }
+
+                };
+
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     String uri = CallbackServlet.registerAndCreateURLFor(
                             (HttpServletRequest) Executions.getCurrent()
-                                    .getNativeRequest(),
-                            new IServletRequestHandler() {
-
-                                @Override
-                                public void handle(HttpServletRequest request,
-                                        HttpServletResponse response)
-                                        throws ServletException, IOException {
-                                    response.setContentType("text/xml");
-                                    String xml = subcontractedTasksModel
-                                            .exportXML(subcontractedTaskData);
-                                    response.getWriter().write(xml);
-                                }
-
-                            }, false);
+                                    .getNativeRequest(), requestHandler, false,
+                            DisposalMode.WHEN_NO_LONGER_REFERENCED);
 
                     Executions.getCurrent().sendRedirect(uri, "_blank");
                 }
@@ -193,7 +196,7 @@ public class SubcontractedTasksController extends GenericForwardComposer {
             sendButton.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     try {
                         subcontractedTasksModel
                                 .sendToSubcontractor(subcontractedTaskData);

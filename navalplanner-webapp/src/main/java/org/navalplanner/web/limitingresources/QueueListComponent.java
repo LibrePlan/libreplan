@@ -33,8 +33,8 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MutableTreeModel;
 import org.zkoss.zk.au.out.AuInvoke;
-import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zul.impl.XulElement;
 
 /**
  * Component to include a list of {@link LimitingResourceQueue} inside the {@link LimitingResourcesPanel}
@@ -42,7 +42,7 @@ import org.zkoss.zk.ui.ext.AfterCompose;
  * @author Lorenzo Tilve Álvaro <ltilve@igalia.com>
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class QueueListComponent extends HtmlMacroComponent implements
+public class QueueListComponent extends XulElement implements
         AfterCompose {
 
     private final LimitingResourcesPanel limitingResourcesPanel;
@@ -105,6 +105,12 @@ public class QueueListComponent extends HtmlMacroComponent implements
     public void removeQueueElementFrom(LimitingResourceQueue queue, LimitingResourceQueueElement element) {
         QueueComponent queueComponent = fromQueueToComponent.get(queue);
         queueComponent.removeQueueElement(element);
+    }
+
+    public void refreshQueues() {
+        for (QueueComponent each: fromQueueToComponent.values()) {
+            each.invalidate();
+        }
     }
 
     public void refreshQueue(LimitingResourceQueue queue) {

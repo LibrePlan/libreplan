@@ -45,4 +45,5 @@ public interface IConfigurationDAO extends IGenericDAO<Configuration, Long> {
      * specified user.
      */
     void saveChangedDefaultPassword(String user, boolean change);
+
 }

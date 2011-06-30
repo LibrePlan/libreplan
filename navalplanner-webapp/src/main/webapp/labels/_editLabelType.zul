@@ -62,8 +62,8 @@
                 <panel title="${i18n:_('Label list')}"
                     border="normal">
                     <panelchildren>
-            <hbox valign="center">
-                         <label value="${i18n:_('New label')}" />
+			<hbox align="center">
+                        <label value="${i18n:_('New label')}" />
                         <textbox id="newLabelTextbox" value="" width="200px" onOK="controller.createLabel()" />
                         <button label="${i18n:_('Add')}"
                             onClick="controller.createLabel()" />

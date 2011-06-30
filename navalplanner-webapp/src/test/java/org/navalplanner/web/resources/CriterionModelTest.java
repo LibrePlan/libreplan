@@ -111,7 +111,7 @@ public class CriterionModelTest {
 
     @Test
     public void savingCriterionIncreasesTheNumberOfCriterions()
-            throws Exception {
+            {
         givenValidCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         criterionDAO.save(criterion);
@@ -145,7 +145,7 @@ public class CriterionModelTest {
 
     /*@Test
     @NotTransactional
-    public void modificationsAreSaved() throws Exception {
+    public void modificationsAreSaved() {
         adHocTransactionService.runOnTransaction(new IOnTransaction<Void>() {
 
             @Override
@@ -174,7 +174,7 @@ public class CriterionModelTest {
     }*/
 
     @Test
-    public void modifyingDontAlterTheNumberOfCriterions() throws Exception {
+    public void modifyingDontAlterTheNumberOfCriterions() {
         givenCreatedCriterionFor(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         int initial = getCriterionsNumber(PredefinedCriterionTypes.WORK_RELATIONSHIP);
         String newName = UUID.randomUUID().toString() + "random";

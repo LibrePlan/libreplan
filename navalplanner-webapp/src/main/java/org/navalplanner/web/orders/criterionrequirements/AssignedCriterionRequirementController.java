@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -247,7 +248,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             try {
                 int status = Messagebox
                     .show(
-                            _("Are you sure of changing the resource type? You will lose the criterions with different resource type."),
+                            _("Are you sure of changing the resource type? You will lose the criteria with different resource type."),
                             "Question", Messagebox.OK | Messagebox.CANCEL,
                             Messagebox.QUESTION);
 
@@ -514,14 +515,14 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
             @Override
             public void validate(Component comp, Object value)
                     throws WrongValueException {
-                if (value == null) {
-                    value = new Integer(0);
-                    orderElementTotalHours.setValue((Integer) value);
+                Validate.isTrue(value instanceof Integer);
+                int intValue = value == null ? 0 : (Integer) value;
+                if (intValue == 0) {
+                    orderElementTotalHours.setValue(0);
                 }
                 try {
                     if (getElement() instanceof OrderLine) {
-                        ((OrderLine) getElement())
-                                .setWorkHours((Integer) value);
+                        ((OrderLine) getElement()).setWorkHours(intValue);
                     }
                 } catch (IllegalArgumentException e) {
                     throw new WrongValueException(comp, _(e.getMessage()));
@@ -618,7 +619,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends
     public class HoursGroupListitemRender implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final HoursGroup hoursGroup = (HoursGroup) data;
 
             // Criterion Requirements hours Group

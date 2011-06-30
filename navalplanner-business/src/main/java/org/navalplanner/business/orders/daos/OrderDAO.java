@@ -315,19 +315,17 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
     public List<Task> getFilteredTask(List<OrderElement> orderElements,
             List<Criterion> criterions) {
 
+        if (orderElements == null || orderElements.isEmpty()) {
+            return new ArrayList<Task>();
+        }
+
 
         String strQuery = "SELECT taskSource.task "
                 + "FROM OrderElement orderElement, TaskSource taskSource, Task task "
                 + "LEFT OUTER JOIN taskSource.schedulingData.orderElement taskSourceOrderElement "
                 + "LEFT OUTER JOIN taskSource.task taskElement "
                 + "WHERE taskSourceOrderElement.id = orderElement.id "
-                + "AND taskElement.id = task.id ";
-
-        if (orderElements != null && !orderElements.isEmpty()) {
-            strQuery += " AND orderElement IN (:orderElements) ";
-        } else {
-            return new ArrayList<Task>();
-        }
+                + "AND taskElement.id = task.id  AND orderElement IN (:orderElements) ";
 
         // Set Criterions
         if (criterions != null && !criterions.isEmpty()) {
@@ -341,9 +339,7 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements
 
         // Set parameters
         Query query = getSession().createQuery(strQuery);
-        if (orderElements != null && !orderElements.isEmpty()) {
-            query.setParameterList("orderElements", orderElements);
-        }
+        query.setParameterList("orderElements", orderElements);
 
         if (criterions != null && !criterions.isEmpty()) {
             query.setParameterList("criterions",

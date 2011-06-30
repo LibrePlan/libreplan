@@ -69,7 +69,7 @@ public class CriterionSatisfactionDAOTest {
     private IWorkerDAO workerDAO;
 
     @Test
-    public void testSaveCriterions() throws Exception {
+    public void testSaveCriterions() {
         CriterionSatisfaction criterionSatisfaction = createValidCriterionSatisfaction(2007);
         satisfactionDAO.save(criterionSatisfaction);
         assertNotNull(criterionSatisfaction.getId());

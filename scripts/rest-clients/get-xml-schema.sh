@@ -7,26 +7,26 @@ read loginName
 printf "Password: "
 read password
 
-baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
-certificate=$DEVELOPMENT_CERTIFICATE
-
-for i in "$@"
-do
-    if [ "$i" = "--prod" ]; then
-        baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
-        certificate=$PRODUCTION_CERTIFICATE
-    else
-       service=$i
-    fi
-done
+if [ "$1" = "--prod" ]; then
+    baseServiceURL=$PRODUCTION_BASE_SERVICE_URL
+    certificate=$PRODUCTION_CERTIFICATE
+    service=$2
+elif [ "$1" = "--dev" ]; then
+    baseServiceURL=$DEVELOPMENT_BASE_SERVICE_URL
+    certificate=$DEVELOPMENT_CERTIFICATE
+    service=$2
+else
+    baseServiceURL=$DEMO_BASE_SERVICE_URL
+    certificate=$DEMO_CERTIFICATE
+    service=$1
+fi
 
 if [ "$service" = "" ]; then
     printf "Missing service path\n" 1>&2
     exit 1
 fi
 
-authorization=`./base64.sh $loginName:$password`
-
+authorization=`echo -n "$loginName:$password" | base64`
 
 wget --no-check-certificate \
    --header "Authorization: Basic $authorization" \

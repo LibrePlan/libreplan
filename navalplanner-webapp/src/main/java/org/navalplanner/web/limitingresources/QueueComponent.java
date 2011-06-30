@@ -23,6 +23,7 @@ package org.navalplanner.web.limitingresources;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -54,6 +55,7 @@ import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.ext.AfterCompose;
+import org.zkoss.zk.ui.sys.ContentRenderer;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.impl.XulElement;
 
@@ -344,13 +346,15 @@ public class QueueComponent extends XulElement implements
                 .getCapacityOn(PartialDay.wholeDay(queueElement.getEndDate()))
                 .roundToHours();
 
-        int shadeWidth = new Long((24 - workableHours)
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue();
+        int shadeWidth = Long.valueOf(
+                (24 - workableHours)
+                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel()).intValue();
 
-        int shadeLeft = new Long((workableHours - queueElement.getEndHour())
-                * DatesMapperOnInterval.MILISECONDS_PER_HOUR
-                / datesMapper.getMilisecondsPerPixel()).intValue()
+        int shadeLeft = Long.valueOf(
+                (workableHours - queueElement.getEndHour())
+                        * DatesMapperOnInterval.MILISECONDS_PER_HOUR
+                        / datesMapper.getMilisecondsPerPixel()).intValue()
                 + shadeWidth;
         ;
 
@@ -512,6 +516,12 @@ public class QueueComponent extends XulElement implements
         for (QueueTask each : queueTasks) {
             appendMenu(each);
         }
+    }
+
+    public void renderProperties(ContentRenderer renderer) throws IOException{
+        super.renderProperties(renderer);
+
+        render(renderer, "_resourceName", getResourceName());
     }
 
 }

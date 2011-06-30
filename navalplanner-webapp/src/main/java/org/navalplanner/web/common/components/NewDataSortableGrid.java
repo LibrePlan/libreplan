@@ -50,7 +50,7 @@ public class NewDataSortableGrid extends Grid implements AfterCompose {
     public NewDataSortableGrid() {
         addEventListener(Events.ON_SORT, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                     sortByLastColumn();
             }
         });

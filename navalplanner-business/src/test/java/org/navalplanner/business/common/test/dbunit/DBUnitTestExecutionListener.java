@@ -30,6 +30,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.dbunit.DatabaseUnitException;
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -77,7 +78,7 @@ public class DBUnitTestExecutionListener extends
         }
     }
 
-    private DataSource getDataSource(TestContext context) throws Exception {
+    private DataSource getDataSource(TestContext context) {
         DataSource dataSource;
         Map beans = context.getApplicationContext().getBeansOfType(
                 DataSource.class);
@@ -94,7 +95,8 @@ public class DBUnitTestExecutionListener extends
     }
 
     private IDatabaseConnection getDBUnitConnection(Connection c)
-            throws Exception {
+            throws DatabaseUnitException
+            {
         IDatabaseConnection conn = new DatabaseConnection(c);
         DatabaseConfig config = conn.getConfig();
         config.setFeature("http://www.dbunit.org/features/qualifiedTableNames",

@@ -53,8 +53,8 @@ import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableColumn;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
-import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
+import org.navalplanner.web.common.entrypoints.IURLHandlerRegistry;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.zk.ui.Component;
@@ -641,7 +641,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxSelectOrderElementInHead.setListboxEventListener(Events.ON_SELECT,
                 new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Listitem selectedItem = (Listitem) ((SelectEvent) event)
                         .getSelectedItems().iterator().next();
                 OrderElement orderElement = (OrderElement) selectedItem
@@ -653,7 +653,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxSelectOrderElementInHead.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Listitem selectedItem = bandboxSelectOrderElementInHead
                                 .getSelectedItem();
                         if ((selectedItem != null) && (getWorkReport() != null)) {
@@ -740,12 +740,12 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 NewDataSortableColumn columnDate = new NewDataSortableColumn();
                 columnDate.setLabel(_("Date"));
                 columnDate.setSclass("date-column");
-                columnDate.setSort("auto=(date)");
+                Util.setSort(columnDate, "auto=(date)");
                 columnDate.setSortDirection("ascending");
 
                 columnDate.addEventListener("onSort", new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         sortWorkReportLines();
                     }
                 });
@@ -895,7 +895,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         autocomplete.addEventListener("onChange", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 changeResourceInLines(autocomplete, row);
             }
         });
@@ -936,7 +936,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxSearch.setListboxEventListener(Events.ON_SELECT,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Listitem selectedItem = bandboxSearch.getSelectedItem();
                         setOrderElementInWRL(selectedItem, workReportLine);
                     }
@@ -945,7 +945,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         bandboxSearch.setListboxEventListener(Events.ON_OK,
                 new EventListener() {
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Listitem selectedItem = bandboxSearch.getSelectedItem();
                         setOrderElementInWRL(selectedItem, workReportLine);
                         bandboxSearch.close();
@@ -982,7 +982,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         comboLabels.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if (comboLabels.getSelectedItem() != null) {
                     Label newLabel = (Label) comboLabels.getSelectedItem()
                             .getValue();
@@ -1022,7 +1022,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         timeStart.addEventListener(Events.ON_CHANGING, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 // force the binding
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
                 if (timeFinish != null) {
@@ -1035,7 +1035,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         timeStart.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Timebox timeFinish = (Timebox) getTimeboxFinish(row);
                 if (timeFinish != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
@@ -1084,7 +1084,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         timeFinish.addEventListener(Events.ON_CHANGING, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
                 if (timeStart != null) {
                     timeStart.setFocus(true);
@@ -1096,7 +1096,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         timeFinish.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Timebox timeStart = (Timebox) getTimeboxStart(row);
                 if (timeStart != null) {
                     checkCannotBeHigher(timeStart, timeFinish);
@@ -1176,7 +1176,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         lbHoursType.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 Listitem item = lbHoursType.getSelectedItem();
                 if (item != null) {
                     setHoursType((WorkReportLine) row.getValue(), item);
@@ -1210,7 +1210,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         code.addEventListener("onChange", new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 final WorkReportLine line = (WorkReportLine) row.getValue();
                 line.setCode(code.getValue());
             }
@@ -1230,7 +1230,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 confirmRemove((WorkReportLine) row.getValue());
             }
         });
@@ -1296,7 +1296,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public class WorkReportListRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             WorkReportLine workReportLine = (WorkReportLine) data;
 
             row.setValue(workReportLine);
@@ -1337,7 +1337,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
     public class OrderedFieldsAndLabelsRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             row.setValue(data);
 
             if (data instanceof DescriptionValue) {
@@ -1394,7 +1394,7 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
 
         comboLabels.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if(comboLabels.getSelectedItem() != null){
                     Label newLabel = (Label) comboLabels.getSelectedItem()
                             .getValue();

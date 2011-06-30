@@ -3,9 +3,16 @@
         <log-base></log-base>
     </log>
 
+    <desktop-config>
+        <!-- seconds it takes between requests for a desktop to be invalidated -->
+        <!-- a timer is introduced to avoid invalidation of pages still open -->
+        <desktop-timeout>30</desktop-timeout>
+    </desktop-config>
+
     <session-config>
-        <!-- -1 value means session should never timeout -->
-        <session-timeout>-1</session-timeout>
+        <!-- 0 implies default from web.xml  -->
+        <session-timeout>0</session-timeout>
+        <timer-keep-alive>true</timer-keep-alive>
     </session-config>
     <error-page>
         <exception-type>java.lang.Throwable
@@ -25,5 +32,21 @@
 			org.springframework.security.context.ThreadLocalSecurityContextHolderStrategy=contextHolder
 		</value>
 	</preference>
+
+
+    <system-config>
+        <disable-event-thread>false</disable-event-thread>
+    </system-config>
+
+
+    <library-property>
+        <name>org.zkoss.zul.Button.mold</name>
+        <value>trendy</value>
+    </library-property>
+
+    <library-property>
+        <name>org.zkoss.zul.chart.engine.class</name>
+        <value>com.igalia.java.zk.components.JFreeChartEngine</value>
+    </library-property>
 
 </zk>

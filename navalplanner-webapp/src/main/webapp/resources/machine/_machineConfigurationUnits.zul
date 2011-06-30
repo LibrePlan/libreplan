@@ -20,7 +20,8 @@
 -->
 <vbox
     apply="org.navalplanner.web.resources.machine.MachineConfigurationController"
-    id="${arg.id}">
+    id="${arg.id}"
+    width="100%">
     <button label="${i18n:_('Add new configuration unit')}"
         onClick="configurationController.addConfigurationUnit();" />
 

@@ -85,7 +85,7 @@ public class OrderBandboxFinder extends BandboxFinder implements IBandboxFinder 
     private final ListitemRenderer orderRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             Order order = (Order) data;
             item.setValue(order);
 

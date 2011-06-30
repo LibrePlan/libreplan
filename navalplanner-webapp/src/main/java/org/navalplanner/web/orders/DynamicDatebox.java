@@ -149,7 +149,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         component.addEventListener("onChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 updateBean();
                 updateComponents();
             }
@@ -160,7 +160,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         textBox.addEventListener("onOK", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 userWantsDateBox(textBox);
             }
         });
@@ -170,7 +170,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         currentDatebox.addEventListener("onOK", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 currentDatebox.setOpen(true);
             }
         });
@@ -180,7 +180,7 @@ public class DynamicDatebox extends GenericForwardComposer {
         currentDatebox.addEventListener("onBlur", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 dateBoxHasLostFocus(currentDatebox);
             }
         });

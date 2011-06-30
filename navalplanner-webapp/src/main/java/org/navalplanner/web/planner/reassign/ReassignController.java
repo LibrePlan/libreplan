@@ -118,7 +118,7 @@ public class ReassignController extends GenericForwardComposer {
                 new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         Radio selectedItem = reassigningTypeSelector
                                 .getSelectedItem();
                         newTypeChoosen(Type.fromRadio(selectedItem));

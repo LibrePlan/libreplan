@@ -86,6 +86,8 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
 
         return result;
     }
@@ -220,4 +222,11 @@ public class OrderCostsPerResourceController extends NavalplannerReportControlle
         return REPORT_NAME;
     }
 
+    private String getParameterCriterions() {
+        return orderCostsPerResourceModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return orderCostsPerResourceModel.getSelectedLabel();
+    }
 }

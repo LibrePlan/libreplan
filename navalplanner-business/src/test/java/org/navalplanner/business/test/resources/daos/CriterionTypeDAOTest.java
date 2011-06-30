@@ -82,7 +82,7 @@ public class CriterionTypeDAOTest {
     }
 
     @Test
-    public void testSaveCriterionType() throws Exception {
+    public void testSaveCriterionType() {
         CriterionType criterionType = createValidCriterionType();
         criterionTypeDAO.save(criterionType);
         assertTrue(criterionTypeDAO.exists(criterionType.getId()));

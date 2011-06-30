@@ -195,9 +195,7 @@ public class MachineWorkersConfigurationUnit extends BaseEntity {
                 } else {
                     range = Interval.from(each.getStart());
                 }
-                if (((range == null)
-                        && existsWorkerAssignmentWithSameWorker(each) || (existsWorkerAssignmentWithSameWorker(
-                        each, range)))) {
+                if (existsWorkerAssignmentWithSameWorker(each, range)) {
                     unique = false;
                 }
             }

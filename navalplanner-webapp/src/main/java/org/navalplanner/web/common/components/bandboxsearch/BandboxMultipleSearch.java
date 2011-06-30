@@ -96,14 +96,14 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         listbox.addEventListener(Events.ON_CLICK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                 pickElementFromListAndCloseBandbox();
                 }
             });
         listbox.addEventListener(Events.ON_OK, new EventListener() {
 
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                 pickElementFromListAndCloseBandbox();
                 }
             });
@@ -116,7 +116,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         bandbox.addEventListener("onChanging", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 final String inputText = ((InputEvent) event).getValue();
                 if ((inputText == null) || (inputText.isEmpty())) {
                     clear();
@@ -130,7 +130,7 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         bandbox.addEventListener(Events.ON_CTRL_KEY, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 List<Listitem> items = listbox.getItems();
                 if (!items.isEmpty()) {
                     listbox.setSelectedIndex(0);

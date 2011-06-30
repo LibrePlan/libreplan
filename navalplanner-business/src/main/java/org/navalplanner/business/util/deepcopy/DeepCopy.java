@@ -33,10 +33,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.proxy.HibernateProxy;
@@ -279,7 +279,8 @@ public class DeepCopy {
 
     private Map<ByIdentity, Object> alreadyCopiedObjects = new HashMap<ByIdentity, Object>();
 
-    private class ByIdentity {
+    private static class ByIdentity {
+
         private final Object wrapped;
 
         ByIdentity(Object wrapped) {
@@ -303,7 +304,6 @@ public class DeepCopy {
             }
             return false;
         }
-
     }
 
     private ByIdentity byIdentity(Object value) {

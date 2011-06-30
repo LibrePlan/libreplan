@@ -33,7 +33,6 @@ import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.common.TemplateController;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.IDBPasswordEncoderService;
@@ -42,7 +41,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkoss.zk.ui.util.Clients;
 
 /**
  * Model for UI operations related to {@link User}
@@ -81,11 +79,9 @@ public class UserModel implements IUserModel {
         }
     }
 
-    private UserCRUDController ctlr;
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
-        this.ctlr = ctlr;
         try {
             // user.getLoginName() has to be validated before encoding password,
             // because it must exist to perform the encoding
@@ -144,43 +140,6 @@ public class UserModel implements IUserModel {
         // save the field changedDefaultAdminPassword in configuration.
         Registry.getConfigurationDAO().saveChangedDefaultPassword(
                 user.getLoginName(), changedPasswd);
-
-        String displayA = null;
-        String displayO = null;
-        String displayU = null;
-        String login = null;
-
-        // show or hide the warning
-        displayO = isWarningDefaultPasswdOthersVisible();
-        if (user.equals(MandatoryUser.ADMIN)) {
-            displayA = isWarningDefaultPasswdAdminVisible(user,changedPasswd);
-        }else{
-            displayU = isWarningDefaultPasswordOtherUser(changedPasswd,
-                    displayO);
-            login = user.getLoginName();
-        }
-        Clients.evalJavaScript("showOrHideWarnings('" + displayA + "', '"
-                + displayO + "', '" + login + "', '" + displayU + "');");
-    }
-
-    private String isWarningDefaultPasswordOtherUser(boolean changedPasswd,
-            String displayO) {
-        if (displayO.equals("inline")) {
-            return changedPasswd ? "none" : "inline";
-        }
-        return null;
-    }
-
-    private String isWarningDefaultPasswdAdminVisible(MandatoryUser user, boolean changedPasswd){
-        if (user.equals(MandatoryUser.ADMIN)) {
-            return changedPasswd ? "none" : "inline";
-        }
-        return null;
-    }
-
-    private String isWarningDefaultPasswdOthersVisible() {
-        return (TemplateController.getCurrent() != null) ? TemplateController
-                .getCurrent().getDefaultPasswdVisible() : "none";
     }
 
     @Override
@@ -289,4 +248,11 @@ public class UserModel implements IUserModel {
     public String getClearNewPassword() {
         return clearNewPassword;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser user) {
+        return user.hasChangedDefaultPasswordOrDisabled();
+    }
+
 }

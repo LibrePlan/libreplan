@@ -50,7 +50,9 @@ public interface ITemplateModel {
 
     boolean isScenariosVisible();
 
-    boolean isChangedDefaultPassword(MandatoryUser user);
+    boolean hasChangedDefaultPassword(MandatoryUser user);
+
+    boolean adminPasswordChangedAndSomeOtherNotChanged();
 
     String getIdUser(String login);
 

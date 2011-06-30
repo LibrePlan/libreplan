@@ -74,7 +74,7 @@ public class AllocationConfiguration extends HtmlMacroComponent {
         calculationTypeSelector.addEventListener(Events.ON_CHECK, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 taskWorkableDays.clearErrorMessage(true);
                 setCalculationTypeSelected(calculationTypeSelector
                         .getSelectedItem().getValue());

@@ -155,4 +155,50 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-new-column-enabled-autocomplete-login" author="smontes">
+        <comment>Add new column enabled_autocomplete_login with default value TRUE to configuration table</comment>
+        <addColumn tableName="configuration">
+            <column name="enabled_autocomplete_login" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="configuration" columnName="enabled_autocomplete_login"
+           defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="configuration"
+           columnName="enabled_autocomplete_login"
+            defaultNullValue="TRUE"
+            columnDataType="BOOLEAN" />
+    </changeSet>
+
+    <changeSet id="add-application-language" author="calvarinop">
+        <comment>Add new column to store the language of application for this user</comment>
+        <addColumn tableName="user_table">
+            <column name="application_language" type="INTEGER" defaultValue="0"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="move-columns-from-configuration-table" author="calvarinop">
+        <comment>Move columns from configuration table to user table</comment>
+
+        <addColumn tableName="user_table">
+            <column name="expand_company_planning_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_company_planning_view_charts" defaultValueBoolean="FALSE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_company_planning_view_charts" defaultNullValue="FALSE" columnDataType="BOOLEAN" />
+
+        <addColumn tableName="user_table">
+            <column name="expand_order_planning_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_order_planning_view_charts" defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_order_planning_view_charts" defaultNullValue="TRUE" columnDataType="BOOLEAN" />
+
+        <addColumn tableName="user_table">
+            <column name="expand_resource_load_view_charts" type="BOOLEAN" />
+        </addColumn>
+        <addDefaultValue tableName="user_table" columnName="expand_resource_load_view_charts" defaultValueBoolean="TRUE" />
+        <addNotNullConstraint tableName="user_table" columnName="expand_resource_load_view_charts" defaultNullValue="TRUE" columnDataType="BOOLEAN" />
+
+        <dropColumn tableName="configuration" columnName="expand_company_planning_view_charts"/>
+        <dropColumn tableName="configuration" columnName="expand_order_planning_view_charts"/>
+        <dropColumn tableName="configuration" columnName="expand_resource_load_view_charts"/>
+    </changeSet>
+
 </databaseChangeLog>

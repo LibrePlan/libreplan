@@ -165,7 +165,8 @@ public class LabelTypeModel extends IntegrationEntityModel implements
             }
         }
         if (!result.isEmpty()) {
-            throw new ValidationException(result.toArray(new InvalidValue[0]));
+            throw new ValidationException(
+                    result.toArray(new InvalidValue[result.size()]));
         }
     }
 

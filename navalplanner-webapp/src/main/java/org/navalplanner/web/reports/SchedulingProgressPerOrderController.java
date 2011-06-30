@@ -26,7 +26,6 @@ import static org.navalplanner.web.I18nHelper._;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,13 +37,14 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.ExtendedJasperreport;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxSearch;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+
+import com.igalia.java.zk.components.JasperreportComponent;
 
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
@@ -211,12 +211,12 @@ public class SchedulingProgressPerOrderController extends NavalplannerReportCont
         }
     }
 
-    public void showReport(ExtendedJasperreport jasperreport) {
+    public void showReport(JasperreportComponent jasperreport){
         checkCannotBeHigher(startingDate, endingDate);
         super.showReport(jasperreport);
     }
 
-    public class AdvanceTypeDTO {
+    public static class AdvanceTypeDTO {
 
         private String name;
 

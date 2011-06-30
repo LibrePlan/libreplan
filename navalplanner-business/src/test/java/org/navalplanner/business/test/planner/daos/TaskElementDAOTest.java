@@ -554,8 +554,9 @@ public class TaskElementDAOTest {
                 allocation.setResource(createValidWorker());
                 LocalDate start = task.getStartAsLocalDate();
                 task.setIntraDayEndDate(IntraDayDate.startOfDay(start
-                        .plusDays(2)));
-                allocation.onIntervalWithinTask(start, start.plusDays(2)).allocateHours(16);
+                        .plusDays(3)));
+                allocation.onIntervalWithinTask(start, start.plusDays(3))
+                        .allocateHours(24);
                 assertTrue(allocation.getAssignedHours() > 0);
 
                 task.addResourceAllocation(allocation);
@@ -579,8 +580,8 @@ public class TaskElementDAOTest {
                     fail();
                     return null;
                 }
-                assertTrue(task1.getSumOfHoursAllocated() == 16);
-                assertTrue(task1.getParent().getSumOfHoursAllocated() == 16);
+                assertTrue(task1.getSumOfHoursAllocated() == 24);
+                assertTrue(task1.getParent().getSumOfHoursAllocated() == 24);
 
                 return null;
             }

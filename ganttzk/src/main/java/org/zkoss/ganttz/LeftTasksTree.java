@@ -107,7 +107,7 @@ public class LeftTasksTree extends HtmlMacroComponent {
                 Treeitem item) {
             item.addEventListener("onOpen", new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     OpenEvent openEvent = (OpenEvent) event;
                     taskBean.setExpanded(openEvent.isOpen());
                 }
@@ -120,7 +120,8 @@ public class LeftTasksTree extends HtmlMacroComponent {
         return task.isLeaf() || task.isExpanded();
     }
 
-    private final class DetailsForBeans {
+    private static final class DetailsForBeans {
+
         private Map<Task, LeftTasksTreeRow> map = new HashMap<Task, LeftTasksTreeRow>();
 
         private Set<Task> focusRequested = new HashSet<Task>();

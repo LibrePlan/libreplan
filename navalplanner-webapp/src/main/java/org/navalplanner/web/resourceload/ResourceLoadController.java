@@ -31,10 +31,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -151,7 +151,7 @@ public class ResourceLoadController implements Composer {
     }
 
     @Override
-    public void doAfterCompose(org.zkoss.zk.ui.Component comp) throws Exception {
+    public void doAfterCompose(org.zkoss.zk.ui.Component comp) {
         this.parent = comp;
     }
 
@@ -255,7 +255,8 @@ public class ResourceLoadController implements Composer {
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
-        resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[0]));
+        resourcesLoadPanel.add(commands.toArray(new IToolbarCommand[commands
+                .size()]));
     }
 
     private TimeTracker buildTimeTracker() {
@@ -327,7 +328,7 @@ public class ResourceLoadController implements Composer {
         button.setTooltip(_("Filter by worker"));
         button.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 if(currentFilterByResources) {
                     filterResourcesFromBandbox();
                 }
@@ -353,7 +354,7 @@ public class ResourceLoadController implements Composer {
         initDate.setWidth("75px");
         initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 resourceLoadModel.setInitDateFilter(LocalDate
                         .fromDateFields(initDate.getValue()));
                 reload(currentFilterByResources);
@@ -364,7 +365,7 @@ public class ResourceLoadController implements Composer {
         endDate.setWidth("75px");
         endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 resourceLoadModel.setEndDateFilter(LocalDate
                         .fromDateFields(endDate.getValue()));
                 reload(currentFilterByResources);
@@ -427,7 +428,7 @@ public class ResourceLoadController implements Composer {
                 Comboitem item = new Comboitem();
                 item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
                 item.setDescription(firstName + " - " + lastName);
-                item.setValue(new Integer(position));
+                item.setValue(position);
                 filterByNameCombo.appendChild(item);
                 if(resourceLoadModel.getPageFilterPosition() == position) {
                     filterByNameCombo.setSelectedItemApi(item);
@@ -545,8 +546,9 @@ public class ResourceLoadController implements Composer {
 
         Tabpanels chartTabpanels = new Tabpanels();
         Tabpanel loadChartPannel = new Tabpanel();
-        CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-                buildLoadChart());
+        // avoid adding Timeplot since it has some pending issues
+         CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+         buildLoadChart());
         chartTabpanels.appendChild(loadChartPannel);
         chartComponent.appendChild(chartTabpanels);
 
@@ -658,9 +660,9 @@ public class ResourceLoadController implements Composer {
             ValueGeometry valueGeometry = getValueGeometry();
             TimeGeometry timeGeometry = getTimeGeometry(interval);
 
-            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
             appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
+            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
 
             chart.setWidth(size + "px");
             chart.setHeight("150px");

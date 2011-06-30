@@ -4,6 +4,8 @@
 	<parameter name="orderName" class="java.lang.String"/>
 	<parameter name="taskStatus" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
+	<parameter name="criteria" class="java.lang.String"/>
+	<parameter name="labels" class="java.lang.String"/>
 	<field name="orderCode" class="java.lang.String"/>
 	<field name="orderName" class="java.lang.String"/>
 	<field name="estimatedStartingDate" class="java.util.Date"/>
@@ -408,7 +410,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="124" splitType="Stretch">
+		<band height="162" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="13" width="263" height="33"/>
 				<textElement verticalAlignment="Middle" markup="none">
@@ -454,6 +456,38 @@
 					<font size="10"/>
 				</textElement>
 				<textFieldExpression class="java.lang.String"><![CDATA[$P{taskStatus}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="61" y="113" width="450" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{criteria}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="112" width="60" height="15">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{criteria} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{criteria}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="61" y="130" width="450" height="15"/>
+				<textElement>
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{labels}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="1" y="129" width="60" height="15">
+					<printWhenExpression><![CDATA[new java.lang.Boolean($P{labels} != null)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$R{labels}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>

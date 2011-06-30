@@ -25,10 +25,13 @@
 <?xel-method prefix="project" name="version" class="org.navalplanner.business.common.VersionInformation"
     signature="java.lang.String getVersion()"?>
 
+<?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
+
 <div xmlns:n="http://www.zkoss.org/2005/zk/native">
 
 <zscript>
 <![CDATA[
+    controller = loginController;
     contextPath = Executions.getCurrent().getContextPath();
     logoLoginLink = contextPath + "/common/img/" +
         org.navalplanner.web.I18nHelper._("en") + "/logo_login.png";
@@ -72,7 +75,7 @@
         <n:tr>
           <n:td><label> </label>
               <div align="center">
-                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="admin" />
+                <n:input name="j_username" type="text" class="campotexto" id="textfield" size="30" value="${controller.loginValue}" />
             </div></n:td>
         </n:tr>
         <n:tr>
@@ -80,7 +83,7 @@
         </n:tr>
         <n:tr>
           <n:td><div align="center">
-              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="admin"/>
+              <n:input name="j_password" type="password" class="campotexto" id="textfield2" size="30" value="${controller.loginValue}"/>
           </div></n:td>
         </n:tr>
         <n:tr>

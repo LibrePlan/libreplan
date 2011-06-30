@@ -25,7 +25,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -129,6 +128,8 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
 
         result.put("startingDate", getStartingDate());
         result.put("endingDate", getEndingDate());
+        result.put("criteria", getParameterCriterions());
+        result.put("labels", getParameterLabels());
         result.put("showNote", hoursWorkedPerWorkerModel.isShowReportMessage());
         return result;
     }
@@ -172,7 +173,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
     public class ResourceListRenderer implements ListitemRenderer {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             final Resource resource = (Resource) data;
             item.setValue(resource);
 
@@ -232,7 +233,7 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         delete.setTooltiptext(_("Delete"));
         delete.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 onRemoveResource((Resource) item.getValue());
             }
         });
@@ -317,4 +318,11 @@ public class HoursWorkedPerWorkerController extends NavalplannerReportController
         return hoursWorkedPerWorkerModel.getSelectedCriterions();
     }
 
+    private String getParameterCriterions() {
+        return hoursWorkedPerWorkerModel.getSelectedCriteria();
+    }
+
+    private String getParameterLabels() {
+        return hoursWorkedPerWorkerModel.getSelectedLabel();
+    }
 }

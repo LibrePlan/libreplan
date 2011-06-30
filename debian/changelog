@@ -1,3 +1,11 @@
+navalplan (1.1.1-1) maverick; urgency=low
+
+  * Changed dependency from OpenJDK to default-jdk or default-jre.
+  * Added bugs fixed from stable branch.
+  * Released version 1.1.1.
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Wed, 07 Jun 2011 09:15:00 +0200
+
 navalplan (1.1.0-1) maverick; urgency=low
 
   * Removed unnecessary dependency with texlive-latex-recommended and pgf

@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?xel-method prefix="i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
+<?xel-method prefix="ganttzk_i18n" name="_" class="org.zkoss.ganttz.i18n.I18nHelper"
     signature="java.lang.String _(java.lang.String name)" ?>
 
 <zk xmlns:n="http://www.zkoss.org/2005/zk/native" height="100%">
@@ -28,12 +28,11 @@ resourcesLoadPanel = self;
 ]]>
 </zscript>
 
-
     <borderlayout sclass="resourcesloadlayout" width="auto" height="100%">
        <north height="30px" border="0" sclass="toolbar-box">
        <hbox align="center" id="toolbar">
         <separator/>
-        <label>${i18n:_('Zoom')}:</label>
+        <label>${ganttzk_i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${resourcesLoadPanel.zoomLevels}"
             onSelect="resourcesLoadPanel.setZoomLevel(self.selectedItem.value);" >
@@ -41,14 +40,14 @@ resourcesLoadPanel = self;
         <separator/>
         <hbox id="additionalFilterInsertionPoint1" />
         <separator/>
-        ${i18n:_('Filter')}:
+        ${ganttzk_i18n:_('Filter')}:
         <listbox id="listFilters" mold="select" rows="1" width="100px"
             model="${resourcesLoadPanel.filters}"
             selectedIndex="0"
             onSelect="resourcesLoadPanel.setFilter(self.selectedItem.value);">
         </listbox>
         <separator/>
-        <label id="filterByNameLabel">${i18n:_('Name filter')}:</label>
+        <label id="filterByNameLabel">${ganttzk_i18n:_('Name filter')}:</label>
         <combobox id="filterByNameCombo" width="50px"
             onChange="resourcesLoadPanel.onSelectFilterByName(self)" />
         <separator/>
@@ -63,10 +62,10 @@ resourcesLoadPanel = self;
 
                     <borderlayout >
                         <north border="0" height="35px" flex="true" collapsible="true">
-                            <vbox pack="top" align="center" width="100%">
-                            <tree fixedLayout="true" width="100%">
+                            <vbox pack="top" align="center">
+                            <tree fixedLayout="true" hflex="true">
                                 <treecols>
-                                    <treecol label="${i18n:_('Name')}" height="29px"/>
+                                    <treecol label="${ganttzk_i18n:_('Name')}" height="29px"/>
                                 </treecols>
                             </tree>
 
@@ -89,7 +88,7 @@ resourcesLoadPanel = self;
                 </center>
             </borderlayout>
         </center>
-        <south height="200px" collapsible="true" title="${i18n:_('Graphics')}"
+        <south height="200px" collapsible="true" title="${ganttzk_i18n:_('Graphics')}"
             sclass="scheduling-graphics" id="graphics"
             onOpen="resourcesLoadPanel.changeChartVisibility(event.open);">
             <div id="insertionPointChart" />

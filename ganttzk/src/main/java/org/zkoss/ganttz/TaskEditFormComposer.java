@@ -93,7 +93,7 @@ public class TaskEditFormComposer extends GenericForwardComposer {
      *
      * @author Manuel Rego Casasnovas <mrego@igalia.com>
      */
-    public class TaskDTO {
+    public static class TaskDTO {
         public String name;
         public Date beginDate;
         public Date endDate;

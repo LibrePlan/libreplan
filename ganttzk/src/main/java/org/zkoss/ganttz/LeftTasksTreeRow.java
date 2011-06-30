@@ -316,7 +316,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         textBox.addEventListener("onCtrlKey", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 userWantsToMove(textBox, (KeyEvent) event);
             }
         });
@@ -326,7 +326,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         component.addEventListener("onChange", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 updateBean(component);
             }
         });
@@ -336,7 +336,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         textBox.addEventListener("onOK", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 userWantsDateBox(textBox);
             }
         });
@@ -346,7 +346,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         datebox.addEventListener("onOK", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 datebox.setOpen(true);
             }
         });
@@ -375,7 +375,7 @@ public class LeftTasksTreeRow extends GenericForwardComposer {
         datebox.addEventListener("onBlur", new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 dateBoxHasLostFocus(datebox);
             }
         });

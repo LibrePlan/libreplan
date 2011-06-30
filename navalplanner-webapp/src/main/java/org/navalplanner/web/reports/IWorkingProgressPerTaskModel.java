@@ -59,4 +59,8 @@ public interface IWorkingProgressPerTaskModel {
 
     List<Criterion> getSelectedCriterions();
 
+    String getSelectedLabel();
+
+    String getSelectedCriteria();
+
 }

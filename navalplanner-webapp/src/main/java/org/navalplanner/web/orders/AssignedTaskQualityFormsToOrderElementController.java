@@ -269,7 +269,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     public class TaskQualityFormsRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             TaskQualityForm taskQualityForm = (TaskQualityForm) data;
             row.setValue(taskQualityForm);
 
@@ -373,7 +373,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         // Add static headers
         Column columnName = new Column();
         columnName.setLabel(_("Name"));
-        columnName.setSort("auto=(name)");
+        Util.setSort(columnName, "auto=(name)");
         columnName.setSortDirection("ascending");
         columns.appendChild(columnName);
 
@@ -406,7 +406,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
 
         buttonRemove.addEventListener(Events.ON_CLICK, new EventListener() {
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 confirmRemove((TaskQualityForm) row.getValue());
             }
         });
@@ -419,7 +419,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
     public class TaskQualityFormItemsRowRenderer implements RowRenderer {
 
         @Override
-        public void render(Row row, Object data) throws Exception {
+        public void render(Row row, Object data) {
             TaskQualityFormItem item = (TaskQualityFormItem) data;
             row.setValue(item);
 
@@ -490,7 +490,7 @@ public class AssignedTaskQualityFormsToOrderElementController extends
         if (!taskQualityForm.isByItems()) {
             checkbox.addEventListener(Events.ON_CHECK, new EventListener() {
                 @Override
-                public void onEvent(Event event) throws Exception {
+                public void onEvent(Event event) {
                     assignedTaskQualityFormsToOrderElementModel
                             .updatePassedTaskQualityFormItems(taskQualityForm);
                     Grid gridItems = row.getGrid();

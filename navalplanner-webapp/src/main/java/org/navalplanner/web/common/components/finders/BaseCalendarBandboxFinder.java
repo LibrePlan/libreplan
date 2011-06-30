@@ -91,7 +91,7 @@ public class BaseCalendarBandboxFinder extends BandboxFinder implements IBandbox
     private final ListitemRenderer baseCalendarRenderer = new ListitemRenderer() {
 
         @Override
-        public void render(Listitem item, Object data) throws Exception {
+        public void render(Listitem item, Object data) {
             BaseCalendar baseCalendar = (BaseCalendar) data;
             item.setValue(baseCalendar);
 

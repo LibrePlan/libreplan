@@ -133,7 +133,7 @@ public class ReassignCommand implements IReassignCommand {
                                         new Callable<String>() {
 
                                     @Override
-                                    public String call() throws Exception {
+                                    public String call() {
                                         return _("{0} reassignations finished",
                                                 reassignations.size());
                                     }
@@ -144,7 +144,7 @@ public class ReassignCommand implements IReassignCommand {
                                         new Callable<String>() {
 
                                     @Override
-                                    public String call() throws Exception {
+                                    public String call() {
                                         return _("It couldn't complete all the reassignations");
                                     }
                                 })));
@@ -248,7 +248,7 @@ public class ReassignCommand implements IReassignCommand {
                 relativeTo.addEventListener(eventName, new EventListener() {
 
                     @Override
-                    public void onEvent(Event event) throws Exception {
+                    public void onEvent(Event event) {
                         relativeTo.removeEventListener(eventName, this);
                         try {
                             Messagebox.show(resolve(message),

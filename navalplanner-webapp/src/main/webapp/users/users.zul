@@ -29,24 +29,36 @@
 <?component name="list" inline="true" macroURI="_listUsers.zul"?>
 <?component name="edition" inline="true" macroURI="_editUser.zul"?>
 <zk>
-  <script type="text/JavaScript">
+
+    <script type="text/javascript">
     <![CDATA[
-		function showOrHideWarnings(displayA, displayO, user, displayU)  {
-			if(displayA != "null"){
-				var warningAdmin = document.getElementById ("warningDefaultPasswdadmin");
-				warningAdmin.style["display"] = displayA;
-			}
+        function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
+            userNotDefaultPassword, wsreaderNotDefaultPassword,
+            wswriterNotDefaultPassword) {
 
-			var warningOthers = document.getElementById ("warningDefaultPasswdOthers");
-            warningOthers.style["display"] = displayO;
+            setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
+                adminNotDefaultPassword);
 
-			if(displayU != "null" && user != "null"){
-				var warningUser = document.getElementById ("warningDefaultPasswd"+user);
-				warningUser.style["display"] = displayU;
-			}
+            var otherDefaultPassword = adminNotDefaultPassword &&
+                (!userNotDefaultPassword || !wsreaderNotDefaultPassword || !wswriterNotDefaultPassword);
+            setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
+                !otherDefaultPassword);
+
+            if (otherDefaultPassword) {
+                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswduser"),
+                    userNotDefaultPassword);
+                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwsreader"),
+                    wsreaderNotDefaultPassword);
+                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),
+                    wswriterNotDefaultPassword);
+            }
+        }
+
+        function setDisplayNoneOrInline(component, boolean) {
+            component.style["display"] = boolean ? "none" : "inline";
         }
     ]]>
-  </script>
+    </script>
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.users.UserCRUDController">

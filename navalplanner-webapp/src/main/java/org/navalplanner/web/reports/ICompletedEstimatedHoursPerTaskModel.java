@@ -59,4 +59,8 @@ public interface ICompletedEstimatedHoursPerTaskModel {
     boolean addSelectedCriterion(Criterion criterion);
 
     List<Criterion> getSelectedCriterions();
+
+    String getSelectedCriteria();
+
+    String getSelectedLabel();
 }

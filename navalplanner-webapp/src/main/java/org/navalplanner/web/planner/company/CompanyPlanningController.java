@@ -42,10 +42,7 @@ import org.springframework.context.annotation.Scope;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
-import org.zkoss.ganttz.resourceload.ScriptsRequiredByResourceLoadPanel;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
-import org.zkoss.ganttz.util.script.IScriptsRegister;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -92,12 +89,6 @@ public class CompanyPlanningController implements Composer {
     private MultipleTabsPlannerController tabsController;
 
     public CompanyPlanningController() {
-        getScriptsRegister().register(ScriptsRequiredByResourceLoadPanel.class);
-    }
-
-    private IScriptsRegister getScriptsRegister() {
-        return OnZKDesktopRegistry.getLocatorFor(IScriptsRegister.class)
-                .retrieve();
     }
 
     private Combobox cbProgressTypes;
@@ -148,6 +139,9 @@ public class CompanyPlanningController implements Composer {
         }
         cbProgressTypes.setModel(new SimpleListModel(ProgressType.getAll()));
         cbProgressTypes.setItemRenderer(new ProgressTypeRenderer());
+
+        // FIXME: Select default configuration option
+        // cbProgressTypes.renderAll();
         cbProgressTypes.invalidate();
         Comboitem item = findListitemValue(cbProgressTypes,
                 getProgressTypeFromConfiguration());
@@ -159,7 +153,7 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.addEventListener(Events.ON_SELECT, new EventListener() {
 
             @Override
-            public void onEvent(Event event) throws Exception {
+            public void onEvent(Event event) {
                 planner.updateCompletion(getSelectedProgressType().toString());
             }
 
@@ -172,10 +166,10 @@ public class CompanyPlanningController implements Composer {
         cbProgressTypes.setVisible(true);
     }
 
-    private class ProgressTypeRenderer implements ComboitemRenderer {
+    private static class ProgressTypeRenderer implements ComboitemRenderer {
 
         @Override
-        public void render(Comboitem item, Object data) throws Exception {
+        public void render(Comboitem item, Object data) {
             ProgressType progressType = (ProgressType) data;
             item.setValue(progressType);
             item.setLabel(_(progressType.getValue()));

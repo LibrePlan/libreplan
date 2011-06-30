@@ -38,6 +38,9 @@ import org.navalplanner.business.labels.daos.ILabelTypeDAO;
 
 /**
  * LabeType entity
+ *
+ * Note: this class has a natural ordering that is inconsistent with equals.
+ *
  * @author Diego Pino Garcia<dpino@igalia.com>
  */
 public class LabelType extends IntegrationEntity implements Comparable {

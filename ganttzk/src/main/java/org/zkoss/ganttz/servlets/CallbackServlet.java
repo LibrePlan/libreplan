@@ -21,14 +21,16 @@
 package org.zkoss.ganttz.servlets;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -47,15 +49,13 @@ public class CallbackServlet extends HttpServlet {
 
     private static final String MAPPING = "/callback/";
 
-    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 10; // ten
+    private static final long CLEANING_PERIOD_MILLIS = 1000 * 60 * 1; // one
+                                                                      // minute
     // minutes
-
-    private static final long EXPIRATION_TIME_MILLIS = 1000 * 60 * 30; // half
-    // hour;
 
     private static Random random = new Random();
 
-    private static ConcurrentMap<String, HandlerWithRegisterTime> handlersCallbacks = new ConcurrentHashMap<String, HandlerWithRegisterTime>();
+    private static ConcurrentMap<String, IHandler> handlersCallbacks = new ConcurrentHashMap<String, IHandler>();
 
     private static Timer cleaningTimer = new Timer(true);
 
@@ -65,32 +65,105 @@ public class CallbackServlet extends HttpServlet {
                 IOException;
     }
 
-    private static class HandlerWithRegisterTime {
-        private final IServletRequestHandler handler;
-        private final long creationTime;
+    public enum DisposalMode {
+        WHEN_NO_LONGER_REFERENCED {
+            @Override
+            public IHandler create(IServletRequestHandler handler) {
+                return new WeakReferencedHandler(handler);
+            }
+        },
+        AFTER_TEN_MINUTES {
+            @Override
+            public IHandler create(IServletRequestHandler handler) {
+                return new BasedOnExpirationTimeHandler(handler,
+                        tenMinutesInMillis);
+            }
+        };
 
-        public HandlerWithRegisterTime(IServletRequestHandler handler) {
+        private static final long tenMinutesInMillis = TimeUnit.MILLISECONDS
+                .convert(10, TimeUnit.MINUTES);
+
+        public abstract IHandler create(
+                IServletRequestHandler handler);
+    }
+
+    private interface IHandler {
+
+        abstract boolean hasExpired();
+
+        abstract IServletRequestHandler getHandler();
+    }
+
+    private static class BasedOnExpirationTimeHandler implements IHandler {
+
+        private IServletRequestHandler handler;
+
+        private final long creationTime;
+        private final long expirationTimeMilliseconds;
+
+        public BasedOnExpirationTimeHandler(IServletRequestHandler handler,
+                long expirationTimeMilliseconds) {
             Validate.notNull(handler);
             this.handler = handler;
             this.creationTime = System.currentTimeMillis();
+            this.expirationTimeMilliseconds = expirationTimeMilliseconds;
         }
 
-        boolean hasExpired() {
-            return System.currentTimeMillis() - creationTime > EXPIRATION_TIME_MILLIS;
+        @Override
+        public IServletRequestHandler getHandler() {
+            return handler;
         }
+
+        @Override
+        public boolean hasExpired() {
+            return System.currentTimeMillis() - creationTime > expirationTimeMilliseconds;
+        }
+    }
+
+    private static class WeakReferencedHandler implements IHandler {
+
+        private final WeakReference<IServletRequestHandler> handler;
+
+        WeakReferencedHandler(IServletRequestHandler handler) {
+            this.handler = new WeakReference<IServletRequestHandler>(handler);
+        }
+
+        @Override
+        public boolean hasExpired() {
+            return handler.get() == null;
+        }
+
+        @Override
+        public IServletRequestHandler getHandler() {
+            return handler.get();
+        }
+
     }
 
     public static String registerAndCreateURLFor(HttpServletRequest request,
             IServletRequestHandler handler) {
-        return registerAndCreateURLFor(request, handler, true);
+        return registerAndCreateURLFor(request, handler,
+                DisposalMode.AFTER_TEN_MINUTES);
+    }
+
+    public static String registerAndCreateURLFor(HttpServletRequest request,
+            IServletRequestHandler handler, DisposalMode disposalMode) {
+        return registerAndCreateURLFor(request, handler, true, disposalMode);
     }
 
     public static String registerAndCreateURLFor(HttpServletRequest request,
             IServletRequestHandler handler, boolean withContextPath) {
+        return registerAndCreateURLFor(request, handler, withContextPath,
+                DisposalMode.AFTER_TEN_MINUTES);
+    }
+
+    public static String registerAndCreateURLFor(HttpServletRequest request,
+            IServletRequestHandler handler, boolean withContextPath,
+            DisposalMode disposalMode) {
+        Validate.notNull(disposalMode);
         // theoretically could be an infinite loop, could be improved.
         String generatedKey = "";
-        HandlerWithRegisterTime toBeRegistered = new HandlerWithRegisterTime(
-                handler);
+        IHandler toBeRegistered = disposalMode.create(handler);
         do {
             generatedKey = generateKey();
         } while (handlersCallbacks.putIfAbsent(generatedKey, toBeRegistered) != null);
@@ -126,10 +199,10 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private static List<String> findExpired() {
-        ArrayList<Entry<String, HandlerWithRegisterTime>> handlersList = new ArrayList<Entry<String, HandlerWithRegisterTime>>(
+        ArrayList<Entry<String, IHandler>> handlersList = new ArrayList<Entry<String, IHandler>>(
                 handlersCallbacks.entrySet());
         List<String> expired = new ArrayList<String>();
-        for (Entry<String, HandlerWithRegisterTime> entry : handlersList) {
+        for (Entry<String, IHandler> entry : handlersList) {
             if (entry.getValue().hasExpired()) {
                 expired.add(entry.getKey());
             }
@@ -170,8 +243,8 @@ public class CallbackServlet extends HttpServlet {
     }
 
     private IServletRequestHandler handlerFor(String callbackId) {
-        HandlerWithRegisterTime h = handlersCallbacks.get(callbackId);
-        return h != null ? h.handler : null;
+        IHandler h = handlersCallbacks.get(callbackId);
+        return h != null ? h.getHandler() : null;
     }
 
 }

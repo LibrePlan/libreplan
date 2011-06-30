@@ -419,7 +419,7 @@ public abstract class AllocationRow {
 
     private void setUnknownResourcesPerDay() {
         this.editedValue = null;
-        this.intendedResourcesPerDayInput.setValue(null);
+        this.intendedResourcesPerDayInput.setValue((BigDecimal) null);
         clearRealResourcesPerDay();
     }
 
@@ -436,7 +436,8 @@ public abstract class AllocationRow {
     public abstract boolean isGeneric();
 
     public boolean isEmptyResourcesPerDay() {
-        return getResourcesPerDayEditedValue().isZero();
+        return getResourcesPerDayEditedValue() == null
+                || getResourcesPerDayEditedValue().isZero();
     }
 
     public abstract List<Resource> getAssociatedResources();
@@ -670,13 +671,17 @@ public abstract class AllocationRow {
     }
 
     private void loadResourcesPerDayFrom(ResourceAllocation<?> allocation) {
+        setResourcesPerDayEditedValue(extractEditedValueFrom(allocation));
+    }
+
+    private ResourcesPerDay extractEditedValueFrom(
+            ResourceAllocation<?> allocation) {
         if (allocation == null) {
-            setResourcesPerDayEditedValue(ResourcesPerDay.amount(0));
+            return ResourcesPerDay.amount(0);
         }
         boolean useIntention = currentCalculatedValue != CalculatedValue.RESOURCES_PER_DAY;
-        setResourcesPerDayEditedValue(useIntention ? allocation
-                .getIntendedResourcesPerDay() : allocation
-                .getNonConsolidatedResourcePerDay());
+        return useIntention ? allocation.getIntendedResourcesPerDay()
+                : allocation.getNonConsolidatedResourcePerDay();
     }
 
     public abstract ResourceEnum getType();
@@ -727,7 +732,7 @@ public abstract class AllocationRow {
                 String firstLine = _(
                         "In the available periods {0} only {1} hours are available.",
                         validPeriods, sumReached.getHours());
-                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criterions by the resources and their calendars.")
+                String secondLine = isGeneric() ? _("The periods available depend on the satisfaction of the criteria by the resources and their calendars.")
                         : _("The periods available depend on the resource's calendar.");
                 throw new WrongValueException(effortInput, firstLine + "\n"
                         + secondLine);

@@ -41,7 +41,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="176" splitType="Stretch">
+		<band height="159" splitType="Stretch">
 			<image scaleImage="RealHeight">
 				<reportElement x="316" y="3" width="180" height="53"/>
 				<imageExpression class="java.lang.String"><![CDATA[$P{logo}]]></imageExpression>
