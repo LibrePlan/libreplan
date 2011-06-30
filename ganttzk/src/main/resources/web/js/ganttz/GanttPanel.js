@@ -29,7 +29,7 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
         return [first, first.parentNode, first.parentNode.parentNode];
     },
     timeplotContainerRescroll : function(){
-        this._timeplotcontainer.each(jq.proxy(function(index, element){
+        this._getTimeplotContainer().each(jq.proxy(function(index, element){
             jq(element).css("left", "-" + this._rightpannellayout.scrollLeft() + "px")
             }, this));
     },
@@ -48,14 +48,13 @@ ganttz.GanttPanel = zk.$extends(zk.Widget,{
         this._plannergraph.scrollLeft( this._rightpannellayout.scrollLeft() );
         this.timeplotContainerRescroll();
     },
+    /*The canvas is inserted in the DOM after this component so
+     * it's not available right now. It is queried instead. Using throttle
+     * to not re-query it constantly */
+    _getTimeplotContainer: common.Common.throttle(500, function() {
+        return jq('canvas.timeplot-canvas');
+    }),
     _initializeProperties : function(){
-        /*The canvas is inserted in the DOM after this component so
-         * it's not available right now. We set up a handler to do
-         * job*/
-        jq(document).ready(jq.proxy(
-                function(){    this._timeplotcontainer = jq('canvas.timeplot-canvas');
-            },this));
-
         this._timetrackergap    = jq('.timetrackergap');
         this._rightpannellayout    = jq('.rightpanellayout div:first');
         this._taskdetails        = jq('.listdetails .z-tree-body');
