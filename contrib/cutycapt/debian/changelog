@@ -1,3 +1,9 @@
+cutycapt (20110107-2) lenny lucid maverick; urgency=low
+
+  * Changing command to use "cutycapt" instead of "CutyCapt".
+
+ -- Manuel Rego Casasnovas <mrego@igalia.com>  Fri, 06 Jun 2011 19:34:22 +0200
+
 cutycapt (20110107-1) lenny squeeze intrepid karmic lucid maverick; urgency=low
 
   * Updated to NavalPlan package naming.

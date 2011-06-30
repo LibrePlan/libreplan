@@ -59,7 +59,7 @@ public class CutyPrint {
 
     private static final Log LOG = LogFactory.getLog(CutyPrint.class);
 
-    private static final String CUTYCAPT_COMMAND = "CutyCapt ";
+    private static final String CUTYCAPT_COMMAND = "cutycapt ";
     // Estimated maximum execution time (ms)
 
     private static final int CUTYCAPT_TIMEOUT = 100000;
