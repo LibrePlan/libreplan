@@ -2,7 +2,7 @@
 /* Work reports */
 .listWorkReportLines  td.z-row-inner,
 .listWorkReportLines td.z-group-foot-inner {
-	padding: 0;
+    padding: 0;
 }
 
 .listWorkReportLines .date-column {

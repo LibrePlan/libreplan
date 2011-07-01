@@ -220,32 +220,32 @@ p.sidebar-subtitle {
 }
 
 div.figure {
-	text-align: center;
+    text-align: center;
 }
 
 div.figure img {
-	background: #f8f8f8;
-	padding: 0.25em;
-	border: 1px solid #888;
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+    background: #f8f8f8;
+    padding: 0.25em;
+    border: 1px solid #888;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 div.figure img:hover {
-	background: #e0e0e0;
+    background: #e0e0e0;
 }
 
 div.figure p.caption {
-	text-align: center;
-	margin-top: 0.1em;
-	font-style: italic;
-	color: #444;
+    text-align: center;
+    margin-top: 0.1em;
+    font-style: italic;
+    color: #444;
 }
 
 pre.literal-block {
-	padding: 0.15em;
-	background: #f8f8f8;
-	border: 1px solid #dfdfdf;
-	border-left: 0.25em solid #dfdfdf
+    padding: 0.15em;
+    background: #f8f8f8;
+    border: 1px solid #dfdfdf;
+    border-left: 0.25em solid #dfdfdf
 }

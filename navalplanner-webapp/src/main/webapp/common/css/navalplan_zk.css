@@ -101,7 +101,7 @@ body .advancedallocationlayout .icono .z-button-cm {
 }
 
 .toolbar-box {
-	border:0;
+    border:0;
 }
 
 .toolbar-box .z-button {
@@ -1116,7 +1116,7 @@ tr.z-tree-row-seld, tr.z-list-item-seld,
 }
 
 .z-panel-body {
-	padding: 10px;
+    padding: 10px;
 }
 
 .resourcesload .z-west-body .z-tree-header ,
@@ -1485,11 +1485,11 @@ input.z-datebox-text-disd {
 }
 
 .add-resources-or-criteria span {
-	white-space: nowrap;
+    white-space: nowrap;
 }
 
 .z-datebox-pp {
-	width: auto !important;
+    width: auto !important;
 }
 
 
@@ -1497,7 +1497,7 @@ input.z-datebox-text-disd {
 .advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-body,
 .advanced-assignment-area .z-center-body
 {
-	width: auto !important;
+    width: auto !important;
 }
 
 /* Icons and toolbar buttons */
@@ -1527,18 +1527,18 @@ input.z-datebox-text-disd {
 }
 
 .toolbar-box .z-button-cm {
-	border-left: solid 1px transparent;
-	border-top: solid 1px transparent;
-	border-right: solid 1px transparent;
+    border-left: solid 1px transparent;
+    border-top: solid 1px transparent;
+    border-right: solid 1px transparent;
 }
 
 .toolbar-box .z-button-clk .z-button-cm {
-	background-color: #71B0D4;
+    background-color: #71B0D4;
 }
 
 .perspectives-column .z-button-cm,
 .toolbar-box .z-button-cm  {
-	-moz-border-radius: 2px;
+    -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
 }
 
@@ -1557,7 +1557,7 @@ input.z-datebox-text-disd {
 }
 
 .z-button .z-button-cm {
-	background-image: none;
+    background-image: none;
 }
 
 .z-button tbody {
@@ -1570,49 +1570,49 @@ input.z-datebox-text-disd {
 }
 
 .z-button tbody:active {
-	background-color: #A1D586;
+    background-color: #A1D586;
 }
 
 .z-button .z-button-tl, .z-button .z-button-tr, 
 .z-button .z-button-bl, .z-button .z-button-br {
-	background-image: url(../img/btn-corner-green.gif);
+    background-image: url(../img/btn-corner-green.gif);
 }
 .z-button .z-button-tm, .z-button .z-button-bm {
-	background-image: url(../img/btn-x-green.gif);
+    background-image: url(../img/btn-x-green.gif);
 }
 
 .z-button .z-button-cl, .z-button .z-button-cr {
-	background-image: url(../img/btn-y-green.gif);
+    background-image: url(../img/btn-y-green.gif);
 }
 
 .z-button .z-button-tl, .z-button .z-button-bl,
 .z-button .z-button-tr, .z-button .z-button-tr {
-	background-color: #FFFFFF;
+    background-color: #FFFFFF;
 }
 
 /* Bugfix for default 3D mold */
 .z-button-clk .z-button-tl {
-	background-position:-18px 0;
+    background-position:-18px 0;
 }
 
 .z-button-clk .z-button-bl {
-	background-position:-18px -3px;
+    background-position:-18px -3px;
 }
 
 .z-button-clk .z-button-tr {
-	background-position:-21px 0;
+    background-position:-21px 0;
 }
 
 .z-button-clk .z-button-br {
-	background-position:-21px -3px;
+    background-position:-21px -3px;
 }
 
 .z-button-clk .z-button-cl {
-	background-position:-18px 0;
+    background-position:-18px 0;
 }
 
 .z-button-clk .z-button-cr {
-	background-position:-21px 0;
+    background-position:-21px 0;
 }
 
 .assigned-hours-input {
