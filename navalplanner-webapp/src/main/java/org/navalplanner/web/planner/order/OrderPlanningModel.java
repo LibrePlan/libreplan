@@ -139,6 +139,7 @@ import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -174,6 +175,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
+
+    private static final Log PROFILING_LOG = ProfilingLogFactory
+            .getLog(OrderPlanningModel.class);
 
     public static <T extends Collection<Resource>> T loadRequiredDataFor(
             T resources) {
@@ -362,9 +366,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             AdvanceConsolidationController advanceConsolidationController,
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
+        long time = System.currentTimeMillis();
         currentScenario = scenarioManager.getCurrent();
         orderReloaded = reload(order);
         PlannerConfiguration<TaskElement> configuration = createConfiguration(planner, orderReloaded);
+        PROFILING_LOG.info("load data and create configuration took: "
+                + (System.currentTimeMillis() - time) + " ms");
         User user;
         try {
             user = this.userDAO.findByLoginName(SecurityUtils
@@ -374,7 +381,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
         configuration.setExpandPlanningViewCharts(user
                 .isExpandOrderPlanningViewCharts());
-
         addAdditional(additional, configuration);
 
         ZoomLevel defaultZoomLevel = OrderPlanningModel
@@ -419,8 +425,11 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         configuration.setChartComponent(chartComponent);
         configureModificators(orderReloaded, configuration);
+        long setConfigurationTime = System.currentTimeMillis();
         planner.setConfiguration(configuration);
-
+        PROFILING_LOG.info("setConfiguration on planner took: "
+                + (System.currentTimeMillis() - setConfigurationTime) + " ms");
+        long preparingChartsAndMisc = System.currentTimeMillis();
         // Prepare tabpanels
         Tabpanels chartTabpanels = new Tabpanels();
 
@@ -447,10 +456,17 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 planner, changeHooker);
         setupOverallProgress(planner, changeHooker);
         setupAdvanceAssignmentPlanningController(planner, advanceAssignmentPlanningController);
+        PROFILING_LOG
+                .info("preparing charts and miscellaneous took: "
+                        + (System.currentTimeMillis() - preparingChartsAndMisc)
+                        + " ms");
 
         planner.addGraphChangeListenersFromConfiguration(configuration);
+        long overalProgressContentTime = System.currentTimeMillis();
         overallProgressContent = new OverAllProgressContent(overallProgressTab);
         overallProgressContent.updateAndRefresh();
+        PROFILING_LOG.info("overalProgressContent took: "
+                + (System.currentTimeMillis() - overalProgressContentTime));
     }
 
     private void setupAdvanceAssignmentPlanningController(final Planner planner,
