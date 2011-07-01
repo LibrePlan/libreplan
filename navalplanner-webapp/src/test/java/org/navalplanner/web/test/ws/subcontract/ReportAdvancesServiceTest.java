@@ -108,7 +108,7 @@ public class ReportAdvancesServiceTest {
             public Void execute() {
                 defaultAdvanceTypesBootstrapListener.loadRequiredData();
                 configurationBootstrap.loadRequiredData();
-		scenariosBootstrap.loadRequiredData();
+                scenariosBootstrap.loadRequiredData();
                 return null;
             }
         };

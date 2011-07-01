@@ -81,7 +81,7 @@ public class CutyPrint {
     private static int TASK_HEIGHT = 25;
     private static int PRINT_VERTICAL_PADDING = 50;
 
-	private static int PRINT_VERTICAL_SPACING = 160;
+    private static int PRINT_VERTICAL_SPACING = 160;
 
     public static void print(Order order) {
         print("/planner/index.zul", entryPointForShowingOrder(order),
@@ -186,10 +186,10 @@ public class CutyPrint {
                 minWidthForTaskNameColumn);
         captureString += " --min-width=" + plannerWidth;
 
-		int plannerHeight = (expanded ? planner.getAllTasksNumber() : planner
-				.getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
+        int plannerHeight = (expanded ? planner.getAllTasksNumber() : planner
+                .getTaskNumber()) * TASK_HEIGHT + PRINT_VERTICAL_SPACING;
 
-		captureString += " --min-height=" + plannerHeight;
+        captureString += " --min-height=" + plannerHeight;
 
         // Static width and time delay parameters (FIX)
 

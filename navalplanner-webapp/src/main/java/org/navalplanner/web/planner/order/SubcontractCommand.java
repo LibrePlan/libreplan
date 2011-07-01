@@ -54,7 +54,7 @@ public class SubcontractCommand implements ISubcontractCommand {
 
     @Override
     public String getIcon() {
-	return "/common/img/ico_subcontract.png";
+        return "/common/img/ico_subcontract.png";
     }
 
     @Override

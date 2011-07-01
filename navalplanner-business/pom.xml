@@ -125,15 +125,15 @@
     <profiles>
         <profile>
             <!-- LiquiBase liquibase:update -->
-	    <id>liquibase-update</id>
-	    <activation>
-	        <activeByDefault>true</activeByDefault>
-	    </activation>
-	    <build>
-	        <plugins>
-	            <plugin>
+        <id>liquibase-update</id>
+        <activation>
+            <activeByDefault>true</activeByDefault>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
                         <groupId>org.liquibase</groupId>
-	                <artifactId>liquibase-maven-plugin</artifactId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
                         <version>2.0-rc7</version>
                         <executions>
                             <execution>
@@ -147,21 +147,21 @@
                                 </goals>
                             </execution>
                         </executions>
-	            </plugin>
-		</plugins>
-	    </build>
-	</profile>
+                </plugin>
+        </plugins>
+        </build>
+    </profile>
         <profile>
             <!-- LiquiBase liquibase:updateSQL -->
-	    <id>liquibase-updatesql</id>
-	    <activation>
-	        <activeByDefault>false</activeByDefault>
-	    </activation>
-	    <build>
-	        <plugins>
-	            <plugin>
+        <id>liquibase-updatesql</id>
+        <activation>
+            <activeByDefault>false</activeByDefault>
+        </activation>
+        <build>
+            <plugins>
+                <plugin>
                         <groupId>org.liquibase</groupId>
-	                <artifactId>liquibase-maven-plugin</artifactId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
                         <version>2.0-rc7</version>
                         <executions>
                             <execution>
@@ -175,10 +175,10 @@
                                 </goals>
                             </execution>
                         </executions>
-	            </plugin>
-		</plugins>
-	    </build>
-	</profile>
+                </plugin>
+        </plugins>
+        </build>
+    </profile>
     </profiles>
 
     <build>

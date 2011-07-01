@@ -50,12 +50,12 @@ public interface ISettingsModel {
 
     boolean isExpandCompanyPlanningViewCharts();
 
-	void setLastName(String lastName);
+    void setLastName(String lastName);
 
-	String getLastName();
+    String getLastName();
 
-	void setFirstName(String firstName);
+    void setFirstName(String firstName);
 
-	String getFirstName();
+    String getFirstName();
 
 }

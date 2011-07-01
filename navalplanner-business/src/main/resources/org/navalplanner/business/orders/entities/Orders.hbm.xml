@@ -221,9 +221,9 @@
 
     <class name="TaskSource" table="task_source">
         <id name="id" access="property" type="long">
-	        <generator class="foreign">
-	            <param name="property">task</param>
-	        </generator>
+            <generator class="foreign">
+                <param name="property">task</param>
+            </generator>
         </id>
         <version name="version" access="property" type="long" />
         <many-to-one name="schedulingData" class="SchedulingDataForVersion"

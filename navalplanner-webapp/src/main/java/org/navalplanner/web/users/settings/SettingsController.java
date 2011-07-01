@@ -126,20 +126,20 @@ public class SettingsController extends GenericForwardComposer {
         return settingsModel.isExpandResourceLoadViewCharts();
     }
 
-	public String getFirstName() {
-		return settingsModel.getFirstName();
-	}
+    public String getFirstName() {
+        return settingsModel.getFirstName();
+    }
 
-	public void setFirstName(String firstName) {
-		settingsModel.setFirstName(firstName);
-	}
+    public void setFirstName(String firstName) {
+        settingsModel.setFirstName(firstName);
+    }
 
-	public String getLastName() {
-		return settingsModel.getLastName();
-	}
+    public String getLastName() {
+        return settingsModel.getLastName();
+    }
 
-	public void setLastName(String lastName) {
-		settingsModel.setLastName(lastName);
-	}
+    public void setLastName(String lastName) {
+        settingsModel.setLastName(lastName);
+    }
 
 }
