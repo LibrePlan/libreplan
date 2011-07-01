@@ -29,6 +29,8 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -94,6 +96,9 @@ public class LDAPCustomAuthenticationProvider extends
 
     private static final String USER_ID_SUBSTITUTION = "[USER_ID]";
 
+    private static final Log LOG = LogFactory
+            .getLog(LDAPCustomAuthenticationProvider.class);
+
     @Override
     protected void additionalAuthenticationChecks(UserDetails arg0,
             UsernamePasswordAuthenticationToken arg1)
@@ -111,21 +116,8 @@ public class LDAPCustomAuthenticationProvider extends
         final String usernameInserted = username;
         String encodedPassword = passwordEncoderService.encodePassword(
                 authentication.getCredentials().toString(), username);
-        User user = null;
 
-        // Gets user from DB if exists
-        user = (User) transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction() {
-
-                    @Override
-                    public Object execute() {
-                        try {
-                            return userDAO.findByLoginName(usernameInserted);
-                        } catch (InstanceNotFoundException e) {
-                            return null;
-                        }
-                    }
-                });
+        User user = getUserFromDB(usernameInserted);
 
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
@@ -142,51 +134,23 @@ public class LDAPCustomAuthenticationProvider extends
             // is a LDAP or null user, then we must authenticate against LDAP
             // if LDAP is enabled
             // Gets the LDAPConfiguration properties
-            configuration = (LDAPConfiguration) transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction() {
-
-                        @Override
-                        public Object execute() {
-                            return configurationDAO.getConfiguration()
-                                    .getLdapConfiguration();
-                        }
-                    });
+            configuration = loadLDAPConfiguration();
 
             if (configuration.getLdapAuthEnabled()) {
-
-                // Establishes the context for LDAP connection.
-                LDAPCustomContextSource context = (LDAPCustomContextSource) ldapTemplate
-                        .getContextSource();
-                context.setUrl(configuration.getLdapHost() + COLON
-                        + configuration.getLdapPort());
-                context.setBase(configuration.getLdapBase());
-                context.setUserDn(configuration.getLdapUserDn());
-                context.setPassword(configuration.getLdapPassword());
-                try {
-                    context.afterPropertiesSet();
-                } catch (Exception e) {
-                    // This exception will be never reached if the LDAP
-                    // properties are
-                    // well-formed.
-                    e.printStackTrace();
-                }
                 // Sets the new context to ldapTemplate
-                ldapTemplate.setContextSource(context);
+                ldapTemplate.setContextSource(loadLDAPContext());
+
                 try {
                     // Test authentication for user against LDAP
-                    if (ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
-                            new EqualsFilter(configuration.getLdapUserId(),
-                                    username).toString(), authentication
-                                    .getCredentials().toString())) {
+                    if (authenticateAgainstLDAP(usernameInserted,
+                            authentication.getCredentials().toString())) {
                         // Authentication against LDAP was ok
                         if (null == user) {
                             // user does not exist in NavalPlan must be imported
                             final User userNavalplan = User.create();
                             userNavalplan.setLoginName(username);
                             // we must check if it is needed to save LDAP
-                            // passwords
-                            // in
-                            // DB
+                            // passwords in DB
                             encodedPassword = null;
                             if (configuration.isLdapSavePasswordsDB())
                                 encodedPassword = passwordEncoderService
@@ -204,14 +168,7 @@ public class LDAPCustomAuthenticationProvider extends
                                             UserRole.class, role));
                                 }
                             }
-                            transactionService
-                                    .runOnTransaction(new IOnTransaction<Void>() {
-                                        @Override
-                                        public Void execute() {
-                                            userDAO.save(userNavalplan);
-                                            return null;
-                                        }
-                                    });
+                            saveUserOnTransaction(userNavalplan);
                         } else {
                             // user exists in NavalPlan
                             // We must match the LDAPRoles with
@@ -250,14 +207,7 @@ public class LDAPCustomAuthenticationProvider extends
                                 }
                             }
                             final User userNavalplan = user;
-                            transactionService
-                                    .runOnTransaction(new IOnTransaction<Void>() {
-                                        @Override
-                                        public Void execute() {
-                                            userDAO.save(userNavalplan);
-                                            return null;
-                                        }
-                                    });
+                            saveUserOnTransaction(userNavalplan);
                         }
                         // Gets and returns user from DB once authenticated
                         // against
@@ -272,6 +222,7 @@ public class LDAPCustomAuthenticationProvider extends
                     // This exception captures when LDAP authentication is not
                     // possible
                     // We must in this case try to authenticate against DB.
+                    LOG.info("LDAP not reachable. Trying to authenticate against database.");
                     if (authenticateInDatabase(authentication, username, user)) {
                         // user credentials are ok
                         return getUserDetailsService().loadUserByUsername(
@@ -292,6 +243,74 @@ public class LDAPCustomAuthenticationProvider extends
                 }
             }
         }
+    }
+
+    private LDAPConfiguration loadLDAPConfiguration() {
+        return (LDAPConfiguration) transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction() {
+
+                    @Override
+                    public Object execute() {
+                        return configurationDAO.getConfiguration()
+                                .getLdapConfiguration();
+                    }
+                });
+    }
+
+    private User getUserFromDB(String username) {
+        final String usernameInserted = username;
+        return (User) transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction() {
+
+                    @Override
+                    public Object execute() {
+                        try {
+                            return userDAO.findByLoginName(usernameInserted);
+                        } catch (InstanceNotFoundException e) {
+                            LOG.info("User not found in database.");
+                            return null;
+                        }
+                    }
+                });
+
+    }
+
+    private LDAPCustomContextSource loadLDAPContext() {
+        // Establishes the context for LDAP connection.
+        LDAPCustomContextSource context = (LDAPCustomContextSource) ldapTemplate
+                .getContextSource();
+        context.setUrl(configuration.getLdapHost() + COLON
+                + configuration.getLdapPort());
+        context.setBase(configuration.getLdapBase());
+        context.setUserDn(configuration.getLdapUserDn());
+        context.setPassword(configuration.getLdapPassword());
+        try {
+            context.afterPropertiesSet();
+        } catch (Exception e) {
+            // This exception will be never reached if the LDAP
+            // properties are
+            // well-formed.
+            LOG.error("There is a problem in LDAP connection: "
+                    + e.getMessage());
+        }
+        return context;
+    }
+
+    private boolean authenticateAgainstLDAP(String username, String password) {
+        return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
+                new EqualsFilter(configuration.getLdapUserId(), username)
+                        .toString(), password);
+    }
+
+    private void saveUserOnTransaction(User user) {
+        final User userLibrePlan = user;
+        transactionService.runOnTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                userDAO.save(userLibrePlan);
+                return null;
+            }
+        });
     }
 
     private boolean authenticateInDatabase(Authentication authentication,
@@ -369,6 +388,7 @@ public class LDAPCustomAuthenticationProvider extends
                 }
             }
         } catch (Exception e) {
+            LOG.error("Configuration of LDAP role-matching is wrong. Please check it.");
             rolesReturn.clear();
         }
         return rolesReturn;
