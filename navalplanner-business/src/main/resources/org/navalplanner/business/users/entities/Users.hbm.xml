@@ -25,7 +25,7 @@
         <property name="disabled"/>
         <property name="applicationLanguage" column="application_language">
             <type name="org.hibernate.type.EnumType">
-                <param name="enumClass">org.navalplanner.business.users.entities.Language</param>
+                <param name="enumClass">org.navalplanner.business.settings.entities.Language</param>
             </type>
         </property>
 

@@ -19,7 +19,8 @@
 package org.navalplanner.web.users.settings;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.users.entities.Language;
+import org.navalplanner.business.settings.entities.Language;
+
 
 /**
  * Model for UI operations related to user settings

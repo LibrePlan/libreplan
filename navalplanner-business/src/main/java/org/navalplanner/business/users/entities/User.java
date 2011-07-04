@@ -30,6 +30,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.settings.entities.Language;
 import org.navalplanner.business.users.daos.IUserDAO;
 
 /**

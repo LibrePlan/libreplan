@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.users.entities;
+package org.navalplanner.business.settings.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 

@@ -22,15 +22,15 @@ package org.navalplanner.web.users.settings;
 import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.users.entities.Language;
+import org.navalplanner.business.settings.entities.Language;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
 
 /**
