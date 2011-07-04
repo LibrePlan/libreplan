@@ -122,13 +122,7 @@ public class LDAPCustomAuthenticationProvider extends
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
             // is a NavalPlan user, then we must authenticate against DB
-            if (authenticateInDatabase(authentication, username, user)) {
-                // user credentials are ok
-                return getUserDetailsService().loadUserByUsername(username);
-            } else {
-                throw new BadCredentialsException(
-                        "Credentials are not the same as in database.");
-            }
+            return authenticateInDatabase(authentication, username, user);
         } else {
             // is a LDAP or null user, then we must authenticate against LDAP
             // if LDAP is enabled
@@ -222,24 +216,12 @@ public class LDAPCustomAuthenticationProvider extends
                     // possible
                     // We must in this case try to authenticate against DB.
                     LOG.info("LDAP not reachable. Trying to authenticate against database.");
-                    if (authenticateInDatabase(authentication, username, user)) {
-                        // user credentials are ok
-                        return getUserDetailsService().loadUserByUsername(
-                                username);
-                    } else {
-                        throw new BadCredentialsException(e.getMessage());
-                    }
+                    return authenticateInDatabase(authentication, username,
+                            user);
                 }
             } else {
                 // LDAP is not enabled we must check if the LDAP user is in DB
-                if (authenticateInDatabase(authentication, username, user)) {
-                    // user credentials are ok
-                    return getUserDetailsService().loadUserByUsername(username);
-                } else {
-                    throw new BadCredentialsException(
-                            "Authenticating LDAP user against LDAP was not possible because LDAPAuthentication is not enabled. "
-                                    + "Credentials are not the same as in database.");
-                }
+                return authenticateInDatabase(authentication, username, user);
             }
         }
     }
@@ -312,13 +294,17 @@ public class LDAPCustomAuthenticationProvider extends
         });
     }
 
-    private boolean authenticateInDatabase(Authentication authentication,
+    private UserDetails authenticateInDatabase(Authentication authentication,
             String username, User user) {
         String encodedPassword = passwordEncoderService.encodePassword(
                 authentication.getCredentials().toString(), username);
-        return (null != user && null != user.getPassword() && encodedPassword
-                .equals(user
-                .getPassword()));
+        if (null != user && null != user.getPassword()
+                && encodedPassword.equals(user.getPassword())) {
+            return getUserDetailsService().loadUserByUsername(username);
+        } else {
+            throw new BadCredentialsException(
+                    "Credentials are not the same as in database.");
+        }
     }
 
     private List<String> getMatchedRoles(LDAPConfiguration configuration,
