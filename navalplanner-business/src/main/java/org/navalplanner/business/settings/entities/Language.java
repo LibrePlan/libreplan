@@ -29,7 +29,7 @@ import static org.navalplanner.business.i18n.I18nHelper._;
  */
 public enum Language {
 
-    BROWSER_LANGUAGE(_("Use browser language configuration ")),
+    BROWSER_LANGUAGE(_("Use browser language configuration")),
     GALICIAN_LANGUAGE(_("Galician")),
     SPANISH_LANGUAGE(_("Spanish")),
     ENGLISH_LANGUAGE(_("English"));

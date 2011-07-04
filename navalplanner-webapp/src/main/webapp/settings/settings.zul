@@ -40,7 +40,7 @@
             </tabs>
             <tabpanels>
                 <tabpanel>
-                    <groupbox>
+                    <groupbox style="margin-top: 5px" closable="false">
                         <caption label="${i18n:_('Personal Data')}" />
                         <grid fixedLayout="true" id="personalData">
                             <columns>
