@@ -122,14 +122,13 @@ public class LDAPCustomAuthenticationProvider extends
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
             // is a NavalPlan user, then we must authenticate against DB
-            if (encodedPassword.equals(user.getPassword())) {
+            if (authenticateInDatabase(authentication, username, user)) {
                 // user credentials are ok
                 return getUserDetailsService().loadUserByUsername(username);
             } else {
                 throw new BadCredentialsException(
                         "Credentials are not the same as in database.");
             }
-
         } else {
             // is a LDAP or null user, then we must authenticate against LDAP
             // if LDAP is enabled
