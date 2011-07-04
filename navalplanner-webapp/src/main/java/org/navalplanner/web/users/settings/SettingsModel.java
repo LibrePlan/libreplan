@@ -16,8 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.navalplanner.web.users.settings;
 
+import org.apache.commons.lang.Validate;
+import org.navalplanner.business.common.Configuration;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -27,6 +31,9 @@ import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.security.SecurityUtils;
+import org.navalplanner.web.users.PasswordUtil;
+import org.navalplanner.web.users.bootstrap.MandatoryUser;
+import org.navalplanner.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -42,12 +49,17 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/settings/settings.zul")
-public class SettingsModel implements ISettingsModel {
+public class SettingsModel extends PasswordUtil implements ISettingsModel {
 
     @Autowired
     private IUserDAO userDAO;
 
     private User user;
+
+    private String clearNewPassword;
+
+    @Autowired
+    private IDBPasswordEncoderService dbPasswordEncoderService;
 
     @Override
     public Language getApplicationLanguage() {
@@ -102,9 +114,51 @@ public class SettingsModel implements ISettingsModel {
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
+        try {
+            // user.getLoginName() has to be validated before encoding password,
+            // because it must exist to perform the encoding
+            Validate.notEmpty(user.getLoginName());
+
+            if (getClearNewPassword() != null) {
+
+                /*
+                 * it ckecks if the user password who have admin role has
+                 * changed and if so sets true in the field
+                 * changedDefaultAdminPassword.
+                 */
+                if (Configuration.isDefaultPasswordsControl()) {
+                    checkIfChangeDefaultPasswd(user);
+                }
+
+                user.setPassword(dbPasswordEncoderService.encodePassword(
+                        getClearNewPassword(), user.getLoginName()));
+            }
+        } catch (IllegalArgumentException e) {
+        }
+        user.validate();
         userDAO.save(user);
     }
 
+    @Override
+	public void setPassword(String password) {
+        // password is not encrypted right away, because
+        // user.getLoginName must exist to do that, and we're
+        // not sure at this point
+        if (password != "") {
+            setClearNewPassword(password);
+        } else {
+            setClearNewPassword(null);
+        }
+    }
+
+    public void setClearNewPassword(String clearNewPassword) {
+        this.clearNewPassword = clearNewPassword;
+    }
+
+    @Override
+    public String getClearNewPassword() {
+        return clearNewPassword;
+    }
 
     @Override
     public boolean isExpandCompanyPlanningViewCharts() {
@@ -167,6 +221,30 @@ public class SettingsModel implements ISettingsModel {
         if (user != null) {
             user.setLastName(lastName);
         }
+    }
+
+    @Override
+	public String getLoginName() {
+        return user.getLoginName();
+    }
+
+    @Override
+	public void setLoginName(String loginName) {
+        if (user != null) {
+            user.setLoginName(loginName);
+        }
+    }
+
+    @Override
+	public void setEmail(String email) {
+        if (user != null) {
+            user.setEmail(email);
+        }
+    }
+
+    @Override
+	public String getEmail() {
+        return user.getEmail();
     }
 
 }

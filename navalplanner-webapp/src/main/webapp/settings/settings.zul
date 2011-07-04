@@ -58,6 +58,28 @@
                                     <textbox id="lastName"
                                         value="@{settingsController.lastName}" width="300px"/>
                                 </row>
+                                <row>
+                                    <label value="${i18n:_('Login name')}:" />
+                                    <textbox id="loginName"
+                                        value="@{settingsController.loginName}" width="300px"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password')}:" />
+                                    <textbox id="password" type="password"
+                                        onChange="settingsController.setPassword(self.value);" width="300px"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Password confirmation')}:" />
+                                    <textbox id="passwordConfirmation" type="password"
+                                        constraint="@{settingsController.validatePasswordConfirmation}"
+                                        width="300px"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('E-mail')}:" />
+                                    <textbox id="email"
+                                        value="@{settingsController.email}" width="300px"/>
+                                </row>
                             </rows>
                         </grid>
                     </groupbox>

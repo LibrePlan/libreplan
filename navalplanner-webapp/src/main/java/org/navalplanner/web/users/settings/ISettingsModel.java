@@ -58,4 +58,20 @@ public interface ISettingsModel {
 
     String getFirstName();
 
+    String getEmail();
+
+    void setEmail(String email);
+
+    void setLoginName(String loginName);
+
+    String getLoginName();
+
+    /**
+     * Sets the password attribute to the inner {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    void setPassword(String password);
+
+    String getClearNewPassword();
 }

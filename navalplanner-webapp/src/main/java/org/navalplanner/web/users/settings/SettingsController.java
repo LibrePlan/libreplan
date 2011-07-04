@@ -21,17 +21,17 @@ package org.navalplanner.web.users.settings;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Language;
-import org.navalplanner.web.common.ConfigurationController;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Textbox;
 
 /**
  * Controller for user settings
@@ -41,15 +41,13 @@ import org.zkoss.zul.ListitemRenderer;
  */
 public class SettingsController extends GenericForwardComposer {
 
-    private static final Log LOG = LogFactory
-            .getLog(ConfigurationController.class);
-
     private IMessagesForUser messages;
 
     private Component messagesContainer;
 
-
     private ISettingsModel settingsModel;
+
+    private Textbox password;
 
     public static ListitemRenderer languagesRenderer = new ListitemRenderer() {
         @Override
@@ -142,4 +140,41 @@ public class SettingsController extends GenericForwardComposer {
         settingsModel.setLastName(lastName);
     }
 
+    /**
+     * Tells the SettingsModel to set the password attribute of the inner
+     * {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    public void setPassword(String password) {
+        settingsModel.setPassword(password);
+    }
+
+    public Constraint validatePasswordConfirmation() {
+        return new Constraint() {
+            @Override
+            public void validate(Component comp, Object value)
+                    throws WrongValueException {
+                if(!((String)value).equals(password.getValue())) {
+                    throw new WrongValueException(comp, _("passwords don't match"));
+                }
+            }
+        };
+    }
+
+    public String getLoginName() {
+        return settingsModel.getLoginName();
+    }
+
+    public void setLoginName(String loginName) {
+        settingsModel.setLoginName(loginName);
+    }
+
+    public void setEmail(String email) {
+        settingsModel.setEmail(email);
+    }
+
+    public String getEmail() {
+        return settingsModel.getEmail();
+    }
 }

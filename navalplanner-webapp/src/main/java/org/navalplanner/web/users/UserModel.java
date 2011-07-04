@@ -50,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/users/users.zul")
-public class UserModel implements IUserModel {
+public class UserModel extends PasswordUtil implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
@@ -95,7 +95,7 @@ public class UserModel implements IUserModel {
                  * changedDefaultAdminPassword.
                  */
                 if (Configuration.isDefaultPasswordsControl()) {
-                    checkIfChangeDefaultPasswd();
+                    checkIfChangeDefaultPasswd(user);
                 }
 
                 user.setPassword(dbPasswordEncoderService.encodePassword(
@@ -106,40 +106,6 @@ public class UserModel implements IUserModel {
 
         user.validate();
         userDAO.save(user);
-    }
-
-    private void checkIfChangeDefaultPasswd() {
-        if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.ADMIN.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.ADMIN);
-            return;
-        }
-        if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.USER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.USER);
-            return;
-        }
-        if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.WSREADER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.WSREADER);
-            return;
-        }
-        if (user.getLoginName().equalsIgnoreCase(
-                MandatoryUser.WSWRITER.getLoginName())) {
-            checkIfChangeDefaultPasswd(MandatoryUser.WSWRITER);
-            return;
-        }
-    }
-
-    private void checkIfChangeDefaultPasswd(MandatoryUser user) {
-        boolean changedPasswd = true;
-        if (getClearNewPassword().isEmpty()
-                || getClearNewPassword().equals(user.getClearPassword())) {
-            changedPasswd = false;
-        }
-        // save the field changedDefaultAdminPassword in configuration.
-        Registry.getConfigurationDAO().saveChangedDefaultPassword(
-                user.getLoginName(), changedPasswd);
     }
 
     @Override
