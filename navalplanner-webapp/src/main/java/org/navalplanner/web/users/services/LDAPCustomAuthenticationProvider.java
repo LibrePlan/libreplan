@@ -46,7 +46,6 @@ import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DistinguishedName;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.EqualsFilter;
-import org.springframework.security.Authentication;
 import org.springframework.security.AuthenticationException;
 import org.springframework.security.BadCredentialsException;
 import org.springframework.security.providers.AuthenticationProvider;
@@ -122,7 +121,7 @@ public class LDAPCustomAuthenticationProvider extends
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
             // is a NavalPlan user, then we must authenticate against DB
-            return authenticateInDatabase(authentication, username, user);
+            return authenticateInDatabase(username, user, encodedPassword);
         } else {
             // is a LDAP or null user, then we must authenticate against LDAP
             // if LDAP is enabled
@@ -216,12 +215,12 @@ public class LDAPCustomAuthenticationProvider extends
                     // possible
                     // We must in this case try to authenticate against DB.
                     LOG.info("LDAP not reachable. Trying to authenticate against database.");
-                    return authenticateInDatabase(authentication, username,
-                            user);
+                    return authenticateInDatabase(username, user,
+                            encodedPassword);
                 }
             } else {
                 // LDAP is not enabled we must check if the LDAP user is in DB
-                return authenticateInDatabase(authentication, username, user);
+                return authenticateInDatabase(username, user, encodedPassword);
             }
         }
     }
@@ -294,10 +293,8 @@ public class LDAPCustomAuthenticationProvider extends
         });
     }
 
-    private UserDetails authenticateInDatabase(Authentication authentication,
-            String username, User user) {
-        String encodedPassword = passwordEncoderService.encodePassword(
-                authentication.getCredentials().toString(), username);
+    private UserDetails authenticateInDatabase(String username, User user,
+            String encodedPassword) {
         if (null != user && null != user.getPassword()
                 && encodedPassword.equals(user.getPassword())) {
             return getUserDetailsService().loadUserByUsername(username);
