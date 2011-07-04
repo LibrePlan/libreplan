@@ -112,11 +112,9 @@ public class LDAPCustomAuthenticationProvider extends
             UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
-        final String usernameInserted = username;
         String encodedPassword = passwordEncoderService.encodePassword(
                 authentication.getCredentials().toString(), username);
-
-        User user = getUserFromDB(usernameInserted);
+        User user = getUserFromDB(username);
 
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
@@ -134,7 +132,7 @@ public class LDAPCustomAuthenticationProvider extends
 
                 try {
                     // Test authentication for user against LDAP
-                    if (authenticateAgainstLDAP(usernameInserted,
+                    if (authenticateAgainstLDAP(username,
                             authentication.getCredentials().toString())) {
                         // Authentication against LDAP was ok
                         if (null == user) {
