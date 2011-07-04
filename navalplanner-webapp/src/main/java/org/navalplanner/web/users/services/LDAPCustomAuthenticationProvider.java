@@ -20,9 +20,8 @@ package org.navalplanner.web.users.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -112,115 +111,86 @@ public class LDAPCustomAuthenticationProvider extends
             UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
+        String clearPassword = authentication.getCredentials().toString();
         String encodedPassword = passwordEncoderService.encodePassword(
-                authentication.getCredentials().toString(), username);
+                clearPassword, username);
         User user = getUserFromDB(username);
 
         // If user != null then exists in NavalPlan
         if (null != user && user.isNavalplanUser()) {
             // is a NavalPlan user, then we must authenticate against DB
             return authenticateInDatabase(username, user, encodedPassword);
-        } else {
-            // is a LDAP or null user, then we must authenticate against LDAP
-            // if LDAP is enabled
-            // Gets the LDAPConfiguration properties
-            configuration = loadLDAPConfiguration();
+        }
 
-            if (configuration.getLdapAuthEnabled()) {
-                // Sets the new context to ldapTemplate
-                ldapTemplate.setContextSource(loadLDAPContext());
+        // If it's a LDAP or null user, then we must authenticate against LDAP
+        // Load LDAPConfiguration properties
+        configuration = loadLDAPConfiguration();
 
-                try {
-                    // Test authentication for user against LDAP
-                    if (authenticateAgainstLDAP(username,
-                            authentication.getCredentials().toString())) {
-                        // Authentication against LDAP was ok
-                        if (null == user) {
-                            // user does not exist in NavalPlan must be imported
-                            final User userNavalplan = User.create();
-                            userNavalplan.setLoginName(username);
-                            // we must check if it is needed to save LDAP
-                            // passwords in DB
-                            encodedPassword = null;
-                            if (configuration.isLdapSavePasswordsDB())
-                                encodedPassword = passwordEncoderService
-                                        .encodePassword(authentication
-                                                .getCredentials().toString(),
-                                                username);
-                            userNavalplan.setPassword(encodedPassword);
-                            userNavalplan.setNavalplanUser(false);
-                            userNavalplan.setDisabled(false);
-                            if (configuration.getLdapSaveRolesDB()) {
-                                List<String> roles = getMatchedRoles(
-                                        configuration, ldapTemplate, username);
-                                for (String role : roles) {
-                                    userNavalplan.addRole(UserRole.valueOf(
-                                            UserRole.class, role));
-                                }
-                            }
-                            saveUserOnTransaction(userNavalplan);
-                        } else {
-                            // user exists in NavalPlan
-                            // We must match the LDAPRoles with
-                            // LibrePlanRoles
-                            // The user must have the roles from LDAP
-                            if (configuration.getLdapSaveRolesDB()) {
-                                List<String> roles = getMatchedRoles(
-                                        configuration, ldapTemplate, username);
-                                for (String role : roles) {
-                                    if (!user.getRoles().contains(
-                                            UserRole.valueOf(UserRole.class,
-                                                    role))) {
-                                        user.addRole(UserRole.valueOf(
-                                                UserRole.class, role));
-                                    }
-                                }
-                                Set<UserRole> oldRoles = new HashSet<UserRole>();
-                                oldRoles.addAll(user.getRoles());
-                                for (UserRole role : oldRoles) {
-                                    if (!roles.contains(role.name())) {
-                                        user.removeRole(role);
-                                    }
-                                }
-                            }
-                            if (configuration.isLdapSavePasswordsDB()) {
-                                // We must test if user had password in
-                                // database, because the configuration
-                                // of importing passwords could be changed after
-                                // the import of the user so the password could
-                                // be null in database.
+        if (configuration.getLdapAuthEnabled()) {
+            // Sets the new context to ldapTemplate
+            ldapTemplate.setContextSource(loadLDAPContext());
 
-                                if (null == user.getPassword()
-                                        || !(user.getPassword()
-                                                .equals(encodedPassword))) {
-                                    user.setPassword(encodedPassword);
-                                }
-                            }
-                            final User userNavalplan = user;
-                            saveUserOnTransaction(userNavalplan);
-                        }
-                        // Gets and returns user from DB once authenticated
-                        // against
-                        // LDAP
-                        return getUserDetailsService().loadUserByUsername(
-                                username);
+            try {
+                // Test authentication for user against LDAP
+                if (authenticateAgainstLDAP(username, clearPassword)) {
+                    // Authentication against LDAP was ok
+                    if (null == user) {
+                        // User does not exist in NavalPlan must be imported
+                        user = createLDAPUserWithRoles(username, encodedPassword);
                     } else {
-                        throw new BadCredentialsException(
-                                "User is not in LDAP.");
+                        // Update password
+                        if (configuration.isLdapSavePasswordsDB()) {
+                            user.setPassword(encodedPassword);
+                        }
+                        // Update roles from LDAP
+                        setRoles(user);
                     }
-                } catch (Exception e) {
-                    // This exception captures when LDAP authentication is not
-                    // possible
-                    // We must in this case try to authenticate against DB.
-                    LOG.info("LDAP not reachable. Trying to authenticate against database.");
-                    return authenticateInDatabase(username, user,
-                            encodedPassword);
+                    saveUserOnTransaction(user);
+                    return loadUserDetails(username);
+                } else {
+                    throw new BadCredentialsException("User is not in LDAP.");
                 }
-            } else {
-                // LDAP is not enabled we must check if the LDAP user is in DB
-                return authenticateInDatabase(username, user, encodedPassword);
+            } catch (Exception e) {
+                // This exception captures when LDAP authentication is not
+                // possible
+                LOG.info(
+                        "LDAP not reachable. Trying to authenticate against database.",
+                        e);
             }
         }
+
+        // LDAP is not enabled we must check if the LDAP user is in DB
+        return authenticateInDatabase(username, user, encodedPassword);
+    }
+
+    private UserDetails loadUserDetails(String username) {
+        return getUserDetailsService().loadUserByUsername(username);
+    }
+
+    private void setRoles(User user) {
+        if (configuration.getLdapSaveRolesDB()) {
+            user.clearRoles();
+            List<String> roles = getMatchedRoles(configuration, ldapTemplate,
+                    user.getLoginName());
+            for (String role : roles) {
+                user.addRole(UserRole.valueOf(UserRole.class, role));
+            }
+        }
+    }
+
+    private User createLDAPUserWithRoles(String username, String encodedPassword) {
+        User user = User.create();
+        user.setLoginName(username);
+        // we must check if it is needed to save LDAP
+        // passwords in DB
+        if (!configuration.isLdapSavePasswordsDB()) {
+            encodedPassword = null;
+        }
+        user.setPassword(encodedPassword);
+        user.setNavalplanUser(false);
+        user.setDisabled(false);
+        setRoles(user);
+        return user;
     }
 
     private LDAPConfiguration loadLDAPConfiguration() {
@@ -267,17 +237,17 @@ public class LDAPCustomAuthenticationProvider extends
             context.afterPropertiesSet();
         } catch (Exception e) {
             // This exception will be never reached if the LDAP
-            // properties are
-            // well-formed.
+            // properties are well-formed.
             LOG.error("There is a problem in LDAP connection: ", e);
         }
         return context;
     }
 
-    private boolean authenticateAgainstLDAP(String username, String password) {
+    private boolean authenticateAgainstLDAP(String username,
+            String clearPassword) {
         return ldapTemplate.authenticate(DistinguishedName.EMPTY_PATH,
                 new EqualsFilter(configuration.getLdapUserId(), username)
-                        .toString(), password);
+                        .toString(), clearPassword);
     }
 
     private void saveUserOnTransaction(User user) {
@@ -295,7 +265,7 @@ public class LDAPCustomAuthenticationProvider extends
             String encodedPassword) {
         if (null != user && null != user.getPassword()
                 && encodedPassword.equals(user.getPassword())) {
-            return getUserDetailsService().loadUserByUsername(username);
+            return loadUserDetails(username);
         } else {
             throw new BadCredentialsException(
                     "Credentials are not the same as in database.");
@@ -324,7 +294,7 @@ public class LDAPCustomAuthenticationProvider extends
                     // We must make a search for each role-matching in nodes
                     List<String> rolesToCheck = Arrays.asList(StringUtils
                             .split(roleLDAP.getRoleLdap(), ";"));
-                    List resultsSearch = new ArrayList();
+                    List<Attribute> resultsSearch = new ArrayList<Attribute>();
                     for (String role : rolesToCheck) {
                         resultsSearch.addAll(ldapTemplate.search(
                                 DistinguishedName.EMPTY_PATH, new EqualsFilter(
@@ -340,8 +310,7 @@ public class LDAPCustomAuthenticationProvider extends
                                     }
                                 }));
                     }
-                    for (Object resultsIter : resultsSearch) {
-                        Attribute atrib = (Attribute) resultsIter;
+                    for (Attribute atrib : resultsSearch) {
                         if (atrib.contains(queryRoles)) {
                             rolesReturn.add(roleLDAP.getRoleLibreplan());
                         }
@@ -371,7 +340,7 @@ public class LDAPCustomAuthenticationProvider extends
             LOG.error(
                     "Configuration of LDAP role-matching is wrong. Please check it.",
                     e);
-            rolesReturn.clear();
+            return Collections.emptyList();
         }
         return rolesReturn;
     }

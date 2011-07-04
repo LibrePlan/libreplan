@@ -116,6 +116,10 @@ public class User extends BaseEntity {
         return roles;
     }
 
+    public void clearRoles() {
+        roles.clear();
+    }
+
     public void setRoles(Set<UserRole> roles) {
         this.roles = roles;
     }
