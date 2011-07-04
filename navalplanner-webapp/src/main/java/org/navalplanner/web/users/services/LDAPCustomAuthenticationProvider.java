@@ -246,11 +246,11 @@ public class LDAPCustomAuthenticationProvider extends
     }
 
     private LDAPConfiguration loadLDAPConfiguration() {
-        return (LDAPConfiguration) transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction() {
+        return transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<LDAPConfiguration>() {
 
                     @Override
-                    public Object execute() {
+                    public LDAPConfiguration execute() {
                         return configurationDAO.getConfiguration()
                                 .getLdapConfiguration();
                     }
@@ -259,15 +259,16 @@ public class LDAPCustomAuthenticationProvider extends
 
     private User getUserFromDB(String username) {
         final String usernameInserted = username;
-        return (User) transactionService
-                .runOnReadOnlyTransaction(new IOnTransaction() {
+        return transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<User>() {
 
                     @Override
-                    public Object execute() {
+                    public User execute() {
                         try {
                             return userDAO.findByLoginName(usernameInserted);
                         } catch (InstanceNotFoundException e) {
-                            LOG.info("User not found in database.");
+                            LOG.info("User " + usernameInserted
+                                    + " not found in database.");
                             return null;
                         }
                     }
@@ -290,8 +291,7 @@ public class LDAPCustomAuthenticationProvider extends
             // This exception will be never reached if the LDAP
             // properties are
             // well-formed.
-            LOG.error("There is a problem in LDAP connection: "
-                    + e.getMessage());
+            LOG.error("There is a problem in LDAP connection: ", e);
         }
         return context;
     }
@@ -388,7 +388,9 @@ public class LDAPCustomAuthenticationProvider extends
                 }
             }
         } catch (Exception e) {
-            LOG.error("Configuration of LDAP role-matching is wrong. Please check it.");
+            LOG.error(
+                    "Configuration of LDAP role-matching is wrong. Please check it.",
+                    e);
             rolesReturn.clear();
         }
         return rolesReturn;
