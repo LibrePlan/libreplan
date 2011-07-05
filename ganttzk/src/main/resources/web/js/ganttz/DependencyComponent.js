@@ -295,26 +295,21 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
 
         return overTask;
     },
-    updateCoordOrigin : function(){
+    _getCoordOrigin: function() {
+        if (this._coordOrigin) {
+            return this._coordOrigin;
+        }
+
         var coordOrigin = this.findPos_(this._DOMorigin);
-        coordOrigin.left =    coordOrigin.left
-        + Math.max(0,    this._DOMorigin.outerWidth() -
-                        ganttz.TaskComponent.CORNER_WIDTH);
+        coordOrigin.left = coordOrigin.left
+                + Math.max(0, this._DOMorigin.outerWidth()
+                              - ganttz.TaskComponent.CORNER_WIDTH);
+        coordOrigin.top = coordOrigin.top + ganttz.TaskComponent.HEIGHT;
 
-        coordOrigin.top =    coordOrigin.top - this._DOMlisttasks.position().top +
-        this._DOMlistdependencies.position().top +
-        ganttz.TaskComponent.HEIGHT;
-
-        this._coordOrigin = coordOrigin;
-
-        return this._coordOrigin;
+        return this._coordOrigin = coordOrigin;
     },
     _updateArrow : function(event){
-        if (! this._coordOrigin ) this.updateCoordOrigin();
-        var coordDest;
-
-        coordDest = this._findCoordsForMouse();
-        this.drawArrow_(this._coordOrigin, coordDest);
+        this.drawArrow_(this._getCoordOrigin(), this._findCoordsForMouse());
     },
     _findCoordsForMouse : function(){
         var pos1 = YAHOO.util.Dom.getXY('listtasks');
