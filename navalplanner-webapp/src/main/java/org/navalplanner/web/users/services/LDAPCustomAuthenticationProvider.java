@@ -298,7 +298,7 @@ public class LDAPCustomAuthenticationProvider extends
                     for (String role : rolesToCheck) {
                         resultsSearch.addAll(ldapTemplate.search(
                                 DistinguishedName.EMPTY_PATH, new EqualsFilter(
-                                        roleProperty, roleLDAP.getRoleLdap())
+                                        roleProperty, role)
                                         .toString(), new AttributesMapper() {
 
                                     @Override
