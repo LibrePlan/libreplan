@@ -275,10 +275,9 @@ public class LDAPCustomAuthenticationProvider extends
     @SuppressWarnings("unchecked")
     private List<String> getRolesUsingNodeStrategy(
             List<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
-            LDAPConfiguration configuration) {
+            final LDAPConfiguration configuration) {
 
-        final LDAPConfiguration ldapConfig = configuration;
-        final String roleProperty = ldapConfig.getLdapRoleProperty();
+        String roleProperty = configuration.getLdapRoleProperty();
 
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
@@ -296,7 +295,7 @@ public class LDAPCustomAuthenticationProvider extends
                             public Object mapFromAttributes(
                                     Attributes attributes)
                                     throws NamingException {
-                                return attributes.get(ldapConfig
+                                return attributes.get(configuration
                                         .getLdapUserId());
                             }
                         }));
@@ -314,8 +313,7 @@ public class LDAPCustomAuthenticationProvider extends
             List<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
             LDAPConfiguration configuration) {
 
-        final LDAPConfiguration ldapConfig = configuration;
-        final String roleProperty = ldapConfig.getLdapRoleProperty();
+        String roleProperty = configuration.getLdapRoleProperty();
         String groupsPath = configuration.getLdapGroupPath();
 
         List<String> rolesReturn = new ArrayList<String>();
