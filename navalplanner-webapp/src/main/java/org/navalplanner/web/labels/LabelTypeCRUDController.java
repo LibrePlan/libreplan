@@ -31,10 +31,10 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -43,7 +43,6 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
@@ -53,29 +52,18 @@ import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Rows;
 
 /**
  * CRUD Controller for {@link LabelType}
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class LabelTypeCRUDController extends GenericForwardComposer {
+public class LabelTypeCRUDController extends BaseCRUDController {
 
     @Autowired
     private ILabelTypeModel labelTypeModel;
 
-    private Window listWindow;
-
-    private Window editWindow;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
     private IMessagesForUser messagesEditWindow;
-
-    private Component messagesContainer;
 
     private Grid gridLabelTypes;
 
@@ -91,12 +79,10 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
         messagesEditWindow = new MessagesForUser(editWindow
                 .getFellowIfAny("messagesContainer"));
         initializeLabelsGrid();
         initializeLabelTypesGrid();
-        showListWindow();
         newLabelTextbox = (Textbox) editWindow
                 .getFellowIfAny("newLabelTextbox");
     }
@@ -179,17 +165,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         });
     }
 
-    private void showListWindow() {
-        getVisibility().showOnly(listWindow);
-    }
-
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, editWindow);
-        }
-        return visibility;
-    }
-
     /**
      * Return all {@link LabelType}
      * @return
@@ -215,13 +190,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public void goToCreateForm() {
         labelTypeModel.initCreate();
-        editWindow.setTitle(_("Create Label Type"));
-        showEditWindow();
+        showEditWindow(true);
         Util.reloadBindings(editWindow);
-    }
-
-    private void showEditWindow() {
-        getVisibility().showOnly(editWindow);
     }
 
     /**
@@ -230,7 +200,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      */
     public void goToEditForm(LabelType labelType) {
         labelTypeModel.initEdit(labelType);
-        editWindow.setTitle(_("Edit Label Type"));
         showEditWindow();
         Util.reloadBindings(editWindow);
     }
@@ -253,7 +222,7 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
      * Show all {@link LabelType}
      */
     private void goToList() {
-        getVisibility().showOnly(listWindow);
+        showListWindow();
         Util.reloadBindings(listWindow);
     }
 
@@ -444,4 +413,15 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         }
         Util.reloadBindings(editWindow);
     }
+
+    @Override
+    protected String getEntityType() {
+        return _("Label Type");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Label Types");
+    }
+
 }
