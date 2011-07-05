@@ -311,10 +311,10 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
     _updateArrow : function(event){
         this.drawArrow_(this._getCoordOrigin(), this._findCoordsForMouse());
     },
-    _findCoordsForMouse : function(){
-        var pos1 = YAHOO.util.Dom.getXY('listtasks');
-        return {    left : this._WGTganttpanel.getXMouse() -  pos1[0],
-                    top: this._WGTganttpanel.getYMouse() - pos1[1]};
+    _findCoordsForMouse: function() {
+        var reference =  jq('#listdependencies').offset();
+        return {left : this._WGTganttpanel.getXMouse() - reference.left,
+            top: this._WGTganttpanel.getYMouse() - reference.top};
     },
     _handleKeyUp: function(event){
         if ( event.keyCode != 27 )
