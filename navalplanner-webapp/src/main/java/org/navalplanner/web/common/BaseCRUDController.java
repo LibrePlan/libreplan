@@ -21,7 +21,7 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
-import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -42,7 +42,7 @@ import org.zkoss.zul.api.Window;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @SuppressWarnings("serial")
-public abstract class BaseCRUDController<T extends BaseEntity> extends
+public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         GenericForwardComposer {
 
     private OnlyOneVisible visibility;
@@ -108,7 +108,8 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
                 editWindow.setTitle(_("Create {0}", getEntityType()));
                 break;
         case EDIT:
-                editWindow.setTitle(_("Edit {0}", getEntityType()));
+            editWindow.setTitle(_("Edit {0}: {1}", getEntityType(),
+                    getEntityBeingEdited().getHumanId()));
                 break;
         default:
             throw new IllegalStateException(
