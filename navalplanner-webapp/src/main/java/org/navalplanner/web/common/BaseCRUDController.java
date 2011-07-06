@@ -182,13 +182,32 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      */
     public final void saveAndExit() {
         try {
-            save();
-            messagesForUser.showMessage(Level.INFO,
-                    _("{0} saved", getEntityType()));
+            saveCommonActions();
             goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
+    }
+
+    /**
+     * Common save actions:<br />
+     * <ul>
+     * <li>Use {@link ConstraintChecker} to validate form.</li>
+     * <li>Delegate in {@link #save()} that should be implemented in subclasses.
+     * </li>
+     * <li>Show message to user.</li>
+     * </ul>
+     *
+     * @throws ValidationException
+     *             If form is not valid or save has any validation problem
+     */
+    private void saveCommonActions() throws ValidationException {
+        if (!ConstraintChecker.isValid(editWindow)) {
+            throw new ValidationException("Please fix invalid fields in form");
+        }
+        save();
+        messagesForUser
+                .showMessage(Level.INFO, _("{0} saved", getEntityType()));
     }
 
     /**
@@ -197,9 +216,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      */
     public final void saveAndContinue() {
         try {
-            save();
-            messagesForUser.showMessage(Level.INFO,
-                    _("{0} saved", getEntityType()));
+            saveCommonActions();
             goToEditForm(getEntityBeingEdited());
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);

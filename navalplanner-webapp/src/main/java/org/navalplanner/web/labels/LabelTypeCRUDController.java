@@ -53,7 +53,9 @@ import org.zkoss.zul.api.Rows;
 
 /**
  * CRUD Controller for {@link LabelType}
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
@@ -179,7 +181,6 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     @Override
     public void save() {
-        validate();
         labelTypeModel.confirmSave();
     }
 
