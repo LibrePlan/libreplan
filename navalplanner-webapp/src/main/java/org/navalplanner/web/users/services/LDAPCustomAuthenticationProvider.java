@@ -21,6 +21,7 @@ package org.navalplanner.web.users.services;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -272,7 +273,7 @@ public class LDAPCustomAuthenticationProvider extends
 
     @SuppressWarnings("unchecked")
     private List<String> getRolesUsingNodeStrategy(
-            List<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
+            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
             final LDAPConfiguration configuration) {
 
         String roleProperty = configuration.getLdapRoleProperty();
@@ -301,7 +302,7 @@ public class LDAPCustomAuthenticationProvider extends
     }
 
     private List<String> getRolesUsingBranchStrategy(
-            List<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
+            Set<ConfigurationRolesLDAP> rolesLdap, String queryRoles,
             LDAPConfiguration configuration) {
 
         String roleProperty = configuration.getLdapRoleProperty();
@@ -329,7 +330,7 @@ public class LDAPCustomAuthenticationProvider extends
                 USER_ID_SUBSTITUTION, username);
         String groupsPath = configuration.getLdapGroupPath();
 
-        List<ConfigurationRolesLDAP> rolesLdap = configuration
+        Set<ConfigurationRolesLDAP> rolesLdap = configuration
                 .getConfigurationRolesLdap();
 
         try {

@@ -211,4 +211,9 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="remove-configuration_roles_ldap" author="mrego">
+        <comment>Remove column configuration_roles_ldap in role_matching_id</comment>
+        <dropColumn tableName="configuration_roles_ldap" columnName="role_matching_id" />
+    </changeSet>
+
 </databaseChangeLog>

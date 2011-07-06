@@ -22,8 +22,10 @@ package org.navalplanner.business.common.entities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.users.entities.UserRole;
@@ -81,7 +83,7 @@ public class LDAPConfiguration extends BaseEntity {
      * {@link ConfigurationRolesLDAP} class: ROLE_ADMINISTRATION - admins and
      * ROLE_ADMINISTRATION - editors
      */
-    private List<ConfigurationRolesLDAP> configurationRolesLdap = new ArrayList<ConfigurationRolesLDAP>();
+    private Set<ConfigurationRolesLDAP> configurationRolesLdap = new HashSet<ConfigurationRolesLDAP>();
 
     private Map<String, List<String>> mapMatchingRoles = new HashMap<String, List<String>>();
 
@@ -179,8 +181,8 @@ public class LDAPConfiguration extends BaseEntity {
         this.ldapRoleProperty = ldapRoleProperty;
     }
 
-    public List<ConfigurationRolesLDAP> getConfigurationRolesLdap() {
-        return Collections.unmodifiableList(configurationRolesLdap);
+    public Set<ConfigurationRolesLDAP> getConfigurationRolesLdap() {
+        return Collections.unmodifiableSet(configurationRolesLdap);
     }
 
     public void setConfigurationRolesLdap(

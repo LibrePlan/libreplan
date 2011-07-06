@@ -76,16 +76,15 @@
             <property name="ldapSaveRolesDB" column="ldap_save_roles_db" not-null="true"/>
             <property name="ldapSearchQuery" column="ldap_search_query"/>
 
-            <list name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
+            <set name="configurationRolesLdap" table="configuration_roles_ldap" lazy="false">
                 <key column="id_configuration" />
-                <list-index column="role_matching_id" />
                 <composite-element class="ConfigurationRolesLDAP">
                     <property name="roleLdap" column="role_ldap"
                         not-null="true" />
                     <property name="roleLibreplan" column="role_libreplan"
                         not-null="true" />
                 </composite-element>
-            </list>
+            </set>
 
         </component>
 
