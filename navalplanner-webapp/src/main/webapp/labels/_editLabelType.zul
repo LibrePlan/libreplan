@@ -104,13 +104,13 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}"
-            onClick="controller.save()"
+            onClick="controller.saveAndExit()"
             sclass="save-button global-action"/>
         <button label="${i18n:_('Save &amp; Continue')}"
             onClick="controller.saveAndContinue()"
             sclass="saveandcontinue-button global-action"/>
         <button label="${i18n:_('Cancel')}"
-            onClick="controller.close()"
+            onClick="controller.cancelForm()"
             sclass="cancel-button global-action"/>
     </hbox>
 </window>

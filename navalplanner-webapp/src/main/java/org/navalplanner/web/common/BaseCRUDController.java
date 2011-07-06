@@ -22,8 +22,10 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -31,10 +33,11 @@ import org.zkoss.zul.api.Window;
  *
  * Those screens must define the following components:
  * <ul>
- * <li>{@link Component} messagesContainer: A container to show the different
+ * <li>{@link #messagesContainer}: A {@link Component} to show the different
  * messages to users.</li>
- * <li>{@link Window} listWindow: A window where the list of elements is shown.</li>
- * <li>{@link Window} editWindow: A window with creation/edition form.</li>
+ * <li>{@link #listWindow}: A {@link Window} where the list of elements is
+ * shown.</li>
+ * <li>{@link #editWindow}: A {@link Window} with creation/edition form.</li>
  *
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
@@ -58,9 +61,21 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
 
     private CRUCControllerState state = CRUCControllerState.LIST;
 
+    /**
+     * Call to super and do some extra stuff: <br />
+     * <ul>
+     * <li>Set "controller" variable to be used in .zul files.</li>
+     * <li>Initialize {@link #messagesForUser}.</li>
+     * <li>Show list view.</li>
+     * </ul>
+     *
+     * @see org.zkoss.zk.ui.util.GenericForwardComposer#doAfterCompose(org.zkoss.zk.ui.Component)
+     */
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        comp.setAttribute("controller", this);
+
         messagesForUser = new MessagesForUser(messagesContainer);
 
         listWindow.setTitle(_("{0} List", getPluralEntityType()));
@@ -157,5 +172,94 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      *            Entity to be edited
      */
     protected abstract void initEdit(T entity);
+
+    /**
+     * Save current form and go to list view. Delegate in {@link #save()} that
+     * should be implemented in subclasses.
+     */
+    public void saveAndExit() {
+        try {
+            save();
+            messagesForUser.showMessage(Level.INFO,
+                    _("{0} saved", getEntityType()));
+            goToList();
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+    }
+
+    /**
+     * Save current form and continue in edition view. Delegate in
+     * {@link #save()} that should be implemented in subclasses.
+     */
+    public void saveAndContinue() {
+        try {
+            save();
+            messagesForUser.showMessage(Level.INFO,
+                    _("{0} saved", getEntityType()));
+            goToEditForm(getEntityBeingEdited());
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
+        }
+    }
+
+    /**
+     * Performs actions to save current form
+     *
+     * @throws ValidationException
+     *             If entity is not valid
+     */
+    protected abstract void save() throws ValidationException;
+
+    /**
+     * Returns entity being edited in the form
+     *
+     * @return Current entity being edited
+     */
+    protected abstract T getEntityBeingEdited();
+
+    /**
+     * Close form and go to list view. Delegate in {@link #cancel()} that should
+     * be implemented in subclasses.
+     */
+    public void cancelForm() {
+        cancel();
+        goToList();
+    }
+
+    /**
+     * Performs needed actions to cancel edition
+     */
+    protected abstract void cancel();
+
+    /**
+     * Shows a dialog asking for confirmation to user and if ok remove entity
+     * passed as parameter. Delegate in {@link #delete(entity)} that should be
+     * implemented in subclasses.
+     *
+     * @param entity
+     *            Entity to be removed
+     */
+    public void confirmDelete(T entity) {
+        try {
+            if (Messagebox.show(
+                    _("Delete {0}. Are you sure?", getEntityType()),
+                    _("Confirm"), Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION) == Messagebox.OK) {
+                delete(entity);
+                Util.reloadBindings(listWindow);
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Performs actions needed to remove entity passed as parameter
+     *
+     * @param entity
+     *            Entity to be removed
+     */
+    protected abstract void delete(T entity);
 
 }
