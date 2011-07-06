@@ -89,12 +89,17 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
         return visibility;
     }
 
+    /**
+     * Show list window and reload bindings
+     */
     protected void showListWindow() {
         getVisibility().showOnly(listWindow);
+        Util.reloadBindings(listWindow);
     }
 
     /**
-     * Show edit form with different title depending on controller state
+     * Show edit form with different title depending on controller state and
+     * reload bindings
      */
     protected void showEditWindow() {
         getVisibility().showOnly(editWindow);
@@ -110,6 +115,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
                     "BaseCRUDController#goToEditForm or BaseCRUDController#goToCreateForm"
                             + " must be called first in order to use this method");
         }
+        Util.reloadBindings(editWindow);
     }
 
     /**
@@ -129,21 +135,19 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
     /**
      * Show list window and reload bindings there
      */
-    public void goToList() {
+    public final void goToList() {
         state = CRUCControllerState.LIST;
         showListWindow();
-        Util.reloadBindings(listWindow);
     }
 
     /**
      * Show create form. Delegate in {@link #initCreate()} that should be
      * implemented in subclasses.
      */
-    public void goToCreateForm() {
+    public final void goToCreateForm() {
         state = CRUCControllerState.CREATE;
         initCreate();
         showEditWindow();
-        Util.reloadBindings(editWindow);
     }
 
     /**
@@ -158,11 +162,10 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      * @param entity
      *            Entity to be edited
      */
-    public void goToEditForm(T entity) {
+    public final void goToEditForm(T entity) {
         state = CRUCControllerState.EDIT;
         initEdit(entity);
         showEditWindow();
-        Util.reloadBindings(editWindow);
     }
 
     /**
@@ -177,7 +180,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      * Save current form and go to list view. Delegate in {@link #save()} that
      * should be implemented in subclasses.
      */
-    public void saveAndExit() {
+    public final void saveAndExit() {
         try {
             save();
             messagesForUser.showMessage(Level.INFO,
@@ -192,7 +195,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      * Save current form and continue in edition view. Delegate in
      * {@link #save()} that should be implemented in subclasses.
      */
-    public void saveAndContinue() {
+    public final void saveAndContinue() {
         try {
             save();
             messagesForUser.showMessage(Level.INFO,
@@ -222,7 +225,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      * Close form and go to list view. Delegate in {@link #cancel()} that should
      * be implemented in subclasses.
      */
-    public void cancelForm() {
+    public final void cancelForm() {
         cancel();
         goToList();
     }
@@ -240,7 +243,7 @@ public abstract class BaseCRUDController<T extends BaseEntity> extends
      * @param entity
      *            Entity to be removed
      */
-    public void confirmDelete(T entity) {
+    public final void confirmDelete(T entity) {
         try {
             if (Messagebox.show(
                     _("Delete {0}. Are you sure?", getEntityType()),
