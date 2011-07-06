@@ -21,6 +21,7 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import org.navalplanner.business.common.BaseEntity;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.api.Window;
@@ -38,7 +39,8 @@ import org.zkoss.zul.api.Window;
  * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 @SuppressWarnings("serial")
-public abstract class BaseCRUDController extends GenericForwardComposer {
+public abstract class BaseCRUDController<T extends BaseEntity> extends
+        GenericForwardComposer {
 
     private OnlyOneVisible visibility;
 
@@ -49,6 +51,12 @@ public abstract class BaseCRUDController extends GenericForwardComposer {
     protected Window listWindow;
 
     protected Window editWindow;
+
+    private enum CRUCControllerState {
+        LIST, CREATE, EDIT
+    };
+
+    private CRUCControllerState state = CRUCControllerState.LIST;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -71,24 +79,21 @@ public abstract class BaseCRUDController extends GenericForwardComposer {
     }
 
     /**
-     * Show edit form with edition title
+     * Show edit form with different title depending on controller state
      */
     protected void showEditWindow() {
-        showEditWindow(false);
-    }
-
-    /**
-     * Show edit form with different title depending on parameter
-     *
-     * @param creation
-     *            If true creation title is used
-     */
-    protected void showEditWindow(boolean creation) {
         getVisibility().showOnly(editWindow);
-        if (creation) {
-            editWindow.setTitle(_("Create {0}", getEntityType()));
-        } else {
-            editWindow.setTitle(_("Edit {0}", getEntityType()));
+        switch (state) {
+            case CREATE:
+                editWindow.setTitle(_("Create {0}", getEntityType()));
+                break;
+        case EDIT:
+                editWindow.setTitle(_("Edit {0}", getEntityType()));
+                break;
+        default:
+            throw new IllegalStateException(
+                    "BaseCRUDController#goToEditForm or BaseCRUDController#goToCreateForm"
+                            + " must be called first in order to use this method");
         }
     }
 
@@ -105,5 +110,52 @@ public abstract class BaseCRUDController extends GenericForwardComposer {
      * @return Text representing several entities
      */
     protected abstract String getPluralEntityType();
+
+    /**
+     * Show list window and reload bindings there
+     */
+    public void goToList() {
+        state = CRUCControllerState.LIST;
+        showListWindow();
+        Util.reloadBindings(listWindow);
+    }
+
+    /**
+     * Show create form. Delegate in {@link #initCreate()} that should be
+     * implemented in subclasses.
+     */
+    public void goToCreateForm() {
+        state = CRUCControllerState.CREATE;
+        initCreate();
+        showEditWindow();
+        Util.reloadBindings(editWindow);
+    }
+
+    /**
+     * Performs needed operations to initialize the creation of a new entity.
+     */
+    protected abstract void initCreate();
+
+    /**
+     * Show edit form for entity passed as parameter. Delegate in
+     * {@link #initEdit(entity)} that should be implemented in subclasses.
+     *
+     * @param entity
+     *            Entity to be edited
+     */
+    public void goToEditForm(T entity) {
+        state = CRUCControllerState.EDIT;
+        initEdit(entity);
+        showEditWindow();
+        Util.reloadBindings(editWindow);
+    }
+
+    /**
+     * Performs needed operations to initialize the edition of a new entity.
+     *
+     * @param entity
+     *            Entity to be edited
+     */
+    protected abstract void initEdit(T entity);
 
 }

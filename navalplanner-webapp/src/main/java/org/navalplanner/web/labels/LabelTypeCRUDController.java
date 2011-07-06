@@ -58,7 +58,7 @@ import org.zkoss.zul.api.Rows;
  * CRUD Controller for {@link LabelType}
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
-public class LabelTypeCRUDController extends BaseCRUDController {
+public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     @Autowired
     private ILabelTypeModel labelTypeModel;
@@ -186,25 +186,6 @@ public class LabelTypeCRUDController extends BaseCRUDController {
     }
 
     /**
-     * Prepare form for Create
-     */
-    public void goToCreateForm() {
-        labelTypeModel.initCreate();
-        showEditWindow(true);
-        Util.reloadBindings(editWindow);
-    }
-
-    /**
-     * Prepare form for Edit
-     * @param labelType
-     */
-    public void goToEditForm(LabelType labelType) {
-        labelTypeModel.initEdit(labelType);
-        showEditWindow();
-        Util.reloadBindings(editWindow);
-    }
-
-    /**
      * Save current {@link LabelType} and return
      */
     public void save() {
@@ -216,14 +197,6 @@ public class LabelTypeCRUDController extends BaseCRUDController {
         } catch (ValidationException e) {
             showInvalidValues(e);
         }
-    }
-
-    /**
-     * Show all {@link LabelType}
-     */
-    private void goToList() {
-        showListWindow();
-        Util.reloadBindings(listWindow);
     }
 
     /**
@@ -422,6 +395,16 @@ public class LabelTypeCRUDController extends BaseCRUDController {
     @Override
     protected String getPluralEntityType() {
         return _("Label Types");
+    }
+
+    @Override
+    protected void initCreate() {
+        labelTypeModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(LabelType labelType) {
+        labelTypeModel.initEdit(labelType);
     }
 
 }
