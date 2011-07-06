@@ -19,7 +19,6 @@
 package org.navalplanner.web.users.services;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -27,7 +26,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -282,24 +280,17 @@ public class LDAPCustomAuthenticationProvider extends
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLDAP : rolesLdap) {
             // We must make a search for each role-matching in nodes
-            List<String> rolesToCheck = Arrays.asList(StringUtils.split(
-                    roleLDAP.getRoleLdap(), ";"));
             List<Attribute> resultsSearch = new ArrayList<Attribute>();
-            for (String role : rolesToCheck) {
-                resultsSearch.addAll(ldapTemplate.search(
-                        DistinguishedName.EMPTY_PATH, new EqualsFilter(
-                                roleProperty, role).toString(),
-                        new AttributesMapper() {
-
-                            @Override
-                            public Object mapFromAttributes(
-                                    Attributes attributes)
-                                    throws NamingException {
-                                return attributes.get(configuration
-                                        .getLdapUserId());
-                            }
-                        }));
-            }
+            resultsSearch.addAll(ldapTemplate.search(
+                    DistinguishedName.EMPTY_PATH, new EqualsFilter(
+                            roleProperty, roleLDAP.getRoleLdap()).toString(),
+                    new AttributesMapper() {
+                        @Override
+                        public Object mapFromAttributes(Attributes attributes)
+                                throws NamingException {
+                            return attributes.get(configuration.getLdapUserId());
+                        }
+                    }));
             for (Attribute atrib : resultsSearch) {
                 if (atrib.contains(queryRoles)) {
                     rolesReturn.add(roleLDAP.getRoleLibreplan());
@@ -319,16 +310,12 @@ public class LDAPCustomAuthenticationProvider extends
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
             // We must make a search for each role matching
-            List<String> rolesToCheck = Arrays.asList(StringUtils.split(
-                    roleLdap.getRoleLdap(), ";"));
-            for (String role : rolesToCheck) {
-                DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
-                        .lookup(role + "," + groupsPath);
-                if (adapter.attributeExists(roleProperty)) {
-                    Attributes atrs = adapter.getAttributes();
-                    if (atrs.get(roleProperty).contains(queryRoles)) {
-                        rolesReturn.add(roleLdap.getRoleLibreplan());
-                    }
+            DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
+                    .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
+            if (adapter.attributeExists(roleProperty)) {
+                Attributes atrs = adapter.getAttributes();
+                if (atrs.get(roleProperty).contains(queryRoles)) {
+                    rolesReturn.add(roleLdap.getRoleLibreplan());
                 }
             }
         }
