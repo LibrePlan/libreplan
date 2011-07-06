@@ -21,6 +21,7 @@ package org.navalplanner.web.common;
 
 import static org.navalplanner.web.I18nHelper._;
 
+import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
@@ -103,20 +104,34 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      */
     protected void showEditWindow() {
         getVisibility().showOnly(editWindow);
+        updateWindowTitle();
+        Util.reloadBindings(editWindow);
+    }
+
+    public final void updateWindowTitle() {
+        T entityBeingEdited = getEntityBeingEdited();
+        if (entityBeingEdited == null) {
+            throw new IllegalStateException(
+                    "You should be editing one entity in order to use this method");
+        }
+
+        String humanId = entityBeingEdited.getHumanId();
         switch (state) {
-            case CREATE:
+        case CREATE:
+            if (StringUtils.isEmpty(humanId)) {
                 editWindow.setTitle(_("Create {0}", getEntityType()));
-                break;
+            } else {
+                editWindow.setTitle(_("Create {0}: {1}", getEntityType(),
+                        humanId));
+            }
+            break;
         case EDIT:
-            editWindow.setTitle(_("Edit {0}: {1}", getEntityType(),
-                    getEntityBeingEdited().getHumanId()));
-                break;
+            editWindow.setTitle(_("Edit {0}: {1}", getEntityType(), humanId));
+            break;
         default:
             throw new IllegalStateException(
-                    "BaseCRUDController#goToEditForm or BaseCRUDController#goToCreateForm"
-                            + " must be called first in order to use this method");
+                    "You should be in creation or edition mode to use this method");
         }
-        Util.reloadBindings(editWindow);
     }
 
     /**
