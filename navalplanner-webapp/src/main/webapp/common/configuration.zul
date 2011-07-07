@@ -335,21 +335,21 @@
                                     <label value="${i18n:_('Group path:')}" />
                                     <hbox>
                                         <textbox id="ldapGroupPath" value="@{configurationController.ldapConfiguration.ldapGroupPath}"  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'ou=devel,ou=groups (If it is empty, a node strategy is used.)')}" />
+                                        <label value="${i18n:__('Example: {0}', 'ou=groups (If it is empty, a node strategy is used.)')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role property:')}" />
                                     <hbox>
                                         <textbox id="ldapRoleProperty" value="@{configurationController.ldapConfiguration.ldapRoleProperty}"  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'memberUid')}" />
+                                        <label value="${i18n:__('Example: {0}', 'member')}" />
                                     </hbox>
                                 </row>
                                 <row>
                                     <label value="${i18n:_('Role search query:')}" />
                                     <hbox>
                                         <textbox id="ldapSearchQuery" value="@{configurationController.ldapConfiguration.ldapSearchQuery}"  width="300px"/>
-                                        <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=groups,ou=people,dc=example,dc=org')}" />
+                                        <label value="${i18n:__('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
                                 </row>
                             </rows>
@@ -362,8 +362,8 @@
                                 rowRenderer="@{configurationController.allUserRolesRenderer}"
                                 mold="paging" pageSize="10" fixedLayout="true">
                                 <columns>
-                                    <column label="${i18n:_('Role DB')}" width="200px" />
-                                    <column label="${i18n:_('LDAP Roles')}" />
+                                    <column label="${i18n:_('LibrePlan Role')}" width="200px" />
+                                    <column label="${i18n:_('LDAP Roles (separated by ;)')}" />
                                 </columns>
                             </grid>
                         </vbox>
