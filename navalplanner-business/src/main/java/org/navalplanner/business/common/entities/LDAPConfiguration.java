@@ -185,8 +185,8 @@ public class LDAPConfiguration extends BaseEntity {
         return Collections.unmodifiableSet(configurationRolesLdap);
     }
 
-    public void setConfigurationRolesLdap(
-            String roleLibreplan, List<String> rolesLdap) {
+    public void setConfigurationRolesLdap(String roleLibreplan,
+            Set<String> rolesLdap) {
         removeConfigurationRolesLdapForRoleLibreplan(roleLibreplan);
 
         for (String roleLdap : rolesLdap) {

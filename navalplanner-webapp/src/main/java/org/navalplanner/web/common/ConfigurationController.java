@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -818,12 +819,13 @@ public class ConfigurationController extends GenericForwardComposer {
                 }, new Util.Setter<String>() {
                     @Override
                     public void set(String value) {
-                                configurationModel
-                                        .getLdapConfiguration()
-                                        .setConfigurationRolesLdap(
-                                                role.name(),
-                                                Arrays.asList(StringUtils
-                                                        .split(value, ";")));
+                                // Created a set in order to avoid duplicates
+                                Set<String> rolesLdap = new HashSet<String>(
+                                        Arrays.asList(StringUtils.split(value,
+                                                ";")));
+                                configurationModel.getLdapConfiguration()
+                                        .setConfigurationRolesLdap(role.name(),
+                                                rolesLdap);
                     }
                 });
                 textbox.setWidth("300px");
