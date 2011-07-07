@@ -25,6 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
@@ -811,6 +812,7 @@ public class ConfigurationController extends GenericForwardComposer {
                     public String get() {
                         List<String> listRoles = configurationModel.
                             getLdapConfiguration().getMapMatchingRoles().get(role.name());
+                        Collections.sort(listRoles);
                         return StringUtils.join(listRoles, ";");
                     }
                 }, new Util.Setter<String>() {
