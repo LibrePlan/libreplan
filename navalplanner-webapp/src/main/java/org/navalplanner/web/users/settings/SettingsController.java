@@ -140,28 +140,6 @@ public class SettingsController extends GenericForwardComposer {
         settingsModel.setLastName(lastName);
     }
 
-    /**
-     * Tells the SettingsModel to set the password attribute of the inner
-     * {@ link User} object.
-     *
-     * @param password String with the <b>unencrypted</b> password.
-     */
-    public void setPassword(String password) {
-        settingsModel.setPassword(password);
-    }
-
-    public Constraint validatePasswordConfirmation() {
-        return new Constraint() {
-            @Override
-            public void validate(Component comp, Object value)
-                    throws WrongValueException {
-                if(!((String)value).equals(password.getValue())) {
-                    throw new WrongValueException(comp, _("passwords don't match"));
-                }
-            }
-        };
-    }
-
     public String getLoginName() {
         return settingsModel.getLoginName();
     }

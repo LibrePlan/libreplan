@@ -16,55 +16,30 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package org.navalplanner.web.users.settings;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.settings.entities.Language;
-
 
 /**
- * Model for UI operations related to user settings
+ * Model for UI operations related to user password
  *
  * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
-public interface ISettingsModel {
-
-    void setApplicationLanguage(Language applicationLanguage);
-
-    Language getApplicationLanguage();
+public interface IPasswordModel {
 
     void initEditLoggedUser();
 
     void confirmSave() throws ValidationException;
 
-    void setExpandCompanyPlanningViewCharts(
-            boolean expandCompanyPlanningViewCharts);
+    /**
+     * Sets the password attribute to the inner {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    void setPassword(String password);
 
-    boolean isExpandResourceLoadViewCharts();
-
-    void setExpandResourceLoadViewCharts(boolean expandResourceLoadViewCharts);
-
-    boolean isExpandOrderPlanningViewCharts();
-
-    void setExpandOrderPlanningViewCharts(boolean expandOrderPlanningViewCharts);
-
-    boolean isExpandCompanyPlanningViewCharts();
-
-    void setLastName(String lastName);
-
-    String getLastName();
-
-    void setFirstName(String firstName);
-
-    String getFirstName();
-
-    String getEmail();
-
-    void setEmail(String email);
-
-    void setLoginName(String loginName);
-
-    String getLoginName();
+    boolean validateCurrentPassword(String value);
 
 }
