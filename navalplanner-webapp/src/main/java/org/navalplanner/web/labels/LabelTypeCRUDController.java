@@ -327,4 +327,9 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
         labelTypeModel.confirmDelete(labelType);
     }
 
+    @Override
+    protected void beforeSaving() {
+        labelTypeModel.generateCodes();
+    }
+
 }

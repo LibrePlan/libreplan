@@ -208,6 +208,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     /**
      * Common save actions:<br />
      * <ul>
+     * <li>Delegate in {@link #beforeSaving()} that could be implemented if
+     * needed in subclasses.</li>
      * <li>Use {@link ConstraintChecker} to validate form.</li>
      * <li>Delegate in {@link #save()} that should be implemented in subclasses.
      * </li>
@@ -218,10 +220,15 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      *             If form is not valid or save has any validation problem
      */
     private void saveCommonActions() throws ValidationException {
+        beforeSaving();
+
+        Util.reloadBindings(editWindow);
         if (!ConstraintChecker.isValid(editWindow)) {
             throw new ValidationException("Please fix invalid fields in form");
         }
+
         save();
+
         messagesForUser.showMessage(
                 Level.INFO,
                 _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited()
@@ -239,6 +246,16 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
         }
+    }
+
+    /**
+     * Performs additional operations before saving (usually generate codes of
+     * related entities).
+     *
+     * Default behavior do nothing, however it could be overridden if needed.
+     */
+    protected void beforeSaving() {
+        // Do nothing
     }
 
     /**
