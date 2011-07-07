@@ -222,8 +222,10 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
             throw new ValidationException("Please fix invalid fields in form");
         }
         save();
-        messagesForUser
-                .showMessage(Level.INFO, _("{0} saved", getEntityType()));
+        messagesForUser.showMessage(
+                Level.INFO,
+                _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited()
+                        .getHumanId()));
     }
 
     /**
@@ -279,10 +281,15 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     public final void confirmDelete(T entity) {
         try {
             if (Messagebox.show(
-                    _("Delete {0}. Are you sure?", getEntityType()),
+                    _("Delete {0} \"{1}\". Are you sure?", getEntityType(),
+                            entity.getHumanId()),
                     _("Confirm"), Messagebox.OK | Messagebox.CANCEL,
                     Messagebox.QUESTION) == Messagebox.OK) {
                 delete(entity);
+                messagesForUser.showMessage(
+                        Level.INFO,
+                        _("{0} \"{1}\" deleted", getEntityType(),
+                                entity.getHumanId()));
                 Util.reloadBindings(listWindow);
             }
         } catch (InterruptedException e) {
