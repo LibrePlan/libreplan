@@ -49,7 +49,8 @@
                             <label value="${i18n:_('Name')}"/>
                             <textbox id="tbName"
                                 value="@{controller.exceptionDayType.name}"
-                                width="300px" />
+                                width="300px"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Color')}" />
@@ -82,7 +83,7 @@
     <button onClick="controller.saveAndContinue()"
         label="${i18n:_('Save and Continue')}"
         sclass="save-button global-action"/>
-    <button onClick="controller.cancel()"
+    <button onClick="controller.cancelForm()"
         label="${i18n:_('Cancel')}"
         sclass="cancel-button global-action"/>
 

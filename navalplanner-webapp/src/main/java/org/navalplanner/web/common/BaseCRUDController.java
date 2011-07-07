@@ -292,14 +292,20 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     }
 
     /**
-     * Shows a dialog asking for confirmation to user and if ok remove entity
-     * passed as parameter. Delegate in {@link #delete(entity)} that should be
-     * implemented in subclasses.
+     * First call {@link #beforeDeleting(entity)} in order to perform some
+     * checkings before trying to delete if needed. Then show a dialog asking
+     * for confirmation to user and if ok remove entity passed as parameter.
+     * Delegate in {@link #delete(entity)} that should be implemented in
+     * subclasses.
      *
      * @param entity
      *            Entity to be removed
      */
     public final void confirmDelete(T entity) {
+        if (!beforeDeleting(entity)) {
+            return;
+        }
+
         try {
             if (Messagebox.show(
                     _("Delete {0} \"{1}\". Are you sure?", getEntityType(),
@@ -316,6 +322,21 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * Performs additional operations before deleting (usually check some wrong
+     * conditions before deleting).
+     *
+     * Default behavior do nothing, however it could be overridden if needed.
+     *
+     * @param entity
+     *            Entity to be removed
+     * @return Return true if deletion can carry on
+     */
+    protected boolean beforeDeleting(T entity) {
+        // Do nothing
+        return true;
     }
 
     /**
