@@ -274,8 +274,8 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
     protected abstract T getEntityBeingEdited();
 
     /**
-     * Close form and go to list view. Delegate in {@link #cancel()} that should
-     * be implemented in subclasses.
+     * Close form and go to list view. Delegate in {@link #cancel()} that could
+     * be implemented in subclasses if needed.
      */
     public final void cancelForm() {
         cancel();
@@ -284,8 +284,12 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
 
     /**
      * Performs needed actions to cancel edition
+     *
+     * Default behavior do nothing, however it could be overridden if needed.
      */
-    protected abstract void cancel();
+    protected void cancel() {
+        // Do nothing
+    }
 
     /**
      * Shows a dialog asking for confirmation to user and if ok remove entity

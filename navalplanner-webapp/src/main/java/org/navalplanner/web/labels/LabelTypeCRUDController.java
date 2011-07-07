@@ -318,11 +318,6 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     @Override
-    protected void cancel() {
-        // Do nothing
-    }
-
-    @Override
     protected void delete(LabelType labelType) {
         labelTypeModel.confirmDelete(labelType);
     }
