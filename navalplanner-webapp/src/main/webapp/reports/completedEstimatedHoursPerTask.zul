@@ -175,7 +175,7 @@
 
         <separator spacing="10px" orient="horizontal"/>
 
-		<hbox style="display: none" id="URItext">
+        <hbox style="display: none" id="URItext">
             <label value="${i18n:_('Click on ')}" />
             <toolbarbutton id="URIlink" class="z-label" zclass="z-label"
                     label="${i18n:_('direct link')}" />

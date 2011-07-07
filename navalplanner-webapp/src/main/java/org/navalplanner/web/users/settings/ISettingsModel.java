@@ -19,7 +19,8 @@
 package org.navalplanner.web.users.settings;
 
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.business.users.entities.Language;
+import org.navalplanner.business.settings.entities.Language;
+
 
 /**
  * Model for UI operations related to user settings
@@ -50,12 +51,20 @@ public interface ISettingsModel {
 
     boolean isExpandCompanyPlanningViewCharts();
 
-	void setLastName(String lastName);
+    void setLastName(String lastName);
 
-	String getLastName();
+    String getLastName();
 
-	void setFirstName(String firstName);
+    void setFirstName(String firstName);
 
-	String getFirstName();
+    String getFirstName();
+
+    String getEmail();
+
+    void setEmail(String email);
+
+    void setLoginName(String loginName);
+
+    String getLoginName();
 
 }

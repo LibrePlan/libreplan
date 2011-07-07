@@ -27,7 +27,7 @@
     <popup id="finderPopup" sclass="finder-popup">
         <groupbox mold="3d" closable="false" width="400px">
             <caption id="finderCaption" />
-				<div id="finderPlaceholder" />
+                <div id="finderPlaceholder" />
             <hbox>
                 <button id="acceptButton" />
                 <button id="cancelButton" />

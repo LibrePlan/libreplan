@@ -52,22 +52,22 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     public ResourceAllocationCommand() {
     }
 
-	@Override
-	public void doAction(IContextWithPlannerTask<TaskElement> context,
-			TaskElement taskElement) {
-		editTaskUtilities.reattach(taskElement);
+    @Override
+    public void doAction(IContextWithPlannerTask<TaskElement> context,
+            TaskElement taskElement) {
+        editTaskUtilities.reattach(taskElement);
 
-		if (isApplicableTo(taskElement)) {
-			Task task = (Task) taskElement;
-			if (task.isSubcontracted()) {
-				editTaskController.showEditFormSubcontract(context, task,
-						planningState);
-			} else {
-				editTaskController.showEditFormResourceAllocation(context,
-						task, planningState);
-			}
-		}
-	}
+        if (isApplicableTo(taskElement)) {
+            Task task = (Task) taskElement;
+            if (task.isSubcontracted()) {
+                editTaskController.showEditFormSubcontract(context, task,
+                        planningState);
+            } else {
+                editTaskController.showEditFormResourceAllocation(context,
+                        task, planningState);
+            }
+        }
+    }
 
     @Override
     public String getName() {

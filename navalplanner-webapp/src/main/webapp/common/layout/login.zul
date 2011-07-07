@@ -33,6 +33,7 @@
 <![CDATA[
     controller = loginController;
     contextPath = Executions.getCurrent().getContextPath();
+    loginError = Executions.getCurrent().getParameter("login_error");
     logoLoginLink = contextPath + "/common/img/" +
         org.navalplanner.web.I18nHelper._("en") + "/logo_login.png";
 ]]>
@@ -97,12 +98,12 @@
         </n:tr>
     </n:table></n:td>
     <n:td width="450" height="165" valign="top">
-        <html if="${param.login_error == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.DisabledException'}">
+        <html if="${loginError == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.DisabledException'}">
             <![CDATA[
                 <div class="login_ERROR">${i18n:_('User disabled')}</div>
             ]]>
         </html>
-        <html if="${param.login_error == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.BadCredentialsException'}">
+        <html if="${loginError == 'true' and SPRING_SECURITY_LAST_EXCEPTION.class.name == 'org.springframework.security.BadCredentialsException'}">
             <![CDATA[
                <div class="login_ERROR">${i18n:_('Incorrect authentication')}</div>
             ]]>

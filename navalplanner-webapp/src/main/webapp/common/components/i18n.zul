@@ -20,10 +20,10 @@
 -->
 
 <zk>
-	<zscript><![CDATA[
-		top = self;
-	]]>
-	</zscript>
+    <zscript><![CDATA[
+        top = self;
+    ]]>
+    </zscript>
 
-	<label id="i18nlabel" value="@{top.i18n}" />
+    <label id="i18nlabel" value="@{top.i18n}" />
 </zk>

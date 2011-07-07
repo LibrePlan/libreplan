@@ -31,10 +31,8 @@ import org.hibernate.validator.InvalidValue;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
-import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
@@ -43,39 +41,26 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.InputEvent;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModelExt;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Rows;
 
 /**
  * CRUD Controller for {@link LabelType}
+ *
  * @author Diego Pino Garcia <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
-public class LabelTypeCRUDController extends GenericForwardComposer {
+public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
 
     @Autowired
     private ILabelTypeModel labelTypeModel;
-
-    private Window listWindow;
-
-    private Window editWindow;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private IMessagesForUser messagesEditWindow;
-
-    private Component messagesContainer;
 
     private Grid gridLabelTypes;
 
@@ -90,13 +75,8 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        messagesEditWindow = new MessagesForUser(editWindow
-                .getFellowIfAny("messagesContainer"));
         initializeLabelsGrid();
         initializeLabelTypesGrid();
-        showListWindow();
         newLabelTextbox = (Textbox) editWindow
                 .getFellowIfAny("newLabelTextbox");
     }
@@ -179,17 +159,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         });
     }
 
-    private void showListWindow() {
-        getVisibility().showOnly(listWindow);
-    }
-
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, editWindow);
-        }
-        return visibility;
-    }
-
     /**
      * Return all {@link LabelType}
      * @return
@@ -210,51 +179,9 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         return labelTypeModel.getLabels();
     }
 
-    /**
-     * Prepare form for Create
-     */
-    public void goToCreateForm() {
-        labelTypeModel.initCreate();
-        editWindow.setTitle(_("Create Label Type"));
-        showEditWindow();
-        Util.reloadBindings(editWindow);
-    }
-
-    private void showEditWindow() {
-        getVisibility().showOnly(editWindow);
-    }
-
-    /**
-     * Prepare form for Edit
-     * @param labelType
-     */
-    public void goToEditForm(LabelType labelType) {
-        labelTypeModel.initEdit(labelType);
-        editWindow.setTitle(_("Edit Label Type"));
-        showEditWindow();
-        Util.reloadBindings(editWindow);
-    }
-
-    /**
-     * Save current {@link LabelType} and return
-     */
+    @Override
     public void save() {
-        validate();
-        try {
-            labelTypeModel.confirmSave();
-            goToList();
-            messagesForUser.showMessage(Level.INFO, _("Label type saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-    }
-
-    /**
-     * Show all {@link LabelType}
-     */
-    private void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
+        labelTypeModel.confirmSave();
     }
 
     /**
@@ -291,65 +218,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
             final Constraint constraint = comp.getConstraint();
             constraint.validate(comp, comp.getValue());
         }
-    }
-
-    /**
-     * Save current {@link LabelType} and continue
-     */
-    public void saveAndContinue() {
-        validate();
-        try {
-            labelTypeModel.confirmSave();
-            goToEditForm(labelTypeModel.getLabelType());
-            messagesEditWindow.showMessage(Level.INFO, _("Label saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-    }
-
-    private void showInvalidValues(ValidationException e) {
-        for (InvalidValue invalidValue : e.getInvalidValues()) {
-            Object value = invalidValue.getBean();
-            if (value instanceof LabelType) {
-                validateLabelType(invalidValue);
-            }
-            if (value instanceof Label) {
-                validateLabel(invalidValue);
-            }
-        }
-    }
-
-    private void validateLabelType(InvalidValue invalidValue) {
-        Component component = editWindow.getFellowIfAny("label_type_"
-                + invalidValue.getPropertyName());
-        if (component != null) {
-            throw new WrongValueException(component, invalidValue.getMessage());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private void validateLabel(InvalidValue invalidValue) {
-        Row listitem = findLabel(gridLabels.getRows().getChildren(),
-                (Label) invalidValue.getBean());
-        if (listitem != null) {
-            throw new WrongValueException(listitem, invalidValue.getMessage());
-        }
-    }
-
-    private Row findLabel(List<Row> rows, Label label) {
-        for (Row row : rows) {
-            if (label.equals(row.getValue())) {
-                return row;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Cancel edition
-     */
-    public void close() {
-        goToList();
     }
 
     public void createLabel() {
@@ -412,27 +280,6 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         Util.reloadBindings(gridLabels);
     }
 
-    /**
-     * Pop up confirm remove dialog
-     * @param labelType
-     */
-    public void confirmDelete(LabelType labelType) {
-        try {
-            if (Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
-                labelTypeModel.confirmDelete(labelType);
-                Grid labelTypes = (Grid) listWindow
-                        .getFellowIfAny("labelTypes");
-                if (labelTypes != null) {
-                    Util.reloadBindings(labelTypes);
-                }
-            }
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
-
     public void onCheckGenerateCode(Event e) {
         CheckEvent ce = (CheckEvent) e;
         if (ce.isChecked()) {
@@ -444,4 +291,40 @@ public class LabelTypeCRUDController extends GenericForwardComposer {
         }
         Util.reloadBindings(editWindow);
     }
+
+    @Override
+    protected String getEntityType() {
+        return _("Label Type");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Label Types");
+    }
+
+    @Override
+    protected void initCreate() {
+        labelTypeModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(LabelType labelType) {
+        labelTypeModel.initEdit(labelType);
+    }
+
+    @Override
+    protected LabelType getEntityBeingEdited() {
+        return labelTypeModel.getLabelType();
+    }
+
+    @Override
+    protected void delete(LabelType labelType) {
+        labelTypeModel.confirmDelete(labelType);
+    }
+
+    @Override
+    protected void beforeSaving() {
+        labelTypeModel.generateCodes();
+    }
+
 }

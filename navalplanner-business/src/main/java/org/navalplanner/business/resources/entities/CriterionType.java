@@ -529,12 +529,12 @@ public class CriterionType extends IntegrationEntity implements
                 .checkChildrenAssignedToAnyResource(this)));
     }
 
-	@NotNull(message = "last criterion sequence code not specified")
-	public Integer getLastCriterionSequenceCode() {
-		return lastCriterionSequenceCode;
-	}
+    @NotNull(message = "last criterion sequence code not specified")
+    public Integer getLastCriterionSequenceCode() {
+        return lastCriterionSequenceCode;
+    }
 
-	public void incrementLastCriterionSequenceCode() {
+    public void incrementLastCriterionSequenceCode() {
         if (this.lastCriterionSequenceCode == null) {
             this.lastCriterionSequenceCode = 0;
         }

@@ -156,7 +156,7 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
      * @throws ValidationException if it is not possible to create the entity
      *         because some very important constraint is violated
      * @throws RecoverableErrorException if a recoverable
-     * 	       error occurs
+     *            error occurs
      */
     protected abstract E toEntity(DTO entityDTO)
         throws ValidationException, RecoverableErrorException;

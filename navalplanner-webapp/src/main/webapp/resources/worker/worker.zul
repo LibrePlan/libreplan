@@ -37,7 +37,7 @@
 
         <list top_id="listWindow" />
 
-        <edition top_id="editWindow" title="${i18n:_('Edit Worker')}"
+        <edition top_id="editWindow"
             save_button_label="${i18n:_('Save')}" cancel_button_label="${i18n:_('Cancel')}" />
 
     </window>

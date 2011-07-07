@@ -77,11 +77,11 @@
 }
 
 .listdetails div.z-tree-cell-cnt {
-	width: 500px; !important;
+    width: 500px; !important;
 }
 
 /*.listdetails input {
-	width: 80%; !important;
+    width: 80%; !important;
 } */
 
 
@@ -187,7 +187,7 @@
     text-align: center;
     vertical-align: middle;
     cursor: pointer;
-    z-index : 99;
+    z-index : 99 !important;
 }
 
 /* Task lane properties */
@@ -884,8 +884,8 @@ height: 100%
     top: 8px;
     left: 10px;
     z-index: 6;
-	background-color: rgb(255, 202, 135);
-	background-color: rgba(255, 202, 135, 0.9);
+    background-color: rgb(255, 202, 135);
+    background-color: rgba(255, 202, 135, 0.9);
     -moz-border-radius: 2px;
     -webkit-border-radius: 2px;
     padding: 0 3px;
@@ -920,11 +920,6 @@ height: 100%
 
 .task-resources span {
     padding: 1px 4px;
-}
-
-
-.yui-resize {
-    z-index: auto !important;
 }
 
 .advancedallocationlayout .name {
@@ -1247,7 +1242,7 @@ body .perspectives-column {
 
 /* ------------ Limiting resources  ------------ */
 .limiting-resources-buffer .z-south-body {
-	overflow-y:scroll;
+    overflow-y:scroll;
 }
 
 .queue-progress-bar {

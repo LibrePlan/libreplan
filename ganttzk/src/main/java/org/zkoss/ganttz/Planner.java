@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
 import org.zkoss.ganttz.adapters.IDisabilityConfiguration;
 import org.zkoss.ganttz.adapters.IDomainAndBeansMapper;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -52,7 +53,7 @@ import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.ComponentsFinder;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.au.AuRequest;
@@ -75,6 +76,9 @@ import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.South;
 
 public class Planner extends HtmlMacroComponent  {
+
+    private static final Log PROFILING_LOG = ProfilingLogFactory
+            .getLog(Planner.class);
 
     public static boolean guessContainersExpandedByDefaultGivenPrintParameters(
             Map<String, String> printParameters) {
@@ -325,9 +329,12 @@ public class Planner extends HtmlMacroComponent  {
         this.context = newContext;
         this.disabilityConfiguration = configuration;
         resettingPreviousComponentsToNull();
+        long timeAddingData = System.currentTimeMillis();
         newContext.add(configuration.getData());
+        PROFILING_LOG.info("It took to add data: "
+                + (System.currentTimeMillis() - timeAddingData) + " ms");
+        long timeSetupingAndAddingComponents = System.currentTimeMillis();
         setupComponents();
-
         setAt("insertionPointLeftPanel", leftPane);
         leftPane.afterCompose();
         setAt("insertionPointRightPanel", ganttPanel);
@@ -365,6 +372,11 @@ public class Planner extends HtmlMacroComponent  {
 
         this.visibleChart = configuration.isExpandPlanningViewCharts();
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
+
+        PROFILING_LOG
+                .info("it took doing the setup of components and adding them: "
+                        + (System.currentTimeMillis() - timeSetupingAndAddingComponents)
+                        + " ms");
 
         setAuService(new AuService(){
             public boolean service(AuRequest request, boolean everError){

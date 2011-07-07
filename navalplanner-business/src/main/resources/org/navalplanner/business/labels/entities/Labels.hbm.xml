@@ -13,13 +13,13 @@
     <version name="version" access="property" type="long" />
 
     <property name="code" access="property" not-null="true" unique="true"/>
-	<properties name="nameAndType" unique="true">
-		<property name="name" />
-		<!-- Indexed -->
+    <properties name="nameAndType" unique="true">
+        <property name="name" />
+        <!-- Indexed -->
         <many-to-one name="type" class="LabelType"
         column="label_type_id"
         index="idx_label_on_label_type"/>
-	</properties>
+    </properties>
 
     <set name="orderElements" table="order_element_label" cascade="none" inverse="true">
         <key column="label_id" not-null="false"/>

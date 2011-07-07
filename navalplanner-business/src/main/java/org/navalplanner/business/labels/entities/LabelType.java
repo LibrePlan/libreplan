@@ -30,6 +30,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -43,7 +44,8 @@ import org.navalplanner.business.labels.daos.ILabelTypeDAO;
  *
  * @author Diego Pino Garcia<dpino@igalia.com>
  */
-public class LabelType extends IntegrationEntity implements Comparable {
+public class LabelType extends IntegrationEntity implements Comparable,
+        IHumanIdentifiable {
 
     @NotEmpty(message = "name not specified")
     private String name;
@@ -197,6 +199,11 @@ public class LabelType extends IntegrationEntity implements Comparable {
     @NotNull(message = "last label sequence code not specified")
     public Integer getLastLabelSequenceCode() {
         return lastLabelSequenceCode;
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }

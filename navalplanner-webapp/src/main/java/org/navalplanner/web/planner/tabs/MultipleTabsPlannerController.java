@@ -434,7 +434,9 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Override
     public void goToOrder(Order order) {
+        planningTab.toggleToNoFeedback();
         getTabsRegistry().show(planningTab, changeModeTo(order));
+        planningTab.toggleToFeedback();
     }
 
     @Override

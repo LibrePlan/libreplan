@@ -30,6 +30,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.settings.entities.Language;
 import org.navalplanner.business.users.daos.IUserDAO;
 
 /**
@@ -263,20 +264,20 @@ public class User extends BaseEntity {
         this.expandCompanyPlanningViewCharts = expandCompanyPlanningViewCharts;
     }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
 }

@@ -40,7 +40,7 @@
             </tabs>
             <tabpanels>
                 <tabpanel>
-                    <groupbox>
+                    <groupbox style="margin-top: 5px" closable="false">
                         <caption label="${i18n:_('Personal Data')}" />
                         <grid fixedLayout="true" id="personalData">
                             <columns>
@@ -57,6 +57,17 @@
                                     <label value="${i18n:_('Last name')}:" />
                                     <textbox id="lastName"
                                         value="@{settingsController.lastName}" width="300px"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('Login name')}:" />
+                                    <textbox id="loginName"
+                                        value="@{settingsController.loginName}" width="300px"
+                                        constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                </row>
+                                <row>
+                                    <label value="${i18n:_('E-mail')}:" />
+                                    <textbox id="email"
+                                        value="@{settingsController.email}" width="300px"/>
                                 </row>
                             </rows>
                         </grid>

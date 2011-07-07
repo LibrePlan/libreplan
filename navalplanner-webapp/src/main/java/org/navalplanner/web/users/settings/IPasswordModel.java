@@ -17,31 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.users.entities;
+package org.navalplanner.web.users.settings;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import org.navalplanner.business.common.exceptions.ValidationException;
 
 /**
- * Available languages.
+ * Model for UI operations related to user password
  *
- * @author Cristina Alavarino Perez <cristina.alvarino@comtecsf.es>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
-public enum Language {
+public interface IPasswordModel {
 
-    BROWSER_LANGUAGE(_("Use browser language configuration ")),
-    GALICIAN_LANGUAGE(_("Galician")),
-    SPANISH_LANGUAGE(_("Spanish")),
-    ENGLISH_LANGUAGE(_("English"));
+    void initEditLoggedUser();
 
-    private final String displayName;
+    void confirmSave() throws ValidationException;
 
-    private Language(String displayName) {
-        this.displayName = displayName;
-    }
+    /**
+     * Sets the password attribute to the inner {@ link User} object.
+     *
+     * @param password String with the <b>unencrypted</b> password.
+     */
+    void setPassword(String password);
 
-    public String getDisplayName() {
-        return displayName;
-    }
+    boolean validateCurrentPassword(String value);
 
 }

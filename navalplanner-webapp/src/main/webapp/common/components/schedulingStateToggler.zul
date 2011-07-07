@@ -27,7 +27,7 @@
     <div>
     <label class="scheduling-state" value="${top.buttonLabel}" tooltiptext="${top.buttonTextTooltip}" />
     <button tooltiptext="${i18n:_('Schedule')}" visible="${top.scheduleButtonVisible}" sclass="icono"
-	image="/common/img/ico_planificador1.png" hoverImage="/common/img/ico_planificador.png"
+    image="/common/img/ico_planificador1.png" hoverImage="/common/img/ico_planificador.png"
         onClick="top.schedule();"/>
     <button tooltiptext="${i18n:_('Unschedule')}" visible="${top.unscheduleButtonVisible}" sclass="icono"
     image="/common/img/ico_unschedule1.png" hoverImage="/common/img/ico_unschedule.png"

@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.apache.commons.logging.Log;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.common.ViewSwitcher;
@@ -57,7 +58,7 @@ import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.LongOperationFeedback;
 import org.zkoss.ganttz.util.LongOperationFeedback.ILongOperation;
-import org.zkoss.ganttz.util.OnZKDesktopRegistry;
+import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
@@ -72,6 +73,9 @@ import org.zkoss.zul.Vbox;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderPlanningController implements Composer {
+
+    private static final Log PROFILING_LOG = ProfilingLogFactory
+            .getLog(OrderPlanningController.class);
 
     @Autowired
     private ViewSwitcher viewSwitcher;
@@ -186,10 +190,13 @@ public class OrderPlanningController implements Composer {
 
     private void updateConfiguration() {
         if (order != null) {
+            long time = System.currentTimeMillis();
             model.setConfigurationToPlanner(planner, order, viewSwitcher,
                     editTaskController, advanceAssignmentPlanningController,
                     advanceConsolidationController,
                     calendarAllocationController, additional);
+            PROFILING_LOG.info("setConfigurationToPlanner took: "
+                    + (System.currentTimeMillis() - time) + " ms");
             planner.updateSelectedZoomLevel();
             showResorceAllocationIfIsNeeded();
         }

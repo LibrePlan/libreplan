@@ -1,19 +1,19 @@
 /* CSS Document */
 body {
-	background-image: url(../img/fondo.gif);
-	margin-top: 40px;
+    background-image: url(../img/fondo.gif);
+    margin-top: 40px;
     font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
+    font-size: 11px;
 }
 
 .identificacion {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 18px;
-	color: #0081C3;
-	text-decoration: none;
-	padding-top: 20px;
-	text-align: left;
-	padding-bottom: 5px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    color: #0081C3;
+    text-decoration: none;
+    padding-top: 20px;
+    text-align: left;
+    padding-bottom: 5px;
 }
 
 .entrar {
@@ -23,11 +23,11 @@ body {
     border: 1px solid #439e32; /* green4 (border) */
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
-	font-size:12px;
-	font-family: Arial, Helvetica, sans-serif;
-	margin-top:15px;
-	padding-top: 2px;
-	padding-bottom: 2px;
+    font-size:12px;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-top:15px;
+    padding-top: 2px;
+    padding-bottom: 2px;
 }
 
 .entrar:hover {
@@ -40,25 +40,25 @@ body {
 }
 
 .usuario_clave {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #333333;
-	text-decoration: none;
-	padding-top: 5px;
-	text-align: left;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #333333;
+    text-decoration: none;
+    padding-top: 5px;
+    text-align: left;
 }
 
 .campotexto {
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 11px;
-	color: #666666;
-	text-decoration: none;
-	border: 1px solid #CCCCCC;
-	padding-left: 4px;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    color: #666666;
+    text-decoration: none;
+    border: 1px solid #CCCCCC;
+    padding-left: 4px;
 }
 .fondo_identificacion {
-	background-image: url(../img/degradado_azul.gif);
-	background-repeat:  repeat-x;
+    background-image: url(../img/degradado_azul.gif);
+    background-repeat:  repeat-x;
 }
 
 .authentication {
@@ -66,17 +66,17 @@ body {
 }
 
 .ayuda {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
-	font-weight: bold;
-	color: #009900;
-	text-decoration: none;
-	padding-bottom: 5px;
-	display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    color: #009900;
+    text-decoration: none;
+    padding-bottom: 5px;
+    display: block;
 }
 
 a.ayuda:hover {
-	text-decoration: underline;
+    text-decoration: underline;
 }
 
 .login_ERROR {

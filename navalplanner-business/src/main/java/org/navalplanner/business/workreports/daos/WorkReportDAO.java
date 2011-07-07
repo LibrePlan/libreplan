@@ -57,12 +57,12 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport>
     @Autowired
     private IOrderDAO orderDAO;
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
-		final Criteria criteria = getSession().createCriteria(WorkReport.class);
-		return criteria.add(Restrictions.eq("workReportType", workReportType)).list();
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
+        final Criteria criteria = getSession().createCriteria(WorkReport.class);
+        return criteria.add(Restrictions.eq("workReportType", workReportType)).list();
+    }
 
     @Override
     public List<WorkReport> getAll() {

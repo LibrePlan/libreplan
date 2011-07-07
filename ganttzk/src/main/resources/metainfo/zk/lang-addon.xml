@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <language-addon>
-	<addon-name>ganttz</addon-name>
-	<language-name>xul/html</language-name>
+    <addon-name>ganttz</addon-name>
+    <language-name>xul/html</language-name>
 
-	<extension>zul</extension>
-	<extension>xul</extension>
+    <extension>zul</extension>
+    <extension>xul</extension>
 
-	<zscript>
-		import org.zkoss.ganttz.*;
+    <zscript>
+        import org.zkoss.ganttz.*;
     </zscript>
 
-	<component>
-		<component-name>planner</component-name>
-		<component-class>org.zkoss.ganttz.Planner</component-class>
+    <component>
+        <component-name>planner</component-name>
+        <component-class>org.zkoss.ganttz.Planner</component-class>
         <widget-class>ganttz.Planner</widget-class>
         <macro-uri>~./ganttz/zul/plannerLayout.zul</macro-uri>
-		<!-- mold>
-			<mold-name>default</mold-name>
-			<mold-uri>~./ganttz/planner.dsp</mold-uri>
-		</mold -->
-	</component>
+        <!-- mold>
+            <mold-name>default</mold-name>
+            <mold-uri>~./ganttz/planner.dsp</mold-uri>
+        </mold -->
+    </component>
 
-	<component>
-	   <component-name>tabSwitcher</component-name>
-	   <component-class>org.zkoss.ganttz.TabSwitcher</component-class>
-	   <macro-uri>~./ganttz/zul/tabSwitcher.zul</macro-uri>
-	</component>
+    <component>
+       <component-name>tabSwitcher</component-name>
+       <component-class>org.zkoss.ganttz.TabSwitcher</component-class>
+       <macro-uri>~./ganttz/zul/tabSwitcher.zul</macro-uri>
+    </component>
 
-	<component>
-		<component-name>resourcesLoadPanel</component-name>
-		<component-class>org.zkoss.ganttz.resourceload.ResourcesLoadPanel</component-class>
-	        <macro-uri>~./ganttz/zul/resourcesLoadLayout.zul</macro-uri>
-	</component>
+    <component>
+        <component-name>resourcesLoadPanel</component-name>
+        <component-class>org.zkoss.ganttz.resourceload.ResourcesLoadPanel</component-class>
+            <macro-uri>~./ganttz/zul/resourcesLoadLayout.zul</macro-uri>
+    </component>
 
     <component>
         <component-name>resourcesLoadList</component-name>
@@ -52,43 +52,43 @@
     </component>
 
 
-	<component>
-		<component-name>leftPane</component-name>
-		<component-class>org.zkoss.ganttz.LeftPane</component-class>
-		<macro-uri>~./ganttz/zul/leftPane.zul</macro-uri>
-	</component>
+    <component>
+        <component-name>leftPane</component-name>
+        <component-class>org.zkoss.ganttz.LeftPane</component-class>
+        <macro-uri>~./ganttz/zul/leftPane.zul</macro-uri>
+    </component>
 
-	<component>
-		<component-name>leftTasksTree</component-name>
-		<component-class>org.zkoss.ganttz.LeftTasksTree</component-class>
-		<macro-uri>~./ganttz/zul/leftTasksTree.zul</macro-uri>
-	</component>
+    <component>
+        <component-name>leftTasksTree</component-name>
+        <component-class>org.zkoss.ganttz.LeftTasksTree</component-class>
+        <macro-uri>~./ganttz/zul/leftTasksTree.zul</macro-uri>
+    </component>
 
-	<component>
-		<component-name>ganttpanel</component-name>
-		<component-class>org.zkoss.ganttz.GanttPanel</component-class>
+    <component>
+        <component-name>ganttpanel</component-name>
+        <component-class>org.zkoss.ganttz.GanttPanel</component-class>
         <widget-class>ganttz.GanttPanel</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
-			<!-- <mold-uri>~./ganttz/ganttpanel.dsp</mold-uri> -->
+        <mold>
+            <mold-name>default</mold-name>
+            <!-- <mold-uri>~./ganttz/ganttpanel.dsp</mold-uri> -->
             <mold-uri>mold/gantt-panel.js</mold-uri>
-		</mold>
-	</component>
+        </mold>
+    </component>
 
-	<component>
-		<component-name>resourceload</component-name>
-		<component-class>org.zkoss.ganttz.resourceload.ResourceLoadComponent
-		</component-class>
+    <component>
+        <component-name>resourceload</component-name>
+        <component-class>org.zkoss.ganttz.resourceload.ResourceLoadComponent
+        </component-class>
         <widget-class>ganttz.resourceload.ResourceLoadComponent</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
+        <mold>
+            <mold-name>default</mold-name>
             <mold-uri>mold/resource-load-component.js</mold-uri>
-			<!-- <mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri> -->
-		</mold>
-	</component>
+            <!-- <mold-uri>~./ganttz/resourceload/resourceload.dsp</mold-uri> -->
+        </mold>
+    </component>
 
 
-	<component>
+    <component>
         <component-name>taskRow</component-name>
         <component-class>org.zkoss.ganttz.TaskRow</component-class>
         <widget-class>ganttz.TaskRow</widget-class>
@@ -99,16 +99,16 @@
         </mold>
     </component>
 
-	<component>
-		<component-name>task</component-name>
-		<component-class>org.zkoss.ganttz.TaskComponent</component-class>
+    <component>
+        <component-name>task</component-name>
+        <component-class>org.zkoss.ganttz.TaskComponent</component-class>
         <widget-class>ganttz.TaskComponent</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
-			<!-- <mold-uri>~./ganttz/task.dsp</mold-uri> -->
+        <mold>
+            <mold-name>default</mold-name>
+            <!-- <mold-uri>~./ganttz/task.dsp</mold-uri> -->
             <mold-uri>mold/task-component.js</mold-uri>
-		</mold>
-	</component>
+        </mold>
+    </component>
 
     <component>
         <component-name>milestone</component-name>
@@ -122,64 +122,64 @@
     </component>
 
 
-	<component>
-		<component-name>taskcontainer</component-name>
-		<component-class>org.zkoss.ganttz.TaskContainerComponent
-		</component-class>
+    <component>
+        <component-name>taskcontainer</component-name>
+        <component-class>org.zkoss.ganttz.TaskContainerComponent
+        </component-class>
         <widget-class>ganttz.TaskContainerComponent</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
+        <mold>
+            <mold-name>default</mold-name>
             <mold-uri>mold/task-container.js</mold-uri>
-			<!-- <mold-uri>~./ganttz/taskcontainer.dsp</mold-uri> -->
-		</mold>
-	</component>
+            <!-- <mold-uri>~./ganttz/taskcontainer.dsp</mold-uri> -->
+        </mold>
+    </component>
 
-	<component>
-		<component-name>tasklist</component-name>
-		<component-class>org.zkoss.ganttz.TaskList</component-class>
+    <component>
+        <component-name>tasklist</component-name>
+        <component-class>org.zkoss.ganttz.TaskList</component-class>
         <widget-class>ganttz.TaskList</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
-			<!-- <mold-uri>~./ganttz/tasklist.dsp</mold-uri> -->
+        <mold>
+            <mold-name>default</mold-name>
+            <!-- <mold-uri>~./ganttz/tasklist.dsp</mold-uri> -->
             <mold-uri>mold/task-list.js</mold-uri>
-		</mold>
-	</component>
+        </mold>
+    </component>
 
-	<component>
-		<component-name>dependencylist</component-name>
-		<component-class>org.zkoss.ganttz.DependencyList</component-class>
+    <component>
+        <component-name>dependencylist</component-name>
+        <component-class>org.zkoss.ganttz.DependencyList</component-class>
         <widget-class>ganttz.DependencyList</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
-			<!-- <mold-uri>~./ganttz/dependencylist.dsp</mold-uri> -->
+        <mold>
+            <mold-name>default</mold-name>
+            <!-- <mold-uri>~./ganttz/dependencylist.dsp</mold-uri> -->
             <mold-uri>mold/dependency-list.js</mold-uri>
-		</mold>
-	</component>
+        </mold>
+    </component>
 
-	<component>
-		<component-name>dependency</component-name>
-		<component-class>org.zkoss.ganttz.DependencyComponent
-		</component-class>
+    <component>
+        <component-name>dependency</component-name>
+        <component-class>org.zkoss.ganttz.DependencyComponent
+        </component-class>
         <widget-class>ganttz.DependencyComponent</widget-class>
-		<mold>
-			<mold-name>default</mold-name>
+        <mold>
+            <mold-name>default</mold-name>
             <mold-uri>mold/dependency-component.js</mold-uri>
-			<!-- <mold-uri>~./ganttz/dependency.dsp</mold-uri> -->
-		</mold>
-	</component>
+            <!-- <mold-uri>~./ganttz/dependency.dsp</mold-uri> -->
+        </mold>
+    </component>
 
 
-	<component>
-		<component-name>timetracker</component-name>
-		<component-class>org.zkoss.ganttz.timetracker.TimeTrackerComponent</component-class>
-		<widget-class>ganttz.TimeTracker</widget-class>
+    <component>
+        <component-name>timetracker</component-name>
+        <component-class>org.zkoss.ganttz.timetracker.TimeTrackerComponent</component-class>
+        <widget-class>ganttz.TimeTracker</widget-class>
         <macro-uri>~./ganttz/zul/timetracker/timetracker.zul</macro-uri>
-	</component>
+    </component>
 
-	<component>
-	   <component-name>timeTrackedTable</component-name>
-	   <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTable</component-class>
-	   <macro-uri>~./ganttz/zul/timetracker/timetrackedtable.zul</macro-uri>
-	</component>
+    <component>
+       <component-name>timeTrackedTable</component-name>
+       <component-class>org.zkoss.ganttz.timetracker.TimeTrackedTable</component-class>
+       <macro-uri>~./ganttz/zul/timetracker/timetrackedtable.zul</macro-uri>
+    </component>
 
 </language-addon>

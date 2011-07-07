@@ -3,10 +3,10 @@
 
 
 <!-- the type wr1 has got the following structure
-Date:			heading
-Resource:		heading
-Order Element:		heading
-Hours Management:	Number of assigned hours.-->
+Date:             heading
+Resource:         heading
+Order Element:    heading
+Hours Management: Number of assigned hours.-->
 
 <work-report work-order="PREFIX-00001"
   resource="30303030D" date="2010-03-09"
@@ -135,10 +135,10 @@ Hours Management:	Number of assigned hours.-->
 
 
 <!-- the work report type has got the following structure:
-Date:			line
-Resource:		line
-Order Element:		line
-Hours Management: 	Number of hours calculated by clock -->
+Date:             line
+Resource:         line
+Order Element:    line
+Hours Management: Number of hours calculated by clock -->
 
 <!-- missing finish-hour  OK -->
 <work-report date="2010-03-09"
@@ -224,14 +224,14 @@ Hours Management: 	Number of hours calculated by clock -->
 
 
 <!-- the work report type (wrt4) has got the following structure :
-Date:			heading
-Resource:		heading
-Order Element:		heading
-Hours Management: 	Number of assigned hours and the time.
+Date:             heading
+Resource:         heading
+Order Element:    heading
+Hours Management: Number of assigned hours and the time.
  -->
 
 <!-- the work report date does not match with the work report line date [OK] -->
-<!-- the work report resource does not match with the work report line resource	[OK] -->
+<!-- the work report resource does not match with the work report line resource    [OK] -->
 <!-- the work report order element does not match with the work report order element [OK] -->
 <work-report date="2010-03-09"
   work-order="PREFIX-00001"
@@ -244,9 +244,9 @@ Hours Management: 	Number of assigned hours and the time.
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr15-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>
@@ -280,18 +280,18 @@ Hours Management: 	Number of assigned hours and the time.
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr17-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
        <work-report-line hours="6"
       finish-hour="2010-07-08T06:00:00.000"
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr17-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>
@@ -308,10 +308,10 @@ Hours Management: 	Number of assigned hours and the time.
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr18-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-		<text-field name="etiqueta1" value="value-etiqueta2" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        <text-field name="etiqueta1" value="value-etiqueta2" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>
@@ -327,9 +327,9 @@ Hours Management: 	Number of assigned hours and the time.
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr20-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>
@@ -345,9 +345,9 @@ Hours Management: 	Number of assigned hours and the time.
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr21-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>
@@ -359,14 +359,14 @@ Hours Management: 	Number of assigned hours and the time.
   resource="30303030D"
   work-report-type="wrt4"
   code="wr22">
-	 <work-report-line-list>
+     <work-report-line-list>
        <work-report-line
       start-hour="2010-07-08T01:00:00.000" hour-type="t1"
       date="2010-03-12" work-order="PREFIX-00022"
       resource="w18-nif" code="wr20-wrl1">
-	    <text-field-list>
-		<text-field name="etiqueta1" value="value-etiqueta1" />
-	    </text-field-list>
+        <text-field-list>
+        <text-field name="etiqueta1" value="value-etiqueta1" />
+        </text-field-list>
       </work-report-line>
     </work-report-line-list>
   </work-report>

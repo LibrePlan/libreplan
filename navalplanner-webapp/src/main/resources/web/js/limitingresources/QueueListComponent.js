@@ -15,13 +15,13 @@ limitingresources.QueueListComponent = zk.$extends(zk.Widget,{
         var first = this.$n();
         return [first, first.parentNode, first.parentNode.parentNode];
     },
-	adjustResourceLoadRows : function() {
-		var width = jq('.rightpanellayout #timetracker .z-grid-header :first').innerWidth();
-		jq('.row_resourceload').each(function(index, element){
-			jq(element).width(width);
-		});
-	},
-	adjustTimeTrackerSize: function() {
+    adjustResourceLoadRows : function() {
+        var width = jq('.rightpanellayout #timetracker .z-grid-header :first').innerWidth();
+        jq('.row_resourceload').each(function(index, element){
+            jq(element).width(width);
+        });
+    },
+    adjustTimeTrackerSize: function() {
         var limitingResourcesList = jq('.limitingresourceslist');
         jq('#watermark').height(this.$n().clientHeight);
         jq('#timetracker').width(this.$n().clientWidth).each(function() {

@@ -41,7 +41,8 @@
                                 <label value="${i18n:_('Name')}" />
                                 <textbox id="label_type_name"
                                     width="500px" value="@{controller.labelType.name}"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    onBlur="controller.updateWindowTitle()" />
                             </row>
                             <row>
                                 <label value="${i18n:_('Code')}" />
@@ -62,7 +63,7 @@
                 <panel title="${i18n:_('Label list')}"
                     border="normal">
                     <panelchildren>
-			<hbox align="center">
+            <hbox align="center">
                         <label value="${i18n:_('New label')}" />
                         <textbox id="newLabelTextbox" value="" width="200px" onOK="controller.createLabel()" />
                         <button label="${i18n:_('Add')}"
@@ -104,13 +105,13 @@
     <!-- Control buttons -->
     <hbox>
         <button label="${i18n:_('Save')}"
-            onClick="controller.save()"
+            onClick="controller.saveAndExit()"
             sclass="save-button global-action"/>
         <button label="${i18n:_('Save &amp; Continue')}"
             onClick="controller.saveAndContinue()"
             sclass="saveandcontinue-button global-action"/>
         <button label="${i18n:_('Cancel')}"
-            onClick="controller.close()"
+            onClick="controller.cancelForm()"
             sclass="cancel-button global-action"/>
     </hbox>
 </window>
