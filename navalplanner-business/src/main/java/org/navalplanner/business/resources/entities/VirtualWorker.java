@@ -113,4 +113,9 @@ public class VirtualWorker extends Worker {
         return false;
     }
 
+    @Override
+    public String getHumanId() {
+        return getFirstName();
+    }
+
 }

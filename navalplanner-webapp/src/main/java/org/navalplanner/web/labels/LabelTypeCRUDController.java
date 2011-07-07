@@ -32,6 +32,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.web.common.BaseCRUDController;
+import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -323,8 +324,12 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     @Override
-    protected void beforeSaving() {
+    protected void beforeSaving() throws ValidationException {
         labelTypeModel.generateCodes();
+        Util.reloadBindings(editWindow);
+        if (!ConstraintChecker.isValid(editWindow)) {
+            throw new ValidationException("Please fix invalid fields in form");
+        }
     }
 
 }

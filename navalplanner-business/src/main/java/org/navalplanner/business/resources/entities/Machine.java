@@ -135,4 +135,9 @@ public class Machine extends Resource {
         return String.format("MACHINE: %s", name);
     }
 
+    @Override
+    public String getHumanId() {
+        return name;
+    }
+
 }

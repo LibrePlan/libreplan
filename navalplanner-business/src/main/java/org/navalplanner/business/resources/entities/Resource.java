@@ -48,6 +48,7 @@ import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -71,7 +72,8 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public abstract class Resource extends IntegrationEntity {
+public abstract class Resource extends IntegrationEntity implements
+        IHumanIdentifiable {
 
     public static class AllResourceAssignments implements IAssignmentsOnResourceCalculator {
 
