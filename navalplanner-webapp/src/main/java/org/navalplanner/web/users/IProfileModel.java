@@ -43,7 +43,7 @@ public interface IProfileModel {
      */
     void addRole(UserRole role);
 
-    void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException;
+    void checkHasUsers(Profile profile) throws ValidationException;
 
     /**
      *  Stores the removal of the passed {@link Profile}

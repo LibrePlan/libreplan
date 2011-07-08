@@ -30,6 +30,7 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.ProfileOrderAuthorization;
 import org.springframework.stereotype.Repository;
@@ -88,24 +89,15 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
     }
 
     @Override
-    public void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException {
-        checkHasUsers(profile);
-        checkHasOrderAuthorizations(profile);
-    }
-
-    private void checkHasOrderAuthorizations(Profile profile) {
+    public List<OrderAuthorization> getOrderAuthorizationsByProfile(Profile profile) {
         List orderAuthorizations = getSession()
                 .createCriteria(ProfileOrderAuthorization.class)
                 .add(Restrictions.eq("profile", profile)).list();
-        if (!orderAuthorizations.isEmpty()) {
-            throw ValidationException
-                    .invalidValue(
-                            "Cannot delete profile. It is being used at this moment by some order authorizations.",
-                            profile);
-        }
+        return orderAuthorizations;
     }
 
-    private void checkHasUsers(Profile profile) {
+    @Override
+    public void checkHasUsers(Profile profile) throws ValidationException {
         // Query against a collection of elements
         // http://community.jboss.org/message/353859#353859
         Query query = getSession().createQuery(
