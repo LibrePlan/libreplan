@@ -20,40 +20,46 @@
 -->
 
 <window visible="@{calendarController.editionController.creatingNewVersion}"
-    id="createNewVersion" title="${i18n:_('Create new version')}" width="350px">
-    <vbox>
-        <label value="${i18n:_('Select the base calendar from which the new version will derive')}"
-            visible="@{calendarController.editionController.isDerived}"/>
-        <hbox align="right" visible="@{calendarController.editionController.isDerived}">
+    id="createNewVersion" title="${i18n:_('Create new work week')}" width="450px"
+    closable="true" border="normal"
+    onClose = "calendarController.editionController.cancelNewVersion();">
+
+    <grid id="gridProjectDetails">
+        <columns>
+            <column width="150px" />
+            <column width="300px" />
+        </columns>
+        <rows>
+            <row>
+                <label value="${i18n:_('Base calendar')}" />
+                <hbox align="right">
                       <label value="${i18n:_('Type')}:"/>
-                      <label value="@{calendarController.editionController.calendarType}"/>
                       <combobox id="parentCalendars"
                         constraint="no empty:${i18n:_('cannot be null or empty')}"
-                        model="@{calendarController.editionController.parentCalendars}">
-                        <comboitem self="@{each='baseCalnedar'}"
-                          value="@{baseCalnedar}" label="@{baseCalnedar.name}" />
-                      </combobox>
-        </hbox>
-         <separator spacing="5px"/>
-        <label value="${i18n:_('Select the date from which the new version will be valid')}" />
-        <separator spacing="2px"/>
-        <hbox visible="@{calendarController.editionController.isEditing}"
-            align="right">
-            <label value="${i18n:_('Valid from')}" />
-            <datebox id="startDateValidFromNewVersion"
-                value="@{calendarController.editionController.dateValidFromNewVersion}"
-                disabled="@{calendarController.editionController.isFirstVersion(self.value)}" />
-            <label value="${i18n:_('to')}" />
-            <datebox id="expiringDateValidFromNewVersion"
-                value="@{calendarController.editionController.dateValidToNewVersion}"
-                disabled="@{calendarController.editionController.isLastVersion(self.value)}" />
-        </hbox>
-         <separator spacing="5px"/>
-        <hbox>
-            <button label="${i18n:_('Create')}"
-                onClick="calendarController.editionController.acceptCreateNewVersion();" />
-            <button label="${i18n:_('Cancel')}"
-                onClick="calendarController.editionController.cancelNewVersion();" />
-        </hbox>
-    </vbox>
+                        model="@{calendarController.editionController.parentCalendars}"
+                        disabled="@{calendarController.editionController.isNotDerived}"
+                        itemRenderer = "@{calendarController.editionController.parentCalendarsComboitemRenderer}" />
+                </hbox>
+            </row>
+            <row>
+                <label value="${i18n:_('From date')}" />
+                <datebox id="startDateValidFromNewVersion"
+                    value="@{calendarController.editionController.dateValidFromNewVersion}"/>
+            </row>
+            <row>
+                <label value="${i18n:_('Up to date')}" />
+                <datebox id="expiringDateValidFromNewVersion"
+                    value="@{calendarController.editionController.dateValidToNewVersion}"/>
+            </row>
+        </rows>
+    </grid>
+    <hbox>
+        <button label="${i18n:_('Create')}"
+            onClick="calendarController.editionController.acceptCreateNewVersion();"
+                sclass="create-button global-action"/>
+        <button label="${i18n:_('Cancel')}"
+            onClick="calendarController.editionController.cancelNewVersion();"
+           sclass="cancel-button global-action"/>
+    </hbox>
+
 </window>

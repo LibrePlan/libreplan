@@ -45,13 +45,7 @@
             <row>
               <label value="${i18n:_('Type')}" />
               <hbox>
-                <label
-                  value="@{calendarController.editionController.nameParentCalendar}"
-                  visible="@{calendarController.editionController.isDerived}" />
-                [
-                <label
-                  value="@{calendarController.editionController.calendarType}" />
-                ]
+                <label id="calendarTypeLabel" value="@{calendarController.editionController.calendarType}" />
               </hbox>
             </row>
             <row
@@ -237,7 +231,7 @@
                             visible="@{calendarController.editionController.isDerived}"/>
                         <listheader label="${i18n:_('Valid from')}"
                           width="80px" />
-                        <listheader label="${i18n:_('Expiry date')}"
+                        <listheader label="${i18n:_('Valid until')}"
                           width="80px" />
                         <listheader label="${i18n:_('Summary')}" />
                         <listheader label="${i18n:_('Op.')}"

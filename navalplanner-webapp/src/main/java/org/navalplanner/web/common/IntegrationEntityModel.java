@@ -24,6 +24,7 @@ package org.navalplanner.web.common;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ConcurrentModificationException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -122,6 +123,11 @@ public abstract class IntegrationEntityModel implements IIntegrationEntityModel 
 
     public IEntitySequenceDAO getEntitySequenceDAO() {
         return entitySequenceDAO;
+    }
+
+    public Date getCurrentExpiringDate() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

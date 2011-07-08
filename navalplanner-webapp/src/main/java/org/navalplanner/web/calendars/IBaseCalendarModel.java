@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.calendars;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -216,5 +217,11 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
             LocalDate newExpiringDate);
 
     BaseCalendar getCurrentParent();
+
+    List<BaseCalendar> getSortedBaseCalendars(List<BaseCalendar> baseCalendars);
+
+    Date getCurrentStartDate();
+
+    Date getCurrentExpiringDate();
 
 }

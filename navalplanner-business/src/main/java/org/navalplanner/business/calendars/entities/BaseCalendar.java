@@ -25,6 +25,7 @@ import static org.navalplanner.business.workingday.EffortDuration.hours;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +76,23 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
         BaseCalendar calendar = create();
         resetDefaultCapacities(calendar);
         return calendar;
+    }
+
+    public static List<BaseCalendar> sortByName(List<BaseCalendar> baseCalendars) {
+        Collections.sort(baseCalendars, new Comparator<BaseCalendar>() {
+
+            @Override
+            public int compare(BaseCalendar o1, BaseCalendar o2) {
+                if (o2.getName() == null) {
+                    return -1;
+                }
+                if (o1.getName() == null) {
+                    return 1;
+                }
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        return baseCalendars;
     }
 
     private static void resetDefaultCapacities(BaseCalendar calendar) {

@@ -34,14 +34,14 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
@@ -101,6 +101,13 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
             forceLoad(each);
         }
         return baseCalendars;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BaseCalendar> getSortedBaseCalendars(
+            List<BaseCalendar> baseCalendars) {
+        return BaseCalendar.sortByName(baseCalendars);
     }
 
     /*
@@ -384,9 +391,36 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         if (getBaseCalendar() == null) {
             return null;
         }
-        CalendarData version = getBaseCalendar().getCalendarData(
-                LocalDate.fromDateFields(new Date()));
+        CalendarData version = getCurrentVersion();
         return version != null ? version.getParent() : null;
+    }
+
+    @Override
+    public Date getCurrentExpiringDate() {
+        CalendarData calendarData = getCurrentVersion();
+        if (calendarData != null) {
+            LocalDate startDate = calendarData.getExpiringDate();
+            return startDate != null ? startDate.minusDays(1)
+                    .toDateTimeAtStartOfDay()
+                    .toDate() : null;
+        }
+        return null;
+    }
+
+    @Override
+    public Date getCurrentStartDate() {
+        CalendarData calendarData = getCurrentVersion();
+        if (calendarData != null) {
+            LocalDate startDate = getValidFrom(calendarData);
+            return startDate != null ? startDate.toDateTimeAtStartOfDay()
+                    .toDate() : null;
+        }
+        return null;
+    }
+
+    public CalendarData getCurrentVersion() {
+        return getBaseCalendar().getCalendarData(
+                LocalDate.fromDateFields(new Date()));
     }
 
     @Override

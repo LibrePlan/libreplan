@@ -38,14 +38,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -70,6 +70,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
@@ -124,6 +125,8 @@ public abstract class BaseCalendarEditionController extends
     private HoursPerDayRenderer hoursPerDayRenderer = new HoursPerDayRenderer();
 
     private HistoryVersionsRenderer historyVersionsRenderer = new HistoryVersionsRenderer();
+
+    private ParentCalendarsComboitemRenderer parentCalendarsComboitemRenderer = new ParentCalendarsComboitemRenderer();
 
     private CalendarExceptionRenderer calendarExceptionRenderer = new CalendarExceptionRenderer();
 
@@ -286,13 +289,42 @@ public abstract class BaseCalendarEditionController extends
 
     public String getCalendarType() {
         if (baseCalendarModel.isDerived()) {
-            return _("Derived");
+            String currentStartDate = this.getCurrentStartDateLabel();
+            String currentExpiringDate = this.getCurrentExpiringDateLabel();
+            return _("Derived of Calendar " + getNameParentCalendar()
+                    + currentStartDate + currentExpiringDate);
         }
-        return _("Normal");
+        return _("Root calendar");
+    }
+
+    private String getCurrentExpiringDateLabel() {
+        System.out.println("expiringDate "
+                + baseCalendarModel.getCurrentStartDate());
+        Date date = baseCalendarModel.getCurrentExpiringDate();
+        String label = "";
+        if (date != null) {
+            label = " to " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+        }
+        return label;
+    }
+
+    private String getCurrentStartDateLabel() {
+        System.out.println("expiringDate "
+                + baseCalendarModel.getCurrentStartDate());
+        Date date = baseCalendarModel.getCurrentStartDate();
+        String label = "";
+        if (date != null) {
+            label = " from " + new SimpleDateFormat("dd/MM/yyyy").format(date);
+        }
+        return label;
     }
 
     public boolean isDerived() {
         return baseCalendarModel.isDerived();
+    }
+
+    public boolean isNotDerived() {
+        return (!isDerived());
     }
 
     public List<Days> getHoursPerDay() {
@@ -421,6 +453,7 @@ public abstract class BaseCalendarEditionController extends
 
     private void reloadWorkWeeksList() {
         Util.reloadBindings(window.getFellow("historyInformation"));
+        Util.reloadBindings(window.getFellow("calendarTypeLabel"));
     }
 
     private void reloadTypeDatesAndDuration() {
@@ -1011,7 +1044,8 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public List<BaseCalendar> getParentCalendars() {
-        return baseCalendarModel.getPossibleParentCalendars();
+        return baseCalendarModel.getSortedBaseCalendars(baseCalendarModel
+                .getPossibleParentCalendars());
     }
 
     public List<CalendarException> getCalendarExceptions() {
@@ -1025,6 +1059,25 @@ public abstract class BaseCalendarEditionController extends
                     }
                 });
         return calendarExceptions;
+    }
+
+    public ParentCalendarsComboitemRenderer getParentCalendarsComboitemRenderer() {
+        return parentCalendarsComboitemRenderer;
+    }
+
+    public class ParentCalendarsComboitemRenderer implements ComboitemRenderer {
+
+        @Override
+        public void render(Comboitem item, Object data) {
+            BaseCalendar calendar = (BaseCalendar) data;
+            item.setLabel(calendar.getName());
+            item.setValue(calendar);
+
+            Combobox combobox = (Combobox) item.getParent();
+            if (combobox.getSelectedItem() == null) {
+                combobox.setSelectedItem(item);
+            }
+        }
     }
 
     public CalendarExceptionRenderer getCalendarExceptionRenderer() {
