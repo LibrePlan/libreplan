@@ -21,9 +21,12 @@
 
 package org.navalplanner.business.users.daos;
 
+import java.util.List;
+
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.Profile;
 
 /**
@@ -34,8 +37,6 @@ import org.navalplanner.business.users.entities.Profile;
  */
 public interface IProfileDAO extends IGenericDAO<Profile, Long>{
 
-    void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException;
-
     boolean existsByProfileName(String profileName);
 
     boolean existsByProfileNameAnotherTransaction(String profileName);
@@ -45,5 +46,9 @@ public interface IProfileDAO extends IGenericDAO<Profile, Long>{
 
     Profile findByProfileNameAnotherTransaction(String profileName)
         throws InstanceNotFoundException;
+
+    void checkHasUsers(Profile profile) throws ValidationException;
+
+    List<OrderAuthorization> getOrderAuthorizationsByProfile(Profile profile);
 
 }

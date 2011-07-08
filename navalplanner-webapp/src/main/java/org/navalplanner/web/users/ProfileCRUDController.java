@@ -196,7 +196,7 @@ public class ProfileCRUDController extends GenericForwardComposer implements
 
     private boolean isReferencedByOtherEntities(Profile profile) {
         try {
-            profileModel.checkIsReferencedByOtherEntities(profile);
+            profileModel.checkHasUsers(profile);
             return false;
         } catch (ValidationException e) {
             showCannotDeleteProfileDialog(e.getInvalidValue().getMessage(),
