@@ -28,7 +28,9 @@ import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.User;
+import org.navalplanner.business.users.entities.UserOrderAuthorization;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -117,4 +119,11 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
         return c.list();
     }
 
+    @Override
+    public List<OrderAuthorization> getOrderAuthorizationsByUser(User user) {
+        List orderAuthorizations = getSession()
+                .createCriteria(UserOrderAuthorization.class)
+                .add(Restrictions.eq("user", user)).list();
+        return orderAuthorizations;
+    }
 }
