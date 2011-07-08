@@ -311,10 +311,16 @@ public class LDAPCustomAuthenticationProvider extends
         List<String> rolesReturn = new ArrayList<String>();
         for (ConfigurationRolesLDAP roleLdap : rolesLdap) {
             // We must make a search for each role matching
-            DirContextAdapter adapter = (DirContextAdapter) ldapTemplate
-                    .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
-            if (adapter.attributeExists(roleProperty)) {
+            DirContextAdapter adapter = null;
+            try {
+                adapter = (DirContextAdapter) ldapTemplate
+                        .lookup(roleLdap.getRoleLdap() + "," + groupsPath);
+            } catch (org.springframework.ldap.NamingException ne) {
+                LOG.error(ne.getMessage());
+            }
+            if (adapter != null && adapter.attributeExists(roleProperty)) {
                 Attributes atrs = adapter.getAttributes();
+
                 if (atrs.get(roleProperty).contains(queryRoles)) {
                     rolesReturn.add(roleLdap.getRoleLibreplan());
                 }
