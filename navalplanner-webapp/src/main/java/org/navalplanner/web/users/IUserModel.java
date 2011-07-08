@@ -23,6 +23,7 @@ package org.navalplanner.web.users;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
@@ -124,5 +125,7 @@ public interface IUserModel {
     String getClearNewPassword();
 
     boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser admin);
+
+    void confirmRemove(User user) throws InstanceNotFoundException;
 
 }
