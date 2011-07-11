@@ -200,4 +200,9 @@ public class Worker extends Resource implements Comparable {
         return worker.getShortDescription().compareTo(getShortDescription());
     }
 
+    @Override
+    public String getHumanId() {
+        return firstName + " " + surname;
+    }
+
 }

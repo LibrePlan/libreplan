@@ -24,6 +24,9 @@ package org.navalplanner.ws.common.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -195,6 +198,38 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
 
         return dtos;
 
+    }
+
+    /**
+     * Returns a DTO searching by code. This will be useful for all REST
+     * services of IntegrationEntities
+     *
+     * @param code
+     *            this is the code for the element which will be searched
+     * @return DTO which represents the IntegrationEntity with this code
+     * @throws InstanceNotFoundException
+     *             If entity with this code is not found
+     */
+    protected DTO findByCode(String code) throws InstanceNotFoundException {
+        return toDTO(getIntegrationEntityDAO().findByCode(code));
+    }
+
+    /**
+     * Wraps within a {@link Response} object the DTO searching the entity by
+     * code.
+     *
+     * If entity is not found returns 404 HTTP status code (NOT_FOUND).
+     *
+     * @param code
+     *            this is the code for the element which will be searched
+     * @return The {@link Response} with DTO if OK or 404 if NOT_FOUND
+     */
+    protected Response getDTOByCode(String code) {
+        try {
+            return Response.ok(findByCode(code)).build();
+        } catch (InstanceNotFoundException e) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
     }
 
 }

@@ -25,6 +25,8 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 
+import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
@@ -46,6 +48,7 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Window;
 
@@ -57,6 +60,8 @@ import org.zkoss.zul.api.Window;
 @SuppressWarnings("serial")
 public class UserCRUDController extends GenericForwardComposer implements
         IUserCRUDController {
+
+    private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(UserCRUDController.class);
 
     private Window createWindow;
 
@@ -277,4 +282,35 @@ public class UserCRUDController extends GenericForwardComposer implements
                 listWindow)
                 : visibility;
     }
+
+    public void confirmRemove(User user) {
+        int result = showConfirmDeleteUser(user);
+        if (result == Messagebox.OK) {
+            try {
+                userModel.confirmRemove(user);
+                goToList();
+            } catch (InstanceNotFoundException e) {
+                messagesForUser
+                        .showMessage(
+                                Level.ERROR,
+                                _("Cannot delete user: it does not exist anymore"));
+                LOG.error(_("Error removing element: ", user.getId()), e);
+            }
+        }
+    }
+
+    private int showConfirmDeleteUser(User user) {
+        try {
+            return Messagebox.show(
+                    _("Confirm deleting this User. Are you sure?"),
+                    _("Delete"), Messagebox.OK | Messagebox.CANCEL,
+                    Messagebox.QUESTION);
+        } catch (InterruptedException e) {
+            LOG.error(
+                    _("Error on showing removing element: ", user.getId()),
+                    e);
+        }
+        return Messagebox.CANCEL;
+    }
+
 }

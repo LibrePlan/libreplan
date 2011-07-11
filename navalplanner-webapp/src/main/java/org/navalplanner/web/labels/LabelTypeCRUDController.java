@@ -323,8 +323,10 @@ public class LabelTypeCRUDController extends BaseCRUDController<LabelType> {
     }
 
     @Override
-    protected void beforeSaving() {
+    protected void beforeSaving() throws ValidationException {
+        validate();
         labelTypeModel.generateCodes();
+        Util.reloadBindings(editWindow);
     }
 
 }

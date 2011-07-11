@@ -26,7 +26,9 @@ import java.util.List;
 
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IProfileDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
@@ -51,6 +53,9 @@ public class ProfileModel implements IProfileModel {
 
     @Autowired
     private IProfileDAO profileDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Override
     @Transactional
@@ -126,6 +131,12 @@ public class ProfileModel implements IProfileModel {
     @Transactional
     public void confirmRemove(Profile profile)
         throws InstanceNotFoundException {
+        List<OrderAuthorization> orderAuthorizations = profileDAO.getOrderAuthorizationsByProfile(profile);
+        if (!orderAuthorizations.isEmpty()){
+            for (OrderAuthorization orderAuthorization : orderAuthorizations) {
+                orderAuthorizationDAO.remove(orderAuthorization.getId());
+            }
+        }
         profileDAO.remove(profile.getId());
     }
 
@@ -140,8 +151,8 @@ public class ProfileModel implements IProfileModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void checkIsReferencedByOtherEntities(Profile profile) throws ValidationException {
-       profileDAO.checkIsReferencedByOtherEntities(profile);
+    public void checkHasUsers(Profile profile) throws ValidationException {
+       profileDAO.checkHasUsers(profile);
     }
 
 }

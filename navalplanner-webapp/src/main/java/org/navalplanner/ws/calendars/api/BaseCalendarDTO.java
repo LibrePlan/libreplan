@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -36,6 +37,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
+@XmlRootElement(name = "base-calendar")
 public class BaseCalendarDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "base-calendar";

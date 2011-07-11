@@ -26,10 +26,11 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.Configuration;
-import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
@@ -54,6 +55,9 @@ public class UserModel extends PasswordUtil implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IOrderAuthorizationDAO orderAuthorizationDAO;
 
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
@@ -219,6 +223,24 @@ public class UserModel extends PasswordUtil implements IUserModel {
     @Transactional(readOnly = true)
     public boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser user) {
         return user.hasChangedDefaultPasswordOrDisabled();
+    }
+
+    @Override
+    @Transactional
+    public void confirmRemove(User user)
+        throws InstanceNotFoundException {
+        List<OrderAuthorization> orderAuthorizations = getReferencedByOtherEntities(user);
+        if (!orderAuthorizations.isEmpty()) {
+            for (OrderAuthorization orderAuthorization : orderAuthorizations) {
+                orderAuthorizationDAO.remove(orderAuthorization.getId());
+            }
+        }
+        userDAO.remove(user.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderAuthorization> getReferencedByOtherEntities(User user){
+       return userDAO.getOrderAuthorizationsByUser(user);
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.List;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.entities.Scenario;
+import org.navalplanner.business.users.entities.OrderAuthorization;
 import org.navalplanner.business.users.entities.User;
 
 /**
@@ -80,4 +81,5 @@ public interface IUserDAO extends IGenericDAO<User, Long>{
 
     public List<User> findByLastConnectedScenario(Scenario scenario);
 
+    List<OrderAuthorization> getOrderAuthorizationsByUser(User user);
 }

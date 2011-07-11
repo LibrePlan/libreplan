@@ -54,7 +54,8 @@
                         <row>
                             <label value="${i18n:_('Name')}" />
                             <textbox value="@{controller.machine.name}" width="500px"
-                                constraint="no empty:${i18n:_('Name cannot be null or empty')}" />
+                                constraint="no empty:${i18n:_('Name cannot be null or empty')}"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Description')}" />
@@ -93,13 +94,13 @@
         </tabpanels>
     </tabbox>
     <button label="${i18n:_('Save')}"
-        onClick="controller.save();"
+        onClick="controller.saveAndExit();"
         sclass="save-button global-action"/>
     <button label="${i18n:_('Save &amp; Continue')}"
         onClick="controller.saveAndContinue();"
         sclass="save-button global-action"/>
     <button label="${i18n:_('Cancel')}"
-        onClick="controller.cancel();"
+        onClick="controller.cancelForm();"
         sclass="cancel-button global-action"/>
 
     <zscript><![CDATA[

@@ -32,6 +32,7 @@ import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -44,7 +45,8 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class CalendarExceptionType extends IntegrationEntity {
+public class CalendarExceptionType extends IntegrationEntity implements
+        IHumanIdentifiable {
 
     private String name;
 
@@ -181,6 +183,11 @@ public class CalendarExceptionType extends IntegrationEntity {
             }
 
         }
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }
