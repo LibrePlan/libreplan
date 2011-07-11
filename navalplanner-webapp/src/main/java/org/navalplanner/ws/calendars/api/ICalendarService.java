@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.calendars.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
@@ -33,8 +35,9 @@ public interface ICalendarService {
 
     BaseCalendarListDTO getBaseCalendars();
 
-    public InstanceConstraintViolationsListDTO addBaseCalendars(
+    InstanceConstraintViolationsListDTO addBaseCalendars(
             BaseCalendarListDTO BaseCalendraListDTO);
 
-    public BaseCalendarDTO getBaseCalendar(String code);
+    Response getBaseCalendar(String code);
+
 }

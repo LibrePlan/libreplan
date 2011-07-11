@@ -29,6 +29,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
@@ -104,7 +105,8 @@ public class CalendarServiceREST extends
     @GET
     @Path("/{code}/")
     @Transactional(readOnly = true)
-    public BaseCalendarDTO getBaseCalendar(@PathParam("code") String code) {
-        return findByCode(code);
+    public Response getBaseCalendar(@PathParam("code") String code) {
+        return getDTOByCode(code);
     }
+
 }
