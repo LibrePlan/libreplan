@@ -21,12 +21,9 @@
 
 package org.navalplanner.business.calendars.entities;
 
-import static org.navalplanner.business.workingday.EffortDuration.hours;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,15 +93,10 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     }
 
     private static void resetDefaultCapacities(BaseCalendar calendar) {
-        Capacity eightHours = Capacity.create(hours(8))
-                .overAssignableWithoutLimit();
-        calendar.setCapacityAt(Days.MONDAY, eightHours);
-        calendar.setCapacityAt(Days.TUESDAY, eightHours);
-        calendar.setCapacityAt(Days.WEDNESDAY, eightHours);
-        calendar.setCapacityAt(Days.THURSDAY, eightHours);
-        calendar.setCapacityAt(Days.FRIDAY, eightHours);
-        calendar.setCapacityAt(Days.SATURDAY, Capacity.zero());
-        calendar.setCapacityAt(Days.SUNDAY, Capacity.zero());
+        CalendarData calendarData = calendar.getLastCalendarData();
+        if (calendarData != null) {
+            CalendarData.resetDefaultCapacities(calendarData);
+        }
     }
 
     public static BaseCalendar createUnvalidated(String code, String name,
@@ -574,16 +566,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
     private void resetDefaultCapacities(CalendarData version){
         if(version.getParent() == null){
             CalendarData.resetDefaultCapacities(version);
-        }else{
-            BaseCalendar parent = version.getParent();
-            CalendarData currentVersion = parent.getCalendarData(LocalDate
-                    .fromDateFields(new Date()));
-            if (currentVersion != null) {
-                for (Days day : Days.values()) {
-                    version.setCapacityAt(day, currentVersion
-                            .getCapacityOn(day));
-                }
-            }
         }
     }
 

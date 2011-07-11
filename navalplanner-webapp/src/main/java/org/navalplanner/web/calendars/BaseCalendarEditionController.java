@@ -686,14 +686,14 @@ public abstract class BaseCalendarEditionController extends
 
             List<String> summary = new ArrayList<String>();
             for (Days day : Days.values()) {
-                if (version.isDefault(day)) {
-                    if (parent == null) {
+                if (parent == null) {
+                    if (version.isDefault(day)) {
                         summary.add("0");
                     } else {
-                        summary.add(_("D"));
+                        summary.add(asString(version.getCapacityOn(day)));
                     }
                 } else {
-                    summary.add(asString(version.getCapacityOn(day)));
+                    summary.add(_("Inh"));
                 }
             }
             Label summaryLabel = new Label(StringUtils.join(summary, " - "));
