@@ -35,4 +35,6 @@ public interface ICalendarService {
 
     public InstanceConstraintViolationsListDTO addBaseCalendars(
             BaseCalendarListDTO BaseCalendraListDTO);
+
+    public BaseCalendarDTO getBaseCalendar(String code);
 }

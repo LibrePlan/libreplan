@@ -197,4 +197,20 @@ public abstract class GenericRESTService<E extends IntegrationEntity,
 
     }
 
+    /**
+     * Returns a DTO searching by code. This will be useful for all REST
+     * services of IntegrationEntities
+     *
+     * @param code
+     *            this is the code for the element which will be searched
+     * @return DTO which represents the IntegrationEntity with this code
+     */
+    protected DTO findByCode(String code) {
+        try {
+            return toDTO(getIntegrationEntityDAO().findByCode(code));
+        } catch (InstanceNotFoundException e) {
+            return null;
+        }
+    }
+
 }
