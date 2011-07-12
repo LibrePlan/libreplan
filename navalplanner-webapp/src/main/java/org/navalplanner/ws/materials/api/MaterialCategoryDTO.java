@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
@@ -34,6 +35,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  * DTO for <code>MaterialCategory</code> entity.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+@XmlRootElement(name = "material-category")
 public class MaterialCategoryDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "material-category";

@@ -22,6 +22,7 @@
 package org.navalplanner.ws.unittypes.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 
@@ -29,6 +30,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  * DTO for <code>UnitType</code> entity.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+@XmlRootElement(name = "unit-type")
 public class UnitTypeDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "unit type";

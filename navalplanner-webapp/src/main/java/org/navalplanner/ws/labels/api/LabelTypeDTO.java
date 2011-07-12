@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -36,6 +37,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
+@XmlRootElement(name = "label-type")
 public class LabelTypeDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "label-type";

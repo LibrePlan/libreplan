@@ -22,6 +22,7 @@
 package org.navalplanner.ws.calendarexceptiontypes.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -31,6 +32,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
+@XmlRootElement(name = "calendar-exception-type")
 public class CalendarExceptionTypeDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "calendar-exception-type";

@@ -27,6 +27,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
 import org.navalplanner.ws.common.api.ResourceEnumDTO;
@@ -36,6 +37,7 @@ import org.navalplanner.ws.common.api.ResourceEnumDTO;
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@XmlRootElement(name = "criterion-type")
 public class CriterionTypeDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "criterion-type";

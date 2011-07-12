@@ -22,12 +22,14 @@
 package org.navalplanner.ws.resources.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * DTO for <code>Worker</code> entity.
  *
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
+@XmlRootElement(name = "worker")
 public class WorkerDTO extends ResourceDTO {
 
     public final static String ENTITY_TYPE = "worker";

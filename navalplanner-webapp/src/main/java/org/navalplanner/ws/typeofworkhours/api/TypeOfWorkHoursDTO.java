@@ -24,6 +24,7 @@ package org.navalplanner.ws.typeofworkhours.api;
 import java.math.BigDecimal;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.ws.common.api.IntegrationEntityDTO;
@@ -32,6 +33,7 @@ import org.navalplanner.ws.common.api.IntegrationEntityDTO;
  * DTO for {@link TypeOfWorkHours} entity.
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
+@XmlRootElement(name = "type-work-hours")
 public class TypeOfWorkHoursDTO extends IntegrationEntityDTO {
 
     public final static String ENTITY_TYPE = "type-work-hours";

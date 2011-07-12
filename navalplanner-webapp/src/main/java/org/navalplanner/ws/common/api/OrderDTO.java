@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.navalplanner.business.orders.entities.Order;
@@ -34,7 +35,7 @@ import org.navalplanner.business.orders.entities.Order;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-
+@XmlRootElement(name = "order")
 public class OrderDTO extends OrderLineGroupDTO {
 
     public final static String ENTITY_TYPE = "order";
