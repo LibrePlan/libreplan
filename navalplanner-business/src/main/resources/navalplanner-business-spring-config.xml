@@ -113,7 +113,7 @@
 
     <!--
         For enabling annotation-based configuration (in particular, required
-        for "@Autowired")
+        for Autowired annotation)
     -->
     <context:annotation-config />
 
