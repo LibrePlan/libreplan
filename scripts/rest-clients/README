@@ -37,8 +37,8 @@ methods with the following meaning:
   return a list with all the entities. For example, resources web service will
   return a list with all application resources.
 
-  This is current behaviour for ``GET`` services, but it could be expanded to
-  just return one entity sending the code as a GET parameter.
+  You can also pass ``code`` attribute (since LibrePlan 1.2) in order to return
+  just one entity sending the code as a GET parameter.
 
 * ``POST``: Used to add and update information in NavalPlan. These services will
   receive a XML file with a list of entities. For each entity there could be 2
@@ -148,6 +148,11 @@ with the data requested.
 Example::
 
   $ ./export-resources.sh
+
+To export just one specific resource by code you can add a new extra parameter.
+Example::
+
+  $ ./export-resources.sh WORKER00011
 
 
 Import scripts
