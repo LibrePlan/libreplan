@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.orders.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
@@ -34,5 +36,7 @@ public interface IOrderElementService {
     InstanceConstraintViolationsListDTO addOrders(OrderListDTO orderListDTO);
 
     OrderListDTO getOrders();
+
+    Response getOrderElement(String code);
 
 }

@@ -31,7 +31,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -184,6 +186,14 @@ public class ResourceServiceREST
 
     private Integer getNumberOfDigitsCode(EntityNameEnum entityName) {
         return entitySequenceDAO.getNumberOfDigitsCode(entityName);
+    }
+
+    @Override
+    @GET
+    @Path("/{code}/")
+    @Transactional(readOnly = true)
+    public Response getResource(@PathParam("code") String code) {
+        return getDTOByCode(code);
     }
 
 }

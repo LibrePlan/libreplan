@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.unittypes.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 public interface IUnitTypeService {
@@ -29,5 +31,7 @@ public interface IUnitTypeService {
 
     public InstanceConstraintViolationsListDTO addUnitTypes(
             UnitTypeListDTO unitTypeListDTO);
+
+    Response getUnitType(String code);
 
 }

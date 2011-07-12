@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.labels.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
@@ -35,5 +37,7 @@ public interface ILabelService {
 
     InstanceConstraintViolationsListDTO addLabelTypes(
             LabelTypeListDTO labelTypes);
+
+    Response getLabel(String code);
 
 }

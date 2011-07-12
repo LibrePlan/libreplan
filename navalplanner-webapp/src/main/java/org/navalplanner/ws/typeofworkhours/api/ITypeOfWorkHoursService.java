@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.typeofworkhours.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -33,4 +35,6 @@ public interface ITypeOfWorkHoursService {
             TypeOfWorkHoursListDTO typeOfWorkHoursListDTO);
 
     public TypeOfWorkHoursListDTO getTypeOfWorkHours();
+
+    Response getTypeOfWorkHours(String code);
 }

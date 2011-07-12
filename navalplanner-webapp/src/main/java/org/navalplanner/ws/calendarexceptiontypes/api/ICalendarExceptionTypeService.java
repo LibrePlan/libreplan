@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.calendarexceptiontypes.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
@@ -35,5 +37,7 @@ public interface ICalendarExceptionTypeService {
 
     InstanceConstraintViolationsListDTO addCalendarExceptionTypes(
             CalendarExceptionTypeListDTO calendarExceptionTypeListDTO);
+
+    Response getCalendarExceptionType(String code);
 
 }

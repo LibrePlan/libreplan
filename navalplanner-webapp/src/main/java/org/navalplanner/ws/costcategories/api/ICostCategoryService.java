@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.costcategories.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -33,4 +35,6 @@ public interface ICostCategoryService {
             CostCategoryListDTO costCategoryListDTO);
 
     public CostCategoryListDTO getCostCotegories();
+
+    Response getCostCategory(String code);
 }

@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.resources.criterion.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -34,5 +36,7 @@ public interface ICriterionService {
 
     public InstanceConstraintViolationsListDTO addCriterionTypes(
         CriterionTypeListDTO criterionTypes);
+
+    Response getCriterion(String code);
 
 }

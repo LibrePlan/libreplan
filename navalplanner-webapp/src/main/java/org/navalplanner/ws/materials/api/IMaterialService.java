@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.materials.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -33,5 +35,7 @@ public interface IMaterialService {
 
     public InstanceConstraintViolationsListDTO addMaterials(
             MaterialCategoryListDTO materialCategoryListDTO);
+
+    Response getMaterial(String code);
 
 }

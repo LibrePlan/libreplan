@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.resources.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -40,5 +42,7 @@ public interface IResourceService {
         ResourceListDTO resources);
 
     public ResourceListDTO getResources();
+
+    Response getResource(String code);
 
 }

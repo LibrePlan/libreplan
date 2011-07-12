@@ -21,6 +21,8 @@
 
 package org.navalplanner.ws.workreports.api;
 
+import javax.ws.rs.core.Response;
+
 import org.navalplanner.ws.common.api.InstanceConstraintViolationsListDTO;
 
 /**
@@ -34,5 +36,7 @@ public interface IWorkReportService {
 
     public InstanceConstraintViolationsListDTO addWorkReports(
             WorkReportListDTO workReportListDTO);
+
+    public Response getWorkReport(String code);
 
 }
