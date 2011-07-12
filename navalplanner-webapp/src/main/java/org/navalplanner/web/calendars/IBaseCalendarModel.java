@@ -211,11 +211,6 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
 
     void checkIsReferencedByOtherEntities(BaseCalendar calendar) throws ValidationException;
 
-    boolean checkAndChangeStartDate(CalendarData version, LocalDate newStartDate);
-
-    boolean checkChangeExpiringDate(CalendarData version,
-            LocalDate newExpiringDate);
-
     BaseCalendar getCurrentParent();
 
     List<BaseCalendar> getSortedBaseCalendars(List<BaseCalendar> baseCalendars);
@@ -223,5 +218,11 @@ public interface IBaseCalendarModel extends IIntegrationEntityModel {
     Date getCurrentStartDate();
 
     Date getCurrentExpiringDate();
+
+    void checkChangeExpiringDate(CalendarData version, Date date)
+            throws ValidationException;
+
+    void checkAndChangeStartDate(CalendarData version, Date date)
+            throws ValidationException;
 
 }

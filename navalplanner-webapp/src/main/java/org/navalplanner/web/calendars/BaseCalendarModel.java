@@ -502,12 +502,22 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     }
 
     @Override
-    public boolean checkAndChangeStartDate(CalendarData version,
-            LocalDate newStartDate) {
+    public void checkAndChangeStartDate(CalendarData version, Date date)
+            throws ValidationException {
+
+        if (date == null) {
+            if (version.equals(getBaseCalendar().getFirstCalendarData())) {
+                return;
+            } else {
+                throw new ValidationException(_("This date can not be empty"));
+            }
+        }
+
+        LocalDate newStartDate = LocalDate.fromDateFields(date);
         CalendarData prevVersion = getBaseCalendar().getPrevious(version);
         if ((newStartDate != null) && (prevVersion != null)) {
             if (getBaseCalendar().getPrevious(prevVersion) == null) {
-                return true;
+                return;
             }
             LocalDate prevStartDate = getBaseCalendar()
                     .getPrevious(prevVersion).getExpiringDate();
@@ -515,27 +525,37 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
                     || ((newStartDate
                             .compareTo(prevStartDate) > 0))) {
                 prevVersion.setExpiringDate(newStartDate);
-                return true;
+                return;
             }
         }
-        return false;
+        throw new ValidationException(
+                _("This date can not include the whole previous work week"));
     }
 
     @Override
-    public boolean checkChangeExpiringDate(CalendarData version,
-            LocalDate newExpiringDate) {
+    public void checkChangeExpiringDate(CalendarData version, Date date) {
         Integer index = getBaseCalendar().getCalendarDataVersions().indexOf(
                 version);
-        if ((newExpiringDate != null)
-                && (index < getBaseCalendar().getCalendarDataVersions().size() - 1)) {
+
+        if (date == null) {
+            if (version.equals(getBaseCalendar().getLastCalendarData())) {
+                return;
+            } else {
+                throw new ValidationException(_("This date can not be empty"));
+            }
+        }
+
+        LocalDate newExpiringDate = LocalDate.fromDateFields(date);
+        if ((index < getBaseCalendar().getCalendarDataVersions().size() - 1)) {
             LocalDate nextExpiringDate = getBaseCalendar()
                     .getCalendarDataVersions().get(index + 1).getExpiringDate();
             if ((nextExpiringDate == null)
                     || (newExpiringDate.compareTo(nextExpiringDate) < 0)) {
-                return true;
+                return;
             }
         }
-        return false;
+        throw new ValidationException(
+                _("This date can not include the whole next work week"));
     }
 
     @Override

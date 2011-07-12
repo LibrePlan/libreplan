@@ -24,6 +24,7 @@ package org.navalplanner.web.calendars;
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.common.Util.findOrCreate;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -46,6 +47,7 @@ import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
 import org.navalplanner.web.common.IMessagesForUser;
@@ -732,11 +734,11 @@ public abstract class BaseCalendarEditionController extends
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
-                    if (!baseCalendarModel.checkAndChangeStartDate(version,
-                            LocalDate.fromDateFields(((Date) value)))) {
-                        throw new WrongValueException(
-                                comp,
-                                _("This date can not include the whole previous work week"));
+                    try {
+                        baseCalendarModel.checkAndChangeStartDate(version,
+                                ((Date) value));
+                    } catch (ValidationException e) {
+                        throw new WrongValueException(comp, e.getMessage());
                     }
                 }
             });
@@ -789,11 +791,12 @@ public abstract class BaseCalendarEditionController extends
                 @Override
                 public void validate(Component comp, Object value)
                         throws WrongValueException {
-                    if (!baseCalendarModel.checkChangeExpiringDate(version,
-                            LocalDate.fromDateFields(((Date) value)))) {
-                        throw new WrongValueException(
-                                comp,
-                                _("This date can not include the whole next work week"));
+                    Date date = ((Date) value);
+                    try {
+                        baseCalendarModel
+                                .checkChangeExpiringDate(version, date);
+                    } catch (ValidationException e) {
+                        throw new WrongValueException(comp, e.getMessage());
                     }
                 }
             });
