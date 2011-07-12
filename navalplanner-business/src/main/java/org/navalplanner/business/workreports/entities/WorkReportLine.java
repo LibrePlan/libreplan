@@ -52,14 +52,6 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  */
 public class WorkReportLine extends IntegrationEntity implements Comparable {
 
-    public static final String DATE = "date";
-
-    public static final String RESOURCE = "resource";
-
-    public static final String ORDER_ELEMENT = "orderElement";
-
-    public static final String HOURS = "numHours";
-
     public static WorkReportLine create(WorkReport workReport) {
         return create(new WorkReportLine(workReport));
     }
@@ -255,7 +247,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return -1;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "closckStart:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean checkConstraintClockStartMustBeNotNullIfIsCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
@@ -269,7 +260,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "closckFinish:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
@@ -283,7 +273,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "The start hour cannot be higher than finish hour")
     public boolean checkCannotBeHigher() {
         if (!firstLevelValidationsPassed()) {
@@ -453,7 +442,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
                 && (orderElement != null);
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "label type:the work report have not assigned this label type")
     public boolean checkConstraintAssignedLabelTypes() {
         if (this.workReport == null
@@ -477,7 +465,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "description value:the work report have not assigned the description field")
     public boolean checkConstraintAssignedDescriptionValues() {
         if (this.workReport == null
@@ -501,7 +488,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
-    @SuppressWarnings("unused")
     @AssertTrue(message = "There are repeated description values in the work report line")
     public boolean checkConstraintAssignedRepeatedDescriptionValues() {
 
