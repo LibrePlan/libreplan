@@ -50,8 +50,7 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class ProfileCRUDController extends GenericForwardComposer implements
-        IProfileCRUDController {
+public class ProfileCRUDController extends GenericForwardComposer {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(ProfileCRUDController.class);
 
@@ -90,7 +89,6 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         }
     }
 
-    @Override
     public void goToCreateForm() {
         profileModel.initCreate();
         createWindow.setTitle(_("Create Profile"));
@@ -98,7 +96,6 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToEditForm(Profile profile) {
         profileModel.initEdit(profile);
         createWindow.setTitle(_("Edit Profile"));
@@ -106,7 +103,6 @@ public class ProfileCRUDController extends GenericForwardComposer implements
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);

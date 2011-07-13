@@ -49,8 +49,7 @@ import org.zkoss.zul.api.Window;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
 @SuppressWarnings("serial")
-public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implements
-        ITypeOfWorkHoursCRUDController {
+public class TypeOfWorkHoursCRUDController extends GenericForwardComposer {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(TypeOfWorkHoursCRUDController.class);
@@ -78,7 +77,6 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
         getVisibility().showOnly(listWindow);
     }
 
-    @Override
     public void goToCreateForm() {
         typeOfWorkHoursModel.initCreate();
         createWindow.setTitle(_("Create Work Hours Type"));
@@ -86,7 +84,6 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToEditForm(TypeOfWorkHours typeOfWorkHours) {
         typeOfWorkHoursModel.initEdit(typeOfWorkHours);
         createWindow.setTitle(_("Edit Work Hours Type"));
@@ -94,7 +91,6 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer implem
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);

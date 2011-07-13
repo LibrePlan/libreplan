@@ -76,8 +76,7 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class CostCategoryCRUDController extends GenericForwardComposer
-        implements ICostCategoryCRUDController {
+public class CostCategoryCRUDController extends GenericForwardComposer {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
@@ -137,7 +136,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         allHoursType = new SimpleListModel(costCategoryModel.getAllHoursType());
     }
 
-    @Override
     public void goToCreateForm() {
         costCategoryModel.initCreate();
         createWindow.setTitle(_("Create Cost Category"));
@@ -145,7 +143,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToEditForm(CostCategory costCategory) {
         costCategoryModel.initEdit(costCategory);
         createWindow.setTitle(_("Edit Cost Category"));
@@ -153,7 +150,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer
         Util.reloadBindings(createWindow);
     }
 
-    @Override
     public void goToList() {
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
