@@ -88,10 +88,16 @@ public class EntitySequenceDAO extends
     @Override
     public EntitySequence getActiveEntitySequence(EntityNameEnum entityName)
             throws InstanceNotFoundException, NonUniqueResultException {
-        return (EntitySequence) getSession().createCriteria(
+        EntitySequence entitySequence = (EntitySequence) getSession()
+                .createCriteria(
                 EntitySequence.class).add(
                 Restrictions.eq("entityName", entityName)).add(
                 Restrictions.eq("active", true)).uniqueResult();
+        if (entitySequence == null) {
+            throw new InstanceNotFoundException(entitySequence,
+                    "Entity sequence not exist");
+        }
+        return entitySequence;
     }
 
     @Override

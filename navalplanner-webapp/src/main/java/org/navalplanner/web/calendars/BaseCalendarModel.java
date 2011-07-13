@@ -118,8 +118,11 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
     @Transactional(readOnly = true)
     public void initCreate() {
         editing = false;
-        boolean codeGenerated = configurationDAO.getConfiguration()
-                .getGenerateCodeForBaseCalendars();
+
+        boolean codeGenerated = (configurationDAO.getConfiguration() != null) ? configurationDAO
+                .getConfiguration().getGenerateCodeForBaseCalendars()
+                : false;
+
         this.baseCalendar = BaseCalendar.createBasicCalendar();
 
         if (codeGenerated) {
@@ -149,8 +152,10 @@ public class BaseCalendarModel extends IntegrationEntityModel implements
         forceLoad(this.baseCalendar);
         this.baseCalendar.setCode("");
 
-        boolean codeGenerated = configurationDAO.getConfiguration()
-                .getGenerateCodeForBaseCalendars();
+        boolean codeGenerated = (configurationDAO.getConfiguration() != null) ? configurationDAO
+                .getConfiguration().getGenerateCodeForBaseCalendars()
+                : false;
+
         if (codeGenerated) {
             setDefaultCode();
         }
