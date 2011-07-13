@@ -286,14 +286,13 @@ ganttz.UnlinkedDependencyComponent = zk.$extends(ganttz.DependencyComponentBase,
         ganttz.DependencyList.getInstance().removeChild(this);
     },
     _isOverTask : function() {
-        var tasksArray = jq('div[z\\.type="ganttz.task.Task"]');
-        var overTask = null;
-
-        tasksArray.each(function(index, element){
-            if(ganttz.TaskComponent.$(element.id).mouseOverTask) overTask = ganttz.TaskComponent.$(element.id);
+        var tasksOver = jq.grep(ganttz.TaskComponent.allTaskComponents(), function(task) {
+            return task.mouseOverTask;
         });
-
-        return overTask;
+        if (tasksOver.length > 0) {
+            return tasksOver[0];
+        }
+        return null;
     },
     _getCoordOrigin: function() {
         if (this._coordOrigin) {

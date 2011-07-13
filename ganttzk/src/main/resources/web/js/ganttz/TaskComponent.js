@@ -228,5 +228,12 @@ ganttz.TaskComponent = zk.$extends(zul.Widget, {
     _PERSPECTIVES_WIDTH : 80,
     CORNER_WIDTH : 20,
     HEIGHT : 10,
-    HALF_HEIGHT : 5
+    HALF_HEIGHT : 5,
+    allTaskComponents: function() {
+        var tasksArray = jq('div[z\\.type="ganttz.task.Task"]')
+            .add('div[z\\.type="ganttz.taskcontainer.TaskContainer"]');
+        return jq.map(tasksArray, function(element) {
+            return ganttz.TaskComponent.$(element.id);
+        });
+    }
 });
