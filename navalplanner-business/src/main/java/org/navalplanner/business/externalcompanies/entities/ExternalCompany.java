@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.externalcompanies.daos.IExternalCompanyDAO;
@@ -35,7 +36,7 @@ import org.navalplanner.business.users.entities.User;
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  */
-public class ExternalCompany extends BaseEntity {
+public class ExternalCompany extends BaseEntity implements IHumanIdentifiable{
 
     private String name;
 
@@ -187,6 +188,11 @@ public class ExternalCompany extends BaseEntity {
         return !StringUtils.isEmpty(appURI)
                 && !StringUtils.isEmpty(ourCompanyLogin)
                 && !StringUtils.isEmpty(ourCompanyPassword);
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }

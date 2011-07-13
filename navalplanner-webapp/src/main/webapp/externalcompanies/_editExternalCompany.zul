@@ -100,7 +100,7 @@
         label="${i18n:_('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
         label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
-    <button onClick="controller.cancel();"
+    <button onClick="controller.cancelForm();"
         label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
 
 </window>

@@ -34,6 +34,6 @@
         <vbox id="messagesContainer" width="100%"></vbox>
 
         <list top_id="listWindow" />
-        <edition top_id="createWindow" />
+        <edition top_id="editWindow" />
     </window>
 </zk>

@@ -30,20 +30,12 @@ import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.externalcompanies.entities.ExternalCompany;
 import org.navalplanner.business.users.entities.User;
-import org.navalplanner.web.common.ConstraintChecker;
-import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
-import org.navalplanner.web.common.Util;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Comboitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 
 /**
  * Controller for CRUD actions over a {@link User}
@@ -51,23 +43,13 @@ import org.zkoss.zul.Window;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @SuppressWarnings("serial")
-public class ExternalCompanyCRUDController extends GenericForwardComposer
+public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCompany>
         implements IExternalCompanyCRUDController {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExternalCompanyCRUDController.class);
 
     private IExternalCompanyModel externalCompanyModel;
-
-    private Window createWindow;
-
-    private Window listWindow;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private Textbox appURI;
 
@@ -78,28 +60,14 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        getVisibility().showOnly(listWindow);
-        appURI = (Textbox) createWindow.getFellow("appURI");
-        ourCompanyLogin = (Textbox) createWindow.getFellow("ourCompanyLogin");
-        ourCompanyPassword = (Textbox) createWindow
+        appURI = (Textbox) editWindow.getFellow("appURI");
+        ourCompanyLogin = (Textbox) editWindow.getFellow("ourCompanyLogin");
+        ourCompanyPassword = (Textbox) editWindow
                 .getFellow("ourCompanyPassword");
     }
 
-    @Override
-    public void goToCreateForm() {
-        externalCompanyModel.initCreate();
-        createWindow.setTitle(_("Create Company"));
-        getVisibility().showOnly(createWindow);
-        setInteractionFieldsActivation(getCompany()
-                .getInteractsWithApplications());
-        clearAutocompleteUser();
-        Util.reloadBindings(createWindow);
-    }
-
     private void clearAutocompleteUser() {
-        Autocomplete user = (Autocomplete) createWindow.getFellowIfAny("user");
+        Autocomplete user = (Autocomplete) editWindow.getFellowIfAny("user");
         if (user != null) {
             user.clear();
         }
@@ -109,85 +77,8 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         goToEditForm(dto.getCompany());
     }
 
-    @Override
-    public void goToEditForm(ExternalCompany company) {
-        externalCompanyModel.initEdit(company);
-        createWindow.setTitle(_("Edit Company"));
-        getVisibility().showOnly(createWindow);
-        setInteractionFieldsActivation(company.getInteractsWithApplications());
-        clearAutocompleteUser();
-        Util.reloadBindings(createWindow);
-    }
-
-    public void confirmRemove(ExternalCompanyDTO dto) {
-        try {
-            int status = Messagebox.show(_(
-                    "Confirm deleting {0}. Are you sure?", dto.getCompany()
-                            .getName()), _("Delete"), Messagebox.OK
-                    | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                goToDelete(dto);
-            }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", dto.getCompany()
-                    .getId()), e);
-        }
-    }
-
-    private void goToDelete(ExternalCompanyDTO dto) {
-        ExternalCompany company = dto.getCompany();
-        boolean alreadyInUse = externalCompanyModel.isAlreadyInUse(company);
-        if (alreadyInUse) {
-            messagesForUser
-                    .showMessage(
-                            Level.ERROR,
-                            _(
-                                    "You can not remove the company \"{0}\" because is already in use in some project or in some subcontrated task.",
-                                    company.getName()));
-        } else {
-            externalCompanyModel.deleteCompany(dto.getCompany());
-            Util.reloadBindings(self);
-            messagesForUser.showMessage(Level.INFO, _("Removed {0}", company
-                    .getName()));
-        }
-
-    }
-
-    @Override
-    public void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
-
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditForm(getCompany());
-        }
-    }
-
-    public boolean save() {
-        if (!ConstraintChecker.isValid(createWindow)) {
-            return false;
-        }
-        try {
-            externalCompanyModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Company saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-        }
-        return false;
+    protected void save() throws ValidationException {
+        externalCompanyModel.confirmSave();
     }
 
     public List<ExternalCompany> getCompanies() {
@@ -242,11 +133,6 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
         ourCompanyPassword.setConstraint("");
     }
 
-    private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow) : visibility;
-    }
-
     public void sortByDefaultByName() {
         Column column = (Column) listWindow.getFellowIfAny("columnName");
         if (column != null) {
@@ -258,5 +144,40 @@ public class ExternalCompanyCRUDController extends GenericForwardComposer
                 column.setSortDirection("descending");
             }
         }
+    }
+
+    @Override
+    protected String getEntityType() {
+        return _("External company");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("External companies");
+    }
+
+    @Override
+    protected void initCreate() {
+        externalCompanyModel.initCreate();
+        setInteractionFieldsActivation(getCompany()
+                .getInteractsWithApplications());
+        clearAutocompleteUser();
+    }
+
+    @Override
+    protected void initEdit(ExternalCompany company) {
+        externalCompanyModel.initEdit(company);
+        setInteractionFieldsActivation(company.getInteractsWithApplications());
+        clearAutocompleteUser();
+    }
+
+    @Override
+    protected ExternalCompany getEntityBeingEdited() {
+        return externalCompanyModel.getCompany();
+    }
+
+    @Override
+    protected void delete(ExternalCompany company) {
+        externalCompanyModel.deleteCompany(company);
     }
 }
