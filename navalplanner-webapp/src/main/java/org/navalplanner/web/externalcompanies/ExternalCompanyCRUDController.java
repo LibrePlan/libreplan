@@ -43,8 +43,8 @@ import org.zkoss.zul.Textbox;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 @SuppressWarnings("serial")
-public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCompany>
-        implements IExternalCompanyCRUDController {
+public class ExternalCompanyCRUDController extends
+        BaseCRUDController<ExternalCompany> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(ExternalCompanyCRUDController.class);
