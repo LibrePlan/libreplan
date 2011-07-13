@@ -28,7 +28,6 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.users.bootstrap.MandatoryUser;
 
 /**
  * Model for UI operations related to {@link User}
@@ -123,8 +122,6 @@ public interface IUserModel {
     void setPassword(String password);
 
     String getClearNewPassword();
-
-    boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser admin);
 
     void confirmRemove(User user) throws InstanceNotFoundException;
 

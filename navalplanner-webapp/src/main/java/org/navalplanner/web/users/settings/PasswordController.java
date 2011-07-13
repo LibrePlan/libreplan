@@ -27,6 +27,7 @@ import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.users.PasswordUtil;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -64,7 +65,7 @@ public class PasswordController extends GenericForwardComposer {
             try {
                 passwordModel.confirmSave();
                 messages.showMessage(Level.INFO, _("Password saved"));
-
+                PasswordUtil.showOrHideDefaultPasswordWarnings();
             } catch (ValidationException e) {
                 messages.showInvalidValues(e);
             }

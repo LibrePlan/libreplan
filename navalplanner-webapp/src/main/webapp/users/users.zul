@@ -28,37 +28,9 @@
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 <?component name="list" inline="true" macroURI="_listUsers.zul"?>
 <?component name="edition" inline="true" macroURI="_editUser.zul"?>
-<zk>
+<zk xmlns:n="http://www.zkoss.org/2005/zk/native">
 
-    <script type="text/javascript">
-    <![CDATA[
-        function showOrHideDefaultPasswordWarnings(adminNotDefaultPassword,
-            userNotDefaultPassword, wsreaderNotDefaultPassword,
-            wswriterNotDefaultPassword) {
-
-            setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdadmin"),
-                adminNotDefaultPassword);
-
-            var otherDefaultPassword = adminNotDefaultPassword &&
-                (!userNotDefaultPassword || !wsreaderNotDefaultPassword || !wswriterNotDefaultPassword);
-            setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdOthers"),
-                !otherDefaultPassword);
-
-            if (otherDefaultPassword) {
-                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswduser"),
-                    userNotDefaultPassword);
-                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwsreader"),
-                    wsreaderNotDefaultPassword);
-                setDisplayNoneOrInline(document.getElementById("warningDefaultPasswdwswriter"),
-                    wswriterNotDefaultPassword);
-            }
-        }
-
-        function setDisplayNoneOrInline(component, boolean) {
-            component.style["display"] = boolean ? "none" : "inline";
-        }
-    ]]>
-    </script>
+    <n:script type="text/javascript" src="/navalplanner-webapp/js/defaultPasswordWarnings.js" />
 
     <window self="@{define(content)}"
         apply="org.navalplanner.web.users.UserCRUDController">

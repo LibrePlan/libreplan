@@ -35,7 +35,6 @@ import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
-import org.navalplanner.web.users.bootstrap.MandatoryUser;
 import org.navalplanner.web.users.services.IDBPasswordEncoderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -51,7 +50,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/users/users.zul")
-public class UserModel extends PasswordUtil implements IUserModel {
+public class UserModel implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
@@ -99,7 +98,8 @@ public class UserModel extends PasswordUtil implements IUserModel {
                  * changedDefaultAdminPassword.
                  */
                 if (Configuration.isDefaultPasswordsControl()) {
-                    checkIfChangeDefaultPasswd(user);
+                    PasswordUtil.checkIfChangeDefaultPasswd(user,
+                            getClearNewPassword());
                 }
 
                 user.setPassword(dbPasswordEncoderService.encodePassword(
@@ -217,12 +217,6 @@ public class UserModel extends PasswordUtil implements IUserModel {
     @Override
     public String getClearNewPassword() {
         return clearNewPassword;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public boolean hasChangedDefaultPasswordOrDisabled(MandatoryUser user) {
-        return user.hasChangedDefaultPasswordOrDisabled();
     }
 
     @Override

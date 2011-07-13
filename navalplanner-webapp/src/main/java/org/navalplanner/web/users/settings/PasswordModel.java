@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 @OnConcurrentModification(goToPage = "/settings/changePassword.zul")
-public class PasswordModel extends PasswordUtil implements IPasswordModel{
+public class PasswordModel implements IPasswordModel {
 
     @Autowired
     private IUserDAO userDAO;
@@ -55,11 +55,13 @@ public class PasswordModel extends PasswordUtil implements IPasswordModel{
     @Autowired
     private IDBPasswordEncoderService dbPasswordEncoderService;
 
+    private String clearPassword;
+
     @Override
     @Transactional
     public void confirmSave() throws ValidationException {
         try {
-            if (getClearNewPassword() != null) {
+            if (clearPassword != null) {
 
                 /*
                  * it ckecks if the user password who have admin role has
@@ -67,11 +69,12 @@ public class PasswordModel extends PasswordUtil implements IPasswordModel{
                  * changedDefaultAdminPassword.
                  */
                 if (Configuration.isDefaultPasswordsControl()) {
-                    checkIfChangeDefaultPasswd(user);
+                    PasswordUtil
+                            .checkIfChangeDefaultPasswd(user, clearPassword);
                 }
 
                 user.setPassword(dbPasswordEncoderService.encodePassword(
-                        getClearNewPassword(), user.getLoginName()));
+                        clearPassword, user.getLoginName()));
             }
         } catch (IllegalArgumentException e) {
         }
@@ -85,9 +88,9 @@ public class PasswordModel extends PasswordUtil implements IPasswordModel{
         // user.getLoginName must exist to do that, and we're
         // not sure at this point
         if (password != "") {
-            setClearNewPassword(password);
+            clearPassword = password;
         } else {
-            setClearNewPassword(null);
+            clearPassword = null;
         }
     }
 

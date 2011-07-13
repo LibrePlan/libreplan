@@ -85,7 +85,8 @@ public enum MandatoryUser {
     }
 
     private static Configuration getConfiguration() {
-        return Registry.getConfigurationDAO().getConfiguration();
+        return Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction();
     }
 
     private Set<UserRole> initialRoles;

@@ -46,6 +46,7 @@ public class UserDAO extends GenericDAOHibernate<User, Long>
     implements IUserDAO {
 
     @Override
+    @Transactional(readOnly = true)
     public User findByLoginName(String loginName)
         throws InstanceNotFoundException {
 
