@@ -7137,7 +7137,7 @@ msgstr "Escritor de servicio web"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/users/entities/UserRole.java:36
 msgid "All projects read allowed"
-msgstr "Permiso de lecutra para todos los proyectos"
+msgstr "Permiso de lectura para todos los proyectos"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/users/entities/UserRole.java:37
 msgid "All projects edition allowed"
