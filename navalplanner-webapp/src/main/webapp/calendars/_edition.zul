@@ -170,13 +170,14 @@
                       model="@{calendarController.editionController.calendarExceptions}"
                       itemRenderer="@{calendarController.editionController.calendarExceptionRenderer}"
                       onSelect="calendarController.editionController.onSelectException(event)"
-                      rows="4" width="400px">
+                      rows="4">
                       <listhead>
                         <listheader label="${i18n:_('Day')}" />
-                        <listheader label="${i18n:_('Exception Type')}" width="150px" />
+                        <listheader label="${i18n:_('Exception Type')}" width="180px" />
                         <listheader label="${i18n:_('Normal Effort')}" width="100px" />
                         <listheader label="${i18n:_('Extra Effort')}" width="100px" />
                         <listheader label="${i18n:_('Code')}"
+                          width="200px"
                           visible="@{calendarController.editionController.notResourceCalendar}" />
                         <listheader label="${i18n:_('Origin')}" />
                         <listheader label="${i18n:_('Op.')}" />
@@ -196,17 +197,15 @@
                   <listbox id="hoursPerDay"
                     style="margin-right: 5px;margin-left:5px;"
                     model="@{calendarController.editionController.getHoursPerDay}"
-                    itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}"
-                    sizedByContent="true">
+                    itemRenderer="@{calendarController.editionController.hoursPerDayRenderer}">
                     <listhead>
-                      <listheader label="${i18n:_('Day of week')}"
-                        width="80px" />
+                      <listheader label="${i18n:_('Day of week')}"/>
                       <listheader label="${i18n:_('Normal Effort')}"
-                        width="100px" />
+                        width="200px" />
                       <listheader label="${i18n:_('Extra Effort')}"
-                        width="180px" />
+                        width="200px" />
                       <listheader label="${i18n:_('Inherited')}"
-                        width="30px"
+                        width="80px"
                         tooltiptext="${i18n:_('Inherited from parent calendar')}" />
                     </listhead>
                   </listbox>
@@ -224,15 +223,14 @@
 
                     <listbox id="historyInformation"
                       model="@{calendarController.editionController.historyVersions}"
-                      itemRenderer="@{calendarController.editionController.historyVersionsRenderer}"
-                      sizedByContent="true">
+                      itemRenderer="@{calendarController.editionController.historyVersionsRenderer}">
                       <listhead>
-                        <listheader label="${i18n:_('Parent')}" width="80px"
+                        <listheader label="${i18n:_('Parent')}" width="180px"
                             visible="@{calendarController.editionController.isDerived}"/>
                         <listheader label="${i18n:_('Valid from')}"
-                          width="80px" />
+                          width="120px" />
                         <listheader label="${i18n:_('Valid until')}"
-                          width="80px" />
+                          width="120px" />
                         <listheader label="${i18n:_('Summary')}" />
                         <listheader label="${i18n:_('Op.')}"
                           tooltiptext="${i18n:_('Operations')}" width="40px" />

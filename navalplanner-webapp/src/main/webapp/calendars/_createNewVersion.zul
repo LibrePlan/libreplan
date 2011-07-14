@@ -27,7 +27,7 @@
     <grid id="gridProjectDetails">
         <columns>
             <column width="150px" />
-            <column width="300px" />
+            <column width="280px" />
         </columns>
         <rows>
             <row>
@@ -35,7 +35,6 @@
                 <hbox align="right">
                       <label value="${i18n:_('Type')}:"/>
                       <combobox id="parentCalendars"
-                        constraint="no empty:${i18n:_('cannot be null or empty')}"
                         model="@{calendarController.editionController.parentCalendars}"
                         disabled="@{calendarController.editionController.isNotDerived}"
                         itemRenderer = "@{calendarController.editionController.parentCalendarsComboitemRenderer}" />

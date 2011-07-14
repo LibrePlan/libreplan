@@ -300,8 +300,6 @@ public abstract class BaseCalendarEditionController extends
     }
 
     private String getCurrentExpiringDateLabel() {
-        System.out.println("expiringDate "
-                + baseCalendarModel.getCurrentStartDate());
         Date date = baseCalendarModel.getCurrentExpiringDate();
         String label = "";
         if (date != null) {
@@ -311,8 +309,6 @@ public abstract class BaseCalendarEditionController extends
     }
 
     private String getCurrentStartDateLabel() {
-        System.out.println("expiringDate "
-                + baseCalendarModel.getCurrentStartDate());
         Date date = baseCalendarModel.getCurrentStartDate();
         String label = "";
         if (date != null) {
@@ -986,7 +982,8 @@ public abstract class BaseCalendarEditionController extends
             Combobox parentCalendars = (Combobox) createNewVersionWindow
                     .getFellow("parentCalendars");
             if (parentCalendars.getSelectedItem() == null) {
-                return;
+                throw new WrongValueException(parentCalendars,
+                        _("cannot be null or empty"));
             }
             selected = (BaseCalendar) parentCalendars.getSelectedItem()
                     .getValue();
@@ -1077,8 +1074,8 @@ public abstract class BaseCalendarEditionController extends
             item.setValue(calendar);
 
             Combobox combobox = (Combobox) item.getParent();
-            if (combobox.getSelectedItem() == null) {
-                combobox.setSelectedItem(item);
+            if (combobox.getSelectedIndex() != 0) {
+                combobox.setSelectedIndex(0);
             }
         }
     }
