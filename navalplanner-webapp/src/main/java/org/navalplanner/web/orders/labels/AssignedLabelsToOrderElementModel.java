@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.web.orders.IOrderModel;
@@ -62,14 +61,6 @@ public class AssignedLabelsToOrderElementModel extends
     @Override
     protected List<Label> getLabels(OrderElement orderElement) {
         return new ArrayList<Label>(orderElement.getLabels());
-    }
-
-    @Override
-    public Label createLabel(String labelName, LabelType labelType) {
-        Label label = Label.create(labelName);
-        label.setType(labelType);
-        orderModel.addLabel(label);
-        return label;
     }
 
     @Override

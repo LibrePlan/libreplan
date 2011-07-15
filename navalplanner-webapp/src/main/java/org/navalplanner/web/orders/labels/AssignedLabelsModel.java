@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.navalplanner.business.common.IAdHocTransactionService;
+import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
@@ -40,6 +42,9 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
     private ILabelDAO labelDAO;
 
     private T element;
+
+    @Autowired
+    private IAdHocTransactionService adHocTransactionService;
 
     @Transactional(readOnly = true)
     public void init(T element) {
@@ -121,9 +126,19 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
         return result;
     }
 
-    public Label createLabel(String labelName, LabelType labelType) {
-        Label label = Label.create(labelName);
-        label.setType(labelType);
+    public Label createLabel(final String labelName,
+            final LabelType labelType) {
+        Label label = adHocTransactionService
+                .runOnAnotherTransaction(new IOnTransaction<Label>() {
+                    @Override
+                    public Label execute() {
+                        Label label = Label.create(labelName);
+                        label.setType(labelType);
+                        labelDAO.save(label);
+                        return label;
+                    }
+        });
+        label.dontPoseAsTransientObjectAnymore();
         addLabelToConversation(label);
         return label;
     }
