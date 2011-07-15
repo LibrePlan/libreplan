@@ -23,6 +23,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.common.IHumanIdentifiable;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
@@ -319,6 +320,11 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
             }
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } catch (InstanceNotFoundException ie) {
+            messagesForUser.showMessage(
+                    Level.ERROR,
+                    _("{0} \"{1}\" could not be deleted, it was already removed", getEntityType(),
+                            entity.getHumanId()));
         }
     }
 
@@ -343,6 +349,6 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      * @param entity
      *            Entity to be removed
      */
-    protected abstract void delete(T entity);
+    protected abstract void delete(T entity) throws InstanceNotFoundException;
 
 }
