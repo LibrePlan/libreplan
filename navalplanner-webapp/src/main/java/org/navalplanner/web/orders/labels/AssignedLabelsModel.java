@@ -30,6 +30,7 @@ import org.navalplanner.business.labels.daos.ILabelDAO;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -126,9 +127,31 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
         return result;
     }
 
+    @Transactional(readOnly = true)
     public Label createLabel(final String labelName,
             final LabelType labelType) {
-        Label label = adHocTransactionService
+        Label label = createAndSaveLabelOrGetFromDatabase(labelName, labelType);
+        addLabelToConversation(label);
+        return label;
+    }
+
+    private Label createAndSaveLabelOrGetFromDatabase(final String labelName,
+            final LabelType labelType) {
+        Label label;
+        try {
+            label = saveLabelOnAnotherTransaction(labelName, labelType);
+            label.dontPoseAsTransientObjectAnymore();
+        } catch (DataIntegrityViolationException e) {
+            // Label was already created by another user while editing the order
+            label = labelDAO.findByNameAndType(labelName, labelType);
+            forceLoad(label);
+        }
+        return label;
+    }
+
+    private Label saveLabelOnAnotherTransaction(final String labelName,
+            final LabelType labelType) {
+        return adHocTransactionService
                 .runOnAnotherTransaction(new IOnTransaction<Label>() {
                     @Override
                     public Label execute() {
@@ -137,10 +160,11 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
                         labelDAO.save(label);
                         return label;
                     }
-        });
-        label.dontPoseAsTransientObjectAnymore();
-        addLabelToConversation(label);
-        return label;
+                });
+    }
+
+    private void forceLoad(Label label) {
+        label.getType().getName();
     }
 
     protected abstract void addLabelToConversation(Label label);
