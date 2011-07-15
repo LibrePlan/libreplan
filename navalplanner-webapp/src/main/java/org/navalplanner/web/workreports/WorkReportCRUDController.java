@@ -171,15 +171,15 @@ public class WorkReportCRUDController extends GenericForwardComposer implements
                 .getFellowIfAny("listWorkReportLines");
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setVariable("controller", this, true);
-        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
-                .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
-        handler.register(this, page);
         initCurrentList();
         if(listType != null) {
             //listType is null in reports -> work report lines
             listType.setSelectedIndex(0);
         }
         initializeHoursType();
+        final EntryPointsHandler<IWorkReportCRUDControllerEntryPoints> handler = URLHandlerRegistry
+                .getRedirectorFor(IWorkReportCRUDControllerEntryPoints.class);
+        handler.register(this, page);
     }
 
     private void initializeHoursType() {
