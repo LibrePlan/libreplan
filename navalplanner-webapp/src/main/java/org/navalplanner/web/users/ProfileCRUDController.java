@@ -30,18 +30,12 @@ import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.web.common.ConstraintChecker;
-import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link Profile}
@@ -50,31 +44,18 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class ProfileCRUDController extends GenericForwardComposer {
+public class ProfileCRUDController extends BaseCRUDController<Profile> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(ProfileCRUDController.class);
 
-    private Window createWindow;
-
-    private Window listWindow;
-
     private IProfileModel profileModel;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private Combobox userRolesCombo;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        userRolesCombo = (Combobox) createWindow.getFellowIfAny("userRolesCombo");
-        getVisibility().showOnly(listWindow);
+        userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRoles(userRolesCombo);
     }
 
@@ -89,54 +70,8 @@ public class ProfileCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void goToCreateForm() {
-        profileModel.initCreate();
-        createWindow.setTitle(_("Create Profile"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    public void goToEditForm(Profile profile) {
-        profileModel.initEdit(profile);
-        createWindow.setTitle(_("Edit Profile"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    public void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
-
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditForm(getProfile());
-        }
-    }
-
-    public boolean save() {
-        if(!ConstraintChecker.isValid(createWindow)) {
-            return false;
-        }
-        try {
-            profileModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Profile saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-        }
-        return false;
+    protected void save() throws ValidationException{
+        profileModel.confirmSave();
     }
 
     public List<Profile> getProfiles() {
@@ -164,30 +99,37 @@ public class ProfileCRUDController extends GenericForwardComposer {
 
     public void addRole(UserRole role) {
         profileModel.addRole(role);
-        Util.reloadBindings(createWindow);
+        Util.reloadBindings(editWindow);
     }
 
     public void removeRole(UserRole role) {
         profileModel.removeRole(role);
-        Util.reloadBindings(createWindow);
+        Util.reloadBindings(editWindow);
     }
 
-    public void removeProfile(Profile profile) {
-        if (!isReferencedByOtherEntities(profile)) {
-            int result = showConfirmDeleteProfile(profile);
-            if (result == Messagebox.OK) {
-                try {
-                    profileModel.confirmRemove(profile);
-                    goToList();
-                } catch (InstanceNotFoundException e) {
-                    messagesForUser
-                            .showMessage(
-                                    Level.ERROR,
-                                    _("Cannot delete profile: it does not exist anymore"));
-                    LOG.error(_("Error removing element: ", profile.getId()), e);
-                }
-            }
-        }
+    @Override
+    protected String getEntityType() {
+        return _("Profile");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Profiles");
+    }
+
+    @Override
+    protected void initCreate() {
+        profileModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(Profile profile) {
+        profileModel.initEdit(profile);
+    }
+
+    @Override
+    protected Profile getEntityBeingEdited() {
+        return profileModel.getProfile();
     }
 
     private boolean isReferencedByOtherEntities(Profile profile) {
@@ -211,25 +153,13 @@ public class ProfileCRUDController extends GenericForwardComposer {
                             profile.getId()), e);
         }
     }
-
-    private int showConfirmDeleteProfile(Profile profile) {
-        try {
-            return Messagebox.show(
-                    _("Confirm deleting this profile. Are you sure?"),
-                    _("Delete"), Messagebox.OK | Messagebox.CANCEL,
-                    Messagebox.QUESTION);
-        } catch (InterruptedException e) {
-            LOG.error(
-                    _("Error on showing removing element: ", profile.getId()),
-                    e);
-        }
-        return Messagebox.CANCEL;
+    @Override
+    protected boolean beforeDeleting(Profile profile){
+        return !isReferencedByOtherEntities(profile);
     }
 
-    private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow)
-                : visibility;
+    @Override
+    protected void delete(Profile profile) throws InstanceNotFoundException {
+        profileModel.confirmRemove(profile);
     }
-
 }
