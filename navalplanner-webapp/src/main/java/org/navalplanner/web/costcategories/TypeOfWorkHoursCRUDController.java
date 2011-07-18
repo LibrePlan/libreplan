@@ -27,104 +27,42 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
-import org.navalplanner.web.common.ConstraintChecker;
-import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link TypeOfWorkHours}
  *
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
+ * @author Cristina Alvarino Pereza <cristina.alvarino@comtecsf.es>
  */
 @SuppressWarnings("serial")
-public class TypeOfWorkHoursCRUDController extends GenericForwardComposer {
+public class TypeOfWorkHoursCRUDController extends BaseCRUDController<TypeOfWorkHours> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(TypeOfWorkHoursCRUDController.class);
 
-    private Window createWindow;
-
-    private Window listWindow;
-
     private ITypeOfWorkHoursModel typeOfWorkHoursModel;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private NewDataSortableGrid listing;
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
         listing = (NewDataSortableGrid) listWindow.getFellowIfAny("listing");
-        getVisibility().showOnly(listWindow);
     }
 
-    public void goToCreateForm() {
-        typeOfWorkHoursModel.initCreate();
-        createWindow.setTitle(_("Create Work Hours Type"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    public void goToEditForm(TypeOfWorkHours typeOfWorkHours) {
-        typeOfWorkHoursModel.initEdit(typeOfWorkHours);
-        createWindow.setTitle(_("Edit Work Hours Type"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    public void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
-
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditForm(getTypeOfWorkHours());
-        }
-    }
-
-    public boolean save() {
-        if(!ConstraintChecker.isValid(createWindow)) {
-            return false;
-        }
-        try {
-            typeOfWorkHoursModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Type of work hours saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-        }
-        return false;
+    protected void save() throws ValidationException {
+        typeOfWorkHoursModel.confirmSave();
     }
 
     public List<TypeOfWorkHours> getTypesOfWorkHours() {
@@ -133,12 +71,6 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer {
 
     public TypeOfWorkHours getTypeOfWorkHours() {
         return typeOfWorkHoursModel.getTypeOfWorkHours();
-    }
-
-    private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow)
-                : visibility;
     }
 
     public void onCheckGenerateCode(Event e) {
@@ -151,17 +83,7 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer {
                 messagesForUser.showMessage(Level.ERROR, err.getMessage());
             }
         }
-        Util.reloadBindings(createWindow);
-    }
-
-    public void confirmDelete(TypeOfWorkHours typeOfWorkHours) {
-        if (!isReferencedByOtherEntities(typeOfWorkHours)) {
-            int result = showConfirmDeleteWorkHoursType(typeOfWorkHours);
-            if (result == Messagebox.OK) {
-                typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
-                Util.reloadBindings(listing);
-            }
-        }
+        Util.reloadBindings(editWindow);
     }
 
     private boolean isReferencedByOtherEntities(TypeOfWorkHours typeOfWorkHours) {
@@ -185,14 +107,38 @@ public class TypeOfWorkHoursCRUDController extends GenericForwardComposer {
         }
     }
 
-    private int showConfirmDeleteWorkHoursType(TypeOfWorkHours typeOfWorkHours) {
-        try {
-            return Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-        } catch (InterruptedException e) {
-            LOG.error(_("Error on removing typeOfWorkHours: ", typeOfWorkHours.getId()), e);
-        }
-        return Messagebox.CANCEL;
+    @Override
+    protected String getEntityType() {
+        return _("Type of hours");
     }
 
+    @Override
+    protected String getPluralEntityType() {
+        return _("Types of hours");
+    }
+
+    @Override
+    protected void initCreate() {
+        typeOfWorkHoursModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(TypeOfWorkHours typeOfWorkHours) {
+        typeOfWorkHoursModel.initEdit(typeOfWorkHours);
+    }
+
+    @Override
+    protected TypeOfWorkHours getEntityBeingEdited() {
+        return typeOfWorkHoursModel.getTypeOfWorkHours();
+    }
+
+    @Override
+    protected void delete(TypeOfWorkHours typeOfWorkHours)
+            throws InstanceNotFoundException {
+        typeOfWorkHoursModel.confirmRemove(typeOfWorkHours);
+    }
+
+    protected boolean beforeDeleting(TypeOfWorkHours typeOfWorkHours) {
+        return !isReferencedByOtherEntities(typeOfWorkHours);
+    }
 }
