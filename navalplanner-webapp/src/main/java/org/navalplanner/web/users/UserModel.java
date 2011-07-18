@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.common.Configuration;
+import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
@@ -55,6 +56,9 @@ public class UserModel implements IUserModel {
 
     @Autowired
     private IUserDAO userDAO;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     @Autowired
     private IOrderAuthorizationDAO orderAuthorizationDAO;
@@ -142,7 +146,7 @@ public class UserModel implements IUserModel {
             changedPasswd = false;
         }
         // save the field changedDefaultAdminPassword in configuration.
-        Registry.getConfigurationDAO().saveChangedDefaultPassword(
+        configurationDAO.saveChangedDefaultPassword(
                 user.getLoginName(), changedPasswd);
     }
 
