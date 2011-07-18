@@ -199,13 +199,13 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
             FilterPair filterPair = (FilterPair) data;
             item.setValue(data);
 
-            final Listcell labelType = new Listcell();
-            labelType.setLabel(_(filterPair.getType().toString()));
-            labelType.setParent(item);
-
             final Listcell labelPattern = new Listcell();
             labelPattern.setLabel(filterPair.getPattern());
             labelPattern.setParent(item);
+
+            final Listcell labelType = new Listcell();
+            labelType.setLabel(_(filterPair.getType().toString()));
+            labelType.setParent(item);
 
         }
     };
