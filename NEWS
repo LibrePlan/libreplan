@@ -1,6 +1,64 @@
 NEWS
 ====
 
+
+Version 1.1.2 (18 Jul 2011)
+---------------------------
+
+Bugfixing release due to a critical bug causing problems in concurrent edition
+of projects using shared labels.
+
+Other minor issues fixed in this version:
+
+* Added operation for users deletion.
+* Solved issue with printing translation.
+* Don't show default password warnings if user is disabled.
+* Fixed issue with Sigmoid function if there is consolidated progress.
+
+Notes
+~~~~~
+
+In this version *CutyCapt* command user has changed from ``CutyCapt`` to
+``cutycapt``. Depending on your distribution you will need to perform the
+following steps:
+
+* Ubuntu Lucid (10.04) or Maverick (10.10) upgrade your CutyCapt package in
+  order to use ``cutycapt_20110107-2``.
+* Debian Sqeeze (6) remove ``cutycapt_20110107-1`` package and install the
+  official CutyCapt package.
+* Ubuntu Natty (11.04) simply install CutyCapt package if not done
+  automatically.
+* For manual installation simply rename ``CutyCapt`` command to ``cutycapt``.
+
+Changes
+~~~~~~~
+
+* Updated Spanish and Galician translations.
+* [i18n] Update keys.pot files.
+* Fixed problem in UserModel.
+* Workaround for maven 3
+* Add Eclipse m2e settings to pom.xml files
+* [Bug #1104] Allow remove profile if it's only used in order authorizations
+* Option to delete a user pending in the interface of user list
+* [Bug #1108] Fixed problem if label is created by another user
+* [Bug #1108] Fix bug
+* [i18n] Fixed typo in Spanish translation.
+* [Bug #1094] Made changes to fix the issue and use "cutycapt" command.
+* [Bug #1096] Fix bug
+* [Bug #1095] Fixed issue using header parameter of CutyCapt to set
+  Accept-Language.
+* [Bug #1090] Added JavaScript removed in one of the previous patches.
+* [Bug #1090] Removed unused variables in UserModel.
+* [Bug #1090] Avoid pass Configuration to MandatoryUser.
+* [Bug #1090] Fixed hidden warnings if user is disabled.
+* [Bug #971] Fixed reseting Tree model to null.
+* [Bug #1091] Fix bug
+* [Bug #1091] Be more lenient if the end date is before start date
+* Extract validation checks and fix exception message
+* [Bug #975] Cannot apply Sigmoid function is resource allocation has
+  consolidated days
+
+
 Version 1.1.1 (07 Jun 2011)
 ---------------------------
 

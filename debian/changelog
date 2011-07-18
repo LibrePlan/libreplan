@@ -1,3 +1,12 @@
+navalplan (1.1.2-1) maverick; urgency=low
+
+  * Fixed critical bug that causes concurrency issues editing projects with
+    labels.
+  * Added bugs fixed from stable branch.
+  * Released version 1.1.2.
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Wed, 18 Jul 2011 13:23:00 +0200
+
 navalplan (1.1.1-1) maverick; urgency=low
 
   * Changed dependency from OpenJDK to default-jdk or default-jre.
