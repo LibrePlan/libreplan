@@ -63,9 +63,13 @@ public final class SecurityUtils {
     public final static CustomUser getLoggedUser() {
         Authentication authentication = getAuthentication();
         if (authentication == null) {
+            // This happens before processing first element of login page
             return null;
         }
-        return (CustomUser) authentication.getPrincipal();
+        if (authentication.getPrincipal() instanceof CustomUser) {
+            return (CustomUser) authentication.getPrincipal();
+        }
+        return null;
     }
 
     private static Authentication getAuthentication() {

@@ -21,6 +21,8 @@ package org.navalplanner.business.settings.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.Locale;
+
 /**
  * Available languages.
  *
@@ -29,19 +31,26 @@ import static org.navalplanner.business.i18n.I18nHelper._;
  */
 public enum Language {
 
-    BROWSER_LANGUAGE(_("Use browser language configuration")),
-    GALICIAN_LANGUAGE(_("Galician")),
-    SPANISH_LANGUAGE(_("Spanish")),
-    ENGLISH_LANGUAGE(_("English"));
+    BROWSER_LANGUAGE(_("Use browser language configuration"), null),
+    GALICIAN_LANGUAGE(_("Galician"), new Locale("gl")),
+    SPANISH_LANGUAGE(_("Spanish"), new Locale("es")),
+    ENGLISH_LANGUAGE(_("English"), Locale.ENGLISH);
 
     private final String displayName;
 
-    private Language(String displayName) {
+    private Locale locale;
+
+    private Language(String displayName, Locale locale) {
         this.displayName = displayName;
+        this.locale = locale;
     }
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public Locale getLocale() {
+        return locale;
     }
 
 }

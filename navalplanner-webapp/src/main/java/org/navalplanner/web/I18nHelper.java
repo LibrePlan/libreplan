@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2011 ComtecSF, S.L.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +25,14 @@ package org.navalplanner.web;
 import java.util.HashMap;
 import java.util.Locale;
 
+import javax.servlet.http.HttpSession;
+
+import org.navalplanner.business.users.entities.User;
 import org.xnap.commons.i18n.I18n;
 import org.xnap.commons.i18n.I18nFactory;
 import org.zkoss.util.Locales;
+import org.zkoss.web.servlet.Charsets;
+import org.zkoss.zk.ui.Executions;
 
 
 public class I18nHelper {
@@ -36,8 +42,11 @@ public class I18nHelper {
     private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
 
     public static I18n getI18n() {
+        Charsets.setPreferredLocale((HttpSession) Executions.getCurrent()
+                .getSession().getNativeSession(), getUserLocale());
 
         Locale locale = Locales.getCurrent();
+
         if (localesCache.keySet().contains(locale)) {
             return localesCache.get(locale);
         }
@@ -54,6 +63,14 @@ public class I18nHelper {
         localesCache.put(Locales.getCurrent(), i18n);
 
         return i18n;
+    }
+
+    private static Locale getUserLocale() {
+        User user = UserUtil.getUserFromSession();
+        if (user != null) {
+            return user.getApplicationLanguage().getLocale();
+        }
+        return null;
     }
 
     private static I18n getDefaultI18n() {
