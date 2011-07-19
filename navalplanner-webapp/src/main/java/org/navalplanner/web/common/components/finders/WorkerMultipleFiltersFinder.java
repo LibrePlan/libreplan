@@ -37,7 +37,7 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     private IFilterEnum workerFilterEnum = new IFilterEnum() {
         @Override
         public String toString() {
-            return "worker";
+            return "Resource ( Worker )";
         }
     };
 
@@ -54,8 +54,9 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
         Iterator<Worker> iteratorWorker = getListWorkers().iterator();
         while(iteratorWorker.hasNext() && getListMatching().size() < 10) {
             Worker worker = iteratorWorker.next();
-            getListMatching().add(new FilterPair(
-                    workerFilterEnum, worker.getShortDescription(), worker));
+            getListMatching().add(
+                    new FilterPair(workerFilterEnum, worker.getDescription(),
+                            worker));
         }
         addNoneFilter();
         return getListMatching();
@@ -78,8 +79,8 @@ public class WorkerMultipleFiltersFinder extends MultipleFiltersFinder {
     }
     private void searchInWorkers(String filter) {
         for (Worker worker : getListWorkers()) {
-            String name = StringUtils.deleteWhitespace(
-                    worker.getShortDescription().toLowerCase());
+            String name = StringUtils.deleteWhitespace(worker.getDescription()
+                    .toLowerCase());
             if(name.contains(filter)) {
                 getListMatching().add(new FilterPair(
                         workerFilterEnum, worker.getShortDescription(), worker));

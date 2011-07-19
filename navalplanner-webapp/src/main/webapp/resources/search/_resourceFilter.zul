@@ -24,7 +24,7 @@
     <!-- Multiple filter -->
     <label value="${i18n:_('Filter by')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
-    <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="300px"
+    <bandboxMultipleSearch id="bdFilters" widthBandbox="285px" widthListbox="550px"
         finder="resourcesMultipleFiltersFinder"/>
 
     <!-- Personal details -->

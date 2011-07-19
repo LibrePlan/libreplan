@@ -152,18 +152,17 @@ public class ResourcesMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addCriterion(CriterionType type, Criterion criterion) {
-        String pattern = type.getName() + " :: " + criterion.getName();
-        getListMatching()
-                .add(
-                        new FilterPair(ResourceFilterEnum.Criterion, pattern,
-                criterion));
+        String pattern = criterion.getName() + " ( " + type.getName() + " ) ";
+        getListMatching().add(
+                new FilterPair(ResourceFilterEnum.Criterion, type.getResource()
+                        .toLowerCase(), pattern, criterion));
     }
 
     private void addCostCategory(CostCategory costCategory) {
         String pattern = costCategory.getName();
         getListMatching().add(
-                new FilterPair(ResourceFilterEnum.CostCategory,
-                pattern, costCategory));
+                new FilterPair(ResourceFilterEnum.CostCategory, pattern,
+                        costCategory));
     }
 
 }
