@@ -28,20 +28,24 @@ import java.util.List;
 
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.advance.entities.AdvanceType;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
-import org.navalplanner.web.common.BaseCRUDController;
+import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.MessagesForUser;
+import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
@@ -50,14 +54,27 @@ import org.zkoss.zul.impl.InputElement;
 /**
  * Controller for CRUD actions over a {@link AdvanceType}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
-public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
+public class AdvanceTypeCRUDController extends GenericForwardComposer {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
             .getLog(AdvanceTypeCRUDController.class);
 
+    private IMessagesForUser messagesForUser;
+
+    private Component messagesContainer;
+
+    private Component editWindow;
+
+    private Component createWindow;
+
+    private Component listWindow;
+
     private IAdvanceTypeModel advanceTypeModel;
+
+    private OnlyOneVisible visibility;
+
+    private boolean isEditing = false;
 
     public List<AdvanceType> getAdvanceTypes() {
         return advanceTypeModel.getAdvanceTypes();
@@ -70,6 +87,25 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        messagesForUser = new MessagesForUser(messagesContainer);
+        comp.setVariable("controller", this, true);
+        getVisibility().showOnly(listWindow);
+    }
+
+    public void cancel() {
+        goToList();
+    }
+
+    public void goToList() {
+        Util.reloadBindings(listWindow);
+        getVisibility().showOnly(listWindow);
+    }
+
+    public void goToEditForm(AdvanceType advanceType) {
+        advanceTypeModel.prepareForEdit(advanceType);
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
+        isEditing = true;
     }
 
     public Constraint lessThanDefaultMaxValue() {
@@ -130,20 +166,27 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
         return newConstraint;
     }
 
-    @Override
-    protected void save() throws ValidationException {
-        advanceTypeModel.save();
-    }
-
-    protected void beforeSaving() throws ValidationException {
-        isAllValid();
+    private boolean save() {
+        if (isAllValid()) {
+            try {
+                advanceTypeModel.save();
+                messagesForUser.showMessage(Level.INFO,
+                        _("Progress type saved"));
+                return true;
+            } catch (ValidationException e) {
+                messagesForUser.showInvalidValues(e);
+                return false;
+            }
+        }
+        return false;
     }
 
     private boolean isAllValid() {
-        Textbox unitName = (Textbox) editWindow.getFellowIfAny("unitName");
-        InputElement defaultMaxValue = (InputElement) editWindow
+        Component window = this.getCurrentWindow();
+        Textbox unitName = (Textbox) window.getFellowIfAny("unitName");
+        InputElement defaultMaxValue = (InputElement) window
                 .getFellowIfAny("defaultMaxValue");
-        InputElement precision = (InputElement) editWindow
+        InputElement precision = (InputElement) window
                 .getFellowIfAny("precision");
         unitName.setFocus(true);
         return (isValid(unitName) && isValid(precision) && isValid(defaultMaxValue));
@@ -154,13 +197,45 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
         return inputtext.isValid();
     }
 
+    public void confirmRemove(AdvanceType advanceType) {
+        try {
+            int status = Messagebox.show(_(
+                    "Confirm deleting {0}. Are you sure?", advanceType
+                            .getUnitName()), "Remove", Messagebox.OK
+                    | Messagebox.CANCEL, Messagebox.QUESTION);
+            if (Messagebox.OK == status) {
+                advanceTypeModel.prepareForRemove(advanceType);
+                advanceTypeModel.remove(advanceType);
+            }
+            Util.reloadBindings(listWindow);
+            messagesForUser.showMessage(Level.INFO, _("Removed {0}",
+                    advanceType.getUnitName()));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void goToCreateForm() {
+        advanceTypeModel.prepareForCreate();
+        getVisibility().showOnly(createWindow);
+        Util.reloadBindings(createWindow);
+        isEditing = false;
+    }
+
+    private OnlyOneVisible getVisibility() {
+        if (visibility == null) {
+            visibility = new OnlyOneVisible(listWindow, createWindow,
+                    editWindow);
+        }
+        return visibility;
+    }
+
     public void setDefaultMaxValue(BigDecimal defaultMaxValue) {
         try {
             advanceTypeModel.setDefaultMaxValue(defaultMaxValue);
         } catch (IllegalArgumentException e) {
-            Component component = editWindow.getFellow(
+            Component component = getCurrentWindow().getFellow(
                     "defaultMaxValue");
-
             throw new WrongValueException(component, e.getMessage());
         }
     }
@@ -169,15 +244,34 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
         return advanceTypeModel.getDefaultMaxValue();
     }
 
+    private Component getCurrentWindow() {
+        if (!isEditing) {
+            return createWindow;
+        }
+        return editWindow;
+    }
+
     public void setPercentage(Boolean percentage) {
         advanceTypeModel.setPercentage(percentage);
+        Util.reloadBindings(getCurrentWindow().getFellow(
+                "defaultMaxValue"));
     }
 
     public Boolean getPercentage() {
         return advanceTypeModel.getPercentage();
     }
 
+    public void saveAndExit() {
+        if (save()) {
+            goToList();
+        }
+    }
 
+    public void saveAndContinue() {
+        if (save()) {
+            goToEditForm(getAdvanceType());
+        }
+    }
 
     public boolean isImmutable() {
         return advanceTypeModel.isImmutable();
@@ -239,8 +333,8 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
                         .createRemoveButton(new EventListener() {
 
                     @Override
-                            public void onEvent(Event event) throws InstanceNotFoundException {
-                        delete(advanceType);
+                            public void onEvent(Event event) {
+                        confirmRemove(advanceType);
                     }
                 });
                 removeButton.setDisabled(advanceTypeModel
@@ -253,35 +347,4 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
         };
     }
 
-    @Override
-    protected String getEntityType() {
-        return _("Advanced type");
-    }
-
-    @Override
-    protected String getPluralEntityType() {
-        return _("Advanced types");
-    }
-
-    @Override
-    protected void initCreate() {
-        advanceTypeModel.prepareForCreate();
-    }
-
-    @Override
-    protected void initEdit(AdvanceType advanceType) {
-        advanceTypeModel.prepareForEdit(advanceType);
-    }
-
-    @Override
-    protected AdvanceType getEntityBeingEdited() {
-        return advanceTypeModel.getAdvanceType();
-    }
-
-    @Override
-    protected void delete(AdvanceType advanceType) throws InstanceNotFoundException{
-        advanceTypeModel.prepareForRemove(advanceType);
-        advanceTypeModel.remove(advanceType);
-        Util.reloadBindings(listWindow);
-    }
 }

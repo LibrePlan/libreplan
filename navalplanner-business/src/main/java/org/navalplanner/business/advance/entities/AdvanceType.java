@@ -30,15 +30,13 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.BaseEntity;
-import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
- * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
 
-public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
+public class AdvanceType extends BaseEntity {
 
     public static AdvanceType create() {
         AdvanceType advanceType = new AdvanceType();
@@ -228,11 +226,6 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
             }
         }
         return true;
-    }
-
-    @Override
-    public String getHumanId() {
-        return unitName;
     }
 
 }
