@@ -36,7 +36,8 @@
                         <row>
                             <label value="${i18n:_('Unit name')}" />
                             <textbox id="unitName" value="@{controller.advanceType.unitName}" constraint="@{controller.distinctNames}" width="300px"
-                                disabled="@{controller.immutable}" />
+                                disabled="@{controller.immutable}"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Active')}" />
@@ -78,7 +79,7 @@
         label="${arg.save_and_continue_button_label}"
         sclass="save-button global-action"
         disabled="@{controller.immutable}" />
-    <button onClick="controller.cancel();"
+    <button onClick="controller.cancelForm();"
         label="${arg.cancel_button_label}"
         sclass="cancel-button global-action" />
 </window>
