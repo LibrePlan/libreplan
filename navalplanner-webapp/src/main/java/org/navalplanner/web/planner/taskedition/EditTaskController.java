@@ -45,7 +45,7 @@ import org.navalplanner.web.planner.allocation.AllocationResult;
 import org.navalplanner.web.planner.allocation.FormBinder;
 import org.navalplanner.web.planner.allocation.ResourceAllocationController;
 import org.navalplanner.web.planner.limiting.allocation.LimitingResourceAllocationController;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.order.SubcontractController;
 import org.navalplanner.web.planner.taskedition.TaskPropertiesController.ResourceAllocationTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;

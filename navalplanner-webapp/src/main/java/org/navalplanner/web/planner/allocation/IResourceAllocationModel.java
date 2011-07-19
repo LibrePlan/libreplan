@@ -30,7 +30,7 @@ import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.allocation.AllocationRowsHandler.Warnings;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**

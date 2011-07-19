@@ -24,7 +24,7 @@ package org.navalplanner.web.planner.advances;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 
 /**

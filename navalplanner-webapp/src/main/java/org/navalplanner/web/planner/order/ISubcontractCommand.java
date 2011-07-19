@@ -22,6 +22,7 @@
 package org.navalplanner.web.planner.order;
 
 import org.navalplanner.business.planner.entities.TaskElement;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.extensions.ICommandOnTask;
 

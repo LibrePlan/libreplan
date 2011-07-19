@@ -29,6 +29,7 @@ import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.extensions.ICommand;

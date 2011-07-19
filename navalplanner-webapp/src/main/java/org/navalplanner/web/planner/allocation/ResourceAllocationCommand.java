@@ -26,7 +26,7 @@ import static org.navalplanner.web.I18nHelper._;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.IEditTaskUtilities;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -75,8 +75,7 @@ public class ResourceAllocationCommand implements IResourceAllocationCommand {
     }
 
     @Override
-    public void initialize(
-EditTaskController editTaskController,
+    public void initialize(EditTaskController editTaskController,
             PlanningState planningState) {
         this.editTaskController = editTaskController;
         this.planningState = planningState;

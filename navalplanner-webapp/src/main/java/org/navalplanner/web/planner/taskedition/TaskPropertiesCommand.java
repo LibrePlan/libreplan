@@ -25,7 +25,7 @@ import static org.navalplanner.web.I18nHelper._;
 
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.web.planner.order.IEditTaskUtilities;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;

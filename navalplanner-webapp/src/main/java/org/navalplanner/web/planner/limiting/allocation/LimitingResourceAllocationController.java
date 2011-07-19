@@ -35,7 +35,7 @@ import org.navalplanner.web.common.components.NewAllocationSelectorCombo;
 import org.navalplanner.web.common.components.ResourceAllocationBehaviour;
 import org.navalplanner.web.planner.allocation.TaskInformation;
 import org.navalplanner.web.planner.allocation.TaskInformation.ITotalHoursCalculationListener;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;

@@ -52,7 +52,7 @@ import org.navalplanner.business.planner.entities.consolidations.NonCalculatedCo
 import org.navalplanner.business.planner.entities.consolidations.NonCalculatedConsolidation;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.web.planner.order.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
