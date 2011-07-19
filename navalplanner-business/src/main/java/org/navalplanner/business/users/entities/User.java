@@ -27,6 +27,7 @@ import java.util.Set;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.scenarios.entities.Scenario;
@@ -42,7 +43,7 @@ import org.navalplanner.business.users.daos.IUserDAO;
  * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  *
  */
-public class User extends BaseEntity {
+public class User extends BaseEntity implements IHumanIdentifiable{
 
     private String loginName = "";
 
@@ -278,6 +279,11 @@ public class User extends BaseEntity {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String getHumanId() {
+        return loginName;
     }
 
 }
