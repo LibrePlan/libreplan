@@ -35,6 +35,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -46,7 +47,7 @@ import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  * @author Diego Pino García <dpino@igalia.com>
  */
-public class CostCategory extends IntegrationEntity {
+public class CostCategory extends IntegrationEntity implements IHumanIdentifiable {
 
     @NotEmpty
     private String name;
@@ -309,6 +310,11 @@ public class CostCategory extends IntegrationEntity {
     @NotNull(message = "last hours cost sequence code not specified")
     public Integer getLastHourCostSequenceCode() {
         return lastHourCostSequenceCode;
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }

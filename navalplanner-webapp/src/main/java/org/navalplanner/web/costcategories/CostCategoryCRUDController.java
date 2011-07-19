@@ -37,11 +37,9 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.costcategories.entities.CostCategory;
 import org.navalplanner.business.costcategories.entities.HourCost;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.ConstraintChecker;
-import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.util.ValidationExceptionPrinter;
 import org.navalplanner.web.workreports.WorkReportCRUDController;
@@ -52,7 +50,6 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
@@ -67,7 +64,6 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.api.Hbox;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link CostCategory}
@@ -76,21 +72,11 @@ import org.zkoss.zul.api.Window;
  * @author Diego Pino García <dpino@igalia.com>
  */
 @SuppressWarnings("serial")
-public class CostCategoryCRUDController extends GenericForwardComposer {
+public class CostCategoryCRUDController extends BaseCRUDController<CostCategory> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory.getLog(WorkReportCRUDController.class);
 
-    private Window listWindow;
-
-    private Window createWindow;
-
     private ICostCategoryModel costCategoryModel;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private Grid listHourCosts;
 
@@ -103,11 +89,8 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        listHourCosts = (Grid) createWindow.getFellowIfAny("listHourCosts");
+        listHourCosts = (Grid) editWindow.getFellowIfAny("listHourCosts");
         listCostCategories = (Grid) listWindow.getFellowIfAny("listing");
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        getVisibility().showOnly(listWindow);
 
         // Renders grid and disables delete button in case it cannot be removed
         listCostCategories.addEventListener("onInitRender", new EventListener() {
@@ -136,61 +119,14 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
         allHoursType = new SimpleListModel(costCategoryModel.getAllHoursType());
     }
 
-    public void goToCreateForm() {
-        costCategoryModel.initCreate();
-        createWindow.setTitle(_("Create Cost Category"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+    @Override
+    protected void save() throws ValidationException{
+        costCategoryModel.confirmSave();
     }
 
-    public void goToEditForm(CostCategory costCategory) {
-        costCategoryModel.initEdit(costCategory);
-        createWindow.setTitle(_("Edit Cost Category"));
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    public void goToList() {
-        getVisibility().showOnly(listWindow);
-        Util.reloadBindings(listWindow);
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
-
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditForm(getCostCategory());
-        }
-    }
-
-    public boolean save() {
-        if (!ConstraintChecker.isValid(createWindow)) {
-            return false;
-        }
-
-        try {
-            costCategoryModel.validateHourCostsOverlap();
-        } catch (ValidationException e) {
-            ValidationExceptionPrinter.showAt(listHourCosts, e);
-        }
-
-        try {
-            costCategoryModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Cost category saved"));
-            return true;
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-        return false;
+    @Override
+    protected void beforeSaving() throws ValidationException {
+        costCategoryModel.validateHourCostsOverlap();
     }
 
     private void showInvalidValues(ValidationException e) {
@@ -236,11 +172,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
         return costCategoryModel.getHourCosts();
     }
 
-    private OnlyOneVisible getVisibility() {
-        return (visibility == null) ? new OnlyOneVisible(createWindow,
-                listWindow)
-                : visibility;
-    }
 
     private TypeOfWorkHours getTypeOfWorkHours(Row listitem) {
         HourCost hourCost = (HourCost) listitem.getValue();
@@ -535,20 +466,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
         }
     }
 
-    public void confirmRemove(CostCategory category) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting this cost category. Are you sure?"), _("Delete"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeCostCategory(category);
-            }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, e.getMessage());
-            LOG.error(_("Error on showing removing element: ", category.getId()), e);
-        }
-    }
-
     public HourCostListRenderer getRenderer() {
         return hourCostListRenderer;
     }
@@ -566,27 +483,6 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
     public void removeHourCost(HourCost hourCost) {
         costCategoryModel.removeHourCost(hourCost);
         Util.reloadBindings(listHourCosts);
-    }
-
-    public void removeCostCategory(CostCategory category) {
-        if(canRemoveCostCategory(category)) {
-            try {
-                costCategoryModel.confirmRemoveCostCategory(category);
-            }
-            catch(InstanceNotFoundException e) {
-                messagesForUser.showMessage(
-                        Level.ERROR, _("The cost category had already been removed."));
-            }
-            Util.reloadBindings(listCostCategories);
-        }
-        else {
-            messagesForUser.showMessage(Level.ERROR,
-                    _("Cannot delete that cost category because there are resources assigned to it."));
-        }
-    }
-
-    public boolean canRemoveCostCategory(CostCategory category) {
-        return costCategoryModel.canRemoveCostCategory(category);
     }
 
     /**
@@ -627,4 +523,44 @@ public class CostCategoryCRUDController extends GenericForwardComposer {
         Util.reloadBindings(listCostCategories);
         Util.reloadBindings(listHourCosts);
     }
+
+    @Override
+    protected String getEntityType() {
+        return _("Cost Category");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Cost Categories");
+    }
+
+    @Override
+    protected void initCreate() {
+        costCategoryModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(CostCategory costCategory) {
+        costCategoryModel.initEdit(costCategory);
+    }
+
+    @Override
+    protected CostCategory getEntityBeingEdited() {
+        return costCategoryModel.getCostCategory();
+    }
+
+    @Override
+    protected void delete(CostCategory category) throws InstanceNotFoundException{
+        costCategoryModel.confirmRemoveCostCategory(category);
+        Util.reloadBindings(listCostCategories);
+    }
+
+    protected boolean beforeDeleting(CostCategory category) {
+        return costCategoryModel.canRemoveCostCategory(category);
+    }
+
+    public boolean canRemoveCostCategory(CostCategory category) {
+        return costCategoryModel.canRemoveCostCategory(category);
+    }
+
 }

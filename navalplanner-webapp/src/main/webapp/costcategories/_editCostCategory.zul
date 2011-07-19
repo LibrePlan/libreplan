@@ -50,7 +50,8 @@
                                 <label value="${i18n:_('Name')}:" />
                                 <textbox id="name"
                                     value="@{controller.costCategory.name}" width="300px"
-                                    constraint="no empty:${i18n:_('cannot be null or empty')}"/>
+                                    constraint="no empty:${i18n:_('cannot be null or empty')}"
+                                    onBlur="controller.updateWindowTitle()"/>
                             </row>
                             <row>
                                 <label value="${i18n:_('Enabled')}:" />
@@ -92,7 +93,7 @@
         label="${i18n:_('Save')}" sclass="save-button global-action" />
     <button onClick="controller.saveAndContinue();"
         label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action" />
-    <button onClick="controller.cancel();"
+    <button onClick="controller.cancelForm();"
         label="${i18n:_('Cancel')}" sclass="cancel-button global-action" />
 
 </window>
