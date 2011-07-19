@@ -27,12 +27,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.entities.UnitType;
-import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -40,52 +39,26 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
-import org.zkoss.zul.Textbox;
-import org.zkoss.zul.api.Window;
-import org.zkoss.zul.impl.InputElement;
 
 /**
  *
  * Controller for the listing and editing unit types
  *
  * @author Javier Moran Rua <jmoran@igalia.com>
+ * @author Cristina Alvarino Perez <cristina.alvarino@comtecsf.es>
  */
 
-public class UnitTypeController extends GenericForwardComposer {
+public class UnitTypeController extends BaseCRUDController<UnitType> {
 
     private static final org.apache.commons.logging.Log LOG = LogFactory
     .getLog(UnitTypeController.class);
 
-    private Component messagesContainer;
-    private IMessagesForUser messagesForUser;
-    private OnlyOneVisible visibility;
-
-    private Component listWindow;
-    private Window editWindow;
-
     private IUnitTypeModel unitTypeModel;
-
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
-        getVisibility().showOnly(listWindow);
-    }
-
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow,editWindow);
-        }
-        return visibility;
-    }
 
     public List<UnitType> getUnitTypes() {
         return unitTypeModel.getUnitTypes();
@@ -103,7 +76,7 @@ public class UnitTypeController extends GenericForwardComposer {
                 row.addEventListener(Events.ON_CLICK, new EventListener() {
                     @Override
                     public void onEvent(Event event) {
-                        goToEditFormInEditionMode(unitType);
+                        goToEditForm(unitType);
                     }
                 });
             }
@@ -119,7 +92,7 @@ public class UnitTypeController extends GenericForwardComposer {
 
                     @Override
                     public void onEvent(Event event) {
-                        goToEditFormInEditionMode(unitType);
+                        goToEditForm(unitType);
                     }
                 }));
 
@@ -127,53 +100,13 @@ public class UnitTypeController extends GenericForwardComposer {
 
                     @Override
                     public void onEvent(Event event) {
-                        confirmRemove(unitType);
+                        confirmDelete(unitType);
                     }
                 }));
 
                 row.appendChild(hbox);
             }
         };
-    }
-
-    private void confirmRemove(UnitType unitType) {
-        try {
-            int status = Messagebox.show(_("Confirm deleting {0}. Are you sure?", unitType.getMeasure()),
-                    "Delete", Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION);
-            if (Messagebox.OK == status) {
-                removeUnitType(unitType);
-            }
-        } catch (InterruptedException e) {
-            LOG.error("Error showing confirming message box",e);
-            throw new RuntimeException();
-        }
-    }
-
-    private void removeUnitType(UnitType unitType) {
-        if (unitTypeModel.isUnitTypeUsedInAnyMaterial(unitType)) {
-            messagesForUser.showMessage(Level.ERROR, _("Unit {0} cannot be " +
-                " removed because it is used in materials",
-                unitType.getMeasure()));
-        } else {
-            unitTypeModel.remove(unitType);
-            Util.reloadBindings(listWindow);
-            messagesForUser.showMessage(Level.INFO, _("Deleted unit type {0}",
-                    unitType.getMeasure()));
-        }
-    }
-
-    public void goToEditFormInCreationMode() {
-        unitTypeModel.initCreate();
-        editWindow.setTitle(_("Create Unit Type"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
-    private void goToEditFormInEditionMode(UnitType unitType) {
-        unitTypeModel.initEdit(unitType);
-        editWindow.setTitle(_("Edit Unit Type"));
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
     }
 
     public UnitType getUnitType() {
@@ -222,58 +155,10 @@ public class UnitTypeController extends GenericForwardComposer {
 
         };
     }
-    public void saveAndExit() {
-        if (save()) {
-            goToList();
-        }
-    }
 
-    public void saveAndContinue() {
-        if (save()) {
-            goToEditFormInEditionMode(getUnitType());
-        }
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-    private boolean save() {
-        try {
-            validateAll();
-            unitTypeModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Unit type saved"));
-            return true;
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-            return false;
-        }
-    }
-
-    private void validateAll() {
-        Textbox codeTextBox = (Textbox) editWindow.
-            getFellowIfAny("codeTextBox");
-        validate(codeTextBox,codeTextBox.getValue());
-
-        Textbox measureTextBox = (Textbox) editWindow.
-            getFellowIfAny("measureTextBox");
-        validate(measureTextBox,measureTextBox.getValue());
-    }
-
-    /**
-     * Validates {@link Textbox} checking {@link Constraint}
-     * @param comp
-     */
-    private void validate(InputElement comp, Object value) {
-        if (comp != null && comp.getConstraint() != null && !comp.isDisabled()) {
-            final Constraint constraint = comp.getConstraint();
-            constraint.validate(comp, value);
-        }
-    }
-
-    private void goToList() {
-        Util.reloadBindings(listWindow);
-        getVisibility().showOnly(listWindow);
+    @Override
+    protected void save() throws ValidationException {
+        unitTypeModel.confirmSave();
     }
 
     public void onCheckGenerateCode(Event e) {
@@ -289,4 +174,38 @@ public class UnitTypeController extends GenericForwardComposer {
         Util.reloadBindings(editWindow);
     }
 
+    @Override
+    protected String getEntityType() {
+        return _("Unit Type");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Unit Types");
+    }
+
+    @Override
+    protected void initCreate() {
+        unitTypeModel.initCreate();
+    }
+
+    @Override
+    protected void initEdit(UnitType unitType) {
+        unitTypeModel.initEdit(unitType);
+    }
+
+    @Override
+    protected UnitType getEntityBeingEdited() {
+        return unitTypeModel.getCurrentUnitType();
+    }
+
+    @Override
+    protected void delete(UnitType unitType) throws InstanceNotFoundException {
+        unitTypeModel.remove(unitType);
+    }
+
+    @Override
+    protected boolean beforeDeleting(UnitType unitType) {
+        return !unitTypeModel.isUnitTypeUsedInAnyMaterial(unitType);
+    }
 }

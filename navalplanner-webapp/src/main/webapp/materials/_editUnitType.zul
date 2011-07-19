@@ -52,7 +52,8 @@
                                 id="measureTextBox"
                                 value="@{controller.unitType.measure}"
                                 constraint="@{controller.uniqueMeasureName}"
-                                width="300px"/>
+                                width="300px"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                     </rows>
                 </grid>
@@ -65,7 +66,7 @@
     <button onClick="controller.saveAndContinue();"
         label="${arg.save_and_continue_button_label}"
         sclass="save-button global-action"/>
-    <button onClick="controller.cancel();"
+    <button onClick="controller.cancelForm();"
         label="${arg.cancel_button_label}"
         sclass="cancel-button global-action"/>
 </window>

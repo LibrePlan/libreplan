@@ -24,6 +24,7 @@ package org.navalplanner.business.materials.entities;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -35,7 +36,7 @@ import org.navalplanner.business.materials.daos.IUnitTypeDAO;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  * @author Javier Moran Rua <jmoran@ialia.com>
  */
-public class UnitType extends IntegrationEntity{
+public class UnitType extends IntegrationEntity implements IHumanIdentifiable {
 
     public static UnitType create(String code, String measure) {
         UnitType unitType = new UnitType(measure);
@@ -115,5 +116,10 @@ public class UnitType extends IntegrationEntity{
     @Override
     protected IUnitTypeDAO getIntegrationEntityDAO() {
         return Registry.getUnitTypeDAO();
+    }
+
+    @Override
+    public String getHumanId() {
+        return measure;
     }
 }
