@@ -83,12 +83,8 @@ public class QualityFormModel implements IQualityFormModel {
 
     @Override
     @Transactional
-    public void confirmDelete(QualityForm qualityForm) {
-        try {
-            qualityFormDAO.remove(qualityForm.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException();
-        }
+    public void confirmDelete(QualityForm qualityForm) throws InstanceNotFoundException {
+        qualityFormDAO.remove(qualityForm.getId());
     }
 
     @Override

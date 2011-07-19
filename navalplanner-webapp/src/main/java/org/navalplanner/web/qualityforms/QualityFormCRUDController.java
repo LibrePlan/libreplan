@@ -28,10 +28,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.validator.InvalidValue;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.qualityforms.entities.QualityFormType;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -59,22 +61,10 @@ import org.zkoss.zul.impl.InputElement;
  * CRUD Controller for {@link QualityForm}
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class QualityFormCRUDController extends GenericForwardComposer {
+public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
     @Autowired
     private IQualityFormModel qualityFormModel;
-
-    private Window listWindow;
-
-    private Window editWindow;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private IMessagesForUser messagesEditWindow;
-
-    private Component messagesContainer;
 
     private Grid gridQualityForms;
 
@@ -93,28 +83,13 @@ public class QualityFormCRUDController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        messagesEditWindow = new MessagesForUser(editWindow
-                .getFellowIfAny("messagesContainer"));
+
         txtFilter = (Textbox) listWindow.getFellowIfAny("txtFilter");
         cbFilterQualityFormName = (Combobox) listWindow
                 .getFellowIfAny("cbFilterQualityFormName");
         gridQualityFormItems = (Grid) editWindow
                 .getFellowIfAny("gridQualityFormItems");
         gridQualityForms = (Grid) listWindow.getFellowIfAny("qualityFormsList");
-        showListWindow();
-    }
-
-    private void showListWindow() {
-        getVisibility().showOnly(listWindow);
-    }
-
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, editWindow);
-        }
-        return visibility;
     }
 
     /**
@@ -142,53 +117,14 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         return qualityFormModel.getQualityFormItems();
     }
 
-    /**
-     * Prepare form for Create
-     */
-    public void goToCreateForm() {
-        qualityFormModel.initCreate();
-        editWindow.setTitle(_("Create Quality Form"));
-        showEditWindow();
-        Util.reloadBindings(editWindow);
-    }
-
-    private void showEditWindow() {
-        getVisibility().showOnly(editWindow);
-    }
-
-    /**
-     * Prepare form for Edit
-     * @param qualityForm
-     */
-    public void goToEditForm(QualityForm qualityForm) {
-        qualityFormModel.initEdit(qualityForm);
-        editWindow.setTitle(_("Edit Quality Form"));
-        showEditWindow();
-        Util.reloadBindings(editWindow);
-    }
-
-    /**
-     * Save current {@link QualityForm} and return
-     */
-    public void save() {
+    @Override
+    protected void beforeSaving() throws ValidationException {
         validate();
-        try {
-            qualityFormModel.confirmSave();
-            goToList();
-            messagesForUser.showMessage(Level.INFO, _("Quality form saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        } catch (IllegalStateException e) {
-        }
     }
 
-    /**
-     * Show all {@link QualityForm}
-     */
-    private void goToList() {
-        getVisibility().showOnly(listWindow);
-        clearFilter();
-        Util.reloadBindings(listWindow);
+    @Override
+    protected void save() throws ValidationException {
+        qualityFormModel.confirmSave();
     }
 
     /**
@@ -229,19 +165,6 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         }
     }
 
-    /**
-     * Save current {@link QualityForm} and continue
-     */
-    public void saveAndContinue() {
-        validate();
-        try {
-            qualityFormModel.confirmSave();
-            goToEditForm(qualityFormModel.getQualityForm());
-            messagesEditWindow.showMessage(Level.INFO, _("Quality form saved"));
-        } catch (ValidationException e) {
-            showInvalidValues(e);
-        }
-    }
 
     private void showInvalidValues(ValidationException e) {
         for (InvalidValue invalidValue : e.getInvalidValues()) {
@@ -295,13 +218,6 @@ public class QualityFormCRUDController extends GenericForwardComposer {
             }
         }
         return null;
-    }
-
-    /**
-     * Cancel edition
-     */
-    public void close() {
-        goToList();
     }
 
     public void createQualityFormItem() {
@@ -364,26 +280,6 @@ public class QualityFormCRUDController extends GenericForwardComposer {
         Util.reloadBindings(gridQualityFormItems);
     }
 
-    /**
-     * Pop up confirm remove dialog
-     * @param QualityForm
-     */
-    public void confirmDelete(QualityForm qualityForm) {
-        try {
-            if (Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
-                qualityFormModel.confirmDelete(qualityForm);
-                Grid qualityForms = (Grid) listWindow
-                        .getFellowIfAny("qualityFormsList");
-                if (qualityForms != null) {
-                    Util.reloadBindings(qualityForms);
-                }
-            }
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }
 
     public QualityFormType[] getQualityFormTypes() {
         return QualityFormType.values();
@@ -423,8 +319,7 @@ public class QualityFormCRUDController extends GenericForwardComposer {
                 item.setName((String)value);
                 if (((String) value == null) || (((String) value)).isEmpty()) {
                     item.setName(null);
-                    throw new WrongValueException(comp,
- _("cannot be empty"));
+                    throw new WrongValueException(comp, _("cannot be empty"));
                 } else if (!qualityFormModel
                         .checkConstraintUniqueQualityFormItemName()) {
                     item.setName(null);
@@ -537,6 +432,42 @@ public class QualityFormCRUDController extends GenericForwardComposer {
             getQualityForm().setReportAdvance(false);
             reportProgress.setChecked(false);
             reportProgress.invalidate();
+        }
+    }
+
+    @Override
+    protected String getEntityType() {
+        return _("Quality form");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Quality forms");
+    }
+
+    @Override
+    protected void initCreate() {
+        qualityFormModel.initCreate();
+    }
+
+
+    @Override
+    protected void initEdit(QualityForm qualityForm) {
+        qualityFormModel.initEdit(qualityForm);
+    }
+
+    @Override
+    protected QualityForm getEntityBeingEdited() {
+        return qualityFormModel.getQualityForm();
+    }
+
+    @Override
+    protected void delete(QualityForm qualityForm) throws InstanceNotFoundException {
+        qualityFormModel.confirmDelete(qualityForm);
+        Grid qualityForms = (Grid) listWindow
+                .getFellowIfAny("qualityFormsList");
+        if (qualityForms != null) {
+            Util.reloadBindings(qualityForms);
         }
     }
 }

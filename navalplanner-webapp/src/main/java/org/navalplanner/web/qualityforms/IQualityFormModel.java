@@ -23,6 +23,7 @@ package org.navalplanner.web.qualityforms;
 
 import java.util.List;
 
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
@@ -37,7 +38,7 @@ public interface IQualityFormModel {
      * Removes {@link QualityForm}
      * @param qualityForm
      */
-    void confirmDelete(QualityForm qualityForm);
+    void confirmDelete(QualityForm qualityForm) throws InstanceNotFoundException;
 
     /**
      * Ends conversation saving current {@link QualityForm}

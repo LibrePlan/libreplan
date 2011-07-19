@@ -38,11 +38,12 @@ import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 
-public class QualityForm extends BaseEntity {
+public class QualityForm extends BaseEntity implements IHumanIdentifiable{
 
     public static final String ADVANCE_TYPE_PREFIX = "QF: ";
 
@@ -407,6 +408,11 @@ public class QualityForm extends BaseEntity {
             return !isReportAdvance();
         }
         return true;
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }
