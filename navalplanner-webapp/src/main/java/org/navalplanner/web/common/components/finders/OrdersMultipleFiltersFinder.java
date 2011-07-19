@@ -74,10 +74,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
             for (int i = 0; getListMatching().size() < 10
                     && i < mapLabels.get(type).size(); i++) {
                 Label label = mapLabels.get(type).get(i);
-                String pattern = type.getName() + " :: " + label.getName();
-                getListMatching().add(
-                        new FilterPair(OrderFilterEnum.Label, pattern,
-                        label));
+                addLabel(type, label);
             }
         }
         return getListMatching();
@@ -92,10 +89,7 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
             for (int i = 0; getListMatching().size() < 10
                     && i < mapCriterions.get(type).size(); i++) {
                 Criterion criterion = mapCriterions.get(type).get(i);
-                String pattern = type.getName() + " :: " + criterion.getName();
-                getListMatching().add(
-                        new FilterPair(OrderFilterEnum.Criterion,
-                        pattern, criterion));
+                addCriterion(type, criterion);
             }
         }
         return getListMatching();
@@ -301,14 +295,14 @@ public class OrdersMultipleFiltersFinder extends MultipleFiltersFinder {
     }
 
     private void addCriterion(CriterionType type, Criterion criterion) {
-        String pattern = type.getName() + " :: " + criterion.getName();
+        String pattern = criterion.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(OrderFilterEnum.Criterion, pattern,
-                criterion));
+                new FilterPair(OrderFilterEnum.Criterion, type.getResource()
+                        .toLowerCase(), pattern, criterion));
     }
 
     private void addLabel(LabelType type, Label label) {
-        String pattern = type.getName() + " :: " + label.getName();
+        String pattern = label.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
                 new FilterPair(OrderFilterEnum.Label, pattern, label));
     }
