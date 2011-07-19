@@ -63,6 +63,10 @@ public enum ResourceEnum {
         return klass.getSimpleName().toUpperCase();
     }
 
+    public String toLowerCase() {
+        return klass.getSimpleName().toLowerCase();
+    }
+
     public boolean isAssignableFrom(Class<?> clase) {
         return asClass().isAssignableFrom(clase);
     }
