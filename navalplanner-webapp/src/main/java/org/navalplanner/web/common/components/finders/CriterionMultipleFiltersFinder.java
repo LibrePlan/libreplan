@@ -23,23 +23,19 @@ package org.navalplanner.web.common.components.finders;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
 import org.navalplanner.business.resources.entities.Criterion;
+import org.navalplanner.business.resources.entities.CriterionType;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
 
     @Autowired
     private PredefinedDatabaseSnapshots databaseSnapshots;
-
-    private IFilterEnum criterionFilterEnum = new IFilterEnum() {
-        @Override
-        public String toString() {
-            return "criterion";
-        }
-    };
 
     /**
      * Forces to mark the string as needing translation
@@ -51,18 +47,22 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
     @Override
     public List<FilterPair> getFirstTenFilters() {
         getListMatching().clear();
-        Iterator<Criterion> iteratorCriterion = getCriterions().iterator();
-        while(iteratorCriterion.hasNext() && getListMatching().size() < 10) {
-            Criterion criterion = iteratorCriterion.next();
-            getListMatching().add(new FilterPair(
-                    criterionFilterEnum, criterion.getName(), criterion));
+        SortedMap<CriterionType, List<Criterion>> criterionsMap = getCriterionsMap();
+        Iterator<CriterionType> iteratorCriterionType = criterionsMap.keySet()
+                .iterator();
+        while (iteratorCriterionType.hasNext() && getListMatching().size() < 10) {
+            CriterionType type = iteratorCriterionType.next();
+            for (int i = 0; getListMatching().size() < 10
+                    && i < criterionsMap.get(type).size(); i++) {
+                Criterion criterion = criterionsMap.get(type).get(i);
+                addCriterion(type, criterion);
+            }
         }
-        addNoneFilter();
         return getListMatching();
     }
 
-    private List<Criterion> getCriterions() {
-        return databaseSnapshots.snapshotListCriterion();
+    private SortedMap<CriterionType, List<Criterion>> getCriterionsMap() {
+        return databaseSnapshots.snapshotCriterionsMap();
     }
 
     @Override
@@ -70,21 +70,54 @@ public class CriterionMultipleFiltersFinder extends MultipleFiltersFinder {
         getListMatching().clear();
         if ((filter != null) && (!filter.isEmpty())) {
             filter = StringUtils.deleteWhitespace(filter.toLowerCase());
-            searchInCriteria(filter);
+            searchInCriterionTypes(filter);
         }
         addNoneFilter();
         return getListMatching();
-
     }
-    private void searchInCriteria(String filter) {
-        for (Criterion criterion : getCriterions()) {
-            String name = StringUtils.deleteWhitespace(
-                    criterion.getName().toLowerCase());
-            if(name.contains(filter)) {
-                getListMatching().add(new FilterPair(
-                        criterionFilterEnum, criterion.getName(), criterion));
+
+    private void searchInCriterionTypes(String filter) {
+        boolean limited = (filter.length() < 3);
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
+        for (CriterionType type : mapCriterions.keySet()) {
+            String name = StringUtils.deleteWhitespace(type.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
+                setFilterPairCriterionType(type, limited);
+            } else {
+                searchInCriterions(type, filter);
             }
         }
     }
 
+    private void searchInCriterions(CriterionType type, String filter) {
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
+        for (Criterion criterion : mapCriterions.get(type)) {
+            String name = StringUtils.deleteWhitespace(criterion.getName()
+                    .toLowerCase());
+            if (name.contains(filter)) {
+                addCriterion(type, criterion);
+                if ((filter.length() < 3) && (getListMatching().size() > 9)) {
+                    return;
+                }
+            }
+        }
+    }
+
+    private void setFilterPairCriterionType(CriterionType type, boolean limited) {
+        Map<CriterionType, List<Criterion>> mapCriterions = getCriterionsMap();
+        for (Criterion criterion : mapCriterions.get(type)) {
+            addCriterion(type, criterion);
+            if ((limited) && (getListMatching().size() > 9)) {
+                return;
+            }
+        }
+    }
+
+    private void addCriterion(CriterionType type, Criterion criterion) {
+        String pattern = criterion.getName() + " ( " + type.getName() + " ) ";
+        getListMatching().add(
+                new FilterPair(ResourceFilterEnum.Criterion, type.getResource()
+                        .toLowerCase(), pattern, criterion));
+    }
 }

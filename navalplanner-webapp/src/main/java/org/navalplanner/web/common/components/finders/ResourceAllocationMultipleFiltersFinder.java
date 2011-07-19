@@ -89,12 +89,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
                         .isLimitingResource()) {
                     continue;
                 }
-
-                String pattern = className.getSimpleName() + " :: "
-                        + resource.getName();
-                getListMatching().add(
-                        new FilterPair(ResourceAllocationFilterEnum.Resource,
-                                pattern, resource));
+                addResource(className, resource);
             }
         }
         return getListMatching();
@@ -109,10 +104,7 @@ public class ResourceAllocationMultipleFiltersFinder extends
             for (int i = 0; getListMatching().size() < 10
                     && i < mapCriterions.get(type).size(); i++) {
                 Criterion criterion = mapCriterions.get(type).get(i);
-                String pattern = type.getName() + " :: " + criterion.getName();
-                getListMatching().add(
-                        new FilterPair(ResourceAllocationFilterEnum.Criterion,
-                                pattern, criterion));
+                addCriterion(type, criterion);
             }
         }
         return getListMatching();
@@ -196,18 +188,17 @@ public class ResourceAllocationMultipleFiltersFinder extends
     }
 
     private void addCriterion(CriterionType type, Criterion criterion) {
-        String pattern = type.getName() + " :: " + criterion.getName();
+        String pattern = criterion.getName() + " ( " + type.getName() + " )";
         getListMatching().add(
-                new FilterPair(ResourceAllocationFilterEnum.Criterion, pattern,
-                        criterion));
+                new FilterPair(ResourceAllocationFilterEnum.Criterion, type
+                        .getResource().toLowerCase(), pattern, criterion));
     }
 
     private void addResource(Class className, Resource resource) {
-        String pattern = className.getSimpleName() + " :: "
-                + resource.getName();
+        String pattern = resource.getName();
         getListMatching().add(
-                new FilterPair(ResourceAllocationFilterEnum.Resource, pattern,
-                        resource));
+                new FilterPair(ResourceAllocationFilterEnum.Resource, className
+                        .getSimpleName(), pattern, resource));
     }
 
     public boolean isValidNewFilter(List filterValues, Object obj) {

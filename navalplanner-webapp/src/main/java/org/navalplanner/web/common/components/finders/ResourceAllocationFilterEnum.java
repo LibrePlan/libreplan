@@ -24,6 +24,7 @@
  */
 package org.navalplanner.web.common.components.finders;
 
+
 public enum ResourceAllocationFilterEnum implements IFilterEnum {
 
     Criterion(_("Criterion")), Resource(_("Resource"));
