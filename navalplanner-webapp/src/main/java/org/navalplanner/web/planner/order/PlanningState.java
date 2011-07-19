@@ -33,6 +33,7 @@ import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.TaskSource;
 import org.navalplanner.business.planner.daos.ITaskSourceDAO;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -40,12 +41,12 @@ import org.navalplanner.business.resources.daos.ICriterionDAO;
 import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
+import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
 import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.zkoss.ganttz.Planner;
 
 public abstract class PlanningState {
 
@@ -56,16 +57,21 @@ public abstract class PlanningState {
                 currentVersionForScenario);
     }
 
-    public static IScenarioInfo forNotOwnerScenario(IOrderDAO orderDAO,
+    public static IScenarioInfo forNotOwnerScenario(
+            IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator,
+            IOrderDAO orderDAO,
             IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
             Order order, OrderVersion previousVersion,
             Scenario currentScenario, OrderVersion newVersion) {
-        return new UsingNotOwnerScenario(orderDAO, scenarioDAO, taskSourceDAO,
+        return new UsingNotOwnerScenario(assigmentsOnResourceCalculator,
+                orderDAO, scenarioDAO, taskSourceDAO,
                 order, previousVersion,
                 currentScenario, newVersion);
     }
 
     public interface IScenarioInfo {
+
+        public IAssignmentsOnResourceCalculator getAssignmentsCalculator();
 
         public Scenario getCurrentScenario();
 
@@ -107,6 +113,11 @@ public abstract class PlanningState {
                 throws IllegalStateException {
         }
 
+        @Override
+        public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
+            return new Resource.AllResourceAssignments();
+        }
+
     }
 
     private static class UsingOwnerScenario implements IScenarioInfo {
@@ -116,8 +127,7 @@ public abstract class PlanningState {
         private final IOrderVersionDAO orderVersionDAO;
 
         public UsingOwnerScenario(IOrderVersionDAO orderVersionDAO,
-                Scenario currentScenario,
-                OrderVersion currentVersionForScenario) {
+                Scenario currentScenario, OrderVersion currentVersionForScenario) {
             Validate.notNull(orderVersionDAO);
             Validate.notNull(currentScenario);
             Validate.notNull(currentVersionForScenario);
@@ -146,6 +156,11 @@ public abstract class PlanningState {
         public Scenario getCurrentScenario() {
             return currentScenario;
         }
+
+        @Override
+        public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
+            return new Resource.AllResourceAssignments();
+        }
     }
 
     private static class UsingNotOwnerScenario implements IScenarioInfo {
@@ -160,11 +175,16 @@ public abstract class PlanningState {
         private final Order order;
         private boolean versionSaved = false;
 
-        public UsingNotOwnerScenario(IOrderDAO orderDAO,
+        private final IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator;
+
+        public UsingNotOwnerScenario(
+                IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator,
+                IOrderDAO orderDAO,
                 IScenarioDAO scenarioDAO, ITaskSourceDAO taskSourceDAO,
                 Order order, OrderVersion previousVersion,
                 Scenario currentScenario,
                 OrderVersion newVersion) {
+            Validate.notNull(assigmentsOnResourceCalculator);
             Validate.notNull(order);
             Validate.notNull(previousVersion);
             Validate.notNull(currentScenario);
@@ -172,6 +192,7 @@ public abstract class PlanningState {
             Validate.notNull(orderDAO);
             Validate.notNull(scenarioDAO);
             Validate.notNull(taskSourceDAO);
+            this.assigmentsOnResourceCalculator = assigmentsOnResourceCalculator;
             this.orderDAO = orderDAO;
             this.scenarioDAO = scenarioDAO;
             this.taskSourceDAO = taskSourceDAO;
@@ -209,22 +230,57 @@ public abstract class PlanningState {
         public Scenario getCurrentScenario() {
             return currentScenario;
         }
+
+        @Override
+        public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
+            return assigmentsOnResourceCalculator;
+        }
     }
 
-    public static PlanningState create(Planner planner, TaskGroup rootTask,
+    public static PlanningState create(TaskGroup rootTask,
             Collection<? extends TaskElement> initialState,
             Collection<? extends Resource> initialResources,
             ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
             IScenarioInfo scenarioInfo) {
-        return new WithDataPlanningState(planner, rootTask, initialState,
+        return new WithDataPlanningState(rootTask, initialState,
                 initialResources, criterionDAO, resourceDAO, scenarioInfo);
     }
 
-    public static PlanningState createEmpty(Scenario currentScenario) {
-        return new EmptyPlannigState(currentScenario);
+    public static PlanningState createEmpty(Scenario currentScenario,
+            Order order) {
+        return new EmptyPlannigState(currentScenario, order);
+    }
+
+    private final Order order;
+
+    public PlanningState(Order order) {
+        Validate.notNull(order);
+        this.order = order;
+    }
+
+    public Order getOrder() {
+        return order;
     }
 
     public abstract boolean isEmpty();
+
+    /**
+     * <p>
+     * When the scenario was not owner, the previous {@link DayAssignment day
+     * assingments} for the scenario must be avoided. Since the previous
+     * scenario was not an owner, all tasks and related information are copied,
+     * but the resource keeps pointing to the scenario's previous assignments.
+     * </p>
+     * <p>
+     * If the scenario is the owner, the assignments are returned directly.
+     * </p>
+     * @return the {@link IAssignmentsOnResourceCalculator} to use.
+     * @see IAssignmentsOnResourceCalculator
+     * @see AvoidStaleAssignments
+     */
+    public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
+        return getScenarioInfo().getAssignmentsCalculator();
+    }
 
     public abstract Collection<? extends TaskElement> getTasksToSave();
 
@@ -241,8 +297,6 @@ public abstract class PlanningState {
     public abstract TaskGroup getRootTask();
 
     public abstract IScenarioInfo getScenarioInfo();
-
-    public abstract Planner getPlanner();
 
     public Scenario getCurrentScenario() {
         return getScenarioInfo().getCurrentScenario();
@@ -266,14 +320,12 @@ public abstract class PlanningState {
 
         private final IScenarioInfo scenarioInfo;
 
-        private final Planner planner;
-
-        private WithDataPlanningState(Planner planner, TaskGroup rootTask,
+        private WithDataPlanningState(TaskGroup rootTask,
                 Collection<? extends TaskElement> initialState,
                 Collection<? extends Resource> initialResources,
                 ICriterionDAO criterionDAO, IResourceDAO resourceDAO,
                 IScenarioInfo scenarioInfo) {
-            this.planner = planner;
+            super((Order) rootTask.getOrderElement());
             this.rootTask = rootTask;
             this.criterionDAO = criterionDAO;
             this.resourceDAO = resourceDAO;
@@ -401,11 +453,6 @@ public abstract class PlanningState {
         }
 
         @Override
-        public Planner getPlanner() {
-            return planner;
-        }
-
-        @Override
         public boolean isEmpty() {
             return false;
         }
@@ -416,7 +463,8 @@ public abstract class PlanningState {
 
         private final Scenario currentScenario;
 
-        private EmptyPlannigState(Scenario currentScenario) {
+        private EmptyPlannigState(Scenario currentScenario, Order order) {
+            super(order);
             this.currentScenario = currentScenario;
         }
 
@@ -457,14 +505,10 @@ public abstract class PlanningState {
         }
 
         @Override
-        public Planner getPlanner() {
-            return null;
-        }
-
-        @Override
         public boolean isEmpty() {
             return true;
         }
 
     }
+
 }

@@ -27,7 +27,6 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -43,14 +42,12 @@ import java.util.TreeMap;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.ProgressType;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.daos.IOrderDAO;
@@ -58,27 +55,15 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
-import org.navalplanner.business.planner.daos.ITaskSourceDAO;
 import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.DerivedAllocation;
-import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ICostCalculator;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
-import org.navalplanner.business.resources.daos.ICriterionDAO;
-import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
-import org.navalplanner.business.resources.entities.IAssignmentsOnResourceCalculator;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
-import org.navalplanner.business.scenarios.daos.IOrderVersionDAO;
-import org.navalplanner.business.scenarios.daos.IScenarioDAO;
-import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
@@ -107,7 +92,6 @@ import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
 import org.navalplanner.web.planner.milestone.IDeleteMilestoneCommand;
 import org.navalplanner.web.planner.order.ISaveCommand.IAfterSaveListener;
-import org.navalplanner.web.planner.order.PlanningState.IScenarioInfo;
 import org.navalplanner.web.planner.reassign.IReassignCommand;
 import org.navalplanner.web.planner.taskedition.EditTaskController;
 import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
@@ -233,15 +217,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     private PlanningState planningState;
 
     @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private ITaskElementDAO taskDAO;
-
-    @Autowired
     private IUserDAO userDAO;
 
     @Autowired
@@ -253,9 +228,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    @Autowired
-    private ITaskElementDAO taskElementDAO;
-
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     private ITaskElementAdapter taskElementAdapter;
@@ -265,50 +237,13 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
-    private Order orderReloaded;
-
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
-
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    private IAssignmentsOnResourceCalculator assigmentsOnResourceCalculator = new Resource.AllResourceAssignments();
 
     private Scenario currentScenario;
 
-    @Autowired
-    private IOrderVersionDAO orderVersionDAO;
-
-    @Autowired
-    private IScenarioDAO scenarioDAO;
-
-    @Autowired
-    private ITaskSourceDAO taskSourceDAO;
+    private Planner planner;
 
     private OverAllProgressContent overallProgressContent;
-
-    private static final class ReturningNewAssignments implements
-            IAssignmentsOnResourceCalculator {
-
-        private Set<DayAssignment> previousAssignmentsSet;
-
-        public ReturningNewAssignments(List<DayAssignment> previousAssignments) {
-            this.previousAssignmentsSet = new HashSet<DayAssignment>(
-                    previousAssignments);
-        }
-
-        @Override
-        public List<DayAssignment> getAssignments(Resource resource) {
-            List<DayAssignment> result = new ArrayList<DayAssignment>();
-            for (DayAssignment each : resource.getAssignments()) {
-                if (!previousAssignmentsSet.contains(each)) {
-                    result.add(each);
-                }
-            }
-            return result;
-        }
-
-    }
 
     private static final class TaskElementNavigator implements
             IStructureNavigator<TaskElement> {
@@ -367,9 +302,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             CalendarAllocationController calendarAllocationController,
             List<ICommand<TaskElement>> additional) {
         long time = System.currentTimeMillis();
+        this.planner = planner;
         currentScenario = scenarioManager.getCurrent();
-        orderReloaded = reload(order);
-        PlannerConfiguration<TaskElement> configuration = createConfiguration(planner, orderReloaded);
+        PlannerConfiguration<TaskElement> configuration = createConfiguration(order);
         PROFILING_LOG.info("load data and create configuration took: "
                 + (System.currentTimeMillis() - time) + " ms");
         User user;
@@ -387,7 +322,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                 .calculateDefaultLevel(configuration);
         configureInitialZoomLevelFor(planner, defaultZoomLevel);
 
-        final boolean writingAllowed = isWritingAllowedOn(orderReloaded);
+        final boolean writingAllowed = isWritingAllowedOn(planningState
+                .getOrder());
         ISaveCommand saveCommand = setupSaveCommand(configuration,
                 writingAllowed);
         setupEditingCapabilities(configuration, writingAllowed);
@@ -424,7 +360,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         appendTabs(chartComponent);
 
         configuration.setChartComponent(chartComponent);
-        configureModificators(orderReloaded, configuration);
+        configureModificators(planningState.getOrder(), configuration);
         long setConfigurationTime = System.currentTimeMillis();
         planner.setConfiguration(configuration);
         PROFILING_LOG.info("setConfiguration on planner took: "
@@ -530,7 +466,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private OrderEarnedValueChartFiller createOrderEarnedValueChartFiller(TimeTracker timeTracker) {
-        OrderEarnedValueChartFiller result = new OrderEarnedValueChartFiller(orderReloaded);
+        OrderEarnedValueChartFiller result = new OrderEarnedValueChartFiller(
+                planningState.getOrder());
         result.calculateValues(timeTracker.getRealInterval());
         return result;
     }
@@ -584,15 +521,16 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner,
             ChangeHooker changeHooker) {
-        Chart loadChart = setupChart(orderReloaded, new OrderLoadChartFiller(
-                orderReloaded), chartLoadTimeplot, planner);
+        Chart loadChart = setupChart(planningState.getOrder(),
+                new OrderLoadChartFiller(planningState.getOrder()),
+                chartLoadTimeplot, planner);
         refillLoadChartWhenNeeded(changeHooker, planner, loadChart);
     }
 
     private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
             OrderEarnedValueChartFiller earnedValueChartFiller,
             Planner planner, ChangeHooker changeHooker) {
-        Chart earnedValueChart = setupChart(orderReloaded,
+        Chart earnedValueChart = setupChart(planningState.getOrder(),
                 earnedValueChartFiller, chartEarnedValueTimeplot, planner);
         refillLoadChartWhenNeeded(changeHooker, planner, earnedValueChart);
         setEventListenerConfigurationCheckboxes(earnedValueChart);
@@ -1137,23 +1075,20 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return zoomListener;
     }
 
-    private PlannerConfiguration<TaskElement> createConfiguration(
-            Planner planner, Order orderReloaded) {
+    private PlannerConfiguration<TaskElement> createConfiguration(Order order) {
         taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.useScenario(currentScenario);
-        planningState = createPlanningStateFor(planner, orderReloaded);
-        taskElementAdapter
-                .setInitDate(asLocalDate(orderReloaded.getInitDate()));
-        taskElementAdapter
-                .setDeadline(asLocalDate(orderReloaded.getDeadline()));
+        planningState = createPlanningStateFor(order);
+        taskElementAdapter.setInitDate(asLocalDate(order.getInitDate()));
+        taskElementAdapter.setDeadline(asLocalDate(order.getDeadline()));
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
                 taskElementAdapter,
                 new TaskElementNavigator(), planningState.getInitial());
-        result.setNotBeforeThan(orderReloaded.getInitDate());
-        result.setNotAfterThan(orderReloaded.getDeadline());
-        result.setDependenciesConstraintsHavePriority(orderReloaded
+        result.setNotBeforeThan(order.getInitDate());
+        result.setNotAfterThan(order.getDeadline());
+        result.setDependenciesConstraintsHavePriority(order
                 .getDependenciesConstraintsHavePriority());
-        result.setScheduleBackwards(orderReloaded.isScheduleBackwards());
+        result.setScheduleBackwards(order.isScheduleBackwards());
         return result;
     }
 
@@ -1161,171 +1096,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
-    private PlanningState createPlanningStateFor(
-            Planner planner, Order orderReloaded) {
-        if (!orderReloaded.isSomeTaskElementScheduled()) {
-            return PlanningState.createEmpty(currentScenario);
-        }
-        final List<Resource> allResources = resourceDAO.list(Resource.class);
-        criterionDAO.list(Criterion.class);
-        TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
-        forceLoadOfChildren(Arrays.asList(taskElement));
-        forceLoadDayAssignments(orderReloaded.getResources());
-        switchAllocationsToScenario(currentScenario, taskElement);
-        final IScenarioInfo scenarioInfo = buildScenarioInfo(orderReloaded);
-        PlanningState result = PlanningState.create(planner, taskElement, orderReloaded
-                .getAssociatedTasks(), allResources, criterionDAO, resourceDAO,
-                scenarioInfo);
-        forceLoadOfDependenciesCollections(result.getInitial());
-        forceLoadOfWorkingHours(result.getInitial());
-        forceLoadOfLabels(result.getInitial());
-        return result;
-    }
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
 
-    private void forceLoadDayAssignments(Set<Resource> resources) {
-        for (Resource resource : resources) {
-            resource.getAssignments().size();
-        }
-    }
-
-    private IScenarioInfo buildScenarioInfo(Order orderReloaded) {
-        if (orderReloaded.isUsingTheOwnerScenario()) {
-            return createOwnerScenarioInfoFor(orderReloaded);
-        }
-        final List<DayAssignment> previousAssignments = orderReloaded
-                .getDayAssignments();
-        OrderVersion previousVersion = currentScenario
-                .getOrderVersion(orderReloaded);
-        OrderVersion newVersion = OrderVersion
-                .createInitialVersion(currentScenario);
-        orderReloaded.writeSchedulingDataChangesTo(currentScenario, newVersion);
-        assigmentsOnResourceCalculator = new ReturningNewAssignments(
-                previousAssignments);
-        switchAllocationsToScenario(currentScenario, orderReloaded
-                .getAssociatedTaskElement());
-        return createScenarioInfoForNotOwnerScenario(orderReloaded, previousVersion,
-                newVersion);
-    }
-
-    private IScenarioInfo createOwnerScenarioInfoFor(Order orderReloaded) {
-        return PlanningState.ownerScenarioInfo(orderVersionDAO,
-                currentScenario,
-                currentScenario.getOrderVersion(orderReloaded));
-    }
-
-    private IScenarioInfo createScenarioInfoForNotOwnerScenario(
-            Order orderReloaded, OrderVersion previousVersion,
-            OrderVersion newVersion) {
-        return PlanningState.forNotOwnerScenario(orderDAO, scenarioDAO,
-                taskSourceDAO, orderReloaded,
-                previousVersion, currentScenario, newVersion);
-    }
-
-    private void forceLoadOfChildren(Collection<? extends TaskElement> initial) {
-        for (TaskElement each : initial) {
-            forceLoadOfDataAssociatedTo(each);
-            if (each instanceof TaskGroup) {
-                findChildrenWithQueryToAvoidProxies((TaskGroup) each);
-                List<TaskElement> children = each.getChildren();
-                forceLoadOfChildren(children);
-            }
-        }
-    }
-
-    public static void forceLoadOfDataAssociatedTo(TaskElement each) {
-        forceLoadOfResourceAllocationsResources(each);
-        forceLoadOfCriterions(each);
-        if (each.getCalendar() != null) {
-            BaseCalendarModel.forceLoadBaseCalendar(each.getCalendar());
-        }
-        each.hasConsolidations();
-    }
-
-    private static void switchAllocationsToScenario(Scenario scenario,
-            TaskElement task) {
-        for (ResourceAllocation<?> each : task.getAllResourceAllocations()) {
-            each.switchToScenario(scenario);
-        }
-    }
-
-    /**
-     * Forcing the load of all criterions so there are no different criterion
-     * instances for the same criteiron at database
-     */
-    private static void forceLoadOfCriterions(TaskElement taskElement) {
-        List<GenericResourceAllocation> generic = ResourceAllocation.getOfType(
-                GenericResourceAllocation.class, taskElement
-                        .getSatisfiedResourceAllocations());
-        for (GenericResourceAllocation each : generic) {
-            for (Criterion eachCriterion : each.getCriterions()) {
-                eachCriterion.getName();
-            }
-        }
-    }
-
-    /**
-     * Forcing the load of all resources so the resources at planning state and
-     * at allocations are the same
-     */
-    private static void forceLoadOfResourceAllocationsResources(
-            TaskElement taskElement) {
-        Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getAllResourceAllocations();
-        for (ResourceAllocation<?> each : resourceAllocations) {
-            each.getAssociatedResources();
-            for (DerivedAllocation eachDerived : each.getDerivedAllocations()) {
-                eachDerived.getResources();
-            }
-        }
-    }
-
-    private void findChildrenWithQueryToAvoidProxies(TaskGroup group) {
-        for (TaskElement eachTask : taskDAO.findChildrenOf(group)) {
-            Hibernate.initialize(eachTask);
-        }
-    }
-
-    private void forceLoadOfWorkingHours(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            if (taskElement.getTaskSource() != null) {
-                taskElement.getTaskSource().getTotalHours();
-                OrderElement orderElement = taskElement.getOrderElement();
-                if (orderElement != null) {
-                    orderElement.getWorkHours();
-                }
-                if (!taskElement.isLeaf()) {
-                    forceLoadOfWorkingHours(taskElement.getChildren());
-                }
-            }
-        }
-    }
-
-    private void forceLoadOfDependenciesCollections(
-            Collection<? extends TaskElement> elements) {
-        for (TaskElement task : elements) {
-            forceLoadOfDepedenciesCollections(task);
-            if (!task.isLeaf()) {
-                forceLoadOfDependenciesCollections(task.getChildren());
-            }
-        }
-    }
-
-    private void forceLoadOfDepedenciesCollections(TaskElement task) {
-        task.getDependenciesWithThisOrigin().size();
-        task.getDependenciesWithThisDestination().size();
-    }
-
-    private void forceLoadOfLabels(List<TaskElement> initial) {
-        for (TaskElement taskElement : initial) {
-            if (taskElement.isLeaf()) {
-                OrderElement orderElement = taskElement.getOrderElement();
-                if (orderElement != null) {
-                    orderElement.getLabels().size();
-                }
-            } else {
-                forceLoadOfLabels(taskElement.getChildren());
-            }
-        }
+    private PlanningState createPlanningStateFor(Order order) {
+        return planningStateCreator.retrieveOrCreate(planner.getDesktop(),
+                order);
     }
 
     // spring method injection
@@ -1348,12 +1124,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract IAdvanceAssignmentPlanningCommand getAdvanceAssignmentPlanningCommand();
 
     protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
-
-    private Order reload(Order order) {
-        Order result = orderDAO.findExistingEntity(order.getId());
-        result.useSchedulingDataFor(currentScenario);
-        return result;
-    }
 
     private class OrderLoadChartFiller extends ChartFiller {
 
@@ -1385,8 +1155,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
             List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
             for (Resource resource : order.getResources()) {
-                resourcesDayAssignments.addAll(assigmentsOnResourceCalculator
-                        .getAssignments(resource));
+                resourcesDayAssignments.addAll(planningState
+                        .getAssignmentsCalculator().getAssignments(resource));
             }
             SortedMap<LocalDate, Map<Resource, EffortDuration>> resourceDayAssignmentsGrouped = groupDurationsByDayAndResource(resourcesDayAssignments);
 
@@ -1633,7 +1403,7 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     protected abstract ISubcontractCommand getSubcontractCommand();
 
     public Order getOrder() {
-        return orderReloaded;
+        return planningState.getOrder();
     }
 
     @Override
@@ -1644,9 +1414,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Override
     @Transactional(readOnly = true)
     public void forceLoadLabelsAndCriterionRequirements() {
-        orderDAO.reattach(orderReloaded);
-        forceLoadLabels(orderReloaded);
-        forceLoadCriterionRequirements(orderReloaded);
+        orderDAO.reattach(planningState.getOrder());
+        forceLoadLabels(planningState.getOrder());
+        forceLoadCriterionRequirements(planningState.getOrder());
     }
 
     private void forceLoadLabels(OrderElement orderElement) {
@@ -1751,7 +1521,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateCriticalPathProgress(TaskGroup rootTask) {
-            Planner planner = planningState.getPlanner();
             if (planner != null) {
                 rootTask.updateCriticalPathProgress((List<TaskElement>) planner
                         .getCriticalPath());

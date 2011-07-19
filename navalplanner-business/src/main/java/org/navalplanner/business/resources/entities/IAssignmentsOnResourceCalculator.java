@@ -25,8 +25,13 @@ import java.util.List;
 import org.navalplanner.business.planner.entities.DayAssignment;
 
 /**
- * @author Óscar González Fernández <ogonzalez@igalia.com>
+ * It serves as a indirection point for retrieving the assignments of a
+ * {@link Resource}. In some circumstances the assignments can't be retrieved
+ * directly, because the assignments of the resource might be stale and some
+ * further processing is required.
  *
+ * @see OrderPlanningModel.ReturningNewAssignments
+ * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public interface IAssignmentsOnResourceCalculator {
 
