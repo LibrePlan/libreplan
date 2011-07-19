@@ -176,12 +176,12 @@ public class UnitTypeController extends BaseCRUDController<UnitType> {
 
     @Override
     protected String getEntityType() {
-        return _("Unit Type");
+        return _("Unit Measure");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Unit Types");
+        return _("Unit Measures");
     }
 
     @Override

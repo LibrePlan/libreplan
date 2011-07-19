@@ -148,12 +148,12 @@ public class ExternalCompanyCRUDController extends
 
     @Override
     protected String getEntityType() {
-        return _("External company");
+        return _("Company");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("External companies");
+        return _("Companies");
     }
 
     @Override

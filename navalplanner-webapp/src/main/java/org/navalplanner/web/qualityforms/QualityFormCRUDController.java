@@ -34,16 +34,12 @@ import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
 import org.navalplanner.business.qualityforms.entities.QualityFormType;
 import org.navalplanner.web.common.BaseCRUDController;
-import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
@@ -54,7 +50,6 @@ import org.zkoss.zul.ListModelExt;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
-import org.zkoss.zul.Window;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -437,12 +432,12 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
 
     @Override
     protected String getEntityType() {
-        return _("Quality form");
+        return _("Quality Form");
     }
 
     @Override
     protected String getPluralEntityType() {
-        return _("Quality forms");
+        return _("Quality Forms");
     }
 
     @Override
