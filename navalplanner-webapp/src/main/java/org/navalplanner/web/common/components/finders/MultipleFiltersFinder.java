@@ -204,7 +204,7 @@ public abstract class MultipleFiltersFinder implements IMultipleFiltersFinder {
             labelPattern.setParent(item);
 
             final Listcell labelType = new Listcell();
-            labelType.setLabel(_(filterPair.getType().toString()));
+            labelType.setLabel(_(filterPair.getTypeComplete()));
             labelType.setParent(item);
 
         }
