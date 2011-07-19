@@ -21,6 +21,8 @@
 
 package org.navalplanner.web.common.components.finders;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
@@ -28,11 +30,21 @@ public class FilterPair extends Object {
 
     private IFilterEnum type;
 
+    private String typeDescription;
+
     private String pattern;
 
     private Object value;
 
     public FilterPair() {
+    }
+
+    public FilterPair(IFilterEnum type, String typeDescription, String pattern,
+            Object value) {
+        this.type = type;
+        this.typeDescription = typeDescription;
+        this.value = value;
+        this.pattern = pattern;
     }
 
     public FilterPair(IFilterEnum type, String pattern, Object value) {
@@ -63,5 +75,25 @@ public class FilterPair extends Object {
 
     public void setPattern(String pattern) {
         this.pattern = pattern;
+    }
+
+    public void setTypeDescription(String typeDescription) {
+        this.typeDescription = typeDescription;
+    }
+
+    public String getTypeDescription() {
+        return typeDescription;
+    }
+
+    public String getTypeComplete() {
+        if (getType() == null) {
+            return "";
+        }
+
+        String descriptionComplete = getType().toString();
+        if (!StringUtils.isBlank(this.getTypeDescription())) {
+            descriptionComplete += " ( " + getTypeDescription() + " )";
+        }
+        return descriptionComplete;
     }
 }
