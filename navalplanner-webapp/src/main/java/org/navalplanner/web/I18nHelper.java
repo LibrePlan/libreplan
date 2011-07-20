@@ -32,6 +32,7 @@ import org.xnap.commons.i18n.I18n;
 import org.xnap.commons.i18n.I18nFactory;
 import org.zkoss.util.Locales;
 import org.zkoss.web.servlet.Charsets;
+import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
 
 
@@ -42,8 +43,7 @@ public class I18nHelper {
     private static HashMap<Locale, I18n> localesCache = new HashMap<Locale, I18n>();
 
     public static I18n getI18n() {
-        Charsets.setPreferredLocale((HttpSession) Executions.getCurrent()
-                .getSession().getNativeSession(), getUserLocale());
+        setPreferredLocale();
 
         Locale locale = Locales.getCurrent();
 
@@ -63,6 +63,14 @@ public class I18nHelper {
         localesCache.put(Locales.getCurrent(), i18n);
 
         return i18n;
+    }
+
+    private static void setPreferredLocale() {
+        Execution execution = Executions.getCurrent();
+        if (execution != null) {
+            Charsets.setPreferredLocale((HttpSession) execution.getSession()
+                    .getNativeSession(), getUserLocale());
+        }
     }
 
     private static Locale getUserLocale() {
