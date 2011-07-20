@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}" title="${arg.title}">
+<window id="${arg.top_id}">
 
     <grid  fixedLayout="true" style="margin-bottom: 10px;">
         <columns>
@@ -29,22 +29,23 @@
         <rows>
             <row>
                 <label value="${i18n:_('Name')}" />
-                <textbox value="@{scenarioController.scenario.name}" width="300px"
+                <textbox value="@{controller.scenario.name}" width="300px"
                     constraint="no empty:${i18n:_('cannot be null or empty')}"
-                    disabled="@{scenarioController.scenario.predefined}" />
+                    disabled="@{controller.scenario.predefined}"
+                    onBlur="controller.updateWindowTitle()" />
             </row>
-            <row visible="@{scenarioController.scenario.derived}">
+            <row visible="@{controller.scenario.derived}">
                 <label value="${i18n:_('Predecessor')}" />
-                <label value="@{scenarioController.scenario.predecessor.name}" />
+                <label value="@{controller.scenario.predecessor.name}" />
             </row>
             <row>
                 <label value="${i18n:_('Description')}" />
-                <textbox value="@{scenarioController.scenario.description}"
+                <textbox value="@{controller.scenario.description}"
                     rows="5" width="300px" />
             </row>
             <row>
                 <label value="${i18n:_('Projects')}" />
-                <listbox model="@{scenarioController.orders}">
+                <listbox model="@{controller.orders}">
                     <listhead>
                         <listheader label="${i18n:_('Code')}" />
                         <listheader label="${i18n:_('Name')}" />
@@ -59,13 +60,15 @@
     </grid>
 
     <hbox>
-        <button onClick="scenarioController.save();"
-            label="${arg.save_button_label}"
-            sclass="save-button global-action"
-            visible="${arg.save_button_visible}" />
-        <button onClick="scenarioController.cancel();"
-            label="${arg.cancel_button_label}"
-            sclass="cancel-button global-action" />
+        <button label="${i18n:_('Save')}"
+            onClick="controller.saveAndExit()"
+            sclass="save-button global-action"/>
+        <button label="${i18n:_('Save &amp; Continue')}"
+            onClick="controller.saveAndContinue()"
+            sclass="saveandcontinue-button global-action"/>
+        <button label="${i18n:_('Cancel')}"
+            onClick="controller.cancelForm()"
+            sclass="cancel-button global-action"/>
     </hbox>
 
 </window>

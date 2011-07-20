@@ -57,11 +57,11 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
 
     protected Window editWindow;
 
-    private enum CRUCControllerState {
+    protected enum CRUDControllerState {
         LIST, CREATE, EDIT
     };
 
-    private CRUCControllerState state = CRUCControllerState.LIST;
+    protected CRUDControllerState state = CRUDControllerState.LIST;
 
     /**
      * Call to super and do some extra stuff: <br />
@@ -153,7 +153,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      * Show list window and reload bindings there
      */
     public final void goToList() {
-        state = CRUCControllerState.LIST;
+        state = CRUDControllerState.LIST;
         showListWindow();
     }
 
@@ -162,7 +162,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      * implemented in subclasses.
      */
     public final void goToCreateForm() {
-        state = CRUCControllerState.CREATE;
+        state = CRUDControllerState.CREATE;
         initCreate();
         showEditWindow();
     }
@@ -180,7 +180,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      *            Entity to be edited
      */
     public final void goToEditForm(T entity) {
-        state = CRUCControllerState.EDIT;
+        state = CRUDControllerState.EDIT;
         initEdit(entity);
         showEditWindow();
     }

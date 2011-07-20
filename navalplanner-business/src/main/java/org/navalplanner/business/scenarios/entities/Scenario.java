@@ -29,8 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
@@ -39,6 +39,7 @@ import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.joda.time.DateTime;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
@@ -50,7 +51,7 @@ import org.navalplanner.business.scenarios.daos.IScenarioDAO;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class Scenario extends BaseEntity {
+public class Scenario extends BaseEntity implements IHumanIdentifiable {
 
     private String name;
 
@@ -274,6 +275,11 @@ public class Scenario extends BaseEntity {
         return !isOwnerScenario
                 && orderVersion
                         .hasBeenModifiedAfter(lastNotOwnedReassignationsTimeStamp);
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }

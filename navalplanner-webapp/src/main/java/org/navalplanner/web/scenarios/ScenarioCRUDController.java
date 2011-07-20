@@ -29,26 +29,22 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.scenarios.bootstrap.PredefinedScenarios;
 import org.navalplanner.business.scenarios.entities.Scenario;
-import org.navalplanner.web.common.IMessagesForUser;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.ITemplateModel;
-import org.navalplanner.web.common.Level;
-import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
-import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.ITemplateModel.IOnFinished;
+import org.navalplanner.web.common.Level;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.SimpleTreeNode;
@@ -56,14 +52,13 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
-import org.zkoss.zul.api.Window;
 
 /**
  * Controller for CRUD actions over a {@link Scenario}.
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class ScenarioCRUDController extends GenericForwardComposer {
+public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     private static final Log LOG = LogFactory
             .getLog(ScenarioCRUDController.class);
@@ -77,76 +72,36 @@ public class ScenarioCRUDController extends GenericForwardComposer {
     @Autowired
     private IScenarioManager scenarioManager;
 
-    private Window listWindow;
-
-    private Window createWindow;
-
-    private Window editWindow;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
-
     private ScenariosTreeitemRenderer scenariosTreeitemRenderer = new ScenariosTreeitemRenderer();
 
     public Scenario getScenario() {
         return scenarioModel.getScenario();
     }
 
-    @Override
-    public void doAfterCompose(Component comp) throws Exception {
-        super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("scenarioController", this, true);
-        getVisibility().showOnly(listWindow);
-    }
-
     public void cancel() {
         scenarioModel.cancel();
-        goToList();
     }
 
-    public void goToList() {
-        Util.reloadBindings(listWindow);
-        getVisibility().showOnly(listWindow);
-    }
-
-    public void goToEditForm(Scenario scenario) {
-        scenarioModel.initEdit(scenario);
-        getVisibility().showOnly(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
+    @Override
     public void save() {
-        try {
-            scenarioModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO, _("Scenario \"{0}\" saved",
-                    scenarioModel.getScenario().getName()));
-            goToList();
-        } catch (ValidationException e) {
-            messagesForUser.showInvalidValues(e);
-        }
+        scenarioModel.confirmSave();
     }
 
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, createWindow,
-                    editWindow);
-        }
-        return visibility;
+    @Override
+    protected void initCreate() {
+        // Do nothing, direct scenario creation is not allowed it should be
+        // derived
     }
 
     public void goToCreateDerivedForm(Scenario scenario) {
+        state = CRUDControllerState.CREATE;
         scenarioModel.initCreateDerived(scenario);
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        showEditWindow();
     }
 
     public ScenariosTreeModel getScenariosTreeModel() {
-        return new ScenariosTreeModel(new ScenarioTreeRoot(scenarioModel
-                .getScenarios()));
+        return new ScenariosTreeModel(new ScenarioTreeRoot(
+                scenarioModel.getScenarios()));
     }
 
     public ScenariosTreeitemRenderer getScenariosTreeitemRenderer() {
@@ -205,8 +160,7 @@ public class ScenarioCRUDController extends GenericForwardComposer {
 
                 @Override
                 public void onEvent(Event event) {
-                    scenarioModel.remove(scenario);
-                    Util.reloadBindings(listWindow);
+                    confirmDelete(scenario);
                 }
 
             });
@@ -277,6 +231,31 @@ public class ScenarioCRUDController extends GenericForwardComposer {
             return Collections.emptySet();
         }
         return scenario.getOrders().keySet();
+    }
+
+    @Override
+    protected String getEntityType() {
+        return "Scenario";
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return "Scenarios";
+    }
+
+    @Override
+    protected void initEdit(Scenario scenario) {
+        scenarioModel.initEdit(scenario);
+    }
+
+    @Override
+    protected Scenario getEntityBeingEdited() {
+        return scenarioModel.getScenario();
+    }
+
+    @Override
+    protected void delete(Scenario scenario) throws InstanceNotFoundException {
+        scenarioModel.remove(scenario);
     }
 
 }

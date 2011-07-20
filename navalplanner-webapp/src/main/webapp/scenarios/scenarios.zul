@@ -34,13 +34,6 @@
         <vbox id="messagesContainer"></vbox>
 
         <list top_id="listWindow" />
-        <edition top_id="createWindow" title="${i18n:_('Create Scenario')}"
-            save_button_label="${i18n:_('Save')}"
-            save_button_visible="true"
-            cancel_button_label="${i18n:_('Cancel')}" />
-        <edition top_id="editWindow" title="${i18n:_('Edit Scenario')}"
-            save_button_label="${i18n:_('Save')}"
-            save_button_visible="true"
-            cancel_button_label="${i18n:_('Cancel')}" />
+        <edition top_id="editWindow" />
     </window>
 </zk>

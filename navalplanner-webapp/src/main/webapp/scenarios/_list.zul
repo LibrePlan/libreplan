@@ -20,8 +20,8 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_('Scenarios List')}">
-    <tree id="tree" model="@{scenarioController.scenariosTreeModel}"
-        treeitemRenderer="@{scenarioController.scenariosTreeitemRenderer}"
+    <tree id="tree" model="@{controller.scenariosTreeModel}"
+        treeitemRenderer="@{controller.scenariosTreeitemRenderer}"
         zclass="z-dottree">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
