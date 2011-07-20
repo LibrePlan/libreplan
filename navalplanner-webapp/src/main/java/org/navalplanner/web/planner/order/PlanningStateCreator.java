@@ -502,6 +502,13 @@ public class PlanningStateCreator {
             return getScenarioInfo().getCurrentScenario();
         }
 
+        public void reattach() {
+            orderDAO.reattach(order);
+            if (getRootTask() != null) {
+                taskDAO.reattach(getRootTask());
+            }
+        }
+
     }
 
     private class EmptyPlannigState extends PlanningState {

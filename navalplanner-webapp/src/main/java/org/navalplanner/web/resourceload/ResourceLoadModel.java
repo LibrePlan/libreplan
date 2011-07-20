@@ -112,7 +112,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private List<LoadTimeLine> loadTimeLines;
     private Interval viewInterval;
 
-    private Order filterBy;
+    private PlanningState filterBy;
 
     private boolean filterByResources = true;
 
@@ -164,7 +164,9 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(PlanningState filterBy, boolean filterByResources) {
-        this.filterBy = filterBy.getOrder();
+        this.filterBy = filterBy;
+        this.filterBy.reattach();
+        this.filterBy.reassociateResourcesWithSession();
         this.filterByResources = filterByResources;
         doGlobalView();
     }
@@ -252,7 +254,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private Map<Criterion, List<GenericResourceAllocation>> findAllocationsByCriterion() {
         if (filter()) {
-            List<Task> tasks = justTasks(filterBy
+            List<Task> tasks = justTasks(filterBy.getOrder()
                     .getAllChildrenAssociatedTaskElements());
             return findAllocationsGroupedByCriteria(getCriterionsOn(tasks));
         } else {
@@ -404,7 +406,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     private List<Resource> resourcesForActiveTasks() {
         return Resource.sortByName(resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy
+                .findResourcesRelatedTo(justTasks(filterBy.getOrder()
                         .getAllChildrenAssociatedTaskElements())));
     }
 
@@ -484,11 +486,11 @@ public class ResourceLoadModel implements IResourceLoadModel {
         // REVISAR ESTO ANTES DE ACABAR
         if (filter()) {
             // build time lines for current order
-            if (byOrder.get(filterBy) != null) {
-                result.addAll(buildTimeLinesForOrder(filterBy, criterion,
-                        byOrder.get(filterBy)));
+            if (byOrder.get(filterBy.getOrder()) != null) {
+                result.addAll(buildTimeLinesForOrder(filterBy.getOrder(),
+                        criterion, byOrder.get(filterBy.getOrder())));
             }
-            byOrder.remove(filterBy);
+            byOrder.remove(filterBy.getOrder());
             // build time lines for other orders
             LoadTimeLine lineOthersOrders = buildTimeLinesForOtherOrders(
                     criterion, byOrder);
@@ -674,12 +676,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
         Map<Order, List<ResourceAllocation<?>>> byOrder = byOrder(sortedByStartDate);
 
         if (filter()) {
-            if (byOrder.get(filterBy) != null) {
+            if (byOrder.get(filterBy.getOrder()) != null) {
                 // build time lines for current order
-                result.addAll(buildTimeLinesForOrder(resource, byOrder
-                    .get(filterBy)));
+                result.addAll(buildTimeLinesForOrder(resource,
+                        byOrder.get(filterBy.getOrder())));
             }
-            byOrder.remove(filterBy);
+            byOrder.remove(filterBy.getOrder());
             // build time lines for other orders
             LoadTimeLine lineOthersOrders = buildTimeLinesForOtherOrders(
                     resource, byOrder);
