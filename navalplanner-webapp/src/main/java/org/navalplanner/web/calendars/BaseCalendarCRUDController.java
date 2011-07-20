@@ -25,11 +25,13 @@ import static org.navalplanner.web.I18nHelper._;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.common.exceptions.ValidationException;
+import org.navalplanner.web.common.BaseCRUDController.CRUDControllerState;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
@@ -81,6 +83,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private BaseCalendarEditionController editionController;
 
+    private CRUDControllerState state = CRUDControllerState.LIST;
+
     public BaseCalendar getBaseCalendar() {
         return baseCalendarModel.getBaseCalendar();
     }
@@ -99,17 +103,20 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToList() {
+        state = CRUDControllerState.LIST;
         Util.reloadBindings(listWindow);
         getVisibility().showOnly(listWindow);
     }
 
     public void goToEditForm(BaseCalendar baseCalendar) {
+        state = CRUDControllerState.EDIT;
         baseCalendarModel.initEdit(baseCalendar);
         assignEditionController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        updateWindowTitle();
     }
 
     private void highlightDaysOnCalendar() {
@@ -145,12 +152,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateForm() {
+        state = CRUDControllerState.CREATE;
         baseCalendarModel.initCreate();
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        updateWindowTitle();
     }
 
     public void setSelectedDay(LocalDate date) {
@@ -238,12 +247,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateDerivedForm(BaseCalendar baseCalendar) {
+        state = CRUDControllerState.CREATE;
         baseCalendarModel.initCreateDerived(baseCalendar);
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        updateWindowTitle();
     }
 
     public boolean isEditing() {
@@ -251,12 +262,14 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     public void goToCreateCopyForm(BaseCalendar baseCalendar) {
+        state = CRUDControllerState.CREATE;
         baseCalendarModel.initCreateCopy(baseCalendar);
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
+        updateWindowTitle();
     }
 
     public BaseCalendarsTreeModel getBaseCalendarsTreeModel() {
@@ -486,4 +499,30 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
             this.createController.validateCalendarExceptionCodes();
         }
     }
+
+    public void updateWindowTitle() {
+        if (editWindow != null && state != CRUDControllerState.LIST) {
+            String entityType = _("Calendar");
+            String humanId = getBaseCalendar().getHumanId();
+
+            String title;
+            switch (state) {
+            case CREATE:
+                if (StringUtils.isEmpty(humanId)) {
+                    title = _("Create {0}", entityType);
+                } else {
+                    title = _("Create {0}: {1}", entityType, humanId);
+                }
+                break;
+            case EDIT:
+                title = _("Edit {0}: {1}", entityType, humanId);
+                break;
+            default:
+                throw new IllegalStateException(
+                        "You should be in creation or edition mode to use this method");
+            }
+            editWindow.setTitle(title);
+        }
+    }
+
 }

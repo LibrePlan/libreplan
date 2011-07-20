@@ -40,7 +40,8 @@
               <label value="${i18n:_('Name')}" />
               <textbox
                 value="@{calendarController.editionController.baseCalendar.name}"
-                width="300px" constraint="no empty:${i18n:_('cannot be null or empty')}" />
+                width="300px" constraint="no empty:${i18n:_('cannot be null or empty')}"
+                onBlur="calendarController.updateWindowTitle()" />
             </row>
             <row>
               <label value="${i18n:_('Type')}" />

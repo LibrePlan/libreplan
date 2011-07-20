@@ -39,15 +39,16 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.IVetoer;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.entities.EntitySequence;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate;
-import org.navalplanner.business.workingday.ResourcesPerDay;
 import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.business.workingday.ResourcesPerDay;
 
 /**
  * Represents a calendar with some exception days. A calendar is valid till the
@@ -56,7 +57,8 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * some exceptions of its parent calendar.
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class BaseCalendar extends IntegrationEntity implements ICalendar {
+public class BaseCalendar extends IntegrationEntity implements ICalendar,
+        IHumanIdentifiable {
 
     private static final Capacity DEFAULT_VALUE = Capacity.zero()
             .overAssignableWithoutLimit();
@@ -1231,6 +1233,11 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar {
             }
         }
         return false;
+    }
+
+    @Override
+    public String getHumanId() {
+        return name;
     }
 
 }
