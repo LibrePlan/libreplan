@@ -31,10 +31,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -56,6 +56,8 @@ import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.company.CompanyPlanningModel;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
+import org.navalplanner.web.planner.order.PlanningStateCreator;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -114,9 +116,12 @@ public class ResourceLoadController implements Composer {
 
     private List<IToolbarCommand> commands = new ArrayList<IToolbarCommand>();
 
-    private Order filterBy;
+    private PlanningState filterBy;
 
     private org.zkoss.zk.ui.Component parent;
+
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
 
     private ResourcesLoadPanel resourcesLoadPanel;
 
@@ -490,7 +495,8 @@ public class ResourceLoadController implements Composer {
     }
 
     public void filterBy(Order order) {
-        this.filterBy = order;
+        this.filterBy = order == null ? null : planningStateCreator
+                .retrieveOrCreate(parent.getDesktop(), order);
     }
 
     public void setPlanningControllerEntryPoints(

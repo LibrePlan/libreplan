@@ -29,6 +29,7 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
@@ -37,7 +38,7 @@ public interface IResourceLoadModel {
 
     void initGlobalView(boolean filterByResources);
 
-    void initGlobalView(Order filterBy, boolean filterByResources);
+    void initGlobalView(PlanningState filterBy, boolean filterByResources);
 
     List<LoadTimeLine> getLoadTimeLines();
 

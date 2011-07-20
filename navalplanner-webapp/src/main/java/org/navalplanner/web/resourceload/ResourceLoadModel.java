@@ -68,6 +68,7 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -162,9 +163,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(Order filterBy, boolean filterByResources) {
-        this.filterBy = orderDAO.findExistingEntity(filterBy.getId());
-        this.filterBy.useSchedulingDataFor(scenarioManager.getCurrent());
+    public void initGlobalView(PlanningState filterBy, boolean filterByResources) {
+        this.filterBy = filterBy.getOrder();
         this.filterByResources = filterByResources;
         doGlobalView();
     }
