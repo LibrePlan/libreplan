@@ -736,8 +736,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
     }
 
-    @Transactional(readOnly = true)
-    public Map<Order, List<ResourceAllocation<?>>> byOrder(
+    private Map<Order, List<ResourceAllocation<?>>> byOrder(
             Collection<? extends ResourceAllocation<?>> allocations) {
         Map<Order, List<ResourceAllocation<?>>> result = new HashMap<Order, List<ResourceAllocation<?>>>();
         for (ResourceAllocation<?> resourceAllocation : allocations) {
