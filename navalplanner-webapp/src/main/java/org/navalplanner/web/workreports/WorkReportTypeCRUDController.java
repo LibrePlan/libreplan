@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.workreports.entities.HoursManagementEnum;
@@ -36,11 +38,11 @@ import org.navalplanner.business.workreports.entities.PositionInWorkReportEnum;
 import org.navalplanner.business.workreports.entities.WorkReportLabelTypeAssigment;
 import org.navalplanner.business.workreports.entities.WorkReportType;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
+import org.navalplanner.web.common.BaseCRUDController;
 import org.navalplanner.web.common.EnumsListitemRenderer;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
-import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.components.Autocomplete;
 import org.navalplanner.web.common.components.NewDataSortableGrid;
@@ -52,7 +54,6 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
@@ -78,17 +79,11 @@ import org.zkoss.zul.api.Window;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-public class WorkReportTypeCRUDController extends GenericForwardComposer
+public class WorkReportTypeCRUDController extends BaseCRUDController<WorkReportType>
         implements IWorkReportTypeCRUDControllerEntryPoints {
 
      private static final org.apache.commons.logging.Log LOG = LogFactory
      .getLog(WorkReportTypeCRUDController.class);
-
-    private Window listWindow;
-
-    private Window createWindow;
-
-    private Window editWindow;
 
     private NewDataSortableGrid listDescriptionFields;
 
@@ -109,12 +104,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     private IMessagesForUser messagesForUserSortedLabelsAndFields;
 
     private IWorkReportTypeModel workReportTypeModel;
-
-    private OnlyOneVisible visibility;
-
-    private IMessagesForUser messagesForUser;
-
-    private Component messagesContainer;
 
     private IWorkReportCRUDControllerEntryPoints workReportCRUD;
 
@@ -137,79 +126,19 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
         final EntryPointsHandler<IWorkReportTypeCRUDControllerEntryPoints> handler = URLHandlerRegistry
                 .getRedirectorFor(IWorkReportTypeCRUDControllerEntryPoints.class);
         handler.register(this, page);
-        getVisibility().showOnly(listWindow);
     }
 
-    public void saveAndContinue() {
-        save();
-        goToEditForm(getWorkReportType());
+    @Override
+    protected void save() throws ValidationException {
+        workReportTypeModel.save();
     }
 
-    public void saveAndExit() {
-        final boolean couldSave = save();
-        if (couldSave) {
-            goToList();
-        }
-    }
-
-    public void cancel() {
-        goToList();
-    }
-
-    public void goToList() {
-        this.workReportTypeModel.setListing(true);
-        Util.reloadBindings(listWindow);
-        getVisibility().showOnly(listWindow);
-    }
-
-    public void goToEditForm(WorkReportType workReportType) {
-        workReportTypeModel.initEdit(workReportType);
-        getVisibility().showOnly(editWindow);
-        loadComponents(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
-    public boolean save() {
-        if (isAllValid()) {
-            workReportTypeModel.save();
-            messagesForUser.showMessage(Level.INFO, _("Work report type saved"));
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public void confirmRemove(WorkReportType workReportType) {
-        if (thereAreWorkReportsFor(workReportType)) {
-            try {
-                Messagebox.show(_("Cannot delete work report type. There are some work reports bound to it."),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                LOG.error(_("Error on showing warning message removing workReportType: ", workReportType.getId()), e);
-            }
-            return;
-        }
-
-        // Show remove confirming window
-        try {
-            if (Messagebox.show(_("Delete item. Are you sure?"), _("Confirm"),
-                    Messagebox.OK | Messagebox.CANCEL, Messagebox.QUESTION) == Messagebox.OK) {
-                workReportTypeModel.confirmRemove(workReportType);
-                final Grid workReportTypes = (Grid) listWindow.getFellowIfAny("listing");
-                if (workReportTypes != null) {
-                    Util.reloadBindings(workReportTypes);
-                }
-            }
-        } catch (InterruptedException e) {
-            messagesForUser.showMessage(
-                    Level.ERROR, e.getMessage());
-            LOG.error(_("Error on removing workReportType: ", workReportType.getId()), e);
-        }
+    @Override
+    protected void beforeSaving() throws ValidationException {
+        isAllValid();
     }
 
     private boolean thereAreWorkReportsFor(WorkReportType workReportType) {
@@ -222,27 +151,6 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
 
     public boolean isEditable() {
         return (!thereAreWorkReportsFor(getWorkReportType()));
-    }
-
-    public void goToEditForm() {
-        getVisibility().showOnly(editWindow);
-        loadComponents(editWindow);
-        Util.reloadBindings(editWindow);
-    }
-
-    public void goToCreateForm() {
-        workReportTypeModel.prepareForCreate();
-        getVisibility().showOnly(createWindow);
-        loadComponents(createWindow);
-        Util.reloadBindings(createWindow);
-    }
-
-    private OnlyOneVisible getVisibility() {
-        if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, createWindow,
-                    editWindow);
-        }
-        return visibility;
     }
 
     private void loadComponents(Window window) {
@@ -922,7 +830,7 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
                 type = _("Text field");
             } else {
                 if((((WorkReportLabelTypeAssigment) data)
-.getLabelType() != null)
+                        .getLabelType() != null)
                         && (((WorkReportLabelTypeAssigment) data)
                                 .getDefaultLabel() != null)) {
                     String labelType = ((WorkReportLabelTypeAssigment) data)
@@ -1028,5 +936,59 @@ public class WorkReportTypeCRUDController extends GenericForwardComposer
             }
         }
         Util.reloadBindings(code);
+    }
+
+    @Override
+    protected String getEntityType() {
+        return _("Work Report Type");
+    }
+
+    @Override
+    protected String getPluralEntityType() {
+        return _("Work Report Types");
+    }
+
+    @Override
+    protected void initCreate() {
+        workReportTypeModel.prepareForCreate();
+        loadComponents(editWindow);
+    }
+
+    @Override
+    protected void initEdit(WorkReportType workReportType) {
+        workReportTypeModel.initEdit(workReportType);
+        loadComponents(editWindow);
+    }
+
+    @Override
+    protected WorkReportType getEntityBeingEdited() {
+        return workReportTypeModel.getWorkReportType();
+    }
+
+    @Override
+    protected boolean beforeDeleting(WorkReportType workReportType) {
+        if (thereAreWorkReportsFor(workReportType)) {
+            try {
+                Messagebox
+                        .show(_("Cannot delete work report type. There are some work reports bound to it."),
+                                _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+            } catch (InterruptedException e) {
+                LOG.error(
+                        _("Error on showing warning message removing workReportType: ",
+                                workReportType.getHumanId()), e);
+            }
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected void delete(WorkReportType workReportType)
+            throws InstanceNotFoundException {
+        workReportTypeModel.confirmRemove(workReportType);
+        final Grid workReportTypes = (Grid) listWindow.getFellowIfAny("listing");
+        if (workReportTypes != null) {
+            Util.reloadBindings(workReportTypes);
+        }
     }
 }

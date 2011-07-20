@@ -41,7 +41,7 @@
                     <button sclass="icono" image="/common/img/ico_borrar1.png"
                         hoverImage="/common/img/ico_borrar.png"
                         tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmRemove(self.parent.parent.value);">
+                        onClick="controller.confirmDelete(self.parent.parent.value);">
                     </button>
 
                     <button label="${i18n:_('New work report')}"

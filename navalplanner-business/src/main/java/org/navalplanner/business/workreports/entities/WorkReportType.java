@@ -30,6 +30,7 @@ import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.Valid;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -42,7 +43,7 @@ import org.springframework.orm.hibernate3.HibernateOptimisticLockingFailureExcep
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 
-public class WorkReportType extends IntegrationEntity {
+public class WorkReportType extends IntegrationEntity implements IHumanIdentifiable{
 
     public static WorkReportType create() {
         return create(new WorkReportType());
@@ -517,4 +518,8 @@ public class WorkReportType extends IntegrationEntity {
         return Registry.getWorkReportTypeDAO();
     }
 
+    @Override
+    public String getHumanId() {
+        return name;
+    }
 }

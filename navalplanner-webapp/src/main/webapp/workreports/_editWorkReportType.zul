@@ -43,7 +43,8 @@
                                 <hbox>
                                     <textbox visible = "@{controller.editable}"
                                         id="name" value="@{controller.workReportType.name}" width="300px"
-                                        constraint = "@{controller.validateWorkReportTypeName}" />
+                                        constraint = "@{controller.validateWorkReportTypeName}"
+                                        onBlur="controller.updateWindowTitle()" />
                                     <label visible = "@{controller.readOnly}"
                                         value="@{controller.workReportType.name}" width="300px"/>
                                 </hbox>
@@ -180,11 +181,11 @@
                 label="${arg.saveAndContinue_button_label}"
                 sclass="saveandcontinue-button global-action" />
             <button visible = "@{controller.editable}"
-                 onClick="controller.cancel();"
+                 onClick="controller.cancelForm();"
                 label="${arg.cancel_button_label}"
                 sclass="cancel-button global-action"/>
             <button visible = "@{controller.readOnly}"
-                onClick="controller.cancel();"
+                onClick="controller.cancelForm();"
                 label="${i18n:_('Close')}"
                 sclass="cancel-button global-action"/>
 
