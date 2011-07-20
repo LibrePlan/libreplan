@@ -428,7 +428,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
                     if (newIntervalIncludeAnotherWorkWeek(startDate,
                             expiringDate, prevVersion, nextVersion)) {
                         throw new IllegalArgumentException(
-                                "the new version includes a whole version already exists");
+                                "the new work week includes a whole work week already exists");
                     } else {
                         LocalDate prevExpiringDate = prevVersion
                                 .getExpiringDate();
@@ -463,12 +463,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
                     }
                 } else {
                     throw new IllegalArgumentException(
-                            "Wrong start date : the new version will be the first one, and the start date must be empty");
+                            "Wrong start date : the new work week will be the first one, and the start date must be empty");
                 }
             }
         }
         throw new IllegalArgumentException(
-                "Wrong expiring date : the new version will be the last one, and the expiring date must be empty");
+                "Wrong expiring date : the new work week will be the last one, and the expiring date must be empty");
     }
 
     public boolean newIntervalIncludeAnotherWorkWeek(LocalDate startDate,
@@ -496,8 +496,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         if ((calendarData.getExpiringDate() != null)
                 && (startDate.compareTo(calendarData.getExpiringDate()) <= 0)) {
             throw new IllegalArgumentException(
-                    "Wrong start date : Version date must be greater than expiring date of "
-                            + "all versions of this calendar");
+                    "Wrong start date : the new work week includes a whole work week already exists");
         }
 
         getLastCalendarData().setExpiringDate(startDate);
@@ -516,8 +515,8 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
                 && (expiringDate.compareTo(firstVersion.getExpiringDate()) >= 0)) {
 
             throw new IllegalArgumentException(
-                    "Wrong expiring date : Version expiring date must be lower than expiring date of "
-                            + "all versions of this calendar");
+                    "Wrong expiring date : Work week expiring date must be lower than expiring date for "
+                            + "all work weeks of this calendar");
         }
 
         CalendarData newCalendarData = CalendarData.create();
@@ -575,7 +574,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         if (version.getExpiringDate() == null) {
             if (getLastCalendarData().getExpiringDate() == null) {
                 throw new IllegalArgumentException(
-                        "the date is null and overlaps with the last version.");
+                        "the date is null and overlaps with the last work week.");
             }
             else{
                 calendarDataVersions.add(version);
@@ -588,7 +587,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         if (version.getExpiringDate().compareTo(new LocalDate()) <= 0) {
 
             throw new IllegalArgumentException(
-                    "You can not add a version with previous date than current date");
+                    "You can not add a work week with previous date than current date");
         }
         for (int i = 0; i < calendarDataVersions.size(); i++) {
             if ((calendarDataVersions.get(i).getExpiringDate() == null)
@@ -599,7 +598,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
                         && (calendarDataVersions.get(i - 1).getExpiringDate()
                                 .compareTo(version.getExpiringDate()) >= 0)) {
                     throw new IllegalArgumentException(
-                            "the date is null and overlap with the other version.");
+                            "the date is null and overlap with the other work week.");
                 }
                 calendarDataVersions.add(i, version);
                 return;
@@ -663,7 +662,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
             }
         }
 
-        throw new RuntimeException("Some version should not be expired");
+        throw new RuntimeException("Some work week should not be expired");
     }
 
     public CalendarData getLastCalendarData() {
@@ -739,7 +738,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
             LocalDate expiringDate) throws IllegalArgumentException {
         if (calendarData.getExpiringDate() == null) {
             throw new IllegalArgumentException("Can not set the expiring date "
-                    + "because of this is the last version");
+                    + "because of this is the last work week");
         }
 
         Integer index = calendarDataVersions.indexOf(calendarData);
@@ -781,7 +780,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         CalendarData calendarData = getPreviousCalendarData(date);
         if (calendarData == null) {
             throw new IllegalArgumentException(
-                    "You can not set this date for the first version");
+                    "You can not set this date for the first work week");
         }
         setExpiringDate(calendarData, validFromDate);
     }
@@ -1111,7 +1110,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
     }
 
     @SuppressWarnings("unused")
-    @AssertTrue(message = "the versions: the dates should be corrects and sorted and could not overlap ")
+    @AssertTrue(message = "the work week: the dates should be corrects and sorted and could not overlap ")
     public boolean checkConstraintDateCouldNotOverlap() {
 
         if (calendarDataVersions == null || calendarDataVersions.isEmpty()) {

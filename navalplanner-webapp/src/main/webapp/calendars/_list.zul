@@ -25,8 +25,8 @@
         zclass="z-dottree">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
-            <treecol label="${i18n:_('From date')}" width="150px" align="center"/>
-            <treecol label="${i18n:_('Up to date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_('Inherits from date')}" width="150px" align="center"/>
+            <treecol label="${i18n:_('Inherits up to date')}" width="150px" align="center"/>
             <treecol label="${i18n:_('Operations')}" width="150px" align="center"/>
         </treecols>
     </tree>

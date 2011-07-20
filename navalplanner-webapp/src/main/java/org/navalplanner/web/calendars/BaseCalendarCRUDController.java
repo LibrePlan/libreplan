@@ -299,7 +299,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             // append start date of the current work week
             Treecell startDateTreecell = new Treecell();
-            Label startDateLabel = new Label();
+            Label startDateLabel = new Label("---");
             CalendarData version = baseCalendar.getCalendarData(LocalDate
                     .fromDateFields(new Date()));
             CalendarData prevVersion = baseCalendar.getPrevious(version);
@@ -313,7 +313,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
             // append expiring date of the current work week
             Treecell expiringDateTreecell = new Treecell();
-            Label expiringDateLabel = new Label();
+            Label expiringDateLabel = new Label("---");
             if (version.getExpiringDate() != null) {
                 expiringDateLabel
                         .setValue(version.getExpiringDate().toString());

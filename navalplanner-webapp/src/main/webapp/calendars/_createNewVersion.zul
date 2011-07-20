@@ -31,9 +31,8 @@
         </columns>
         <rows>
             <row>
-                <label value="${i18n:_('Base calendar')}" />
+                <label value="${i18n:_('Base calendar type')}" />
                 <hbox align="right">
-                      <label value="${i18n:_('Type')}:"/>
                       <combobox id="parentCalendars"
                         model="@{calendarController.editionController.parentCalendars}"
                         disabled="@{calendarController.editionController.isNotDerived}"

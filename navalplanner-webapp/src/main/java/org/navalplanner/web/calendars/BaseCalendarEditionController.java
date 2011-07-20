@@ -88,8 +88,8 @@ import org.zkoss.zul.api.Window;
  * Controller for edit and create one {@link BaseCalendar}. It's separated of
  * {@link BaseCalendarCRUDController} to be used from other parts of the
  * application.
- *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+ * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
 public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
