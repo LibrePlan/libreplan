@@ -29,6 +29,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
@@ -39,6 +40,7 @@ import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.web.calendars.BaseCalendarEditionController;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
+import org.navalplanner.web.common.BaseCRUDController.CRUDControllerState;
 import org.navalplanner.web.common.ConstraintChecker;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
@@ -131,13 +133,13 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private Textbox txtfilter;
 
-    private boolean isEditingWorkes;
-
     private Tab personalDataTab;
 
     private Tab assignedCriteriaTab;
 
     private Tab costCategoryAssignmentTab;
+
+    private CRUDControllerState state = CRUDControllerState.LIST;
 
     public WorkerCRUDController() {
     }
@@ -186,7 +188,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     public void saveAndContinue() {
         if (save()) {
-            if (this.isEditingWorkes) {
+            if (!getWorker().isVirtual()) {
                 goToEditForm(getWorker());
             } else {
                 this.goToEditVirtualWorkerForm(getWorker());
@@ -265,13 +267,14 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     @Override
     public void goToList() {
+        state = CRUDControllerState.LIST;
         getVisibility().showOnly(listWindow);
         Util.reloadBindings(listWindow);
     }
 
     @Override
     public void goToEditForm(Worker worker) {
-        setEditingWorkes(true);
+        state = CRUDControllerState.EDIT;
         getBookmarker().goToEditForm(worker);
         workerModel.prepareEditFor(worker);
         resourcesCostCategoryAssignmentController.setResource(workerModel
@@ -280,11 +283,11 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
-        showEditWindow(_("Edit Worker"));
+        showEditWindow(_("Edit Worker: {0}", worker.getHumanId()));
     }
 
     public void goToEditVirtualWorkerForm(Worker worker) {
-        setEditingWorkes(false);
+        state = CRUDControllerState.EDIT;
         workerModel.prepareEditFor(worker);
         resourcesCostCategoryAssignmentController.setResource(workerModel
                 .getWorker());
@@ -292,20 +295,20 @@ public class WorkerCRUDController extends GenericForwardComposer implements
             editCalendar();
         }
         editAsignedCriterions();
-        showEditWindow(_("Edit Virtual Workers Group"));
+        showEditWindow(_("Edit Virtual Workers Group: {0}", worker.getHumanId()));
     }
 
     public void goToEditForm() {
-        setEditingWorkes(true);
+        state = CRUDControllerState.EDIT;
         if (isCalendarNotNull()) {
             editCalendar();
         }
-        showEditWindow(_("Edit Worker"));
+        showEditWindow(_("Edit Worker: {0}", getWorker().getHumanId()));
     }
 
     @Override
     public void goToCreateForm() {
-        setEditingWorkes(true);
+        state = CRUDControllerState.CREATE;
         getBookmarker().goToCreateForm();
         workerModel.prepareForCreate();
         createAsignedCriterions();
@@ -560,7 +563,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
     }
 
     public void goToCreateVirtualWorkerForm() {
-        setEditingWorkes(false);
+        state = CRUDControllerState.CREATE;
         workerModel.prepareForCreate(true);
         createAsignedCriterions();
         resourcesCostCategoryAssignmentController.setResource(workerModel
@@ -879,12 +882,35 @@ public class WorkerCRUDController extends GenericForwardComposer implements
         };
     }
 
-    public void setEditingWorkes(boolean isEditingWorkes) {
-        this.isEditingWorkes = isEditingWorkes;
-    }
+    public void updateWindowTitle() {
+        if (editWindow != null && state != CRUDControllerState.LIST) {
+            Worker worker = getWorker();
 
-    public boolean isEditingWorkes() {
-        return isEditingWorkes;
+            String entityType = _("Worker");
+            if (worker.isVirtual()) {
+                entityType = _("Virtual Workers Group");
+            }
+
+            String humanId = worker.getHumanId();
+
+            String title;
+            switch (state) {
+            case CREATE:
+                if (StringUtils.isEmpty(humanId)) {
+                    title = _("Create {0}", entityType);
+                } else {
+                    title = _("Create {0}: {1}", entityType, humanId);
+                }
+                break;
+            case EDIT:
+                title = _("Edit {0}: {1}", entityType, humanId);
+                break;
+            default:
+                throw new IllegalStateException(
+                        "You should be in creation or edition mode to use this method");
+            }
+            editWindow.setTitle(title);
+        }
     }
 
 }

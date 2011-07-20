@@ -56,17 +56,20 @@
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('First name')}" />
                             <textbox
-                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"/>
+                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row visible="@{controller.isVirtualWorker}">
                             <label value="${i18n:_('Group name')}" />
                             <textbox
-                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"/>
+                                value="@{controller.worker.firstName}" constraint="no empty" width="500px"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('Last name')}" />
                             <textbox
-                                value="@{controller.worker.surname}" constraint="no empty" width="500px"/>
+                                value="@{controller.worker.surname}" constraint="no empty" width="500px"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row visible="@{controller.isRealWorker}">
                             <label value="${i18n:_('ID')}" />

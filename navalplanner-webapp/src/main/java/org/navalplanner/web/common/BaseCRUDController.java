@@ -57,7 +57,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
 
     protected Window editWindow;
 
-    protected enum CRUDControllerState {
+    public enum CRUDControllerState {
         LIST, CREATE, EDIT
     };
 
