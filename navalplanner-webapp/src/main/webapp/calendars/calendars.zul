@@ -42,13 +42,7 @@
 
         <list top_id="listWindow" />
 
-        <edition top_id="createWindow" title="${i18n:_('Create Calendar')}"
-            save_button_label="${i18n:_('Save')}"
-            save_button_visible="true"
-            saveandcontinue_button_label="${i18n:_('Save and Continue')}"
-            cancel_button_label="${i18n:_('Cancel')}" />
-
-        <edition top_id="editWindow" title="${i18n:_('Edit Calendar')}"
+        <edition top_id="editWindow"
             save_button_label="${i18n:_('Save')}"
             save_button_visible="true"
             saveandcontinue_button_label="${i18n:_('Save and Continue')}"

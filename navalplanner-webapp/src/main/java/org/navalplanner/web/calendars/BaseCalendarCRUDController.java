@@ -65,8 +65,6 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private Window listWindow;
 
-    private Window createWindow;
-
     private Window editWindow;
 
     private Window createNewVersion;
@@ -115,13 +113,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     private void highlightDaysOnCalendar() {
-        if (baseCalendarModel.isEditing()) {
-            ((CalendarHighlightedDays) editWindow.getFellow("calendarWidget"))
-                    .highlightDays();
-        } else {
-            ((CalendarHighlightedDays) createWindow.getFellow("calendarWidget"))
-                    .highlightDays();
-        }
+        ((CalendarHighlightedDays) editWindow.getFellow("calendarWidget"))
+                .highlightDays();
     }
 
     public void save() {
@@ -156,8 +149,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
     }
 
     public void setSelectedDay(LocalDate date) {
@@ -202,7 +195,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private void assignCreateController() {
         createController = new BaseCalendarEditionController(baseCalendarModel,
-                createWindow, createNewVersion, messagesForUser) {
+                editWindow, createNewVersion, messagesForUser) {
 
             @Override
             public void goToList() {
@@ -226,7 +219,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         };
 
         try {
-            createController.doAfterCompose(createWindow);
+            createController.doAfterCompose(editWindow);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -234,18 +227,13 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
 
     private OnlyOneVisible getVisibility() {
         if (visibility == null) {
-            visibility = new OnlyOneVisible(listWindow, createWindow,
-                    editWindow);
+            visibility = new OnlyOneVisible(listWindow, editWindow);
         }
         return visibility;
     }
 
     private void reloadDayInformation() {
-        if (baseCalendarModel.isEditing()) {
-            Util.reloadBindings(editWindow.getFellow("dayInformation"));
-        } else {
-            Util.reloadBindings(createWindow.getFellow("dayInformation"));
-        }
+        Util.reloadBindings(editWindow.getFellow("dayInformation"));
         highlightDaysOnCalendar();
     }
 
@@ -254,8 +242,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
     }
 
     public boolean isEditing() {
@@ -267,8 +255,8 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
         assignCreateController();
         setSelectedDay(new LocalDate());
         highlightDaysOnCalendar();
-        getVisibility().showOnly(createWindow);
-        Util.reloadBindings(createWindow);
+        getVisibility().showOnly(editWindow);
+        Util.reloadBindings(editWindow);
     }
 
     public BaseCalendarsTreeModel getBaseCalendarsTreeModel() {
