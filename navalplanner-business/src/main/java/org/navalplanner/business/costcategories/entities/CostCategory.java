@@ -49,7 +49,6 @@ import org.navalplanner.business.costcategories.daos.ICostCategoryDAO;
  */
 public class CostCategory extends IntegrationEntity implements IHumanIdentifiable {
 
-    @NotEmpty
     private String name;
 
     private boolean enabled = true;
@@ -58,6 +57,8 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
 
     @Valid
     private Set<HourCost> hourCosts = new HashSet<HourCost>();
+
+    private ICostCategoryDAO costCategoryDAO = Registry.getCostCategoryDAO();
 
     // Default constructor, needed by Hibernate
     protected CostCategory() {
@@ -189,6 +190,7 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
         this.name = name;
     }
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return name;
     }
@@ -317,4 +319,25 @@ public class CostCategory extends IntegrationEntity implements IHumanIdentifiabl
         return name;
     }
 
+    @AssertTrue(message = "the cost category name has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+        if (StringUtils.isBlank(name)) {
+            return true;
+        }
+        if (isNewObject()) {
+            return !costCategoryDAO.existsByNameInAnotherTransaction(name);
+        } else {
+            return checkNotExistsOrIsTheSame();
+        }
+    }
+
+    private boolean checkNotExistsOrIsTheSame() {
+        try {
+            CostCategory costCategory = costCategoryDAO
+                    .findUniqueByNameInAnotherTransaction(name);
+            return costCategory.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
+    }
 }

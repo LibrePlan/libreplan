@@ -35,7 +35,18 @@ public interface ICostCategoryDAO extends IIntegrationEntityDAO<CostCategory> {
 
     List<CostCategory> findActive();
 
-    CostCategory findUniqueByName(String name) throws InstanceNotFoundException;
+    CostCategory findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException;
 
-    CostCategory findUniqueByCode(String code) throws InstanceNotFoundException;
+    boolean existsByNameInAnotherTransaction(String name);
+
+    CostCategory findByNameCaseInsensitive(String name)
+            throws InstanceNotFoundException;
+
+    CostCategory findUniqueByCode(String code)
+            throws InstanceNotFoundException;
+
+    CostCategory findUniqueByName(String name)
+            throws InstanceNotFoundException;
+
 }

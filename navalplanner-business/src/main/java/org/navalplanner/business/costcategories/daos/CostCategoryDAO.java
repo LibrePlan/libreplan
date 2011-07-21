@@ -27,6 +27,7 @@ import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
@@ -38,6 +39,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -113,4 +115,37 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
         return null;
     }
 
+    @Override
+    @Transactional(readOnly=true)
+    public CostCategory findByNameCaseInsensitive(String name)
+            throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(CostCategory.class);
+        c.add(Restrictions.ilike("name", name, MatchMode.EXACT));
+        CostCategory result = (CostCategory) c.uniqueResult();
+
+        if (result == null) {
+            throw new InstanceNotFoundException(name,
+                    getEntityClass().getName());
+        }
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameInAnotherTransaction(String name) {
+        try {
+            findByNameCaseInsensitive(name);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public CostCategory findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findByNameCaseInsensitive(name);
+    }
 }
