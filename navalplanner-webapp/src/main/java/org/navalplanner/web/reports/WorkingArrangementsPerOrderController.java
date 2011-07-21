@@ -84,7 +84,7 @@ public class WorkingArrangementsPerOrderController extends NavalplannerReportCon
             Listitem item = new Listitem();
             item.setParent(lbTaskStatus);
             item.setValue(status);
-            item.appendChild(new Listcell(status.toString()));
+            item.appendChild(new Listcell(_(status.toString())));
             lbTaskStatus.appendChild(item);
             if(status.equals(TaskStatusEnum.ALL)) {
                 item.setSelected(true);
