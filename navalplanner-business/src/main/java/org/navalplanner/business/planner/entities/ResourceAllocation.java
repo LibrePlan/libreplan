@@ -129,7 +129,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public static <R extends ResourceAllocation<?>> List<R> sortedByStartDate(
-            Collection<R> allocations) {
+            Collection<? extends R> allocations) {
         List<R> result = new ArrayList<R>(allocations);
         Collections.sort(result, byStartDateComparator());
         return result;

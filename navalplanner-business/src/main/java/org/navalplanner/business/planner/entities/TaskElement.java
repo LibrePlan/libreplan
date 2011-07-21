@@ -26,6 +26,7 @@ import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.ConcurrentModificationException;
@@ -62,6 +63,16 @@ import org.navalplanner.business.workingday.ResourcesPerDay;
 public abstract class TaskElement extends BaseEntity {
 
     private static final Log LOG = LogFactory.getLog(TaskElement.class);
+
+    public static List<Task> justTasks(Collection<? extends TaskElement> tasks) {
+        List<Task> result = new ArrayList<Task>();
+        for (TaskElement taskElement : tasks) {
+            if (taskElement instanceof Task) {
+                result.add((Task) taskElement);
+            }
+        }
+        return result;
+    }
 
     public interface IDatesInterceptor {
         public void setStartDate(IntraDayDate previousStart,

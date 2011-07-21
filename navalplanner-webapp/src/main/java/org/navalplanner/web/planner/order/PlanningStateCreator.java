@@ -18,6 +18,8 @@
  */
 package org.navalplanner.web.planner.order;
 
+import static org.navalplanner.business.planner.entities.TaskElement.justTasks;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +30,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
+import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -38,6 +41,9 @@ import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
+import org.navalplanner.business.planner.entities.ResourceAllocation.IVisitor;
+import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
+import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -509,6 +515,93 @@ public class PlanningStateCreator {
             }
         }
 
+        public List<Resource> getResourcesRelatedWithAllocations() {
+            Set<Resource> result = new HashSet<Resource>();
+            for (Task each : justTasks(order
+                    .getAllChildrenAssociatedTaskElements())) {
+                result.addAll(resourcesRelatedWith(each));
+            }
+            return new ArrayList<Resource>(result);
+        }
+
+        private Set<Resource> resourcesRelatedWith(Task task) {
+            Set<Resource> result = new HashSet<Resource>();
+            for (ResourceAllocation<?> each : task
+                    .getSatisfiedResourceAllocations()) {
+                result.addAll(resourcesRelatedWith(each));
+            }
+            return result;
+        }
+
+        private <T> Collection<Resource> resourcesRelatedWith(
+                ResourceAllocation<?> allocation) {
+            return ResourceAllocation.visit(allocation,
+                    new IVisitor<Collection<Resource>>() {
+
+                        @Override
+                        public Collection<Resource> on(
+                                SpecificResourceAllocation specificAllocation) {
+                            return Collections.singletonList(specificAllocation
+                                    .getResource());
+                        }
+
+                        @Override
+                        public Collection<Resource> on(
+                                GenericResourceAllocation genericAllocation) {
+                            return DayAssignment.byResource(
+                                    genericAllocation.getAssignments())
+                                    .keySet();
+                        }
+                    });
+        }
+
+        public List<ResourceAllocation<?>> replaceByCurrentOnes(
+                Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
+                IAllocationCriteria allocationCriteria) {
+            Set<TaskElement> orderTasks = new HashSet<TaskElement>(
+                    order.getAllChildrenAssociatedTaskElements());
+            List<ResourceAllocation<?>> result = allocationsNotInOrder(
+                    allocationsReturnedByQuery, orderTasks);
+            result.addAll(allocationsInOrderSatisfyingCriteria(orderTasks,
+                    allocationCriteria));
+            return result;
+        }
+
+        private List<ResourceAllocation<?>> allocationsNotInOrder(
+                Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
+                Set<TaskElement> orderTasks) {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (ResourceAllocation<?> each : allocationsReturnedByQuery) {
+                if (!orderTasks.contains(each.getTask())) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
+        private List<ResourceAllocation<?>> allocationsInOrderSatisfyingCriteria(
+                Collection<? extends TaskElement> tasks,
+                IAllocationCriteria allocationCriteria) {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (Task each : justTasks(tasks)) {
+                result.addAll(satisfying(allocationCriteria,
+                        each.getSatisfiedResourceAllocations()));
+            }
+            return result;
+        }
+
+        private List<ResourceAllocation<?>> satisfying(
+                IAllocationCriteria criteria,
+                Collection<ResourceAllocation<?>> allocations) {
+            List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
+            for (ResourceAllocation<?> each : allocations) {
+                if (criteria.isSatisfiedBy(each)) {
+                    result.add(each);
+                }
+            }
+            return result;
+        }
+
     }
 
     private class EmptyPlannigState extends PlanningState {
@@ -708,6 +801,149 @@ public class PlanningStateCreator {
         @Override
         public boolean isEmpty() {
             return false;
+        }
+
+    }
+
+    public interface IAllocationCriteria {
+
+        boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation);
+
+    }
+
+    public static IAllocationCriteria and(final IAllocationCriteria... criteria) {
+        return new IAllocationCriteria() {
+
+            @Override
+            public boolean isSatisfiedBy(
+                    ResourceAllocation<?> resourceAllocation) {
+                for (IAllocationCriteria each : criteria) {
+                    if (!each.isSatisfiedBy(resourceAllocation)) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        };
+    }
+
+    public static class TaskOnInterval implements IAllocationCriteria {
+
+        private final LocalDate startInclusive;
+
+        private final LocalDate endInclusive;
+
+        public TaskOnInterval(LocalDate startInclusive, LocalDate endInclusive) {
+            this.startInclusive = startInclusive;
+            this.endInclusive = endInclusive;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
+            if (startInclusive != null
+                    && resourceAllocation.getEndDate()
+                            .compareTo(startInclusive) < 0) {
+                return false;
+            }
+            if (endInclusive != null
+                    && resourceAllocation.getStartDate()
+                            .compareTo(endInclusive) > 0) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public static class RelatedWithAnyOf implements
+            IAllocationCriteria {
+
+        private final Collection<? extends Criterion> anyOf;
+
+        public RelatedWithAnyOf(
+                Collection<? extends Criterion> anyOf) {
+            this.anyOf = anyOf;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
+            if (resourceAllocation instanceof GenericResourceAllocation) {
+                GenericResourceAllocation g = (GenericResourceAllocation) resourceAllocation;
+                Set<Criterion> allocationCriterions = g.getCriterions();
+                return someCriterionIn(allocationCriterions);
+            }
+            return false;
+        }
+
+        private boolean someCriterionIn(
+                Collection<? extends Criterion> allocationCriterions) {
+            for (Criterion each : allocationCriterions) {
+                if (this.anyOf.contains(each)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+    }
+
+    public static class SpecificRelatedWithCriterionOnInterval implements
+            IAllocationCriteria {
+
+        private final LocalDate startInclusive;
+
+        private final LocalDate endExclusive;
+
+        private final Criterion criterion;
+
+        public SpecificRelatedWithCriterionOnInterval(
+                Criterion criterion, LocalDate startInclusive,
+                LocalDate endInclusive) {
+            Validate.notNull(criterion);
+            this.startInclusive = startInclusive;
+            this.endExclusive = endInclusive != null ? endInclusive.plusDays(1)
+                    : null;
+            this.criterion = criterion;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
+            if (resourceAllocation instanceof SpecificResourceAllocation) {
+                SpecificResourceAllocation s = (SpecificResourceAllocation) resourceAllocation;
+                return s.interferesWith(criterion, startInclusive, endExclusive);
+            }
+            return false;
+        }
+
+    }
+
+    public static class RelatedWithResource implements IAllocationCriteria {
+        private final Resource resource;
+
+        public RelatedWithResource(Resource resource) {
+            Validate.notNull(resource);
+            this.resource = resource;
+        }
+
+        @Override
+        public boolean isSatisfiedBy(ResourceAllocation<?> resourceAllocation) {
+            return ResourceAllocation.visit(resourceAllocation,
+                    new IVisitor<Boolean>() {
+
+                        @Override
+                        public Boolean on(
+                                SpecificResourceAllocation specificAllocation) {
+                            return specificAllocation.getResource().equals(
+                                    resource);
+                        }
+
+                        @Override
+                        public Boolean on(
+                                GenericResourceAllocation genericAllocation) {
+                            return DayAssignment.byResource(
+                                    genericAllocation.getAssignments())
+                                    .containsKey(resource);
+                        }
+                    });
         }
 
     }

@@ -26,7 +26,6 @@ import java.util.List;
 
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -41,14 +40,6 @@ import org.navalplanner.business.resources.entities.Worker;
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
-
-    /**
-     * Returns all {@link Resource} which are related with tasks
-     *
-     * @param tasks
-     * @return
-     */
-    List<Resource> findResourcesRelatedTo(List<Task> tasks);
 
     /**
      * Returns all {@link Machine}

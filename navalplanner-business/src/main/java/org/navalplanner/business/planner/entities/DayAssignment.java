@@ -105,6 +105,15 @@ public abstract class DayAssignment extends BaseEntity {
 
     public static <T extends DayAssignment> Map<Resource, List<T>> byResourceAndOrdered(
             Collection<? extends T> assignments) {
+        Map<Resource, List<T>> result = byResource(assignments);
+        for (Entry<Resource, List<T>> entry : result.entrySet()) {
+            Collections.sort(entry.getValue(), byDayComparator());
+        }
+        return result;
+    }
+
+    public static <T extends DayAssignment> Map<Resource, List<T>> byResource(
+            Collection<? extends T> assignments) {
         Map<Resource, List<T>> result = new HashMap<Resource, List<T>>();
         for (T assignment : assignments) {
             Resource resource = assignment.getResource();
@@ -112,9 +121,6 @@ public abstract class DayAssignment extends BaseEntity {
                 result.put(resource, new ArrayList<T>());
             }
             result.get(resource).add(assignment);
-        }
-        for (Entry<Resource, List<T>> entry : result.entrySet()) {
-            Collections.sort(entry.getValue(), byDayComparator());
         }
         return result;
     }

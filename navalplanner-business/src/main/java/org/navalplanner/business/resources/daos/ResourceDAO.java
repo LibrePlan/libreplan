@@ -24,15 +24,12 @@ package org.navalplanner.business.resources.daos;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.common.daos.IntegrationEntityDAO;
 import org.navalplanner.business.labels.entities.Label;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerResourceDTO;
 import org.navalplanner.business.reports.dtos.HoursWorkedPerWorkerInAMonthDTO;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -41,7 +38,6 @@ import org.navalplanner.business.resources.entities.Machine;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.Worker;
 import org.navalplanner.business.scenarios.IScenarioManager;
-import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
@@ -88,46 +84,6 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements
                 iterator.remove();
             }
         }
-        return list;
-    }
-
-    @Override
-    public List<Resource> findResourcesRelatedTo(List<Task> taskElements) {
-        if (taskElements.isEmpty()) {
-            return new ArrayList<Resource>();
-        }
-        Set<Resource> result = new LinkedHashSet<Resource>();
-        result.addAll(findRelatedToSpecific(taskElements));
-        result.addAll(findRelatedToGeneric(taskElements));
-        return new ArrayList<Resource>(result);
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Resource> findRelatedToGeneric(List<Task> taskElements) {
-        String query = "SELECT DISTINCT resource FROM GenericResourceAllocation generic"
-                + " JOIN generic.genericDayAssignmentsContainers container "
-                + " JOIN container.dayAssignments dayAssignment"
-                + " JOIN dayAssignment.resource resource"
-                + " WHERE generic.task IN(:taskElements)";
-        return getSession().createQuery(query)
-                .setParameterList("taskElements",
-                taskElements).list();
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Resource> findRelatedToSpecific(List<Task> taskElements) {
-        Scenario scenario = scenarioManager.getCurrent();
-        List<Resource> list = getSession()
-                .createQuery(
-                        "SELECT DISTINCT specificAllocation.resource "
-                                + "FROM SpecificResourceAllocation specificAllocation "
-                                + "JOIN specificAllocation.specificDayAssignmentsContainers container "
-                                + "WHERE specificAllocation.task IN(:taskElements) "
-                                + "and container.scenario = :scenario "
-                                + "and container.dayAssignments IS NOT EMPTY")
-                .setParameterList("taskElements", taskElements)
-                .setParameter("scenario", scenario)
-                .list();
         return list;
     }
 

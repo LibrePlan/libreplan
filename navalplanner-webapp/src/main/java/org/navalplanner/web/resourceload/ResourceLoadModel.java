@@ -21,7 +21,9 @@
 
 package org.navalplanner.web.resourceload;
 
+import static org.navalplanner.business.planner.entities.TaskElement.justTasks;
 import static org.navalplanner.web.I18nHelper._;
+import static org.navalplanner.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -68,7 +70,12 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.planner.order.PlanningStateCreator.IAllocationCriteria;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
+import org.navalplanner.web.planner.order.PlanningStateCreator.RelatedWithAnyOf;
+import org.navalplanner.web.planner.order.PlanningStateCreator.RelatedWithResource;
+import org.navalplanner.web.planner.order.PlanningStateCreator.SpecificRelatedWithCriterionOnInterval;
+import org.navalplanner.web.planner.order.PlanningStateCreator.TaskOnInterval;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -262,17 +269,43 @@ public class ResourceLoadModel implements IResourceLoadModel {
         }
     }
 
+    private IAllocationCriteria onInterval() {
+        return new TaskOnInterval(initDateFilter, endDateFilter);
+    }
+
     private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria(
             List<Criterion> relatedWith) {
-        return resourceAllocationDAO
-                .findGenericAllocationsBySomeCriterion(
-                        relatedWith, asDate(initDateFilter), asDate(endDateFilter));
+        Map<Criterion, List<GenericResourceAllocation>> result = resourceAllocationDAO
+                .findGenericAllocationsBySomeCriterion(relatedWith,
+                        asDate(initDateFilter), asDate(endDateFilter));
+        return doReplacementsIfNeeded(result,
+                and(onInterval(), new RelatedWithAnyOf(relatedWith)));
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria() {
-        return resourceAllocationDAO
-                .findGenericAllocationsByCriterion(
-                asDate(initDateFilter), asDate(endDateFilter));
+        return doReplacementsIfNeeded(
+                resourceAllocationDAO.findGenericAllocationsByCriterion(
+                        asDate(initDateFilter), asDate(endDateFilter)),
+                onInterval());
+    }
+
+    private Map<Criterion, List<GenericResourceAllocation>> doReplacementsIfNeeded(
+            Map<Criterion, List<GenericResourceAllocation>> map,
+            IAllocationCriteria criteria) {
+        if (filterBy == null) {
+            return map;
+        }
+        Map<Criterion, List<GenericResourceAllocation>> result = new HashMap<Criterion, List<GenericResourceAllocation>>();
+        for (Entry<Criterion, List<GenericResourceAllocation>> each : map
+                .entrySet()) {
+            List<ResourceAllocation<?>> replaced = filterBy
+                    .replaceByCurrentOnes(each.getValue(), criteria);
+            if (!replaced.isEmpty()) {
+                result.put(each.getKey(), ResourceAllocation.getOfType(
+                        GenericResourceAllocation.class, replaced));
+            }
+        }
+        return result;
     }
 
     private Map<Criterion, List<ResourceAllocation<?>>> withAssociatedSpecific(
@@ -282,12 +315,27 @@ public class ResourceLoadModel implements IResourceLoadModel {
                 .entrySet()) {
             List<ResourceAllocation<?>> both = new ArrayList<ResourceAllocation<?>>();
             both.addAll(each.getValue());
-            both.addAll(resourceAllocationDAO.findSpecificAllocationsRelatedTo(
-                    each.getKey(), asDate(initDateFilter),
-                    asDate(endDateFilter)));
+            both.addAll(doReplacementsIfNeeded(resourceAllocationDAO
+                    .findSpecificAllocationsRelatedTo(each.getKey(),
+                            asDate(initDateFilter), asDate(endDateFilter)),
+                    and(onInterval(), specificRelatedTo(each.getKey()))));
             result.put(each.getKey(), both);
         }
         return result;
+    }
+
+    private IAllocationCriteria specificRelatedTo(Criterion key) {
+        return new SpecificRelatedWithCriterionOnInterval(key,
+                initDateFilter, endDateFilter);
+    }
+
+    private Collection<? extends ResourceAllocation<?>> doReplacementsIfNeeded(
+            Collection<? extends ResourceAllocation<?>> allocations,
+            IAllocationCriteria criteria) {
+        if (filterBy == null) {
+            return allocations;
+        }
+        return filterBy.replaceByCurrentOnes(allocations, criteria);
     }
 
     private <R extends ResourceAllocation<?>> Map<Criterion, List<R>> onlyForThePagesShown(
@@ -405,19 +453,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private List<Resource> resourcesForActiveTasks() {
-        return Resource.sortByName(resourcesDAO
-                .findResourcesRelatedTo(justTasks(filterBy.getOrder()
-                        .getAllChildrenAssociatedTaskElements())));
-    }
-
-    private List<Task> justTasks(Collection<? extends TaskElement> tasks) {
-        List<Task> result = new ArrayList<Task>();
-        for (TaskElement taskElement : tasks) {
-            if (taskElement instanceof Task) {
-                result.add((Task) taskElement);
-            }
-        }
-        return result;
+        return Resource.sortByName(filterBy
+                .getResourcesRelatedWithAllocations());
     }
 
     private List<Resource> allResources() {
@@ -641,11 +678,16 @@ public class ResourceLoadModel implements IResourceLoadModel {
         Map<Resource, List<ResourceAllocation<?>>> map = new LinkedHashMap<Resource, List<ResourceAllocation<?>>>();
         for (Resource resource : allResources) {
             map.put(resource, ResourceAllocation
-                    .sortedByStartDate(resourceAllocationDAO
-                            .findAllocationsRelatedTo(resource, initDateFilter,
-                                    endDateFilter)));
+                    .sortedByStartDate(doReplacementsIfNeeded(
+                            resourceAllocationDAO.findAllocationsRelatedTo(
+                                    resource, initDateFilter, endDateFilter),
+                            and(onInterval(), relatedToResource(resource)))));
         }
         return map;
+    }
+
+    private IAllocationCriteria relatedToResource(Resource resource) {
+        return new RelatedWithResource(resource);
     }
 
     private List<LoadTimeLine> buildGroupsFor(
