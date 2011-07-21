@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="listing" title="${i18n:_('Criterion Type List')}">
+<window id="listWindow" title="${i18n:_('Criterion Type List')}">
 <newdatasortablegrid model="@{controller.criterionTypes}" fixedLayout="true" sclass="clickable-rows">
    <columns>
         <newdatasortablecolumn label="${i18n:_('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
@@ -42,7 +42,8 @@
                 </button>
                 <button sclass="icono" image="/common/img/ico_borrar1.png"
                     hoverImage="/common/img/ico_borrar.png"
-                    tooltiptext="${i18n:_('Delete')}" disabled="@{criterionType.immutable}" onClick="controller.confirmRemove(self.parent.parent.value);">
+                    tooltiptext="${i18n:_('Delete')}" disabled="@{criterionType.immutable}"
+                    onClick="controller.confirmDelete(self.parent.parent.value);">
                 </button>
             </hbox>
         </row>

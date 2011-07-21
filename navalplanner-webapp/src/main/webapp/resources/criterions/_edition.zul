@@ -21,7 +21,7 @@
 
 <?component name="criterionsTree" inline="true" macroURI="_criterionsTree.zul"?>
 
-<window id="${arg.id}" title="${arg.title}">
+<window id="${arg.id}">
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Edit')}" width="850"></tab>
@@ -36,7 +36,8 @@
                     <rows>
                         <row>
                             <label value="${i18n:_('Name')}" />
-                            <textbox width="390px" value="@{controller.criterionType.name}"/>
+                            <textbox width="390px" value="@{controller.criterionType.name}"
+                                onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row>
                             <label value="${i18n:_('Type')}" />
@@ -84,11 +85,11 @@
         </tabpanels>
     </tabbox>
     <hbox>
-        <button id="save" onClick="controller.saveAndClose();"
+        <button id="save" onClick="controller.saveAndExit();"
             label="${i18n:_('Save')}" sclass="save-button global-action" />
         <button id="save_and_continue" onClick="controller.saveAndContinue();"
             label="${i18n:_('Save &amp; Continue')}" sclass="saveandcontinue-button global-action"/>
-        <button id="close" onClick="controller.close();"
+        <button id="close" onClick="controller.cancelForm();"
             label="${i18n:_('Cancel')}" sclass="cancel-button global-action"/>
     </hbox>
 </window>

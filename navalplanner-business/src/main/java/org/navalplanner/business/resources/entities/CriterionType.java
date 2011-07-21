@@ -35,6 +35,7 @@ import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
+import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.entities.EntitySequence;
@@ -49,7 +50,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class CriterionType extends IntegrationEntity implements
-        ICriterionType<Criterion> {
+        ICriterionType<Criterion>, IHumanIdentifiable {
 
     public static CriterionType create() {
         return create(new CriterionType());
@@ -553,6 +554,11 @@ public class CriterionType extends IntegrationEntity implements
     }
 
     public String toString() {
+        return name;
+    }
+
+    @Override
+    public String getHumanId() {
         return name;
     }
 
