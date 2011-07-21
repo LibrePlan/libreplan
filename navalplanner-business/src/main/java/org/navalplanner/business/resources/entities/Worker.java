@@ -202,6 +202,12 @@ public class Worker extends Resource implements Comparable {
 
     @Override
     public String getHumanId() {
+        if (firstName == null) {
+            return surname;
+        }
+        if (surname == null) {
+            return firstName;
+        }
         return firstName + " " + surname;
     }
 
