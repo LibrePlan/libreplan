@@ -304,7 +304,7 @@ public abstract class ChartFiller implements IChartFiller {
                 LocalDate lastDay) {
             for (LocalDate day : getDays()) {
                 BigDecimal hours = getHoursForDay(day);
-                printIntervalLine(writer, day, hours, isZoomByDayOrWeek());
+                printLine(writer, day.toDateTimeAtStartOfDay(), hours);
             }
         }
 
