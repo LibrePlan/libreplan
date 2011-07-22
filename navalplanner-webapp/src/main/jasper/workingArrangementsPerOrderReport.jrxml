@@ -13,7 +13,7 @@
 	<field name="firstWorkReportDate" class="java.util.Date"/>
 	<field name="lastWorkReportDate" class="java.util.Date"/>
 	<field name="deadline" class="java.util.Date"/>
-	<field name="measuredProgress" class="java.math.BigDecimal"/>
+	<field name="measuredProgress" class="java.lang.String"/>
 	<field name="status" class="java.lang.String"/>
 	<field name="overrun" class="java.lang.Boolean"/>
 	<field name="dependencyName" class="java.lang.String"/>
@@ -135,7 +135,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 						<font size="10" isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers1.column2}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$R{headers1.column3}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement mode="Opaque" x="435" y="21" width="60" height="35" backcolor="#E0E4FB"/>
@@ -168,7 +168,7 @@
 				<textField isBlankWhenNull="true">
 					<reportElement x="53" y="1" width="237" height="15"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="11"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderName}]]></textFieldExpression>
 				</textField>
@@ -254,7 +254,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font size="9"/>
 					</textElement>
-					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{measuredProgress}]]></textFieldExpression>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{measuredProgress}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="435" y="56" width="60" height="15"/>
@@ -419,7 +419,7 @@
 				<textFieldExpression class="java.lang.String"><![CDATA[$R{title}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="69" y="46" width="207" height="22"/>
+				<reportElement x="69" y="46" width="248" height="22"/>
 				<textElement markup="none">
 					<font size="15" isItalic="true"/>
 				</textElement>
