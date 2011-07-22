@@ -23,7 +23,7 @@
     <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
         treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
         zclass="z-dottree"
-        nonselectableTags="div,span,img">
+        nonselectableTags="*">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
             <treecol label="${i18n:_('Inherits from date')}" width="150px" align="center"/>
