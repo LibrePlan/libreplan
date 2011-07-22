@@ -22,7 +22,8 @@
 <window id="${arg.top_id}" title="${i18n:_('Calendars List')}">
     <tree id="tree" model="@{calendarController.baseCalendarsTreeModel}"
         treeitemRenderer="@{calendarController.baseCalendarsTreeitemRenderer}"
-        zclass="z-dottree">
+        zclass="z-dottree"
+        nonselectableTags="div,span,img">
         <treecols sizable="true">
             <treecol label="${i18n:_('Name')}" />
             <treecol label="${i18n:_('Inherits from date')}" width="150px" align="center"/>
