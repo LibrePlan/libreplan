@@ -625,6 +625,12 @@ public abstract class TaskElement extends BaseEntity {
                 : advancePercentage;
     }
 
+    /**
+     * For common tasks it just return the spread progress.
+     *
+     * It's overridden in {@link TaskGroup} to return different progresses
+     * depending on parameter
+     */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
         if (progressType.equals(ProgressType.SPREAD_PROGRESS)) {
             return advancePercentage;

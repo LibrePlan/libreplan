@@ -27,12 +27,22 @@
 
         <separator />
 
-        <!-- Progress with all task tasks by hours -->
-        <label id="textAdvancePercentage" style="font-weight: regular; font-size: 11px" />
+        <!-- Spreading progress -->
+        <label id="textProgressSpread" style="font-weight: regular; font-size: 11px" />
 
         <hbox style="margin-top: 5px">
-            <progressmeter id="progressAdvancePercentage" style="margin-right: 5px" width="400px" />
-            <label id="lbAdvancePercentage" style="font-weight: regular; font-size: 11px" />
+            <progressmeter id="progressSpread" style="margin-right: 5px" width="400px" />
+            <label id="lbProgressSpread" style="font-weight: regular; font-size: 11px" />
+        </hbox>
+
+        <separator />
+
+        <!-- Progress with all task tasks by hours -->
+        <label id="textProgressAllByNumHours" style="font-weight: regular; font-size: 11px" />
+
+        <hbox style="margin-top: 5px">
+            <progressmeter id="progressAllByNumHours" style="margin-right: 5px" width="400px" />
+            <label id="lbProgressAllByNumHours" style="font-weight: regular; font-size: 11px" />
         </hbox>
 
         <separator />

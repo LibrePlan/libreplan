@@ -1459,14 +1459,19 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
         private Label lbCriticalPathByNumHours;
 
-        private Progressmeter progressAdvancePercentage;
+        private Progressmeter progressSpread;
 
-        private Label lbAdvancePercentage;
+        private Label lbProgressSpread;
+
+        private Progressmeter progressAllByNumHours;
+
+        private Label lbProgressAllByNumHours;
 
         public OverAllProgressContent(Tabpanel tabpanel) {
             initializeProgressCriticalPathByDuration(tabpanel);
             initializeProgressCriticalPathByNumHours(tabpanel);
-            initializeProgressAdvancePercentage(tabpanel);
+            initializeProgressSpread(tabpanel);
+            initializeProgressAllByNumHours(tabpanel);
 
             tabpanel.setVariable("overall_progress_content", this, true);
         }
@@ -1489,13 +1494,21 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
                     .setValue(_(ProgressType.CRITICAL_PATH_DURATION.toString()));
         }
 
-        public void initializeProgressAdvancePercentage(Tabpanel tabpanel) {
-            progressAdvancePercentage = (Progressmeter) tabpanel
-                    .getFellow("progressAdvancePercentage");
-            lbAdvancePercentage = (Label) tabpanel
-                    .getFellow("lbAdvancePercentage");
-            ((Label) tabpanel.getFellow("textAdvancePercentage"))
+        public void initializeProgressSpread(Tabpanel tabpanel) {
+            progressSpread = (Progressmeter) tabpanel
+                    .getFellow("progressSpread");
+            lbProgressSpread = (Label) tabpanel.getFellow("lbProgressSpread");
+            ((Label) tabpanel.getFellow("textProgressSpread"))
                     .setValue(_(ProgressType.SPREAD_PROGRESS.toString()));
+        }
+
+        public void initializeProgressAllByNumHours(Tabpanel tabpanel) {
+            progressAllByNumHours = (Progressmeter) tabpanel
+                    .getFellow("progressAllByNumHours");
+            lbProgressAllByNumHours = (Label) tabpanel
+                    .getFellow("lbProgressAllByNumHours");
+            ((Label) tabpanel.getFellow("textProgressAllByNumHours"))
+                    .setValue(_(ProgressType.ALL_NUMHOURS.toString()));
         }
 
         public void refresh() {
@@ -1504,7 +1517,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
             TaskGroup rootTask = planningState.getRootTask();
 
-            setAdvancePercentage(rootTask.getAdvancePercentage());
+            setProgressSpread(rootTask.getAdvancePercentage());
+            setProgressAllByNumHours(rootTask.getProgressAllByNumHours());
             setCriticalPathByDuration(rootTask
                     .getCriticalPathProgressByDuration());
             setCriticalPathByNumHours(rootTask
@@ -1528,14 +1542,24 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
             }
         }
 
-        private void setAdvancePercentage(BigDecimal value) {
+        private void setProgressSpread(BigDecimal value) {
             if (value == null) {
                 value = BigDecimal.ZERO;
             }
             value = value.multiply(BigDecimal.valueOf(100));
             value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
-            lbAdvancePercentage.setValue(value.toString() + " %");
-            progressAdvancePercentage.setValue(value.intValue());
+            lbProgressSpread.setValue(value.toString() + " %");
+            progressSpread.setValue(value.intValue());
+        }
+
+        private void setProgressAllByNumHours(BigDecimal value) {
+            if (value == null) {
+                value = BigDecimal.ZERO;
+            }
+            value = value.multiply(BigDecimal.valueOf(100));
+            value = value.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+            lbProgressAllByNumHours.setValue(value.toString() + " %");
+            progressAllByNumHours.setValue(value.intValue());
         }
 
         public void setCriticalPathByDuration(BigDecimal value) {

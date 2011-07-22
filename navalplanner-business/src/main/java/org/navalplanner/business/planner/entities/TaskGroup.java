@@ -74,6 +74,13 @@ public class TaskGroup extends TaskElement {
         return planningData.getProgressByNumHours();
     }
 
+    public BigDecimal getProgressAllByNumHours() {
+        if (planningData == null) {
+            return BigDecimal.ZERO;
+        }
+        return planningData.getProgressAllByNumHours();
+    }
+
     @SuppressWarnings("unused")
     @AssertTrue(message = "order element associated to a task group must be not null")
     private boolean theOrderElementMustBeNotNull() {
@@ -270,10 +277,12 @@ public class TaskGroup extends TaskElement {
      */
     public BigDecimal getAdvancePercentage(ProgressType progressType) {
         if (isTaskRoot(this)) {
-            if (progressType.equals(ProgressType.CRITICAL_PATH_DURATION)) {
+            switch (progressType) {
+            case ALL_NUMHOURS:
+                return getProgressAllByNumHours();
+            case CRITICAL_PATH_DURATION:
                 return getCriticalPathProgressByDuration();
-            }
-            if (progressType.equals(ProgressType.CRITICAL_PATH_NUMHOURS)) {
+            case CRITICAL_PATH_NUMHOURS:
                 return getCriticalPathProgressByNumHours();
             }
         }

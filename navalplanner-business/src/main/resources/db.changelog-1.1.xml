@@ -216,4 +216,11 @@
         <dropColumn tableName="configuration_roles_ldap" columnName="role_matching_id" />
     </changeSet>
 
+    <changeSet id="add-column-progress_all_by_num_hours-in-planning_data" author="mrego">
+        <comment>Add column progress_all_by_num_hours in planning_data</comment>
+        <addColumn tableName="planning_data">
+            <column name="progress_all_by_num_hours" type="numeric(19,6)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

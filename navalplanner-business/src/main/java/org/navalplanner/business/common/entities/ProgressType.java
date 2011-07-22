@@ -21,7 +21,7 @@
 
 package org.navalplanner.business.common.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper.*;
+import static org.navalplanner.business.i18n.I18nHelper._;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +33,8 @@ import java.util.List;
 */
 public enum ProgressType {
 
-    SPREAD_PROGRESS(_("Progress with all tasks by hours")),
+    SPREAD_PROGRESS(_("Spreading progress")),
+    ALL_NUMHOURS(_("Progress with all tasks by hours")),
     CRITICAL_PATH_DURATION(_("Progress with critical path tasks by hours")),
     CRITICAL_PATH_NUMHOURS(_("Progress with critical path tasks by duration"));
 

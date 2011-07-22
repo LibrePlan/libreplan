@@ -143,6 +143,7 @@
         </id>
         <one-to-one name="rootTask" class="TaskGroup" constrained="true"
             cascade="all" lazy="false" />
+        <property name="progressAllByNumHours" column="progress_all_by_num_hours" scale="6" />
         <property name="progressByDuration" column="progress_by_duration" scale="6" />
         <property name="progressByNumHours" column="progress_by_num_hours" scale="6" />
     </class>

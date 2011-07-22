@@ -47,12 +47,18 @@ public class PlanningData extends BaseEntity {
 
     private TaskGroup rootTask;
 
+    private BigDecimal progressAllByNumHours;
+
     private BigDecimal progressByDuration;
 
     private BigDecimal progressByNumHours;
 
     public PlanningData() {
 
+    }
+
+    public BigDecimal getProgressAllByNumHours() {
+        return progressAllByNumHours;
     }
 
     public BigDecimal getProgressByDuration() {
@@ -72,6 +78,8 @@ public class PlanningData extends BaseEntity {
             LOG.warn("it can't be updated because the critical path provided is empty");
             return;
         }
+        progressAllByNumHours = rootTask.getOrderElement()
+                .getAdvancePercentageChildren();
         progressByDuration = calculateByDuration(criticalPath);
         progressByNumHours = calculateByNumHours(criticalPath);
     }
