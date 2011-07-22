@@ -70,12 +70,7 @@ public class AdvanceAssignmentPlanningModel implements
 
     @Override
     public void accept() {
-        calculateAdvancePercentage(getOrderElement());
-        OrderElement parent = getOrderElement().getParent();
-        while (parent != null) {
-            calculateAdvancePercentage(parent);
-            parent = parent.getParent();
-        }
+        getOrderElement().updateAdvancePercentageTaskElement();
     }
 
     @Override
@@ -152,10 +147,6 @@ public class AdvanceAssignmentPlanningModel implements
 
     public OrderElement getOrderElement() {
         return orderElement;
-    }
-
-    private void calculateAdvancePercentage(OrderElement orderElement) {
-        orderElement.updateAdvancePercentageTaskElement();
     }
 
 }

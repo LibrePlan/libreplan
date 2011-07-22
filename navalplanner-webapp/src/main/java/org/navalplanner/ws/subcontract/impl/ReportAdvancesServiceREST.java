@@ -214,12 +214,11 @@ public class ReportAdvancesServiceREST implements IReportAdvancesService {
     private void updateAdvancePercentage(OrderVersion orderVersion,
             OrderElement orderElement) {
         orderElement.useSchedulingDataFor(orderVersion);
-        orderElement.updateAdvancePercentageTaskElement();
         OrderElement parent = orderElement.getParent();
         while (parent != null) {
             parent.useSchedulingDataFor(orderVersion);
-            parent.updateAdvancePercentageTaskElement();
             parent = parent.getParent();
         }
+        orderElement.updateAdvancePercentageTaskElement();
     }
 }

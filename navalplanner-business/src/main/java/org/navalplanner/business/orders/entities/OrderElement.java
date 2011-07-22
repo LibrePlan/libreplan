@@ -1333,6 +1333,9 @@ public abstract class OrderElement extends IntegrationEntity implements
                         advancePercentage);
             }
         }
+        if (parent != null) {
+            parent.updateAdvancePercentageTaskElement();
+        }
     }
 
     public static void checkConstraintOrderUniqueCode(OrderElement order) {

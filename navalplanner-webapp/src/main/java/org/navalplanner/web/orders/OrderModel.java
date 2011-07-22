@@ -574,19 +574,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
             order.writeSchedulingDataChanges();
         }
         saveDerivedScenarios();
-        calculateAdvancePercentageIncludingChildren(order);
         deleteOrderElementWithoutParent();
-    }
-
-    private void calculateAdvancePercentageIncludingChildren(OrderElement order) {
-        calculateAdvancePercentage(order);
-        for (OrderElement orderElement : order.getAllChildren()) {
-            calculateAdvancePercentage(orderElement);
-        }
-    }
-
-    private void calculateAdvancePercentage(OrderElement orderElement) {
-        orderElement.updateAdvancePercentageTaskElement();
     }
 
     private void createAndSaveNewOrderVersion(Scenario currentScenario,

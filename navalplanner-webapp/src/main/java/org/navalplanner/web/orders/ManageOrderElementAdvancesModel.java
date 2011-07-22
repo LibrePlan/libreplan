@@ -472,6 +472,7 @@ public class ManageOrderElementAdvancesModel implements
             DuplicateValueTrueReportGlobalAdvanceException {
         orderElementDAO.checkVersion(orderElement);
         reattachmentOrderElement();
+        orderElement.updateAdvancePercentageTaskElement();
         validateBasicData();
         cancelOperation.clear();
     }
