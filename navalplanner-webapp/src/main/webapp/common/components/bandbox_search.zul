@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<zk id="bandboxsearch" xmlns:n="http://www.zkoss.org/2005/zk/native">
+<zk id="bandboxsearch" xmlns:n="http://www.zkoss.org/2005/zk/native" xmlns:c="http://www.zkoss.org/2005/zk/client">
 
     <zscript>
         <![CDATA[
@@ -29,11 +29,8 @@
 
     <n:script language="javascript">
 
-    function closeBandbox(listbox) {
-        zkau.send({
-           uuid : listbox.id,
-           cmd : "onClick"
-       });
+    function closeBandbox(bandbox) {
+        zAu.send(new zk.Event(bandbox, "closeBandbox"));
     }
 
     </n:script>
@@ -43,7 +40,7 @@
             <vbox height="50px">
                <listbox id="listbox" width="200px" sclass="bandbox-search" height="100px"
                       vflex="true" model="${arg.model}"
-                      action="onClick: closeBandbox(#{listbox})">
+                      c:onClick="closeBandbox(this.$f().bandbox.parent);">
                <listhead id="listhead" />
                </listbox>
             </vbox>

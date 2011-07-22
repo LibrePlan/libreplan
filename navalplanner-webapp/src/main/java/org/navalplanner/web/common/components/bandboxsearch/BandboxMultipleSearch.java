@@ -35,6 +35,8 @@ import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.common.components.finders.IMultipleFiltersFinder;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.zkoss.zk.au.AuRequest;
+import org.zkoss.zk.au.AuService;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.WrongValueException;
@@ -92,21 +94,24 @@ public class BandboxMultipleSearch extends HtmlMacroComponent {
         listbox.setItemRenderer(multipleFiltersFinder.getItemRenderer());
         addHeaders();
 
-            // Close bandbox for events onClick and onOK
-        listbox.addEventListener(Events.ON_CLICK, new EventListener() {
-
-                @Override
-                public void onEvent(Event event) {
-                pickElementFromListAndCloseBandbox();
+        setAuService(new AuService() {
+            @Override
+            public boolean service(AuRequest request, boolean everError) {
+                String command = request.getCommand();
+                if (command.equals("closeBandbox")) {
+                    pickElementFromListAndCloseBandbox();
+                    return true;
                 }
-            });
+                return false;
+            }
+        });
         listbox.addEventListener(Events.ON_OK, new EventListener() {
 
-                @Override
-                public void onEvent(Event event) {
+            @Override
+            public void onEvent(Event event) {
                 pickElementFromListAndCloseBandbox();
-                }
-            });
+            }
+        });
     }
 
     private void initBandbox() {
