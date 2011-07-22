@@ -433,17 +433,17 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.7</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.7</version>
             </dependency>
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.7</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
@@ -454,7 +454,7 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkex</artifactId>
-                <version>5.0.5</version>
+                <version>5.0.7</version>
             </dependency>
             <!-- JGraphT -->
             <dependency>
@@ -577,6 +577,12 @@
                 <groupId>org.zkoss.zkforge</groupId>
                 <artifactId>timelinez</artifactId>
                 <version>2.3.1_50</version>
+                <exclusions>
+                <exclusion>
+                    <groupId>org.zkoss.common</groupId>
+                    <artifactId>zcommon</artifactId>
+                </exclusion>
+            </exclusions>
             </dependency>
             <dependency>
                 <groupId>net.sf.ehcache</groupId>

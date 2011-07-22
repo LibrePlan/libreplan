@@ -21,6 +21,7 @@
 
 package org.navalplanner.web.planner.company;
 
+import static java.util.Arrays.asList;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.io.IOException;
@@ -374,10 +375,8 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
                     e.printStackTrace();
                 }
                 Clients.response("aa",
-                        new AuInsertAfter(
-                                chartComponent.getTabpanels().getFirstChild(),
-                                out.toString()
-                                ));
+                        new AuInsertAfter(chartComponent.getTabpanels()
+                                .getFirstChild(), asList(out.toString())));
                 return null;
             }
         });
