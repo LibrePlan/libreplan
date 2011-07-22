@@ -55,7 +55,7 @@ public class WorkingArrangementPerOrderDTO {
 
     private Date deadline;
 
-    private BigDecimal measuredProgress;
+    private String measuredProgress;
 
     private String status;
 
@@ -104,7 +104,9 @@ public class WorkingArrangementPerOrderDTO {
             this.deadline = orderElement.getDeadline();
         }
 
-        this.measuredProgress = getAdvanceSpread(orderElement);
+        this.measuredProgress = getAdvanceSpread(orderElement).multiply(
+                new BigDecimal(100)).intValue()
+                + " %";
         this.status = (taskStatus != null) ? taskStatus.toString() : "";
         this.overrun = calculateOverrun();
         this.hasDependencies = hasDependencies;
@@ -150,7 +152,7 @@ public class WorkingArrangementPerOrderDTO {
         return deadline;
     }
 
-    public BigDecimal getMeasuredProgress() {
+    public String getMeasuredProgress() {
         return measuredProgress;
     }
 
