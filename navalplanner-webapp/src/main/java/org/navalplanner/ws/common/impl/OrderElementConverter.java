@@ -316,7 +316,7 @@ public final class OrderElementConverter {
                                 .addCriterionRequirement(DirectCriterionRequirement
                                         .create(criterion));
                         } catch (IllegalStateException e) {
-                            throw new ValidationException(e.getMessage());
+                            throw new ValidationException(_(e.getMessage()));
                         }
                     }
                 } else { // criterionRequirementDTO instanceof

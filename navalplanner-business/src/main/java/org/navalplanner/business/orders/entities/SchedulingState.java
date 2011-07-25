@@ -165,9 +165,9 @@ public class SchedulingState {
         this(type);
         for (SchedulingState each : children) {
             if (!each.isRoot()) {
-                throw new IllegalArgumentException(_(
-                        "{0} is already child of another {1}", each,
-                        SchedulingState.class.getSimpleName()));
+                throw new IllegalArgumentException(each
+                        + " is already child of another "
+                        + SchedulingState.class.getSimpleName());
             }
             add(each);
         }

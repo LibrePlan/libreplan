@@ -43,6 +43,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.IntegrationEntity;
+import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.common.entities.Configuration;
 import org.navalplanner.business.common.entities.EntityNameEnum;
@@ -544,8 +545,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     private void saveOnTransaction(boolean newOrderVersionNeeded) {
-        Order.checkConstraintOrderUniqueCode(order);
-        HoursGroup.checkConstraintHoursGroupUniqueCode(order);
+        checkConstraintOrderUniqueCode(order);
+        checkConstraintHoursGroupUniqueCode(order);
 
         reattachCalendar();
         reattachCriterions();
@@ -587,6 +588,53 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     private void calculateAdvancePercentage(OrderElement orderElement) {
         orderElement.updateAdvancePercentageTaskElement();
+    }
+
+    private static void checkConstraintOrderUniqueCode(OrderElement order) {
+        OrderElement repeatedOrder;
+
+        // Check no code is repeated in this order
+        if (order instanceof OrderLineGroup) {
+            repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
+            if (repeatedOrder != null) {
+                throw new ValidationException(_(
+                        "Repeated Project code {0} in Project {1}",
+                        repeatedOrder.getCode(), repeatedOrder.getName()));
+            }
+        }
+
+        // Check no code is repeated within the DB
+        repeatedOrder = Registry.getOrderElementDAO()
+                .findRepeatedOrderCodeInDB(order);
+        if (repeatedOrder != null) {
+            throw new ValidationException(_(
+                    "Repeated Project code {0} in Project {1}",
+                    repeatedOrder.getCode(), repeatedOrder.getName()));
+        }
+    }
+
+    private static void checkConstraintHoursGroupUniqueCode(Order order) {
+        HoursGroup repeatedHoursGroup;
+
+        if (order instanceof OrderLineGroup) {
+            repeatedHoursGroup = ((OrderLineGroup) order)
+                    .findRepeatedHoursGroupCode();
+            if (repeatedHoursGroup != null) {
+                throw new ValidationException(_(
+                        "Repeated Hours Group code {0} in Project {1}",
+                        repeatedHoursGroup.getCode(), repeatedHoursGroup
+                                .getParentOrderLine().getName()));
+            }
+        }
+
+        repeatedHoursGroup = Registry.getHoursGroupDAO()
+                .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
+        if (repeatedHoursGroup != null) {
+            throw new ValidationException(_(
+                    "Repeated Hours Group code {0} in Project {1}",
+                    repeatedHoursGroup.getCode(), repeatedHoursGroup
+                            .getParentOrderLine().getName()));
+        }
     }
 
     private void createAndSaveNewOrderVersion(Scenario currentScenario,

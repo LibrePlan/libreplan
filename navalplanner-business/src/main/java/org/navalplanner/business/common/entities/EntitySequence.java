@@ -136,9 +136,9 @@ public class EntitySequence extends BaseEntity {
                 && (numberOfDigits <= MAX_NUMBER_OF_DIGITS)) {
             this.numberOfDigits = numberOfDigits;
         } else {
-            throw new IllegalArgumentException(I18nHelper._(
-                    "number of digits must be between {0} and {1}",
-                    MIN_NUMBER_OF_DIGITS, MAX_NUMBER_OF_DIGITS));
+            throw new IllegalArgumentException(
+                    "number of digits must be between " + MIN_NUMBER_OF_DIGITS
+                            + " and " + MAX_NUMBER_OF_DIGITS);
         }
     }
 

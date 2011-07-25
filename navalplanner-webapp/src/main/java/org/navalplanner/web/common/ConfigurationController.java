@@ -236,7 +236,10 @@ public class ConfigurationController extends GenericForwardComposer {
                             seq.setNumberOfDigits(digitsBox.getValue());
                         }
                     } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(digitsBox, e.getMessage());
+                        throw new WrongValueException(digitsBox, _(
+                                "number of digits must be between {0} and {1}",
+                                EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                EntitySequence.MAX_NUMBER_OF_DIGITS));
                     }
                 }
             }
@@ -563,8 +566,10 @@ public class ConfigurationController extends GenericForwardComposer {
                     try {
                         entitySequence.setNumberOfDigits(value);
                     } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(tempIntbox, e
-                                .getMessage());
+                        throw new WrongValueException(tempIntbox, _(
+                                "number of digits must be between {0} and {1}",
+                                EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                EntitySequence.MAX_NUMBER_OF_DIGITS));
                     }
                 }
             });
@@ -660,7 +665,10 @@ public class ConfigurationController extends GenericForwardComposer {
                     try {
                     sequence.setNumberOfDigits(numberOfDigits);
                     } catch (IllegalArgumentException e) {
-                        throw new WrongValueException(comp, e.getMessage());
+                        throw new WrongValueException(comp, _(
+                                "number of digits must be between {0} and {1}",
+                                EntitySequence.MIN_NUMBER_OF_DIGITS,
+                                EntitySequence.MAX_NUMBER_OF_DIGITS));
                     }
                 }
             }

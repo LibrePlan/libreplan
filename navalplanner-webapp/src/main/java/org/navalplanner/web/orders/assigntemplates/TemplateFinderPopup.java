@@ -20,7 +20,7 @@
  */
 package org.navalplanner.web.orders.assigntemplates;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
 import org.apache.commons.lang.Validate;
 import org.navalplanner.business.templates.entities.OrderElementTemplate;

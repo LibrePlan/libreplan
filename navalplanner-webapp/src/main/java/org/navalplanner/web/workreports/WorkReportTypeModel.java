@@ -21,7 +21,7 @@
 
 package org.navalplanner.web.workreports;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
 import java.util.ArrayList;
 import java.util.HashMap;

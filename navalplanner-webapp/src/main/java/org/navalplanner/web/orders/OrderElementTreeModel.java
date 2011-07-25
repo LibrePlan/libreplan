@@ -21,7 +21,7 @@
 
 package org.navalplanner.web.orders;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
 import java.util.List;
 

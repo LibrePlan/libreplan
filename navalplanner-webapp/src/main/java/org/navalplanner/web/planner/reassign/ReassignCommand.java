@@ -20,7 +20,7 @@
  */
 package org.navalplanner.web.planner.reassign;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 import static org.zkoss.ganttz.util.LongOperationFeedback.and;
 
 import java.util.ArrayList;

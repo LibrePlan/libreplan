@@ -535,10 +535,8 @@ public abstract class CriterionRequirementHandler<T, S, R> {
             propagateDirectCriterionRequirementAddition(orderElement,
                             newRequirement);
         } else {
-            final Criterion criterion = newRequirement.getCriterion();
-            throw new IllegalStateException(_(
-                    " The {0} already exist into other task",
-                    criterion.getName()));
+            throw new IllegalStateException(
+                    _("The criterion already exist into other task"));
         }
     }
 
