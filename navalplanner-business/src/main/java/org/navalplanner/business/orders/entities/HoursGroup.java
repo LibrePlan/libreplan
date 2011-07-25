@@ -39,7 +39,6 @@ import org.hibernate.validator.Valid;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.daos.IIntegrationEntityDAO;
-import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
 import org.navalplanner.business.requirements.entities.DirectCriterionRequirement;
 import org.navalplanner.business.requirements.entities.IndirectCriterionRequirement;
@@ -255,15 +254,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
     public void addCriterionRequirement(CriterionRequirement requirement) {
         if (!isValidResourceType(requirement)) {
             throw new IllegalStateException(
-                    _(
-                            " The criterion {0} can not be assigned to this hoursGroup because its resource type is diferent.",
-                            requirement.getCriterion().getName()));
+                    _("The criterion can not be assigned to this hoursGroup because its resource type is diferent"));
         }
         if (existSameCriterionRequirement(requirement)) {
             throw new IllegalStateException(
-                    _(
-                            " The criterion  {0} can not be assigned to this hoursGroup because it already exist into the hoursGroup.",
-                            requirement.getCriterion().getName()));
+                    _("The criterion can not be assigned to this hoursGroup because it already exist into the hoursGroup"));
 
         }
         requirement.setHoursGroup(this);
@@ -409,29 +404,6 @@ public class HoursGroup extends IntegrationEntity implements Cloneable,
         // the automatic checking of this constraint is avoided because it uses
         // the wrong code property
         return true;
-    }
-
-    public static void checkConstraintHoursGroupUniqueCode(OrderElement order) {
-        HoursGroup repeatedHoursGroup;
-
-        if (order instanceof OrderLineGroup) {
-            repeatedHoursGroup = ((OrderLineGroup) order).findRepeatedHoursGroupCode();
-            if (repeatedHoursGroup != null) {
-                throw new ValidationException(_(
-                        "Repeated Hours Group code {0} in Project {1}",
-                        repeatedHoursGroup.getCode(), repeatedHoursGroup
-                                .getParentOrderLine().getName()));
-            }
-        }
-
-        repeatedHoursGroup = Registry.getHoursGroupDAO()
-                .findRepeatedHoursGroupCodeInDB(order.getHoursGroups());
-        if (repeatedHoursGroup != null) {
-            throw new ValidationException(_(
-                    "Repeated Hours Group code {0} in Project {1}",
-                    repeatedHoursGroup.getCode(), repeatedHoursGroup
-                            .getParentOrderLine().getName()));
-        }
     }
 
 }

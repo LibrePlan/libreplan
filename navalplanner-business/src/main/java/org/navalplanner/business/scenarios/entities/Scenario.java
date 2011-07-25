@@ -21,8 +21,6 @@
 
 package org.navalplanner.business.scenarios.entities;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -174,7 +172,7 @@ public class Scenario extends BaseEntity implements IHumanIdentifiable {
     }
 
     public Scenario newDerivedScenario() {
-        Scenario result = new Scenario(_("Derived from {0}", name), this);
+        Scenario result = new Scenario("Derived from " + name, this);
         for (Order order : orders.keySet()) {
             result.addOrder(order, orders.get(order));
         }

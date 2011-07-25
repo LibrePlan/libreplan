@@ -21,44 +21,22 @@
 
 package org.navalplanner.business.i18n;
 
-import java.util.Locale;
 
-import org.xnap.commons.i18n.I18n;
-import org.xnap.commons.i18n.I18nFactory;
-
+/**
+ * This class provides a function to mark strings to be translated. Real
+ * translation have to be done in webapp module depending on user language and
+ * not done here depending on server language.
+ *
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
+ */
 public class I18nHelper {
 
     private I18nHelper() {
 
     }
 
-    public static I18n getI18n() {
-        return I18nFactory.getI18n(I18nHelper.class, Locale.getDefault(),
-                org.xnap.commons.i18n.I18nFactory.FALLBACK);
-    }
-
     public static String _(String text) {
-        return getI18n().tr(text);
+        return text;
     }
 
-    public static String _(String text, Object o1) {
-        return getI18n().tr(text, o1);
-    }
-
-    public static String _(String text, Object o1, Object o2) {
-        return getI18n().tr(text, o1, o2);
-    }
-
-    public static String _(String text, Object o1, Object o2, Object o3) {
-        return getI18n().tr(text, o1, o2, o3);
-    }
-
-    public static String _(String text, Object o1, Object o2, Object o3,
-            Object o4) {
-        return getI18n().tr(text, o1, o2, o3, o4);
-    }
-
-    public static String _(String text, Object[] objects) {
-        return getI18n().tr(text, objects);
-    }
 }

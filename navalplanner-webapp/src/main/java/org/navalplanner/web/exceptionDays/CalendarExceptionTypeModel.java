@@ -18,7 +18,7 @@
  */
 package org.navalplanner.web.exceptionDays;
 
-import static org.navalplanner.business.i18n.I18nHelper._;
+import static org.navalplanner.web.I18nHelper._;
 
 import java.util.HashSet;
 import java.util.List;

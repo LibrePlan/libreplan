@@ -1049,10 +1049,9 @@ public abstract class OrderElement extends IntegrationEntity implements
         Validate.notNull(qualityForm);
         for (TaskQualityForm taskQualityForm : getTaskQualityForms()) {
             if (qualityForm.equals(taskQualityForm.getQualityForm())) {
-                throw new ValidationException(new InvalidValue(_(
-                        "{0} already exists", qualityForm.getName()),
-                        QualityForm.class, "name", qualityForm.getName(),
-                        qualityForm));
+                throw new ValidationException(new InvalidValue(
+                        _("Quality form already exists"), QualityForm.class,
+                        "name", qualityForm.getName(), qualityForm));
             }
         }
     }
@@ -1335,29 +1334,6 @@ public abstract class OrderElement extends IntegrationEntity implements
         }
         if (parent != null) {
             parent.updateAdvancePercentageTaskElement();
-        }
-    }
-
-    public static void checkConstraintOrderUniqueCode(OrderElement order) {
-        OrderElement repeatedOrder;
-
-        // Check no code is repeated in this order
-        if (order instanceof OrderLineGroup) {
-            repeatedOrder = ((OrderLineGroup) order).findRepeatedOrderCode();
-            if (repeatedOrder != null) {
-                throw new ValidationException(_(
-                        "Repeated Project code {0} in Project {1}",
-                        repeatedOrder.getCode(), repeatedOrder.getName()));
-            }
-        }
-
-        // Check no code is repeated within the DB
-        repeatedOrder = Registry.getOrderElementDAO()
-                .findRepeatedOrderCodeInDB(order);
-        if (repeatedOrder != null) {
-            throw new ValidationException(_(
-                    "Repeated Project code {0} in Project {1}",
-                    repeatedOrder.getCode(), repeatedOrder.getName()));
         }
     }
 
