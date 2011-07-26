@@ -558,25 +558,38 @@ public class PlanningStateCreator {
         public List<ResourceAllocation<?>> replaceByCurrentOnes(
                 Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
                 IAllocationCriteria allocationCriteria) {
-            Set<TaskElement> orderTasks = new HashSet<TaskElement>(
-                    order.getAllChildrenAssociatedTaskElements());
+            Set<Long> orderElements = getIds(order.getAllChildren());
             List<ResourceAllocation<?>> result = allocationsNotInOrder(
-                    allocationsReturnedByQuery, orderTasks);
-            result.addAll(allocationsInOrderSatisfyingCriteria(orderTasks,
+                    allocationsReturnedByQuery, orderElements);
+            result.addAll(allocationsInOrderSatisfyingCriteria(
+                    order.getAllChildrenAssociatedTaskElements(),
                     allocationCriteria));
+            return result;
+        }
+
+        private Set<Long> getIds(List<OrderElement> allChildren) {
+            Set<Long> result = new HashSet<Long>();
+            for (OrderElement each : allChildren) {
+                result.add(each.getId());
+            }
             return result;
         }
 
         private List<ResourceAllocation<?>> allocationsNotInOrder(
                 Collection<? extends ResourceAllocation<?>> allocationsReturnedByQuery,
-                Set<TaskElement> orderTasks) {
+                Set<Long> orderElementsIds) {
             List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
             for (ResourceAllocation<?> each : allocationsReturnedByQuery) {
-                if (!orderTasks.contains(each.getTask())) {
+                Task task = each.getTask();
+                if (!isIncluded(orderElementsIds, task)) {
                     result.add(each);
                 }
             }
             return result;
+        }
+
+        private boolean isIncluded(Set<Long> orderElementsIds, Task task) {
+            return orderElementsIds.contains(task.getOrderElement().getId());
         }
 
         private List<ResourceAllocation<?>> allocationsInOrderSatisfyingCriteria(
