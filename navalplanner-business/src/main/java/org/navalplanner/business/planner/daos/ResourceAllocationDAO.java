@@ -28,10 +28,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 
-import org.hibernate.Criteria;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.Session;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
@@ -74,52 +75,79 @@ public class ResourceAllocationDAO extends
 
     @SuppressWarnings("unchecked")
     private List<GenericResourceAllocation> findGenericAllocationsFor(
-            List<Resource> resources, LocalDate intervalFilterStartDate,
-            LocalDate intervalFilterEndDate) {
-        if(resources.isEmpty()) {
+            final List<Resource> resources,
+            final LocalDate intervalFilterStartDate,
+            final LocalDate intervalFilterEndDate) {
+        if (resources.isEmpty()) {
             return new ArrayList<GenericResourceAllocation>();
         }
-        Criteria criteria  = getSession().createCriteria(GenericResourceAllocation.class);
-        criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY)
-            .createCriteria(
-                "genericDayAssignmentsContainers").createCriteria(
-                "dayAssignments").add(
-                Restrictions.in("resource", resources));
+        QueryBuilder queryBuilder = new QueryBuilder() {
 
-        filterByDatesIfApplyable(criteria, intervalFilterStartDate,
-                intervalFilterEndDate);
-        return (List<GenericResourceAllocation>) criteria.list();
+            @Override
+            protected String getBaseQuery() {
+                return "select distinct generic from GenericResourceAllocation generic "
+                        + "join generic.task task "
+                        + "join generic.genericDayAssignmentsContainers container "
+                        + "join container.dayAssignments dayAssignment";
+            }
+
+            @Override
+            protected String getBaseConditions() {
+                return "where dayAssignment.resource in (:resources)";
+            }
+
+            @Override
+            protected void setBaseParameters(Query query) {
+                query.setParameterList("resources", resources);
+            }
+
+            @Override
+            protected IQueryPart[] getExtraParts() {
+                return new IQueryPart[] { new DatesInterval("task",
+                        intervalFilterStartDate, intervalFilterEndDate) };
+            }
+
+        };
+        Query query = queryBuilder.build(getSession());
+        return query.list();
     }
 
     @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            List<Resource> resources, LocalDate intervalFilterStartDate,
-            LocalDate intervalFilterEndDate) {
-        if(resources.isEmpty()) {
+            final List<Resource> resources,
+            final LocalDate intervalFilterStartDate,
+            final LocalDate intervalFilterEndDate) {
+
+        if (resources.isEmpty()) {
             return new ArrayList<SpecificResourceAllocation>();
         }
-        Criteria criteria  = getSession().createCriteria(
-                SpecificResourceAllocation.class);
-        criteria.add(Restrictions.in("resource", resources));
+        QueryBuilder queryBuilder = new QueryBuilder() {
 
-        filterByDatesIfApplyable(criteria, intervalFilterStartDate,
-                intervalFilterEndDate);
-        return (List<SpecificResourceAllocation>) criteria.list();
-    }
+            @Override
+            protected String getBaseQuery() {
+                return "select distinct specific from "
+                        + "SpecificResourceAllocation specific "
+                        + "join specific.task task";
+            }
 
-    private void filterByDatesIfApplyable(Criteria criteria,
-            LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate) {
-        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
-            Criteria dateCriteria = criteria.createCriteria("task");
-            if(intervalFilterEndDate != null) {
-                dateCriteria.add(Restrictions.le("startDate.date",
-                        intervalFilterEndDate));
+            @Override
+            protected String getBaseConditions() {
+                return "where specific.resource in (:resources)";
             }
-            if(intervalFilterStartDate != null) {
-                dateCriteria.add(Restrictions.ge("endDate.date",
-                        intervalFilterStartDate));
+
+            @Override
+            protected void setBaseParameters(Query query) {
+                query.setParameterList("resources", resources);
             }
-        }
+
+            @Override
+            protected IQueryPart[] getExtraParts() {
+                return new IQueryPart[] { new DatesInterval("task",
+                        intervalFilterStartDate, intervalFilterEndDate) };
+            }
+        };
+        return (List<SpecificResourceAllocation>) queryBuilder.build(
+                getSession()).list();
     }
 
     @Override
@@ -156,67 +184,74 @@ public class ResourceAllocationDAO extends
 
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
-            Date intervalFilterStartDate, Date intervalFilterEndDate) {
-        String query = "select generic, criterion "
-            + "from GenericResourceAllocation as generic "
-            + "join generic.criterions as criterion ";
-        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
-            query += "inner join generic.task as task ";
-            if(intervalFilterEndDate != null) {
-                query += "where task.startDate.date <= :intervalFilterEndDate ";
+            final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
+        QueryBuilder queryBuilder = new QueryBuilder() {
+
+            @Override
+            protected String getBaseQuery() {
+                return "select generic, criterion "
+                        + "from GenericResourceAllocation as generic "
+                        + "join generic.criterions as criterion "
+                        + "join generic.task as task";
             }
-            if(intervalFilterStartDate != null) {
-                if(intervalFilterEndDate != null) {
-                    query += "and ";
-                }
-                else {
-                    query += "where ";
-                }
-                query += "task.endDate.date >= :intervalFilterStartDate ";
+
+            @Override
+            protected String getBaseConditions() {
+                return "";
             }
-        }
-        Query q = getSession().createQuery(query);
-        if(intervalFilterStartDate != null) {
-            q.setParameter("intervalFilterStartDate",
-                    LocalDate.fromDateFields(intervalFilterStartDate));
-        }
-        if(intervalFilterEndDate != null) {
-            q.setParameter("intervalFilterEndDate",
-                    LocalDate.fromDateFields(intervalFilterEndDate));
-        }
-        return toCriterionMapFrom(q);
+
+            @Override
+            protected void setBaseParameters(Query query) {
+            }
+
+            @Override
+            protected IQueryPart[] getExtraParts() {
+                return new IQueryPart[] { new DatesInterval("task",
+                        intervalFilterStartDate, intervalFilterEndDate) };
+            }
+
+        };
+        Query query = queryBuilder.build(getSession());
+
+        return toCriterionMapFrom(query);
     }
 
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
-            List<Criterion> criterions, Date intervalFilterStartDate, Date intervalFilterEndDate) {
+            final List<Criterion> criterions,
+            final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
+
         if (criterions.isEmpty()) {
             return new HashMap<Criterion, List<GenericResourceAllocation>>();
         }
-        String query = "select generic, criterion "
-            + "from GenericResourceAllocation as generic "
-            + "join generic.criterions as criterion ";
-        if(intervalFilterStartDate != null || intervalFilterEndDate != null) {
-            query += "inner join generic.task as task ";
-        }
-        query += "where criterion in(:criterions) ";
-        if(intervalFilterEndDate != null) {
-            query += "and task.startDate.date <= :intervalFilterEndDate ";
-        }
-        if(intervalFilterStartDate != null) {
-            query += "and task.endDate.date >= :intervalFilterStartDate ";
-        }
 
-        Query q = getSession().createQuery(query);
-        q.setParameterList("criterions", criterions);
-        if(intervalFilterStartDate != null) {
-            q.setParameter("intervalFilterStartDate",
-                    LocalDate.fromDateFields(intervalFilterStartDate));
-        }
-        if(intervalFilterEndDate != null) {
-            q.setParameter("intervalFilterEndDate",
-                    LocalDate.fromDateFields(intervalFilterEndDate));
-        }
+        QueryBuilder queryBuilder = new QueryBuilder() {
+
+            @Override
+            protected String getBaseQuery() {
+                return "select generic, criterion "
+                        + "from GenericResourceAllocation as generic "
+                        + "join generic.task as task "
+                        + "join generic.criterions as criterion ";
+            }
+
+            @Override
+            protected String getBaseConditions() {
+                return "where criterion in(:criterions) ";
+            }
+
+            @Override
+            protected void setBaseParameters(Query query) {
+                query.setParameterList("criterions", criterions);
+            }
+
+            @Override
+            protected IQueryPart[] getExtraParts() {
+                return new IQueryPart[] { new DatesInterval("task",
+                        intervalFilterStartDate, intervalFilterEndDate) };
+            }
+        };
+        Query q = queryBuilder.build(getSession());
         return toCriterionMapFrom(q);
     }
 
@@ -300,34 +335,37 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            Criterion criterion, Date intervalFilterStartDate,
-            Date intervalFilterEndDate) {
-        String queryString = "select distinct s from SpecificResourceAllocation s "
-                + "join s.resource r "
-                + "join r.criterionSatisfactions satisfaction "
-                + "join satisfaction.criterion c";
-        if (intervalFilterStartDate != null || intervalFilterEndDate != null) {
-            queryString += " inner join s.task t";
-        }
-        queryString += " where c = :criterion";
-        if (intervalFilterEndDate != null) {
-            queryString += " and t.startDate.date <= :intervalFilterEndDate";
-        }
-        if (intervalFilterStartDate != null) {
-            queryString += " and t.endDate.date >= :intervalFilterStartDate";
-        }
+            final Criterion criterion,
+            final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
 
-        Query query = getSession().createQuery(queryString);
-        query.setParameter("criterion", criterion);
+        QueryBuilder builder = new QueryBuilder() {
 
-        if (intervalFilterStartDate != null) {
-            query.setParameter("intervalFilterStartDate",
-                    asLocalDate(intervalFilterStartDate));
-        }
-        if (intervalFilterEndDate != null) {
-            query.setParameter("intervalFilterEndDate",
-                    asLocalDate(intervalFilterEndDate));
-        }
+            @Override
+            protected String getBaseQuery() {
+                return "select distinct s from SpecificResourceAllocation s "
+                        + "join s.resource r "
+                        + "join r.criterionSatisfactions satisfaction "
+                        + "join satisfaction.criterion c join s.task t";
+            }
+
+            @Override
+            protected String getBaseConditions() {
+                return " where c = :criterion";
+            }
+
+            @Override
+            protected void setBaseParameters(Query query) {
+                query.setParameter("criterion", criterion);
+            }
+
+            @Override
+            protected IQueryPart[] getExtraParts() {
+                return new IQueryPart[] { new DatesInterval("t",
+                        intervalFilterStartDate, intervalFilterEndDate) };
+            }
+        };
+
+        Query query = builder.build(getSession());
 
         @SuppressWarnings("unchecked")
         List<SpecificResourceAllocation> result = query.list();
@@ -353,6 +391,150 @@ public class ResourceAllocationDAO extends
             }
         }
         return result;
+    }
+
+    public static abstract class QueryBuilder {
+
+        private static Pattern wherePattern = Pattern.compile("WHERE",
+                Pattern.CASE_INSENSITIVE);
+
+        protected abstract String getBaseQuery();
+
+        protected abstract String getBaseConditions();
+
+        protected abstract void setBaseParameters(Query query);
+
+        protected abstract IQueryPart[] getExtraParts();
+
+        public Query build(Session session) {
+            final List<IQueryPart> extraParts = Arrays.asList(getExtraParts());
+
+            String queryString = getBaseQuery();
+            queryString = withExtraQueryParts(queryString, extraParts);
+
+            queryString += " " + getBaseConditions();
+            queryString = withExtraWhereConditions(queryString, extraParts);
+
+            Query query = session.createQuery(queryString);
+            setBaseParameters(query);
+            injectParameters(query, extraParts);
+            return query;
+        }
+
+        private String withExtraQueryParts(String initialQuery,
+                List<IQueryPart> extraParts) {
+            StringBuilder result = new StringBuilder(initialQuery);
+            for (IQueryPart each : extraParts) {
+                result.append(" ").append(each.queryPart());
+            }
+            return result.toString();
+        }
+
+        private String withExtraWhereConditions(String initialQuery,
+                List<IQueryPart> extraParts) {
+            StringBuilder result = new StringBuilder(initialQuery);
+            boolean alreadyHasWhere = hasWhere(initialQuery);
+            if (!alreadyHasWhere) {
+                result.append(" where ");
+            }
+            List<String> conditionsToAdd = notEmptyConditions(extraParts);
+            for (int i = 0; i < conditionsToAdd.size(); i++) {
+                if (alreadyHasWhere || i != 0) {
+                    result.append(" and ");
+                }
+                result.append(conditionsToAdd.get(i));
+            }
+            return result.toString();
+        }
+
+        private List<String> notEmptyConditions(List<IQueryPart> extraParts) {
+            List<String> result = new ArrayList<String>();
+            for (IQueryPart each : extraParts) {
+                String toAdd = each.wherePart();
+                if (!StringUtils.isEmpty(toAdd)) {
+                    result.add(toAdd);
+                }
+            }
+            return result;
+        }
+
+        private static boolean hasWhere(String initialQuery) {
+            return wherePattern.matcher(initialQuery).find();
+        }
+
+        private void injectParameters(Query query, List<IQueryPart> extraParts) {
+            for (IQueryPart each : extraParts) {
+                each.injectParameters(query);
+            }
+        }
+
+    }
+
+    public interface IQueryPart {
+
+        public abstract String queryPart();
+
+        public abstract String wherePart();
+
+        public abstract void injectParameters(Query query);
+
+    }
+
+    public static class DatesInterval implements IQueryPart {
+
+        private final LocalDate startInclusive;
+        private final LocalDate endInclusive;
+        private final String baseAlias;
+
+        public DatesInterval(String baseAlias, Date startInclusive,
+                Date endInclusive) {
+            this(baseAlias, asLocal(startInclusive), asLocal(endInclusive));
+        }
+
+        private static LocalDate asLocal(Date date) {
+            if (date == null) {
+                return null;
+            }
+            return LocalDate.fromDateFields(date);
+        }
+
+        public DatesInterval(String baseAlias, LocalDate startInclusive,
+                LocalDate endInclusive) {
+            this.baseAlias = baseAlias;
+            this.startInclusive = startInclusive;
+            this.endInclusive = endInclusive;
+        }
+
+        @Override
+        public String queryPart() {
+            return "";
+        }
+
+        @Override
+        public String wherePart() {
+            String result = "";
+            if (startInclusive != null) {
+                result += baseAlias + ".endDate.date >= :startInclusive";
+            }
+            if (!result.isEmpty() && endInclusive != null) {
+                result += " and ";
+            }
+            if (endInclusive != null) {
+                result += baseAlias + ".startDate.date <= :endInclusive";
+            }
+            return result;
+        }
+
+        @Override
+        public void injectParameters(Query query) {
+            if (startInclusive != null) {
+                query.setParameter("startInclusive", startInclusive);
+            }
+            if (endInclusive != null) {
+                query.setParameter("endInclusive", endInclusive);
+            }
+        }
+
     }
 
 }

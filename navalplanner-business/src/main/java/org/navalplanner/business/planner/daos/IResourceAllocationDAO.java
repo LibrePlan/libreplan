@@ -84,7 +84,8 @@ public interface IResourceAllocationDAO extends
      *         allocations} found
      */
     List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
-            Criterion criterion, Date intervalFilterStartDate,
+            Criterion criterion,
+            Date intervalFilterStartDate,
             Date intervalFilterEndDate);
 
 }
