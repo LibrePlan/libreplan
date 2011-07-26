@@ -21,7 +21,6 @@
 
 package org.navalplanner.business.planner.daos;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,9 +29,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.IGenericDAO;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 
@@ -51,25 +48,11 @@ public interface IResourceAllocationDAO extends
             List<Resource> resources, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate);
 
-    List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource);
-
     List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource,
             LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate);
 
-    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion();
-
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
             Date intervalFilterStartDate, Date intervalFilterEndDate);
-
-    List<SpecificDayAssignment> getSpecificAssignmentsBetween(
-            Collection<Resource> relatedToOne,
-            LocalDate start, LocalDate end);
-
-    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
-            List<Task> task);
-
-    Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
-            List<Criterion> criterions);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
             List<Criterion> criterions, Date intervalFilterStartDate,

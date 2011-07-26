@@ -23,7 +23,6 @@ package org.navalplanner.business.planner.daos;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,9 +36,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
-import org.navalplanner.business.planner.entities.SpecificDayAssignment;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
-import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -127,13 +124,6 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedTo(
-            Resource resource) {
-        return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
-                .asList(resource)));
-    }
-
-    @Override
-    public List<ResourceAllocation<?>> findAllocationsRelatedTo(
             Resource resource, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate) {
         return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
@@ -162,16 +152,6 @@ public class ResourceAllocationDAO extends
             }
         }
         return result;
-    }
-
-    @Override
-    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion() {
-        Query query = getSession()
-                .createQuery(
-                "select generic, criterion "
-                        + "from GenericResourceAllocation as generic "
-                        + "join generic.criterions as criterion");
-        return toCriterionMapFrom(query);
     }
 
     @Override
@@ -205,36 +185,6 @@ public class ResourceAllocationDAO extends
                     LocalDate.fromDateFields(intervalFilterEndDate));
         }
         return toCriterionMapFrom(q);
-    }
-
-    @Override
-    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterionFor(
-            List<Task> tasks) {
-        if (tasks.isEmpty()) {
-            return new HashMap<Criterion, List<GenericResourceAllocation>>();
-        }
-        Query query = getSession().createQuery(
-                "select generic, criterion "
-                        + "from GenericResourceAllocation as generic "
-                        + "join generic.criterions as criterion "
-                        + "join generic.task task where task in(:tasks)")
-                .setParameterList("tasks", tasks);
-        return toCriterionMapFrom(query);
-    }
-
-    @Override
-    public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
-            List<Criterion> criterions) {
-        if (criterions.isEmpty()) {
-            return new HashMap<Criterion, List<GenericResourceAllocation>>();
-        }
-        Query query = getSession().createQuery(
-                "select generic, criterion "
-                        + "from GenericResourceAllocation as generic "
-                        + "join generic.criterions as criterion "
-                        + "where criterion in(:criterions)").setParameterList(
-                "criterions", criterions);
-        return toCriterionMapFrom(query);
     }
 
     @Override
@@ -346,14 +296,6 @@ public class ResourceAllocationDAO extends
             current = current.getParent();
         }
         return result;
-    }
-
-    @Override
-    public List<SpecificDayAssignment> getSpecificAssignmentsBetween(
-            Collection<Resource> relatedToOne, LocalDate start, LocalDate end) {
-        return getSession().createCriteria(SpecificDayAssignment.class).add(
-                Restrictions.and(Restrictions.in("resource", relatedToOne),
-                        Restrictions.between("day", start, end))).list();
     }
 
     @Override
