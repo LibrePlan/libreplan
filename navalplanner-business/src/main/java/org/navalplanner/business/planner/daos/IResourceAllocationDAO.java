@@ -32,6 +32,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 
 /**
  * DAO interface for {@link ResourceAllocation}
@@ -42,19 +43,24 @@ public interface IResourceAllocationDAO extends
         IGenericDAO<ResourceAllocation, Long> {
 
     List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            Scenario onScenario,
             List<Resource> resources);
 
     List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            Scenario onScenario,
             List<Resource> resources, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate);
 
-    List<ResourceAllocation<?>> findAllocationsRelatedTo(Resource resource,
+    List<ResourceAllocation<?>> findAllocationsRelatedTo(Scenario onScenario,
+            Resource resource,
             LocalDate intervalFilterStartDate, LocalDate intervalFilterEndDate);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
+            Scenario onScenario,
             Date intervalFilterStartDate, Date intervalFilterEndDate);
 
     Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            Scenario onScenario,
             List<Criterion> criterions, Date intervalFilterStartDate,
             Date intervalFilterEndDate);
 
@@ -74,6 +80,8 @@ public interface IResourceAllocationDAO extends
      * allocations satisfying the first requirement are returned.
      * </p>
      *
+     * @param onScenario
+     *            the scenario the allocations returned will belong to
      * @param criterion
      *            must be not <code>null</code>
      * @param intervalFilterStartDate
@@ -84,6 +92,7 @@ public interface IResourceAllocationDAO extends
      *         allocations} found
      */
     List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            Scenario onScenario,
             Criterion criterion,
             Date intervalFilterStartDate,
             Date intervalFilterEndDate);

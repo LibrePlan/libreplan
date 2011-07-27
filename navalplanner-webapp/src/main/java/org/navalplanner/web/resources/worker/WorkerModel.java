@@ -58,6 +58,7 @@ import org.navalplanner.business.resources.entities.PredefinedCriterionTypes;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.VirtualWorker;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.calendars.IBaseCalendarModel;
 import org.navalplanner.web.common.IntegrationEntityModel;
@@ -122,6 +123,9 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
 
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     @Autowired
     public WorkerModel(IResourceDAO resourceDAO, ICriterionDAO criterionDAO) {
@@ -597,9 +601,10 @@ public class WorkerModel extends IntegrationEntityModel implements IWorkerModel 
     public boolean canRemove(Worker worker) {
         List<Resource> resourcesList = new ArrayList<Resource>();
         resourcesList.add(worker);
-        return dayAssignmentDAO.findByResources(resourcesList).isEmpty() &&
-            workReportLineDAO.findByResources(resourcesList).isEmpty() &&
-            resourceAllocationDAO.findAllocationsRelatedToAnyOf(resourcesList).isEmpty();
+        return dayAssignmentDAO.findByResources(resourcesList).isEmpty()
+                && workReportLineDAO.findByResources(resourcesList).isEmpty()
+                && resourceAllocationDAO.findAllocationsRelatedToAnyOf(
+                        scenarioManager.getCurrent(), resourcesList).isEmpty();
     }
 
     @Override

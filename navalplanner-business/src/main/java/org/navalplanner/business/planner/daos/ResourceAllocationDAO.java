@@ -31,6 +31,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.joda.time.LocalDate;
@@ -40,6 +41,7 @@ import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
@@ -56,28 +58,35 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
-            List<Resource> resources) {
+            Scenario onScenario, List<Resource> resources) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        result.addAll(findSpecificAllocationsRelatedTo(resources, null, null));
-        result.addAll(findGenericAllocationsFor(resources, null, null));
+        result.addAll(findSpecificAllocationsRelatedTo(onScenario, resources,
+                null, null));
+        result.addAll(findGenericAllocationsFor(onScenario, resources, null,
+                null));
         return result;
     }
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedToAnyOf(
+            Scenario onScenario,
             List<Resource> resources, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate) {
         List<ResourceAllocation<?>> result = new ArrayList<ResourceAllocation<?>>();
-        result.addAll(findSpecificAllocationsRelatedTo(resources, intervalFilterStartDate, intervalFilterEndDate));
-        result.addAll(findGenericAllocationsFor(resources, intervalFilterStartDate, intervalFilterEndDate));
+        result.addAll(findSpecificAllocationsRelatedTo(onScenario, resources,
+                intervalFilterStartDate, intervalFilterEndDate));
+        result.addAll(findGenericAllocationsFor(onScenario, resources,
+                intervalFilterStartDate, intervalFilterEndDate));
         return result;
     }
 
     @SuppressWarnings("unchecked")
     private List<GenericResourceAllocation> findGenericAllocationsFor(
+            final Scenario onScenario,
             final List<Resource> resources,
             final LocalDate intervalFilterStartDate,
             final LocalDate intervalFilterEndDate) {
+
         if (resources.isEmpty()) {
             return new ArrayList<GenericResourceAllocation>();
         }
@@ -103,8 +112,10 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected IQueryPart[] getExtraParts() {
-                return new IQueryPart[] { new DatesInterval("task",
-                        intervalFilterStartDate, intervalFilterEndDate) };
+                return new IQueryPart[] {
+                        new DatesInterval("task", intervalFilterStartDate,
+                                intervalFilterEndDate),
+                        new OnScenario("task", onScenario) };
             }
 
         };
@@ -114,6 +125,7 @@ public class ResourceAllocationDAO extends
 
     @SuppressWarnings("unchecked")
     private List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            final Scenario onScenario,
             final List<Resource> resources,
             final LocalDate intervalFilterStartDate,
             final LocalDate intervalFilterEndDate) {
@@ -142,8 +154,10 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected IQueryPart[] getExtraParts() {
-                return new IQueryPart[] { new DatesInterval("task",
-                        intervalFilterStartDate, intervalFilterEndDate) };
+                return new IQueryPart[] {
+                        new DatesInterval("task", intervalFilterStartDate,
+                                intervalFilterEndDate),
+                        new OnScenario("task", onScenario) };
             }
         };
         return (List<SpecificResourceAllocation>) queryBuilder.build(
@@ -152,10 +166,12 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<ResourceAllocation<?>> findAllocationsRelatedTo(
+            Scenario onScenario,
             Resource resource, LocalDate intervalFilterStartDate,
             LocalDate intervalFilterEndDate) {
-        return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(Arrays
-                .asList(resource), intervalFilterStartDate, intervalFilterEndDate));
+        return stripAllocationsWithoutAssignations(findAllocationsRelatedToAnyOf(
+                onScenario, Arrays.asList(resource), intervalFilterStartDate,
+                intervalFilterEndDate));
     }
 
     private <R extends ResourceAllocation<?>> List<R> stripAllocationsWithoutAssignations(
@@ -184,7 +200,9 @@ public class ResourceAllocationDAO extends
 
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsByCriterion(
+            final Scenario onScenario,
             final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
+
         QueryBuilder queryBuilder = new QueryBuilder() {
 
             @Override
@@ -206,8 +224,10 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected IQueryPart[] getExtraParts() {
-                return new IQueryPart[] { new DatesInterval("task",
-                        intervalFilterStartDate, intervalFilterEndDate) };
+                return new IQueryPart[] {
+                        new DatesInterval("task", intervalFilterStartDate,
+                                intervalFilterEndDate),
+                        new OnScenario("task", onScenario) };
             }
 
         };
@@ -218,6 +238,7 @@ public class ResourceAllocationDAO extends
 
     @Override
     public Map<Criterion, List<GenericResourceAllocation>> findGenericAllocationsBySomeCriterion(
+            final Scenario onScenario,
             final List<Criterion> criterions,
             final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
 
@@ -247,8 +268,10 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected IQueryPart[] getExtraParts() {
-                return new IQueryPart[] { new DatesInterval("task",
-                        intervalFilterStartDate, intervalFilterEndDate) };
+                return new IQueryPart[] {
+                        new DatesInterval("task", intervalFilterStartDate,
+                                intervalFilterEndDate),
+                        new OnScenario("task", onScenario) };
             }
         };
         Query q = queryBuilder.build(getSession());
@@ -335,6 +358,7 @@ public class ResourceAllocationDAO extends
 
     @Override
     public List<SpecificResourceAllocation> findSpecificAllocationsRelatedTo(
+            final Scenario onScenario,
             final Criterion criterion,
             final Date intervalFilterStartDate, final Date intervalFilterEndDate) {
 
@@ -360,8 +384,10 @@ public class ResourceAllocationDAO extends
 
             @Override
             protected IQueryPart[] getExtraParts() {
-                return new IQueryPart[] { new DatesInterval("t",
-                        intervalFilterStartDate, intervalFilterEndDate) };
+                return new IQueryPart[] {
+                        new DatesInterval("t", intervalFilterStartDate,
+                                intervalFilterEndDate),
+                        new OnScenario("t", onScenario) };
             }
         };
 
@@ -535,6 +561,38 @@ public class ResourceAllocationDAO extends
             }
         }
 
+    }
+
+    public class OnScenario implements IQueryPart {
+
+        private final Scenario onScenario;
+        private final String taskAlias;
+
+        private OnScenario(String taskAlias, Scenario onScenario) {
+            Validate.notNull(taskAlias);
+            Validate.notNull(onScenario);
+            this.taskAlias = taskAlias;
+            this.onScenario = onScenario;
+        }
+
+        @Override
+        public String queryPart() {
+            return "join " + taskAlias
+                    + ".taskSource.schedulingData as schedulingData "
+                    + "join schedulingData.orderElement as orderElement "
+                    + ", OrderVersion as version ";
+        }
+
+        @Override
+        public String wherePart() {
+            return "orderElement.schedulingDatasForVersion[version] = schedulingData "
+                    + "and version.ownerScenario = :scenario";
+        }
+
+        @Override
+        public void injectParameters(Query query) {
+            query.setParameter("scenario", onScenario);
+        }
     }
 
 }

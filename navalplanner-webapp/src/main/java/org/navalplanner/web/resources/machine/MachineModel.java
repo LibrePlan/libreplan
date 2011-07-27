@@ -56,6 +56,7 @@ import org.navalplanner.business.resources.entities.MachineWorkersConfigurationU
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.resources.entities.ResourceEnum;
 import org.navalplanner.business.resources.entities.Worker;
+import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.web.common.IntegrationEntityModel;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
@@ -111,6 +112,9 @@ public class MachineModel extends IntegrationEntityModel implements
     private IWorkReportLineDAO workReportLineDAO;
     @Autowired
     private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IScenarioManager scenarioManager;
 
     private ClassValidator<Machine> validator = new ClassValidator<Machine>(
             Machine.class);
@@ -371,9 +375,10 @@ public class MachineModel extends IntegrationEntityModel implements
     public boolean canRemove(Machine machine) {
         List<Resource> resourcesList = new ArrayList<Resource>();
         resourcesList.add(machine);
-        return dayAssignmentDAO.findByResources(resourcesList).isEmpty() &&
-            workReportLineDAO.findByResources(resourcesList).isEmpty() &&
-            resourceAllocationDAO.findAllocationsRelatedToAnyOf(resourcesList).isEmpty();
+        return dayAssignmentDAO.findByResources(resourcesList).isEmpty()
+                && workReportLineDAO.findByResources(resourcesList).isEmpty()
+                && resourceAllocationDAO.findAllocationsRelatedToAnyOf(
+                        scenarioManager.getCurrent(), resourcesList).isEmpty();
     }
 
     @Override

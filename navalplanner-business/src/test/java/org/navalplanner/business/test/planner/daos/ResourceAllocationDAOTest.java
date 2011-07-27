@@ -265,6 +265,7 @@ public class ResourceAllocationDAOTest {
 
     @Test
     public void testFindAllocationsRelatedToResourcesWithDateFilter() {
+        Scenario current = scenarioManager.getCurrent();
         ResourceAllocation<?> resourceAllocation1 = createValidSpecificResourceAllocation();
         resourceAllocationDAO.save(resourceAllocation1);
 
@@ -274,19 +275,23 @@ public class ResourceAllocationDAOTest {
                 .getEndAsLocalDate();
         List<Resource> resources = resourceAllocation1.getAssociatedResources();
 
-        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(
+                current, resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 
         intervalEndDate = intervalInitDate;
         intervalInitDate = intervalInitDate.minusMonths(1);
-        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(current,
+                resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 
         intervalEndDate = intervalEndDate.minusMonths(1);
-        assertFalse(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+        assertFalse(resourceAllocationDAO.findAllocationsRelatedToAnyOf(
+                current, resources,
                 intervalInitDate, intervalEndDate).contains(resourceAllocation1));
 
-        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(resources,
+        assertTrue(resourceAllocationDAO.findAllocationsRelatedToAnyOf(current,
+                resources,
                 intervalInitDate, null).contains(resourceAllocation1));
   }
 }

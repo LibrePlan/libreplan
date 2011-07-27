@@ -63,6 +63,7 @@ import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
+import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -160,6 +161,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
      */
     List<Criterion> allCriteriaList;
 
+    private Scenario getCurrentScenario() {
+        if (filterBy != null) {
+            return filterBy.getCurrentScenario();
+        }
+        return scenarioManager.getCurrent();
+    }
+
     @Override
     @Transactional(readOnly = true)
     public void initGlobalView(boolean filterByResources) {
@@ -246,7 +254,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
             // reattaching criterions so the query returns the same criteria as
             // keys
             allCriteriaList = new ArrayList<Criterion>(criteriaToShowList);
-            return withAssociatedSpecific(findAllocationsGroupedByCriteria(criteriaToShowList));
+            return withAssociatedSpecific(findAllocationsGroupedByCriteria(
+                    scenarioManager.getCurrent(), criteriaToShowList));
         }
         Map<Criterion, List<GenericResourceAllocation>> result = findAllocationsByCriterion();
         allCriteriaList = Criterion.sortByInclusionTypeAndName(result.keySet());
@@ -263,7 +272,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
         if (filter()) {
             List<Task> tasks = justTasks(filterBy.getOrder()
                     .getAllChildrenAssociatedTaskElements());
-            return findAllocationsGroupedByCriteria(getCriterionsOn(tasks));
+            return findAllocationsGroupedByCriteria(getCurrentScenario(),
+                    getCriterionsOn(tasks));
         } else {
             return findAllocationsGroupedByCriteria();
         }
@@ -274,9 +284,10 @@ public class ResourceLoadModel implements IResourceLoadModel {
     }
 
     private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria(
+            Scenario onScenario,
             List<Criterion> relatedWith) {
         Map<Criterion, List<GenericResourceAllocation>> result = resourceAllocationDAO
-                .findGenericAllocationsBySomeCriterion(relatedWith,
+                .findGenericAllocationsBySomeCriterion(onScenario, relatedWith,
                         asDate(initDateFilter), asDate(endDateFilter));
         return doReplacementsIfNeeded(result,
                 and(onInterval(), new RelatedWithAnyOf(relatedWith)));
@@ -285,6 +296,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
     private Map<Criterion, List<GenericResourceAllocation>> findAllocationsGroupedByCriteria() {
         return doReplacementsIfNeeded(
                 resourceAllocationDAO.findGenericAllocationsByCriterion(
+                        getCurrentScenario(),
                         asDate(initDateFilter), asDate(endDateFilter)),
                 onInterval());
     }
@@ -316,7 +328,8 @@ public class ResourceLoadModel implements IResourceLoadModel {
             List<ResourceAllocation<?>> both = new ArrayList<ResourceAllocation<?>>();
             both.addAll(each.getValue());
             both.addAll(doReplacementsIfNeeded(resourceAllocationDAO
-                    .findSpecificAllocationsRelatedTo(each.getKey(),
+                    .findSpecificAllocationsRelatedTo(getCurrentScenario(),
+                            each.getKey(),
                             asDate(initDateFilter), asDate(endDateFilter)),
                     and(onInterval(), specificRelatedTo(each.getKey()))));
             result.put(each.getKey(), both);
@@ -680,6 +693,7 @@ public class ResourceLoadModel implements IResourceLoadModel {
             map.put(resource, ResourceAllocation
                     .sortedByStartDate(doReplacementsIfNeeded(
                             resourceAllocationDAO.findAllocationsRelatedTo(
+                                    getCurrentScenario(),
                                     resource, initDateFilter, endDateFilter),
                             and(onInterval(), relatedToResource(resource)))));
         }
