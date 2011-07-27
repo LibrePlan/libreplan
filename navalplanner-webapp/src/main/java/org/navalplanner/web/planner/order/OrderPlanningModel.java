@@ -1526,6 +1526,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         private void updateAndRefresh() {
+            if (planningState.isEmpty()) {
+                return;
+            }
             update();
             refresh();
         }
