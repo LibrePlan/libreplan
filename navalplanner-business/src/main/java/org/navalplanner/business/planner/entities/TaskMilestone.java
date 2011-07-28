@@ -79,7 +79,7 @@ public class TaskMilestone extends TaskElement implements ITaskPositionConstrain
 
     @Override
     public List<TaskElement> getChildren() {
-        throw new UnsupportedOperationException();
+        return Collections.emptyList();
     }
 
     public CalculatedValue getCalculatedValue() {

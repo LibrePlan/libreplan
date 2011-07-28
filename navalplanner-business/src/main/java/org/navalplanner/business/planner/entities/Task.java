@@ -196,7 +196,7 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
 
     @Override
     public List<TaskElement> getChildren() {
-        throw new UnsupportedOperationException();
+        return Collections.emptyList();
     }
 
     public Set<ResourceAllocation<?>> getSatisfiedResourceAllocations() {
