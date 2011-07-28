@@ -756,7 +756,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                     allocationInput.getAggregate());
         }
         try {
-            Messagebox.show(_("Advanced assignment saved"), _("Information"),
+            Messagebox.show(_("Changes applied"), _("Information"),
                     Messagebox.OK, Messagebox.INFORMATION);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

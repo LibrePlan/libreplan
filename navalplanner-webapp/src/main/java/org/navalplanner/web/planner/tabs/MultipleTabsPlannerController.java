@@ -25,18 +25,13 @@ import static org.zkoss.ganttz.adapters.TabsConfiguration.configure;
 
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.daos.IResourceDAO;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
-import org.navalplanner.business.scenarios.IScenarioManager;
 import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
 import org.navalplanner.web.common.entrypoints.URLHandlerRegistry;
@@ -47,6 +42,7 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBac
 import org.navalplanner.web.planner.company.CompanyPlanningController;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.order.OrderPlanningController;
+import org.navalplanner.web.planner.order.PlanningStateCreator;
 import org.navalplanner.web.planner.tabs.Mode.ModeTypeChangedListener;
 import org.navalplanner.web.resourceload.ResourceLoadController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -135,14 +131,14 @@ public class MultipleTabsPlannerController implements Composer,
 
     private Mode mode = Mode.initial();
 
-    @Resource
-    private IGlobalViewEntryPoints globalView;
-
     @Autowired
     private CompanyPlanningController companyPlanningController;
 
     @Autowired
     private OrderCRUDController orderCRUDController;
+
+    @Autowired
+    private PlanningStateCreator planningStateCreator;
 
     private TabWithLoadingFeedback planningTab;
 
@@ -185,12 +181,6 @@ public class MultipleTabsPlannerController implements Composer,
     private IOrderDAO orderDAO;
 
     @Autowired
-    private ITaskElementDAO taskElementDAO;
-
-    @Autowired
-    private IResourceDAO resourceDAO;
-
-    @Autowired
     private IResourcesSearcher resourcesSearcher;
 
     @Autowired
@@ -198,9 +188,6 @@ public class MultipleTabsPlannerController implements Composer,
 
     @Autowired
     private URLHandlerRegistry registry;
-
-    @Autowired
-    private IScenarioManager scenarioManager;
 
     private TabsConfiguration buildTabsConfiguration() {
 
@@ -270,9 +257,8 @@ public class MultipleTabsPlannerController implements Composer,
 
         final State<Void> typeChanged = typeChangedState();
         advancedAllocationTab = doFeedbackOn(AdvancedAllocationTabCreator
-                .create(mode, transactionService, orderDAO, taskElementDAO,
-                        resourceDAO, scenarioManager.getCurrent(),
-                        returnToPlanningTab(), breadcrumbs, globalView));
+                .create(mode, transactionService, planningStateCreator,
+                        returnToPlanningTab(), breadcrumbs));
 
         TabsConfiguration tabsConfiguration = TabsConfiguration.create()
             .add(tabWithNameReloading(planningTab, typeChanged))

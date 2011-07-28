@@ -40,7 +40,7 @@
                 if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
             <button label="${i18n:_('Cancel')}" id="cancelButton" class="cancel-button global-action"
                 if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
-            <button image="/common/img/ico_save.png" tooltiptext="${i18n:_('Accept')}" id="saveButton" class="planner-command"
+            <button image="/common/img/ico_ok.png" tooltiptext="${i18n:_('Accept')}" id="saveButton" class="planner-command"
                 if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}" />
             <separator/>
             <label>${i18n:_('Zoom level')}:</label>

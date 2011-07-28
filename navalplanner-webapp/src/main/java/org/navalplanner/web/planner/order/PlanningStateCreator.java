@@ -492,6 +492,8 @@ public class PlanningStateCreator {
 
         public abstract List<TaskElement> getInitial();
 
+        public abstract List<Task> getAllTasks();
+
         public abstract void reassociateResourcesWithSession();
 
         public abstract Collection<? extends TaskElement> getToRemove();
@@ -667,6 +669,11 @@ public class PlanningStateCreator {
             return true;
         }
 
+        @Override
+        public List<Task> getAllTasks() {
+            return Collections.emptyList();
+        }
+
     }
 
     private class WithDataPlanningState extends PlanningState {
@@ -710,6 +717,23 @@ public class PlanningStateCreator {
         @Override
         public Collection<? extends TaskElement> getTasksToSave() {
             return Collections.unmodifiableCollection(toSave);
+        }
+
+        @Override
+        public List<Task> getAllTasks() {
+            List<Task> result = new ArrayList<Task>();
+            findTasks(rootTask, result);
+            return result;
+        }
+
+        private void findTasks(TaskElement taskElement, List<Task> result) {
+            if (taskElement instanceof Task) {
+                Task t = (Task) taskElement;
+                result.add(t);
+            }
+            for (TaskElement each : taskElement.getChildren()) {
+                findTasks(each, result);
+            }
         }
 
         @Override

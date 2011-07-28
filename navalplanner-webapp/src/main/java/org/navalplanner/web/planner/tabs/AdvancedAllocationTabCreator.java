@@ -26,38 +26,21 @@ import static org.navalplanner.web.planner.tabs.MultipleTabsPlannerController.ge
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
-import org.navalplanner.business.common.Registry;
-import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
-import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.daos.ITaskElementDAO;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.CalculatedValue;
-import org.navalplanner.business.planner.entities.DayAssignment;
-import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.planner.entities.consolidations.Consolidation;
-import org.navalplanner.business.resources.daos.IResourceDAO;
-import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.web.calendars.BaseCalendarModel;
-import org.navalplanner.web.common.concurrentdetection.ConcurrentModificationHandling;
-import org.navalplanner.web.common.entrypoints.EntryPointsHandler;
-import org.navalplanner.web.common.entrypoints.EntryPointsHandler.ICapture;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.AllocationInput;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IAdvanceAllocationResultReceiver;
@@ -65,7 +48,8 @@ import org.navalplanner.web.planner.allocation.AdvancedAllocationController.IBac
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction;
 import org.navalplanner.web.planner.allocation.AdvancedAllocationController.Restriction.IRestrictionSource;
 import org.navalplanner.web.planner.allocation.AllocationResult;
-import org.navalplanner.web.planner.order.OrderPlanningModel;
+import org.navalplanner.web.planner.order.PlanningStateCreator;
+import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 import org.navalplanner.web.planner.tabs.CreatedOnDemandTab.IComponentCreator;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
@@ -88,48 +72,16 @@ public class AdvancedAllocationTabCreator {
         private final AggregateOfResourceAllocations aggregate;
         private AllocationResult allocationResult;
         private final Task task;
-        private Set<Resource> associatedResources;
-        private final Scenario currentScenario;
+        private final PlanningState planningState;
 
-        private final String retryPage;
-
-        public ResultReceiver(Scenario currentScenario, final Order order,
+        public ResultReceiver(PlanningState planningState,
                 Task task) {
-            this.currentScenario = currentScenario;
+            this.planningState = planningState;
             this.calculatedValue = task.getCalculatedValue();
-            this.allocationResult = AllocationResult.createCurrent(currentScenario, task);
+            this.allocationResult = AllocationResult.createCurrent(
+                    planningState.getCurrentScenario(), task);
             this.aggregate = this.allocationResult.getAggregate();
             this.task = task;
-            this.associatedResources = getAssociatedResources(task);
-            this.retryPage = EntryPointsHandler.capturePath(new ICapture() {
-                @Override
-                public void capture() {
-                    globalViewEntryPoints.goToAdvancedAllocation(order);
-                }
-            });
-            reattachResources();
-            loadNeededDataOfTask();
-        }
-
-        private void loadNeededDataOfTask() {
-            BaseCalendarModel.forceLoadBaseCalendar(task.getCalendar());
-            loadConsolidationRelatedData(task);
-        }
-
-        private void loadConsolidationRelatedData(Task task) {
-            Consolidation consolidation = task.getConsolidation();
-            if (consolidation != null) {
-                consolidation.getConsolidatedValues().size();
-            }
-        }
-
-        private Set<Resource> getAssociatedResources(Task task) {
-            Set<Resource> result = new HashSet<Resource>();
-            for (ResourceAllocation<?> resourceAllocation : task
-                    .getSatisfiedResourceAllocations()) {
-                result.addAll(resourceAllocation.getAssociatedResources());
-            }
-            return result;
         }
 
         @Override
@@ -183,128 +135,92 @@ public class AdvancedAllocationTabCreator {
         public void accepted(AggregateOfResourceAllocations modifiedAllocations) {
             Validate
                     .isTrue(allocationResult.getAggregate() == modifiedAllocations);
-            IAdHocTransactionService withConcurrencyHandling = ConcurrentModificationHandling
-                    .addHandling(retryPage,
-                    IAdHocTransactionService.class, adHocTransactionService);
-
-            withConcurrencyHandling
-                    .runOnTransaction(new IOnTransaction<Void>() {
-
-                        @Override
-                        public Void execute() {
-                            reattachResources();
-                            applyChanges();
-                            return null;
-                        }
-                    });
-        }
-
-        public AggregateOfResourceAllocations getAggregate() {
-            return aggregate;
-        }
-
-        private void reattachResources() {
-            for (Resource each : associatedResources) {
-                resourceDAO.reattach(each);
-            }
-            OrderPlanningModel.loadRequiredDataFor(associatedResources);
-            for (Resource each : associatedResources) {
-                loadDayAssignments(each.getAssignments());
-            }
-        }
-
-        private void loadDayAssignments(List<DayAssignment> assignments) {
-            for (DayAssignment each : assignments) {
-                Hibernate.initialize(each);
-            }
-        }
-
-        private void applyChanges() {
-            taskElementDAO.reattach(task);
-            allocationResult.applyTo(currentScenario, task);
-            taskElementDAO.save(task);
-            makeNewAssignmentsDontPoseAsTransient(task);
+            allocationResult.applyTo(planningState.getCurrentScenario(), task);
             updateParentsPositions(task);
-        }
-
-        private void makeNewAssignmentsDontPoseAsTransient(TaskElement task) {
-            for (DayAssignment each : task.getDayAssignments()) {
-                each.dontPoseAsTransientObjectAnymore();
-            }
         }
 
         private void updateParentsPositions(TaskElement task) {
             TaskGroup current = task.getParent();
             while (current != null) {
                 current.fitStartAndEndDatesToChildren();
-                taskElementDAO.save(current);
                 current = current.getParent();
             }
+        }
+
+        public AggregateOfResourceAllocations getAggregate() {
+            return aggregate;
         }
     }
 
     private final String ADVANCED_ALLOCATION_VIEW = _("Advanced Allocation");
     private final Mode mode;
     private final IAdHocTransactionService adHocTransactionService;
-    private final IOrderDAO orderDAO;
     private AdvancedAllocationController advancedAllocationController;
     private final IBack onBack;
-    private final ITaskElementDAO taskElementDAO;
-
-    private final IResourceDAO resourceDAO;
-    private final Scenario currentScenario;
+    private final PlanningStateCreator planningStateCreator;
     private final Component breadcrumbs;
-    private final IGlobalViewEntryPoints globalViewEntryPoints;
 
     public static ITab create(final Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
+            PlanningStateCreator planningStateCreator, IBack onBack,
+            Component breadcrumbs) {
         return new AdvancedAllocationTabCreator(mode, adHocTransactionService,
-                orderDAO, taskElementDAO, resourceDAO, currentScenario, onBack,
-                breadcrumbs, globalViewEntryPoints).build();
+                planningStateCreator, onBack, breadcrumbs).build();
     }
 
     private AdvancedAllocationTabCreator(Mode mode,
             IAdHocTransactionService adHocTransactionService,
-            IOrderDAO orderDAO, ITaskElementDAO taskElementDAO,
-            IResourceDAO resourceDAO, Scenario currentScenario, IBack onBack,
-            Component breadcrumbs, IGlobalViewEntryPoints globalViewEntryPoints) {
+            PlanningStateCreator planningStateCreator, IBack onBack,
+            Component breadcrumbs) {
         Validate.notNull(mode);
         Validate.notNull(adHocTransactionService);
-        Validate.notNull(orderDAO);
-        Validate.notNull(resourceDAO);
         Validate.notNull(onBack);
-        Validate.notNull(currentScenario);
+        Validate.notNull(planningStateCreator);
         Validate.notNull(breadcrumbs);
-        Validate.notNull(globalViewEntryPoints);
         this.adHocTransactionService = adHocTransactionService;
-        this.orderDAO = orderDAO;
         this.mode = mode;
         this.onBack = onBack;
-        this.taskElementDAO = taskElementDAO;
-        this.resourceDAO = resourceDAO;
-        this.currentScenario = currentScenario;
+        this.planningStateCreator = planningStateCreator;
         this.breadcrumbs = breadcrumbs;
-        this.globalViewEntryPoints = globalViewEntryPoints;
+    }
+
+    private class AdvanceAssignmentCreator implements IComponentCreator {
+
+        private PlanningState planningState;
+
+        @Override
+        public Component create(final Component parent) {
+            return adHocTransactionService
+                    .runOnReadOnlyTransaction(new IOnTransaction<Component>() {
+                        @Override
+                        public Component execute() {
+                            planningState = createPlanningState(parent,
+                                    mode.getOrder());
+                            return createComponent(parent, planningState);
+                        }
+
+                        private PlanningState createPlanningState(
+                                final Component parent, Order order) {
+                            return planningStateCreator.retrieveOrCreate(
+                                    parent.getDesktop(), order);
+                        }
+
+                    });
+        }
+
+        public PlanningState getState() {
+            if (planningState == null) {
+                throw new IllegalStateException(
+                        "the planningState has not been created yet");
+            }
+            return planningState;
+        }
+
     }
 
     private ITab build() {
-        IComponentCreator advanceAllocationComponentCreator = new IComponentCreator() {
-            @Override
-            public Component create(final Component parent) {
-                return adHocTransactionService
-                        .runOnReadOnlyTransaction(new IOnTransaction<Component>() {
-                            @Override
-                            public Component execute() {
-                                return createComponent(parent);
-                            }
+        final AdvanceAssignmentCreator advanceAllocationComponentCreator = new AdvanceAssignmentCreator();
 
-                        });
-            }
-
-        };
         return new CreatedOnDemandTab(ADVANCED_ALLOCATION_VIEW,
                 "advanced-allocation",
                 advanceAllocationComponentCreator) {
@@ -329,7 +245,8 @@ public class AdvancedAllocationTabCreator {
 
                             @Override
                             public Void execute() {
-                                resetController();
+                                resetController(advanceAllocationComponentCreator
+                                        .getState());
                                 return null;
                             }
                         });
@@ -337,74 +254,50 @@ public class AdvancedAllocationTabCreator {
         };
     }
 
-    private Component createComponent(final Component parent) {
-        Order order = mode.getOrder();
+    private Component createComponent(final Component parent,
+            PlanningState planningState) {
         return Executions.createComponents("advance_allocation.zul", parent,
-                argsWithController(order));
+                argsWithController(planningState));
     }
 
-    private Map<String, Object> argsWithController(Order order) {
+
+    private Map<String, Object> argsWithController(PlanningState planningState) {
         Map<String, Object> result = new HashMap<String, Object>();
         advancedAllocationController = new AdvancedAllocationController(onBack,
-                createAllocationInputsFor(order));
-        result
-                .put("advancedAllocationController",
-                        advancedAllocationController);
+                createAllocationInputsFor(planningState));
+        result.put("advancedAllocationController", advancedAllocationController);
         return result;
     }
 
-    private Order reload(Order order) {
-        try {
-            return orderDAO.find(order.getId());
-        } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private List<AllocationInput> createAllocationInputsFor(Order order) {
-        Order orderReloaded = reload(order);
-        orderReloaded.useSchedulingDataFor(currentScenario);
-        return createAllocationsWithOrderReloaded(orderReloaded);
+    private List<AllocationInput> createAllocationInputsFor(
+            PlanningState planningState) {
+        planningState.reattach();
+        planningState.reassociateResourcesWithSession();
+        return createAllocationsWithOrderReloaded(planningState);
     }
 
     private List<AllocationInput> createAllocationsWithOrderReloaded(
-            Order orderReloaded) {
+            PlanningState planningState) {
+        List<Task> allTasks = planningState.getAllTasks();
         List<AllocationInput> result = new ArrayList<AllocationInput>();
-        for (TaskElement taskElement : orderReloaded.getTaskElements()) {
-            addAllocations(orderReloaded, result, taskElement);
-            if (taskElement instanceof Task) {
-                Task t = (Task) taskElement;
-                result.add(createAllocationInputFor(orderReloaded, t));
+        for (Task each : allTasks) {
+            if (each.hasSomeSatisfiedAllocation()) {
+                result.add(createAllocationInputFor(planningState, each));
             }
         }
         return result;
     }
 
-    private void addAllocations(Order order,
-            List<AllocationInput> result, TaskElement taskElement) {
-        if (taskElement instanceof Task
-                && ((Task) taskElement).hasSomeSatisfiedAllocation()) {
-            result.add(createAllocationInputFor(order, (Task) taskElement));
-        }
-        if (!taskElement.isLeaf()) {
-            for (TaskElement each : taskElement.getChildren()) {
-                addAllocations(order, result, each);
-            }
-        }
-    }
-
-    private AllocationInput createAllocationInputFor(Order order, Task task) {
-        Scenario currentScenario = Registry.getScenarioManager().getCurrent();
-        ResultReceiver resultReceiver = new ResultReceiver(currentScenario,
-                order, task);
+    private AllocationInput createAllocationInputFor(
+            PlanningState planningState, Task task) {
+        ResultReceiver resultReceiver = new ResultReceiver(planningState, task);
         return new AllocationInput(resultReceiver.getAggregate(), task,
                 resultReceiver);
     }
 
-    private void resetController() {
-        Order order = mode.getOrder();
+    private void resetController(PlanningState planningState) {
         advancedAllocationController.reset(onBack,
-                createAllocationInputsFor(order));
+                createAllocationInputsFor(planningState));
     }
 
 }
