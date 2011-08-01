@@ -38,7 +38,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>callbackServlet</servlet-name>
-        <url-pattern>callback/*</url-pattern>
+        <url-pattern>/callback/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>dspLoader</servlet-name>
