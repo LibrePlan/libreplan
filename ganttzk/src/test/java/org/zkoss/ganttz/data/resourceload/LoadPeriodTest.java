@@ -71,9 +71,9 @@ public class LoadPeriodTest {
                 assignedHours, correctLoadLevel());
     }
 
-    private static final int totalHours = 100;
+    private static final String totalHours = "100";
 
-    private static final int assignedHours = 40;
+    private static final String assignedHours = "40";
 
     private static LoadLevel correctLoadLevel() {
         return new LoadLevel(40);

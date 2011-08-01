@@ -205,7 +205,8 @@ abstract class LoadPeriodGenerator {
         EffortDuration totalEffort = getTotalAvailableEffort();
         EffortDuration effortAssigned = getEffortAssigned();
         return new LoadPeriod(asGantt(start), asGantt(end),
-                totalEffort.roundToHours(), effortAssigned.roundToHours(),
+                totalEffort.toFormattedString(),
+                effortAssigned.toFormattedString(),
                 new LoadLevel(calculateLoadPercentage(totalEffort,
                         effortAssigned)));
     }
