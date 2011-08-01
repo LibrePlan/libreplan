@@ -29,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
@@ -38,8 +36,8 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.MenuBuilder;
-import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.MenuBuilder.ItemAction;
+import org.zkoss.ganttz.util.WeakReferencedListeners;
 import org.zkoss.ganttz.util.WeakReferencedListeners.IListenerNotification;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -209,10 +207,8 @@ public class ResourceLoadComponent extends XulElement {
 
     private static int getWidthPixels(IDatesMapper datesMapper,
             LoadPeriod loadPeriod) {
-        LocalDate start = loadPeriod.getStart();
-        LocalDate end = loadPeriod.getEnd();
-        return datesMapper.toPixels(new Duration(
-                start.toDateTimeAtStartOfDay(), end.toDateTimeAtStartOfDay()));
+        return Math.max(loadPeriod.getEnd().toPixels(datesMapper)
+                - getStartPixels(datesMapper, loadPeriod), 0);
     }
 
     private static String forCSS(int pixels) {
@@ -221,7 +217,7 @@ public class ResourceLoadComponent extends XulElement {
 
     private static int getStartPixels(IDatesMapper datesMapper,
             LoadPeriod loadPeriod) {
-        return datesMapper.toPixels(loadPeriod.getStart());
+        return loadPeriod.getStart().toPixels(datesMapper);
     }
 
     protected void renderProperties(ContentRenderer renderer) throws IOException{

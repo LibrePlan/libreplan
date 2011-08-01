@@ -24,18 +24,17 @@ package org.zkoss.ganttz.data.resourceload;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.Validate;
-import org.joda.time.LocalDate;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.util.Interval;
 
 public class LoadTimeLine {
 
     @SuppressWarnings("unchecked")
-    private static final Comparator<LocalDate> nullSafeComparator = ComparatorUtils
+    private static final Comparator<GanttDate> nullSafeComparator = ComparatorUtils
             .nullLowComparator(ComparatorUtils.naturalComparator());
 
     public static Comparator<LoadTimeLine> byStartAndEndDate() {
@@ -120,7 +119,7 @@ public class LoadTimeLine {
         return loadPeriods.get(loadPeriods.size() - 1);
     }
 
-    public LocalDate getStartPeriod() {
+    public GanttDate getStartPeriod() {
         if (isEmpty()) {
             return null;
         }
@@ -131,7 +130,7 @@ public class LoadTimeLine {
         return loadPeriods.isEmpty();
     }
 
-    public LocalDate getEndPeriod() {
+    public GanttDate getEndPeriod() {
         if (isEmpty()) {
             return null;
         }
@@ -144,22 +143,18 @@ public class LoadTimeLine {
 
     public static Interval getIntervalFrom(List<LoadTimeLine> timeLines) {
         Validate.notEmpty(timeLines);
-        LocalDate start = null;
-        LocalDate end = null;
+        GanttDate start = null;
+        GanttDate end = null;
         for (LoadTimeLine loadTimeLine : timeLines) {
             Validate.notNull(loadTimeLine.getStart());
             start = min(start, loadTimeLine.getStart());
             Validate.notNull(loadTimeLine.getEnd());
             end = max(end, loadTimeLine.getEnd());
         }
-        return new Interval(toDate(start), toDate(end));
+        return new Interval(start.toLocalDate(), end.asExclusiveEnd());
     }
 
-    private static Date toDate(LocalDate localDate) {
-        return localDate.toDateTimeAtStartOfDay().toDate();
-    }
-
-    private static LocalDate max(LocalDate one, LocalDate other) {
+    private static GanttDate max(GanttDate one, GanttDate other) {
         if (one == null) {
             return other;
         }
@@ -169,7 +164,7 @@ public class LoadTimeLine {
         return one.compareTo(other) > 0 ? one : other;
     }
 
-    private static LocalDate min(LocalDate one, LocalDate other) {
+    private static GanttDate min(GanttDate one, GanttDate other) {
         if (one == null) {
             return other;
         }
@@ -196,24 +191,25 @@ public class LoadTimeLine {
         return result;
     }
 
-    public LocalDate getStart() {
-        LocalDate result = getStartPeriod();
+    public GanttDate getStart() {
+        GanttDate result = getStartPeriod();
         for (LoadTimeLine loadTimeLine : getChildren()) {
-            LocalDate start = loadTimeLine.getStart();
+            GanttDate start = loadTimeLine.getStart();
             if (start != null) {
-            result = result == null || result.compareTo(start) > 0 ? start
-                    : result;
+                result = result == null || result.compareTo(start) > 0 ? start
+                        : result;
             }
         }
         return result;
     }
 
-    public LocalDate getEnd() {
-        LocalDate result = getEndPeriod();
+    public GanttDate getEnd() {
+        GanttDate result = getEndPeriod();
         for (LoadTimeLine loadTimeLine : getChildren()) {
-            LocalDate end = loadTimeLine.getEnd();
+            GanttDate end = loadTimeLine.getEnd();
             if (end != null) {
-            result = result == null || result.compareTo(end) < 0 ? end : result;
+                result = result == null || result.compareTo(end) < 0 ? end
+                        : result;
             }
         }
         return result;
