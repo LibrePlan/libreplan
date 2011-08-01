@@ -48,6 +48,7 @@ import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.util.deepcopy.OnCopy;
 import org.navalplanner.business.util.deepcopy.Strategy;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.business.workingday.ResourcesPerDay;
 
@@ -365,8 +366,8 @@ public class GenericResourceAllocation extends
 
     @Override
     public EffortDuration getAssignedEffort(Criterion criterion,
-            LocalDate start, LocalDate endExclusive) {
-        return super.getAssignedDuration(start, endExclusive);
+            IntraDayDate startInclusive, IntraDayDate endExclusive) {
+        return super.getAssignedDuration(startInclusive, endExclusive);
     }
 
     public IEffortDistributor<GenericDayAssignment> createEffortDistributor(

@@ -1311,8 +1311,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             EffortDuration incrementWorkable = getAllocationCalendar()
                     .asDurationOn(day, ONE_RESOURCE_PER_DAY);
             sumWorkableEffort = sumWorkableEffort.plus(incrementWorkable);
-            sumTotalEffort = sumTotalEffort
-                    .plus(getAssignedDuration(assignmentsAtDay));
+            sumTotalEffort = sumTotalEffort.plus(sumDuration(assignmentsAtDay));
         }
         if (sumWorkableEffort.equals(zero())) {
             return ResourcesPerDay.amount(0);
@@ -1924,20 +1923,32 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     public int getAssignedHours(final Resource resource, LocalDate start,
             LocalDate endExclusive) {
-        return getAssignedEffort(resource, start, endExclusive).roundToHours();
+        return getAssignedEffort(resource, IntraDayDate.create(start, zero()),
+                IntraDayDate.create(endExclusive, zero())).roundToHours();
     }
 
     public EffortDuration getAssignedEffort(final Resource resource,
-            LocalDate start, LocalDate endExclusive) {
-        return getAssignedDuration(
-                filter(getAssignments(start, endExclusive),
+            IntraDayDate start, IntraDayDate endExclusive) {
+        List<DayAssignment> assignments = getAssingments(resource,
+                start.getDate(), endExclusive.asExclusiveEnd());
+        return getAssignedDuration(assignments, start, endExclusive);
+    }
+
+    private List<DayAssignment> getAssingments(final Resource resource,
+            LocalDate startInclusive, LocalDate endExclusive) {
+        return filter(getAssignments(startInclusive, endExclusive),
                         new PredicateOnDayAssignment() {
                             @Override
                             public boolean satisfiedBy(
                                     DayAssignment dayAssignment) {
                                 return dayAssignment.isAssignedTo(resource);
                             }
-                }));
+                });
+    }
+
+    public List<DayAssignment> getAssignments(IntraDayDate start,
+            IntraDayDate endExclusive) {
+        return getAssignments(start.getDate(), endExclusive.asExclusiveEnd());
     }
 
     public List<DayAssignment> getAssignments(LocalDate start,
@@ -1947,12 +1958,12 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
     }
 
     public int getAssignedHours(LocalDate start, LocalDate endExclusive) {
-        return getAssignedDuration(start, endExclusive).roundToHours();
+        return getAssignedDuration(IntraDayDate.create(start, zero()),
+                IntraDayDate.create(endExclusive, zero())).roundToHours();
     }
 
     public abstract EffortDuration getAssignedEffort(Criterion criterion,
-            LocalDate start,
-            LocalDate endExclusive);
+            IntraDayDate startInclusive, IntraDayDate endExclusive);
 
     private List<DayAssignment> filter(List<DayAssignment> assignments,
             PredicateOnDayAssignment predicate) {
@@ -1965,19 +1976,58 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         return result;
     }
 
-    protected EffortDuration getAssignedDuration(LocalDate startInclusive,
-            LocalDate endExclusive) {
-        return getAssignedDuration(getAssignments(startInclusive, endExclusive));
+    protected EffortDuration getAssignedDuration(IntraDayDate startInclusive,
+            IntraDayDate endExclusive) {
+        return getAssignedDuration(
+                getAssignments(startInclusive, endExclusive), startInclusive,
+                endExclusive);
+    }
+
+    private EffortDuration sumDuration(
+            Collection<? extends DayAssignment> assignments) {
+        return EffortDuration.sum(assignments,
+                new IEffortFrom<DayAssignment>() {
+
+                    @Override
+                    public EffortDuration from(DayAssignment each) {
+                        return each.getDuration();
+                    }
+                });
     }
 
     private EffortDuration getAssignedDuration(
-            List<? extends DayAssignment> assignments) {
+            List<? extends DayAssignment> assignments,
+            final IntraDayDate startInclusive, final IntraDayDate endExclusive) {
+
         return EffortDuration.sum(assignments,
                 new IEffortFrom<DayAssignment>() {
 
                     @Override
                     public EffortDuration from(DayAssignment value) {
-                        return value.getDuration();
+                        PartialDay partial = getPartialDay(value,
+                                startInclusive, endExclusive);
+                        return partial.limitWorkingDay(value.getDuration());
+                    }
+
+                    private PartialDay getPartialDay(DayAssignment assignment,
+                            IntraDayDate startInclusive,
+                            IntraDayDate endExclusive) {
+
+                        LocalDate assignmentDay = assignment.getDay();
+                        LocalDate startDate = startInclusive.getDate();
+                        LocalDate endDate = endExclusive.getDate();
+
+                        PartialDay result = PartialDay.wholeDay(assignment
+                                .getDay());
+                        if (assignmentDay.equals(startDate)) {
+                            result = new PartialDay(startInclusive, result
+                                    .getEnd());
+                        }
+                        if (assignmentDay.equals(endDate)) {
+                            result = new PartialDay(result.getStart(),
+                                    endExclusive);
+                        }
+                        return result;
                     }
                 });
     }

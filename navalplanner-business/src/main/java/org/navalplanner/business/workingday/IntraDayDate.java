@@ -467,4 +467,13 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
         }
     }
 
+    public static IntraDayDate convert(LocalDate date,
+            IntraDayDate morePreciseAlternative) {
+        LocalDate morePreciseDate = morePreciseAlternative.getDate();
+        if (morePreciseDate.equals(date)) {
+            return morePreciseAlternative;
+        }
+        return startOfDay(date);
+    }
+
 }

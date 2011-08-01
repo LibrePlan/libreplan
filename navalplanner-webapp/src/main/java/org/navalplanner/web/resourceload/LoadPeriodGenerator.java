@@ -286,8 +286,7 @@ class LoadPeriodGeneratorOnResource extends LoadPeriodGenerator {
     @Override
     protected EffortDuration getAssignedEffortFor(
             ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getAssignedEffort(resource, start.getDate(),
-                end.asExclusiveEnd());
+        return resourceAllocation.getAssignedEffort(resource, start, end);
     }
 
     @Override
@@ -332,8 +331,7 @@ class LoadPeriodGeneratorOnCriterion extends LoadPeriodGenerator {
     @Override
     protected EffortDuration getAssignedEffortFor(
             ResourceAllocation<?> resourceAllocation) {
-        return resourceAllocation.getAssignedEffort(criterion, start.getDate(),
-                end.asExclusiveEnd());
+        return resourceAllocation.getAssignedEffort(criterion, start, end);
     }
 
     @Override

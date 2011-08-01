@@ -21,6 +21,8 @@
 
 package org.navalplanner.business.planner.entities;
 
+import static org.navalplanner.business.workingday.EffortDuration.zero;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -116,6 +118,12 @@ public class AggregateOfResourceAllocations {
 
     public EffortDuration effortBetween(final LocalDate startInclusive,
             final LocalDate endExclusive) {
+        return effortBetween(IntraDayDate.create(startInclusive, zero()),
+                IntraDayDate.create(endExclusive, zero()));
+    }
+
+    public EffortDuration effortBetween(final IntraDayDate startInclusive,
+            final IntraDayDate endExclusive) {
         return EffortDuration.sum(resourceAllocations,
                 new IEffortFrom<ResourceAllocation<?>>() {
 

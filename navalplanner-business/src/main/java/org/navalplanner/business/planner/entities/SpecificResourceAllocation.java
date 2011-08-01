@@ -375,18 +375,20 @@ public class SpecificResourceAllocation extends
 
     @Override
     public EffortDuration getAssignedEffort(Criterion criterion,
-            LocalDate startInclusive,
-            LocalDate endExclusive) {
-        return EffortDuration
-                .sum(getIntervalsRelatedWith(criterion, startInclusive,
-                        endExclusive), new IEffortFrom<Interval>() {
+            final IntraDayDate startInclusive, final IntraDayDate endExclusive) {
+
+        return EffortDuration.sum(
+                getIntervalsRelatedWith(criterion, startInclusive.getDate(),
+                        endExclusive.asExclusiveEnd()),
+                new IEffortFrom<Interval>() {
 
                     @Override
                     public EffortDuration from(Interval each) {
                         FixedPoint intervalStart = (FixedPoint) each.getStart();
                         FixedPoint intervalEnd = (FixedPoint) each.getEnd();
-                        return getAssignedDuration(intervalStart.getDate(),
-                                intervalEnd.getDate());
+                        return getAssignedDuration(
+                                IntraDayDate.convert(intervalStart.getDate(), startInclusive),
+                                IntraDayDate.convert(intervalEnd.getDate(), endExclusive));
                     }
                 });
     }
