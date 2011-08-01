@@ -74,6 +74,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
@@ -1039,22 +1040,25 @@ class PeriodsBuilder {
             Date startDateFilter, Date endDateFilter) {
         List<LoadPeriod> list = new PeriodsBuilder(factory, sortedByStartDate).buildPeriods();
         List<LoadPeriod> toReturn = new ArrayList<LoadPeriod>();
-        for(LoadPeriod loadPeriod : list) {
-            LocalDate finalStartDate = loadPeriod.getStart();
-            LocalDate finalEndDate = loadPeriod.getEnd();
-            if(startDateFilter != null) {
-                LocalDate startDateFilterLocalDate = new LocalDate(startDateFilter.getTime());
-                if(finalStartDate.compareTo(startDateFilterLocalDate) < 0) {
-                    finalStartDate = startDateFilterLocalDate;
-                }
+        for (LoadPeriod loadPeriod : list) {
+
+            final GanttDate finalStartDate;
+            if (startDateFilter != null) {
+                finalStartDate = GanttDate.max(GanttDate
+                        .createFrom(new LocalDate(startDateFilter.getTime())),
+                        loadPeriod.getStart());
+            } else {
+                finalStartDate = loadPeriod.getStart();
             }
-            if(endDateFilter != null) {
-                LocalDate endDateFilterLocalDate = new LocalDate(endDateFilter.getTime());
-                if(loadPeriod.getEnd().compareTo(endDateFilterLocalDate) > 0) {
-                    finalEndDate = endDateFilterLocalDate;
-                }
+
+            final GanttDate finalEndDate;
+            if (endDateFilter != null) {
+                finalEndDate = GanttDate.min(loadPeriod.getEnd(), GanttDate
+                        .createFrom(new LocalDate(endDateFilter.getTime())));
+            } else {
+                finalEndDate = loadPeriod.getEnd();
             }
-            if(finalStartDate.compareTo(finalEndDate) < 0) {
+            if (finalStartDate.compareTo(finalEndDate) < 0) {
                 toReturn.add(new LoadPeriod(finalStartDate, finalEndDate,
                         loadPeriod.getTotalResourceWorkHours(),
                         loadPeriod.getAssignedHours(), loadPeriod.getLoadLevel()));

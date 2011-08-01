@@ -32,6 +32,7 @@ import java.util.List;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.zkoss.ganttz.data.GanttDate;
 
 public class LoadTimelineTest {
 
@@ -61,10 +62,11 @@ public class LoadTimelineTest {
 
     private void givenValidLoadTimeLine() {
         conceptName = "bla";
-        loadTimeLine = new LoadTimeLine(conceptName, Arrays
-                .asList(new LoadPeriod(new LocalDate(2009, 10, 5),
-                                new LocalDate(2009, 10, 11), 100, 20,
-                                new LoadLevel(20))), null);
+        loadTimeLine = new LoadTimeLine(conceptName,
+                Arrays.asList(new LoadPeriod(GanttDate
+                        .createFrom(new LocalDate(2009, 10, 5)), GanttDate
+                        .createFrom(new LocalDate(2009, 10, 11)), 100, 20,
+                        new LoadLevel(20))), null);
     }
 
     @Test
@@ -76,10 +78,12 @@ public class LoadTimelineTest {
 
     @Test
     public void aLoadTimelineSortsItsReceivedPeriods() {
-        LoadPeriod l1 = new LoadPeriod(new LocalDate(2009, 10, 5),
-                new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
-        LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
-                new LocalDate(2009, 6, 3), 100, 20, new LoadLevel(20));
+        LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
+                10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
+                100, 20, new LoadLevel(20));
+        LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
+                5, 3)), GanttDate.createFrom(new LocalDate(2009, 6, 3)), 100,
+                20, new LoadLevel(20));
         LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1,
                 l2), null);
 
@@ -90,10 +94,12 @@ public class LoadTimelineTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void theLoadPeriodsMustNotOverlap() {
-        LoadPeriod l1 = new LoadPeriod(new LocalDate(2009, 10, 5),
-                new LocalDate(2009, 10, 11), 100, 20, new LoadLevel(20));
-        LoadPeriod l2 = new LoadPeriod(new LocalDate(2009, 5, 3),
-                new LocalDate(2009, 10, 10), 100, 20, new LoadLevel(20));
+        LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
+                10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
+                100, 20, new LoadLevel(20));
+        LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
+                5, 3)), GanttDate.createFrom(new LocalDate(2009, 10, 10)), 100,
+                20, new LoadLevel(20));
         new LoadTimeLine("bla", Arrays.asList(l1, l2), null);
     }
 

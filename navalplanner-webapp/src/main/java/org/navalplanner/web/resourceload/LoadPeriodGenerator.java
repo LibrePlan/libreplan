@@ -34,6 +34,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.math.Fraction;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.resources.daos.IResourcesSearcher;
 import org.navalplanner.business.resources.entities.Criterion;
@@ -43,6 +44,9 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
 import org.navalplanner.business.workingday.IntraDayDate;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
+import org.navalplanner.web.planner.TaskElementAdapter;
+import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.resourceload.LoadLevel;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 
@@ -200,10 +204,30 @@ abstract class LoadPeriodGenerator {
         }
         EffortDuration totalEffort = getTotalAvailableEffort();
         EffortDuration effortAssigned = getEffortAssigned();
-        return new LoadPeriod(start.getDate(), end.getDate(),
+        return new LoadPeriod(asGantt(start), asGantt(end),
                 totalEffort.roundToHours(), effortAssigned.roundToHours(),
                 new LoadLevel(calculateLoadPercentage(totalEffort,
                         effortAssigned)));
+    }
+
+    private GanttDate asGantt(IntraDayDate date) {
+        return TaskElementAdapter.toGantt(
+                date,
+                inferDayCapacity(allocationsOnInterval,
+                        PartialDay.wholeDay(date.getDate())));
+    }
+
+    private EffortDuration inferDayCapacity(
+            List<ResourceAllocation<?>> allocationsOnInterval, PartialDay day) {
+        if (allocationsOnInterval.isEmpty()) {
+            return null;
+        }
+        EffortDuration result = EffortDuration.zero();
+        for (ResourceAllocation<?> each : allocationsOnInterval) {
+            ICalendar allocationCalendar = each.getAllocationCalendar();
+            result = result.plus(allocationCalendar.getCapacityOn(day));
+        }
+        return result.divideBy(allocationsOnInterval.size());
     }
 
     protected abstract EffortDuration getTotalAvailableEffort();

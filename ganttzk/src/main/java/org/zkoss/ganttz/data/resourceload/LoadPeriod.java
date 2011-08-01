@@ -31,15 +31,15 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.LocalDate;
+import org.zkoss.ganttz.data.GanttDate;
 
 public class LoadPeriod {
 
     private static final Log LOG = LogFactory.getLog(LoadPeriod.class);
 
-    private final LocalDate start;
+    private final GanttDate start;
 
-    private final LocalDate end;
+    private final GanttDate end;
 
     private final LoadLevel loadLevel;
 
@@ -47,14 +47,14 @@ public class LoadPeriod {
 
     private final int assignedHours;
 
-    public LoadPeriod(LocalDate start, LocalDate end,
+    public LoadPeriod(GanttDate start, GanttDate end,
             int totalResourceWorkHours, int assignedHours, LoadLevel loadLevel) {
         Validate.notNull(start);
         Validate.notNull(end);
         Validate.notNull(loadLevel);
         Validate.notNull(totalResourceWorkHours);
         Validate.notNull(assignedHours);
-        Validate.isTrue(!start.isAfter(end));
+        Validate.isTrue(start.compareTo(end) <= 0);
         this.start = start;
         this.end = end;
         this.loadLevel = loadLevel;
@@ -62,16 +62,16 @@ public class LoadPeriod {
         this.assignedHours = assignedHours;
     }
 
-    public LocalDate getStart() {
+    public GanttDate getStart() {
         return start;
     }
 
-    public LocalDate getEnd() {
+    public GanttDate getEnd() {
         return end;
     }
 
     public boolean overlaps(LoadPeriod other) {
-        return start.isBefore(other.end) && end.isAfter(other.start);
+        return start.compareTo(other.end) < 0 && end.compareTo(other.start) > 0;
     }
 
     /**

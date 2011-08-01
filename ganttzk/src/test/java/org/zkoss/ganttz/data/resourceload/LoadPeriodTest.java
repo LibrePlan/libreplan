@@ -32,28 +32,34 @@ import java.util.ListIterator;
 
 import org.joda.time.LocalDate;
 import org.junit.Test;
+import org.zkoss.ganttz.data.GanttDate;
 
 public class LoadPeriodTest {
 
-    private LocalDate start;
-    private LocalDate end;
+    private GanttDate start;
+    private GanttDate end;
     private LoadLevel loadLevel;
 
     private LoadPeriod loadPeriod;
     private List<LoadPeriod> unsortedList;
 
     private void givenExampleLoadPeriod() {
-        start = new LocalDate(2009, 11, 4);
-        end = new LocalDate(2009, 12, 8);
+        start = GanttDate.createFrom(new LocalDate(2009, 11, 4));
+        end = GanttDate.createFrom(new LocalDate(2009, 12, 8));
         givenExampleLoadPeriod(start, end);
     }
 
     private void givenExampleLoadPeriod(LocalDate start, LocalDate end) {
+        givenExampleLoadPeriod(GanttDate.createFrom(start),
+                GanttDate.createFrom(end));
+    }
+
+    private void givenExampleLoadPeriod(GanttDate start, GanttDate end) {
         loadLevel = new LoadLevel(50);
         givenExampleLoadPeriod(start, end, loadLevel);
     }
 
-    private void givenExampleLoadPeriod(LocalDate start, LocalDate end,
+    private void givenExampleLoadPeriod(GanttDate start, GanttDate end,
             LoadLevel loadLevel) {
         loadPeriod = new LoadPeriod(start, end, totalHours, assignedHours,
                 loadLevel);
@@ -61,8 +67,8 @@ public class LoadPeriodTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadPeriodMustHaveAStartDate() {
-        new LoadPeriod(null, new LocalDate(), totalHours, assignedHours,
-                correctLoadLevel());
+        new LoadPeriod(null, GanttDate.createFrom(new LocalDate()), totalHours,
+                assignedHours, correctLoadLevel());
     }
 
     private static final int totalHours = 100;
@@ -75,24 +81,24 @@ public class LoadPeriodTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void aLoadPeriodMustHaveAnEndDate() {
-        new LoadPeriod(new LocalDate(), null, totalHours, assignedHours,
-                correctLoadLevel());
+        new LoadPeriod(GanttDate.createFrom(new LocalDate()), null, totalHours,
+                assignedHours, correctLoadLevel());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void theEndDateCantBeBeforeTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 3);
-        new LoadPeriod(start, end, totalHours, assignedHours,
-                correctLoadLevel());
+        new LoadPeriod(GanttDate.createFrom(start), GanttDate.createFrom(end),
+                totalHours, assignedHours, correctLoadLevel());
     }
 
     @Test
     public void theEndDateCanBeTheSameThanTheStartDate() {
         LocalDate start = new LocalDate(2009, 10, 4);
         LocalDate end = new LocalDate(2009, 10, 4);
-        new LoadPeriod(start, end, totalHours, assignedHours,
-                correctLoadLevel());
+        new LoadPeriod(GanttDate.createFrom(start), GanttDate.createFrom(end),
+                totalHours, assignedHours, correctLoadLevel());
     }
 
     @Test
@@ -137,8 +143,9 @@ public class LoadPeriodTest {
 
     private static LoadPeriod create(int startYear, int startMonth,
             int startDay, int endYear, int endMonth, int endDay) {
-        return new LoadPeriod(new LocalDate(startYear, startMonth, startDay),
-                new LocalDate(endYear, endMonth, endDay), totalHours,
+        return new LoadPeriod(GanttDate.createFrom(new LocalDate(startYear,
+                startMonth, startDay)), GanttDate.createFrom(new LocalDate(
+                endYear, endMonth, endDay)), totalHours,
                 assignedHours, correctLoadLevel());
     }
 
@@ -181,7 +188,7 @@ public class LoadPeriodTest {
             previous = current;
             current = listIterator.next();
             if (previous != null) {
-                assertFalse(current.getStart().isBefore(previous.getEnd()));
+                assertFalse(current.getStart().compareTo(previous.getEnd()) < 0);
             }
         }
     }
