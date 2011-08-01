@@ -1060,8 +1060,8 @@ class PeriodsBuilder {
             }
             if (finalStartDate.compareTo(finalEndDate) < 0) {
                 toReturn.add(new LoadPeriod(finalStartDate, finalEndDate,
-                        loadPeriod.getTotalResourceWorkHours(),
-                        loadPeriod.getAssignedHours(), loadPeriod.getLoadLevel()));
+                        loadPeriod.getAvailableEffort(),
+                        loadPeriod.getAssignedEffort(), loadPeriod.getLoadLevel()));
             }
         }
         return toReturn;

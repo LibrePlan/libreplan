@@ -43,23 +43,23 @@ public class LoadPeriod {
 
     private final LoadLevel loadLevel;
 
-    private final int totalResourceWorkHours;
+    private final String availableEffort;
 
-    private final int assignedHours;
+    private final String assignedEffort;
 
-    public LoadPeriod(GanttDate start, GanttDate end,
-            int totalResourceWorkHours, int assignedHours, LoadLevel loadLevel) {
+    public LoadPeriod(GanttDate start, GanttDate end, String availableEffort,
+            String assignedEffort, LoadLevel loadLevel) {
         Validate.notNull(start);
         Validate.notNull(end);
         Validate.notNull(loadLevel);
-        Validate.notNull(totalResourceWorkHours);
-        Validate.notNull(assignedHours);
+        Validate.notNull(availableEffort);
+        Validate.notNull(assignedEffort);
         Validate.isTrue(start.compareTo(end) <= 0);
         this.start = start;
         this.end = end;
         this.loadLevel = loadLevel;
-        this.totalResourceWorkHours = totalResourceWorkHours;
-        this.assignedHours = assignedHours;
+        this.availableEffort = availableEffort;
+        this.assignedEffort = assignedEffort;
     }
 
     public GanttDate getStart() {
@@ -113,11 +113,11 @@ public class LoadPeriod {
         return loadLevel;
     }
 
-    public int getTotalResourceWorkHours() {
-        return totalResourceWorkHours;
+    public String getAvailableEffort() {
+        return availableEffort;
     }
 
-    public int getAssignedHours() {
-        return assignedHours;
+    public String getAssignedEffort() {
+        return assignedEffort;
     }
 }

@@ -185,9 +185,9 @@ public class ResourceLoadComponent extends XulElement {
             load = "";
         }
         result.setTooltiptext(load
-                + _("total work hours: {0}, assigned hours: {1}", loadPeriod
-                        .getTotalResourceWorkHours(), loadPeriod
-                        .getAssignedHours()));
+                + _("available effort: {0}, assigned effort: {1}",
+                        loadPeriod.getAvailableEffort(),
+                        loadPeriod.getAssignedEffort()));
 
         result.setLeft(forCSS(getStartPixels(datesMapper, loadPeriod)));
         result.setWidth(forCSS(getWidthPixels(datesMapper, loadPeriod)));

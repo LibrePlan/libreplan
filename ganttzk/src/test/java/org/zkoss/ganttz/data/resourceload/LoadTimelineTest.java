@@ -65,7 +65,7 @@ public class LoadTimelineTest {
         loadTimeLine = new LoadTimeLine(conceptName,
                 Arrays.asList(new LoadPeriod(GanttDate
                         .createFrom(new LocalDate(2009, 10, 5)), GanttDate
-                        .createFrom(new LocalDate(2009, 10, 11)), 100, 20,
+                        .createFrom(new LocalDate(2009, 10, 11)), "100", "20",
                         new LoadLevel(20))), null);
     }
 
@@ -80,10 +80,10 @@ public class LoadTimelineTest {
     public void aLoadTimelineSortsItsReceivedPeriods() {
         LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
                 10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
-                100, 20, new LoadLevel(20));
+                "100", "20", new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                5, 3)), GanttDate.createFrom(new LocalDate(2009, 6, 3)), 100,
-                20, new LoadLevel(20));
+                5, 3)), GanttDate.createFrom(new LocalDate(2009, 6, 3)), "100",
+                "20", new LoadLevel(20));
         LoadTimeLine loadTimeLine = new LoadTimeLine("bla", Arrays.asList(l1,
                 l2), null);
 
@@ -96,10 +96,10 @@ public class LoadTimelineTest {
     public void theLoadPeriodsMustNotOverlap() {
         LoadPeriod l1 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
                 10, 5)), GanttDate.createFrom(new LocalDate(2009, 10, 11)),
-                100, 20, new LoadLevel(20));
+                "100", "20", new LoadLevel(20));
         LoadPeriod l2 = new LoadPeriod(GanttDate.createFrom(new LocalDate(2009,
-                5, 3)), GanttDate.createFrom(new LocalDate(2009, 10, 10)), 100,
-                20, new LoadLevel(20));
+                5, 3)), GanttDate.createFrom(new LocalDate(2009, 10, 10)),
+                "100", "20", new LoadLevel(20));
         new LoadTimeLine("bla", Arrays.asList(l1, l2), null);
     }
 
