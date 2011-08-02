@@ -61,7 +61,7 @@
             border="normal"
             style="overflow:auto">
             <panelchildren>
-                <label value="${i18n:_('Task Code')}:" />
+                <label value="${i18n:_('Project')}:" />
                 <bandboxSearch id="bandboxSelectOrder"
                     finder="OrderBandboxFinder"
                     model="@{controller.orders}"
