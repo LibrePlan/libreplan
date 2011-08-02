@@ -168,7 +168,7 @@
 				<textField isBlankWhenNull="true">
 					<reportElement x="53" y="1" width="237" height="15"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="10" isBold="true"/>
+						<font size="10"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderName}]]></textFieldExpression>
 				</textField>
@@ -306,21 +306,21 @@
 				<textField>
 					<reportElement x="1" y="1" width="52" height="15"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
-						<font size="11" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="290" y="0" width="65" height="15"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle" markup="none">
-						<font size="11" isBold="true"/>
+						<font size="10" isBold="true"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{code}]]></textFieldExpression>
 				</textField>
 				<textField isBlankWhenNull="true">
 					<reportElement x="355" y="0" width="198" height="15"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
-						<font size="11"/>
+						<font size="10"/>
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$F{orderCode}]]></textFieldExpression>
 				</textField>
