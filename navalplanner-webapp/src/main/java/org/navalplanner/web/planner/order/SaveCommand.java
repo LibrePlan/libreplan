@@ -383,7 +383,7 @@ public class SaveCommand implements ISaveCommand {
         dontPoseAsTransient(taskElement.getDependenciesWithThisOrigin());
         dontPoseAsTransient(taskElement.getDependenciesWithThisDestination());
         Set<ResourceAllocation<?>> resourceAllocations = taskElement
-                .getSatisfiedResourceAllocations();
+                .getAllResourceAllocations();
         dontPoseAsTransientAndChildrenObjects(resourceAllocations);
         if (!taskElement.isLeaf()) {
             for (TaskElement each : taskElement.getChildren()) {
