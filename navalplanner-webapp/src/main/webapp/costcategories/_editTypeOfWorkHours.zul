@@ -27,9 +27,9 @@
             <tab label="${i18n:_('Type data')}"></tab>
         </tabs>
         <tabpanels>
-            <tabpanel>
+            <tabpanel width="100%">
                     <!-- Type of work hour details  -->
-                    <grid fixedLayout="false">
+                    <grid fixedLayout="true">
                         <columns>
                             <column width="200px" />
                             <column />
@@ -37,7 +37,7 @@
                         <rows>
                             <row>
                                 <label
-                                    value="${i18n:_('Code')}:" />
+                                    value="${i18n:_('Code')}" />
                                 <hbox>
                                     <textbox id="code"
                                         value="@{controller.typeOfWorkHours.code}" width="300px"
@@ -49,19 +49,19 @@
                                 </hbox>
                             </row>
                             <row>
-                                <label value="${i18n:_('Name')}:" />
+                                <label value="${i18n:_('Name')}" />
                                 <textbox id="name"
                                     value="@{controller.typeOfWorkHours.name}" width="300px"
                                     constraint="no empty:${i18n:_('cannot be null or empty')}"
                                     onBlur="controller.updateWindowTitle()" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Default price')}:" />
+                                <label value="${i18n:_('Default price')}" />
                                 <decimalbox id="defaultPrice"
                                     value="@{controller.typeOfWorkHours.defaultPrice}" width="300px" />
                             </row>
                             <row>
-                                <label value="${i18n:_('Enabled')}:" />
+                                <label value="${i18n:_('Enabled')}" />
                                 <checkbox id="enabled"
                                     checked="@{controller.typeOfWorkHours.Enabled}" width="300px" />
                             </row>
