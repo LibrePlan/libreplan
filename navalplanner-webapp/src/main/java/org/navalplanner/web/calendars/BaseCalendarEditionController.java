@@ -39,14 +39,14 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
+import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
-import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
@@ -888,8 +888,9 @@ public abstract class BaseCalendarEditionController extends
                             reloadWorkWeeksList();
                         }
                     });
-            if (baseCalendarModel.getBaseCalendar().getCalendarDataVersions()
-                    .size() == 1) {
+            if (baseCalendarModel.getBaseCalendar() == null
+                    || baseCalendarModel.getBaseCalendar()
+                            .getCalendarDataVersions().size() == 1) {
                 result.setDisabled(true);
             } else {
                 result.setDisabled(false);
