@@ -67,7 +67,7 @@
                 <columns sizable="true">
                 <column id="date" label="${i18n:_('Date')}" width="60px" align="center"
                     sort="auto(date)" sortDirection="ascending"/>
-                <column id="resource" label="${i18n:_('Resource')}" width="190px" align="center"
+                <column id="resource" label="${i18n:_('Resource')}" align="center"
                     sort="auto(resource.shortDescription)" sortDirection="ascending"/>
                 <column id="projectCode" label="${i18n:_('Project Code')}" width="130px" align="center"
                     sort="auto(orderElement.order.code)" sortDirection="ascending"/>
