@@ -79,6 +79,9 @@ import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
@@ -123,8 +126,9 @@ import org.zkoss.zul.Vbox;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-// This bean is defined at navalplanner-webapp-spring-config.xml
-public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
@@ -152,6 +156,9 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     @Autowired
     private IScenarioManager scenarioManager;
+
+    @Autowired
+    private ITaskElementAdapter taskElementAdapter;
 
     private Scenario currentScenario;
 
@@ -190,13 +197,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
             }
             return false;
         }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public void setConfigurationToPlanner(Planner planner,
-            Collection<ICommandOnTask<TaskElement>> additional) {
-        setConfigurationToPlanner(planner, additional, null);
     }
 
     @Override
@@ -713,7 +713,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration(
             IPredicate predicate) {
-        ITaskElementAdapter taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.setPreventCalculateResourcesText(true);
         taskElementAdapter.useScenario(currentScenario);
         List<TaskElement> toShow;
@@ -785,9 +784,6 @@ public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
         }
         return result;
     }
-
-    // spring method injection
-    protected abstract ITaskElementAdapter getTaskElementAdapter();
 
     @Override
     public LocalDate getFilterStartDate() {

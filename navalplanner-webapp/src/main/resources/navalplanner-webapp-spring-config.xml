@@ -27,10 +27,6 @@
 
     <bean class="org.navalplanner.web.common.entrypoints.RedirectorSynthetiser"></bean>
 
-    <bean class="org.navalplanner.web.planner.company.CompanyPlanningModel" scope="prototype">
-      <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
-    </bean>
-
     <bean id="ordersMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrdersMultipleFiltersFinder" scope="singleton" />
 
     <bean id="orderElementsMultipleFiltersFinder" class="org.navalplanner.web.common.components.finders.OrderElementsMultipleFiltersFinder" scope="singleton"/>

@@ -39,13 +39,6 @@ import org.zkoss.ganttz.extensions.ICommandOnTask;
  */
 public interface ICompanyPlanningModel {
 
-    void setConfigurationToPlanner(final Planner planner,
-            Collection<ICommandOnTask<TaskElement>> additional);
-
-    public void setConfigurationToPlanner(Planner planner,
-            Collection<ICommandOnTask<TaskElement>> additional,
-            ICommandOnTask<TaskElement> doubleClickCommand);
-
     public void setConfigurationToPlanner(Planner planner,
             Collection<ICommandOnTask<TaskElement>> additional,
             ICommandOnTask<TaskElement> doubleClickCommand, IPredicate predicate);
