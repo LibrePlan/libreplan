@@ -233,10 +233,13 @@ public class ManageOrderElementAdvancesController extends
          * preparation to select the advance line. Set the current selected
          * index that will show when the grid reloads.
          */
-        AdvanceAssignment advance = (AdvanceAssignment) selectedItem.getValue();
-        indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
-        prepareEditAdvanceMeasurements(advance);
-        reloadAdvances();
+        if (selectedItem != null) {
+            AdvanceAssignment advance = (AdvanceAssignment) selectedItem
+                    .getValue();
+            indexSelectedItem = editAdvances.getIndexOfItem(selectedItem);
+            prepareEditAdvanceMeasurements(advance);
+            reloadAdvances();
+        }
     }
 
     public void selectAdvanceLine(int index) {
