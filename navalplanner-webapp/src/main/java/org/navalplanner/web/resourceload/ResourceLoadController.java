@@ -21,20 +21,12 @@
 
 package org.navalplanner.web.resourceload;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
@@ -43,16 +35,16 @@ import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
 import org.navalplanner.business.orders.entities.Order;
+import org.navalplanner.business.planner.chart.ILoadChartData;
+import org.navalplanner.business.planner.chart.ResourceLoadChartData;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.chart.Chart;
-import org.navalplanner.web.planner.chart.ChartFiller;
+import org.navalplanner.web.planner.chart.LoadChartFiller;
 import org.navalplanner.web.planner.company.CompanyPlanningModel;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
@@ -65,8 +57,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.geometry.TimeGeometry;
-import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.resourceload.IFilterChangedListener;
@@ -623,183 +613,23 @@ public class ResourceLoadController implements Composer {
         return timeplot;
     }
 
-    private class ResourceLoadChartFiller extends ChartFiller {
+    private class ResourceLoadChartFiller extends LoadChartFiller {
 
         @Override
-        public void fillChart(Timeplot chart, Interval interval, Integer size) {
-            chart.getChildren().clear();
-            chart.invalidate();
-
-            resetMinimumAndMaximumValueForChart();
-
-            LocalDate start = interval.getStart();
-            LocalDate finish = interval.getFinish();
-            if ((resourceLoadModel.getInitDateFilter() != null)
-                    && (resourceLoadModel.getInitDateFilter().compareTo(start) > 0)) {
-                start = resourceLoadModel.getInitDateFilter();
-            }
-            if ((resourceLoadModel.getEndDateFilter() != null)
-                    && (resourceLoadModel.getEndDateFilter().compareTo(finish) < 0)) {
-                finish = resourceLoadModel.getEndDateFilter();
-            }
-
-            Plotinfo plotInfoLoad = createPlotinfoFromDurations(
-                    getLoad(start, finish), interval);
-            plotInfoLoad
-                    .setFillColor(CompanyPlanningModel.COLOR_ASSIGNED_LOAD_GLOBAL);
-            plotInfoLoad.setLineWidth(0);
-
-            Plotinfo plotInfoMax = createPlotinfoFromDurations(
-                    getCalendarMaximumAvailability(interval.getStart(),
-                            interval.getFinish()), interval);
-            plotInfoMax
-                    .setLineColor(CompanyPlanningModel.COLOR_CAPABILITY_LINE);
-            plotInfoMax.setFillColor("#FFFFFF");
-            plotInfoMax.setLineWidth(2);
-
-            Plotinfo plotInfoOverload = createPlotinfoFromDurations(
-                    getOverload(start, finish), interval);
-            plotInfoOverload
-                    .setFillColor(CompanyPlanningModel.COLOR_OVERLOAD_GLOBAL);
-            plotInfoOverload.setLineWidth(0);
-
-            ValueGeometry valueGeometry = getValueGeometry();
-            TimeGeometry timeGeometry = getTimeGeometry(interval);
-
-            appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
-
-            chart.setWidth(size + "px");
-            chart.setHeight("150px");
+        protected String getOptionalJavascriptCall() {
+            return null;
         }
 
-        private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
-                LocalDate finish) {
+        @Override
+        protected ILoadChartData getDataOn(Interval interval) {
             List<DayAssignment> dayAssignments = resourceLoadModel
                     .getDayAssignments();
-
-            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayWithoutOverload(dayAssignmentGrouped);
-            for (Entry<LocalDate, EffortDuration> each : mapDayAssignments
-                    .entrySet()) {
-                LocalDate day = each.getKey();
-                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
-                    result.put(day, each.getValue());
-                }
-            }
-            return result;
-        }
-
-        private SortedMap<LocalDate, EffortDuration> getOverload(
-                LocalDate start, LocalDate finish) {
-            List<DayAssignment> dayAssignments = resourceLoadModel
-                    .getDayAssignments();
-
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped = groupDurationsByDayAndResource(dayAssignments);
-            SortedMap<LocalDate, EffortDuration> mapDayAssignments = calculateHoursAdditionByDayJustOverload(dayAssignmentGrouped);
-            SortedMap<LocalDate, EffortDuration> mapMaxAvailability = calculateHoursAdditionByDay(
-                    resourceLoadModel.getResources(), start, finish);
-            for (Entry<LocalDate, EffortDuration> each : mapDayAssignments
-                    .entrySet()) {
-                LocalDate day = each.getKey();
-                EffortDuration overload = each.getValue();
-                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
-                    EffortDuration maxAvailability = mapMaxAvailability
-                            .get(day);
-                    mapDayAssignments.put(day, overload.plus(maxAvailability));
-                }
-            }
-            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
-            for (LocalDate day : mapDayAssignments.keySet()) {
-                if (day.compareTo(start) >= 0 && day.compareTo(finish) <= 0) {
-                    result.put(day, mapDayAssignments.get(day));
-                }
-            }
-            return result;
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayWithoutOverload(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
-            for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
-                    .entrySet()) {
-                LocalDate date = each.getKey();
-                PartialDay day = PartialDay.wholeDay(date);
-                EffortDuration result = zero();
-                for (Entry<Resource, EffortDuration> resourceWithDuration : each
-                        .getValue().entrySet()) {
-                    Resource resource = resourceWithDuration.getKey();
-                    EffortDuration assignedDuration = resourceWithDuration
-                            .getValue();
-                    EffortDuration resourceCapacity = resource
-                            .getCalendarOrDefault().getCapacityOn(day);
-                    result = result
-                            .plus(min(assignedDuration, resourceCapacity));
-                }
-                map.put(date, result);
-            }
-            return groupAsNeededByZoom(map);
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDayJustOverload(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
-            SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
-            for (Entry<LocalDate, Map<Resource, EffortDuration>> each : dayAssignmentGrouped
-                    .entrySet()) {
-                final LocalDate date = each.getKey();
-                final PartialDay day = PartialDay.wholeDay(date);
-                EffortDuration result = zero();
-                for (Entry<Resource, EffortDuration> resourceWithDuration : each
-                        .getValue().entrySet()) {
-                    Resource resource = resourceWithDuration.getKey();
-                    EffortDuration assignedDuration = resourceWithDuration
-                            .getValue();
-                    EffortDuration resourceCapacity = resource
-                            .getCalendarOrDefault().getCapacityOn(day);
-                    EffortDuration overloadIncrement = assignedDuration
-                            .minus(min(resourceCapacity, assignedDuration));
-                    result = result.plus(overloadIncrement);
-                }
-                map.put(date, result);
-            }
-            return groupAsNeededByZoom(map);
-        }
-
-        private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
-                LocalDate start, LocalDate finish) {
-            return calculateHoursAdditionByDay(
-                    resourceLoadModel.getResources(), start, finish);
-        }
-
-        private SortedMap<LocalDate, EffortDuration> calculateHoursAdditionByDay(
-                List<Resource> resources, LocalDate start, LocalDate finish) {
-            return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
-
-                @Override
-                protected LocalDate getDayFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    return element.getKey();
-                }
-
-                @Override
-                protected EffortDuration getDurationFor(
-                        Entry<LocalDate, List<Resource>> element) {
-                    return sumCalendarCapacitiesForDay(element.getValue(),
-                            element.getKey());
-                }
-            }.calculate(getResourcesByDateBetween(resources, start, finish));
-        }
-
-        private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-                List<Resource> resources, LocalDate start, LocalDate finish) {
-            Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-            for (LocalDate date = start; date.compareTo(finish) <= 0; date = date
-                    .plusDays(1)) {
-                result.put(date, resources);
-            }
-            return result.entrySet();
+            List<Resource> resources = resourceLoadModel.getResources();
+            ResourceLoadChartData data = new ResourceLoadChartData(
+                    dayAssignments, resources);
+            return data.on(
+                    getStart(resourceLoadModel.getInitDateFilter(), interval),
+                    getEnd(resourceLoadModel.getEndDateFilter(), interval));
         }
 
     }

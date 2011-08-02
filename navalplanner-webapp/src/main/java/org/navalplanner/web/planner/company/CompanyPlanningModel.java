@@ -54,6 +54,8 @@ import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapsh
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.planner.chart.ILoadChartData;
+import org.navalplanner.business.planner.chart.ResourceLoadChartData;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
 import org.navalplanner.business.planner.entities.TaskMilestone;
@@ -63,16 +65,15 @@ import org.navalplanner.business.templates.entities.OrderTemplate;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
-import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
 import org.navalplanner.web.planner.ITaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
-import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.LoadChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -85,8 +86,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.geometry.TimeGeometry;
-import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.IPredicate;
 import org.zkoss.ganttz.Planner;
@@ -129,10 +128,6 @@ import org.zkoss.zul.Vbox;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CompanyPlanningModel implements ICompanyPlanningModel {
-
-    public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#98D471"; // Green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FF5A11"; // Red
 
     @Autowired
     private IOrderDAO orderDAO;
@@ -800,66 +795,19 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 getFilterFinishDate());
     }
 
-    private class CompanyLoadChartFiller extends ChartFiller {
+    private class CompanyLoadChartFiller extends LoadChartFiller {
 
         @Override
-        public void fillChart(Timeplot chart, Interval interval, Integer size) {
-            chart.getChildren().clear();
-            chart.invalidate();
-
-            String javascript = "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
-            Clients.evalJavaScript(javascript);
-
-            resetMinimumAndMaximumValueForChart();
-
-            LocalDate start = filterStartDate != null ? filterStartDate
-                    : interval.getStart();
-            LocalDate finish = filterFinishDate != null ? filterFinishDate
-                    : interval.getFinish();
-
-            Plotinfo plotInfoLoad = createPlotinfoFromDurations(
-                    getLoad(start, finish), interval);
-            plotInfoLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
-            plotInfoLoad.setLineWidth(0);
-
-            Plotinfo plotInfoMax = createPlotinfoFromDurations(
-                    getCalendarMaximumAvailability(start, finish), interval);
-            plotInfoMax.setLineColor(COLOR_CAPABILITY_LINE);
-            plotInfoMax.setFillColor("#FFFFFF");
-            plotInfoMax.setLineWidth(2);
-
-            Plotinfo plotInfoOverload = createPlotinfoFromDurations(
-                    getOverload(start, finish), interval);
-            plotInfoOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
-            plotInfoOverload.setLineWidth(0);
-
-            ValueGeometry valueGeometry = getValueGeometry();
-            TimeGeometry timeGeometry = getTimeGeometry(interval);
-
-
-            appendPlotinfo(chart, plotInfoOverload, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoMax, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotInfoLoad, valueGeometry, timeGeometry);
-
-            chart.setWidth(size + "px");
-            chart.setHeight("150px");
+        protected String getOptionalJavascriptCall() {
+            return "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
         }
 
-        private SortedMap<LocalDate, EffortDuration> getLoad(LocalDate start,
-                LocalDate finish) {
-            return groupAsNeededByZoom(databaseSnapshots.
-                    snapshotResourceLoadChartData().getLoad().subMap(start, finish));
-        }
-
-        private SortedMap<LocalDate, EffortDuration> getOverload(
-                LocalDate start, LocalDate finish) {
-            return groupAsNeededByZoom(
-                    databaseSnapshots.snapshotResourceLoadChartData().getOverload().subMap(start, finish));
-        }
-
-        private SortedMap<LocalDate, EffortDuration> getCalendarMaximumAvailability(
-                LocalDate start, LocalDate finish) {
-            return databaseSnapshots.snapshotResourceLoadChartData().getAvailability().subMap(start, finish);
+        @Override
+        protected ILoadChartData getDataOn(Interval interval) {
+            ResourceLoadChartData data = databaseSnapshots
+                    .snapshotResourceLoadChartData();
+            return data.on(getStart(filterStartDate, interval),
+                    getEnd(filterFinishDate, interval));
         }
 
     }

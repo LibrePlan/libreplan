@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.navalplanner.business.planner.entities;
+package org.navalplanner.business.planner.chart;
 
 import static org.navalplanner.business.workingday.EffortDuration.min;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
+import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
@@ -50,7 +51,7 @@ import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
  * @author Jacobo Aragunde Pérez<jaragunde@igalia.com>
  *
  */
-public class ResourceLoadChartData {
+public class ResourceLoadChartData implements ILoadChartData {
 
     private SortedMap<LocalDate, EffortDuration> load;
 
@@ -90,6 +91,43 @@ public class ResourceLoadChartData {
 
     public SortedMap<LocalDate, EffortDuration> getAvailability() {
         return availability;
+    }
+
+    public ILoadChartData on(final LocalDate startInclusive,
+            final LocalDate endExclusive) {
+
+        final ResourceLoadChartData original = ResourceLoadChartData.this;
+        if (startInclusive == null && endExclusive == null) {
+            return original;
+        }
+        return new ILoadChartData() {
+
+            @Override
+            public SortedMap<LocalDate, EffortDuration> getOverload() {
+                return filter(original.getOverload());
+            }
+
+            @Override
+            public SortedMap<LocalDate, EffortDuration> getLoad() {
+                return filter(original.getLoad());
+            }
+
+            @Override
+            public SortedMap<LocalDate, EffortDuration> getAvailability() {
+                return filter(original.getAvailability());
+            }
+
+            private SortedMap<LocalDate, EffortDuration> filter(
+                    SortedMap<LocalDate, EffortDuration> map) {
+                if (startInclusive != null) {
+                    return map.tailMap(startInclusive);
+                }
+                if (endExclusive != null) {
+                    return map.headMap(endExclusive);
+                }
+                return map.subMap(startInclusive, endExclusive);
+            }
+        };
     }
 
     private SortedMap<LocalDate, Map<Resource, EffortDuration>> groupDurationsByDayAndResource(
