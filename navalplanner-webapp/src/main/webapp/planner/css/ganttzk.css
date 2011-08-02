@@ -763,10 +763,6 @@ tr.z-vbox-sep {
     height: 35px;
 }
 
-.limitingresources .z-tree-body {
-    margin-top: -4px;
-}
-
 .limitingresources td.z-treecell {
     paddding-top: 2px;
     border-bottom: 1px dotted #CCCCCC;

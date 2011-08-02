@@ -84,15 +84,12 @@
                     splittable="true" autoscroll="true">
 
                     <borderlayout >
-                        <north border="0" height="35px" flex="true" collapsible="true">
-                            <vbox pack="top" align="center">
+                        <north border="0" height="31px" flex="true" collapsible="true">
                             <tree fixedLayout="true">
                                 <treecols>
-                                    <treecol label="${i18n:_('Name')}" height="29px"/>
+                                    <treecol label="${i18n:_('Name')}" height="26px"/>
                                 </treecols>
                             </tree>
-
-                            </vbox>
                         </north>
                         <center border="0" style="overflow-x:scroll">
                             <div sclass="leftpanelgap" id="insertionPointLeftPanel"></div>
