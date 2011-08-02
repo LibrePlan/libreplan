@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.daos.IGenericDAO;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 
 /**
  * Contract for {@link AdvanceTypeDao}
@@ -42,5 +43,13 @@ public interface IAdvanceTypeDAO extends IGenericDAO<AdvanceType, Long>{
     public Collection<? extends AdvanceType> getAll();
 
     public boolean isAlreadyInUse(AdvanceType advanceType);
+
+    AdvanceType findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException;
+
+    boolean existsByNameInAnotherTransaction(String name);
+
+    AdvanceType findByNameCaseInsensitive(String name)
+            throws InstanceNotFoundException;
 
 }
