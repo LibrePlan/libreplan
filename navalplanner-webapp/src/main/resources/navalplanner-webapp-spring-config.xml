@@ -27,20 +27,6 @@
 
     <bean class="org.navalplanner.web.common.entrypoints.RedirectorSynthetiser"></bean>
 
-    <bean class="org.navalplanner.web.planner.order.OrderPlanningModel" scope="prototype">
-      <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
-      <lookup-method name="getSaveCommand" bean="saveCommand"/>
-      <lookup-method name="getResourceAllocationCommand" bean="resourceAllocationCommand"/>
-      <lookup-method name="getTaskPropertiesCommand" bean="taskPropertiesCommand"/>
-      <lookup-method name="getCalendarAllocationCommand" bean="calendarAllocationCommand"/>
-      <lookup-method name="getAddMilestoneCommand" bean="addMilestoneCommand"/>
-      <lookup-method name="getDeleteMilestoneCommand" bean="deleteMilestoneCommand"/>
-      <lookup-method name="getSubcontractCommand" bean="subcontractCommand"/>
-      <lookup-method name="getReassignCommand" bean="reassignCommand"/>
-      <lookup-method name="getAdvanceConsolidationCommand" bean="advanceConsolidationCommand"/>
-      <lookup-method name="getAdvanceAssignmentPlanningCommand" bean="advanceAssignmentPlanningCommand"/>
-    </bean>
-
     <bean class="org.navalplanner.web.planner.company.CompanyPlanningModel" scope="prototype">
       <lookup-method name="getTaskElementAdapter" bean="taskElementAdapter"/>
     </bean>

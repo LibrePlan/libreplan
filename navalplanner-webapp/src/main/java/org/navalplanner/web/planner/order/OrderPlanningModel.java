@@ -99,6 +99,9 @@ import org.navalplanner.web.planner.taskedition.ITaskPropertiesCommand;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
@@ -145,8 +148,9 @@ import org.zkoss.zul.Vbox;
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-// This bean is defined at navalplanner-webapp-spring-config.xml
-public abstract class OrderPlanningModel implements IOrderPlanningModel {
+@Component
+@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+public class OrderPlanningModel implements IOrderPlanningModel {
 
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
     public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
@@ -225,8 +229,39 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     @Autowired
     private IScenarioManager scenarioManager;
 
+    @Autowired
+    private ISaveCommand saveCommand;
+
+    @Autowired
+    private IReassignCommand reassignCommand;
+
+    @Autowired
+    private IResourceAllocationCommand resourceAllocationCommand;
+
+    @Autowired
+    private IAddMilestoneCommand addMilestoneCommand;
+
+    @Autowired
+    private IDeleteMilestoneCommand deleteMilestoneCommand;
+
+    @Autowired
+    private ITaskPropertiesCommand taskPropertiesCommand;
+
+    @Autowired
+    private IAdvanceConsolidationCommand advanceConsolidationCommand;
+
+    @Autowired
+    private IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand;
+
+    @Autowired
+    private ICalendarAllocationCommand calendarAllocationCommand;
+
+    @Autowired
+    private ISubcontractCommand subcontractCommand;
+
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
+    @Autowired
     private ITaskElementAdapter taskElementAdapter;
 
     @Autowired
@@ -657,9 +692,8 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private IDeleteMilestoneCommand buildDeleteMilestoneCommand() {
-        IDeleteMilestoneCommand result = getDeleteMilestoneCommand();
-        result.setState(planningState);
-        return result;
+        deleteMilestoneCommand.setState(planningState);
+        return deleteMilestoneCommand;
     }
 
     private void configureModificators(Order orderReloaded,
@@ -953,7 +987,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private ICalendarAllocationCommand buildCalendarAllocationCommand(
             CalendarAllocationController calendarAllocationController) {
-        ICalendarAllocationCommand calendarAllocationCommand = getCalendarAllocationCommand();
         calendarAllocationCommand
                 .setCalendarAllocationController(calendarAllocationController);
         return calendarAllocationCommand;
@@ -961,15 +994,12 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private ITaskPropertiesCommand buildTaskPropertiesCommand(
             EditTaskController editTaskController) {
-        ITaskPropertiesCommand taskPropertiesCommand = getTaskPropertiesCommand();
-        taskPropertiesCommand.initialize(editTaskController,
-                planningState);
+        taskPropertiesCommand.initialize(editTaskController, planningState);
         return taskPropertiesCommand;
     }
 
     private IAdvanceAssignmentPlanningCommand buildAdvanceAssignmentPlanningCommand(
             AdvanceAssignmentPlanningController advanceAssignmentPlanningController) {
-        IAdvanceAssignmentPlanningCommand advanceAssignmentPlanningCommand = getAdvanceAssignmentPlanningCommand();
         advanceAssignmentPlanningCommand.initialize(
                 advanceAssignmentPlanningController, planningState);
         return advanceAssignmentPlanningCommand;
@@ -977,38 +1007,32 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private IAdvanceConsolidationCommand buildAdvanceConsolidationCommand(
             AdvanceConsolidationController advanceConsolidationController) {
-        IAdvanceConsolidationCommand advanceConsolidationCommand = getAdvanceConsolidationCommand();
         advanceConsolidationCommand.initialize(advanceConsolidationController,
                 planningState);
         return advanceConsolidationCommand;
     }
 
     private IAddMilestoneCommand buildMilestoneCommand() {
-        IAddMilestoneCommand addMilestoneCommand = getAddMilestoneCommand();
         addMilestoneCommand.setState(planningState);
         return addMilestoneCommand;
     }
 
     private IResourceAllocationCommand buildResourceAllocationCommand(
             EditTaskController editTaskController) {
-        IResourceAllocationCommand resourceAllocationCommand = getResourceAllocationCommand();
-        resourceAllocationCommand.initialize(editTaskController,
-                planningState);
+        resourceAllocationCommand.initialize(editTaskController, planningState);
         return resourceAllocationCommand;
     }
 
     private ISaveCommand buildSaveCommand(
             PlannerConfiguration<TaskElement> configuration) {
-        ISaveCommand saveCommand = getSaveCommand();
         saveCommand.setConfiguration(configuration);
         saveCommand.setState(planningState);
         return saveCommand;
     }
 
     private ICommand<TaskElement> buildReassigningCommand() {
-        IReassignCommand result = getReassignCommand();
-        result.setState(planningState);
-        return result;
+        reassignCommand.setState(planningState);
+        return reassignCommand;
     }
 
     private Chart setupChart(Order orderReloaded,
@@ -1073,7 +1097,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(Order order) {
-        taskElementAdapter = getTaskElementAdapter();
         taskElementAdapter.useScenario(currentScenario);
         planningState = createPlanningStateFor(order);
         taskElementAdapter.setInitDate(asLocalDate(order.getInitDate()));
@@ -1100,27 +1123,6 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
         return planningStateCreator.retrieveOrCreate(planner.getDesktop(),
                 order);
     }
-
-    // spring method injection
-    protected abstract ITaskElementAdapter getTaskElementAdapter();
-
-    protected abstract ISaveCommand getSaveCommand();
-
-    protected abstract IReassignCommand getReassignCommand();
-
-    protected abstract IResourceAllocationCommand getResourceAllocationCommand();
-
-    protected abstract IAddMilestoneCommand getAddMilestoneCommand();
-
-    protected abstract IDeleteMilestoneCommand getDeleteMilestoneCommand();
-
-    protected abstract ITaskPropertiesCommand getTaskPropertiesCommand();
-
-    protected abstract IAdvanceConsolidationCommand getAdvanceConsolidationCommand();
-
-    protected abstract IAdvanceAssignmentPlanningCommand getAdvanceAssignmentPlanningCommand();
-
-    protected abstract ICalendarAllocationCommand getCalendarAllocationCommand();
 
     private class OrderLoadChartFiller extends ChartFiller {
 
@@ -1391,13 +1393,9 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private ISubcontractCommand buildSubcontractCommand(
             EditTaskController editTaskController) {
-        ISubcontractCommand subcontractCommand = getSubcontractCommand();
-        subcontractCommand.initialize(editTaskController,
-                planningState);
+        subcontractCommand.initialize(editTaskController, planningState);
         return subcontractCommand;
     }
-
-    protected abstract ISubcontractCommand getSubcontractCommand();
 
     public Order getOrder() {
         return planningState.getOrder();
