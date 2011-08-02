@@ -24,13 +24,17 @@ package org.navalplanner.business.advance.daos;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.common.daos.GenericDAOHibernate;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
@@ -70,4 +74,37 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
                 Restrictions.eq("advanceType", advanceType)).list().isEmpty();
     }
 
+    @Override
+    @Transactional(readOnly=true)
+    public AdvanceType findByNameCaseInsensitive(String name)
+            throws InstanceNotFoundException {
+        Criteria c = getSession().createCriteria(AdvanceType.class);
+        c.add(Restrictions.ilike("unitName", name, MatchMode.EXACT));
+        AdvanceType result = (AdvanceType) c.uniqueResult();
+
+        if (result == null) {
+            throw new InstanceNotFoundException(name,
+                    getEntityClass().getName());
+        }
+
+        return result;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public boolean existsByNameInAnotherTransaction(String name) {
+        try {
+            findByNameCaseInsensitive(name);
+        } catch (InstanceNotFoundException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRES_NEW)
+    public AdvanceType findUniqueByNameInAnotherTransaction(String name)
+            throws InstanceNotFoundException {
+        return findByNameCaseInsensitive(name);
+    }
 }

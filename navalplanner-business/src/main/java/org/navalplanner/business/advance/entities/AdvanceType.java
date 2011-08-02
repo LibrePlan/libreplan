@@ -26,10 +26,14 @@ import static org.navalplanner.business.i18n.I18nHelper._;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
+import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.common.BaseEntity;
+import org.navalplanner.business.common.Registry;
+import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
 import org.navalplanner.business.orders.entities.OrderElement;
 
 /**
@@ -59,7 +63,6 @@ public class AdvanceType extends BaseEntity {
                 unitPrecision, active, percentage, qualityForm));
     }
 
-    @NotEmpty
     private String unitName;
 
     @NotNull
@@ -78,6 +81,8 @@ public class AdvanceType extends BaseEntity {
     private boolean percentage = false;
 
     private Boolean qualityForm = false;
+
+    private IAdvanceTypeDAO avanceTypeDAO = Registry.getAdvanceTypeDao();
 
     /**
      * Constructor for hibernate. Do not use!
@@ -104,6 +109,7 @@ public class AdvanceType extends BaseEntity {
         this.unitName = unitName;
     }
 
+    @NotEmpty(message = "unit name not specified")
     public String getUnitName() {
         return this.unitName;
     }
@@ -226,6 +232,28 @@ public class AdvanceType extends BaseEntity {
             }
         }
         return true;
+    }
+
+    @AssertTrue(message = "the advance type name has to be unique. It is already used")
+    public boolean checkConstraintUniqueName() {
+        if (StringUtils.isBlank(unitName)) {
+            return true;
+        }
+        if (isNewObject()) {
+            return !avanceTypeDAO.existsByNameInAnotherTransaction(unitName);
+        } else {
+            return checkNotExistsOrIsTheSame();
+        }
+    }
+
+    private boolean checkNotExistsOrIsTheSame() {
+        try {
+            AdvanceType advanceType = avanceTypeDAO
+                    .findUniqueByNameInAnotherTransaction(unitName);
+            return advanceType.getId().equals(getId());
+        } catch (InstanceNotFoundException e) {
+            return true;
+        }
     }
 
 }
