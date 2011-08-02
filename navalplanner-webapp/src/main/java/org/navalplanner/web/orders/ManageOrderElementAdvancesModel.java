@@ -698,7 +698,8 @@ public class ManageOrderElementAdvancesModel implements
                         if ((selectedAdvances.size() > 1) && (value != null)) {
                             BigDecimal maxValue = directAdvanceAssignment
                                     .getMaxValue();
-                            value = value.divide(maxValue, RoundingMode.DOWN);
+                            value = value.setScale(2).divide(maxValue,
+                                    RoundingMode.DOWN);
                         }
                         LocalDate date = advanceMeasurement.getDate();
                         if ((value != null) && (date != null)) {
