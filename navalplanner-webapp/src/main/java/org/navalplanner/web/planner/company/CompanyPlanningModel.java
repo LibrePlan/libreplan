@@ -75,9 +75,6 @@ import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
 import org.navalplanner.web.print.CutyPrint;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
@@ -121,8 +118,7 @@ import org.zkoss.zul.Vbox;
  *
  * @author Manuel Rego Casasnovas <mrego@igalia.com>
  */
-@Component
-@Scope(BeanDefinition.SCOPE_SINGLETON)
+// This bean is defined at navalplanner-webapp-spring-config.xml
 public abstract class CompanyPlanningModel implements ICompanyPlanningModel {
 
     public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
