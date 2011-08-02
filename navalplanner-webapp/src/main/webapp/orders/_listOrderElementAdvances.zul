@@ -18,11 +18,10 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <vbox id="${arg.id}"
     apply="org.navalplanner.web.orders.ManageOrderElementAdvancesController" width="100%">
-    <panel title="${i18n:_('Progress assignments')}" border="normal">
-        <panelchildren>
+    <groupbox sclass="progress-assignments" closable="false">
+    <caption label="${i18n:_('Progress assignments')}" />
             <vbox id="messagesContainerAdvances" />
             <vbox align="left" width="100%">
                 <hbox>
@@ -39,11 +38,11 @@
                      onSelect="manageOrderElementAdvancesController.selectAdvanceLine(self.selectedItem);"
                      pageSize="4">
                     <listhead sizable="true">
-                         <listheader label="${i18n:_('Type')}" width="150px" tooltiptext="Progress unit type" />
-                         <listheader label="${i18n:_('Max value')}" tooltiptext="Maximum allowed value" width="80px" align="center"/>
-                         <listheader label="${i18n:_('Current value')}" width="80px" align="center"/>
-                         <listheader label="${i18n:_('Percentage')}" width="80px" align="center"/>
-                         <listheader label="${i18n:_('Date')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Type')}" tooltiptext="${i18n:_('Progress unit type')}" />
+                         <listheader label="${i18n:_('Max value')}" tooltiptext="${i18n:_('Maximum allowed value')}" width="80px" align="center"/>
+                         <listheader label="${i18n:_('Current value')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
+                         <listheader label="${i18n:_('Date')}" width="110px" align="center"/>
                          <listheader label="${i18n:_('Spread')}" width="70px" align="center"/>
                          <listheader label="${i18n:_('Calculated')}" width="70px" align="center"/>
                          <listheader label="${i18n:_('Show')}" width="60px" align="center"/>
@@ -51,14 +50,13 @@
                      </listhead>
             </listbox>
             </radiogroup>
-            </vbox>
-        </panelchildren>
-    </panel>
-    <panel id="panelAdvanceMeasurement" title="@{manageOrderElementAdvancesController.getInfoAdvance}" border="normal">
-        <panelchildren>
+    </vbox>
+    </groupbox>
+    <groupbox sclass="advance-measurement" width="100%" closable="false">
+    <caption label="@{manageOrderElementAdvancesController.getInfoAdvance}" />
             <hbox>
                 <vbox>
-                    <listbox id="editAdvancesMeasurement" width="380px" height="200px"
+                    <listbox id="editAdvancesMeasurement" width="390px" height="200px"
                              model="@{manageOrderElementAdvancesController.advanceMeasurements}"
                              itemRenderer="@{manageOrderElementAdvancesController.advanceMeasurementRenderer}"
                              mold="paging" pageSize="5" sclass="advance-measurement"
@@ -66,17 +64,26 @@
                             <listhead>
                                 <listheader label="${i18n:_('Value')}" width="100px" align="center"/>
                                 <listheader label="${i18n:_('Percentage')}" width="90px" align="center"/>
-                                <listheader label="${i18n:_('Date')}" width="100px" align="center"/>
+                                <listheader label="${i18n:_('Date')}" width="110px" align="center"/>
                                 <listheader label="${i18n:_('Operations')}" width="90px" align="center"/>
                             </listhead>
                     </listbox>
                 </vbox>
+                <vbox width="20px" />
+                <zscript>
+                    import java.awt.Font;
+                    String fontname = "Verdana";
+                    Font tfont = new Font(fontname, Font.BOLD, 14); //for title
+                    Font lbfont = new Font(fontname, Font.PLAIN, 12); //for label
+                </zscript>
                 <chart id="chart" title="${i18n:_('Progress Evolution')}"
                     type="time_series" threeD="false"
                     model="@{manageOrderElementAdvancesController.chartData}"
+                    titleFont="${tfont}"
+                    xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
+                    yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
                     xAxis="${i18n:_('Date')}" yAxis= "${i18n:_('Value')}"
-                    paneColor="#FFFFFF" />
+                    paneColor="#FFFFFF" height="200" width="500"  />
             </hbox>
-        </panelchildren>
-    </panel>
+        </groupbox>
 </vbox>
