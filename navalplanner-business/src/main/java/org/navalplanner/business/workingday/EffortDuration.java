@@ -130,6 +130,16 @@ public class EffortDuration implements Comparable<EffortDuration> {
         return result;
     }
 
+    public static EffortDuration sum(EffortDuration... summands) {
+        return sum(Arrays.asList(summands), new IEffortFrom<EffortDuration>() {
+
+            @Override
+            public EffortDuration from(EffortDuration each) {
+                return each;
+            }
+        });
+    }
+
     public static EffortDuration zero() {
         return elapsing(0, Granularity.SECONDS);
     }

@@ -21,21 +21,23 @@
 
 package org.navalplanner.business.planner.chart;
 
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.compound;
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.sum;
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.toSortedMap;
 import static org.navalplanner.business.workingday.EffortDuration.min;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.joda.time.LocalDate;
-import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.hibernate.notification.PredefinedDatabaseSnapshots;
+import org.navalplanner.business.planner.chart.ContiguousDaysLine.IValueTransformer;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.workingday.EffortDuration;
@@ -60,25 +62,113 @@ public class ResourceLoadChartData implements ILoadChartData {
     private SortedMap<LocalDate, EffortDuration> availability;
 
     public ResourceLoadChartData(List<DayAssignment> dayAssignments, List<Resource> resources) {
-        SortedMap<LocalDate, Map<Resource, EffortDuration>> map =
-            groupDurationsByDayAndResource(dayAssignments);
-        this.load = calculateResourceLoadPerDate(map);
-        this.overload = calculateResourceOverloadPerDate(map);
-        if(load.keySet().isEmpty()) {
-            this.availability = new TreeMap<LocalDate, EffortDuration>();
-        }
-        else {
-            this.availability = calculateAvailabilityDurationByDay(
-                    resources, load.firstKey(), load.lastKey());
-        }
 
-        for (LocalDate day : this.overload.keySet()) {
-            EffortDuration overloadDuration = this.overload
-            .get(day);
-            EffortDuration maxDuration = this.availability.get(day);
-            this.overload.put(day,
-                    overloadDuration.plus(maxDuration));
-        }
+        ContiguousDaysLine<List<DayAssignment>> assignments = ContiguousDaysLine
+                .byDay(dayAssignments);
+
+        ContiguousDaysLine<EffortDuration> load = assignments
+                .transform(extractLoad());
+
+        ContiguousDaysLine<EffortDuration> overload = assignments
+                .transform(extractOverload());
+
+        ContiguousDaysLine<EffortDuration> availabilityOnAllResources = assignments
+                .transform(extractAvailabilityOnAllResources(resources));
+
+        this.load = toSortedMap(ContiguousDaysLine.min(load,
+                availabilityOnAllResources));
+        this.overload = toSortedMap(sum(overload, availabilityOnAllResources));
+        this.availability = toSortedMap(availabilityOnAllResources);
+    }
+
+    private IValueTransformer<List<DayAssignment>, EffortDuration> extractOverload() {
+        return compound(effortByResource(), calculateOverload());
+    }
+
+    private IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>> effortByResource() {
+        return new IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>>() {
+
+            @Override
+            public Map<Resource, EffortDuration> transform(LocalDate day,
+                    List<DayAssignment> previousValue) {
+                Map<Resource, List<DayAssignment>> byResource = DayAssignment
+                        .byResource(previousValue);
+                Map<Resource, EffortDuration> result = new HashMap<Resource, EffortDuration>();
+                for (Entry<Resource, List<DayAssignment>> each : byResource
+                        .entrySet()) {
+                    result.put(each.getKey(),
+                            DayAssignment.sum(each.getValue()));
+                }
+                return result;
+            }
+        };
+    }
+
+    private IValueTransformer<Map<Resource, EffortDuration>, EffortDuration> calculateOverload() {
+        return new IValueTransformer<Map<Resource, EffortDuration>, EffortDuration>() {
+
+            @Override
+            public EffortDuration transform(LocalDate day,
+                    Map<Resource, EffortDuration> previousValue) {
+
+                final PartialDay wholeDay = PartialDay.wholeDay(day);
+                return EffortDuration.sum(previousValue.entrySet(),
+                        new IEffortFrom<Entry<Resource, EffortDuration>>() {
+
+                            @Override
+                            public EffortDuration from(
+                                    Entry<Resource, EffortDuration> each) {
+                                EffortDuration capacity = calendarCapacityFor(
+                                        each.getKey(), wholeDay);
+                                EffortDuration assigned = each.getValue();
+                                return assigned.minus(min(capacity, assigned));
+                            }
+                        });
+            }
+        };
+    }
+
+    private IValueTransformer<List<DayAssignment>, EffortDuration> extractLoad() {
+        return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
+
+            @Override
+            public EffortDuration transform(LocalDate day,
+                    List<DayAssignment> previousValue) {
+                return DayAssignment.sum(previousValue);
+            }
+        };
+    }
+
+    private IValueTransformer<List<DayAssignment>, EffortDuration> extractAvailabilityOnAssignedResources() {
+        return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
+
+            @Override
+            public EffortDuration transform(LocalDate day,
+                    List<DayAssignment> previousValue) {
+                Set<Resource> resources = getResources(previousValue);
+                return sumCalendarCapacitiesForDay(resources, day);
+            }
+
+            private Set<Resource> getResources(List<DayAssignment> assignments) {
+                Set<Resource> resources = new HashSet<Resource>();
+                for (DayAssignment dayAssignment : assignments) {
+                    resources.add(dayAssignment.getResource());
+                }
+                return resources;
+            }
+        };
+    }
+
+    private IValueTransformer<List<DayAssignment>, EffortDuration> extractAvailabilityOnAllResources(
+            final List<Resource> resources) {
+        return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
+
+            @Override
+            public EffortDuration transform(LocalDate day,
+                    List<DayAssignment> previousValue) {
+                return sumCalendarCapacitiesForDay(resources, day);
+            }
+        };
     }
 
     public SortedMap<LocalDate, EffortDuration> getLoad() {
@@ -130,140 +220,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         };
     }
 
-    private SortedMap<LocalDate, Map<Resource, EffortDuration>> groupDurationsByDayAndResource(
-            List<DayAssignment> dayAssignments) {
-        SortedMap<LocalDate, Map<Resource, EffortDuration>> map =
-                new TreeMap<LocalDate, Map<Resource, EffortDuration>>();
-
-        for (DayAssignment dayAssignment : dayAssignments) {
-            final LocalDate day = dayAssignment.getDay();
-            final EffortDuration dayAssignmentDuration = dayAssignment
-                    .getDuration();
-            Resource resource = dayAssignment.getResource();
-            if (map.get(day) == null) {
-                map.put(day, new HashMap<Resource, EffortDuration>());
-            }
-            Map<Resource, EffortDuration> forDay = map.get(day);
-            EffortDuration previousDuration = forDay.get(resource);
-            previousDuration = previousDuration != null ? previousDuration
-                    : EffortDuration.zero();
-            forDay.put(dayAssignment.getResource(),
-                    previousDuration.plus(dayAssignmentDuration));
-        }
-        return map;
-    }
-
-    private SortedMap<LocalDate, EffortDuration> calculateResourceLoadPerDate(
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> durationsGrouped) {
-        SortedMap<LocalDate, EffortDuration> map = new TreeMap<LocalDate, EffortDuration>();
-
-        for (LocalDate date : durationsGrouped.keySet()) {
-            EffortDuration result = zero();
-            PartialDay day = PartialDay.wholeDay(date);
-            for (Resource resource : durationsGrouped.get(date).keySet()) {
-                ICalendar calendar = resource.getCalendarOrDefault();
-                EffortDuration workableTime = calendar.getCapacityOn(day);
-                EffortDuration assignedDuration = durationsGrouped.get(
-                        day.getDate()).get(resource);
-                result = result.plus(min(assignedDuration, workableTime));
-            }
-
-            map.put(date, result);
-        }
-        return map;
-    }
-
-    protected abstract class EffortByDayCalculator<T> {
-        public SortedMap<LocalDate, EffortDuration> calculate(
-                Collection<? extends T> elements) {
-            SortedMap<LocalDate, EffortDuration> result = new TreeMap<LocalDate, EffortDuration>();
-            if (elements.isEmpty()) {
-                return result;
-            }
-            for (T element : elements) {
-                if (included(element)) {
-                    EffortDuration duration = getDurationFor(element);
-                    LocalDate day = getDayFor(element);
-                    EffortDuration previous = result.get(day);
-                    previous = previous == null ? zero() : previous;
-                    result.put(day, previous.plus(duration));
-                }
-            }
-            return result;
-        }
-
-        protected abstract LocalDate getDayFor(T element);
-
-        protected abstract EffortDuration getDurationFor(T element);
-
-        protected boolean included(T each) {
-            return true;
-        }
-    }
-
-    private SortedMap<LocalDate, EffortDuration> calculateResourceOverloadPerDate(
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> dayAssignmentGrouped) {
-        return new EffortByDayCalculator<Entry<LocalDate, Map<Resource, EffortDuration>>>() {
-
-            @Override
-            protected LocalDate getDayFor(
-                    Entry<LocalDate, Map<Resource, EffortDuration>> element) {
-                return element.getKey();
-            }
-
-            @Override
-            protected EffortDuration getDurationFor(
-                    Entry<LocalDate, Map<Resource, EffortDuration>> element) {
-
-                final PartialDay day = PartialDay.wholeDay(element.getKey());
-
-                return EffortDuration.sum(element.getValue().entrySet(),
-                        new IEffortFrom<Entry<Resource, EffortDuration>>() {
-
-                            @Override
-                            public EffortDuration from(
-                                    Entry<Resource, EffortDuration> each) {
-                                EffortDuration overload = getOverloadAt(day,
-                                        each.getKey(), each.getValue());
-                                return overload;
-                            }
-                        });
-            }
-
-            private EffortDuration getOverloadAt(PartialDay day,
-                    Resource resource, EffortDuration assignedDuration) {
-                ICalendar calendar = resource.getCalendarOrDefault();
-                EffortDuration workableDuration = calendar
-                        .getCapacityOn(day);
-                if (assignedDuration.compareTo(workableDuration) > 0) {
-                    return assignedDuration.minus(workableDuration);
-                }
-                return zero();
-            }
-        }.calculate(dayAssignmentGrouped.entrySet());
-    }
-
-    private SortedMap<LocalDate, EffortDuration> calculateAvailabilityDurationByDay(
-            final List<Resource> resources, LocalDate start, LocalDate finish) {
-        return new EffortByDayCalculator<Entry<LocalDate, List<Resource>>>() {
-
-            @Override
-            protected LocalDate getDayFor(
-                    Entry<LocalDate, List<Resource>> element) {
-                return element.getKey();
-            }
-
-            @Override
-            protected EffortDuration getDurationFor(
-                    Entry<LocalDate, List<Resource>> element) {
-                LocalDate day = element.getKey();
-                return sumCalendarCapacitiesForDay(resources, day);
-            }
-
-        }.calculate(getResourcesByDateBetween(resources, start, finish));
-    }
-
-    protected static EffortDuration sumCalendarCapacitiesForDay(
+    private static EffortDuration sumCalendarCapacitiesForDay(
             Collection<? extends Resource> resources, LocalDate day) {
 
         final PartialDay wholeDay = PartialDay.wholeDay(day);
@@ -281,13 +238,4 @@ public class ResourceLoadChartData implements ILoadChartData {
         return resource.getCalendarOrDefault().getCapacityOn(day);
     }
 
-    private Set<Entry<LocalDate, List<Resource>>> getResourcesByDateBetween(
-            List<Resource> resources, LocalDate start, LocalDate finish) {
-        Map<LocalDate, List<Resource>> result = new HashMap<LocalDate, List<Resource>>();
-        for (LocalDate date = new LocalDate(start); date.compareTo(finish) <= 0; date = date
-                .plusDays(1)) {
-            result.put(date, resources);
-        }
-        return result.entrySet();
-    }
 }
