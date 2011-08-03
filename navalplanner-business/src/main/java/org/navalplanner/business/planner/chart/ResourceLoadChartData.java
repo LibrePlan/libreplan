@@ -81,11 +81,11 @@ public class ResourceLoadChartData implements ILoadChartData {
         this.availability = toSortedMap(availabilityOnAllResources);
     }
 
-    private IValueTransformer<List<DayAssignment>, EffortDuration> extractOverload() {
+    public static IValueTransformer<List<DayAssignment>, EffortDuration> extractOverload() {
         return compound(effortByResource(), calculateOverload());
     }
 
-    private IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>> effortByResource() {
+    private static IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>> effortByResource() {
         return new IValueTransformer<List<DayAssignment>, Map<Resource, EffortDuration>>() {
 
             @Override
@@ -104,7 +104,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         };
     }
 
-    private IValueTransformer<Map<Resource, EffortDuration>, EffortDuration> calculateOverload() {
+    public static IValueTransformer<Map<Resource, EffortDuration>, EffortDuration> calculateOverload() {
         return new IValueTransformer<Map<Resource, EffortDuration>, EffortDuration>() {
 
             @Override
@@ -128,7 +128,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         };
     }
 
-    private IValueTransformer<List<DayAssignment>, EffortDuration> extractLoad() {
+    public static IValueTransformer<List<DayAssignment>, EffortDuration> extractLoad() {
         return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
 
             @Override
@@ -139,7 +139,7 @@ public class ResourceLoadChartData implements ILoadChartData {
         };
     }
 
-    private IValueTransformer<List<DayAssignment>, EffortDuration> extractAvailabilityOnAssignedResources() {
+    public static IValueTransformer<List<DayAssignment>, EffortDuration> extractAvailabilityOnAssignedResources() {
         return new IValueTransformer<List<DayAssignment>, EffortDuration>() {
 
             @Override

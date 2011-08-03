@@ -21,8 +21,9 @@
 
 package org.navalplanner.web.planner.order;
 
-import static org.navalplanner.business.workingday.EffortDuration.min;
-import static org.navalplanner.business.workingday.EffortDuration.zero;
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.min;
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.sum;
+import static org.navalplanner.business.planner.chart.ContiguousDaysLine.toSortedMap;
 import static org.navalplanner.web.I18nHelper._;
 
 import java.math.BigDecimal;
@@ -44,6 +45,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -55,6 +57,8 @@ import org.navalplanner.business.orders.entities.HoursGroup;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderStatusEnum;
+import org.navalplanner.business.planner.chart.ContiguousDaysLine;
+import org.navalplanner.business.planner.chart.ResourceLoadChartData;
 import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.Task;
@@ -72,8 +76,6 @@ import org.navalplanner.business.users.entities.OrderAuthorizationType;
 import org.navalplanner.business.users.entities.User;
 import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
-import org.navalplanner.business.workingday.EffortDuration.IEffortFrom;
-import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
 import org.navalplanner.web.planner.ITaskElementAdapter;
@@ -1128,12 +1130,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
         private final Order order;
 
-        private SortedMap<LocalDate, EffortDuration> mapOrderLoad = new TreeMap<LocalDate, EffortDuration>();
-        private SortedMap<LocalDate, EffortDuration> mapOrderOverload = new TreeMap<LocalDate, EffortDuration>();
-        private SortedMap<LocalDate, EffortDuration> mapMaxCapacity = new TreeMap<LocalDate, EffortDuration>();
-        private SortedMap<LocalDate, EffortDuration> mapOtherLoad = new TreeMap<LocalDate, EffortDuration>();
-        private SortedMap<LocalDate, EffortDuration> mapOtherOverload = new TreeMap<LocalDate, EffortDuration>();
-
         public OrderLoadChartFiller(Order orderReloaded) {
             this.order = orderReloaded;
         }
@@ -1147,33 +1143,44 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             Clients.evalJavaScript(javascript);
 
             resetMinimumAndMaximumValueForChart();
-            resetMaps();
 
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped = groupDurationsByDayAndResource(orderDayAssignments);
+            ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
+                    .byDay(orderDayAssignments);
+            ContiguousDaysLine<List<DayAssignment>> allAssignments = allAssignments(orderAssignments);
 
-            List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
-            for (Resource resource : order.getResources()) {
-                resourcesDayAssignments.addAll(planningState
-                        .getAssignmentsCalculator().getAssignments(resource));
-            }
-            SortedMap<LocalDate, Map<Resource, EffortDuration>> resourceDayAssignmentsGrouped = groupDurationsByDayAndResource(resourcesDayAssignments);
-
-            fillMaps(orderDayAssignmentsGrouped, resourceDayAssignmentsGrouped);
-            convertAsNeededByZoomMaps();
+            ContiguousDaysLine<EffortDuration> maxCapacityOnResources = orderAssignments
+                    .transform(ResourceLoadChartData
+                            .extractAvailabilityOnAssignedResources());
+            ContiguousDaysLine<EffortDuration> orderLoad = orderAssignments
+                    .transform(ResourceLoadChartData.extractLoad());
+            ContiguousDaysLine<EffortDuration> allLoad = allAssignments
+                    .transform(ResourceLoadChartData.extractLoad());
+            ContiguousDaysLine<EffortDuration> orderOverload = orderAssignments
+                    .transform(ResourceLoadChartData.extractOverload());
+            ContiguousDaysLine<EffortDuration> allOverload = allAssignments
+                    .transform(ResourceLoadChartData.extractOverload());
 
             Plotinfo plotOrderLoad = createPlotinfoFromDurations(
-                    mapOrderLoad, interval);
-            Plotinfo plotOrderOverload = createPlotinfoFromDurations(
-                    mapOrderOverload,
-                    interval);
-            Plotinfo plotMaxCapacity = createPlotinfoFromDurations(
-                    mapMaxCapacity, interval);
+                    groupAsNeededByZoom(toSortedMap(ContiguousDaysLine.min(
+                            orderLoad, maxCapacityOnResources))), interval);
+
             Plotinfo plotOtherLoad = createPlotinfoFromDurations(
-                    mapOtherLoad, interval);
-            Plotinfo plotOtherOverload = createPlotinfoFromDurations(
-                    mapOtherOverload,
+                    groupAsNeededByZoom(toSortedMap(min(allLoad,
+                            maxCapacityOnResources))),
                     interval);
+
+            Plotinfo plotMaxCapacity = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(maxCapacityOnResources)),
+                    interval);
+
+            Plotinfo plotOrderOverload = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(sum(orderOverload,
+                            maxCapacityOnResources))), interval);
+
+            Plotinfo plotOtherOverload = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(sum(allOverload,
+                            maxCapacityOnResources))), interval);
 
             plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD_SPECIFIC);
             plotOrderLoad.setLineWidth(0);
@@ -1209,109 +1216,38 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             chart.setHeight("150px");
         }
 
-        private void resetMaps() {
-            mapOrderLoad.clear();
-            mapOrderOverload.clear();
-            mapMaxCapacity.clear();
-            mapOtherLoad.clear();
-            mapOtherOverload.clear();
-        }
-
-        private void convertAsNeededByZoomMaps() {
-            mapOrderLoad = groupAsNeededByZoom(mapOrderLoad);
-            mapOrderOverload = groupAsNeededByZoom(mapOrderOverload);
-            mapMaxCapacity = groupAsNeededByZoom(mapMaxCapacity);
-            mapOtherLoad = groupAsNeededByZoom(mapOtherLoad);
-            mapOtherOverload = groupAsNeededByZoom(mapOtherOverload);
-        }
-
-        private void fillMaps(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> resourceDayAssignmentsGrouped) {
-
-            for (LocalDate date : orderDayAssignmentsGrouped.keySet()) {
-                final EffortDuration maxCapacity = getSumCapacities(
-                        orderDayAssignmentsGrouped, date);
-                final PartialDay day = PartialDay.wholeDay(date);
-                EffortDuration orderLoad = zero();
-                EffortDuration orderOverload = zero();
-                EffortDuration otherLoad = zero();
-                EffortDuration otherOverload = zero();
-
-                for (Resource resource : orderDayAssignmentsGrouped.get(date)
-                        .keySet()) {
-                    final EffortDuration resourceCapacityHours = calendarCapacityFor(
-                            resource, day);
-
-                    final EffortDuration durationAtOrder = orderDayAssignmentsGrouped
-                            .get(date).get(resource);
-
-                    final EffortDuration totalDurationForResource;
-                    totalDurationForResource = retrieveTotalDurationForResource(
-                            resourceDayAssignmentsGrouped, date, resource);
-
-                    final EffortDuration durationOther;
-                    durationOther = totalDurationForResource.minus(min(
-                            durationAtOrder, totalDurationForResource));
-
-                    final EffortDuration allDuration = durationAtOrder
-                            .plus(durationOther);
-
-                    final EffortDuration orderLoadIncrement;
-                    orderLoadIncrement = min(durationAtOrder,
-                            resourceCapacityHours);
-
-                    final EffortDuration orderOverloadIncrement;
-                    orderOverloadIncrement = durationAtOrder
-                            .minus(orderLoadIncrement);
-
-                    final EffortDuration otherLoadIncrement;
-                    otherLoadIncrement = min(allDuration, resourceCapacityHours)
-                            .minus(min(resourceCapacityHours, durationAtOrder));
-
-                    final EffortDuration otherOverloadIncrement;
-                    otherOverloadIncrement = durationOther
-                            .minus(otherLoadIncrement);
-
-                    orderLoad = orderLoad.plus(orderLoadIncrement);
-                    orderOverload = orderOverload.plus(orderOverloadIncrement);
-                    otherLoad = otherLoad.plus(otherLoadIncrement);
-                    otherOverload = otherOverload.plus(otherOverloadIncrement);
-                }
-                mapMaxCapacity.put(date, maxCapacity);
-                mapOrderLoad.put(date, orderLoad);
-                mapOrderOverload.put(date, orderOverload.plus(maxCapacity));
-                mapOtherLoad.put(date, otherLoad.plus(orderLoad));
-                mapOtherOverload.put(date, otherOverload.plus(orderOverload)
-                        .plus(maxCapacity));
+        private ContiguousDaysLine<List<DayAssignment>> allAssignments(
+                ContiguousDaysLine<List<DayAssignment>> orderAssignments) {
+            if (orderAssignments.isNotValid()) {
+                return ContiguousDaysLine.<List<DayAssignment>> invalid();
             }
+            return allAssignmentsOnResourcesAt(orderAssignments.getStart(),
+                    orderAssignments.getEndExclusive());
         }
 
-        private EffortDuration getSumCapacities(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> orderDayAssignmentsGrouped,
-                LocalDate date) {
-
-            final PartialDay day = PartialDay.wholeDay(date);
-
-            return EffortDuration.sum(orderDayAssignmentsGrouped.get(date)
-                    .keySet(), new IEffortFrom<Resource>() {
-
-                @Override
-                public EffortDuration from(Resource resource) {
-                    return calendarCapacityFor(resource, day);
-                }
-            });
-        }
-
-        private EffortDuration retrieveTotalDurationForResource(
-                SortedMap<LocalDate, Map<Resource, EffortDuration>> resourceDayAssignmentsGrouped,
-                LocalDate day, Resource resource) {
-            // FIXME review why is null sometimes
-            if (resourceDayAssignmentsGrouped.get(day) != null
-                    && resourceDayAssignmentsGrouped.get(day).get(resource) != null) {
-                return resourceDayAssignmentsGrouped.get(day).get(resource);
+        private ContiguousDaysLine<List<DayAssignment>> allAssignmentsOnResourcesAt(
+                LocalDate startInclusive, LocalDate endExclusive) {
+            AvailabilityTimeLine.Interval interval = AvailabilityTimeLine.Interval
+                    .create(startInclusive, endExclusive);
+            List<DayAssignment> resourcesDayAssignments = new ArrayList<DayAssignment>();
+            for (Resource resource : order.getResources()) {
+                resourcesDayAssignments.addAll(insideInterval(interval,
+                        planningState.getAssignmentsCalculator()
+                                .getAssignments(resource)));
             }
-            return zero();
+            return ContiguousDaysLine.byDay(resourcesDayAssignments);
+        }
+
+        private List<DayAssignment> insideInterval(
+                AvailabilityTimeLine.Interval interval,
+                List<DayAssignment> assignments) {
+            List<DayAssignment> result = new ArrayList<DayAssignment>();
+            for (DayAssignment each : assignments) {
+                if (interval.includes(each.getDay())) {
+                    result.add(each);
+                }
+            }
+            return result;
         }
 
     }
