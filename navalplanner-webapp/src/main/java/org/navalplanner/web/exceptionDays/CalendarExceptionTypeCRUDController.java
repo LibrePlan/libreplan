@@ -43,12 +43,17 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -76,6 +81,43 @@ public class CalendarExceptionTypeCRUDController extends
             CalendarExceptionTypeColor color = (CalendarExceptionTypeColor) data;
             item.setValue(color);
             item.appendChild(new Listcell(_(color.getName())));
+        }
+    };
+
+    private RowRenderer exceptionDayTypeRenderer = new RowRenderer() {
+        @Override
+        public void render(Row row, Object data) throws Exception {
+            final CalendarExceptionType calendarExceptionType = (CalendarExceptionType) data;
+            row.setValue(calendarExceptionType);
+
+            row.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(calendarExceptionType);
+                }
+            });
+
+            row.appendChild(new Label(calendarExceptionType.getName()));
+            row.appendChild(new Label(_(calendarExceptionType.getColor().getName())));
+            row.appendChild(new Label(calendarExceptionType.getOverAssignableStr()));
+            row.appendChild(new Label(calendarExceptionType.getCapacity()
+                    .getStandardEffortString()));
+            row.appendChild(new Label(calendarExceptionType.getCapacity().getExtraEffortString()));
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(Util.createEditButton(new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    goToEditForm(calendarExceptionType);
+                }
+            }));
+            hbox.appendChild(Util.createRemoveButton(new EventListener() {
+                @Override
+                public void onEvent(Event event) throws Exception {
+                    confirmDelete(calendarExceptionType);
+                }
+            }));
+            row.appendChild(hbox);
         }
     };
 
@@ -217,6 +259,10 @@ public class CalendarExceptionTypeCRUDController extends
 
     public ListitemRenderer getColorsRenderer() {
         return calendarExceptionTypeColorRenderer;
+    }
+
+    public RowRenderer getExceptionDayTypeRenderer() {
+        return exceptionDayTypeRenderer;
     }
 
 }

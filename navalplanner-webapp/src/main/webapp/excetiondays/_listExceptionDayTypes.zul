@@ -23,6 +23,7 @@
 
     <newdatasortablegrid id="listExceptionDayTypes"
         model="@{controller.exceptionDayTypes}"
+        rowRenderer="@{controller.exceptionDayTypeRenderer}"
         mold="paging" pageSize="10" class="clickable-rows"
         fixedLayout="true">
 
@@ -34,28 +35,6 @@
             <newdatasortablecolumn label="${i18n:_('Extra Effort')}" />
             <newdatasortablecolumn label="${i18n:_('Operations')}" />
         </columns>
-        <rows>
-            <row self="@{each='exceptionDayType'}" value="@{exceptionDayType}" onClick="controller.goToEditForm(self.value)">
-                <label value="@{exceptionDayType.name}" />
-                <label value="@{exceptionDayType.color}" />
-                <label value="@{exceptionDayType.overAssignableStr}" />
-                <label value="@{exceptionDayType.capacity.standardEffortString}" />
-                <label value="@{exceptionDayType.capacity.extraEffortString}" />
-
-                <!-- Operation -->
-                <hbox>
-                    <button sclass="icono" image="/common/img/ico_editar1.png"
-                        hoverImage="/common/img/ico_editar.png"
-                        tooltiptext="${i18n:_('Edit')}"
-                        onClick="controller.goToEditForm(self.parent.parent.value)"/>
-
-                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                        hoverImage="/common/img/ico_borrar.png"
-                        tooltiptext="${i18n:_('Delete')}"
-                        onClick="controller.confirmDelete(self.parent.parent.value)"/>
-                </hbox>
-            </row>
-        </rows>
     </newdatasortablegrid>
 
     <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
