@@ -31,6 +31,7 @@ import java.util.Set;
 import org.apache.commons.lang.Validate;
 import org.hibernate.Hibernate;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
@@ -291,14 +292,14 @@ public class PlanningStateCreator {
 
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            if (taskElement.isLeaf()) {
-                OrderElement orderElement = taskElement.getOrderElement();
-                if (orderElement != null) {
-                    orderElement.getLabels().size();
+            OrderElement orderElement = taskElement.getOrderElement();
+            if (orderElement != null) {
+                Set<Label> labels = orderElement.getLabels();
+                for (Label each : labels) {
+                    each.getType().getName();
                 }
-            } else {
-                forceLoadOfLabels(taskElement.getChildren());
             }
+            forceLoadOfLabels(taskElement.getChildren());
         }
     }
 
