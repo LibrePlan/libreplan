@@ -30,6 +30,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.hibernate.NonUniqueResultException;
 import org.hibernate.validator.AssertTrue;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.common.IntegrationEntity;
@@ -91,6 +92,7 @@ public class CalendarExceptionType extends IntegrationEntity {
                 .isTrue(notOverAssignable));
     }
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return name;
     }

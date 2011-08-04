@@ -49,7 +49,8 @@
                             <label value="${i18n:_('Name')}"/>
                             <textbox id="tbName"
                                 value="@{controller.exceptionDayType.name}"
-                                width="300px" />
+                                width="300px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}" />
                         </row>
                         <row>
                             <label value="${i18n:_('Color')}" />
