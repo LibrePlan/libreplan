@@ -68,7 +68,7 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
     private String unitName;
 
     @NotNull
-    private BigDecimal defaultMaxValue = BigDecimal.ZERO;
+    private BigDecimal defaultMaxValue = new BigDecimal(100);
 
     @NotNull
     private boolean updatable = true;
@@ -262,4 +262,13 @@ public class AdvanceType extends BaseEntity implements IHumanIdentifiable{
             return true;
         }
     }
+
+    @AssertTrue(message = "the default max value must be greater than the precision value")
+    public boolean checkDefaultMaxValueGreaterThanPrecision() {
+        if (defaultMaxValue.compareTo(unitPrecision) == -1) {
+            return false;
+        }
+        return true;
+    }
+
 }
