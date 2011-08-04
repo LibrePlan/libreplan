@@ -24,7 +24,6 @@ package org.navalplanner.web.common;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -54,19 +53,13 @@ public class ConstraintChecker {
         return true;
     }
 
-    private static boolean inputIsValid(InputElement component) {
-        inputElementIsValid(component);
-        return (component.isValid());
-    }
-
-    private static void inputElementIsValid(InputElement component) {
-        if (!component.isValid()) {
-            final String errorMessage = component.getErrorMessage();
-            if (errorMessage != null) {
-                throw new WrongValueException(component, component
-                        .getErrorMessage());
-            }
+    private static boolean inputIsValid(InputElement input) {
+        if (!input.isValid()) {
+            input.getText();
+            return false;
         }
+
+        return true;
     }
 
 }
