@@ -19,7 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window id="${arg.top_id}">
+<window id="${arg.top_id}" xmlns:w="client">
 
   <tabbox sclass="calendar-tabbox">
     <tabs>
@@ -68,11 +68,20 @@
     <hbox width="100%" pack="stretch">
           <vbox id="dayInformation" width="100%">
 
-            <calendarhighlighteddays id="calendarWidget"
-              value="@{calendarController.editionController.selectedDay,access='both'}"
-              ancestorExceptionDays="@{calendarController.editionController.ancestorExceptionDays,access='both'}"
-              ownExceptionDays="@{calendarController.editionController.ownExceptionDays,access='both'}"
-              zeroHoursDays="@{calendarController.editionController.zeroHoursDays,access='both'}" />
+            <calendar id="calendarWidget"
+                value="@{calendarController.editionController.selectedDay}">
+                <attribute w:name="highlightDates">
+                    function (days, textColor, bgColor) {
+                        var nodes = $('td', this).not('.z-outside');
+                        nodes.each(function () {
+                            var day = parseInt($(this).attr('_dt'));
+                            if (jQuery.inArray(day, days) > -1) {
+                                $(this).css({color: textColor, backgroundColor: bgColor});
+                            }
+                        });
+                    }
+                </attribute>
+            </calendar>
 
             <grid width="160px" sclass="day-details">
               <auxhead>

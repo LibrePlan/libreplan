@@ -37,7 +37,6 @@ import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
-import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -120,8 +119,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     private void highlightDaysOnCalendar() {
-        ((CalendarHighlightedDays) editWindow.getFellow("calendarWidget"))
-                .highlightDays();
+        editionController.highlightDaysOnCalendar();
     }
 
     public void save() {

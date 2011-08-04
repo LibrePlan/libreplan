@@ -30,12 +30,6 @@
     </component>
 
     <component>
-        <component-name>calendarhighlighteddays</component-name>
-        <component-class>org.navalplanner.web.common.components.CalendarHighlightedDays</component-class>
-        <macro-uri>/common/components/calendarhighlighteddays.zul</macro-uri>
-    </component>
-
-    <component>
         <component-name>autocomplete</component-name>
         <component-class>org.navalplanner.web.common.components.Autocomplete</component-class>
         <extends>combobox</extends>

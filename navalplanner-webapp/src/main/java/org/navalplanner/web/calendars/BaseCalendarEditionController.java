@@ -56,9 +56,9 @@ import org.navalplanner.web.common.Util;
 import org.navalplanner.web.common.Util.Getter;
 import org.navalplanner.web.common.Util.ICreation;
 import org.navalplanner.web.common.Util.Setter;
-import org.navalplanner.web.common.components.CalendarHighlightedDays;
 import org.navalplanner.web.common.components.CapacityPicker;
 import org.navalplanner.web.common.components.EffortDurationPicker;
+import org.zkoss.zk.au.out.AuInvoke;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.CheckEvent;
@@ -82,6 +82,7 @@ import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Calendar;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -484,9 +485,16 @@ public abstract class BaseCalendarEditionController extends
         capacityPicker.setValue(baseCalendarModel.getWorkableCapacity());
     }
 
-    private void highlightDaysOnCalendar() {
-        ((CalendarHighlightedDays) window.getFellow("calendarWidget"))
-                .highlightDays();
+    public void highlightDaysOnCalendar() {
+        Calendar calendar = (Calendar) window.getFellow("calendarWidget");
+
+        Map<DayType, List<Integer>> daysByType = getDaysCurrentMonthByType();
+        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
+                .get(DayType.ANCESTOR_EXCEPTION).toArray(), "white", "orange"));
+        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
+                .get(DayType.OWN_EXCEPTION).toArray(), "white", "red"));
+        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
+                .get(DayType.ZERO_HOURS).toArray(), "red", "white"));
     }
 
     public Date getSelectedDay() {
@@ -516,7 +524,7 @@ public abstract class BaseCalendarEditionController extends
         reloadSelectDayInformation();
     }
 
-    private Map<DayType, String> getDaysCurrentMonthByType() {
+    private Map<DayType, List<Integer>> getDaysCurrentMonthByType() {
         LocalDate currentDate = new LocalDate(baseCalendarModel
                 .getSelectedDay());
 
@@ -550,28 +558,14 @@ public abstract class BaseCalendarEditionController extends
             }
         }
 
-        Map<DayType, String> result = new HashMap<DayType, String>();
+        Map<DayType, List<Integer>> result = new HashMap<DayType, List<Integer>>();
 
-        result.put(DayType.ANCESTOR_EXCEPTION, StringUtils.join(
-                ancestorExceptionsDays, ","));
-        result.put(DayType.OWN_EXCEPTION, StringUtils.join(ownExceptionDays,
-                ","));
-        result.put(DayType.ZERO_HOURS, StringUtils.join(zeroHoursDays, ","));
-        result.put(DayType.NORMAL, StringUtils.join(normalDays, ","));
+        result.put(DayType.ANCESTOR_EXCEPTION, ancestorExceptionsDays);
+        result.put(DayType.OWN_EXCEPTION, ownExceptionDays);
+        result.put(DayType.ZERO_HOURS, zeroHoursDays);
+        result.put(DayType.NORMAL, normalDays);
 
         return result;
-    }
-
-    public String getAncestorExceptionDays() {
-        return getDaysCurrentMonthByType().get(DayType.ANCESTOR_EXCEPTION);
-    }
-
-    public String getOwnExceptionDays() {
-        return getDaysCurrentMonthByType().get(DayType.OWN_EXCEPTION);
-    }
-
-    public String getZeroHoursDays() {
-        return getDaysCurrentMonthByType().get(DayType.ZERO_HOURS);
     }
 
     public String getTypeOfDay() {
