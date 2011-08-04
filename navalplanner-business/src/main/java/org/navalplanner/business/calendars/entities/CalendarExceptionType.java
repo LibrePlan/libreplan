@@ -51,7 +51,7 @@ public class CalendarExceptionType extends IntegrationEntity implements
 
     private String name;
 
-    private String color;
+    private CalendarExceptionTypeColor color = CalendarExceptionTypeColor.DEFAULT;
 
     private Capacity capacity = Capacity.zero();
 
@@ -59,19 +59,21 @@ public class CalendarExceptionType extends IntegrationEntity implements
         return create(new CalendarExceptionType());
     }
 
-    public static CalendarExceptionType create(String name, String color,
+    public static CalendarExceptionType create(String name,
+            CalendarExceptionTypeColor color,
             Boolean notAssignable) {
         return create(new CalendarExceptionType(name, color, notAssignable));
     }
 
     public static CalendarExceptionType create(String code, String name,
-            String color, Boolean notAssignable) {
+            CalendarExceptionTypeColor color, Boolean notAssignable) {
         return create(new CalendarExceptionType(name, color, notAssignable),
                 code);
     }
 
     public static CalendarExceptionType create(String code, String name,
-            String color, Boolean notAssignable, EffortDuration duration) {
+            CalendarExceptionTypeColor color, Boolean notAssignable,
+            EffortDuration duration) {
         CalendarExceptionType calendarExceptionType = new CalendarExceptionType(
                 name, color, notAssignable);
         calendarExceptionType.setDuration(duration);
@@ -85,7 +87,7 @@ public class CalendarExceptionType extends IntegrationEntity implements
 
     }
 
-    public CalendarExceptionType(String name, String color,
+    public CalendarExceptionType(String name, CalendarExceptionTypeColor color,
             Boolean notOverAssignable) {
         this.name = name;
         this.color = color;
@@ -103,11 +105,11 @@ public class CalendarExceptionType extends IntegrationEntity implements
         this.name = name;
     }
 
-    public String getColor() {
+    public CalendarExceptionTypeColor getColor() {
         return color;
     }
 
-    public void setColor(String color) {
+    public void setColor(CalendarExceptionTypeColor color) {
         this.color = color;
     }
 

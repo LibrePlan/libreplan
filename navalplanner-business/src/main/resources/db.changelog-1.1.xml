@@ -223,4 +223,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="update-color-in-calendar_exception_type-to-default" author="mrego">
+        <comment>Update color in calendar_exception_type to DEFAULT</comment>
+        <update tableName="calendar_exception_type">
+            <column name="color" value="DEFAULT" />
+        </update>
+    </changeSet>
+
 </databaseChangeLog>

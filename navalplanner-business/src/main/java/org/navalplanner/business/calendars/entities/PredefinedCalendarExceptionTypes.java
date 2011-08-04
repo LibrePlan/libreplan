@@ -29,15 +29,17 @@ package org.navalplanner.business.calendars.entities;
  */
 public enum PredefinedCalendarExceptionTypes {
 
-    HOLIDAY("HOLIDAY", "red", true), SICK_LEAVE("SICK_LEAVE", "red", true), LEAVE(
-            "LEAVE", "red", true), STRIKE("STRIKE", "red", true), BANK_HOLIDAY(
-            "BANK_HOLIDAY", "red", true), WORKABLE_BANK_HOLIDAY(
-            "WORKABLE_BANK_HOLIDAY", "orange", false);
+    HOLIDAY("HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true),
+    SICK_LEAVE("SICK_LEAVE", CalendarExceptionTypeColor.DEFAULT, true),
+    LEAVE("LEAVE", CalendarExceptionTypeColor.DEFAULT, true),
+    STRIKE("STRIKE", CalendarExceptionTypeColor.DEFAULT, true),
+    BANK_HOLIDAY("BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, true),
+    WORKABLE_BANK_HOLIDAY("WORKABLE_BANK_HOLIDAY", CalendarExceptionTypeColor.DEFAULT, false);
 
     private CalendarExceptionType calendarExceptionType;
 
-    private PredefinedCalendarExceptionTypes(String name, String color,
-            Boolean notAssignable) {
+    private PredefinedCalendarExceptionTypes(String name,
+            CalendarExceptionTypeColor color, Boolean notAssignable) {
         // Using the name as code in order to be more human friendly
         calendarExceptionType = CalendarExceptionType.create(name, name, color,
                 notAssignable);

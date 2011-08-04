@@ -41,6 +41,7 @@ import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.CalendarExceptionTypeColor;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
@@ -114,7 +115,7 @@ public class BaseCalendarTest {
 
     public static CalendarExceptionType createCalendarExceptionType() {
         CalendarExceptionType result = CalendarExceptionType.create("TEST",
-                "black", true);
+                CalendarExceptionTypeColor.DEFAULT, true);
         return result;
     }
 

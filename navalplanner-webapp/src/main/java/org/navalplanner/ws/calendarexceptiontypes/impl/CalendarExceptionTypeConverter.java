@@ -23,6 +23,7 @@ package org.navalplanner.ws.calendarexceptiontypes.impl;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
 import org.navalplanner.business.workingday.EffortDuration;
+import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeColorDTO;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO;
 
 /**
@@ -40,23 +41,29 @@ public final class CalendarExceptionTypeConverter {
             CalendarExceptionType calendarExceptionType) {
         EffortDuration duration = calendarExceptionType.getDuration();
         int seconds = (duration != null) ? duration.getSeconds() : 0;
+
+        CalendarExceptionTypeColorDTO colorDTO = CalendarExceptionTypeColorConverter
+                .toDTO(calendarExceptionType.getColor());
+
         return new CalendarExceptionTypeDTO(calendarExceptionType.getCode(),
-                calendarExceptionType.getName(), calendarExceptionType
-                        .getColor(), calendarExceptionType.isOverAssignableWithoutLimit(),
+                calendarExceptionType.getName(), colorDTO,
+                calendarExceptionType.isOverAssignableWithoutLimit(),
                 seconds);
     }
 
     public final static CalendarExceptionType toEntity(
             CalendarExceptionTypeDTO entityDTO) {
         return CalendarExceptionType.create(entityDTO.code, entityDTO.name,
-                entityDTO.color, entityDTO.overAssignable, EffortDuration
-                        .seconds(entityDTO.duration));
+                CalendarExceptionTypeColorConverter.toEntity(entityDTO.color),
+                entityDTO.overAssignable,
+                EffortDuration.seconds(entityDTO.duration));
     }
 
     public static void updateCalendarExceptionType(
             CalendarExceptionType entity, CalendarExceptionTypeDTO entityDTO) {
         entity.setName(entityDTO.name);
-        entity.setColor(entityDTO.color);
+        entity.setColor(CalendarExceptionTypeColorConverter
+                .toEntity(entityDTO.color));
         entity.setOverAssignable(entityDTO.overAssignable);
         entity.setDuration(EffortDuration.seconds(entityDTO.duration));
     }

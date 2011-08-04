@@ -45,6 +45,7 @@ import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.CalendarExceptionTypeColor;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
@@ -120,7 +121,7 @@ public class BaseCalendarServiceTest {
     @Rollback(false)
     public void givenCalendarExceptionTypeStored() {
         CalendarExceptionType calendarExceptionType = CalendarExceptionType
-                .create("name", "color", false);
+                .create("name", CalendarExceptionTypeColor.DEFAULT, false);
         calendarExceptionType.setCode(typeCode);
 
         calendarExceptionTypeDAO.save(calendarExceptionType);

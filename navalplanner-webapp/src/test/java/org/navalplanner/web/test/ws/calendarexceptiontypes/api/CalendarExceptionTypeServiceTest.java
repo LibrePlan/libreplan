@@ -35,9 +35,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.CalendarExceptionTypeColor;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeDTO;
 import org.navalplanner.ws.calendarexceptiontypes.api.CalendarExceptionTypeListDTO;
 import org.navalplanner.ws.calendarexceptiontypes.api.ICalendarExceptionTypeService;
+import org.navalplanner.ws.calendarexceptiontypes.impl.CalendarExceptionTypeColorConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -68,7 +70,7 @@ public class CalendarExceptionTypeServiceTest {
 
     private CalendarExceptionType givenCalendarExceptionTypeStored() {
         CalendarExceptionType calendarExceptionType = CalendarExceptionType
-                .create("name", "color", false);
+                .create("name", CalendarExceptionTypeColor.DEFAULT, false);
 
         calendarExceptionTypeDAO.save(calendarExceptionType);
         calendarExceptionTypeDAO.flush();
@@ -79,14 +81,14 @@ public class CalendarExceptionTypeServiceTest {
     }
 
     @Test
-    public void exportLabelTypes() {
+    public void exportExceptionTypes() {
         CalendarExceptionTypeListDTO list = calendarExceptionTypeService
                 .getCalendarExceptionType();
         assertTrue(list.calendarExceptionTypes.isEmpty());
     }
 
     @Test
-    public void exportLabelTypes2() {
+    public void exportExceptionTypes2() {
         CalendarExceptionType calendarExceptionType = givenCalendarExceptionTypeStored();
 
         CalendarExceptionTypeListDTO list = calendarExceptionTypeService
@@ -99,7 +101,9 @@ public class CalendarExceptionTypeServiceTest {
                 .getCode()));
         assertThat(calendarExceptionTypeDTO.name, equalTo(calendarExceptionType
                 .getName()));
-        assertThat(calendarExceptionTypeDTO.color,
+        assertThat(
+                CalendarExceptionTypeColorConverter
+                        .toEntity(calendarExceptionTypeDTO.color),
                 equalTo(calendarExceptionType.getColor()));
         assertThat(calendarExceptionTypeDTO.overAssignable,
                 equalTo(calendarExceptionType.isOverAssignableWithoutLimit()));
