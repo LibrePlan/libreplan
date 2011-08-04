@@ -25,8 +25,6 @@ import java.util.List;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zul.Datebox;
-import org.zkoss.zul.Textbox;
 import org.zkoss.zul.impl.InputElement;
 
 /**
@@ -50,19 +48,14 @@ public class ConstraintChecker {
     }
 
     private static boolean checkIsValid(Component child) {
-        if (child instanceof Textbox) {
-            return textboxIsValid((Textbox) child);
-        }
-        if (child instanceof Datebox) {
-            return dateboxIsValid((Datebox) child);
+        if (child instanceof InputElement) {
+            return inputIsValid((InputElement) child);
         }
         return true;
     }
 
-    private static boolean textboxIsValid(Textbox component) {
-        inputElementIsValid((InputElement) component);
-        // Forces constraint to be checked
-        component.getValue();
+    private static boolean inputIsValid(InputElement component) {
+        inputElementIsValid(component);
         return (component.isValid());
     }
 
@@ -74,12 +67,6 @@ public class ConstraintChecker {
                         .getErrorMessage());
             }
         }
-    }
-
-    private static boolean dateboxIsValid(Datebox component) {
-        inputElementIsValid((InputElement) component);
-        component.getValue();
-        return (component.isValid());
     }
 
 }
