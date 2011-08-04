@@ -50,6 +50,7 @@
                             <textbox id="tbName"
                                 value="@{controller.exceptionDayType.name}"
                                 width="300px"
+                                constraint="no empty:${i18n:_('cannot be null or empty')}"
                                 onBlur="controller.updateWindowTitle()" />
                         </row>
                         <row>
