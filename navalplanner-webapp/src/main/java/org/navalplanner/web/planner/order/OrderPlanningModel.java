@@ -1289,12 +1289,14 @@ public abstract class OrderPlanningModel implements IOrderPlanningModel {
 
     private void forceLoadOfLabels(List<TaskElement> initial) {
         for (TaskElement taskElement : initial) {
-            if (taskElement.isLeaf()) {
-                OrderElement orderElement = taskElement.getOrderElement();
-                if (orderElement != null) {
-                    orderElement.getLabels().size();
+            OrderElement orderElement = taskElement.getOrderElement();
+            if (orderElement != null) {
+                for (org.navalplanner.business.labels.entities.Label each : orderElement
+                        .getLabels()) {
+                    each.getType().getName();
                 }
-            } else {
+            }
+            if (!taskElement.isLeaf()) {
                 forceLoadOfLabels(taskElement.getChildren());
             }
         }
