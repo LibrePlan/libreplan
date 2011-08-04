@@ -24,6 +24,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
+import org.navalplanner.business.calendars.entities.CalendarExceptionTypeColor;
 import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.PredefinedCalendarExceptionTypes;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -44,6 +45,9 @@ import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 
@@ -60,13 +64,20 @@ public class CalendarExceptionTypeCRUDController extends
 
     private Textbox tbName;
 
-    private Textbox tbColor;
-
     private Checkbox overAssignable;
 
     private EffortDurationPicker standardEffort;
 
     private EffortDurationPicker extraEffort;
+
+    private static ListitemRenderer calendarExceptionTypeColorRenderer = new ListitemRenderer() {
+        @Override
+        public void render(Listitem item, Object data) throws Exception {
+            CalendarExceptionTypeColor color = (CalendarExceptionTypeColor) data;
+            item.setValue(color);
+            item.appendChild(new Listcell(_(color.getName())));
+        }
+    };
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
@@ -94,7 +105,6 @@ public class CalendarExceptionTypeCRUDController extends
 
     private void initializeEditWindowComponents() {
         tbName = (Textbox) editWindow.getFellowIfAny("tbName");
-        tbColor = (Textbox) editWindow.getFellowIfAny("tbColor");
         overAssignable = Util.findComponentAt(editWindow, "overAssignable");
         standardEffort = Util.findComponentAt(editWindow, "standardEffort");
         extraEffort = Util.findComponentAt(editWindow, "extraEffort");
@@ -127,7 +137,6 @@ public class CalendarExceptionTypeCRUDController extends
 
     private void clearFields() {
         tbName.setRawValue("");
-        tbColor.setRawValue("");
     }
 
     @Override
@@ -200,6 +209,14 @@ public class CalendarExceptionTypeCRUDController extends
     @Override
     protected CalendarExceptionType getEntityBeingEdited() {
         return calendarExceptionTypeModel.getExceptionDayType();
+    }
+
+    public CalendarExceptionTypeColor[] getColors() {
+        return CalendarExceptionTypeColor.values();
+    }
+
+    public ListitemRenderer getColorsRenderer() {
+        return calendarExceptionTypeColorRenderer;
     }
 
 }

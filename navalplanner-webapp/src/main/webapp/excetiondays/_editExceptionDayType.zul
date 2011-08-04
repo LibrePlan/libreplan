@@ -55,9 +55,10 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Color')}" />
-                            <textbox id="tbColor"
-                                value="@{controller.exceptionDayType.color}"
-                                width="300px"/>
+                            <listbox id="colorsListbox" mold="select"
+                                    model="@{controller.colors}"
+                                    selectedItem="@{controller.exceptionDayType.color}"
+                                    itemRenderer="@{controller.colorsRenderer}"/>
                         </row>
                          <row>
                             <label value="${i18n:_('Standard Effort')}" />
