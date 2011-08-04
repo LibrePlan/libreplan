@@ -73,7 +73,7 @@ import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
-import org.navalplanner.web.planner.chart.LoadChartFiller;
+import org.navalplanner.web.planner.chart.StandardLoadChartFiller;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.OrderPlanningModel;
 import org.navalplanner.web.planner.tabs.MultipleTabsPlannerController;
@@ -795,7 +795,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
                 getFilterFinishDate());
     }
 
-    private class CompanyLoadChartFiller extends LoadChartFiller {
+    private class CompanyLoadChartFiller extends StandardLoadChartFiller {
 
         @Override
         protected String getOptionalJavascriptCall() {

@@ -44,7 +44,7 @@ import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.web.common.components.bandboxsearch.BandboxMultipleSearch;
 import org.navalplanner.web.common.components.finders.FilterPair;
 import org.navalplanner.web.planner.chart.Chart;
-import org.navalplanner.web.planner.chart.LoadChartFiller;
+import org.navalplanner.web.planner.chart.StandardLoadChartFiller;
 import org.navalplanner.web.planner.company.CompanyPlanningModel;
 import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
@@ -613,7 +613,7 @@ public class ResourceLoadController implements Composer {
         return timeplot;
     }
 
-    private class ResourceLoadChartFiller extends LoadChartFiller {
+    private class ResourceLoadChartFiller extends StandardLoadChartFiller {
 
         @Override
         protected String getOptionalJavascriptCall() {

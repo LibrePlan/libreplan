@@ -85,10 +85,10 @@ import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
 import org.navalplanner.web.planner.calendar.CalendarAllocationController;
 import org.navalplanner.web.planner.calendar.ICalendarAllocationCommand;
 import org.navalplanner.web.planner.chart.Chart;
-import org.navalplanner.web.planner.chart.ChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.navalplanner.web.planner.chart.IChartFiller;
+import org.navalplanner.web.planner.chart.LoadChartFiller;
 import org.navalplanner.web.planner.consolidations.AdvanceConsolidationController;
 import org.navalplanner.web.planner.consolidations.IAdvanceConsolidationCommand;
 import org.navalplanner.web.planner.milestone.IAddMilestoneCommand;
@@ -107,8 +107,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.geometry.TimeGeometry;
-import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
@@ -132,7 +130,6 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
@@ -153,13 +150,6 @@ import org.zkoss.zul.Vbox;
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class OrderPlanningModel implements IOrderPlanningModel {
-
-    public static final String COLOR_CAPABILITY_LINE = "#000000"; // Black
-    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
-                                                                       // green
-    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
-    public static final String COLOR_ASSIGNED_LOAD_SPECIFIC = "#98D471"; // Green
-    public static final String COLOR_OVERLOAD_SPECIFIC = "#FF5A11"; // Red
 
     private static final Log LOG = LogFactory.getLog(OrderPlanningModel.class);
 
@@ -1126,7 +1116,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 order);
     }
 
-    private class OrderLoadChartFiller extends ChartFiller {
+    public static final String COLOR_ASSIGNED_LOAD_GLOBAL = "#E0F3D3"; // Soft
+    // green
+    public static final String COLOR_OVERLOAD_GLOBAL = "#FFD4C2"; // Soft red
+
+    private class OrderLoadChartFiller extends LoadChartFiller {
 
         private final Order order;
 
@@ -1135,15 +1129,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         @Override
-        public void fillChart(Timeplot chart, Interval interval, Integer size) {
-            chart.getChildren().clear();
-            chart.invalidate();
+        protected String getOptionalJavascriptCall() {
+            return "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
+        }
 
-            String javascript = "ganttz.GanttPanel.getInstance().timeplotContainerRescroll()";
-            Clients.evalJavaScript(javascript);
-
-            resetMinimumAndMaximumValueForChart();
-
+        @Override
+        protected Plotinfo[] getPlotInfos(Interval interval) {
             List<DayAssignment> orderDayAssignments = order.getDayAssignments();
             ContiguousDaysLine<List<DayAssignment>> orderAssignments = ContiguousDaysLine
                     .byDay(orderDayAssignments);
@@ -1167,8 +1158,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
             Plotinfo plotOtherLoad = createPlotinfoFromDurations(
                     groupAsNeededByZoom(toSortedMap(min(allLoad,
-                            maxCapacityOnResources))),
-                    interval);
+                            maxCapacityOnResources))), interval);
 
             Plotinfo plotMaxCapacity = createPlotinfoFromDurations(
                     groupAsNeededByZoom(toSortedMap(maxCapacityOnResources)),
@@ -1182,7 +1172,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                     groupAsNeededByZoom(toSortedMap(sum(allOverload,
                             maxCapacityOnResources))), interval);
 
-            plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD_SPECIFIC);
+            plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD);
             plotOrderLoad.setLineWidth(0);
 
             plotOtherLoad.setFillColor(COLOR_ASSIGNED_LOAD_GLOBAL);
@@ -1192,28 +1182,14 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             plotMaxCapacity.setFillColor("#FFFFFF");
             plotMaxCapacity.setLineWidth(2);
 
-            plotOrderOverload.setFillColor(COLOR_OVERLOAD_SPECIFIC);
+            plotOrderOverload.setFillColor(COLOR_OVERLOAD);
             plotOrderOverload.setLineWidth(0);
 
             plotOtherOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
             plotOtherOverload.setLineWidth(0);
 
-            ValueGeometry valueGeometry = getValueGeometry();
-            TimeGeometry timeGeometry = getTimeGeometry(interval);
-
-            // Stacked area: load - otherLoad - max - overload - otherOverload
-            appendPlotinfo(chart, plotOtherOverload, valueGeometry,
-                    timeGeometry);
-            appendPlotinfo(chart, plotOrderOverload, valueGeometry,
-                    timeGeometry);
-            appendPlotinfo(chart, plotMaxCapacity, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotOtherLoad, valueGeometry, timeGeometry);
-            appendPlotinfo(chart, plotOrderLoad, valueGeometry, timeGeometry);
-
-
-
-            chart.setWidth(size + "px");
-            chart.setHeight("150px");
+            return new Plotinfo[] { plotOtherOverload, plotOrderOverload,
+                    plotMaxCapacity, plotOtherLoad, plotOrderLoad };
         }
 
         private ContiguousDaysLine<List<DayAssignment>> allAssignments(
