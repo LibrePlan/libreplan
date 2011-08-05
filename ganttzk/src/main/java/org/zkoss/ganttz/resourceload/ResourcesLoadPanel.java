@@ -109,6 +109,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     private final boolean expandResourceLoadViewCharts;
 
+    private Component firstOptionalFilter;
+
+    private Component secondOptionalFilter;
+
     public ResourcesLoadPanel(List<LoadTimeLine> groups,
             TimeTracker timeTracker, Component componentOnWhichGiveFeedback,
             boolean expandResourceLoadViewCharts, PaginationType paginationType) {
@@ -345,11 +349,11 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         getFellow("insertionPointTimetracker").appendChild(timeTrackerHeader);
 
         // Insert additional filters if any
-        Component additionalFilter = (Component) getVariable("additionalFilter1", true);
+        Component additionalFilter = getFirstOptionalFilter();
         if(additionalFilter != null) {
             getFellow("additionalFilterInsertionPoint1").appendChild(additionalFilter);
         }
-        additionalFilter = (Component) getVariable("additionalFilter2", true);
+        additionalFilter = getSecondOptionalFilter();
         if(additionalFilter != null) {
             getFellow("additionalFilterInsertionPoint2").appendChild(additionalFilter);
         }
@@ -372,6 +376,22 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         this.visibleChart = expandResourceLoadViewCharts;
         ((South) getFellow("graphics")).setOpen(this.visibleChart);
         savePreviousData();
+    }
+
+    public Component getFirstOptionalFilter() {
+        return firstOptionalFilter;
+    }
+
+    public void setFirstOptionalFilter(Component firstOptionalFilter) {
+        this.firstOptionalFilter = firstOptionalFilter;
+    }
+
+    public Component getSecondOptionalFilter() {
+        return secondOptionalFilter;
+    }
+
+    public void setSecondOptionalFilter(Component secondOptionalFilter) {
+        this.secondOptionalFilter = secondOptionalFilter;
     }
 
     public void clearComponents() {

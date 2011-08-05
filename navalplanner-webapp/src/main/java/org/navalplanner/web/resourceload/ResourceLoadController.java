@@ -344,8 +344,7 @@ public class ResourceLoadController implements Composer {
         hbox.appendChild(bandBox);
         hbox.appendChild(button);
         hbox.setAlign("center");
-
-        resourcesLoadPanel.setVariable("additionalFilter2", hbox, true);
+        resourcesLoadPanel.setSecondOptionalFilter(hbox);
     }
 
     private void addTimeFilter() {
@@ -379,8 +378,7 @@ public class ResourceLoadController implements Composer {
         hbox.appendChild(label2);
         hbox.appendChild(endDate);
         hbox.setAlign("center");
-
-        resourcesLoadPanel.setVariable("additionalFilter1", hbox, true);
+        resourcesLoadPanel.setFirstOptionalFilter(hbox);
     }
 
     private void setupNameFilter() {
