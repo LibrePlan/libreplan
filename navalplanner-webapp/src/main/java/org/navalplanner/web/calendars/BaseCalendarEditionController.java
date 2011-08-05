@@ -50,6 +50,7 @@ import org.navalplanner.business.calendars.entities.ResourceCalendar;
 import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.EffortDuration.Granularity;
+import org.navalplanner.business.workingday.IntraDayDate.PartialDay;
 import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.Util;
@@ -94,6 +95,10 @@ import org.zkoss.zul.api.Window;
  */
 public abstract class BaseCalendarEditionController extends
         GenericForwardComposer {
+
+    private static final String TEXT_COLOR_HIGHLIGHTED_DAY = "white";
+
+    private static final String BACKGROUND_COLOR_ZERO_HOURS_DAY = "lightgrey";
 
     private static String asString(Capacity capacity) {
         String extraEffortString = capacity.isOverAssignableWithoutLimit() ? _("unl")
@@ -485,16 +490,60 @@ public abstract class BaseCalendarEditionController extends
         capacityPicker.setValue(baseCalendarModel.getWorkableCapacity());
     }
 
+    private Map<String, List<Integer>> getDaysCurrentMonthByColor() {
+        LocalDate currentDate = baseCalendarModel.getSelectedDay();
+
+        LocalDate minDate = currentDate.dayOfMonth().withMinimumValue();
+        LocalDate maxDate = currentDate.dayOfMonth().withMaximumValue();
+
+        Map<String, List<Integer>> colorsMap = new HashMap<String, List<Integer>>();
+
+        BaseCalendar calendar = baseCalendarModel.getBaseCalendar();
+        if (calendar == null) {
+            return colorsMap;
+        }
+
+        for (LocalDate date = minDate; date.compareTo(maxDate) <= 0; date = date
+                .plusDays(1)) {
+            CalendarExceptionType calendarExceptionType = calendar
+                    .getExceptionType(date);
+
+            if (calendarExceptionType != null) {
+                if (calendar.getOwnExceptionDay(date) != null) {
+                    addDayToColor(colorsMap, calendarExceptionType.getColor()
+                            .getColorOwnException(), date.getDayOfMonth());
+                } else {
+                    addDayToColor(colorsMap, calendarExceptionType.getColor()
+                            .getColorDerivedException(), date.getDayOfMonth());
+                }
+            } else {
+                if (calendar.getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
+                    addDayToColor(colorsMap, BACKGROUND_COLOR_ZERO_HOURS_DAY,
+                            date.getDayOfMonth());
+                }
+            }
+        }
+
+        return colorsMap;
+    }
+
+    private void addDayToColor(Map<String, List<Integer>> colorsMap,
+            String color, int day) {
+        if (colorsMap.get(color) == null) {
+            colorsMap.put(color, new ArrayList<Integer>());
+        }
+        colorsMap.get(color).add(day);
+    }
+
     public void highlightDaysOnCalendar() {
         Calendar calendar = (Calendar) window.getFellow("calendarWidget");
 
-        Map<DayType, List<Integer>> daysByType = getDaysCurrentMonthByType();
-        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
-                .get(DayType.ANCESTOR_EXCEPTION).toArray(), "white", "orange"));
-        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
-                .get(DayType.OWN_EXCEPTION).toArray(), "white", "red"));
-        Clients.response(new AuInvoke(calendar, "highlightDates", daysByType
-                .get(DayType.ZERO_HOURS).toArray(), "red", "white"));
+        Map<String, List<Integer>> daysByColor = getDaysCurrentMonthByColor();
+        for (String color : daysByColor.keySet()) {
+            Clients.response(new AuInvoke(calendar, "highlightDates",
+                    daysByColor.get(color).toArray(),
+                    TEXT_COLOR_HIGHLIGHTED_DAY, color));
+        }
     }
 
     public Date getSelectedDay() {
