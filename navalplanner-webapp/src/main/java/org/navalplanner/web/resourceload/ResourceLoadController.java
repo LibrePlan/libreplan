@@ -171,19 +171,9 @@ public class ResourceLoadController implements Composer {
                 filterHasChanged = (filterByResources != currentFilterByResources);
                 currentFilterByResources = filterByResources;
 
-                if (filterBy == null) {
-                    if (resourcesLoadPanel == null) {
-                        resetAdditionalFilters();
-                    }
-                    resourceLoadModel.initGlobalView(filterByResources);
-                } else {
-                    if (resourcesLoadPanel == null) {
-                        deleteAdditionalFilters();
-                    }
-                    resourceLoadModel.initGlobalView(filterBy, filterByResources);
-                }
-                timeTracker = buildTimeTracker();
-                buildResourcesLoadPanel();
+                ResourceLoadDisplayData dataToShow = calculateDataToDisplay(filterByResources);
+                timeTracker = buildTimeTracker(dataToShow);
+                buildResourcesLoadPanel(dataToShow);
 
                 parent.getChildren().clear();
                 parent.appendChild(resourcesLoadPanel);
@@ -195,6 +185,23 @@ public class ResourceLoadController implements Composer {
                     setupNameFilter();
                 }
                 firstLoad = false;
+            }
+
+            private ResourceLoadDisplayData calculateDataToDisplay(
+                    boolean filterByResources) {
+                if (filterBy == null) {
+                    if (resourcesLoadPanel == null) {
+                        resetAdditionalFilters();
+                    }
+                    return resourceLoadModel
+                            .calculateDataToDisplay(filterByResources);
+                } else {
+                    if (resourcesLoadPanel == null) {
+                        deleteAdditionalFilters();
+                    }
+                    return resourceLoadModel.calculateDataToDisplay(filterBy,
+                            filterByResources);
+                }
             }
         });
     }
@@ -254,10 +261,10 @@ public class ResourceLoadController implements Composer {
                 .size()]));
     }
 
-    private TimeTracker buildTimeTracker() {
-        zoomLevel = (timeTracker == null) ? resourceLoadModel
-                .calculateInitialZoomLevel() : timeTracker.getDetailLevel();
-        return new TimeTracker(resourceLoadModel.getViewInterval(), zoomLevel,
+    private TimeTracker buildTimeTracker(ResourceLoadDisplayData dataToShow) {
+        zoomLevel = (timeTracker == null) ? dataToShow.getInitialZoomLevel()
+                : timeTracker.getDetailLevel();
+        return new TimeTracker(dataToShow.getViewInterval(), zoomLevel,
                 SeveralModificators.create(),
                 SeveralModificators.create(createBankHolidaysMarker()), parent);
     }
@@ -268,7 +275,7 @@ public class ResourceLoadController implements Composer {
         return BankHolidaysMarker.create(defaultCalendar);
     }
 
-    private void buildResourcesLoadPanel() {
+    private void buildResourcesLoadPanel(ResourceLoadDisplayData data) {
         if (resourcesLoadPanel != null) {
             if(bandBox != null) {
                 //if the filter has changed, we have to clear the model and
@@ -290,15 +297,15 @@ public class ResourceLoadController implements Composer {
                 resourcesLoadPanel.setInternalPaginationDisabled(
                         !bandBox.getSelectedElements().isEmpty());
             }
-            resourcesLoadPanel.init(resourceLoadModel.getLoadTimeLines(),
-                    timeTracker);
+            resourcesLoadPanel.init(data.getLoadTimeLines(), timeTracker);
             resourcesLoadPanel.setLoadChart(buildChart());
             if(filterHasChanged) {
                 addNameFilterListener();
             }
         } else {
-            resourcesLoadPanel = new ResourcesLoadPanel(resourceLoadModel
-                    .getLoadTimeLines(), timeTracker, parent, resourceLoadModel
+            resourcesLoadPanel = new ResourcesLoadPanel(
+                    data.getLoadTimeLines(), timeTracker, parent,
+                    resourceLoadModel
                     .isExpandResourceLoadViewCharts(), PaginationType.EXTERNAL_PAGINATION);
 
             if(filterBy == null) {

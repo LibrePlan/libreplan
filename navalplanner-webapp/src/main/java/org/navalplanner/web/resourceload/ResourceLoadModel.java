@@ -26,7 +26,6 @@ import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.planner.order.PlanningStateCreator.and;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -87,8 +86,6 @@ import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.resourceload.LoadPeriod;
 import org.zkoss.ganttz.data.resourceload.LoadTimeLine;
 import org.zkoss.ganttz.data.resourceload.TimeLineRole;
-import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
-import org.zkoss.ganttz.util.Interval;
 
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -117,9 +114,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Autowired
     private IScenarioManager scenarioManager;
-
-    private List<LoadTimeLine> loadTimeLines;
-    private Interval viewInterval;
 
     private PlanningState filterBy;
 
@@ -171,20 +165,21 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(boolean filterByResources) {
+    public ResourceLoadDisplayData calculateDataToDisplay(boolean filterByResources) {
         filterBy = null;
         this.filterByResources = filterByResources;
-        doGlobalView();
+        return new ResourceLoadDisplayData(calculateLoadTimeLines());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void initGlobalView(PlanningState filterBy, boolean filterByResources) {
+    public ResourceLoadDisplayData calculateDataToDisplay(PlanningState filterBy,
+            boolean filterByResources) {
         this.filterBy = filterBy;
         this.filterBy.reattach();
         this.filterBy.reassociateResourcesWithSession();
         this.filterByResources = filterByResources;
-        doGlobalView();
+        return new ResourceLoadDisplayData(calculateLoadTimeLines());
     }
 
     @Override
@@ -218,22 +213,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
             // anyway, if it happenned we don't allow the user to pass
         }
         return false;
-    }
-
-    private void doGlobalView() {
-        loadTimeLines = calculateLoadTimeLines();
-        if (!loadTimeLines.isEmpty()) {
-            viewInterval = LoadTimeLine.getIntervalFrom(loadTimeLines);
-        } else {
-            viewInterval = new Interval(new Date(), plusFiveYears(new Date()));
-        }
-    }
-
-    private Date plusFiveYears(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.YEAR, 5);
-        return calendar.getTime();
     }
 
     private List<LoadTimeLine> calculateLoadTimeLines() {
@@ -945,22 +924,6 @@ public class ResourceLoadModel implements IResourceLoadModel {
 
         return new LoadTimeLine(getName(criterions, task), loadPeriods,
                 type, role);
-    }
-
-    @Override
-    public List<LoadTimeLine> getLoadTimeLines() {
-        return loadTimeLines;
-    }
-
-    @Override
-    public Interval getViewInterval() {
-        return viewInterval;
-    }
-
-    public ZoomLevel calculateInitialZoomLevel() {
-        Interval interval = getViewInterval();
-        return ZoomLevel.getDefaultZoomByDates(new LocalDate(interval
-                .getStart()), new LocalDate(interval.getFinish()));
     }
 
     @Override
