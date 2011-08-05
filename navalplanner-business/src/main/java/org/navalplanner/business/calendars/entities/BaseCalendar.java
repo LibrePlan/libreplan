@@ -154,10 +154,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
 
     private Integer lastSequenceCode = 0;
 
-    public enum DayType {
-        NORMAL, ZERO_HOURS, OWN_EXCEPTION, ANCESTOR_EXCEPTION
-    }
-
     /**
      * Constructor for hibernate. Do not use!
      */
@@ -631,20 +627,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         BaseCalendar copy = ResourceCalendar.create();
         copyFields(copy);
         return copy;
-    }
-
-    public DayType getType(LocalDate date) {
-        CalendarException exceptionDay = getExceptionDay(date);
-        if (exceptionDay != null) {
-            if (getOwnExceptionDay(date) != null) {
-                return DayType.OWN_EXCEPTION;
-            }
-            return DayType.ANCESTOR_EXCEPTION;
-        }
-        if (getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
-            return DayType.ZERO_HOURS;
-        }
-        return DayType.NORMAL;
     }
 
     public List<CalendarData> getCalendarDataVersions() {

@@ -37,7 +37,6 @@ import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
 import org.navalplanner.business.calendars.entities.CalendarException;
 import org.navalplanner.business.calendars.entities.CalendarExceptionType;
@@ -543,31 +542,6 @@ public class BaseCalendarTest {
                 notNullValue());
         assertThat(derived.getOwnExceptionDay(CHRISTMAS_DAY_LOCAL_DATE),
                 nullValue());
-    }
-
-    @Test
-    public void testGetType() {
-        BaseCalendar calendar = createChristmasCalendar();
-
-        assertThat(calendar.getType(MONDAY_LOCAL_DATE), equalTo(DayType.NORMAL));
-        assertThat(calendar.getType(SUNDAY_LOCAL_DATE),
-                equalTo(DayType.ZERO_HOURS));
-        assertThat(calendar.getType(CHRISTMAS_DAY_LOCAL_DATE),
-                equalTo(DayType.OWN_EXCEPTION));
-    }
-
-    @Test
-    public void testGetTypeDerivedCalendar() {
-        BaseCalendar calendar = createChristmasCalendar();
-        BaseCalendar derived = calendar.newDerivedCalendar();
-
-        assertThat(derived.getType(MONDAY_LOCAL_DATE), equalTo(DayType.NORMAL));
-        assertThat(derived.getType(SUNDAY_LOCAL_DATE), equalTo(DayType.ZERO_HOURS));
-        assertThat(derived.getType(CHRISTMAS_DAY_LOCAL_DATE),
-                equalTo(DayType.ANCESTOR_EXCEPTION));
-
-        assertThat(calendar.getType(CHRISTMAS_DAY_LOCAL_DATE),
-                equalTo(DayType.OWN_EXCEPTION));
     }
 
     @Test

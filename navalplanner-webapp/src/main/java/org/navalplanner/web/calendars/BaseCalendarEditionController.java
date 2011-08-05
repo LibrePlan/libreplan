@@ -39,7 +39,6 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
-import org.navalplanner.business.calendars.entities.BaseCalendar.DayType;
 import org.navalplanner.business.calendars.entities.CalendarAvailability;
 import org.navalplanner.business.calendars.entities.CalendarData;
 import org.navalplanner.business.calendars.entities.CalendarData.Days;
@@ -573,67 +572,28 @@ public abstract class BaseCalendarEditionController extends
         reloadSelectDayInformation();
     }
 
-    private Map<DayType, List<Integer>> getDaysCurrentMonthByType() {
-        LocalDate currentDate = new LocalDate(baseCalendarModel
-                .getSelectedDay());
-
-        LocalDate minDate = currentDate.dayOfMonth().withMinimumValue();
-        LocalDate maxDate = currentDate.dayOfMonth().withMaximumValue();
-
-        List<Integer> ancestorExceptionsDays = new ArrayList<Integer>();
-        List<Integer> ownExceptionDays = new ArrayList<Integer>();
-        List<Integer> zeroHoursDays = new ArrayList<Integer>();
-        List<Integer> normalDays = new ArrayList<Integer>();
-
-        for (LocalDate date = minDate; date.compareTo(maxDate) <= 0; date = date
-                .plusDays(1)) {
-            DayType typeOfDay = baseCalendarModel.getTypeOfDay(date);
-            if (typeOfDay != null) {
-                switch (typeOfDay) {
-                case ANCESTOR_EXCEPTION:
-                    ancestorExceptionsDays.add(date.getDayOfMonth());
-                    break;
-                case OWN_EXCEPTION:
-                    ownExceptionDays.add(date.getDayOfMonth());
-                    break;
-                case ZERO_HOURS:
-                    zeroHoursDays.add(date.getDayOfMonth());
-                    break;
-                case NORMAL:
-                default:
-                    normalDays.add(date.getDayOfMonth());
-                    break;
-                }
-            }
-        }
-
-        Map<DayType, List<Integer>> result = new HashMap<DayType, List<Integer>>();
-
-        result.put(DayType.ANCESTOR_EXCEPTION, ancestorExceptionsDays);
-        result.put(DayType.OWN_EXCEPTION, ownExceptionDays);
-        result.put(DayType.ZERO_HOURS, zeroHoursDays);
-        result.put(DayType.NORMAL, normalDays);
-
-        return result;
-    }
-
     public String getTypeOfDay() {
-        DayType typeOfDay = baseCalendarModel.getTypeOfDay();
-        if (typeOfDay == null) {
+        BaseCalendar calendar = baseCalendarModel.getBaseCalendar();
+        if (calendar == null) {
             return "";
         }
 
-        switch (typeOfDay) {
-        case ANCESTOR_EXCEPTION:
-            return _("Derived exception");
-        case OWN_EXCEPTION:
-            return _("Exception");
-        case ZERO_HOURS:
-            return _("Not working day");
-        case NORMAL:
-        default:
-            return _("Normal");
+        LocalDate date = baseCalendarModel.getSelectedDay();
+        CalendarException exceptionDay = calendar.getExceptionDay(date);
+        if (exceptionDay != null) {
+            if (calendar.getOwnExceptionDay(date) != null) {
+                return _("Exception: {0}", exceptionDay.getType().getName());
+            } else {
+                return _("Exception: {0} (Inh)", exceptionDay.getType()
+                        .getName());
+            }
         }
+
+        if (calendar.getCapacityOn(PartialDay.wholeDay(date)).isZero()) {
+            return _("Not working day");
+        }
+
+        return _("Normal");
     }
 
     public String getWorkableTime() {
@@ -1276,11 +1236,7 @@ public abstract class BaseCalendarEditionController extends
     }
 
     public boolean isOwnExceptionDay() {
-        DayType typeOfDay = baseCalendarModel.getTypeOfDay();
-        if ((typeOfDay != null) && (typeOfDay.equals(DayType.OWN_EXCEPTION))) {
-            return true;
-        }
-        return false;
+        return baseCalendarModel.isOwnExceptionDay();
     }
 
     public boolean isNotOwnExceptionDay() {
