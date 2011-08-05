@@ -48,7 +48,7 @@ llamarle **España**.
 
          * 22 de Abril - Tipo BankHoliday - Horas laborales 0.
          * 17 de Mayo - Tipo BankHoliday - Horas laborales 0.
-         * 30 de Diciembre - Tipo Workable BanHoliday - Horas laborales 4.
+         * 30 de Diciembre - Tipo Workable BankHoliday - Horas laborales 4.
 
    * Jornada semanal:
 
