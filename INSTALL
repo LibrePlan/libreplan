@@ -64,7 +64,7 @@ Debian/Ubuntu
 
     CREATE DATABASE navalplan;
     CREATE USER navalplan WITH PASSWORD 'navalplan';
-    GRANT ALL PRIVILEGES ON DATABASE navalplan TO naval;
+    GRANT ALL PRIVILEGES ON DATABASE navalplan TO navalplan;
 
 * Download database installation script::
 
