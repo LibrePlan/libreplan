@@ -2,8 +2,8 @@
 <calendar-exception-type-list xmlns="http://rest.ws.navalplanner.org">
 
   <calendar-exception-type code="HALF_DAY" name="Half day"
-    color="green" duration="14400" over-assignable="true" />
+    color="GREEN" duration="14400" over-assignable="true" />
   <calendar-exception-type code="AVAILABILITY" name="Availability"
-    color="blue" duration="0" over-assignable="true" />
+    color="BLUE" duration="0" over-assignable="true" />
 
 </calendar-exception-type-list>
