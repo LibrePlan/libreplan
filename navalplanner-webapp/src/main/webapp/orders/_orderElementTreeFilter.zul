@@ -27,13 +27,13 @@
     <label value="${i18n:_('name')}"/>
     <textbox id="filterNameOrderElement" width="50px"
         onOK="treeController.onApplyFilter()" />
-    <button label="options" style="margin-top: -4px"
+    <button id="optionsButton" label="options" style="margin-top: -4px"
         tooltiptext="${i18n:_('Set Filter Options')}"
-        onClick="treeController.toggleOptions()"/>
+	onClick='filterOptionsPopup.open(self,"after_end");' />
     <button image="/common/img/ico_filter.png" style="margin-top: -4px"
         tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
         onClick="treeController.onApplyFilter()"/>
-    <popup id="filterOptionsPopup" width="220px" height="120px">
+    <popup id="filterOptionsPopup" width="220px" height="120px" >
         <groupbox mold="3d" closable="true" width="200px" height="100px">
             <vbox>
                 <hbox>
