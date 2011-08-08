@@ -182,7 +182,7 @@ public class ResourceLoadController implements Composer {
                 addSchedulingScreenListeners();
                 addCommands(resourcesLoadPanel);
                 if(firstLoad || filterHasChanged) {
-                    setupNameFilter();
+                    setupPaginateByNameFilter();
                 }
                 firstLoad = false;
             }
@@ -381,74 +381,81 @@ public class ResourceLoadController implements Composer {
         resourcesLoadPanel.setFirstOptionalFilter(hbox);
     }
 
-    private void setupNameFilter() {
+    private Comboitem buildPageCombo(int startPosition, String first, String end) {
+        Comboitem result = new Comboitem();
+        result.setLabel(first.substring(0, 1) + " - " + end.substring(0, 1));
+        result.setDescription(first + " - " + end);
+        result.setValue(startPosition);
+        return result;
+    }
+
+    private void setupPaginateByNameFilter() {
         Combobox filterByNameCombo = resourcesLoadPanel.getPaginationFilterCombobox();
+        if (filterByNameCombo == null) {
+            return;
+        }
         filterByNameCombo.getChildren().clear();
-        List<Resource> resources = resourceLoadModel.getAllResourcesList();
-        List<Criterion> criteria = resourceLoadModel.getAllCriteriaList();
-        int size;
-        if(currentFilterByResources) {
-            size = resources.size();
-        }
-        else {
-            size = criteria.size();
-        }
-        int pageSize = resourceLoadModel.getPageSize();
 
-        if(size > pageSize) {
-            int position = 0;
-            while(position < size) {
-                String firstName;
-                String lastName;
-                int newPosition = position + pageSize;
-                if(currentFilterByResources) {
-                    firstName = resources.get(position).getName();
-                    if(newPosition - 1 < size) {
-                        lastName = resources.get(newPosition - 1)
-                        .getName();
-                    }
-                    else {
-                        lastName = resources.get(size - 1)
-                        .getName();
-                    }
-                }
-                else {
-                    Criterion criterion = criteria.get(position);
-                    firstName = criterion.getType().getName() + ": " + criterion.getName();
-                    if(newPosition - 1 < size) {
-                        criterion = criteria.get(newPosition - 1);
-                        lastName = criterion.getType().getName() + ": " + criterion.getName();
-                    }
-                    else {
-                        criterion = criteria.get(size - 1);
-                        lastName = criterion.getType().getName() + ": " + criterion.getName();
-                    }
-                }
-
-                Comboitem item = new Comboitem();
-                item.setLabel(firstName.substring(0, 1) + " - " + lastName.substring(0, 1));
-                item.setDescription(firstName + " - " + lastName);
-                item.setValue(position);
-                filterByNameCombo.appendChild(item);
-                if(resourceLoadModel.getPageFilterPosition() == position) {
-                    filterByNameCombo.setSelectedItemApi(item);
-                }
-                position = newPosition;
-            }
-        }
-
+        List<Comboitem> pages = byNamePages();
         Comboitem lastItem = new Comboitem();
         lastItem.setLabel(_("All"));
         lastItem.setDescription(_("Show all elements"));
         lastItem.setValue(new Integer(-1));
-        filterByNameCombo.appendChild(lastItem);
-        if(resourceLoadModel.getPageFilterPosition() == -1) {
-            filterByNameCombo.setSelectedItemApi(lastItem);
+        pages.add(lastItem);
+
+        for (Comboitem each : pages) {
+            filterByNameCombo.appendChild(each);
         }
 
-        if(filterByNameCombo.getSelectedIndex() == -1) {
+        int currentPosition = resourceLoadModel.getPageFilterPosition();
+        if (currentPosition >= 0 && currentPosition < pages.size()) {
+            filterByNameCombo.setSelectedItemApi(pages.get(currentPosition));
+        } else if (currentPosition == -1) {
+            filterByNameCombo.setSelectedItemApi(lastItem);
+        } else {
             filterByNameCombo.setSelectedIndex(0);
         }
+    }
+
+    private List<Comboitem> byNamePages() {
+        if (currentFilterByResources) {
+            return byNamePages(resourceLoadModel.getAllResourcesList(),
+                    new INameExtractor<Resource>() {
+
+                        @Override
+                        public String getNameOf(Resource resource) {
+                            return resource.getName();
+                        }
+                    });
+        } else {
+            return byNamePages(resourceLoadModel.getAllCriteriaList(),
+                    new INameExtractor<Criterion>() {
+
+                        @Override
+                        public String getNameOf(Criterion criterion) {
+                            return criterion.getType().getName() + ": "
+                                    + criterion.getName();
+                        }
+                    });
+        }
+    }
+
+    interface INameExtractor<T> {
+        public String getNameOf(T value);
+    }
+
+    private <T> List<Comboitem> byNamePages(List<T> elements,
+            INameExtractor<T> nameExtractor) {
+        List<Comboitem> result = new ArrayList<Comboitem>();
+        int pageSize = resourceLoadModel.getPageSize();
+        for (int startPos = 0; startPos < elements.size(); startPos += pageSize) {
+            int endPos = Math.min(startPos + pageSize - 1, elements.size() - 1);
+            String first = nameExtractor.getNameOf(elements.get(startPos));
+            String end = nameExtractor.getNameOf(elements.get(endPos));
+            Comboitem item = buildPageCombo(startPos, first, end);
+            result.add(item);
+        }
+        return result;
     }
 
     private void resetAdditionalFilters() {
