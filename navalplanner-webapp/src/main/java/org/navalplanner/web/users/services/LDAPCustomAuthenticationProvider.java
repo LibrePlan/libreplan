@@ -27,6 +27,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.common.IAdHocTransactionService;
@@ -111,6 +112,12 @@ public class LDAPCustomAuthenticationProvider extends
             throws AuthenticationException {
 
         String clearPassword = authentication.getCredentials().toString();
+
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(clearPassword)) {
+            throw new BadCredentialsException(
+                    "Username and password can not be empty");
+        }
+
         String encodedPassword = passwordEncoderService.encodePassword(
                 clearPassword, username);
         User user = getUserFromDB(username);
