@@ -1,0 +1,133 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ * ==============
+ *
+ * 1 - Create a new process
+ * 2 - Create a process with the same name (most be failure)
+ * 3 - Create a new process without name (most be failure)
+ * 4 - Edit a process
+ * 5 - Try to delete a previously assigned progress (most be failure)
+ *   5.1 - Create a Project
+ *   5.2 - Assign a progress to a project
+ *   5.3 - try to delete this progress
+ *   5.4 - Delete the previously created project
+ * 6 - Delete a process
+ * 7 - Try to edit a default value
+ * 8 - Try to delete a default value
+*/
+_include("../common_functions.sah");
+
+function progressCreate($name) {
+    commonCreate("Progress");
+    progressForm($name);
+    commonSaveValidation("Progress Type", $name);
+}
+
+function progressCreateDuplicate($name) {
+    commonCreate("Progress");
+    progressForm($name);
+    progressNotValid();
+}
+
+function progressCreateEmpty() {
+    commonCreate("Progress");
+    _click(_cell("Save"));
+    _assertExists(_div("The name is not valid, the name must not be null"));
+    _assert(_isVisible(_div("The name is not valid, the name must not be null")));
+    _click(_link("Progress"));
+}
+
+function progressForm($name) {
+    _setValue(_textbox(1), $name);
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function progressNotValid(){
+    _assertExists(_div("The name is not valid, there is another progress type with the same name."));
+    _assert(_isVisible(_div("The name is not valid, there is another progress type with the same name.")));
+}
+
+function progressEdit($oldName, $newName, $cell) {
+    commonEdit($oldName,3);
+    progressForm($newName);
+    commonSaveValidation("Progress Type", $newName);
+}
+
+function progressTryEditDefault($defaultValue){
+    var $fakeName = "fakenew";
+    commonEdit($defaultValue, 3);
+    progressForm($fakeName);
+    _assertNotEqual("Progress Type \""+$fakeName+"\" saved");
+    _assertNull(_cell("Progress Type \""+$fakeName+"\" saved"));
+    _assertExists(_div("Percentage"));
+    _assert(_isVisible(_div("Percentage")));
+    _click(_link("Progress"));
+}
+
+function progressTryDelDefault($defaultValue){
+    _click(_image("ico_borrar1.png", _in(_cell(3, _near(_cell($defaultValue))))));
+    _assertNotEqual("Delete Progress Type \""+$defaultValue+"\". Are you sure?");
+    _assertNull(_cell("Delete Progress Type \""+$defaultValue+"\". Are you sure?"));
+}
+
+function progressAssigned($projectName, $progressNewName){
+    commonCreateProject($projectName);
+    progressAssignProject($projectName, $progressNewName);
+    _click(_link("Progress"));
+    progressTryDelDefault($progressNewName);
+    commonDeleteProject($projectName);
+}
+
+function progressAssignProject($projectName, $progressNewName){
+    _click(_link("Projects"));
+    _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($projectName))))));
+    _click(_span("Progress"));
+    _click(_cell("Add new progress assignment"));
+    _setValue(_textbox("z-combobox-inp", _near(_row("footer"))), $progressNewName);
+    _setValue(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))),"10.00");
+    _setValue(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))),"10.00");
+    _click(_cell("Add measure"));
+    _click(_cell("z-button-cm[37]", _near(_row("footer"))));
+    _setValue(_textbox("z-decimalbox[1]"), "0.1");
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+/* test values */
+var $progressName = "new";
+var $progressNewName = "newest";
+var $defaultValue = "units";
+var $projectName = "new project";
+
+/* test actions */
+
+commonLogin("admin", "admin");
+progressCreate($progressName);
+progressCreateDuplicate($progressName);
+progressCreateEmpty();
+progressEdit($progressName, $progressNewName, 3);
+progressAssigned($projectName, $progressNewName);
+commonDelete("Progress", $progressNewName, 3);
+commonDeleteValidation("Progress Type", $progressNewName);
+progressTryEditDefault($defaultValue);
+progressTryDelDefault($defaultValue);
+commonLogout();
