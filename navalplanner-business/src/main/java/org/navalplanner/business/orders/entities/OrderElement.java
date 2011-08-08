@@ -565,6 +565,15 @@ public abstract class OrderElement extends IntegrationEntity implements
         return Collections.unmodifiableSet(labels);
     }
 
+    public Set<Label> getAllLabels() {
+        Set<Label> allLabels = new HashSet<Label>();
+        allLabels.addAll(this.labels);
+        if (parent != null) {
+            allLabels.addAll(parent.getAllLabels());
+        }
+        return allLabels;
+    }
+
     public void setLabels(Set<Label> labels) {
         this.labels = labels;
     }

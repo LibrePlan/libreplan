@@ -23,6 +23,7 @@ package org.navalplanner.web.orders;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.navalplanner.business.labels.entities.Label;
@@ -49,12 +50,15 @@ public class OrderElementPredicate implements IPredicate {
 
     private String name;
 
+    private boolean ignoreLabelsInheritance;
+
     public OrderElementPredicate(List<FilterPair> filters, Date startDate,
-            Date finishDate, String name) {
+            Date finishDate, String name, boolean ignoreLabelsInheritance) {
         this.filters = filters;
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.name = name;
+        this.ignoreLabelsInheritance = ignoreLabelsInheritance;
     }
 
     @Override
@@ -153,7 +157,13 @@ public class OrderElementPredicate implements IPredicate {
 
     private boolean existLabelInOrderElement(Label filterLabel,
             OrderElement order) {
-        for(Label label : order.getLabels()){
+        Set<Label> labels;
+        if (ignoreLabelsInheritance) {
+            labels = order.getLabels();
+        } else {
+            labels = order.getAllLabels();
+        }
+        for (Label label : labels) {
             if(label.getId().equals(filterLabel.getId())){
                 return true;
             }

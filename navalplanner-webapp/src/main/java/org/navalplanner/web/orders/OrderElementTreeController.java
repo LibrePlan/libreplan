@@ -60,8 +60,10 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Treechildren;
@@ -88,6 +90,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
 
     private Datebox filterFinishDateOrderElement;
 
+    private Checkbox labelsWithoutInheritance;
+
     private Textbox filterNameOrderElement;
 
     private OrderElementTreeitemRenderer renderer = new OrderElementTreeitemRenderer();
@@ -104,6 +108,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     private OrderElementOperations operationsForOrderElement;
 
     private final IMessagesForUser messagesForUser;
+
+    private Popup filterOptionsPopup;
 
     public List<org.navalplanner.business.labels.entities.Label> getLabels() {
         return orderModel.getLabels();
@@ -248,13 +254,18 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         filterComponent.setVariable("treeController", this, true);
         bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFiltersOrderElement");
-        filterStartDateOrderElement = (Datebox) filterComponent
+        filterOptionsPopup = (Popup) filterComponent
+                .getFellow("filterOptionsPopup");
+        filterStartDateOrderElement = (Datebox) filterOptionsPopup
                 .getFellow("filterStartDateOrderElement");
-        filterFinishDateOrderElement = (Datebox) filterComponent
+        filterFinishDateOrderElement = (Datebox) filterOptionsPopup
                 .getFellow("filterFinishDateOrderElement");
+        labelsWithoutInheritance = (Checkbox) filterOptionsPopup
+                .getFellow("labelsWithoutInheritance");
         filterNameOrderElement = (Textbox) filterComponent
                 .getFellow("filterNameOrderElement");
-
+        labelsWithoutInheritance = (Checkbox) filterComponent
+                .getFellow("labelsWithoutInheritance");
         templateFinderPopup = (TemplateFinderPopup) comp
                 .getFellow("templateFinderPopupAtTree");
         operationsForOrderElement.tree(tree)
@@ -505,6 +516,8 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 .getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
         Date finishDate = filterFinishDateOrderElement.getValue();
+        boolean ignoreLabelsInheritance = Boolean
+                .valueOf(labelsWithoutInheritance.isChecked());
         String name = filterNameOrderElement.getValue();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null
@@ -512,7 +525,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
             return null;
         }
         return new OrderElementPredicate(listFilters, startDate, finishDate,
-                name);
+                name, ignoreLabelsInheritance);
     }
 
     private void filterByPredicate(OrderElementPredicate predicate) {
@@ -701,6 +714,10 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
                 }
             }
         };
+    }
+
+    public void toggleOptions() {
+        filterOptionsPopup.open(300, 150);
     }
 
 }

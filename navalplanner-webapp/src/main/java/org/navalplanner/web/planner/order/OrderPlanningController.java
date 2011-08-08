@@ -62,8 +62,10 @@ import org.zkoss.ganttz.util.ProfilingLogFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.util.Composer;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Vbox;
 
@@ -111,8 +113,11 @@ public class OrderPlanningController implements Composer {
     private Vbox orderElementFilter;
     private Datebox filterStartDateOrderElement;
     private Datebox filterFinishDateOrderElement;
+    private Checkbox labelsWithoutInheritance;
     private BandboxMultipleSearch bdFiltersOrderElement;
     private Textbox filterNameOrderElement;
+
+    private Popup filterOptionsPopup;
 
     public OrderPlanningController() {
     }
@@ -176,10 +181,14 @@ public class OrderPlanningController implements Composer {
                 .createComponents("/orders/_orderElementTreeFilter.zul",
                         orderElementFilter, new HashMap<String, String>());
         filterComponent.setVariable("treeController", this, true);
-        filterStartDateOrderElement = (Datebox) filterComponent
+        filterOptionsPopup = (Popup) filterComponent
+                .getFellow("filterOptionsPopup");
+        filterStartDateOrderElement = (Datebox) filterOptionsPopup
                 .getFellow("filterStartDateOrderElement");
-        filterFinishDateOrderElement = (Datebox) filterComponent
+        filterFinishDateOrderElement = (Datebox) filterOptionsPopup
                 .getFellow("filterFinishDateOrderElement");
+        labelsWithoutInheritance = (Checkbox) filterOptionsPopup
+                .getFellow("labelsWithoutInheritance");
         bdFiltersOrderElement = (BandboxMultipleSearch) filterComponent
                 .getFellow("bdFiltersOrderElement");
         filterNameOrderElement = (Textbox) filterComponent
@@ -227,14 +236,24 @@ public class OrderPlanningController implements Composer {
                 .getSelectedElements();
         Date startDate = filterStartDateOrderElement.getValue();
         Date finishDate = filterFinishDateOrderElement.getValue();
+        boolean ignoreLabelsInheritance = labelsWithoutInheritance.isChecked();
         String name = filterNameOrderElement.getValue();
 
         if (listFilters.isEmpty() && startDate == null && finishDate == null
                 && name == null) {
             return null;
         }
+
         return new OrderElementPredicate(listFilters, startDate, finishDate,
-                name);
+                name, ignoreLabelsInheritance);
+    }
+
+    public Checkbox getLabelsWithoutInheritance() {
+        return labelsWithoutInheritance;
+    }
+
+    public void setLabelsWithoutInheritance(Checkbox labelsWithoutInheritance) {
+        this.labelsWithoutInheritance = labelsWithoutInheritance;
     }
 
     private void filterByPredicate(final OrderElementPredicate predicate) {
@@ -348,4 +367,7 @@ public class OrderPlanningController implements Composer {
         return advanceAssignmentPlanningController;
     }
 
+    public void toggleOptions() {
+        filterOptionsPopup.open(300, 150);
+    }
 }
