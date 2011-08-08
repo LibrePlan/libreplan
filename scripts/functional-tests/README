@@ -11,7 +11,7 @@ Functional Tests
   Commons Attribution-ShareAlike 3.0 licence, available in
   http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:
-  Basic documentation about NavalPlan functional tests usage.
+  Basic documentation about LibrePlan functional tests usage.
 
 
 .. contents:: Table of Contents
@@ -20,8 +20,8 @@ Functional Tests
 Introduction
 ------------
 
-Inside ``scripts/functional-tests/`` folder of NavalPlan source code, you can find
-several scripts to test the correct performance of NavalPlan. There are functional tests
+Inside ``scripts/functional-tests/`` folder of LibrePlan source code, you can find
+several scripts to test the correct performance of LibrePlan. There are functional tests
 for all all the data types and all most all the administration options.
 
 Every file is called like ``<menu-option>_test.sah`` and represent all kind of tests made for
@@ -51,20 +51,6 @@ To install it, execute the following command where you have the previously downl
 You can also see the instructions in sahi's page at:
 http://sahi.co.in/w/using-sahi
 
-.. NOTE::
-
-    If you are using firefox5 you must change this file
-    ``<sahi-path>/htdocs/spr/concat.js`` there replace::
-
-      Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4/.test(this.navigator.userAgent);};
-
-    for::
-
-      Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4|Firefox\/5|Iceweasel\/5|Shiretoko\/5/.test(this.navigator.userAgent);};
-
-    You can also see the instructions in sahi's page at:
-    http://sahi.co.in/forums/viewtopic.php?id=2578
-
 
 Run the Scripts
 ---------------
@@ -75,13 +61,13 @@ Once installed the program you have two kinds of run:
 
 * Console:
 
-  * Including the following sentence in your ``<home>.bashrc``::
-
-    $ export PATH=$PATH:<sahi-path>/userdata/bin
-
-  * And then you can run the test like::
+  * To run sahi scripts, you need to start sahi and after this you must be in
+    ``scripts/functional-tests/``, there you can run them like::
 
     $ testrunner.sh yourtest.sah <initial-url> <browser>
+
+  * NOTE: If you modify sahi default installation path (``~/sahi/``), you must
+    change the path in ``scripts/functional-tests/sahi-common-env.sh``
 
 It's possible run more than one script at the same time using a file.suite you
 can see some information in:
