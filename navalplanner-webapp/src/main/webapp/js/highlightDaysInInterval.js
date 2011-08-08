@@ -150,24 +150,14 @@ function daysDelta(start, end) {
  *
  **/
 function setStyleForDays(nodes, days, colors) {
-    for (var i = 0; i < nodes.length; i++) {
-        var month = nodes[i].getAttribute("zk_monofs");
-        if (month == null) {
-            continue;
-        }
-
-        if (month == 0) {
-            var day = nodes[i].getAttribute("zk_day");
-
-            if (days.in_array(day)) {
-                nodes[i].setAttribute("style", colorStyleObj(colors));
-            } else {
-                nodes[i].removeAttribute("style");
-            }
+    nodes.each(function() {
+        var day = $(this).attr("_dt");
+        if (days.in_array(day)) {
+            $(this).attr("style", colorStyleObj(colors));
         } else {
-            nodes[i].setAttribute("style", colorStyle('lightgrey', 'white'));
+            $(this).removeAttr("style");
         }
-    }
+    });
 }
 
 function colorStyleObj(obj) {
@@ -196,14 +186,15 @@ function colorStyle(color, bgcolor, bold) {
  * colorStyle is the color used to highlight a day (by default blue over white background)
  *
  */
-function highlightDaysInInterval(calendarUuid, intervalJSON, colorStyleJSON) {
+function highlightDaysInInterval(uuid, intervalJSON, colorStyleJSON) {
 
-    var calendar = document.getElementById(calendarUuid + "!pp");
+    calendarUuid = uuid + "-pp";
+    var calendar = document.getElementById(calendarUuid);
     if (calendar == null) {
         return;
     }
 
-    var dateinput = document.getElementById(calendarUuid + "!real");
+    var dateinput = document.getElementById(uuid + "-real");
     if (dateinput === undefined) {
         return;
     }
@@ -215,7 +206,7 @@ function highlightDaysInInterval(calendarUuid, intervalJSON, colorStyleJSON) {
 
     if (currentDate != null) {
         var interval = eval("(" + intervalJSON + ")");
-        var nodes = calendar.getElementsByTagName("td");
+        var nodes = $("#"+calendarUuid+ " td").not(".z-outside");
         var days = daysToHighlightInInterval(interval, currentDate);
         var colorStyle = (colorStyleJSON != undefined) ? eval("(" + colorStyleJSON + ")") : DEFAULT_COLOR_STYLE;
 
