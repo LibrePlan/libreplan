@@ -27,39 +27,36 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zul.impl.InputElement;
 
 /**
- * Class for checking if a component is completely valid (checks all constraints within a component)
+ * Class for checking if a component is completely valid (checks all constraints
+ * within a component)
  *
  * @author Diego Pino García <dpino@igalia.com>
+ * @author Manuel Rego Casasnovas <rego@igalia.com>
  */
 public class ConstraintChecker {
 
     @SuppressWarnings("unchecked")
-    public static boolean isValid(Component component) {
-        return checkIsValid(component) && checkIsValid(component.getChildren());
+    public static void isValid(Component component) {
+        checkIsValid(component);
+        checkIsValid(component.getChildren());
     }
 
-    private static boolean checkIsValid(List<Component> components) {
-        boolean result = true;
+    private static void checkIsValid(List<Component> components) {
         for (Component component: components) {
-            result &= isValid(component);
+            isValid(component);
         }
-        return result;
     }
 
-    private static boolean checkIsValid(Component child) {
+    private static void checkIsValid(Component child) {
         if (child instanceof InputElement) {
-            return inputIsValid((InputElement) child);
+            inputIsValid((InputElement) child);
         }
-        return true;
     }
 
-    private static boolean inputIsValid(InputElement input) {
+    private static void inputIsValid(InputElement input) {
         if (!input.isValid()) {
             input.getText();
-            return false;
         }
-
-        return true;
     }
 
 }

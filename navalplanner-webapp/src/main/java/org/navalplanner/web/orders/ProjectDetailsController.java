@@ -136,9 +136,7 @@ public class ProjectDetailsController extends GenericForwardComposer {
     }
 
     private boolean validate() {
-        if (!ConstraintChecker.isValid(window)) {
-            return false;
-        }
+        ConstraintChecker.isValid(window);
         if (initDate.getValue() == null) {
             showWrongValue();
             return false;

@@ -252,9 +252,7 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
      * {@link #editWindow} is valid, however it could be overridden if needed.
      */
     protected void beforeSaving() throws ValidationException {
-        if (!ConstraintChecker.isValid(editWindow)) {
-            throw new ValidationException("Please fix invalid fields in form");
-        }
+        ConstraintChecker.isValid(editWindow);
     }
 
     /**

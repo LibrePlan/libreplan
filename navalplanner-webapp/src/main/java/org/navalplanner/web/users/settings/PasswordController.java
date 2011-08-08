@@ -61,14 +61,13 @@ public class PasswordController extends GenericForwardComposer {
     }
 
     public void save() {
-        if(ConstraintChecker.isValid(passwordWindow)) {
-            try {
-                passwordModel.confirmSave();
-                messages.showMessage(Level.INFO, _("Password saved"));
-                PasswordUtil.showOrHideDefaultPasswordWarnings();
-            } catch (ValidationException e) {
-                messages.showInvalidValues(e);
-            }
+        ConstraintChecker.isValid(passwordWindow);
+        try {
+            passwordModel.confirmSave();
+            messages.showMessage(Level.INFO, _("Password saved"));
+            PasswordUtil.showOrHideDefaultPasswordWarnings();
+        } catch (ValidationException e) {
+            messages.showInvalidValues(e);
         }
     }
 

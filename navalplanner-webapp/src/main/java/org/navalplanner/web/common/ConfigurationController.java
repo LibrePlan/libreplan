@@ -212,8 +212,8 @@ public class ConfigurationController extends GenericForwardComposer {
     }
 
     public void save() throws InterruptedException {
-        if (ConstraintChecker.isValid(configurationWindow)
-                && checkValidEntitySequenceRows()) {
+        ConstraintChecker.isValid(configurationWindow);
+        if (checkValidEntitySequenceRows()) {
             try {
                 configurationModel.confirm();
                 configurationModel.init();
