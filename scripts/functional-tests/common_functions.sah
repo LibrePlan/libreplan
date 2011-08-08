@@ -1,0 +1,81 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Function to login in NavalPlan */
+function commonLogin($user, $password) {
+    _setValue(_textbox("j_username"), $user);
+    _setValue(_password("j_password"), $password);
+    _click(_submit("Log in"));
+}
+
+/* Function to logout in NavalPlan */
+function commonLogout() {
+    _click(_link("[Log out]"));
+}
+
+/* Function to access to create form */
+function commonCreate($something) {
+    _click(_link($something));
+    _click(_cell("Create"));
+}
+
+/* Function to edit something */
+function commonEdit($name, $cell) {
+    _click(_image("ico_editar1.png", _in(_cell($cell, _near(_cell($name))))));
+}
+
+/* Function to delete something */
+function commonDelete ($something, $name, $cell) {
+    _click(_link($something));
+    _click(_image("ico_borrar1.png", _in(_cell($cell, _near(_cell($name))))));
+    _click(_cell("OK"));
+}
+
+/* Create new project */
+function commonCreateProject($name){
+    _click(_link("Projects"));
+    _click(_image("ico_add.png"));
+    _setValue(_textbox(6), $name);
+    _click(_cell("Accept"));
+    _click(_image("ico_save.png"));
+}
+
+/* Delete a project */
+function commonDeleteProject($name){
+    _click(_link("Projects"));
+    _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
+    _click(_cell("OK"));
+    _assertExists(_div("Removed "+$name));
+    _assert(_isVisible(_div("Removed "+$name)));
+    _assertEqual("Removed "+$name, _getText(_div("Removed "+$name)));
+}
+
+/* test to check a correct save */
+function commonSaveValidation($something, $name){
+    _assertExists(_div($something+" \""+$name+"\" saved"));
+    _assert(_isVisible(_div($something+" \""+$name+"\" saved")));
+    _assertEqual($something+" \""+$name+"\" saved", _getText(_div($something+" \""+$name+"\" saved")));
+}
+
+/* test to check a correct delete */
+function commonDeleteValidation($something, $name){
+    _assertExists(_div($something+" \""+$name+"\" deleted"));
+    _assert(_isVisible(_div($something+" \""+$name+"\" deleted")));
+    _assertEqual($something+" \""+$name+"\" deleted", _getText(_div($something+" \""+$name+"\" deleted")));
+}
