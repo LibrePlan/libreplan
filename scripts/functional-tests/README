@@ -5,7 +5,7 @@ Functional Tests
 
 :Author: Pablo Fernández de la Cigoña Nóvoa
 :Contact: pcigonha@igalia.com
-:Date: 05/08/2011
+:Date: 08/08/2011
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -24,40 +24,46 @@ Inside ``scripts/functional-tests/`` folder of NavalPlan source code, you can fi
 several scripts to test the correct performance of NavalPlan. There are functional tests
 for all all the data types and all most all the administration options.
 
-Every file is called like <menu-option>_test.sah and represent all kind of tests made for
+Every file is called like ``<menu-option>_test.sah`` and represent all kind of tests made for
 each individual option from the menu, all the files includes all the test to be done,
 but the are some common tests for all of them:
 
-* Create <menu-option>
-* Create <menu-option> with duplicate type (most be failure)
-* Create <menu-option> with empty type (most be failure)
-* Create <menu-option> with duplicate name (most be failure)
-* Edit   <menu-option>
-* Delete <menu-option>
+* Create ``<menu-option>``
+* Create ``<menu-option>`` with duplicate type (most be failure)
+* Create ``<menu-option>`` with empty type (most be failure)
+* Create ``<menu-option>`` with duplicate name (most be failure)
+* Edit ``<menu-option>``
+* Delete ``<menu-option>``
 
 
 Requirements
 ------------
 
-To run these test it's necessary to have installed Sahi
+To run these test it's necessary to have installed `Sahi <http://sahi.co.in/>`_.
 
 You can download it at:
-    URL: ``http://sourceforge.net/projects/sahi/files/sahi-v35/20110719/install_sahi_v35_20110719.jar/download``
+http://sourceforge.net/projects/sahi/files/sahi-v35/20110719/install_sahi_v35_20110719.jar/download
 
-To install it, execute the following command where you have the previously download file
-    $ java -jar install_sahi_v35_XXXXXXXX.jar
+To install it, execute the following command where you have the previously download file::
 
-You can also see the instructions in sahi's page at:
-    URL: ``http://sahi.co.in/w/using-sahi``
-
-* NOTE: If you are using firefox5 you must change this file ``<sahi-path>/htdocs/spr/concat.js`` there replace:
-
-    ``Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4/.test(this.navigator.userAgent);};``
-    for:
-    ``Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4|Firefox\/5|Iceweasel\/5|Shiretoko\/5/.test(this.navigator.userAgent);};``
+    $ java -jar install_sahi_v35_20110719.jar
 
 You can also see the instructions in sahi's page at:
-    URL: ``http://sahi.co.in/forums/viewtopic.php?id=2578``
+http://sahi.co.in/w/using-sahi
+
+.. NOTE::
+
+    If you are using firefox5 you must change this file
+    ``<sahi-path>/htdocs/spr/concat.js`` there replace::
+
+      Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4/.test(this.navigator.userAgent);};
+
+    for::
+
+      Sahi.prototype._isFF4 = function () {return /Firefox\/4|Iceweasel\/4|Shiretoko\/4|Firefox\/5|Iceweasel\/5|Shiretoko\/5/.test(this.navigator.userAgent);};
+
+    You can also see the instructions in sahi's page at:
+    http://sahi.co.in/forums/viewtopic.php?id=2578
 
 
 Run the Scripts
@@ -65,19 +71,20 @@ Run the Scripts
 
 Once installed the program you have two kinds of run:
 
-* Graphical: Follow the instructions at
-    URL: ``http://sahi.co.in/w/using-sahi``
+* Graphical: Follow the instructions at: http://sahi.co.in/w/using-sahi
 
-* Console: including the following sentence in your ``<home>.bashrc``
+* Console:
+
+  * Including the following sentence in your ``<home>.bashrc``::
 
     $ export PATH=$PATH:<sahi-path>/userdata/bin
 
-    and then you can run the test like:
+  * And then you can run the test like::
 
-    $ testrunner.sh yourtest.sah [Initial url] [browser]
+    $ testrunner.sh yourtest.sah <initial-url> <browser>
 
-    It's possible run more than one script at the same time using a file.suite you can see some information in:
-        URL: ``http://sahi.co.in/w/Running+multiple+tests+in+batch+mode``
+It's possible run more than one script at the same time using a file.suite you
+can see some information in:
+http://sahi.co.in/w/Running+multiple+tests+in+batch+mode
 
-See more information about how to run at:
-    URL: ``http://sahi.co.in/w/using-sahi``
+See more information about how to run at: http://sahi.co.in/w/using-sahi
