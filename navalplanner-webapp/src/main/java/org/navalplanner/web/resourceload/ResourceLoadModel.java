@@ -350,6 +350,13 @@ public class ResourceLoadModel implements IResourceLoadModel {
         return date.toDateTimeAtStartOfDay().toDate();
     }
 
+    public static LocalDate toLocal(Date date) {
+        if (date == null) {
+            return null;
+        }
+        return LocalDate.fromDateFields(date);
+    }
+
     private void reattachCriteriaToShow() {
         for (Criterion each : criteriaToShowList) {
             criterionDAO.reattachUnmodifiedEntity(each);

@@ -95,7 +95,7 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
     private int filterByNamePosition = 0;
     private int numberOfGroupsByName = 10;
     private int lastSelectedName = 0;
-    private PaginationType paginationType;
+    private final PaginationType paginationType;
 
     private WeakReferencedListeners<IPaginationFilterChangedListener> nameFilterListener =
         WeakReferencedListeners.create();
@@ -540,14 +540,14 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
 
     public void setInternalPaginationDisabled(boolean disabled) {
         Combobox combo = ((Combobox) getFellow("filterByNameCombo"));
-        if(combo.isDisabled() != disabled) {
+        if (combo != null && combo.isDisabled() != disabled) {
             filterByNamePosition = disabled? -1 :
                 ((Integer)combo.getSelectedItemApi().getValue()).intValue();
             combo.setDisabled(disabled);
         }
     }
 
-    public void addNameFilterListener(
+    public void addPaginationFilterListener(
             IPaginationFilterChangedListener iFilterChangedListener) {
         nameFilterListener.addListener(iFilterChangedListener);
     }

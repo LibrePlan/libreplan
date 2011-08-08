@@ -23,14 +23,18 @@ package org.navalplanner.web.resourceload;
 
 import static org.navalplanner.web.I18nHelper._;
 import static org.navalplanner.web.resourceload.ResourceLoadModel.asDate;
+import static org.navalplanner.web.resourceload.ResourceLoadModel.toLocal;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.IOnTransaction;
 import org.navalplanner.business.common.daos.IConfigurationDAO;
@@ -113,21 +117,11 @@ public class ResourceLoadController implements Composer {
     @Autowired
     private PlanningStateCreator planningStateCreator;
 
-    private ResourcesLoadPanel resourcesLoadPanel;
+    private Reloader reloader = new Reloader();
 
     private TimeTracker timeTracker;
 
-    private transient IFilterChangedListener filterChangedListener;
-
-    private transient ISeeScheduledOfListener seeScheduledOfListener;
-
     private IOrderPlanningGate planningControllerEntryPoints;
-
-    private BandboxMultipleSearch bandBox;
-
-    private boolean currentFilterByResources = true;
-    private boolean filterHasChanged = false;
-    private boolean firstLoad = true;
 
     private ZoomLevel zoomLevel;
 
@@ -151,109 +145,670 @@ public class ResourceLoadController implements Composer {
     }
 
     public void reload() {
-        timeTracker = null;
-        resourcesLoadPanel = null;
-        firstLoad = true;
-        resourceLoadModel.setPageFilterPosition(0);
-        reload(true); // show filter by resources by default
+        reloader.resetToInitialState();
+        reloadWithoutReset();
     }
 
-    private void reload(final boolean filterByResources) {
-        transactionService.runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+    private void reloadWithoutReset() {
+        transactionService.runOnReadOnlyTransaction(reloader.reload());
+    }
 
-            @Override
-            public Void execute() {
-                reloadInTransaction(filterByResources);
-                return null;
+    private final Runnable onChange = new Runnable() {
+        public void run() {
+            reloadWithoutReset();
+        }
+    };
+
+    private final class Reloader {
+
+        private ResourcesLoadPanel resourcesLoadPanel = null;
+
+        private ListenerTracker listeners = new ListenerTracker();
+
+        public Reloader() {
+        }
+
+        private List<VisualizationModifier> visualizationModifiers = null;
+
+        private List<VisualizationModifier> getVisualizationModifiers() {
+            if (visualizationModifiers != null) {
+                return visualizationModifiers;
+            }
+            return visualizationModifiers = buildVisualizationModifiers();
+        }
+
+        private FilterTypeChanger getTypeChanger() {
+            for (VisualizationModifier each : getVisualizationModifiers()) {
+                if (each instanceof VisualizationModifier) {
+                    return (FilterTypeChanger) each;
+                }
+            }
+            throw new RuntimeException(FilterTypeChanger.class.getSimpleName()
+                    + " should always be among the visualization modifiers");
+        }
+
+        private List<IListenerAdder> listenersToAdd = null;
+
+        private List<IListenerAdder> getListenersToAdd() {
+            if (listenersToAdd != null) {
+                return listenersToAdd;
+            }
+            List<IListenerAdder> result = new ArrayList<IListenerAdder>();
+            for (VisualizationModifier each : getVisualizationModifiers()) {
+                if (each instanceof IListenerAdder) {
+                    result.add((IListenerAdder) each);
+                }
+            }
+            result.add(new GoToScheduleListener());
+            return listenersToAdd = result;
+        }
+
+        public void resetToInitialState() {
+            timeTracker = null;
+            resourcesLoadPanel = null;
+            listeners = new ListenerTracker();
+            visualizationModifiers = null;
+        }
+
+        public IOnTransaction<Void> reload() {
+            return new IOnTransaction<Void>() {
+
+                @Override
+                public Void execute() {
+                    reloadInTransaction();
+                    return null;
+                }
+            };
+        }
+
+        private void reloadInTransaction() {
+            for (VisualizationModifier each : getVisualizationModifiers()) {
+                each.checkDependencies();
+            }
+            for (VisualizationModifier each : getVisualizationModifiers()) {
+                each.applyToModel(resourceLoadModel);
             }
 
-            private void reloadInTransaction(boolean filterByResources) {
-                filterHasChanged = (filterByResources != currentFilterByResources);
-                currentFilterByResources = filterByResources;
+            ResourceLoadDisplayData dataToShow = calculateDataToDisplay(getTypeChanger()
+                    .isFilterByResources());
+            timeTracker = buildTimeTracker(dataToShow);
 
-                ResourceLoadDisplayData dataToShow = calculateDataToDisplay(filterByResources);
-                timeTracker = buildTimeTracker(dataToShow);
-                buildResourcesLoadPanel(dataToShow);
-
+            if (resourcesLoadPanel == null) {
+                resourcesLoadPanel = buildPanel(dataToShow);
+                listeners.addListeners(resourcesLoadPanel, getListenersToAdd());
                 parent.getChildren().clear();
                 parent.appendChild(resourcesLoadPanel);
-
-                resourcesLoadPanel.afterCompose();
-                addSchedulingScreenListeners();
-                addCommands(resourcesLoadPanel);
-                if(firstLoad || filterHasChanged) {
-                    setupPaginateByNameFilter();
+                for (VisualizationModifier each : getVisualizationModifiers()) {
+                    each.setup(resourcesLoadPanel);
                 }
-                firstLoad = false;
+            } else {
+                resourcesLoadPanel.init(dataToShow.getLoadTimeLines(),
+                        timeTracker);
             }
 
-            private ResourceLoadDisplayData calculateDataToDisplay(
-                    boolean filterByResources) {
-                if (filterBy == null) {
-                    if (resourcesLoadPanel == null) {
-                        resetAdditionalFilters();
-                    }
-                    return resourceLoadModel
-                            .calculateDataToDisplay(filterByResources);
-                } else {
-                    if (resourcesLoadPanel == null) {
-                        deleteAdditionalFilters();
-                    }
-                    return resourceLoadModel.calculateDataToDisplay(filterBy,
-                            filterByResources);
-                }
+            resourcesLoadPanel.setLoadChart(buildChart(resourcesLoadPanel));
+            resourcesLoadPanel.afterCompose();
+            addCommands(resourcesLoadPanel);
+
+            for (VisualizationModifier each : getVisualizationModifiers()) {
+                each.updateUI(resourcesLoadPanel, resourceLoadModel);
             }
-        });
+        }
+
+        private ResourcesLoadPanel buildPanel(ResourceLoadDisplayData dataToShow) {
+            return new ResourcesLoadPanel(dataToShow.getLoadTimeLines(),
+                    timeTracker, parent,
+                    resourceLoadModel.isExpandResourceLoadViewCharts(),
+                    PaginationType.EXTERNAL_PAGINATION);
+        }
+
+        private ResourceLoadDisplayData calculateDataToDisplay(
+                boolean filterByResources) {
+            if (isGlobal()) {
+                return resourceLoadModel
+                        .calculateDataToDisplay(filterByResources);
+            } else {
+                return resourceLoadModel.calculateDataToDisplay(filterBy,
+                        filterByResources);
+            }
+        }
     }
 
-
-    private void addListeners() {
-        /* Listener to filter */
-        filterChangedListener = new IFilterChangedListener() {
-
-            @Override
-            public void filterChanged(boolean filter) {
-                onApplyFilter(filter);
-            }
-        };
-        resourcesLoadPanel.addFilterListener(filterChangedListener);
-        addNameFilterListener();
+    private List<VisualizationModifier> buildVisualizationModifiers() {
+        List<VisualizationModifier> result = new ArrayList<VisualizationModifier>();
+        FilterTypeChanger filterTypeChanger = new FilterTypeChanger(onChange,
+                filterBy);
+        result.add(filterTypeChanger);
+        result.add(new ByDatesFilter(onChange, filterBy));
+        WorkersOrCriteriaBandbox bandbox = new WorkersOrCriteriaBandbox(
+                onChange, filterBy, filterTypeChanger);
+        result.add(bandbox);
+        result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
+                bandbox));
+        return result;
     }
 
-    /*
-     * This object is stored in an attribute to keep one reference to it, so the
-     * garbage collector doesn't get rid of it. It's necessary because it is stored
-     * by ResourcesLoadPanel using weak references.
+    public interface IListenerAdder {
+
+        public Object addAndReturnListener(ResourcesLoadPanel panel);
+    }
+
+    private class GoToScheduleListener implements IListenerAdder {
+
+        @Override
+        public Object addAndReturnListener(ResourcesLoadPanel panel) {
+            ISeeScheduledOfListener listener = new ISeeScheduledOfListener() {
+
+                @Override
+                public void seeScheduleOf(LoadTimeLine taskLine) {
+                    onSeeScheduleOf(taskLine);
+                }
+            };
+            panel.addSeeScheduledOfListener(listener);
+            return listener;
+        }
+
+    }
+
+    private void onSeeScheduleOf(LoadTimeLine taskLine) {
+
+        TaskElement task = (TaskElement) taskLine.getRole().getEntity();
+        Order order = resourceLoadModel.getOrderByTask(task);
+
+        if (resourceLoadModel.userCanRead(order,
+                SecurityUtils.getSessionUserLoginName())) {
+            if (order.isScheduled()) {
+                planningControllerEntryPoints.goToTaskResourceAllocation(order,
+                        task);
+            } else {
+                try {
+                    Messagebox.show(_("The project has no scheduled elements"),
+                            _("Information"), Messagebox.OK,
+                            Messagebox.INFORMATION);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        } else {
+            try {
+                Messagebox
+                        .show(_("You don't have read access to this project"),
+                                _("Information"), Messagebox.OK,
+                                Messagebox.INFORMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
+     * Some set of widgets that can change the data visualized: filtering,
+     * pagination, etc.
      */
-    private IPaginationFilterChangedListener keepAlivePaginationListener =
-        new IPaginationFilterChangedListener() {
-            @Override
-            public void filterChanged(int initialPosition) {
-                resourceLoadModel.setPageFilterPosition(initialPosition);
-                reload(currentFilterByResources);
-                addSchedulingScreenListeners();
-            }
-        };
+    private static abstract class VisualizationModifier {
 
-    private void addNameFilterListener() {
-        resourcesLoadPanel.addNameFilterListener(keepAlivePaginationListener);
+        private final Runnable onChange;
+        private final PlanningState filterBy;
+
+        private VisualizationModifier(Runnable onChange, PlanningState filterBy) {
+            this.onChange = onChange;
+            this.filterBy = filterBy;
+        }
+
+        protected final void notifyChange() {
+            onChange.run();
+        }
+
+        protected boolean isAppliedToOrder() {
+            return filterBy != null;
+        }
+
+        void setup(ResourcesLoadPanel panel) {
+        }
+
+        void checkDependencies() {
+
+        }
+
+        void applyToModel(IResourceLoadModel model) {
+        }
+
+        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
+        }
     }
 
-    private void addSchedulingScreenListeners() {
-        /* Listener to show the scheduling screen */
-        seeScheduledOfListener = new ISeeScheduledOfListener() {
+    private static class FilterTypeChanger extends VisualizationModifier
+            implements IListenerAdder {
 
-            @Override
-            public void seeScheduleOf(LoadTimeLine taskLine) {
-                onSeeScheduleOf(taskLine);
-            }
-        };
-        resourcesLoadPanel.addSeeScheduledOfListener(seeScheduledOfListener);
+        private boolean filterByResources = true;
+
+        private FilterTypeChanger(Runnable onChange, PlanningState filterBy) {
+            super(onChange, filterBy);
+        }
+
+        public boolean isFilterByResources() {
+            return filterByResources;
+        }
+
+        @Override
+        public Object addAndReturnListener(ResourcesLoadPanel panel) {
+            IFilterChangedListener listener = new IFilterChangedListener() {
+
+                @Override
+                public void filterChanged(boolean newValue) {
+                    if (filterByResources != newValue) {
+                        filterByResources = newValue;
+                        notifyChange();
+                    }
+                }
+            };
+            panel.addFilterListener(listener);
+            return listener;
+        }
     }
 
-    public void onApplyFilter(boolean filterByResources) {
-        resourceLoadModel.setPageFilterPosition(0);
-        reload(filterByResources);
+    private static class ByDatesFilter extends VisualizationModifier {
+
+        private LocalDate startDateValue;
+
+        private LocalDate endDateValue = null;
+
+        private final Datebox startBox = new Datebox();
+
+        private final Datebox endBox = new Datebox();
+
+        private ByDatesFilter(Runnable onChange, PlanningState filterBy) {
+            super(onChange, filterBy);
+            startDateValue = isAppliedToOrder() ? null : new LocalDate()
+                    .minusDays(1);
+        }
+
+        @Override
+        void setup(ResourcesLoadPanel panel) {
+            if (isAppliedToOrder()) {
+                return;
+            }
+            panel.setFirstOptionalFilter(buildTimeFilter());
+        }
+
+        private Hbox buildTimeFilter() {
+            Label label1 = new Label(_("Time filter") + ":");
+            Label label2 = new Label("-");
+            startBox.setValue(asDate(startDateValue));
+            startBox.setWidth("75px");
+            startBox.addEventListener(Events.ON_CHANGE, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    LocalDate newStart = toLocal(startBox.getValue());
+                    if (!ObjectUtils.equals(startDateValue, newStart)) {
+                        startDateValue = newStart;
+                        notifyChange();
+                    }
+                }
+            });
+            endBox.setValue(asDate(endDateValue));
+            endBox.setWidth("75px");
+            endBox.addEventListener(Events.ON_CHANGE, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    LocalDate newEnd = toLocal(endBox.getValue());
+                    if (!ObjectUtils.equals(endBox, newEnd)) {
+                        endDateValue = newEnd;
+                        notifyChange();
+                    }
+                }
+            });
+            Hbox hbox = new Hbox();
+            hbox.appendChild(label1);
+            hbox.appendChild(startBox);
+            hbox.appendChild(label2);
+            hbox.appendChild(endBox);
+            hbox.setAlign("center");
+            return hbox;
+        }
+
+        @Override
+        void applyToModel(IResourceLoadModel model) {
+            model.setInitDateFilter(startDateValue);
+            model.setEndDateFilter(endDateValue);
+        }
+
+        @Override
+        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
+            if (isAppliedToOrder()) {
+                return;
+            }
+            startDateValue = model.getInitDateFilter();
+            startBox.setValue(asDate(startDateValue));
+
+            endDateValue = model.getEndDateFilter();
+            endBox.setValue(asDate(endDateValue));
+        }
+    }
+
+    private static abstract class DependingOnFiltering extends
+            VisualizationModifier {
+
+        private final FilterTypeChanger filterType;
+
+        private boolean filteringByResource;
+
+        DependingOnFiltering(Runnable onChange, PlanningState filterBy,
+                FilterTypeChanger filterType) {
+            super(onChange, filterBy);
+            this.filterType = filterType;
+            this.filteringByResource = filterType.isFilterByResources();
+        }
+
+        public boolean isFilteringByResource() {
+            return filteringByResource;
+        }
+
+        @Override
+        void checkDependencies() {
+            if (this.filteringByResource != filterType.isFilterByResources()) {
+                this.filteringByResource = filterType.isFilterByResources();
+                filterTypeChanged();
+            }
+        }
+
+        protected abstract void filterTypeChanged();
+
+    }
+
+    private static class WorkersOrCriteriaBandbox extends DependingOnFiltering {
+
+        private final BandboxMultipleSearch bandBox = new BandboxMultipleSearch();
+
+        private List<Object> entitiesSelected = null;
+
+        private WorkersOrCriteriaBandbox(Runnable onChange,
+                PlanningState filterBy,
+                FilterTypeChanger filterType) {
+            super(onChange, filterBy, filterType);
+        }
+
+        @Override
+        void setup(ResourcesLoadPanel panel) {
+            if (isAppliedToOrder()) {
+                return;
+            }
+            panel.setSecondOptionalFilter(buildBandboxFilterer());
+        }
+
+        private Hbox buildBandboxFilterer() {
+            bandBox.setId("workerBandboxMultipleSearch");
+            bandBox.setWidthBandbox("185px");
+            bandBox.setWidthListbox("450px");
+            bandBox.setFinder(getFinderToUse());
+            bandBox.afterCompose();
+
+            Button button = new Button();
+            button.setImage("/common/img/ico_filter.png");
+            button.setTooltip(_("Filter by worker"));
+            button.addEventListener(Events.ON_CLICK, new EventListener() {
+                @Override
+                public void onEvent(Event event) {
+                    entitiesSelected = getSelected();
+                    notifyChange();
+                }
+            });
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(bandBox);
+            hbox.appendChild(button);
+            hbox.setAlign("center");
+            return hbox;
+        }
+
+        private String getFinderToUse() {
+            if (isFilteringByResource()) {
+                return "workerMultipleFiltersFinder";
+            } else {
+                return "criterionMultipleFiltersFinder";
+            }
+        }
+
+        @Override
+        protected void filterTypeChanged() {
+            if (isAppliedToOrder()) {
+                return;
+            }
+            entitiesSelected = null;
+            bandBox.setFinder(getFinderToUse());
+        }
+
+        @Override
+        void applyToModel(IResourceLoadModel model) {
+            if (!hasEntitiesSelected()) {
+                model.clearResourcesToShow();
+                model.clearCriteriaToShow();
+            } else if (isFilteringByResource()) {
+                model.setResourcesToShow(as(Resource.class, entitiesSelected));
+            } else {
+                model.setCriteriaToShow(as(Criterion.class, entitiesSelected));
+            }
+        }
+
+        public boolean hasEntitiesSelected() {
+            return entitiesSelected != null && !entitiesSelected.isEmpty();
+        }
+
+        private List<Object> getSelected() {
+            List<Object> result = new ArrayList<Object>();
+            @SuppressWarnings("unchecked")
+            List<FilterPair> filterPairList = bandBox.getSelectedElements();
+            for (FilterPair filterPair : filterPairList) {
+                result.add(filterPair.getValue());
+            }
+            return result;
+        }
+
+    }
+
+    private static class ByNamePaginator extends DependingOnFiltering
+            implements IListenerAdder {
+
+        private static final int ALL = -1;
+
+        private final WorkersOrCriteriaBandbox bandbox;
+
+        private int currentPosition;
+
+        private List<? extends BaseEntity> allEntitiesShown = null;
+
+        public ByNamePaginator(Runnable onChange, PlanningState filterBy,
+                FilterTypeChanger filterTypeChanger,
+                WorkersOrCriteriaBandbox bandbox) {
+            super(onChange, filterBy, filterTypeChanger);
+            this.bandbox = bandbox;
+            this.currentPosition = initialPage();
+        }
+
+        private int initialPage() {
+            return isAppliedToOrder() ? ALL : 0;
+        }
+
+        @Override
+        public Object addAndReturnListener(ResourcesLoadPanel panel) {
+            IPaginationFilterChangedListener listener = new IPaginationFilterChangedListener() {
+                @Override
+                public void filterChanged(int newPosition) {
+                    if (currentPosition != newPosition) {
+                        currentPosition = newPosition;
+                        notifyChange();
+                    }
+                }
+            };
+            panel.addPaginationFilterListener(listener);
+            return listener;
+        }
+
+        @Override
+        void checkDependencies() {
+            super.checkDependencies();
+            if (bandbox.hasEntitiesSelected()) {
+                this.currentPosition = ALL;
+            }
+        }
+
+        @Override
+        protected void filterTypeChanged() {
+            this.currentPosition = 0;
+            this.allEntitiesShown = null;
+        }
+
+        @Override
+        void applyToModel(IResourceLoadModel model) {
+            model.setPageFilterPosition(currentPosition);
+        }
+
+        @Override
+        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
+            panel.setInternalPaginationDisabled(bandbox.hasEntitiesSelected());
+
+            List<? extends BaseEntity> newAllEntities = getAllEntities(model);
+            if (this.currentPosition != model.getPageFilterPosition()) {
+                this.currentPosition = model.getPageFilterPosition();
+            }
+            if (this.allEntitiesShown == null
+                    || !equivalent(this.allEntitiesShown, newAllEntities)) {
+                this.currentPosition = initialPage();
+                this.allEntitiesShown = newAllEntities;
+                updatePages(panel.getPaginationFilterCombobox(),
+                        pagesByName(this.allEntitiesShown, model.getPageSize()));
+            }
+        }
+
+        private boolean equivalent(List<? extends BaseEntity> a,
+                List<? extends BaseEntity> b) {
+            if (a == null || b == null) {
+                return false;
+            }
+            if (a.size() != b.size()) {
+                return false;
+            }
+            for (int i = 0; i < a.size(); i++) {
+                BaseEntity aElement = a.get(i);
+                BaseEntity bElement = b.get(i);
+                if (!ObjectUtils.equals(aElement.getId(), bElement.getId())) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private void updatePages(Combobox filterByNameCombo,
+                List<Comboitem> pages) {
+            if (filterByNameCombo == null) {
+                return;
+            }
+            filterByNameCombo.getChildren().clear();
+
+            Comboitem lastItem = new Comboitem();
+            lastItem.setLabel(_("All"));
+            lastItem.setDescription(_("Show all elements"));
+            lastItem.setValue(ALL);
+            pages.add(lastItem);
+
+            for (Comboitem each : pages) {
+                filterByNameCombo.appendChild(each);
+            }
+
+            if (currentPosition >= 0 && currentPosition < pages.size()) {
+                filterByNameCombo
+                        .setSelectedItemApi(pages.get(currentPosition));
+            } else if (currentPosition == ALL) {
+                filterByNameCombo.setSelectedItemApi(lastItem);
+            } else {
+                filterByNameCombo.setSelectedIndex(0);
+            }
+        }
+
+        private List<? extends BaseEntity> getAllEntities(
+                IResourceLoadModel model) {
+            if (isFilteringByResource()) {
+                return model.getAllResourcesList();
+            } else {
+                return model.getAllCriteriaList();
+            }
+        }
+
+        private List<Comboitem> pagesByName(List<?> list, int pageSize) {
+            if (list.isEmpty()) {
+                return new ArrayList<Comboitem>();
+            }
+            Object first = list.get(0);
+            if (first instanceof Resource) {
+                return pagesByName(as(Resource.class, list), pageSize,
+                        new INameExtractor<Resource>() {
+
+                    @Override
+                    public String getNameOf(Resource resource) {
+                        return resource.getName();
+                    }
+                });
+            } else {
+                return pagesByName(as(Criterion.class, list), pageSize,
+                        new INameExtractor<Criterion>() {
+
+                    @Override
+                    public String getNameOf(Criterion criterion) {
+                        return criterion.getType().getName() + ": "
+                                + criterion.getName();
+                    }
+                });
+            }
+        }
+
+        interface INameExtractor<T> {
+            public String getNameOf(T value);
+        }
+
+        private <T> List<Comboitem> pagesByName(List<T> elements,
+                int pageSize,
+                INameExtractor<T> nameExtractor) {
+            List<Comboitem> result = new ArrayList<Comboitem>();
+            for (int startPos = 0; startPos < elements.size(); startPos += pageSize) {
+                int endPos = Math.min(startPos + pageSize - 1,
+                        elements.size() - 1);
+                String first = nameExtractor.getNameOf(elements.get(startPos));
+                String end = nameExtractor.getNameOf(elements.get(endPos));
+                Comboitem item = buildPageCombo(startPos, first, end);
+                result.add(item);
+            }
+            return result;
+        }
+
+        private Comboitem buildPageCombo(int startPosition, String first,
+                String end) {
+            Comboitem result = new Comboitem();
+            result.setLabel(first.substring(0, 1) + " - " + end.substring(0, 1));
+            result.setDescription(first + " - " + end);
+            result.setValue(startPosition);
+            return result;
+        }
+
+    }
+
+    private static <T> List<T> as(Class<T> klass, Collection<?> entities) {
+        List<T> result = new ArrayList<T>(entities.size());
+        for (Object each : entities) {
+            result.add(klass.cast(each));
+        }
+        return result;
+    }
+
+    private static class ListenerTracker {
+        private final List<Object> trackedListeners = new ArrayList<Object>();
+
+        public void addListeners(ResourcesLoadPanel panel,
+                Iterable<IListenerAdder> listeners) {
+            for (IListenerAdder each : listeners) {
+                Object listener = each.addAndReturnListener(panel);
+                trackedListeners.add(listener);
+            }
+        }
     }
 
     private void addCommands(ResourcesLoadPanel resourcesLoadPanel) {
@@ -275,225 +830,8 @@ public class ResourceLoadController implements Composer {
         return BankHolidaysMarker.create(defaultCalendar);
     }
 
-    private void buildResourcesLoadPanel(ResourceLoadDisplayData data) {
-        if (resourcesLoadPanel != null) {
-            if(bandBox != null) {
-                //if the filter has changed, we have to clear the model and
-                //the bandbox, and change its finder
-                if(filterHasChanged) {
-                    if(currentFilterByResources) {
-                        bandBox.setFinder("workerMultipleFiltersFinder");
-                        resourceLoadModel.clearCriteriaToShow();
-                    }
-                    else {
-                        bandBox.setFinder("criterionMultipleFiltersFinder");
-                        resourceLoadModel.clearResourcesToShow();
-                    }
-                    bandBox.clear();
-                    bandBox.afterCompose();
-                }
-
-                //if the bandbox filter is active, we disable the name filter
-                resourcesLoadPanel.setInternalPaginationDisabled(
-                        !bandBox.getSelectedElements().isEmpty());
-            }
-            resourcesLoadPanel.init(data.getLoadTimeLines(), timeTracker);
-            resourcesLoadPanel.setLoadChart(buildChart());
-            if(filterHasChanged) {
-                addNameFilterListener();
-            }
-        } else {
-            resourcesLoadPanel = new ResourcesLoadPanel(
-                    data.getLoadTimeLines(), timeTracker, parent,
-                    resourceLoadModel
-                    .isExpandResourceLoadViewCharts(), PaginationType.EXTERNAL_PAGINATION);
-
-            if(filterBy == null) {
-                addWorkersBandbox();
-                addTimeFilter();
-            }
-            resourcesLoadPanel.setLoadChart(buildChart());
-            addListeners();
-        }
-    }
-
-    private void addWorkersBandbox() {
-        bandBox = new BandboxMultipleSearch();
-        bandBox.setId("workerBandboxMultipleSearch");
-        bandBox.setWidthBandbox("185px");
-        bandBox.setWidthListbox("450px");
-        bandBox.setFinder("workerMultipleFiltersFinder");
-        bandBox.afterCompose();
-
-        Button button = new Button();
-        button.setImage("/common/img/ico_filter.png");
-        button.setTooltip(_("Filter by worker"));
-        button.addEventListener(Events.ON_CLICK, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                if(currentFilterByResources) {
-                    filterResourcesFromBandbox();
-                }
-                else {
-                    filterCriteriaFromBandbox();
-                }
-            }
-        });
-
-        Hbox hbox = new Hbox();
-        hbox.appendChild(bandBox);
-        hbox.appendChild(button);
-        hbox.setAlign("center");
-        resourcesLoadPanel.setSecondOptionalFilter(hbox);
-    }
-
-    private void addTimeFilter() {
-        Label label1 = new Label(_("Time filter") + ":");
-        Label label2 = new Label("-");
-        final Datebox initDate = new Datebox();
-        initDate.setValue(asDate(resourceLoadModel.getInitDateFilter()));
-        initDate.setWidth("75px");
-        initDate.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                resourceLoadModel.setInitDateFilter(LocalDate
-                        .fromDateFields(initDate.getValue()));
-                reload(currentFilterByResources);
-            }
-        });
-        final Datebox endDate = new Datebox();
-        endDate.setValue(asDate(resourceLoadModel.getEndDateFilter()));
-        endDate.setWidth("75px");
-        endDate.addEventListener(Events.ON_CHANGE, new EventListener() {
-            @Override
-            public void onEvent(Event event) {
-                resourceLoadModel.setEndDateFilter(LocalDate
-                        .fromDateFields(endDate.getValue()));
-                reload(currentFilterByResources);
-            }
-        });
-        Hbox hbox = new Hbox();
-        hbox.appendChild(label1);
-        hbox.appendChild(initDate);
-        hbox.appendChild(label2);
-        hbox.appendChild(endDate);
-        hbox.setAlign("center");
-        resourcesLoadPanel.setFirstOptionalFilter(hbox);
-    }
-
-    private Comboitem buildPageCombo(int startPosition, String first, String end) {
-        Comboitem result = new Comboitem();
-        result.setLabel(first.substring(0, 1) + " - " + end.substring(0, 1));
-        result.setDescription(first + " - " + end);
-        result.setValue(startPosition);
-        return result;
-    }
-
-    private void setupPaginateByNameFilter() {
-        Combobox filterByNameCombo = resourcesLoadPanel.getPaginationFilterCombobox();
-        if (filterByNameCombo == null) {
-            return;
-        }
-        filterByNameCombo.getChildren().clear();
-
-        List<Comboitem> pages = byNamePages();
-        Comboitem lastItem = new Comboitem();
-        lastItem.setLabel(_("All"));
-        lastItem.setDescription(_("Show all elements"));
-        lastItem.setValue(new Integer(-1));
-        pages.add(lastItem);
-
-        for (Comboitem each : pages) {
-            filterByNameCombo.appendChild(each);
-        }
-
-        int currentPosition = resourceLoadModel.getPageFilterPosition();
-        if (currentPosition >= 0 && currentPosition < pages.size()) {
-            filterByNameCombo.setSelectedItemApi(pages.get(currentPosition));
-        } else if (currentPosition == -1) {
-            filterByNameCombo.setSelectedItemApi(lastItem);
-        } else {
-            filterByNameCombo.setSelectedIndex(0);
-        }
-    }
-
-    private List<Comboitem> byNamePages() {
-        if (currentFilterByResources) {
-            return byNamePages(resourceLoadModel.getAllResourcesList(),
-                    new INameExtractor<Resource>() {
-
-                        @Override
-                        public String getNameOf(Resource resource) {
-                            return resource.getName();
-                        }
-                    });
-        } else {
-            return byNamePages(resourceLoadModel.getAllCriteriaList(),
-                    new INameExtractor<Criterion>() {
-
-                        @Override
-                        public String getNameOf(Criterion criterion) {
-                            return criterion.getType().getName() + ": "
-                                    + criterion.getName();
-                        }
-                    });
-        }
-    }
-
-    interface INameExtractor<T> {
-        public String getNameOf(T value);
-    }
-
-    private <T> List<Comboitem> byNamePages(List<T> elements,
-            INameExtractor<T> nameExtractor) {
-        List<Comboitem> result = new ArrayList<Comboitem>();
-        int pageSize = resourceLoadModel.getPageSize();
-        for (int startPos = 0; startPos < elements.size(); startPos += pageSize) {
-            int endPos = Math.min(startPos + pageSize - 1, elements.size() - 1);
-            String first = nameExtractor.getNameOf(elements.get(startPos));
-            String end = nameExtractor.getNameOf(elements.get(endPos));
-            Comboitem item = buildPageCombo(startPos, first, end);
-            result.add(item);
-        }
-        return result;
-    }
-
-    private void resetAdditionalFilters() {
-        resourceLoadModel.setInitDateFilter(new LocalDate().minusDays(1));
-        resourceLoadModel.setEndDateFilter(null);
-
-        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
-        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
-    }
-
-    private void deleteAdditionalFilters() {
-        resourceLoadModel.setInitDateFilter(null);
-        resourceLoadModel.setEndDateFilter(null);
-
-        resourceLoadModel.setCriteriaToShow(new ArrayList<Criterion>());
-        resourceLoadModel.setResourcesToShow(new ArrayList<Resource>());
-    }
-
-    @SuppressWarnings("unchecked")
-    private void filterResourcesFromBandbox() {
-        List<FilterPair> filterPairList = bandBox.getSelectedElements();
-        List<Resource> workersList = new ArrayList<Resource>();
-        for(FilterPair filterPair : filterPairList) {
-            workersList.add((Resource)filterPair.getValue());
-        }
-        resourceLoadModel.setResourcesToShow(workersList);
-        reload(true);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void filterCriteriaFromBandbox() {
-        List<FilterPair> filterPairList = bandBox.getSelectedElements();
-        List<Criterion> criteriaList = new ArrayList<Criterion>();
-        for(FilterPair filterPair : filterPairList) {
-            criteriaList.add((Criterion)filterPair.getValue());
-        }
-        resourceLoadModel.setCriteriaToShow(criteriaList);
-        reload(false);
+    private boolean isGlobal() {
+        return filterBy == null;
     }
 
     public void filterBy(Order order) {
@@ -510,39 +848,8 @@ public class ResourceLoadController implements Composer {
         return this.planningControllerEntryPoints;
     }
 
-    private void onSeeScheduleOf(LoadTimeLine taskLine) {
-
-        TaskElement task = (TaskElement) taskLine.getRole().getEntity();
-        Order order = resourceLoadModel.getOrderByTask(task);
-
-        if (resourceLoadModel.userCanRead(order, SecurityUtils
-                .getSessionUserLoginName())) {
-            if (order.isScheduled()) {
-                planningControllerEntryPoints.goToTaskResourceAllocation(order,
-                    task);
-             } else {
-                try {
-                    Messagebox.show(_("The project has no scheduled elements"),
-                            _("Information"), Messagebox.OK,
-                            Messagebox.INFORMATION);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        } else {
-            try {
-                Messagebox
-                        .show(_("You don't have read access to this project"),
-                                _("Information"), Messagebox.OK,
-                                Messagebox.INFORMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-}
-
-
-    private org.zkoss.zk.ui.Component buildChart() {
+    private org.zkoss.zk.ui.Component buildChart(
+            ResourcesLoadPanel resourcesLoadPanel) {
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
         chartComponent.setHeight("200px");
@@ -556,14 +863,14 @@ public class ResourceLoadController implements Composer {
         Tabpanel loadChartPannel = new Tabpanel();
         // avoid adding Timeplot since it has some pending issues
          CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-         buildLoadChart());
+                buildLoadChart(resourcesLoadPanel));
         chartTabpanels.appendChild(loadChartPannel);
         chartComponent.appendChild(chartTabpanels);
 
         return chartComponent;
     }
 
-    private Timeplot buildLoadChart() {
+    private Timeplot buildLoadChart(ResourcesLoadPanel resourcesLoadPanel) {
         Timeplot chartLoadTimeplot = createEmptyTimeplot();
 
         loadChart = new Chart(chartLoadTimeplot,
@@ -572,14 +879,16 @@ public class ResourceLoadController implements Composer {
         if (resourcesLoadPanel.isVisibleChart()) {
             loadChart.fillChart();
         }
-        timeTracker.addZoomListener(fillOnZoomChange(loadChart));
+        timeTracker.addZoomListener(fillOnZoomChange(resourcesLoadPanel,
+                loadChart));
         resourcesLoadPanel
                 .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
 
         return chartLoadTimeplot;
     }
 
-    private IZoomLevelChangedListener fillOnZoomChange(final Chart loadChart) {
+    private IZoomLevelChangedListener fillOnZoomChange(
+            final ResourcesLoadPanel resourcesLoadPanel, final Chart loadChart) {
 
         IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
 
@@ -590,7 +899,7 @@ public class ResourceLoadController implements Composer {
                 if (resourcesLoadPanel.isVisibleChart()) {
                     loadChart.fillChart();
                 }
-                adjustZoomPositionScroll();
+                adjustZoomPositionScroll(resourcesLoadPanel);
             }
         };
 
@@ -599,7 +908,7 @@ public class ResourceLoadController implements Composer {
         return zoomListener;
     }
 
-    private void adjustZoomPositionScroll() {
+    private void adjustZoomPositionScroll(ResourcesLoadPanel resourcesLoadPanel) {
         resourcesLoadPanel.getTimeTrackerComponent().movePositionScroll();
     }
 
