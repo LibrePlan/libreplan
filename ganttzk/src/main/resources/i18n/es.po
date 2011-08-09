@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-18 11:25+0200\n"
-"PO-Revision-Date: 2011-06-06 22:51+0200\n"
+"POT-Creation-Date: 2011-08-09 16:17+0200\n"
+"PO-Revision-Date: 2011-08-09 16:29+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -72,6 +72,10 @@ msgstr "Definir Fin-Fin"
 msgid "Show/Hide progress"
 msgstr "Mostrar/Ocultar progreso"
 
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:188
+msgid "available effort: {0}, assigned effort: {1}"
+msgstr "esfuerzo disponible: {0}, esfuerzo asignado: {1}"
+
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:91
 msgid "by resources"
 msgstr "por recursos"
@@ -87,10 +91,6 @@ msgstr "Criterio"
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:41
 msgid "Print"
 msgstr "Imprimir"
-
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:190
-msgid "total work hours: {0}, assigned hours: {1}"
-msgstr "total de horas trabajables: {0}, horas asignadas: {1}"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:71
 msgid "Week"
@@ -197,7 +197,7 @@ msgstr "Día"
 msgid "Hide reported hours"
 msgstr "Ocultar horas reportadas"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:184
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:182
 msgid "Load: {0}%"
 msgstr "Carga: {0}%"
 
@@ -222,7 +222,7 @@ msgstr "Gráficas"
 msgid "Set Start-Start"
 msgstr "Definir Inicio-Inicio"
 
-#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:143
+#: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourceLoadComponent.java:141
 msgid "See resource allocation"
 msgstr "Ver asignación de recursos"
 
