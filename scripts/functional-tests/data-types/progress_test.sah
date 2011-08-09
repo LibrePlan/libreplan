@@ -107,7 +107,7 @@ function progressAssignProject($projectName, $progressNewName){
     _setValue(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))),"10.00");
     _click(_cell("Add measure"));
     _click(_cell("z-button-cm[37]", _near(_row("footer"))));
-    _setValue(_textbox("z-decimalbox[1]"), "0.1");
+    _setValue(_textbox(0, _near(_parentTable(_div("Value")))), "0.1");
     _click(_image("ico_save.png"));
     _click(_cell("OK"));
 }
