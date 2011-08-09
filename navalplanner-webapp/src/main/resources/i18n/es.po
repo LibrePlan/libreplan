@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-07-18 11:25+0200\n"
-"PO-Revision-Date: 2011-07-18 11:43+0200\n"
+"POT-Creation-Date: 2011-08-09 16:17+0200\n"
+"PO-Revision-Date: 2011-08-09 16:36+0200\n"
 "Last-Translator: Manuel Rego Casasnovas <mrego@igalia.com>\n"
 "Language-Team: Spanish <>\n"
 "Language: es\n"
@@ -195,7 +195,7 @@ msgid "Please, select a calendar"
 msgstr "Por favor, seleccione un calendario"
 
 #: navalplanner-webapp/src/main/webapp/advance/_listAdvanceTypes.zul:29
-#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:162
+#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:168
 msgid "Predefined"
 msgstr "Predefinido"
 
@@ -829,7 +829,7 @@ msgstr "Añadir criterio"
 msgid "You can not remove the current scenario"
 msgstr "No se puede borrar el escenario actual"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:643
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:648
 msgid "format prefix invalid. It cannot be empty or contain whitespaces."
 msgstr ""
 "formato de prefijo inválido. No puede estar vacío o contener espacios en "
@@ -1032,6 +1032,11 @@ msgstr ""
 "La fecha de fin de una excepción debe ser mayor o igual que la fecha de "
 "inicio"
 
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:601
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:611
+msgid "Repeated Project code {0} in Project {1}"
+msgstr "Código {0} de proyecto repetdio en proyecto {1}"
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/ws/subcontract/impl/SubcontractServiceREST.java:274
 msgid "Project from client"
 msgstr "Proyecto del cliente"
@@ -1220,7 +1225,7 @@ msgstr "Tarea no encontrada"
 msgid "Total capability"
 msgstr "Capacidad total"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:684
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:732
 msgid "It not could remove the task "
 msgstr "No se pudo borrar la tarea"
 
@@ -1246,7 +1251,7 @@ msgid "Profiles List"
 msgstr "Lista de Perfiles"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:567
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:896
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:944
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/templates/TemplatesTreeController.java:236
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:322
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:869
@@ -1283,8 +1288,8 @@ msgstr "Crear tipo de horas de trabajo"
 msgid "Filter by task status"
 msgstr "Filtrar por estado de tarea"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:532
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:434
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:528
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:430
 msgid "Select date:"
 msgstr "Seleccione fecha:"
 
@@ -1478,7 +1483,7 @@ msgstr "Zoom"
 #: navalplanner-webapp/src/main/webapp/advance/advanceTypes.zul:41
 #: navalplanner-webapp/src/main/webapp/scenarios/scenarios.zul:38
 #: navalplanner-webapp/src/main/webapp/scenarios/scenarios.zul:42
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:80
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:81
 #: navalplanner-webapp/src/main/webapp/costcategories/_editTypeOfWorkHours.zul:73
 #: navalplanner-webapp/src/main/webapp/costcategories/_editCostCategory.zul:92
 #: navalplanner-webapp/src/main/webapp/users/_editProfile.zul:80
@@ -1488,7 +1493,7 @@ msgstr "Zoom"
 msgid "Save"
 msgstr "Guardar"
 
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:61
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:62
 #: navalplanner-webapp/src/main/webapp/excetiondays/_listExceptionDayTypes.zul:33
 msgid "Standard Effort"
 msgstr "Esfuerzo estándar"
@@ -1496,6 +1501,12 @@ msgstr "Esfuerzo estándar"
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:109
 msgid "Material categories"
 msgstr "Categorías de materiales"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:240
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:570
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:669
+msgid "number of digits must be between {0} and {1}"
+msgstr "el número de dígitos debe estar entre {0} y {1}"
 
 #: navalplanner-webapp/src/main/webapp/orders/_listHoursGroupCriterionRequirement.zul:22
 msgid "Criteria Requirement"
@@ -1824,7 +1835,7 @@ msgstr "Los recursos asignados para esta tarea serán borrados. ¿Está seguro?"
 msgid "NavalPlan: Exception Days"
 msgstr "NavalPlan: Días de excepción"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:641
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:646
 msgid ""
 "format prefix invalid. It cannot be empty or contain '_' or whitespaces."
 msgstr ""
@@ -1942,6 +1953,11 @@ msgstr "falta el tipo de horas en una línea del parte de trabajo"
 #: navalplanner-webapp/src/main/webapp/templates/_assignedQualityForms.zul:30
 msgid "Quality forms"
 msgstr "Formularios de calidad"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:624
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:634
+msgid "Repeated Hours Group code {0} in Project {1}"
+msgstr "Código {0} de grupo de horas repetido en proyecto {1}"
 
 #: navalplanner-webapp/src/main/webapp/orders/_listOrderElementCriterionRequirements.zul:144
 msgid "Hours group"
@@ -2083,7 +2099,7 @@ msgstr "EDT (tareas)"
 msgid "Error on showing removing element: "
 msgstr "Error al mostrar el elemento a borrar: "
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:690
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:698
 msgid "Deleting sequence"
 msgstr "Borrando secuencia"
 
@@ -2333,7 +2349,7 @@ msgstr "Asignar etiqueta"
 msgid "Page up"
 msgstr "Página arriba"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:232
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:228
 msgid "Create new project"
 msgstr "Crear nuevo proyecto"
 
@@ -2528,7 +2544,7 @@ msgstr ""
 "Esta medida de progreso no puede estar en la fecha actual, porque está "
 "consolidada. Debe seleccionar otra fecha."
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadModel.java:704
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadModel.java:705
 msgid "Other projects"
 msgstr "Otros proyectos"
 
@@ -2628,6 +2644,10 @@ msgstr "Asignaciones de materiales"
 msgid "December"
 msgstr "Diciembre"
 
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportTypeCRUDController.java:922
+msgid "Text field"
+msgstr "Campo de texto"
+
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/advance/AdvanceTypeCRUDController.java:122
 msgid ""
 "Value is not valid, the Precision value must be less than the defalt max "
@@ -2635,10 +2655,6 @@ msgid ""
 msgstr ""
 "El valor no es válido, el valor de precisión debe ser menor que el valor "
 "máximo por defecto."
-
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/workreports/WorkReportTypeCRUDController.java:922
-msgid "Text field"
-msgstr "Campo de texto"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resources/criterion/CriterionAdminController.java:181
 msgid "Question"
@@ -2748,7 +2764,7 @@ msgstr "NavalPlan: Error de ejecución"
 #: navalplanner-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:136
 #: navalplanner-webapp/src/main/webapp/scenarios/scenarios.zul:40
 #: navalplanner-webapp/src/main/webapp/scenarios/scenarios.zul:44
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:86
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:87
 #: navalplanner-webapp/src/main/webapp/costcategories/_editTypeOfWorkHours.zul:77
 #: navalplanner-webapp/src/main/webapp/costcategories/_editCostCategory.zul:96
 #: navalplanner-webapp/src/main/webapp/users/_editProfile.zul:84
@@ -2995,6 +3011,8 @@ msgstr "recurso de la asignación de coste no especificado"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderCRUDController.java:127
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderElementBandboxFinder.java:51
 #: navalplanner-webapp/src/main/webapp/limitingresources/limitingResourcesLayout.zul:135
+#: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:68
+#: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:49
 #: navalplanner-business/src/main/java/org/navalplanner/business/templates/entities/OrderTemplate.java:73
 msgid "Project"
 msgstr "Proyecto"
@@ -3033,8 +3051,8 @@ msgstr "el nombre no puede ser vacío"
 msgid "Disabled"
 msgstr "Deshabilitado"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:735
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:351
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:731
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:347
 msgid "Earned value"
 msgstr "Valor ganado"
 
@@ -3199,8 +3217,8 @@ msgstr "Crear parte de trabajo"
 msgid "Value is not valid, the precision value must not be empty"
 msgstr "El valor no es válido, el valor de precisión no debe ser vacío"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:825
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:488
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:821
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:484
 msgid "h"
 msgstr "h"
 
@@ -3669,7 +3687,7 @@ msgstr "Día no laborable"
 msgid "Cost category"
 msgstr "Categoría de coste"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:689
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:697
 msgid "It can not be deleted. At least one sequence is necessary."
 msgstr "No se puede borrar. Al menos una secuencia es necesaria."
 
@@ -3838,8 +3856,6 @@ msgstr "Asignaciones de trabajador"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:409
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/qualityforms/QualityFormCRUDController.java:431
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/scenarios/ScenarioModel.java:221
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderElement.java:1053
-#, java-format
 msgid "{0} already exists"
 msgstr "{0} ya existe"
 
@@ -3855,13 +3871,13 @@ msgstr "Código"
 msgid "Password confirmation"
 msgstr "Confirmación de contraseña"
 
-#: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:88
-msgid "Work Report"
-msgstr "Parte de trabajo"
-
 #: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:69
 msgid "Indent selected task"
 msgstr "Indentar tarea seleccionada"
+
+#: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:88
+msgid "Work Report"
+msgstr "Parte de trabajo"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:323
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:115
@@ -4135,7 +4151,7 @@ msgstr "Nodo seleccionado:"
 msgid "NavalPlan: Task Scheduling Status In Project"
 msgstr "NavalPlan: Estado de planificación en proyecto"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:253
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:249
 msgid "Create new project from template"
 msgstr "Crear nuevo proyecto a partir de plantilla"
 
@@ -4230,7 +4246,7 @@ msgstr "Seleccionar origen"
 msgid "Worker deleted"
 msgstr "Trabajador borrado"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:727
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:735
 msgid "Select entity, please"
 msgstr "Seleccionar entidad, por favor"
 
@@ -4364,7 +4380,7 @@ msgstr "Asignación de progreso duplicada para la tarea "
 
 #: navalplanner-webapp/src/main/webapp/calendars/calendars.zul:48
 #: navalplanner-webapp/src/main/webapp/calendars/calendars.zul:54
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:83
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:84
 msgid "Save and Continue"
 msgstr "Guardar y continuar"
 
@@ -4373,7 +4389,7 @@ msgid "Zoom level"
 msgstr "Nivel de zoom"
 
 #: navalplanner-webapp/src/main/webapp/qualityforms/_editQualityForm.zul:28
-#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:160
+#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:166
 msgid "Quality form"
 msgstr "Formulario de calidad"
 
@@ -4402,7 +4418,7 @@ msgstr "No ha sido posible cargar la entidad. No encontrada. Id: "
 msgid "Create Virtual Workers Group"
 msgstr "Crear grupo de trabajadores virtuales"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:885
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:933
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:861
 msgid "Hours invested"
 msgstr "Horas invertidas"
@@ -4613,7 +4629,7 @@ msgstr "Etiqueta por defecto"
 msgid "Close"
 msgstr "Cerrar"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadModel.java:470
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadModel.java:471
 msgid "Specific Allocations"
 msgstr "Asignaciones específicas"
 
@@ -4626,14 +4642,14 @@ msgstr "Error realizando la reasignación: {0}"
 msgid "Time filter"
 msgstr "Filtro de tiempo"
 
+#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:61
+msgid "Move selected task up"
+msgstr "Mover tarea seleccionada hacia arriba"
+
 #: navalplanner-webapp/src/main/webapp/resources/search/allocation_selector.zul:27
 msgid "Select criteria set or specific resources for allocation"
 msgstr ""
 "Seleccione conjunto de criterios o recursos específicos para la asignación"
-
-#: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:61
-msgid "Move selected task up"
-msgstr "Mover tarea seleccionada hacia arriba"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarCRUDController.java:316
 msgid "Create copy"
@@ -5116,7 +5132,7 @@ msgstr ""
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/costcategories/CostCategoryCRUDController.java:380
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/labels/AssignedLabelsController.java:115
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ProjectDetailsController.java:147
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:732
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:740
 #: navalplanner-webapp/src/main/webapp/workreports/workReport.zul:135
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:43
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:63
@@ -5134,6 +5150,7 @@ msgstr ""
 #: navalplanner-webapp/src/main/webapp/materials/materials.zul:93
 #: navalplanner-webapp/src/main/webapp/scenarios/_edition.zul:33
 #: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:42
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:53
 #: navalplanner-webapp/src/main/webapp/costcategories/_editTypeOfWorkHours.zul:43
 #: navalplanner-webapp/src/main/webapp/costcategories/_editTypeOfWorkHours.zul:54
 #: navalplanner-webapp/src/main/webapp/costcategories/_editCostCategory.zul:43
@@ -5227,18 +5244,18 @@ msgstr "Criterios requeridos"
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:148
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:185
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:212
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:65
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:66
 #: navalplanner-webapp/src/main/webapp/excetiondays/_listExceptionDayTypes.zul:34
 msgid "Extra Effort"
 msgstr "Esfuerzo extra"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeModel.java:260
-msgid "Already exists other label with the same name"
-msgstr "Ya existe otra etiqueta con el mismo nombre"
-
 #: navalplanner-webapp/src/main/webapp/orders/components/_orderElementTree.zul:57
 msgid "Move selected task down"
 msgstr "Mover tarea seleccoinada hacia abajo"
+
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/labels/LabelTypeModel.java:260
+msgid "Already exists other label with the same name"
+msgstr "Ya existe otra etiqueta con el mismo nombre"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/components/finders/OrderFilterEnum.java:32
 msgid "Customer Reference"
@@ -5251,13 +5268,13 @@ msgid "spread values are not valid, at least one value should be true"
 msgstr ""
 "los valores de propagación no son válidos, al menos uno debe ser verdadero"
 
-#: navalplanner-webapp/src/main/webapp/montecarlo/_montecarlo.zul:42
-msgid "Optimistic"
-msgstr "Optimista"
-
 #: navalplanner-webapp/src/main/webapp/orders/components/_listOrderElementLabels.zul:89
 msgid "Create and assign label"
 msgstr "Crear y asignar etiqueta"
+
+#: navalplanner-webapp/src/main/webapp/montecarlo/_montecarlo.zul:42
+msgid "Optimistic"
+msgstr "Optimista"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/chart/EarnedValueChartFiller.java:125
 msgid "SV"
@@ -5280,7 +5297,7 @@ msgstr ""
 "por defecto en la ventana de configuración."
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderElementTreeController.java:587
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:884
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:932
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:319
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/TaskElementAdapter.java:858
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:46
@@ -5487,7 +5504,7 @@ msgstr "Estado de planificación"
 msgid "This template can not be removed because it has applications."
 msgstr "Esta plantilla no se puede borrar porque tiene aplicaciones."
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:483
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/common/ConfigurationController.java:486
 msgid "The code sequence is already in use and it can not be updated."
 msgstr "El código de secuencia ya está en uso y no se puede actualizar."
 
@@ -5562,7 +5579,7 @@ msgstr ""
 msgid "Criterion Type List"
 msgstr "Lista de tipos de criterio"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:736
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:732
 msgid "Overall progress"
 msgstr "Progreso global"
 
@@ -5616,7 +5633,7 @@ msgstr "Mes"
 msgid "{0} could not be allocated. Cannot allocate more than one resource"
 msgstr "No se pudo asignar {0}. No se puede asignar más que un recurso"
 
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:55
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:56
 #: navalplanner-webapp/src/main/webapp/excetiondays/_listExceptionDayTypes.zul:31
 msgid "Color"
 msgstr "Color"
@@ -5741,7 +5758,7 @@ msgid "Priority"
 msgstr "Prioridad"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:207
-#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:69
+#: navalplanner-webapp/src/main/webapp/excetiondays/_editExceptionDayType.zul:70
 msgid "Infinitely Over Assignable"
 msgstr "Sobreasignable infinitamente"
 
@@ -5908,8 +5925,6 @@ msgstr "La fecha no puede ser nula"
 #: navalplanner-webapp/src/main/webapp/workreports/workReport.zul:169
 #: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:76
 #: navalplanner-webapp/src/main/webapp/workreports/workReportQuery.zul:142
-#: navalplanner-webapp/src/main/webapp/reports/workingProgressPerTaskReport.zul:68
-#: navalplanner-webapp/src/main/webapp/reports/workingArrangementsPerOrderReport.zul:49
 msgid "Task Code"
 msgstr "Código de la tarea"
 
@@ -5936,14 +5951,14 @@ msgstr "Probabilidad %"
 msgid "New criterion"
 msgstr "Criterio nuevo"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:734
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:350
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:730
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:346
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/resourceload/ResourceLoadController.java:542
 #: navalplanner-webapp/src/main/webapp/planner/_legendLoadChartOrder.zul:49
 msgid "Load"
 msgstr "Carga"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:889
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:937
 #: navalplanner-webapp/src/main/webapp/resources/machine/_editMachine.zul:60
 #: navalplanner-webapp/src/main/webapp/resources/machine/_listMachines.zul:36
 #: navalplanner-webapp/src/main/webapp/resources/criterions/_edition.zul:65
@@ -5995,7 +6010,7 @@ msgstr "No asignado"
 
 #: navalplanner-webapp/src/main/webapp/externalcompanies/_editExternalCompany.zul:61
 #: navalplanner-webapp/src/main/webapp/common/layout/login.zul:70
-#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:157
+#: navalplanner-business/src/main/java/org/navalplanner/business/advance/entities/AdvanceType.java:163
 msgid "User"
 msgstr "Usuario"
 
@@ -6063,12 +6078,12 @@ msgstr "Carga 100%"
 msgid "Function"
 msgstr "Función"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:779
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:398
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:775
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/company/CompanyPlanningModel.java:394
 msgid "date in future"
 msgstr "fecha en el futuro"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:606
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:654
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:630
 msgid "New project version"
 msgstr "Nueva versión de proyecto"
@@ -6347,7 +6362,7 @@ msgstr "debe seleccionar un tipo de autorización"
 msgid "Must start after (days since beginning project)"
 msgstr "Debe empezar después de (días desde el inicio del proyecto)"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:605
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/OrderModel.java:653
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/SaveCommand.java:629
 msgid ""
 "Confirm creating a new project version for this scenario and derived. Are "
@@ -6470,7 +6485,7 @@ msgstr "Estado"
 msgid "Resource load view"
 msgstr "Vista de carga de recursos"
 
-#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:767
+#: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/order/OrderPlanningModel.java:763
 msgid "the date must be inside the visualization area"
 msgstr "la fecha debe estar dentro del área de visualización"
 
@@ -6793,11 +6808,11 @@ msgstr "Sábado"
 msgid "Sunday"
 msgstr "Domingo"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarExceptionType.java:133
+#: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarExceptionType.java:135
 msgid "Yes"
 msgstr "Sí"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarExceptionType.java:133
+#: navalplanner-business/src/main/java/org/navalplanner/business/calendars/entities/CalendarExceptionType.java:135
 msgid "No"
 msgstr "No"
 
@@ -6873,11 +6888,6 @@ msgstr "por porcentaje"
 msgid "by items"
 msgstr "por items"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/scenarios/entities/Scenario.java:176
-#, java-format
-msgid "Derived from {0}"
-msgstr "Derivado de {0}"
-
 #: navalplanner-business/src/main/java/org/navalplanner/business/costcategories/entities/CostCategory.java:107
 msgid "Hours cost type cannot be empty or null"
 msgstr "Tipo de coste de horas no puede ser vacío o nulo"
@@ -6948,48 +6958,37 @@ msgstr "No pueden propagar dos progresos en la misma tarea"
 msgid "Duplicate Progress Assignment For Task"
 msgstr "Asignación de progreso duplicada para la tarea"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderElement.java:1346
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderElement.java:1356
-#, java-format
-msgid "Repeated Project code {0} in Project {1}"
-msgstr "Código {0} de proyecto repetdio en proyecto {1}"
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderElement.java:1053
+msgid "Quality form already exists"
+msgstr "El formulario de calidad ya existe"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:181
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:180
 msgid "Working hours shouldn't be negative"
 msgstr "Las horas de trabajo no deberían ser negativas"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:210
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:209
 msgid "Total percentage should be less than 100%"
 msgstr "El porcentaje total debería ser menor que el 100%"
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:259
-#, java-format
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:257
 msgid ""
-" The criterion {0} can not be assigned to this hoursGroup because its "
-"resource type is diferent."
+"The criterion can not be assigned to this hoursGroup because its resource "
+"type is diferent"
 msgstr ""
-" El criterio {0} no se puede asignar a este grupo de horas porque su tipo de "
+"El criterio no se puede asignar a este grupo de horas porque su tipo de "
 "recurso es diferente."
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:265
-#, java-format
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:261
 msgid ""
-" The criterion  {0} can not be assigned to this hoursGroup because it "
-"already exist into the hoursGroup."
+"The criterion can not be assigned to this hoursGroup because it already "
+"exist into the hoursGroup"
 msgstr ""
-" El criterio {0} no se puede asignar a este grupo de horas porque ya existe "
-"en el grupo de horas."
+"El criterio no se puede asignar a este grupo de horas porque ya existe en el "
+"grupo de horas."
 
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:421
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/HoursGroup.java:431
-#, java-format
-msgid "Repeated Hours Group code {0} in Project {1}"
-msgstr "Código {0} de grupo de horas repetido en proyecto {1}"
-
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/CriterionRequirementHandler.java:540
-#, java-format
-msgid " The {0} already exist into other task"
-msgstr " El {0} ya existe en otra tarea"
+#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/CriterionRequirementHandler.java:539
+msgid "The criterion already exist into other task"
+msgstr "El criterio ya existe en otra tarea"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderStatusEnum.java:33
 msgid "OFFERED"
@@ -7018,11 +7017,6 @@ msgstr "PROYECTO PENDIENTE SUBCONTRATADO"
 #: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/OrderStatusEnum.java:35
 msgid "STORED"
 msgstr "ARCHIVADO"
-
-#: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/SchedulingState.java:169
-#, java-format
-msgid "{0} is already child of another {1}"
-msgstr "{0} ya es hijo de otro {1}"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/orders/entities/SchedulingState.java:215
 msgid "it's already somewhat scheduled"
@@ -7064,11 +7058,6 @@ msgstr "Línea"
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/EntitySequence.java:131
 msgid "You can not modifiy this entity sequence, it is already in use"
 msgstr "No puede modificar esta secuencia de entidade, ya está en uso"
-
-#: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/EntitySequence.java:140
-#, java-format
-msgid "number of digits must be between {0} and {1}"
-msgstr "el número de dígitos debe estar entre {0} y {1}"
 
 #: navalplanner-business/src/main/java/org/navalplanner/business/common/entities/ProgressType.java:36
 msgid "Progress with all tasks by hours"
@@ -7199,3 +7188,9 @@ msgstr "La hora debería tener un valor entre 0 y 23"
 msgid "A queue dependency has to have an origin different from destiny"
 msgstr ""
 "Una dependencia de la cola tiene que ter un origen diferente de su destino"
+
+#~ msgid "Derived from {0}"
+#~ msgstr "Derivado de {0}"
+
+#~ msgid "{0} is already child of another {1}"
+#~ msgstr "{0} ya es hijo de otro {1}"
