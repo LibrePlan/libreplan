@@ -61,12 +61,17 @@ Once installed the program you have two kinds of run:
 
 * Console:
 
-  * To run sahi scripts, you need to start sahi and after this you must be in
-    ``scripts/functional-tests/``, there you can run them like::
+  * To run sahi scripts, you need to start Sahi::
+
+    $ start_sahi.sh
+
+  * And inside ``scripts/functional-tests/`` you can run them with::
 
     $ testrunner.sh yourtest.sah <initial-url> <browser>
 
-  * NOTE: If you modify sahi default installation path (``~/sahi/``), you must
+.. WARNING::
+
+    If you modify sahi default installation path (``~/sahi/``), you must
     change the path in ``scripts/functional-tests/sahi-common-env.sh``
 
 It's possible run more than one script at the same time using a file.suite you
