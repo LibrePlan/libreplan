@@ -23,15 +23,18 @@
  * 1 - Create a new process
  * 2 - Create a process with the same name (most be failure)
  * 3 - Create a new process without name (most be failure)
- * 4 - Edit a process
- * 5 - Try to delete a previously assigned progress (most be failure)
- *   5.1 - Create a Project
- *   5.2 - Assign a progress to a project
- *   5.3 - try to delete this progress
- *   5.4 - Delete the previously created project
- * 6 - Delete a process
- * 7 - Try to edit a default value
- * 8 - Try to delete a default value
+ * 4 - Check Max value and precision
+ *   4.1 - Wrong values (last input precision)
+ *   4.2 - Wrong values (last input Max Value)
+ * 5 - Edit a process
+ * 6 - Try to delete a previously assigned progress (most be failure)
+ *   6.1 - Create a Project
+ *   6.2 - Assign a progress to a project
+ *   6.3 - try to delete this progress
+ *   6.4 - Delete the previously created project
+ * 7 - Delete a process
+ * 8 - Try to edit a default value
+ * 9 - Try to delete a default value
 */
 _include("../common_functions.sah");
 
@@ -56,7 +59,8 @@ function progressCreateEmpty() {
 }
 
 function progressForm($name) {
-    _setValue(_textbox(1), $name);
+    _setValue(_textbox(0, _near(_div("Unit name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Unit name"))));
     _click(_cell("Save"));
 }
 
@@ -66,8 +70,34 @@ function progressNotValid(){
     _assert(_isVisible(_div("The name is not valid, there is another progress type with the same name.")));
 }
 
+function progressCreateWrongPrecisson($name, $maxValue, $precission){
+    progressPrecisson($name, $maxValue, $precission);
+    progressMaxValue($name, $maxValue, $precission);
+}
+
+function progressPrecisson($name, $maxValue, $precission){
+    commonCreate("Progress");
+    _setValue(_textbox(0, _near(_div("Unit name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Unit name"))));
+    _setValue(_textbox(0, _near(_div("Default max value"))), $maxValue);
+    _setValue(_textbox(0, _near(_div("Precision"))), $precission);
+    _click(_cell("Save"));
+    _assertExists(_div("Value is not valid, the Precision value must be less than the defalt max value."));
+    _assert(_isVisible(_div("Value is not valid, the Precision value must be less than the defalt max value.")));
+}
+
+function progressMaxValue($name, $maxValue, $precission){
+    commonCreate("Progress");
+    _setValue(_textbox(0, _near(_div("Unit name"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Unit name"))));
+    _setValue(_textbox(0, _near(_div("Precision"))), $precission);
+    _setValue(_textbox(0, _near(_div("Default max value"))), $maxValue);
+    _click(_cell("Save"));
+    _assertExists(_div("Value is not valid, the default max value must be greater than the precision value"));
+    _assert(_isVisible(_div("Value is not valid, the default max value must be greater than the precision value")));
+}
 function progressEdit($oldName, $newName, $cell) {
-    commonEdit($oldName,3);
+    commonEdit($oldName, 3);
     progressForm($newName);
     commonSaveValidation("Progress Type", $newName);
 }
@@ -104,7 +134,7 @@ function progressAssignProject($projectName, $progressNewName){
     _click(_cell("Add new progress assignment"));
     _setValue(_textbox("z-combobox-inp", _near(_row("footer"))), $progressNewName);
     _setValue(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))),"10.00");
-    _setValue(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))),"10.00");
+    _removeFocus(_textbox("z-decimalbox", _near(_textbox("z-combobox-inp"))));
     _click(_cell("Add measure"));
     _click(_cell("z-button-cm[37]", _near(_row("footer"))));
     _setValue(_textbox(0, _near(_parentTable(_div("Value")))), "0.1");
@@ -117,6 +147,9 @@ var $progressName = "new";
 var $progressNewName = "newest";
 var $defaultValue = "units";
 var $projectName = "new project";
+var $progressMaxValue = "10";
+var $progressPrecission = "90";
+
 
 /* test actions */
 
@@ -124,6 +157,7 @@ commonLogin("admin", "admin");
 progressCreate($progressName);
 progressCreateDuplicate($progressName);
 progressCreateEmpty();
+progressCreateWrongPrecisson($progressNewName, $progressMaxValue, $progressPrecission);
 progressEdit($progressName, $progressNewName, 3);
 progressAssigned($projectName, $progressNewName);
 commonDelete("Progress", $progressNewName, 3);
