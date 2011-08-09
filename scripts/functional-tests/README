@@ -55,6 +55,11 @@ http://sahi.co.in/w/using-sahi
 Run the Scripts
 ---------------
 
+.. WARNING::
+
+    All tests use English as default language. So, if 
+    your browser language is different from this, they will NOT PASS
+
 Once installed the program you have two kinds of run:
 
 * Graphical: Follow the instructions at: http://sahi.co.in/w/using-sahi
