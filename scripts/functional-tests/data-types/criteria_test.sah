@@ -1,0 +1,143 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* Included tests
+ *
+ * 1 - Create a new criterion
+ * 2 - Create a criterion with duplicate type (most be failure)
+ * 3 - Create a criterion with empty type
+ * 4 - Create a criterion with duplicate name (most be failure)
+ * 5 - Create with Hierarchy
+ * 6 - Create without Hierarchy (clicking on a previous name)
+ * 7 - Edit a criterion
+ * 8 - Delete all criteria
+*/
+_include("../common_functions.sah");
+
+function criteriaCreate($type){
+    commonCreate("Criteria");
+    criteriaForm($type);
+    commonSaveValidation("Criterion Type", $type);
+}
+
+function criteriaCreateDuplicateType($type){
+    commonCreate("Criteria");
+    criteriaForm($type);
+    criteriaNotValid();
+}
+
+function criteriaCreateEmpty(){
+    commonCreate("Criteria");
+    criteriaForm("");
+    _assertExists(_div("name: criterion type name not specified"));
+    _assert(_isVisible(_div("name: criterion type name not specified")));
+}
+
+function criteriaCreateDuplicateName($type, $name){
+    commonCreate("Criteria");
+    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _assertExists(_div("Already exists other criterion with the same name"));
+    _assert(_isVisible(_div("Already exists other criterion with the same name")));
+}
+
+function criteriaCreateWithHierarchy($type, $name, $name2){
+    commonCreate("Criteria");
+    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _click(_div(0, _near(_div("z-treecell-cnt z-overflow-hidden"))));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name2);
+    _click(_cell("Add"));
+    _assertExists(_span("z-tree-line z-tree-spacer"));
+    _assert(_isVisible(_span("z-tree-line z-tree-spacer")));
+    _click(_cell("Save"));
+}
+
+function criteriaCreateWithoutHierarchy($type, $name, $name2){
+    commonCreate("Criteria");
+    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _click(_checkbox(0, _near(_div("Hierarchy"))));
+    _click(_cell("OK"));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _click(_div(0, _near(_div("z-treecell-cnt z-overflow-hidden"))));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name2);
+    _click(_cell("Add"));
+    _assertExists(_span("z-tree-ico z-tree-firstspacer[1]"));
+    _assert(_isVisible(_span("z-tree-ico z-tree-firstspacer[1]")));
+    _click(_cell("Save"));
+}
+
+function criteriaEdit($oldName, $newName, $cell){
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_div("Name[1]"))), $newName);
+    _click(_checkbox(0, _near(_div("Multiple values per resource"))));
+    _click(_cell("Save"));
+    commonSaveValidation("Criterion Type", $newName);
+}
+
+function criteriaForm($name){
+    _setValue(_textbox(0, _near(_div("Name[1]"))), $name);
+    _click(_checkbox(0, _near(_div("Multiple values per resource"))));
+    _click(_checkbox(0, _near(_div("Hierarchy"))));
+    _click(_cell("OK"));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function criteriaNotValid(){
+    _assertExists(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used"));
+    _assert(_isVisible(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used")));
+}
+
+/* test values */
+var $criteriaType = "new";
+var $criteriaType2 = "new2";
+var $criteriaType3 = "new3";
+var $criteriaNewType = "newest";
+var $criteriaName = "criterion1";
+var $criteriaName2 = "criterion2";
+
+
+/* test actions */
+commonLogin("admin","admin");
+
+criteriaCreate($criteriaType);
+criteriaCreateDuplicateType($criteriaType);
+criteriaCreateEmpty();
+criteriaCreateDuplicateName($criteriaType2, $criteriaName);
+criteriaCreateWithHierarchy($criteriaType2, $criteriaName, $criteriaName2);
+criteriaCreateWithoutHierarchy($criteriaType3, $criteriaName, $criteriaName2);
+
+criteriaEdit($criteriaType, $criteriaNewType, 4);
+
+commonDelete("Criteria", $criteriaNewType, 4);
+commonDeleteValidation("Criterion Type", $criteriaNewType);
+commonDelete("Criteria", $criteriaType2, 4);
+commonDeleteValidation("Criterion Type", $criteriaType2);
+commonDelete("Criteria", $criteriaType3, 4);
+commonDeleteValidation("Criterion Type", $criteriaType3);
+
+commonLogout();
