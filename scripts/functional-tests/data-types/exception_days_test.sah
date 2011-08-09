@@ -1,0 +1,92 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* Included tests
+ *
+ * 1 - Create a new Exception Day
+ * 2 - Create a Exception Day with duplicate type (most be failure)
+ * 3 - Create a Exception Day with empty type (most be failure)
+ * 4 - Create a Exception Day with duplicate name (most be failure)
+ * 5 - Edit a Exception Day
+ * 6 - Delete Exception Day
+ *
+*/
+_include("../common_functions.sah");
+
+function exceptDayCreate($name, $standar, $color) {
+    commonCreate("Exception Days");
+    exceptDayForm($name, $standar, $color);
+    commonSaveValidation("Exception Day Type", $name);
+}
+
+function exceptDayCreateDuplicateType($name, $standar, $color) {
+    commonCreate("Exception Days");
+    exceptDayForm($name, $standar, $color);
+    exceptDayNotValid($name);
+}
+
+function exceptDayCreateEmpty($name, $standar, $color) {
+    commonCreate("Exception Days");
+    exceptDayForm($name, $standar, $color);
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+}
+
+function exceptDayForm($name, $standar, $color){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_span("Name"))));
+    _setSelected(_select(0, _near(_span("Color"))),$color);
+    _removeFocus(_select(0, _near(_span("Color"))));
+    _setValue(_textbox(0, _near(_span("Standard Effort"))), $standar);
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function exceptDayNotValid($ExceptDayName){
+    _assertExists(_span("checkConstraintUniqueName: name is already used"));
+    _assert(_isVisible(_span("checkConstraintUniqueName: name is already used")));
+}
+
+function exceptDayEdit($oldName, $newName, $cell){
+    commonEdit($oldName, $cell);
+    exceptDayForm($newName);
+    commonSaveValidation("Exception Day Type", $newName);
+}
+
+
+/* test values */
+var $exceptDayName = "new";
+var $exceptDaystandar = "8";
+var $exceptDayName2 = "new2";
+var $exceptDayNewType = "newest";
+
+
+/* test actions */
+commonLogin("admin", "admin");
+
+exceptDayCreate($exceptDayName, $exceptDaystandar, 2);
+exceptDayCreateDuplicateType($exceptDayName, $exceptDaystandar, 1);
+exceptDayCreateEmpty("", $exceptDaystandar);
+
+exceptDayEdit($exceptDayName, $exceptDayNewType, 5);
+
+commonDelete("Exception Days", $exceptDayNewType, 5);
+commonDeleteValidation("Exception Day Type", $exceptDayNewType);
+
+commonLogout();
