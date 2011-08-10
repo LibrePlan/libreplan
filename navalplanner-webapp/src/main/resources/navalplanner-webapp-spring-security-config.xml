@@ -55,8 +55,12 @@
     <beans:bean id="saltSource" class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
         p:userPropertyToUse="username"/>
 
-    <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
+    <beans:bean id="realAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
+    </beans:bean>
+
+    <beans:bean id="authenticationProvider" class="org.navalplanner.web.users.services.AuthenticationProviderLoggingDecorator">
+        <beans:property name="decoratedProvider" ref="realAuthenticationProvider"></beans:property>
         <custom-authentication-provider/>
     </beans:bean>
 
