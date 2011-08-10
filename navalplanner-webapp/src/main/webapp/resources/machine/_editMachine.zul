@@ -24,6 +24,7 @@
 <?component name="machineConfigurationUnits" inline="true" macroURI="_machineConfigurationUnits.zul"?>
 <?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>
 <window id="editWindow" >
+    <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
             <tab id="tbMachineData" label="${i18n:_('Machine data')}"></tab>

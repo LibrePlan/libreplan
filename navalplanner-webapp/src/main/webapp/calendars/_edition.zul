@@ -20,7 +20,7 @@
 -->
 
 <window id="${arg.top_id}" xmlns:w="client">
-
+  <caption id="caption" sclass="caption-title" />
   <tabbox sclass="calendar-tabbox">
     <tabs>
       <tab label="${i18n:_('Calendar data')}"></tab>

@@ -19,6 +19,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>
  -->
 <window id="${arg.top_id}">
+    <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Edit')}"></tab>

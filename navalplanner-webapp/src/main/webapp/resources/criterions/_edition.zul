@@ -22,6 +22,7 @@
 <?component name="criterionsTree" inline="true" macroURI="_criterionsTree.zul"?>
 
 <window id="${arg.id}">
+    <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Edit')}" width="850"></tab>

@@ -25,6 +25,7 @@
 <?component name="criterions" inline="true" macroURI="../_criterions.zul"?>
 <?component name="costCategoryAssignment" inline="true" macroURI="../_costCategoryAssignment.zul"?>
 <window id="${arg.top_id}">
+    <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
             <tab id="personalDataTab" label="${i18n:_('Personal data')}"></tab>

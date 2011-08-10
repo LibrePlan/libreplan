@@ -21,6 +21,7 @@
 
 <?component name="sortFieldsAndLabels" inline="true" macroURI="_sortFieldsAndLabels.zul"?>
 <window id="${arg.top_id}" title="${arg.title}" >
+    <caption id="caption" sclass="caption-title" />
 
     <tabbox>
         <tabs>

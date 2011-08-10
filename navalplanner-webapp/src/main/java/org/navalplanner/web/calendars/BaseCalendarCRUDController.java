@@ -50,6 +50,7 @@ import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
 import org.zkoss.zul.Treerow;
+import org.zkoss.zul.api.Caption;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -519,7 +520,7 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
                 throw new IllegalStateException(
                         "You should be in creation or edition mode to use this method");
             }
-            editWindow.setTitle(title);
+            ((Caption) editWindow.getFellow("caption")).setLabel(title);
         }
     }
 

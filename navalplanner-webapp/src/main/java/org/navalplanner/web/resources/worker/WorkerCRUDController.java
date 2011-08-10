@@ -77,6 +77,7 @@ import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.api.Caption;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -320,7 +321,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
 
     private void showEditWindow(String title) {
         personalDataTab.setSelected(true);
-        editWindow.setTitle(title);
+        ((Caption) editWindow.getFellow("caption")).setLabel(title);
         getVisibility().showOnly(editWindow);
         Util.reloadBindings(editWindow);
     }
@@ -909,7 +910,7 @@ public class WorkerCRUDController extends GenericForwardComposer implements
                 throw new IllegalStateException(
                         "You should be in creation or edition mode to use this method");
             }
-            editWindow.setTitle(title);
+            ((Caption) editWindow.getFellow("caption")).setLabel(title);
         }
     }
 

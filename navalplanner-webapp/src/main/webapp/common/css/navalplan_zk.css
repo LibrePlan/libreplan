@@ -449,6 +449,10 @@ div.z-row-cnt {
     background-position: 0px 3px;
 }
 
+.caption-title .z-caption-l {
+    font-size: 18px;
+}
+
 .z-tabs-scroll .z-tabs-cnt {
     background: #FAFDFE none repeat scroll 0 0;
     border-bottom: 1px solid #7EAAC6;

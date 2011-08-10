@@ -21,6 +21,7 @@
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n" ?>
 
 <window id="${arg.top_id}">
+    <caption id="caption" sclass="caption-title" />
     <tabbox>
         <tabs>
             <tab label="${i18n:_('Category data')}"></tab>

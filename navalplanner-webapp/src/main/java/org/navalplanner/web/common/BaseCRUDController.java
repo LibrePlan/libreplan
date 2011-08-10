@@ -28,6 +28,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.api.Caption;
 import org.zkoss.zul.api.Window;
 
 /**
@@ -116,23 +117,25 @@ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
                     "You should be editing one entity in order to use this method");
         }
 
+        String title;
+
         String humanId = entityBeingEdited.getHumanId();
         switch (state) {
         case CREATE:
             if (StringUtils.isEmpty(humanId)) {
-                editWindow.setTitle(_("Create {0}", getEntityType()));
+                title = _("Create {0}", getEntityType());
             } else {
-                editWindow.setTitle(_("Create {0}: {1}", getEntityType(),
-                        humanId));
+                title = _("Create {0}: {1}", getEntityType(), humanId);
             }
             break;
         case EDIT:
-            editWindow.setTitle(_("Edit {0}: {1}", getEntityType(), humanId));
+            title = _("Edit {0}: {1}", getEntityType(), humanId);
             break;
         default:
             throw new IllegalStateException(
                     "You should be in creation or edition mode to use this method");
         }
+        ((Caption) editWindow.getFellow("caption")).setLabel(title);
     }
 
     /**
