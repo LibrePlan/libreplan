@@ -120,7 +120,9 @@ public class BaseCalendarCRUDController extends GenericForwardComposer {
     }
 
     private void highlightDaysOnCalendar() {
-        editionController.highlightDaysOnCalendar();
+        if (editionController != null) {
+            editionController.highlightDaysOnCalendar();
+        }
     }
 
     public void save() {
