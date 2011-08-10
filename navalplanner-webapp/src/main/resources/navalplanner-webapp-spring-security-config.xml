@@ -68,7 +68,7 @@
     <beans:bean id="saltSource"
         class="org.springframework.security.providers.dao.salt.ReflectionSaltSource"
         p:userPropertyToUse="username" />
-    <!-- <beans:bean id="authenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
+    <!-- <beans:bean id="realAuthenticationProvider" class="org.springframework.security.providers.dao.DaoAuthenticationProvider"
         p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" p:userDetailsService-ref="dbUserDetailsService">
         <custom-authentication-provider/> </beans:bean> -->
     <!-- Beans used by the NavalPlan Web application when users are registered
@@ -98,12 +98,16 @@
         when an LDAP is used. Also will allow authenticate users in database. The
         property strUserId must be set with the proper value. It represents the property
         of the user in LDAP which will be used to check the username. -->
-    <beans:bean id="authenticationProvider"
+    <beans:bean id="realAuthenticationProvider"
         class="org.navalplanner.web.users.services.LDAPCustomAuthenticationProvider"
         p:userDetailsService-ref="ldapUserDetailsService"
         p:ldapTemplate-ref="ldapTemplate"
         p:passwordEncoderService-ref="dbPasswordEncoderService">
-        <custom-authentication-provider />
+    </beans:bean>
+
+    <beans:bean id="authenticationProvider" class="org.navalplanner.web.users.services.AuthenticationProviderLoggingDecorator">
+        <beans:property name="decoratedProvider" ref="realAuthenticationProvider"></beans:property>
+        <custom-authentication-provider/>
     </beans:bean>
 
     <!-- This bean is used to implement UserDetailsService with LDAP authentication

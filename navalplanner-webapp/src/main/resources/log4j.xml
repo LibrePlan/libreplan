@@ -60,6 +60,26 @@
   <logger name="profiling" additivity="false">
     <level value="info" />
     <appender-ref ref="ASYNC-profiling" />
+   </logger>
+
+  <appender name="logins" class="org.apache.log4j.DailyRollingFileAppender">
+    <param name="file" value="${navalplan-log-directory}navalplan-logins.log" />
+    <param name="datePattern" value="'.'yyyy-MM-dd" /> <!-- Rollover each midnight -->
+
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%-5p [%d{dd-MMMM HH:mm:ss}] [%t] %c %x - %m%n" />
+    </layout>
+  </appender>
+
+  <appender name="ASYNC-logins" class="org.apache.log4j.AsyncAppender">
+    <param name="BufferSize" value="1000" />
+    <appender-ref ref="logins" />
+  </appender>
+
+  <logger name="org.navalplanner.web.users.services.AuthenticationProviderLoggingDecorator"
+          additivity="true">
+    <level value="info" />
+    <appender-ref ref="ASYNC-logins" />
   </logger>
 
   <root>
