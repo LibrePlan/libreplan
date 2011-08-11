@@ -1,0 +1,130 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* Included tests
+ *
+ * 1 - Create a new Unit Measure
+ * 2 - Create a Unit Measure with duplicate type (it should be a failure)
+ * 3 - Create a Unit Measure with empty type (it should be a failure)
+ * 4 - Edit a Unit Measure
+ * 5 - Assign a Unit Measure to a material
+ *   5.1 Create a material and assign the Unit
+ *   5.1 Try to delete the assigned Unit (it should be a failure)
+ *   5.2 Delete the material
+ * 6 - Delete Unit Measure
+ *
+*/
+_include("../common_functions.sah");
+
+function unitMeasureCreate($type){
+    commonCreate("Unit Measures");
+    unitMeasureForm($type);
+    commonSaveValidation("Unit Measure", $type);
+    _log("Create a new Unit Measure SUCCESS", "success");
+}
+
+function unitMeasureCreateDuplicate($type){
+    commonCreate("Unit Measures");
+    unitMeasureForm($type);
+    unitMeasureNotValidation($type);
+    _log("Create Unit Measure Duplicate SUCCESS", "success");
+}
+
+function unitMeasureCreateEmpty(){
+    commonCreate("Unit Measures");
+    unitMeasureForm("");
+    _assertExists(_div("Unit type name cannot be empty"));
+    _assert(_isVisible(_div("Unit type name cannot be empty")));
+    _log("Create Unit Measure Empty SUCCESS", "success");
+}
+
+function unitMeasureForm($name){
+    _setValue(_textbox(0, _near(_span("Unit measure name"))), $name);
+    _removeFocus(_textbox(0, _near(_span("Unit measure name"))));
+    _click(_cell("Save & Continue"));
+}
+
+/* test to check a that naval plan give us a error */
+function unitMeasureNotValidation(){
+    _assertExists(_div("The meausure name is not valid. There is another unit type with the same measure name"));
+    _assert(_isVisible(_div("The meausure name is not valid. There is another unit type with the same measure name")));
+}
+
+function unitMeasureEdit($oldName, $newName, $cell){
+    commonEdit($oldName, $cell);
+    unitMeasureForm($newName);
+    commonSaveValidation("Unit Measure", $newName);
+    _log("Edit the Unit Measure SUCCESS", "success");
+}
+
+function unitMeasureAssign($UMeasure, $materialName){
+    materialFormCreate($materialName, $UMeasure);
+    unitMeasureTryDeleteAssigned($UMeasure);
+    materialFormDelete($materialName);
+    _log("Assign an Unit Measure to a material SUCCESS", "success");
+}
+
+function materialFormCreate($material, $measure){
+    _click(_link("Materials"));
+    _click(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_cell("z-button-cm[3]"));
+    _setValue(_textbox("z-textbox[2]"), $material);
+    _setSelected(_select(0), $measure);
+    _click(_cell("Save"));
+    _assertExists(_div("Materials saved"));
+    _assert(_isVisible(_div("Materials saved")));
+}
+
+function unitMeasureTryDeleteAssigned($UMeasure){
+    _click(_link("Unit Measures"));
+    _click(_image("ico_borrar1.png", _in(_cell(1, _near(_cell($UMeasure))))));
+    _assertNotExists(_cell("OK"));
+    _assertNull(_cell("OK"));
+    _assertExists(_cell($UMeasure));
+    _assert(_isVisible(_cell($UMeasure)));
+}
+
+function materialFormDelete($materialName){
+    _click(_link("Materials"));
+    var $qtengo = _getValue(_textbox(1, _near(_select(0))));
+    if ($qtengo == $materialName)
+    {
+    _click(_image("ico_borrar1.png", _in(_cell(6, _near(_select(0))))));
+    _click(_cell("Save"));
+    _assertExists(_div("Materials saved"));
+    _assert(_isVisible(_div("Materials saved")));
+    }
+}
+
+/* test values */
+var $UMeasureName = "new";
+var $UMeasureName2 = "newest";
+var $materialName = "NewMaterial";
+
+/* test actions */
+commonLogin("admin","admin");
+unitMeasureCreate($UMeasureName);
+unitMeasureCreateDuplicate($UMeasureName);
+unitMeasureCreateEmpty();
+unitMeasureEdit($UMeasureName, $UMeasureName2, 1);
+unitMeasureAssign($UMeasureName2, $materialName);
+commonDelete("Unit Measures", $UMeasureName2, 1);
+commonDeleteValidation("Unit Measure", $UMeasureName2);
+_log("Delete the Unit Measure SUCCESS", "success");
+commonLogout();
