@@ -367,7 +367,4 @@ public class OrderPlanningController implements Composer {
         return advanceAssignmentPlanningController;
     }
 
-    public void toggleOptions() {
-        filterOptionsPopup.open(300, 150);
-    }
 }

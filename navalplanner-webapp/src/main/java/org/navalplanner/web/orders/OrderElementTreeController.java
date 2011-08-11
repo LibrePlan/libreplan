@@ -716,8 +716,4 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         };
     }
 
-    public void toggleOptions() {
-        filterOptionsPopup.open(300, 150);
-    }
-
 }
