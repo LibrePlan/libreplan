@@ -87,6 +87,10 @@ public class SpecificResourceAllocationTest {
                 this.calendar.asDurationOn(isA(PartialDay.class),
                         isA(ResourcesPerDay.class)))
                 .andAnswer(asDurationAnswer).anyTimes();
+        expect(this.calendar.getCapacityWithOvertime(isA(LocalDate.class)))
+                .andReturn(
+                        Capacity.create(hours(hours))
+                                .overAssignableWithoutLimit()).anyTimes();
         expect(this.calendar.getAvailability()).andReturn(
                 AvailabilityTimeLine.allValid()).anyTimes();
         replay(this.calendar);
@@ -122,6 +126,20 @@ public class SpecificResourceAllocationTest {
                         }
                         return day.limitWorkingDay(defaultAnswer
                                 .getStandardEffort());
+                    }
+                }).anyTimes();
+
+        expect(this.calendar.getCapacityWithOvertime(isA(LocalDate.class)))
+                .andAnswer(new IAnswer<Capacity>() {
+
+                    @Override
+                    public Capacity answer() throws Throwable {
+                        LocalDate date = (LocalDate) EasyMock
+                                .getCurrentArguments()[0];
+                        if (answersForDates.containsKey(date)) {
+                            return answersForDates.get(date);
+                        }
+                        return defaultAnswer;
                     }
                 }).anyTimes();
         final IAnswer<EffortDuration> effortAnswer = new IAnswer<EffortDuration>() {

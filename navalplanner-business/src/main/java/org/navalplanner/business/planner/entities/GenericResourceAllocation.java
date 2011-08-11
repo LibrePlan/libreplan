@@ -34,6 +34,7 @@ import org.apache.commons.lang.Validate;
 import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.planner.entities.EffortDistributor.IResourceSelector;
 import org.navalplanner.business.planner.entities.EffortDistributor.ResourceWithAssignedDuration;
@@ -227,6 +228,11 @@ public class GenericResourceAllocation extends
         protected AvailabilityTimeLine getResourcesAvailability() {
             return AvailabilityCalculator.buildSumOfAvailabilitiesFor(
                     getCriterions(), resources);
+        }
+
+        @Override
+        protected Capacity getCapacityAt(PartialDay day) {
+            return hoursDistributor.getCapacityAt(day);
         }
 
     }

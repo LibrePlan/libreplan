@@ -238,6 +238,15 @@ public class EffortDistributor {
             return new ResourceWithAvailableCapacity(resource, available);
         }
 
+        Capacity getAvailableCapacityOn(PartialDay day,
+                IAssignedEffortForResource assignedEffort) {
+            Capacity originalCapacity = day.limitCapacity(calendar
+                    .getCapacityWithOvertime(day.getDate()));
+            EffortDuration alreadyAssigned = assignedEffort
+                    .getAssignedDurationAt(resource, day.getDate());
+            return originalCapacity.minus(alreadyAssigned);
+        }
+
     }
 
     /**
@@ -314,6 +323,15 @@ public class EffortDistributor {
         this.assignedEffortForResource = assignedEffortForResource;
         this.resourceSelector = selector != null ? new CompoundSelector(
                 new OnlyCanWork(), selector) : new OnlyCanWork();
+    }
+
+    public Capacity getCapacityAt(PartialDay day) {
+        List<Capacity> capacities = new ArrayList<Capacity>();
+        for (ResourceWithDerivedData each : resourcesAssignableAt(day.getDate())) {
+            capacities.add(each.getAvailableCapacityOn(day,
+                    assignedEffortForResource));
+        }
+        return Capacity.sum(capacities);
     }
 
 

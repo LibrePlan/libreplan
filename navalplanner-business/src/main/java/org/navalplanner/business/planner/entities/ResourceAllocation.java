@@ -22,7 +22,6 @@
 package org.navalplanner.business.planner.entities;
 
 import static org.navalplanner.business.workingday.EffortDuration.hours;
-import static org.navalplanner.business.workingday.EffortDuration.seconds;
 import static org.navalplanner.business.workingday.EffortDuration.zero;
 
 import java.math.BigDecimal;
@@ -46,6 +45,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.BaseCalendar;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.calendars.entities.SameWorkHoursEveryDay;
@@ -55,6 +55,7 @@ import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.allocationalgorithms.AllocatorForTaskDurationAndSpecifiedResourcesPerDay;
+import org.navalplanner.business.planner.entities.allocationalgorithms.Distributor;
 import org.navalplanner.business.planner.entities.allocationalgorithms.EffortModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.ResourcesPerDayModification;
 import org.navalplanner.business.planner.entities.allocationalgorithms.UntilFillingHoursAllocator;
@@ -974,22 +975,26 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         private EffortDuration[] secondsDistribution(
                 AvailabilityTimeLine availability, Iterable<PartialDay> days,
                 EffortDuration duration) {
-            List<Share> shares = new ArrayList<Share>();
+            List<Capacity> capacities = new ArrayList<Capacity>();
             for (PartialDay each : days) {
-                shares.add(getShareAt(each, availability));
+                capacities.add(getCapacity(availability, each));
             }
-            ShareDivision original = ShareDivision.create(shares);
-            ShareDivision newShare = original.plus(duration.getSeconds());
-            return fromSecondsToDurations(original.to(newShare));
+            Distributor distributor = Distributor.among(capacities);
+            return distributor.distribute(duration).toArray(
+                    new EffortDuration[0]);
         }
 
-        private EffortDuration[] fromSecondsToDurations(int[] seconds) {
-            EffortDuration[] result = new EffortDuration[seconds.length];
-            for (int i = 0; i < result.length; i++) {
-                result[i] = seconds(seconds[i]);
+        private Capacity getCapacity(AvailabilityTimeLine availability,
+                PartialDay day) {
+            if (availability.isValid(day.getDate())) {
+                return getCapacityAt(day);
+            } else {
+                return Capacity.create(hours(0))
+                        .notOverAssignableWithoutLimit();
             }
-            return result;
         }
+
+        protected abstract Capacity getCapacityAt(PartialDay each);
 
         private Share getShareAt(PartialDay day,
                 AvailabilityTimeLine availability) {
