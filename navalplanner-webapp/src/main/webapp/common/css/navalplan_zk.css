@@ -1065,6 +1065,12 @@ span.z-dottree-line {
     padding-right: 3px;
 }
 
+
+.toolbar-box .z-button-cm {
+    font-size:11px;
+    color: #0068B1;
+}
+
 /* =================================================== */
 
 .vertical-separator {
@@ -1717,4 +1723,11 @@ input.z-datebox-text-disd {
 
 select {
     font-size:12px;
+}
+
+.z-separator-ver-bar {
+    height: 22px;
+    width: 0;
+    border-right: 1px solid #9ECAD8;
+    border-left: 1px solid #d9f3ff;
 }

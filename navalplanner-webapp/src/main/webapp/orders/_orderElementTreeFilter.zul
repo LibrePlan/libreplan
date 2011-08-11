@@ -20,34 +20,31 @@
 -->
 
 <hbox align="center" sclass="filtering-area">
-    <label value="${i18n:_('Filter')}"
+    <space bar="true" />
+    <label value="${i18n:_('Task')}"
         tooltiptext="${i18n:_('Select required criteria set and press filter button')}"/>
-    <bandboxMultipleSearch id="bdFiltersOrderElement" widthBandbox="300px" widthListbox="400px"
-        finder="orderElementsMultipleFiltersFinder"/>
-    <label value="${i18n:_('name')}"/>
-    <textbox id="filterNameOrderElement" width="50px"
+    <textbox id="filterNameOrderElement" width="100px"
         onOK="treeController.onApplyFilter()" />
-    <button id="optionsButton" label="options" style="margin-top: -4px"
+    <label value="${i18n:_('with')}"/>
+    <bandboxMultipleSearch id="bdFiltersOrderElement" widthBandbox="260px" widthListbox="550px"
+        finder="orderElementsMultipleFiltersFinder" />
+    <button id="optionsButton" label="${i18n:_('options')}" dir="reverse"
+        image="/common/img/ico_dropdown.png" style="margin-top: -2px"
         tooltiptext="${i18n:_('Set Filter Options')}"
-	onClick='filterOptionsPopup.open(self,"after_end");' />
-    <button image="/common/img/ico_filter.png" style="margin-top: -4px"
+	   onClick='filterOptionsPopup.open(self,"after_end");' />
+    <button label="${i18n:_('Filter')}" dir="reverse"
+        image="/common/img/ico_filter.png" style="margin-top: -2px"
         tooltiptext="${i18n:_('Apply filtering to tasks satisfying required criteria')}"
         onClick="treeController.onApplyFilter()"/>
-    <popup id="filterOptionsPopup" width="220px" height="120px" >
-        <groupbox mold="3d" closable="true" width="200px" height="100px">
-            <vbox>
-                <hbox>
+    <popup id="filterOptionsPopup" sclass="filter-options-popup">
+                <hbox align="pack">
                     <label value="${i18n:_('from')}"/>
-                    <datebox id="filterStartDateOrderElement" constraint = "@{treeController.checkConstraintStartDate}"
-                        width="65px" />
+                    <datebox id="filterStartDateOrderElement" constraint = "@{treeController.checkConstraintStartDate}" />
                     <label value="${i18n:_('to')}"/>
-                    <datebox id="filterFinishDateOrderElement" constraint = "@{treeController.checkConstraintFinishDate}"
-                        width="65px" />
+                    <datebox id="filterFinishDateOrderElement" constraint = "@{treeController.checkConstraintFinishDate}" />
                 </hbox>
-                <hbox>
+                <hbox align="pack">
                     <checkbox id="labelsWithoutInheritance" checked="false" label="${i18n:_('Labels without inheritance')}"/>
                 </hbox>
-            </vbox>
-        </groupbox>
     </popup>
 </hbox>
