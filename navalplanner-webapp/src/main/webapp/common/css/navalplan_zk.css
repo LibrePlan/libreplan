@@ -1093,7 +1093,8 @@ span.z-dottree-line {
 }
 
 tr.z-tree-row-seld, tr.z-list-item-seld,
-.z-combobox-pp .z-combo-item-seld {
+.z-combobox-pp .z-combo-item-seld,
+tr.z-treerow-seld {
     background-color: #fdd772;
     color: #000000;
 }
