@@ -208,4 +208,63 @@ public class CapacityTest {
         assertTrue(withSomeExtraHours
                 .hasSpareSpaceForMoreAllocations(hours(8)));
     }
+
+    @Test
+    public void testMinusWithZeroExtraHours() {
+        Capacity c = Capacity.create(hours(8)).notOverAssignableWithoutLimit();
+
+        assertThat(c.minus(hours(6)).getStandardEffort(), equalTo(hours(2)));
+        assertThat(c.minus(hours(8)).getStandardEffort(), equalTo(hours(0)));
+        assertThat(c.minus(hours(10)).getStandardEffort(), equalTo(hours(0)));
+        assertFalse(c.minus(hours(6)).isOverAssignableWithoutLimit());
+
+    }
+
+    @Test
+    public void testMinusWithExtraHours() {
+        Capacity c = Capacity.create(hours(8)).withAllowedExtraEffort(hours(2));
+
+        assertThat(c.minus(hours(6)).getStandardEffort(), equalTo(hours(2)));
+        assertThat(c.minus(hours(6)).getAllowedExtraEffort(), equalTo(hours(2)));
+        assertThat(c.minus(hours(8)).getStandardEffort(), equalTo(hours(0)));
+        assertThat(c.minus(hours(8)).getAllowedExtraEffort(), equalTo(hours(2)));
+        assertThat(c.minus(hours(10)).getStandardEffort(), equalTo(hours(0)));
+        assertThat(c.minus(hours(10)).getAllowedExtraEffort(),
+                equalTo(hours(0)));
+        assertThat(c.minus(hours(12)).getAllowedExtraEffort(),
+                equalTo(hours(0)));
+        assertFalse(c.minus(hours(10)).isOverAssignableWithoutLimit());
+    }
+
+    @Test
+    public void testMinusWithUnlimitedExtraHours() {
+        Capacity c = Capacity.create(hours(8)).overAssignableWithoutLimit();
+
+        assertThat(c.minus(hours(6)).getStandardEffort(), equalTo(hours(2)));
+        assertTrue(c.minus(hours(6)).isOverAssignableWithoutLimit());
+        assertThat(c.minus(hours(8)).getStandardEffort(), equalTo(hours(0)));
+        assertTrue(c.minus(hours(8)).isOverAssignableWithoutLimit());
+        assertThat(c.minus(hours(10)).getStandardEffort(), equalTo(hours(0)));
+        assertTrue(c.minus(hours(10)).isOverAssignableWithoutLimit());
+    }
+
+    @Test
+    public void capacitiesCanBeSummed() {
+        Capacity result = Capacity.sum(
+                Capacity.create(hours(8)).withAllowedExtraEffort(hours(2)),
+                Capacity.create(hours(8)).notOverAssignableWithoutLimit());
+
+        assertThat(result.getStandardEffort(), equalTo(hours(16)));
+        assertThat(result.getAllowedExtraEffort(), equalTo(hours(2)));
+    }
+
+    @Test
+    public void ifSomeOfTheSumandsHasUnlimitedExtraHoursTheSumToo() {
+        Capacity result = Capacity.sum(Capacity.create(hours(8))
+                .withAllowedExtraEffort(hours(2)), Capacity.create(hours(8))
+                .overAssignableWithoutLimit());
+
+        assertThat(result.getStandardEffort(), equalTo(hours(16)));
+        assertTrue(result.isOverAssignableWithoutLimit());
+    }
 }

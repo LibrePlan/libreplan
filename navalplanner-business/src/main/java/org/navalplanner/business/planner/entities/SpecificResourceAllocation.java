@@ -37,6 +37,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.FixedPoint;
 import org.navalplanner.business.calendars.entities.AvailabilityTimeLine.Interval;
+import org.navalplanner.business.calendars.entities.Capacity;
 import org.navalplanner.business.calendars.entities.CombinedWorkHours;
 import org.navalplanner.business.calendars.entities.ICalendar;
 import org.navalplanner.business.common.ProportionalDistributor;
@@ -198,6 +199,12 @@ public class SpecificResourceAllocation extends
         @Override
         protected AvailabilityTimeLine getResourcesAvailability() {
             return AvailabilityCalculator.getCalendarAvailabilityFor(resource);
+        }
+
+        @Override
+        protected Capacity getCapacityAt(PartialDay day) {
+            return day.limitCapacity(getAllocationCalendar()
+                    .getCapacityWithOvertime(day.getDate()));
         }
     }
 

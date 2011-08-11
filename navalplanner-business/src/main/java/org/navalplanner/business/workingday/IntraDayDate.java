@@ -39,6 +39,7 @@ import org.hibernate.validator.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;
+import org.navalplanner.business.calendars.entities.Capacity;
 
 /**
  * <p>
@@ -271,6 +272,26 @@ public class IntraDayDate implements Comparable<IntraDayDate> {
                         end.getEffortDuration(), standardWorkingDayDuration);
             }
             return durationLimitedByEnd.minus(alreadyElapsedInDay);
+        }
+
+        public Capacity limitCapacity(Capacity capacity) {
+            if (capacity.getAllowedExtraEffort() == null) {
+                EffortDuration effort = limitWorkingDay(capacity
+                        .getStandardEffort());
+                return Capacity.create(effort).overAssignableWithoutLimit(
+                        capacity.isOverAssignableWithoutLimit());
+            }
+            EffortDuration allEffort = capacity.getStandardEffort().plus(
+                    capacity.getAllowedExtraEffort());
+            EffortDuration limited = limitWorkingDay(allEffort);
+            EffortDuration newStandard = EffortDuration.min(limited,
+                    capacity.getStandardEffort());
+            return Capacity
+                    .create(newStandard)
+                    .withAllowedExtraEffort(
+                            EffortDuration.min(limited.minus(newStandard)))
+                    .overAssignableWithoutLimit(
+                            capacity.isOverAssignableWithoutLimit());
         }
 
         private boolean isWholeDay() {

@@ -21,6 +21,8 @@ package org.navalplanner.business.calendars.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumMap;
 
 import org.apache.commons.lang.Validate;
@@ -37,6 +39,21 @@ import org.navalplanner.business.workingday.EffortDuration.Granularity;
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 public class Capacity {
+
+    public static Capacity sum(Capacity... capacities) {
+        return sum(Arrays.asList(capacities));
+    }
+
+    public static Capacity sum(Collection<? extends Capacity> capacities) {
+        EffortDuration standard = EffortDuration.zero();
+        EffortDuration extra = EffortDuration.zero();
+        for (Capacity each : capacities) {
+            standard = standard.plus(each.getStandardEffort());
+            extra = extra == null || each.isOverAssignableWithoutLimit() ? null
+                    : extra.plus(each.getAllowedExtraEffort());
+        }
+        return Capacity.create(standard).withAllowedExtraEffort(extra);
+    }
 
     public static Capacity min(Capacity a, Capacity b) {
         return new Capacity(EffortDuration.min(a.getStandardEffort(),
@@ -70,6 +87,11 @@ public class Capacity {
 
     public static Capacity create(EffortDuration standardEffort) {
         return new Capacity(standardEffort, null);
+    }
+
+    private static Capacity noCapacity() {
+        return Capacity.create(EffortDuration.hours(0))
+                .notOverAssignableWithoutLimit();
     }
 
     public static Capacity zero() {
@@ -209,6 +231,22 @@ public class Capacity {
         return isOverAssignableWithoutLimit()
                 || assignedDuration.compareTo(standardEffort
                         .plus(allowedExtraEffort)) < 0;
+    }
+
+    public Capacity minus(EffortDuration assignment) {
+        if (!hasSpareSpaceForMoreAllocations(assignment)) {
+            return noCapacity();
+        }
+
+        EffortDuration newStandard = standardEffort.minus(EffortDuration.min(
+                assignment, standardEffort));
+        EffortDuration pending = assignment.minus(EffortDuration.min(
+                standardEffort, assignment));
+        EffortDuration newExtra = allowedExtraEffort == null ? null
+                : allowedExtraEffort.minus(EffortDuration.min(pending,
+                        allowedExtraEffort));
+        return Capacity.create(newStandard).withAllowedExtraEffort(newExtra);
+
     }
 
     public boolean allowsWorking() {
