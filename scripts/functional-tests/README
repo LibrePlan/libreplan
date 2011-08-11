@@ -20,13 +20,13 @@ Functional Tests
 Introduction
 ------------
 
-Inside ``scripts/functional-tests/`` folder of LibrePlan source code, you can find 
-a set of functional tests. They consist of different files and each file groups tests 
+Inside ``scripts/functional-tests/`` folder of LibrePlan source code, you can find
+a set of functional tests. They consist of different files and each file groups tests
 related to the same functionality.
 
-Each file is called ``<menu-option>_test.sah`` and represent all the tests developed 
-for an individual option of the menu. Additionally, there are a set of fixed tests 
-that are always included. 
+Each file is called ``<menu-option>_test.sah`` and represent all the tests developed
+for an individual option of the menu. Additionally, there are a set of fixed tests
+that are always included.
 
 * Create ``<menu-option>``
 * Create ``<menu-option>`` with duplicate type (it should not be allowed)
@@ -57,7 +57,7 @@ Run the Scripts
 
 .. WARNING::
 
-    All tests use English as default language. So, if 
+    All tests use English as default language. So, if
     your browser language is different from this, they will NOT PASS
 
 Once installed the program you have two ways to execute the tests:
