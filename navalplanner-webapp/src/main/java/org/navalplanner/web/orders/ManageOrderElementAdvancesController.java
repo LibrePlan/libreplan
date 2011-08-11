@@ -362,8 +362,6 @@ public class ManageOrderElementAdvancesController extends
         public void render(Listitem listItem, Object data) {
             final AdvanceAssignment advance = (AdvanceAssignment) data;
             listItem.setValue(advance);
-            listItem.setDraggable("true");
-            listItem.setDroppable("true");
 
             boolean isQualityForm = false;
             if (advance.getAdvanceType() != null) {
