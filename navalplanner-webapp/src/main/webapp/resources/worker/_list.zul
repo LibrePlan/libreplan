@@ -30,7 +30,7 @@
 
     <newdatasortablegrid id="listing" model="@{controller.realWorkers}" mold="paging"
         rowRenderer="@{controller.workersRenderer}"
-        pageSize="10" fixedLayout="true" sclass="clickable-rows">
+        pageSize="15" fixedLayout="true" sclass="clickable-rows">
         <columns>
             <newdatasortablecolumn label="${i18n:_('Surname')}" sort="auto(lower(surname))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_('First name')}" sort="auto(lower(firstName))" />
