@@ -26,6 +26,7 @@ import java.math.BigDecimal;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotEmpty;
+import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IHumanIdentifiable;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
@@ -99,6 +100,7 @@ public class TypeOfWorkHours extends IntegrationEntity implements IHumanIdentifi
         this.name = name;
     }
 
+    @NotNull(message = "default price not specified")
     public BigDecimal getDefaultPrice() {
         return defaultPrice;
     }
