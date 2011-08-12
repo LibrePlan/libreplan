@@ -1,3 +1,11 @@
+navalplan (1.1.3-1) maverick; urgency=low
+
+  * Fixed important issue in Gantt view for big projects with labels.
+  * Added bugs fixed from stable branch.
+  * Released version 1.1.3.
+
+ -- Manuel Rego Casasnovas <rego@igalia.com>  Fri, 12 Aug 2011 13:08:00 +0200
+
 navalplan (1.1.2-1) maverick; urgency=low
 
   * Fixed critical bug that causes concurrency issues editing projects with

@@ -2,6 +2,56 @@ NEWS
 ====
 
 
+Version 1.1.3 (12 Aug 2011)
+---------------------------
+
+New minor release with all the issues fixed in stable branch since previous
+version. The most important problem solved is the save operation in Gantt view
+screen for big projects using labels. Under some special conditions not all the
+labels were loaded and the persistence to disk failed.
+
+Other minor fixes included in this version:
+* Task Scheduling Status In Project report has been reviewed and fixed.
+* Now NavalPlan does not depend on server language for translations of strings
+  in the business module.
+* Resource load chart is fixed for tasks finishing in the middle of a day.
+* Solved issue on Gantt saving due to transient resource allocations.
+* Added some basic constraints checkers to exception days and progress type.
+* New log file to register login attempts.
+
+Changes
+~~~~~~~
+
+* [Bug #1138] Fix bug
+* [Bug #1136] Fix bug
+* Add class to distribute an EffortDuration considering the capacities
+* Add logging category for authentication attempts
+* [i18n] Update Spanish and Galician translations
+* [i18n] Update keys.pot files
+* [Bug #1133] Fix bug
+* Fix issue in ConstraintChecker now error messages was not being shown
+* [Bug #1132] Fix problem with CalendarExceptionType without name
+* Fix problem in ConstraintChecker
+* [Bug #1121] Fix issue adding @AssertTrue on AdvanceType entity
+* [Bug #1119] DataIntegrityViolationException saving a new Process
+* Fix wrong label in "Work And Progress Per Task" report
+* [Bug #1130] Fix issue changing text size and moving box
+* [Bug #1113] Fix issue marking as not transient all allocations
+* [Bug #1129] Fix bug setting scale for progress value
+* [Bug #1106] Fix bug
+* [Bug #1111] Fix name and code of tasks in report
+* Remove not in effect annotations
+* [Bug # 1111] Fix several issues in report: Task Scheduling Status In Project
+* Show the precise efforts instead of the rounded amount in hours
+* Switch to GanttDates
+* [Bug #1124] Fix problem when calculating assigned duration
+* [Bug #1117] Fix issue changing I18nHelper in business.
+* [Bug #1111] Change label in filter by project section
+* [Bug #1111] Task status combo internationalized
+* Modify CSS to show labels in containers when are expanded
+* [Bug #1088] Fixed issue in earned value chart
+
+
 Version 1.1.2 (18 Jul 2011)
 ---------------------------
 
