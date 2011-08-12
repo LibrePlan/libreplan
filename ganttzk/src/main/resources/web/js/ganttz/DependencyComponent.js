@@ -72,6 +72,8 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
                         width : width2 - ganttz.TaskComponent.HALF_HEIGHT});
 
         var deparrow = this._findImageElement('arrow');
+        deparrow.removeClass("point-north point-south point-west");
+        deparrow.addClass("point-east");
         deparrow.css({top : (yend - ganttz.TaskComponent.HALF_HEIGHT),left : xend - 15});
     },
     _drawArrowEndEnd : function(coordOrig, coordDest){
@@ -118,6 +120,8 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
 
 
         var deparrow = this._findImageElement('arrow');
+        deparrow.removeClass("point-north point-south point-east");
+        deparrow.addClass("point-west");
         deparrow.css({top : yend - 5, left : xend - 8});
     },
     _drawArrowEndStart : function(coordOrig, coordDest){
@@ -156,13 +160,21 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         var deparrow = this._findImageElement('arrow');
         var deparrowcss;
         if ( width == 0 ) {
+            deparrow.removeClass("point-north point-west point-east");
+            deparrow.addClass("point-south");
             deparrowcss = {top : (yend - 10) , left : (xend - 5)};
             if ( yorig > yend ) {
+                deparrow.removeClass("point-west point-south point-east");
+                deparrow.addClass("point-north");
                 deparrowcss = {top : yend};
             }
         } else {
             deparrowcss = {top : (yend -5), left : (xend - 10)};
+            deparrow.removeClass("point-north point-south point-west");
+            deparrow.addClass("point-east");
             if (width < 0) {
+                deparrow.removeClass("point-north point-south point-east");
+                deparrow.addClass("point-west");
                 deparrowcss = {top : (yend - 5), left : xend}
             }
         }
@@ -177,13 +189,12 @@ ganttz.DependencyComponentBase = zk.$extends(zul.Widget,{
         return jq('.' + name + '', this.$n());
     },
     setupArrow_ : function(){
-        var image_data = [ [ "start", "pixel.gif" ], [ "mid", "pixel.gif" ],
-                            [ "end", "pixel.gif" ], [ "arrow", "arrow.png" ] ];
+        var image_data = [ "start" , "mid" , "end", "arrow" ] ;
         var imgDiv;
         var insertPoint = jq(this.$n());
         for ( var i = 0; i < image_data.length; i++) {
                 imgDiv = jq(document.createElement('div'));
-                imgDiv.attr('class', image_data[i][0] + " extra_padding");
+                imgDiv.attr('class', image_data[i]);
 
                 insertPoint.append(imgDiv);
         }
