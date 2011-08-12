@@ -548,6 +548,9 @@ div.z-grid {
     border: 0;
 }
 
+.listdetails div.z-tree-body td.z-treecell {
+    padding: 0;
+}
 
 
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
@@ -570,7 +573,7 @@ div.z-grid {
     height: 15px;
 }
 .listdetails input {
-    padding-top: 6px;
+    padding-top: 5px;
 }
 
 .z-tree .z-datebox-inp {
