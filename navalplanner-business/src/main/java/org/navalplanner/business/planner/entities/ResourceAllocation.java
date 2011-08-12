@@ -2004,6 +2004,8 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             List<? extends DayAssignment> assignments,
             final IntraDayDate startInclusive, final IntraDayDate endExclusive) {
 
+        final IntraDayDate allocationStart = getIntraDayStartDate();
+
         return EffortDuration.sum(assignments,
                 new IEffortFrom<DayAssignment>() {
 
@@ -2031,6 +2033,28 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
                         if (assignmentDay.equals(endDate)) {
                             result = new PartialDay(result.getStart(),
                                     endExclusive);
+                        }
+                        return adjustPartialDayToAllocationStart(result);
+                    }
+
+                    // if the start of the allocation is in the middle of a day,
+                    // its work also starts later; so the PartialDay must be
+                    // moved to earlier so it doesn't limit the duration more
+                    // that it should
+                    private PartialDay adjustPartialDayToAllocationStart(
+                            PartialDay day) {
+                        PartialDay result = day;
+                        if (allocationStart.areSameDay(day.getDate())) {
+                            EffortDuration substractingAtStart = day.getStart()
+                                    .getEffortDuration();
+                            EffortDuration newSubstractionAtStart = substractingAtStart
+                                    .minus(EffortDuration
+                                            .min(substractingAtStart,
+                                                    allocationStart
+                                                            .getEffortDuration()));
+                            IntraDayDate newStart = IntraDayDate.create(
+                                    day.getDate(), newSubstractionAtStart);
+                            result = new PartialDay(newStart, day.getEnd());
                         }
                         return result;
                     }
