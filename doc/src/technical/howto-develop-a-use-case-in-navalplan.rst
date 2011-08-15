@@ -5,8 +5,8 @@ How To Develop A Use Case In NavalPlan
 .. sectnum::
 
 :Author: Manuel Rego Casasnovas
-:Contact: mrego@igalia.com
-:Date: 10/03/2011
+:Contact: rego@igalia.com
+:Date: 15/08/2011
 :Copyright:
   Some rights reserved. This document is distributed under the Creative
   Commons Attribution-ShareAlike 3.0 licence, available in
@@ -83,7 +83,7 @@ this behaviour and use it in all the tasks they want.
    instructions:
 
    * Create a PostgreSQL database called ``navaldev`` with permissions for a
-     user ``naval`` with    password ``naval`` (see ``INSTALL`` file for other
+     user ``naval`` with    password ``naval`` (see ``HACKING`` file for other
      databases and more info).
 
    * Compile NavalPlan with the following command from project root folder::
@@ -243,7 +243,8 @@ shown):
   *
   * @author Manuel Rego Casasnovas <mrego@igalia.com>
   */
- public class StretchesFunctionTemplate extends BaseEntity {
+ public class StretchesFunctionTemplate extends BaseEntity implements
+         IHumanIdentifiable {
 
     public static StretchesFunctionTemplate create(String name) {
         return create(new StretchesFunctionTemplate(name));
@@ -260,7 +261,24 @@ shown):
     protected StretchesFunctionTemplate() {
     }
 
-  ...
+    ...
+
+    @Override
+    public String getHumanId() {
+        return name;
+    }
+
+    ...
+
+.. NOTE::
+
+  ``IHumanIdentifiable`` is an interface that needs a human identifier to show
+  in application UI. It defines the method ``getHumanId`` that returns a text
+  identifier of the entity.
+
+  As this entity is going to be edited from NavalPlan web interface, it
+  implements ``IHumanIdentifiable``.
+
 
 * ``StretchTemplate.java``:
 
@@ -675,20 +693,26 @@ the same identifier in ``.zul`` and Java. For example:
 
 ::
 
- package org.navalplanner.web.planner.allocation.streches;
+ package org.navalplanner.web.common;
 
  ...
 
  /**
-  * CRUD controller for {@link StretchesFunctionTemplate}.
+  * Abstract class defining common behavior for controllers of CRUD screens. <br />
   *
-  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+  * Those screens must define the following components:
+  * <ul>
+  * <li>{@link #messagesContainer}: A {@link Component} to show the different
+  * messages to users.</li>
+  * <li>{@link #listWindow}: A {@link Window} where the list of elements is
+  * shown.</li>
+  * <li>{@link #editWindow}: A {@link Window} with creation/edition form.</li>
+  *
+  * @author Manuel Rego Casasnovas <rego@igalia.com>
   */
- public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
-
-     private Window listWindow;
-     private Window editWindow;
-
+ @SuppressWarnings("serial")
+ public abstract class BaseCRUDController<T extends IHumanIdentifiable> extends
+         GenericForwardComposer {
  ...
 
 This matching is automatic and is done by ZK. In order that this works it is
@@ -704,7 +728,7 @@ steps to do this are the following ones:
 * Your controller will override method ``doAfterCompose``.
 * This method receives a component which is the window associated to the
   controller through ``apply`` attribute.
-* In ``Window`` you will use ``setVariable`` method in order to create a
+* In ``Window`` you will use ``setAttribute`` method in order to create a
   variable called ``controller`` that will contain a reference to controller.
 
 ::
@@ -712,7 +736,9 @@ steps to do this are the following ones:
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
-        comp.setVariable("controller", this, true);
+        comp.setAttribute("controller", this);
+
+        ...
     }
 
 After that from ``.zul``, you will make reference to a variable called
@@ -728,6 +754,31 @@ controller. For example with the following lines::
 
 As you can see in last example, when an event is launched is not needed to use
 data binding.
+
+``BaseCRUDController`` is a generic class with common behaviour for controllers
+of CRUD screens. It defines a set of methods with a common functionality and
+delegates on some abstract methods that should be implemented in the subclasses.
+
+For this example you will create a new controller
+``StretchesFunctionTemplateCRUDController`` as a subclass of
+``BaseCRUDController``.
+
+::
+
+ package org.navalplanner.web.planner.allocation.streches;
+
+ ...
+
+ /**
+  * CRUD controller for {@link StretchesFunctionTemplate}.
+  *
+  * @author Manuel Rego Casasnovas <mrego@igalia.com>
+  */
+ public class StretchesFunctionTemplateCRUDController extends
+         BaseCRUDController<StretchesFunctionTemplate> {
+
+ ...
+
 
 ZK macro components
 -------------------
@@ -753,11 +804,12 @@ controller, you can not access components defined in ``list`` or ``edit``. For
 example, ``list`` contains a ``Grid`` called
 ``listStretchesFunctionTemplates``::
 
- public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
+ public class StretchesFunctionTemplateCRUDController extends
+         BaseCRUDController<StretchesFunctionTemplate> {
 
      ...
 
-     private NewDataSortableGrid listStretchesFunctionTemplates;
+     private Grid listStretchesFunctionTemplates;
 
      @Override
      public void doAfterCompose(Component comp) throws Exception {
@@ -773,18 +825,17 @@ in main window namespace. But, you could access indirectly to component from
 controller through ``list`` component, because this is accessible from
 controller. For example::
 
- public class StretchesFunctionTemplateCRUDController extends GenericForwardComposer {
-
-     private Window listWindow;
+ public class StretchesFunctionTemplateCRUDController extends
+         BaseCRUDController<StretchesFunctionTemplate> {
 
      ...
 
-     private NewDataSortableGrid listStretchesFunctionTemplates;
+     private Grid listStretchesFunctionTemplates;
 
      @Override
      public void doAfterCompose(Component comp) throws Exception {
          ...
-         listStretchesFunctionTemplates = (NewDataSortableGrid) listWindow
+         listStretchesFunctionTemplates = (Grid) listWindow
                  .getFellowIfAny("listStretchesFunctionTemplates");
          listStretchesFunctionTemplates.getModel();
      }
@@ -795,24 +846,11 @@ Another important issue when implementing CRUD use cases is that general view
 contains both ``list`` and ``edit`` component. These components are rendered
 and shown when page is loaded. Class ``OnlyOneVisible`` is used in controller to
 manage which one will be visible at a given time. You can find the following
-pieces of code in all CRUD controllers already working in NavalPlan::
+pieces of code in ``BaseCRUDController``::
 
      private OnlyOneVisible visibility;
 
      ...
-
-     private void showListWindow() {
-         showWindow(listWindow);
-     }
-
-     private void showEditWindow(String title) {
-         editWindow.setTitle(title);
-         showWindow(editWindow);
-     }
-
-     private void showWindow(Window window) {
-         getVisibility().showOnly(window);
-     }
 
      private OnlyOneVisible getVisibility() {
          if (visibility == null) {
@@ -821,9 +859,27 @@ pieces of code in all CRUD controllers already working in NavalPlan::
          return visibility;
      }
 
-And usually at the end of ``doAfterCompose`` method there will be a call to
-``showListWindow``, that shows the list view and use ``OnlyOneVisible`` class to
-hide edit/creation form.
+     /**
+      * Show list window and reload bindings
+      */
+     protected void showListWindow() {
+         getVisibility().showOnly(listWindow);
+         Util.reloadBindings(listWindow);
+     }
+
+     /**
+      * Show edit form with different title depending on controller state and
+      * reload bindings
+      */
+     protected void showEditWindow() {
+         getVisibility().showOnly(editWindow);
+         updateWindowTitle();
+         Util.reloadBindings(editWindow);
+     }
+
+And at the end of ``doAfterCompose`` method there is a call to
+``showListWindow``, that shows the list view and use ``OnlyOneVisible`` class
+to hide edit/creation form.
 
 
 Messages for users
@@ -839,7 +895,7 @@ class called ``MessagesForUser`` which is used in all controllers to show
 messages to users in a similar way for the whole application.
 
 Apart from previous line on ``.zul`` file you will see the following lines
-inside ``doAfterCompose`` method in controller::
+inside ``doAfterCompose`` method in ``BaseCRUDController``::
 
     private IMessagesForUser messagesForUser;
 
@@ -851,7 +907,6 @@ inside ``doAfterCompose`` method in controller::
     public void doAfterCompose(Component comp) throws Exception {
         ...
         messagesForUser = new MessagesForUser(messagesContainer);
-        comp.setVariable("controller", this, true);
         ...
     }
 
@@ -876,16 +931,15 @@ following content:
 
 ::
 
- <window id="${arg.id}" title="${i18n:_('Stretches Function Templates List')}">
+  <window id="${arg.id}" title="${i18n:_('Stretches Function Templates List')}">
 
-     <newdatasortablegrid id="listStretchesFunctionTemplates"
+     <grid id="listStretchesFunctionTemplates"
          model="@{controller.stretchesFunctionTemplates}"
          mold="paging" pageSize="10" fixedLayout="true">
 
          <columns>
-             <newdatasortablecolumn label="${i18n:_('Name')}"
-                 sort="auto(lower(name))" sortDirection="ascending" />
-             <newdatasortablecolumn label="${i18n:_('Operations')}" />
+             <column label="${i18n:_('Name')}" sort="auto(lower(name))" />
+             <column label="${i18n:_('Operations')}" />
          </columns>
          <rows>
             <row self="@{each='stretchesFunctionTemplate'}"
@@ -900,11 +954,11 @@ following content:
                      <button sclass="icono" image="/common/img/ico_borrar1.png"
                          hoverImage="/common/img/ico_borrar.png"
                          tooltiptext="${i18n:_('Delete')}"
-                         onClick="controller.remove(self.parent.parent.value)"/>
+                         onClick="controller.confirmDelete(self.parent.parent.value)"/>
                  </hbox>
              </row>
          </rows>
-     </newdatasortablegrid>
+     </grid>
 
      <button label="${i18n:_('Create')}" onClick="controller.goToCreateForm()"
          sclass="create-button global-action"/>
@@ -915,11 +969,10 @@ In the next paragraphs different parts of the file will be reviewed.
 
 ::
 
-     <newdatasortablegrid id="listStretchesFunctionTemplates"
+     <grid id="listStretchesFunctionTemplates"
          model="@{controller.stretchesFunctionTemplates}"
 
-``NewDataSortableGrid`` is a special component defined in NavalPlan, that
-extends ``Grid`` component adding sorting feature for columns. As you can see,
+``Grid`` is a visual ZK component with some sorting features. As you can see,
 ``model`` attribute is set, which means that a method called
 ``getStretchesFunctionTemplates`` in controller will be called. This method
 will have the responsibility to communicate with model layer in order to get the
@@ -927,8 +980,7 @@ list of ``StretchesFunctionTemplate`` from database.
 
 ::
 
-             <newdatasortablecolumn label="${i18n:_('Name')}"
-                 sort="auto(lower(name))" sortDirection="ascending" />
+             <column label="${i18n:_('Name')}" sort="auto(lower(name))" />
 
 Thanks to this custom component you are able to define that *Name* column will
 by sorted by default in ascending order.
@@ -992,6 +1044,7 @@ edition process. The file will have the following content:
 ::
 
  <window id="${arg.id}">
+     <caption id="caption" sclass="caption-title" />
      <tabbox>
          <tabs>
              <tab label="${i18n:_('Edit')}" />
@@ -1008,7 +1061,8 @@ edition process. The file will have the following content:
                              <label value="${i18n:_('Name')}" />
                              <textbox id="tbName"
                                  value="@{controller.stretchesFunctionTemplate.name}"
-                                 width="300px" />
+                                 width="300px"
+                                 onBlur="controller.updateWindowTitle()" />
                          </row>
                      </rows>
                  </grid>
@@ -1051,7 +1105,7 @@ edition process. The file will have the following content:
      <button onClick="controller.saveAndContinue()"
          label="${i18n:_('Save and Continue')}"
          sclass="save-button global-action" />
-     <button onClick="controller.cancel()"
+     <button onClick="controller.cancelForm()"
          label="${i18n:_('Cancel')}"
          sclass="cancel-button global-action" />
 
@@ -1064,7 +1118,8 @@ Now, let's take a look to the most important parts of the file.
                              <label value="${i18n:_('Name')}" />
                              <textbox id="tbName"
                                  value="@{controller.stretchesFunctionTemplate.name}"
-                                 width="300px" />
+                                 width="300px"
+                                 onBlur="controller.updateWindowTitle()"  />
 
 This will create a ``Textbox`` field in the form. As you can see, it is using
 data bindings, which means that different methods will be automatically called
@@ -1308,13 +1363,35 @@ Conversational steps
 Now you are going to implement the form to create a new
 ``StretchesFunctionTemplate``. As you can see in the ``.zul`` page, the method
 called in order to create a new entity is ``goToCreateForm``. This method will
-start the conversation between controller and model::
+start the conversation between controller and model, and it's already
+implemented in ``BaseCRUDController``::
 
-    public void goToCreateForm() {
-        stretchesFunctionTemplateModel.initCreate();
-        showEditWindow(_("Create Stretches Function Template"));
+    /**
+     * Show edit form with different title depending on controller state and
+     * reload bindings
+     */
+    protected void showEditWindow() {
+        getVisibility().showOnly(editWindow);
+        updateWindowTitle();
         Util.reloadBindings(editWindow);
     }
+
+    ...
+
+    /**
+     * Show create form. Delegate in {@link #initCreate()} that should be
+     * implemented in subclasses.
+     */
+    public final void goToCreateForm() {
+        state = CRUDControllerState.CREATE;
+        initCreate();
+        showEditWindow();
+    }
+
+    /**
+     * Performs needed operations to initialize the creation of a new entity.
+     */
+    protected abstract void initCreate();
 
 .. NOTE::
 
@@ -1322,9 +1399,20 @@ start the conversation between controller and model::
   For example, this is needed to refresh a list of items when some of them are
   added or removed.
 
-This method calls ``initCreate`` in model to start the conversation. Moreover it
-opens ``editWindow`` and then reload information in the form. Then you need to
-add the following lines in model (remember to create method in interface too)::
+This method delegates in ``initCreate`` that should be implemented in
+``StretchesFunctionTemplateCRUDController``. Moreover it opens ``editWindow``
+and then reload information in the form.
+
+Implementation of ``initCreate`` in ``StretchesFunctionTemplateConverter``::
+
+    @Override
+    protected void initCreate() {
+        stretchesFunctionTemplateModel.initCreate();
+    }
+
+Then this method calls to ``initCreate`` in model to start the conversation.
+Then you need to add the following lines in model (remember to create method in
+interface too)::
 
     /**
      * Conversation state
@@ -1342,8 +1430,8 @@ add the following lines in model (remember to create method in interface too)::
         this.stretchesFunctionTemplate = StretchesFunctionTemplate.create("");
     }
 
-Thanks to first line, model will keep in memory current entity being created or
-edited. As you can see in the method, a new instance of the entity is created
+Thanks to the first line, model will keep in memory current entity being created
+or edited. As you can see in the method, a new instance of the entity is created
 and assigned to state variable.
 
 As you are using data bindings for ``StretchesFunctionTemplate`` name, then when
@@ -1351,19 +1439,25 @@ user modify this field, attribute ``name`` in entity will be automatically set.
 
 In order to allow users add new ``StretchTemplate`` you need to implement method
 ``addStretchTemplate`` in controller. As usual this method delegates in model in
-oder to perform the real operation. You need to modify ``doAfterCompose`` in
-order to be able to access input elements in the form and create the new
-method::
+oder to perform the real operation. You need to override ``doAfterCompose`` at
+``StretchesFunctionTemplateCRUDController`` in order to be able to access input
+elements in the form and create the new method::
+
+    private Grid stretchTemplates;
+    private Intbox durationPercentage;
+    private Intbox progressPercentage;
+
+    ...
 
     @Override
     public void doAfterCompose(Component comp) throws Exception {
-        ...
+        super.doAfterCompose(comp);
+
         stretchTemplates = (Grid) editWindow.getFellow("stretchTemplates");
         durationPercentage = (Intbox) stretchTemplates
                 .getFellow("durationPercentage");
         progressPercentage = (Intbox) stretchTemplates
                 .getFellow("progressPercentage");
-        ...
     }
 
     ...
@@ -1414,7 +1508,8 @@ to show ``StrechTemplate`` information in the window::
                 row.appendChild(Util.createRemoveButton(new EventListener() {
                     @Override
                     public void onEvent(Event event) throws Exception {
-                        confirmRemoveStretchTemplate(stretchTemplate);
+                        stretchesFunctionTemplateModel
+                                .removeStretchTemplate(stretchTemplate);
                     }
                 }));
             }
@@ -1427,44 +1522,111 @@ to show ``StrechTemplate`` information in the window::
 
 You will implement ``RowRenderer`` interface, and add the different components
 for each column in ``Row`` element. Moreover, you will create a remove button,
-associated with a new method in the controller. This method will be in charge to
-ask user if is sure about removing the element, and then it will remove the
-``StretchTemplate``.
+associated with a new method in the model which removes the ``StretchTemplate``.
 
-The last step is to close the conversation successfully or not. Then you will
-need to implement the following methods in controller::
+The last step is to close the conversation successfully or not. For this there
+are already several methods in ``BaseCRUDController``::
 
-    private boolean save() {
+    /**
+     * Save current form and go to list view. Delegate in {@link #save()} that
+     * should be implemented in subclasses.
+     */
+    public final void saveAndExit() {
         try {
-            stretchesFunctionTemplateModel.confirmSave();
-            messagesForUser.showMessage(Level.INFO,
-                    _("Stretches function template saved"));
-            return true;
+            saveCommonActions();
+            goToList();
         } catch (ValidationException e) {
             messagesForUser.showInvalidValues(e);
-            return false;
         }
     }
 
-    public void saveAndExit() {
-        if (save()) {
-            showListWindow();
-            Util.reloadBindings(listWindow);
+    /**
+     * Common save actions:<br />
+     * <ul>
+     * <li>Delegate in {@link #beforeSaving()} that could be implemented if
+     * needed in subclasses.</li>
+     * <li>Use {@link ConstraintChecker} to validate form.</li>
+     * <li>Delegate in {@link #save()} that should be implemented in subclasses.
+     * </li>
+     * <li>Show message to user.</li>
+     * </ul>
+     *
+     * @throws ValidationException
+     *             If form is not valid or save has any validation problem
+     */
+    private void saveCommonActions() throws ValidationException {
+        beforeSaving();
+
+        save();
+
+        messagesForUser.showMessage(
+                Level.INFO,
+                _("{0} \"{1}\" saved", getEntityType(), getEntityBeingEdited()
+                        .getHumanId()));
+    }
+
+    /**
+     * Save current form and continue in edition view. Delegate in
+     * {@link #save()} that should be implemented in subclasses.
+     */
+    public final void saveAndContinue() {
+        try {
+            saveCommonActions();
+            goToEditForm(getEntityBeingEdited());
+        } catch (ValidationException e) {
+            messagesForUser.showInvalidValues(e);
         }
     }
 
-    public void saveAndContinue() {
-        if (save()) {
-            stretchesFunctionTemplateModel
-                    .initEdit(stretchesFunctionTemplateModel
-                            .getStretchesFunctionTemplate());
-        }
+    /**
+     * Performs additional operations before saving (usually do some checks or
+     * generate codes of related entities).
+     *
+     * Default behavior use {@link ConstraintChecker} to see if
+     * {@link #editWindow} is valid, however it could be overridden if needed.
+     */
+    protected void beforeSaving() throws ValidationException {
+        ConstraintChecker.isValid(editWindow);
     }
 
-    public void cancel() {
+    /**
+     * Performs actions to save current form
+     *
+     * @throws ValidationException
+     *             If entity is not valid
+     */
+    protected abstract void save() throws ValidationException;
+
+    /**
+     * Close form and go to list view. Delegate in {@link #cancel()} that could
+     * be implemented in subclasses if needed.
+     */
+    public final void cancelForm() {
+        cancel();
+        goToList();
+    }
+
+    /**
+     * Performs needed actions to cancel edition
+     *
+     * Default behavior do nothing, however it could be overridden if needed.
+     */
+    protected void cancel() {
+        // Do nothing
+    }
+
+
+Then you will need to implement the following methods in controller. ``cancel``
+is not mandatory but here is used to show an example about it::
+
+    @Override
+    protected void save() throws ValidationException {
+        stretchesFunctionTemplateModel.confirmSave();
+    }
+
+    @Override
+    protected void cancel() {
         stretchesFunctionTemplateModel.cancel();
-        showListWindow();
-        Util.reloadBindings(listWindow);
     }
 
 ``save`` method will call ``confirmSave`` in model and return true if the
@@ -1477,15 +1639,10 @@ model::
     @Transactional
     public void confirmSave() throws ValidationException {
         stretchesFunctionTemplateDAO.save(stretchesFunctionTemplate);
-        resetConversationState();
     }
 
     @Override
     public void cancel() {
-        resetConversationState();
-    }
-
-    private void resetConversationState() {
         stretchesFunctionTemplate = null;
     }
 
@@ -1504,12 +1661,34 @@ Solving issues with detached objects
 As it was already stated, you need to be careful managing **detached objects**.
 For example, if you think in edit an already stored
 ``StretchesFunctionTemplate``, you will have a very similar method to
-``goToCreateForm`` in controller::
+``goToCreateForm`` in ``BaseCRUDController``::
 
-    public void goToEditForm(StretchesFunctionTemplate stretchesFunctionTemplate) {
+    /**
+     * Show edit form for entity passed as parameter. Delegate in
+     * {@link #initEdit(entity)} that should be implemented in subclasses.
+     *
+     * @param entity
+     *            Entity to be edited
+     */
+    public final void goToEditForm(T entity) {
+        state = CRUDControllerState.EDIT;
+        initEdit(entity);
+        showEditWindow();
+    }
+
+    /**
+     * Performs needed operations to initialize the edition of a new entity.
+     *
+     * @param entity
+     *            Entity to be edited
+     */
+    protected abstract void initEdit(T entity);
+
+And the specific implementation in ``StretchesFunctionTemplateCRUDController``::
+
+    @Override
+    protected void initEdit(StretchesFunctionTemplate stretchesFunctionTemplate) {
         stretchesFunctionTemplateModel.initEdit(stretchesFunctionTemplate);
-        showEditWindow(_("Edit Stretches Function Template"));
-        Util.reloadBindings(editWindow);
     }
 
 Then a new method called ``initEdit`` will appear in model as initial
@@ -1833,18 +2012,26 @@ following validation on ``_editStretchesFunctionTemplate.zul`` file::
                             <textbox id="tbName"
                                 value="@{controller.stretchesFunctionTemplate.name}"
                                 width="300px"
+                                onBlur="controller.updateWindowTitle()"
                                 constraint="no empty:${i18n:_('cannot be null or empty')}" />
 
 Now, if users set an empty name, they will receive an error in a pop-up. However,
 if they click *Save* button, the request to sever will be sent and then they
 will get validations errors due to Hibernate constraints.
 
-In order to do not allow users send wrong data to server you should use
-``ConstraintChecker`` utility in ``StretchesFunctionTemplateCRUDController``::
+In order to do not follow with the conversation when user has not filled the
+right data ``BaseCRUDController`` uses ``ConstraintChecker`` utility in default
+``beforeSaving`` method::
 
-    private boolean save() {
+    /**
+     * Performs additional operations before saving (usually do some checks or
+     * generate codes of related entities).
+     *
+     * Default behavior use {@link ConstraintChecker} to see if
+     * {@link #editWindow} is valid, however it could be overridden if needed.
+     */
+    protected void beforeSaving() throws ValidationException {
         ConstraintChecker.isValid(editWindow);
-        ...
     }
 
 
@@ -1897,7 +2084,8 @@ know how to develop a web service in the application.
 First of all, you need to make that ``StretchesFunctionTemplate`` inherits from
 ``IntegrationEntity``::
 
- public class StretchesFunctionTemplate extends IntegrationEntity {
+ public class StretchesFunctionTemplate extends IntegrationEntity implements
+         IHumanIdentifiable {
      ...
  }
 
