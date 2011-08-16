@@ -13,6 +13,10 @@ ganttzk/target
 #ignore patches files
 *.patch
 
+#ignore logs
+navalplanner-webapp/*.log
+navalplanner-webapp/*.log.????-??-??
+
 #ignore backup files
 *~
 \#*\#
