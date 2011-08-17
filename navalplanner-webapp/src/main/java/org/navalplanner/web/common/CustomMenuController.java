@@ -330,7 +330,7 @@ public class CustomMenuController extends Div implements IMenuItemsRegister {
 
         topItem(_("Reports"), "/reports/hoursWorkedPerWorkerReport.zul", "",
             subItem(_("Work Report Lines"), "/workreports/workReportQuery.zul", "09-partes.html#id4"),
-            subItem(_("Hours Worked Per Resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-informes.html"),
+            subItem(_("Hours Worked Per Resource"),"/reports/hoursWorkedPerWorkerReport.zul","15-1-report-hours-worked-by-resource.html"),
             subItem(_("Hours Worked Per Resource In A Month"),"/reports/hoursWorkedPerWorkerInAMonthReport.zul","15-informes.html"),
             subItem(_("Work And Progress Per Project"),"/reports/schedulingProgressPerOrderReport.zul", "15-informes.html"),
             subItem(_("Work And Progress Per Task"),"/reports/workingProgressPerTaskReport.zul", "15-informes.html"),
