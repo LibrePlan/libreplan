@@ -21,57 +21,18 @@
 
 package org.navalplanner.web.resourceload;
 
-import java.util.List;
-
-import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.entities.Order;
-import org.navalplanner.business.planner.entities.DayAssignment;
 import org.navalplanner.business.planner.entities.TaskElement;
-import org.navalplanner.business.resources.entities.Criterion;
-import org.navalplanner.business.resources.entities.Resource;
-import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
 
 public interface IResourceLoadModel {
 
-    ResourceLoadDisplayData calculateDataToDisplay(boolean filterByResources);
-
-    ResourceLoadDisplayData calculateDataToDisplay(PlanningState filterBy,
-            boolean filterByResources);
+    ResourceLoadDisplayData calculateDataToDisplay(
+            ResourceLoadParameters parameters);
 
     Order getOrderByTask(TaskElement task);
 
     boolean userCanRead(Order order, String loginName);
 
-    void setResourcesToShow(List<Resource> resourcesList);
-
-    void clearResourcesToShow();
-
-    void setCriteriaToShow(List<Criterion> criteriaList);
-
-    void clearCriteriaToShow();
-
-    void setInitDateFilter(LocalDate value);
-
-    void setEndDateFilter(LocalDate value);
-
-    LocalDate getInitDateFilter();
-
-    LocalDate getEndDateFilter();
-
-    List<DayAssignment> getDayAssignments();
-
-    List<Resource> getResources();
-
     boolean isExpandResourceLoadViewCharts();
-
-    List<Resource> getAllResourcesList();
-
-    List<Criterion> getAllCriteriaList();
-
-    int getPageSize();
-
-    int getPageFilterPosition();
-
-    void setPageFilterPosition(int pageFilterPosition);
 
 }

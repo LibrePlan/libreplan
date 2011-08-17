@@ -132,6 +132,10 @@ public class ResourcesLoadPanel extends HtmlMacroComponent {
         leftPane = new ResourceLoadLeftPane(treeModel, resourceLoadList);
     }
 
+    public TimeTracker getTimeTracker() {
+        return timeTracker;
+    }
+
     public ListModel getFilters() {
         String[] filters = new String[] { FILTER_RESOURCES, FILTER_CRITERIA };
         return new SimpleListModel(filters);

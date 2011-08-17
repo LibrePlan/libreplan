@@ -98,6 +98,8 @@ import org.zkoss.ganttz.extensions.IContext;
 import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Emitter;
+import org.zkoss.ganttz.util.Emitter.IEmissionListener;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.au.out.AuInsertAfter;
 import org.zkoss.zk.ui.Executions;
@@ -427,11 +429,30 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPannel,
             Timeplot loadChart) {
+        return appendLoadChartAndLegend(loadChartPannel,
+                Emitter.withInitial(loadChart));
+    }
+
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPannel,
+            Emitter<Timeplot> loadChartEmitter) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
 
-        Div div = new Div();
-        div.appendChild(loadChart);
+        final Div div = new Div();
+        Timeplot timePlot = loadChartEmitter.getLastValue();
+        if (timePlot != null) {
+            div.appendChild(timePlot);
+        }
+        loadChartEmitter.addListener(new IEmissionListener<Timeplot>() {
+
+            @Override
+            public void newEmission(Timeplot timePlot) {
+                div.getChildren().clear();
+                if (timePlot != null) {
+                    div.appendChild(timePlot);
+                }
+            }
+        });
         div.setSclass("plannergraph");
         hbox.appendChild(div);
 

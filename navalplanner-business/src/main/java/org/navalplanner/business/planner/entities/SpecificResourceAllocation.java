@@ -431,4 +431,5 @@ public class SpecificResourceAllocation extends
         return !intervalsRelatedWith.isEmpty();
     }
 
+
 }

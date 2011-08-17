@@ -54,6 +54,7 @@ import org.navalplanner.web.planner.order.BankHolidaysMarker;
 import org.navalplanner.web.planner.order.IOrderPlanningGate;
 import org.navalplanner.web.planner.order.PlanningStateCreator;
 import org.navalplanner.web.planner.order.PlanningStateCreator.PlanningState;
+import org.navalplanner.web.resourceload.ResourceLoadParameters.Paginator;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -73,6 +74,7 @@ import org.zkoss.ganttz.timetracker.TimeTracker;
 import org.zkoss.ganttz.timetracker.zoom.IZoomLevelChangedListener;
 import org.zkoss.ganttz.timetracker.zoom.SeveralModificators;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
+import org.zkoss.ganttz.util.Emitter;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -119,17 +121,7 @@ public class ResourceLoadController implements Composer {
 
     private Reloader reloader = new Reloader();
 
-    private TimeTracker timeTracker;
-
     private IOrderPlanningGate planningControllerEntryPoints;
-
-    private ZoomLevel zoomLevel;
-
-    private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
-
-    private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
-
-    private Chart loadChart;
 
     public ResourceLoadController() {
     }
@@ -165,6 +157,8 @@ public class ResourceLoadController implements Composer {
 
         private ListenerTracker listeners = new ListenerTracker();
 
+        private TimeTracker timeTracker;
+
         public Reloader() {
         }
 
@@ -175,16 +169,6 @@ public class ResourceLoadController implements Composer {
                 return visualizationModifiers;
             }
             return visualizationModifiers = buildVisualizationModifiers();
-        }
-
-        private FilterTypeChanger getTypeChanger() {
-            for (VisualizationModifier each : getVisualizationModifiers()) {
-                if (each instanceof VisualizationModifier) {
-                    return (FilterTypeChanger) each;
-                }
-            }
-            throw new RuntimeException(FilterTypeChanger.class.getSimpleName()
-                    + " should always be among the visualization modifiers");
         }
 
         private List<IListenerAdder> listenersToAdd = null;
@@ -225,14 +209,15 @@ public class ResourceLoadController implements Composer {
             for (VisualizationModifier each : getVisualizationModifiers()) {
                 each.checkDependencies();
             }
+            ResourceLoadParameters parameters = new ResourceLoadParameters(
+                    filterBy);
             for (VisualizationModifier each : getVisualizationModifiers()) {
-                each.applyToModel(resourceLoadModel);
+                each.applyToParameters(parameters);
             }
 
-            ResourceLoadDisplayData dataToShow = calculateDataToDisplay(getTypeChanger()
-                    .isFilterByResources());
-            timeTracker = buildTimeTracker(dataToShow);
+            ResourceLoadDisplayData dataToShow = resourceLoadModel.calculateDataToDisplay(parameters);
 
+            timeTracker = buildTimeTracker(dataToShow);
             if (resourcesLoadPanel == null) {
                 resourcesLoadPanel = buildPanel(dataToShow);
                 listeners.addListeners(resourcesLoadPanel, getListenersToAdd());
@@ -246,13 +231,21 @@ public class ResourceLoadController implements Composer {
                         timeTracker);
             }
 
-            resourcesLoadPanel.setLoadChart(buildChart(resourcesLoadPanel));
             resourcesLoadPanel.afterCompose();
             addCommands(resourcesLoadPanel);
 
             for (VisualizationModifier each : getVisualizationModifiers()) {
-                each.updateUI(resourcesLoadPanel, resourceLoadModel);
+                each.updateUI(resourcesLoadPanel, dataToShow);
             }
+        }
+
+        private TimeTracker buildTimeTracker(ResourceLoadDisplayData dataToShow) {
+            ZoomLevel zoomLevel = dataToShow.getInitialZoomLevel();
+            TimeTracker result = new TimeTracker(dataToShow.getViewInterval(),
+                    zoomLevel, SeveralModificators.create(),
+                    SeveralModificators.create(createBankHolidaysMarker()),
+                    parent);
+            return result;
         }
 
         private ResourcesLoadPanel buildPanel(ResourceLoadDisplayData dataToShow) {
@@ -260,17 +253,6 @@ public class ResourceLoadController implements Composer {
                     timeTracker, parent,
                     resourceLoadModel.isExpandResourceLoadViewCharts(),
                     PaginationType.EXTERNAL_PAGINATION);
-        }
-
-        private ResourceLoadDisplayData calculateDataToDisplay(
-                boolean filterByResources) {
-            if (isGlobal()) {
-                return resourceLoadModel
-                        .calculateDataToDisplay(filterByResources);
-            } else {
-                return resourceLoadModel.calculateDataToDisplay(filterBy,
-                        filterByResources);
-            }
         }
     }
 
@@ -285,6 +267,7 @@ public class ResourceLoadController implements Composer {
         result.add(bandbox);
         result.add(new ByNamePaginator(onChange, filterBy, filterTypeChanger,
                 bandbox));
+        result.add(new LoadChart(onChange, filterBy));
         return result;
     }
 
@@ -370,10 +353,10 @@ public class ResourceLoadController implements Composer {
 
         }
 
-        void applyToModel(IResourceLoadModel model) {
+        void applyToParameters(ResourceLoadParameters parameters) {
         }
 
-        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
+        void updateUI(ResourcesLoadPanel panel, ResourceLoadDisplayData generatedData) {
         }
     }
 
@@ -388,6 +371,11 @@ public class ResourceLoadController implements Composer {
 
         public boolean isFilterByResources() {
             return filterByResources;
+        }
+
+        @Override
+        void applyToParameters(ResourceLoadParameters parameters) {
+            parameters.setFilterByResources(filterByResources);
         }
 
         @Override
@@ -468,22 +456,11 @@ public class ResourceLoadController implements Composer {
         }
 
         @Override
-        void applyToModel(IResourceLoadModel model) {
-            model.setInitDateFilter(startDateValue);
-            model.setEndDateFilter(endDateValue);
+        void applyToParameters(ResourceLoadParameters parameters) {
+            parameters.setInitDateFilter(startDateValue);
+            parameters.setEndDateFilter(endDateValue);
         }
 
-        @Override
-        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
-            if (isAppliedToOrder()) {
-                return;
-            }
-            startDateValue = model.getInitDateFilter();
-            startBox.setValue(asDate(startDateValue));
-
-            endDateValue = model.getEndDateFilter();
-            endBox.setValue(asDate(endDateValue));
-        }
     }
 
     private static abstract class DependingOnFiltering extends
@@ -579,14 +556,16 @@ public class ResourceLoadController implements Composer {
         }
 
         @Override
-        void applyToModel(IResourceLoadModel model) {
+        void applyToParameters(ResourceLoadParameters parameters) {
             if (!hasEntitiesSelected()) {
-                model.clearResourcesToShow();
-                model.clearCriteriaToShow();
+                parameters.clearResourcesToShow();
+                parameters.clearCriteriaToShow();
             } else if (isFilteringByResource()) {
-                model.setResourcesToShow(as(Resource.class, entitiesSelected));
+                parameters.setResourcesToShow(as(Resource.class,
+                        entitiesSelected));
             } else {
-                model.setCriteriaToShow(as(Criterion.class, entitiesSelected));
+                parameters.setCriteriaToShow(as(Criterion.class,
+                        entitiesSelected));
             }
         }
 
@@ -659,24 +638,23 @@ public class ResourceLoadController implements Composer {
         }
 
         @Override
-        void applyToModel(IResourceLoadModel model) {
-            model.setPageFilterPosition(currentPosition);
+        void applyToParameters(ResourceLoadParameters parameters) {
+            parameters.setPageFilterPosition(currentPosition);
         }
 
         @Override
-        void updateUI(ResourcesLoadPanel panel, IResourceLoadModel model) {
+        void updateUI(ResourcesLoadPanel panel, ResourceLoadDisplayData generatedData) {
             panel.setInternalPaginationDisabled(bandbox.hasEntitiesSelected());
-
-            List<? extends BaseEntity> newAllEntities = getAllEntities(model);
-            if (this.currentPosition != model.getPageFilterPosition()) {
-                this.currentPosition = model.getPageFilterPosition();
-            }
+            Paginator<? extends BaseEntity> paginator = generatedData
+                    .getPaginator();
+            List<? extends BaseEntity> newAllEntities = paginator.getAll();
             if (this.allEntitiesShown == null
                     || !equivalent(this.allEntitiesShown, newAllEntities)) {
                 this.currentPosition = initialPage();
                 this.allEntitiesShown = newAllEntities;
                 updatePages(panel.getPaginationFilterCombobox(),
-                        pagesByName(this.allEntitiesShown, model.getPageSize()));
+                        pagesByName(this.allEntitiesShown,
+                                paginator.getPageSize()));
             }
         }
 
@@ -722,15 +700,6 @@ public class ResourceLoadController implements Composer {
                 filterByNameCombo.setSelectedItemApi(lastItem);
             } else {
                 filterByNameCombo.setSelectedIndex(0);
-            }
-        }
-
-        private List<? extends BaseEntity> getAllEntities(
-                IResourceLoadModel model) {
-            if (isFilteringByResource()) {
-                return model.getAllResourcesList();
-            } else {
-                return model.getAllCriteriaList();
             }
         }
 
@@ -799,6 +768,146 @@ public class ResourceLoadController implements Composer {
         return result;
     }
 
+    class LoadChart extends VisualizationModifier implements IListenerAdder {
+
+        private Emitter<Timeplot> emitter = Emitter.withInitial(null);
+
+        private volatile Chart loadChart;
+
+        private IZoomLevelChangedListener zoomLevelListener;
+
+        public LoadChart(Runnable onChange, PlanningState filterBy) {
+            super(onChange, filterBy);
+        }
+
+        void setup(ResourcesLoadPanel panel) {
+            panel.setLoadChart(buildChart(panel, emitter));
+        }
+
+        public Object addAndReturnListener(ResourcesLoadPanel panel) {
+            IChartVisibilityChangedListener visibilityChangedListener = fillOnChartVisibilityChange();
+            panel.addChartVisibilityListener(visibilityChangedListener);
+            return visibilityChangedListener;
+        }
+
+        private IChartVisibilityChangedListener fillOnChartVisibilityChange() {
+            IChartVisibilityChangedListener result = new IChartVisibilityChangedListener() {
+
+                @Override
+                public void chartVisibilityChanged(final boolean visible) {
+                    if (visible && loadChart != null) {
+                        loadChart.fillChart();
+                    }
+                }
+            };
+            return result;
+        }
+
+        private Tabbox buildChart(ResourcesLoadPanel resourcesLoadPanel,
+                Emitter<Timeplot> timePlot) {
+            Tabbox chartComponent = new Tabbox();
+            chartComponent.setOrient("vertical");
+            chartComponent.setHeight("200px");
+
+            Tabs chartTabs = new Tabs();
+            chartTabs.appendChild(new Tab(_("Load")));
+            chartComponent.appendChild(chartTabs);
+            chartTabs.setWidth("124px");
+
+            Tabpanels chartTabpanels = new Tabpanels();
+            Tabpanel loadChartPannel = new Tabpanel();
+            // avoid adding Timeplot since it has some pending issues
+            CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
+                    timePlot);
+            chartTabpanels.appendChild(loadChartPannel);
+            chartComponent.appendChild(chartTabpanels);
+            return chartComponent;
+        }
+
+        @Override
+        void updateUI(ResourcesLoadPanel panel,
+                ResourceLoadDisplayData generatedData) {
+            TimeTracker timeTracker = panel.getTimeTracker();
+            zoomLevelListener = fillOnZoomChange(panel);
+            timeTracker.addZoomListener(zoomLevelListener);
+
+            Timeplot newLoadChart = buildLoadChart(panel, generatedData,
+                    timeTracker);
+            emitter.emit(newLoadChart);
+        }
+
+        private Timeplot buildLoadChart(ResourcesLoadPanel resourcesLoadPanel,
+                ResourceLoadDisplayData generatedData, TimeTracker timeTracker) {
+            Timeplot chartLoadTimeplot = createEmptyTimeplot();
+
+            loadChart = new Chart(chartLoadTimeplot,
+                    new ResourceLoadChartFiller(generatedData), timeTracker);
+            loadChart.setZoomLevel(timeTracker.getDetailLevel());
+            if (resourcesLoadPanel.isVisibleChart()) {
+                loadChart.fillChart();
+            }
+            return chartLoadTimeplot;
+        }
+
+        private IZoomLevelChangedListener fillOnZoomChange(
+                final ResourcesLoadPanel resourcesLoadPanel) {
+
+            IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
+
+                @Override
+                public void zoomLevelChanged(ZoomLevel detailLevel) {
+                    if (loadChart == null) {
+                        return;
+                    }
+                    loadChart.setZoomLevel(detailLevel);
+
+                    if (resourcesLoadPanel.isVisibleChart()) {
+                        loadChart.fillChart();
+                    }
+                    adjustZoomPositionScroll(resourcesLoadPanel);
+                }
+            };
+
+            return zoomListener;
+        }
+    }
+
+    private void adjustZoomPositionScroll(ResourcesLoadPanel resourcesLoadPanel) {
+        resourcesLoadPanel.getTimeTrackerComponent().movePositionScroll();
+    }
+
+    private Timeplot createEmptyTimeplot() {
+        Timeplot timeplot = new Timeplot();
+        timeplot.appendChild(new Plotinfo());
+        return timeplot;
+    }
+
+    private class ResourceLoadChartFiller extends StandardLoadChartFiller {
+
+        private final ResourceLoadDisplayData generatedData;
+
+        public ResourceLoadChartFiller(ResourceLoadDisplayData generatedData) {
+            this.generatedData = generatedData;
+        }
+
+        @Override
+        protected String getOptionalJavascriptCall() {
+            return null;
+        }
+
+        @Override
+        protected ILoadChartData getDataOn(Interval interval) {
+            List<DayAssignment> assignments = generatedData
+                    .getDayAssignmentsConsidered();
+            List<Resource> resources = generatedData.getResourcesConsidered();
+            ResourceLoadChartData data = new ResourceLoadChartData(assignments,
+                    resources);
+            return data.on(getStart(generatedData.getFilterStart(), interval),
+                    getEnd(generatedData.getFilterEnd(), interval));
+        }
+
+    }
+
     private static class ListenerTracker {
         private final List<Object> trackedListeners = new ArrayList<Object>();
 
@@ -816,22 +925,10 @@ public class ResourceLoadController implements Composer {
                 .size()]));
     }
 
-    private TimeTracker buildTimeTracker(ResourceLoadDisplayData dataToShow) {
-        zoomLevel = (timeTracker == null) ? dataToShow.getInitialZoomLevel()
-                : timeTracker.getDetailLevel();
-        return new TimeTracker(dataToShow.getViewInterval(), zoomLevel,
-                SeveralModificators.create(),
-                SeveralModificators.create(createBankHolidaysMarker()), parent);
-    }
-
     private BankHolidaysMarker createBankHolidaysMarker() {
         BaseCalendar defaultCalendar = configurationDAO.getConfiguration()
                 .getDefaultCalendar();
         return BankHolidaysMarker.create(defaultCalendar);
-    }
-
-    private boolean isGlobal() {
-        return filterBy == null;
     }
 
     public void filterBy(Order order) {
@@ -846,113 +943,6 @@ public class ResourceLoadController implements Composer {
 
     public IOrderPlanningGate getPlanningControllerEntryPoints() {
         return this.planningControllerEntryPoints;
-    }
-
-    private org.zkoss.zk.ui.Component buildChart(
-            ResourcesLoadPanel resourcesLoadPanel) {
-        Tabbox chartComponent = new Tabbox();
-        chartComponent.setOrient("vertical");
-        chartComponent.setHeight("200px");
-
-        Tabs chartTabs = new Tabs();
-        chartTabs.appendChild(new Tab(_("Load")));
-        chartComponent.appendChild(chartTabs);
-        chartTabs.setWidth("124px");
-
-        Tabpanels chartTabpanels = new Tabpanels();
-        Tabpanel loadChartPannel = new Tabpanel();
-        // avoid adding Timeplot since it has some pending issues
-         CompanyPlanningModel.appendLoadChartAndLegend(loadChartPannel,
-                buildLoadChart(resourcesLoadPanel));
-        chartTabpanels.appendChild(loadChartPannel);
-        chartComponent.appendChild(chartTabpanels);
-
-        return chartComponent;
-    }
-
-    private Timeplot buildLoadChart(ResourcesLoadPanel resourcesLoadPanel) {
-        Timeplot chartLoadTimeplot = createEmptyTimeplot();
-
-        loadChart = new Chart(chartLoadTimeplot,
-                new ResourceLoadChartFiller(), timeTracker);
-        loadChart.setZoomLevel(zoomLevel);
-        if (resourcesLoadPanel.isVisibleChart()) {
-            loadChart.fillChart();
-        }
-        timeTracker.addZoomListener(fillOnZoomChange(resourcesLoadPanel,
-                loadChart));
-        resourcesLoadPanel
-                .addChartVisibilityListener(fillOnChartVisibilityChange(loadChart));
-
-        return chartLoadTimeplot;
-    }
-
-    private IZoomLevelChangedListener fillOnZoomChange(
-            final ResourcesLoadPanel resourcesLoadPanel, final Chart loadChart) {
-
-        IZoomLevelChangedListener zoomListener = new IZoomLevelChangedListener() {
-
-            @Override
-            public void zoomLevelChanged(ZoomLevel detailLevel) {
-                loadChart.setZoomLevel(detailLevel);
-
-                if (resourcesLoadPanel.isVisibleChart()) {
-                    loadChart.fillChart();
-                }
-                adjustZoomPositionScroll(resourcesLoadPanel);
-            }
-        };
-
-        keepAliveZoomListeners.add(zoomListener);
-
-        return zoomListener;
-    }
-
-    private void adjustZoomPositionScroll(ResourcesLoadPanel resourcesLoadPanel) {
-        resourcesLoadPanel.getTimeTrackerComponent().movePositionScroll();
-    }
-
-    private IChartVisibilityChangedListener fillOnChartVisibilityChange(
-            final Chart loadChart) {
-        IChartVisibilityChangedListener chartVisibilityChangedListener = new IChartVisibilityChangedListener() {
-
-            @Override
-            public void chartVisibilityChanged(final boolean visible) {
-                if (visible) {
-                    loadChart.fillChart();
-                }
-            }
-        };
-
-        keepAliveChartVisibilityListeners.add(chartVisibilityChangedListener);
-        return chartVisibilityChangedListener;
-    }
-
-    private Timeplot createEmptyTimeplot() {
-        Timeplot timeplot = new Timeplot();
-        timeplot.appendChild(new Plotinfo());
-        return timeplot;
-    }
-
-    private class ResourceLoadChartFiller extends StandardLoadChartFiller {
-
-        @Override
-        protected String getOptionalJavascriptCall() {
-            return null;
-        }
-
-        @Override
-        protected ILoadChartData getDataOn(Interval interval) {
-            List<DayAssignment> dayAssignments = resourceLoadModel
-                    .getDayAssignments();
-            List<Resource> resources = resourceLoadModel.getResources();
-            ResourceLoadChartData data = new ResourceLoadChartData(
-                    dayAssignments, resources);
-            return data.on(
-                    getStart(resourceLoadModel.getInitDateFilter(), interval),
-                    getEnd(resourceLoadModel.getEndDateFilter(), interval));
-        }
-
     }
 
 }
