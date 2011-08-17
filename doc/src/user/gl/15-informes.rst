@@ -12,36 +12,4 @@ Informes
 
 Os informes definidos son:
 
-* Informe de pedidos. Amosa unha fila por cada tarefa do pedido. Os campos que se amosan por cada tarefa son:
-
-   * Código
-   * Nome
-   * Data estimada inicio
-   * Data primeiro parte
-   * Data estimada fin
-   * Data último parte
-   * Data *deadline* (se existe)
-   * Porcentaxe de Avance (o marcado como propaga).
-   * Estado actual: Finalizada, En Curso, Pendente, Bloqueada.
-   * Estado *deadline*: Superado, Non superado, En blanco (se non existe deadline).
-
-* Informe de partes de traballo. O informe amosa o resumo de horas traballadas segundo os partes de traballo.
-* Informe de horas traballadas por traballador ou grupo de traballadores. Informe que amosa o resumo por data e subtotal de horas traballadas por recurso existente na aplicación.
-* Informe de lista de avances dos proxectos. Informe que amosa unha fila por cada pedido filtrado de modo que se visualiza o avance dos distintos tipos de avances seleccionados.
-* Informe que lista as horas traballadas de un proxecto. Permite coñecer as:
-
-   * Horas estimadas (HE)
-   * Horas planificadas totais (HP Total)
-   * Horas planificadas (HP)
-   * Horas reais (HR)
-   * Avance medido (AM)
-   * Avance imputado (AI)
-   * Avance planificado (AP)
-   * Desfase en Custo (CV)
-   * Desfase en Planificación (SV)
-   * Ratio desfase en custo (CPI)
-   * Ratio desfase en planificación (SPI)
-
-* Informe de horas realizadas e imputadas por tipo de traballo.
-* Informe de horas realizadas e imputadas por etiquetas.
-* Informe de custos dos recursos asignados a tarefas en base ós tipos de horas.
+#. `Informe sobre as horas traballadas por recurso <15-1-report-hours-worked-by-resource.html>`__
