@@ -13,3 +13,4 @@ Informes
 Los informes definidos son:
 
 #. `Informe sobre las horas trabajadas por recurso <15-1-report-hours-worked-by-resource.html>`__
+#. `Informe sobre el total de horas trabajadas por recurso en un mes <15-2-total-hours-by-resource-month.html>`__
