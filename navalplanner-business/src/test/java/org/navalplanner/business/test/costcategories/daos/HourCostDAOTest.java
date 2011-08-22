@@ -79,6 +79,7 @@ public class HourCostDAOTest {
 
         TypeOfWorkHours type =
                 TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        type.setDefaultPrice(BigDecimal.TEN);
         hourCost.setType(type);
         typeOfWorkHoursDAO.save(type);
 

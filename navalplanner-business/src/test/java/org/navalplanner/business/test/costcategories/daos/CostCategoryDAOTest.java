@@ -105,6 +105,7 @@ public class CostCategoryDAOTest {
         CostCategory costCategory = createValidCostCategory();
         TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        type1.setDefaultPrice(BigDecimal.TEN);
         typeOfWorkHoursDAO.save(type1);
         HourCost hourCost1 = HourCost.create(BigDecimal.ONE, new LocalDate(2009, 11,1));
         hourCost1.setType(type1);
@@ -130,6 +131,7 @@ public class CostCategoryDAOTest {
 
         TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        type2.setDefaultPrice(BigDecimal.TEN);
         typeOfWorkHoursDAO.save(type2);
         hourCost2.setType(type2);
         hourCost2.setInitDate(new LocalDate(2009,10,15));
@@ -179,8 +181,10 @@ public class CostCategoryDAOTest {
         CostCategory costCategory = createValidCostCategory();
         TypeOfWorkHours type1 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        type1.setDefaultPrice(BigDecimal.TEN);
         TypeOfWorkHours type2 = TypeOfWorkHours.create(UUID.randomUUID().toString(),
                 UUID.randomUUID().toString());
+        type2.setDefaultPrice(BigDecimal.TEN);
         //types have to be saved before using them
         //otherwise, the overlapping validation will fail
         typeOfWorkHoursDAO.save(type1);

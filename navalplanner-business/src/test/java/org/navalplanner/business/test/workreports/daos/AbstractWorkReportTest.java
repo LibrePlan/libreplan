@@ -21,6 +21,7 @@
 
 package org.navalplanner.business.test.workreports.daos;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -92,6 +93,7 @@ public abstract class AbstractWorkReportTest {
     private TypeOfWorkHours createValidTypeOfWorkHours() {
         TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.create(UUID
                 .randomUUID().toString(), UUID.randomUUID().toString());
+        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
         typeOfWorkHoursDAO.save(typeOfWorkHours);
         return typeOfWorkHours;
 

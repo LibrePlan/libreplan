@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 import static org.navalplanner.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.navalplanner.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +65,7 @@ public class TypeOfWorkHoursDAOTest {
     private TypeOfWorkHours createValidTypeOfWorkHours() {
         TypeOfWorkHours typeOfWorkHours =
             TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
         return typeOfWorkHours;
     }
 

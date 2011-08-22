@@ -113,6 +113,7 @@ public class CostCategoryServiceTest {
 
         typeOfWorkHours.setCode(code);
         typeOfWorkHours.setName("name" + UUID.randomUUID());
+        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
 
         typeOfWorkHoursDAO.save(typeOfWorkHours);
         typeOfWorkHoursDAO.flush();

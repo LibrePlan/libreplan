@@ -30,6 +30,7 @@ import static org.navalplanner.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONF
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_CONFIG_TEST_FILE;
 import static org.navalplanner.web.test.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_TEST_FILE;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -205,6 +206,7 @@ public class WorkReportServiceTest {
         TypeOfWorkHours typeOfWorkHours = TypeOfWorkHours.create();
         typeOfWorkHours.setCode(typeOfWorkHoursCode);
         typeOfWorkHours.setName("type-of-work-hours-name-" + UUID.randomUUID());
+        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
 
         typeOfWorkHoursDAO.save(typeOfWorkHours);
         typeOfWorkHoursDAO.flush();
