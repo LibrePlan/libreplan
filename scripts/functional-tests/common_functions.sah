@@ -79,3 +79,20 @@ function commonDeleteValidation($something, $name){
     _assert(_isVisible(_div($something+" \""+$name+"\" deleted")));
     _assertEqual($something+" \""+$name+"\" deleted", _getText(_div($something+" \""+$name+"\" deleted")));
 }
+
+function commonConfigurationChangeCheckboxMainPreferences($element){
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label($element))));
+    _click(_cell("Save"));
+    commonSaveConfigurationValidation();
+}
+
+function commonSaveConfigurationValidation(){
+    _assertExists(_span("Changes saved"));
+    _assert(_isVisible(_span("Changes saved")));
+}
+
+function commonEmptyCodeValidation(){
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+}

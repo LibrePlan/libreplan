@@ -20,13 +20,17 @@
 /* Included tests
  *
  * 1 - Create a new criterion
- * 2 - Create a criterion with duplicate type (most be failure)
+ * 2 - Create a criterion with duplicate type (it should be a failure)
  * 3 - Create a criterion with empty type
- * 4 - Create a criterion with duplicate name (most be failure)
+ * 4 - Create a criterion with duplicate name (it should be a failure)
  * 5 - Create with Hierarchy
  * 6 - Create without Hierarchy (clicking on a previous name)
  * 7 - Edit a criterion
- * 8 - Delete all criteria
+ * 8 - Check code
+ *   8.1 - Change configuration
+ *   8.2 - Try to create a new Criterion without Code (it should be a failure)
+ *   8.3 - Change configuration like before
+ * 9 - Delete all criteria
 */
 _include("../common_functions.sah");
 
@@ -51,7 +55,7 @@ function criteriaCreateEmpty(){
 
 function criteriaCreateDuplicateName($type, $name){
     commonCreate("Criteria");
-    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _setValue(_textbox(0, _near(_span("Name"))), $type);
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
     _click(_cell("Add"));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
@@ -62,7 +66,7 @@ function criteriaCreateDuplicateName($type, $name){
 
 function criteriaCreateWithHierarchy($type, $name, $name2){
     commonCreate("Criteria");
-    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _setValue(_textbox(0, _near(_span("Name"))), $type);
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
     _click(_cell("Add"));
     _click(_div(0, _near(_div("z-treecell-cnt z-overflow-hidden"))));
@@ -75,7 +79,7 @@ function criteriaCreateWithHierarchy($type, $name, $name2){
 
 function criteriaCreateWithoutHierarchy($type, $name, $name2){
     commonCreate("Criteria");
-    _setValue(_textbox(0, _near(_div("Name[1]"))), $type);
+    _setValue(_textbox(0, _near(_span("Name"))), $type);
     _click(_checkbox(0, _near(_div("Hierarchy"))));
     _click(_cell("OK"));
     _setValue(_textbox(0, _near(_span("New criterion"))), $name);
@@ -90,14 +94,14 @@ function criteriaCreateWithoutHierarchy($type, $name, $name2){
 
 function criteriaEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
-    _setValue(_textbox(0, _near(_div("Name[1]"))), $newName);
-    _click(_checkbox(0, _near(_div("Multiple values per resource"))));
-    _click(_cell("Save"));
+    _setValue(_textbox(0, _near(_span("Name"))), $newName);
+    _removeFocus(_textbox(0, _near(_span("Name"))), $newName);
+    _click(_cell("Save & Continue"));
     commonSaveValidation("Criterion Type", $newName);
 }
 
 function criteriaForm($name){
-    _setValue(_textbox(0, _near(_div("Name[1]"))), $name);
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
     _click(_checkbox(0, _near(_div("Multiple values per resource"))));
     _click(_checkbox(0, _near(_div("Hierarchy"))));
     _click(_cell("OK"));
@@ -110,6 +114,18 @@ function criteriaForm($name){
 function criteriaNotValid(){
     _assertExists(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used"));
     _assert(_isVisible(_div("checkConstraintUniqueCriterionTypeName: criterion type name is already being used")));
+}
+
+function criteriaCheckCode($criteriaType){
+    commonConfigurationChangeCheckboxMainPreferences("Criterion");
+    criteriaCreateWithoutCode($criteriaType);
+    commonConfigurationChangeCheckboxMainPreferences("Criterion");
+}
+
+function criteriaCreateWithoutCode($type){
+    commonCreate("Criteria");
+    criteriaForm($type);
+    commonEmptyCodeValidation();
 }
 
 /* test values */
@@ -132,6 +148,8 @@ criteriaCreateWithHierarchy($criteriaType2, $criteriaName, $criteriaName2);
 criteriaCreateWithoutHierarchy($criteriaType3, $criteriaName, $criteriaName2);
 
 criteriaEdit($criteriaType, $criteriaNewType, 4);
+
+criteriaCheckCode($criteriaType);
 
 commonDelete("Criteria", $criteriaNewType, 4);
 commonDeleteValidation("Criterion Type", $criteriaNewType);
