@@ -21,13 +21,13 @@
  * ==============
  *
  * 1 - Create a new process
- * 2 - Create a process with the same name (most be failure)
- * 3 - Create a new process without name (most be failure)
+ * 2 - Create a process with the same name (it should be a failure)
+ * 3 - Create a new process without name (it should be a failure)
  * 4 - Check Max value and precision
  *   4.1 - Wrong values (last input precision)
  *   4.2 - Wrong values (last input Max Value)
  * 5 - Edit a process
- * 6 - Try to delete a previously assigned progress (most be failure)
+ * 6 - Try to delete a previously assigned progress (it should be a failure)
  *   6.1 - Create a Project
  *   6.2 - Assign a progress to a project
  *   6.3 - try to delete this progress
@@ -42,12 +42,14 @@ function progressCreate($name) {
     commonCreate("Progress");
     progressForm($name);
     commonSaveValidation("Progress Type", $name);
+    _log("Create a new progress", "custom1");
 }
 
 function progressCreateDuplicate($name) {
     commonCreate("Progress");
     progressForm($name);
     progressNotValid();
+    _log("Do not allow create a progress with duplicate name", "custom1");
 }
 
 function progressCreateEmpty() {
@@ -56,6 +58,7 @@ function progressCreateEmpty() {
     _assertExists(_div("The name is not valid, the name must not be null"));
     _assert(_isVisible(_div("The name is not valid, the name must not be null")));
     _click(_link("Progress"));
+    _log("Do not allow create a progress without name", "custom1");
 }
 
 function progressForm($name) {
@@ -73,6 +76,7 @@ function progressNotValid(){
 function progressCreateWrongPrecisson($name, $maxValue, $precission){
     progressPrecisson($name, $maxValue, $precission);
     progressMaxValue($name, $maxValue, $precission);
+    _log("Check Max value and precision", "custom1");
 }
 
 function progressPrecisson($name, $maxValue, $precission){
@@ -100,6 +104,7 @@ function progressEdit($oldName, $newName, $cell) {
     commonEdit($oldName, 3);
     progressForm($newName);
     commonSaveValidation("Progress Type", $newName);
+    _log("Edit a progress", "custom1");
 }
 
 function progressTryEditDefault($defaultValue){
@@ -111,12 +116,14 @@ function progressTryEditDefault($defaultValue){
     _assertExists(_div("Percentage"));
     _assert(_isVisible(_div("Percentage")));
     _click(_link("Progress"));
+    _log("Try to edit a default progress", "custom1");
 }
 
 function progressTryDelDefault($defaultValue){
     _click(_image("ico_borrar1.png", _in(_cell(3, _near(_cell($defaultValue))))));
     _assertNotEqual("Delete Progress Type \""+$defaultValue+"\". Are you sure?");
     _assertNull(_cell("Delete Progress Type \""+$defaultValue+"\". Are you sure?"));
+    _log("Try to delete a default progress", "custom1");
 }
 
 function progressAssigned($projectName, $progressNewName){
@@ -125,6 +132,7 @@ function progressAssigned($projectName, $progressNewName){
     _click(_link("Progress"));
     progressTryDelDefault($progressNewName);
     commonDeleteProject($projectName);
+    _log("Assign the progress", "custom1");
 }
 
 function progressAssignProject($projectName, $progressNewName){
@@ -162,6 +170,7 @@ progressEdit($progressName, $progressNewName, 3);
 progressAssigned($projectName, $progressNewName);
 commonDelete("Progress", $progressNewName, 3);
 commonDeleteValidation("Progress Type", $progressNewName);
+_log("Delete a progress", "custom1");
 progressTryEditDefault($defaultValue);
 progressTryDelDefault($defaultValue);
 commonLogout();

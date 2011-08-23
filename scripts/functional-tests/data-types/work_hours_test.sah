@@ -49,14 +49,14 @@ function workHourCreate($type, $price){
     commonCreate("Work Hours");
     workHourForm($type, $price);
     commonSaveValidation("Type of hours", $type);
-    _log("Create a new Work Hour SUCCESS", "success");
+    _log("Create a new Work Hour", "custom1");
 }
 
 function workHourCreateDuplicateType($type, $price){
     commonCreate("Work Hours");
     workHourForm($type, $price);
     workHourNotValid($type);
-    _log("Do not allow create a duplicate Work Hour SUCCESS", "success");
+    _log("Do not allow create a duplicate Work Hour", "custom1");
 }
 
 function workHourCreateEmpty(){
@@ -64,7 +64,7 @@ function workHourCreateEmpty(){
     workHourForm("", 10);
     _assertExists(_div("cannot be null or empty"));
     _assert(_isVisible(_div("cannot be null or empty")));
-    _log("Do not allow create a empty Work Hour SUCCESS", "success");
+    _log("Do not allow create a empty Work Hour", "custom1");
 }
 
 function workHourForm($name, $price){
@@ -83,7 +83,7 @@ function workHourEdit($oldName, $newName, $hWorkPrice, $cell) {
     commonEdit($oldName, $cell);
     workHourForm($newName, $hWorkPrice);
     commonSaveValidation("Type of hours", $newName);
-    _log("Edit the Work Hour SUCCESS", "success");
+    _log("Edit the Work Hour", "custom1");
 }
 
 function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescription){
@@ -101,6 +101,7 @@ function workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescr
     commonDeleteValidation("Machine", $materialName);
     commonDelete("Work Report Models", $ModelName, 1);
     commonDeleteValidation("Work Report Type", $ModelName);
+    _log("Assign the work hour to project", "custom1");
 }
 
 function workHourTryDelete($hWorkNewName,$something){
@@ -109,7 +110,7 @@ function workHourTryDelete($hWorkNewName,$something){
     _assertExists(_span("Cannot delete type of work hours. It is being used at this moment in some "+$something+"."));
     _assert(_isVisible(_span("Cannot delete type of work hours. It is being used at this moment in some "+$something+".")));
     _click(_cell("OK"));
-    _log("Do not allow delete the Work Hour SUCCESS", "success");
+    _log("Do not allow delete the Work Hour", "custom1");
 }
 
 /*
@@ -120,7 +121,7 @@ function machineCreate($name, $description){
     commonCreate("Machines");
     machineForm($name, $description);
     commonSaveValidation("Machine", $name);
-    _log("Create a new machine SUCCESS", "success");
+    _log("Create a new machine", "custom1");
 }
 
 function machineForm($name, $description){
@@ -137,7 +138,7 @@ function reportModelCreate($modelName) {
     commonCreate("Work Report Models");
     reportModelForm($modelName);
     commonSaveValidation("Work Report Type", $modelName);
-    _log("Create a Work Report Model SUCCESS", "success");
+    _log("Create a Work Report Model", "custom1");
 }
 
 function reportModelForm($name) {
@@ -153,7 +154,7 @@ function reportModelTryDelete($ModelName){
     _assertExists(_span("Cannot delete work report type. There are some work reports bound to it."));
     _assert(_isVisible(_span("Cannot delete work report type. There are some work reports bound to it.")));
     _click(_cell("OK"));
-    _log("Do not allow delete Work Report Model SUCCESS", "success");
+    _log("Do not allow delete Work Report Model", "custom1");
     }
 
 /*
@@ -163,7 +164,7 @@ function reportModelTryDelete($ModelName){
 function workReportCreate($wReport, $project, $workHour) {
     _click(_link("Work Reports"));
     workReportForm($wReport, $project, $workHour);
-    _log("Create a Work Report SUCCESS", "success");
+    _log("Create a Work Report", "custom1");
 }
 
 function workReportForm($machine, $project, $workHour) {
@@ -185,7 +186,7 @@ function commonTryDeleteProject($name){
     _click(_cell("OK"));
     _assertExists(_div("You can not remove the project \"new project\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario"));
     _assert(_isVisible(_div("You can not remove the project \"new project\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario")));
-    _log("Do not allow delete Work Report SUCCESS", "success");
+    _log("Do not allow delete Work Report", "custom1");
 }
 
 /*
@@ -197,14 +198,14 @@ function workHourAssignCostCategory($categoryName, $hworkName){
     workHourTryDelete($hWorkName,"cost category");
     commonDelete("Cost Categories", $categoryName, 2);
     commonDeleteValidation("Cost Category", $categoryName);
-    _log("Delete the Cost Category SUCCESS", "success");
+    _log("Assign to a Cost Category", "custom1");
 }
 
 function costCategoryCreate($name, $hworkName){
     commonCreate("Cost Categories");
     costCategoryForm($name, $hworkName);
     commonSaveValidation("Cost Category", $name);
-    _log("Create a Cost Category SUCCESS", "success");
+    _log("Create a Cost Category", "custom1");
 }
 
 function costCategoryForm($name, $hworkName){
@@ -239,5 +240,5 @@ workHourCreate($hWorkName, $hWorkPrice);
 workHourAssignCostCategory($cCategoryName, $hWorkName);
 commonDelete("Work Hours", $hWorkName, 4);
 commonDeleteValidation("Type of hours", $hWorkName);
-_log("Delete the work Hour SUCCESS", "success");
+_log("Delete the work Hour", "custom1");
 commonLogout();

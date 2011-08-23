@@ -36,14 +36,14 @@ function unitMeasureCreate($type){
     commonCreate("Unit Measures");
     unitMeasureForm($type);
     commonSaveValidation("Unit Measure", $type);
-    _log("Create a new Unit Measure SUCCESS", "success");
+    _log("Create a new Unit Measure", "custom1");
 }
 
 function unitMeasureCreateDuplicate($type){
     commonCreate("Unit Measures");
     unitMeasureForm($type);
     unitMeasureNotValidation($type);
-    _log("Create Unit Measure Duplicate SUCCESS", "success");
+    _log("Create Unit Measure Duplicate", "custom1");
 }
 
 function unitMeasureCreateEmpty(){
@@ -51,7 +51,7 @@ function unitMeasureCreateEmpty(){
     unitMeasureForm("");
     _assertExists(_div("Unit type name cannot be empty"));
     _assert(_isVisible(_div("Unit type name cannot be empty")));
-    _log("Create Unit Measure Empty SUCCESS", "success");
+    _log("Create Unit Measure Empty", "custom1");
 }
 
 function unitMeasureForm($name){
@@ -70,14 +70,14 @@ function unitMeasureEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     unitMeasureForm($newName);
     commonSaveValidation("Unit Measure", $newName);
-    _log("Edit the Unit Measure SUCCESS", "success");
+    _log("Edit the Unit Measure", "custom1");
 }
 
 function unitMeasureAssign($UMeasure, $materialName){
     materialFormCreate($materialName, $UMeasure);
     unitMeasureTryDeleteAssigned($UMeasure);
     materialFormDelete($materialName);
-    _log("Assign an Unit Measure to a material SUCCESS", "success");
+    _log("Assign an Unit Measure to a material", "custom1");
 }
 
 function materialFormCreate($material, $measure){
@@ -126,5 +126,5 @@ unitMeasureEdit($UMeasureName, $UMeasureName2, 1);
 unitMeasureAssign($UMeasureName2, $materialName);
 commonDelete("Unit Measures", $UMeasureName2, 1);
 commonDeleteValidation("Unit Measure", $UMeasureName2);
-_log("Delete the Unit Measure SUCCESS", "success");
+_log("Delete the Unit Measure", "custom1");
 commonLogout();

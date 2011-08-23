@@ -38,12 +38,14 @@ function criteriaCreate($type){
     commonCreate("Criteria");
     criteriaForm($type);
     commonSaveValidation("Criterion Type", $type);
+    _log("Create a new criterion", "custom1");
 }
 
 function criteriaCreateDuplicateType($type){
     commonCreate("Criteria");
     criteriaForm($type);
     criteriaNotValid();
+    _log("Do not allow create a criterion Duplicate type", "custom1");
 }
 
 function criteriaCreateEmpty(){
@@ -51,6 +53,7 @@ function criteriaCreateEmpty(){
     criteriaForm("");
     _assertExists(_div("name: criterion type name not specified"));
     _assert(_isVisible(_div("name: criterion type name not specified")));
+    _log("Do not allow create a criterion with empty type", "custom1");
 }
 
 function criteriaCreateDuplicateName($type, $name){
@@ -62,6 +65,7 @@ function criteriaCreateDuplicateName($type, $name){
     _click(_cell("Add"));
     _assertExists(_div("Already exists other criterion with the same name"));
     _assert(_isVisible(_div("Already exists other criterion with the same name")));
+    _log("Do not allow create a criterion with duplicate name", "custom1");
 }
 
 function criteriaCreateWithHierarchy($type, $name, $name2){
@@ -75,6 +79,7 @@ function criteriaCreateWithHierarchy($type, $name, $name2){
     _assertExists(_span("z-tree-line z-tree-spacer"));
     _assert(_isVisible(_span("z-tree-line z-tree-spacer")));
     _click(_cell("Save"));
+    _log("Create a criterion with Hierarchy", "custom1");
 }
 
 function criteriaCreateWithoutHierarchy($type, $name, $name2){
@@ -90,6 +95,7 @@ function criteriaCreateWithoutHierarchy($type, $name, $name2){
     _assertExists(_span("z-tree-ico z-tree-firstspacer[1]"));
     _assert(_isVisible(_span("z-tree-ico z-tree-firstspacer[1]")));
     _click(_cell("Save"));
+    _log("Create a criterion without Hierarchy", "custom1");
 }
 
 function criteriaEdit($oldName, $newName, $cell){
@@ -98,6 +104,7 @@ function criteriaEdit($oldName, $newName, $cell){
     _removeFocus(_textbox(0, _near(_span("Name"))), $newName);
     _click(_cell("Save & Continue"));
     commonSaveValidation("Criterion Type", $newName);
+    _log("Edit a criterion", "custom1");
 }
 
 function criteriaForm($name){
@@ -120,6 +127,7 @@ function criteriaCheckCode($criteriaType){
     commonConfigurationChangeCheckboxMainPreferences("Criterion");
     criteriaCreateWithoutCode($criteriaType);
     commonConfigurationChangeCheckboxMainPreferences("Criterion");
+    _log("Check code label", "custom1");
 }
 
 function criteriaCreateWithoutCode($type){
@@ -157,5 +165,6 @@ commonDelete("Criteria", $criteriaType2, 4);
 commonDeleteValidation("Criterion Type", $criteriaType2);
 commonDelete("Criteria", $criteriaType3, 4);
 commonDeleteValidation("Criterion Type", $criteriaType3);
+_log("Delete all criteria", "custom1");
 
 commonLogout();

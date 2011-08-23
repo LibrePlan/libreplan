@@ -20,14 +20,14 @@
 /* Included tests
  *
  * 1 - Create a new Label
- * 2 - Create a Label with duplicate type (most be failure)
- * 3 - Create a Label with empty type (most be failure)
- * 4 - Create a Label with duplicate name (most be failure)
+ * 2 - Create a Label with duplicate type (it should be a failure)
+ * 3 - Create a Label with empty type (it should be a failure)
+ * 4 - Create a Label with duplicate name (it should be a failure)
  * 5 - Edit a Label
  * 6 - Assign a Label
  *   6.1 - Create a project
  *   6.2 - Add a Label to a project
- *   6.3 - Try to delete this assigned Label (most be failure)
+ *   6.3 - Try to delete this assigned Label (it should be a failure)
  *   6.4 - Delete the project
  * 7 - Delete Label
  *
@@ -38,12 +38,14 @@ function labelCreate($type, $name){
     commonCreate("Labels");
     labelForm($type, $name);
     commonSaveValidation("Label Type", $type);
+    _log("Create a new label", "custom1");
 }
 
 function labelCreateDuplicateType($type){
     commonCreate("Labels");
     labelForm($type);
     labelNotValid($type);
+    _log("Do not allow create a label with duplicate type", "custom1");
 }
 
 function labelCreateEmpty(){
@@ -51,6 +53,7 @@ function labelCreateEmpty(){
     labelForm("");
     _assertExists(_div("cannot be null or empty"));
     _assert(_isVisible(_div("cannot be null or empty")));
+    _log("Do not allow create a label without type", "custom1");
 }
 
 function labelCreateDuplicateName($type, $name){
@@ -62,6 +65,7 @@ function labelCreateDuplicateName($type, $name){
     _click(_cell("Add"));
     _assertExists(_span("Already exists other label with the same name"));
     _assert(_isVisible(_span("Already exists other label with the same name")));
+    _log("Do not allow create a label with duplicate name", "custom1");
 }
 
 function labelForm($name, $labelName){
@@ -81,6 +85,7 @@ function labelEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
     labelForm($newName);
     commonSaveValidation("Label Type", $newName);
+    _log("Edit the label", "custom1");
 }
 
 function labelAssig($project, $labelName, $labelType2){
@@ -88,6 +93,7 @@ function labelAssig($project, $labelName, $labelType2){
     labelAssignProject($project);
     labeltryDelete($labelType2);
     commonDeleteProject($project);
+    _log("Assign the label", "custom1");
 }
 
 function labelAssignProject($project){
@@ -131,5 +137,6 @@ labelAssig($projectName, $labelName, $labelNewType);
 
 commonDelete("Labels", $labelNewType, 2);
 commonDeleteValidation("Label Type", $labelNewType);
+_log("Delete the label", "custom1");
 
 commonLogout();
