@@ -23,6 +23,8 @@ package org.navalplanner.business.planner.entities;
 
 import static org.navalplanner.business.i18n.I18nHelper._;
 
+import java.util.List;
+
 import org.navalplanner.business.common.BaseEntity;
 
 /**
@@ -34,6 +36,24 @@ public class AssignmentFunction extends BaseEntity {
 
     public static AssignmentFunction create() {
         return create(new AssignmentFunction());
+    }
+
+    /**
+     * This method goes over the {@link ResourceAllocation} list and apply the
+     * assignment function if it is defined.
+     *
+     * @param resourceAllocations
+     *            List of {@link ResourceAllocation}
+     */
+    public static void applyAssignmentFunctionsIfAny(
+            List<ResourceAllocation<?>> resourceAllocations) {
+        for (ResourceAllocation<?> resourceAllocation : resourceAllocations) {
+            AssignmentFunction assignmentFunction = resourceAllocation
+                    .getAssignmentFunction();
+            if (assignmentFunction != null) {
+                assignmentFunction.applyTo(resourceAllocation);
+            }
+        }
     }
 
     public AssignmentFunction() {

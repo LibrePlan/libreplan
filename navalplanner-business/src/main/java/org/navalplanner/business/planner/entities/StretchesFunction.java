@@ -29,7 +29,6 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -375,6 +374,7 @@ public class StretchesFunction extends AssignmentFunction {
         if (resourceAllocation.getFirstNonConsolidatedDate() == null) {
             return;
         }
+        updateStretchesDates(resourceAllocation);
         taskEndDate = getTaskEndDate(resourceAllocation);
         getDesiredType().applyTo(resourceAllocation, this);
         type = getDesiredType();
@@ -451,6 +451,29 @@ public class StretchesFunction extends AssignmentFunction {
 
     public void setTaskEndDate(LocalDate taskEndDate) {
         this.taskEndDate = taskEndDate;
+    }
+
+    /**
+     * {@link Stretch} is storing date in an attribute. When a task is moved
+     * these dates have to be updated.
+     *
+     * FIXME: Maybe in the future we could remove these dates as they could be
+     * calculated from task information.
+     */
+    private void updateStretchesDates(ResourceAllocation<?> resourceAllocation) {
+        Task task = resourceAllocation.getTask();
+
+        long startDate = task.getStartDate().getTime();
+        long endDate = task.getEndDate().getTime();
+
+        for (Stretch stretch : stretches) {
+            // startDate + (percentage * (endDate - startDate))
+            long stretchDate = startDate
+                    + stretch.getLengthPercentage()
+                            .multiply(new BigDecimal(endDate - startDate))
+                            .longValue();
+            stretch.setDate(new LocalDate(stretchDate));
+        }
     }
 
 }
