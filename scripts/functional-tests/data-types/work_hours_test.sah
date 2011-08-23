@@ -36,12 +36,16 @@
  *   5.10 - Delete the machine
  *   5.11 - Delete the work report model
  * 6 - Delete Work Hour
- * 7 - Assign a work Hour to a Cost Category
- *   7.1 - Create a Work Hour again
- *   7.2 - Create a Cost Category and associate our Work Hour
- *   7.3 - Try to delete the Work Hour
- *   7.4 - Delete the Cost Category
- *   7.5 - Delete the Work Hour
+ * 7 - Check code
+ *   7.1 - Change configuration
+ *   7.2 - Try to create a new Work Hour without Code (it should be a failure)
+ *   7.3 - Change configuration like before
+ * 8 - Assign a work Hour to a Cost Category
+ *   8.1 - Create a Work Hour again
+ *   8.2 - Create a Cost Category and associate our Work Hour
+ *   8.3 - Try to delete the Work Hour
+ *   8.4 - Delete the Cost Category
+ *   8.5 - Delete the Work Hour
 */
 _include("../common_functions.sah");
 
@@ -215,6 +219,19 @@ function costCategoryForm($name, $hworkName){
     _click(_cell("Save"));
 }
 
+function workHourCheckCode($workHourName){
+    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    workHourCreateWithoutCode($workHourName);
+    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    _log("Check code label", "custom1");
+}
+
+function workHourCreateWithoutCode($type){
+    commonCreate("Work Hours");
+    workHourForm($type);
+    commonEmptyCodeValidation();
+}
+
 /* test values */
 var $hWorkName = "new";
 var $hWorkNewName = "newest";
@@ -232,6 +249,7 @@ workHourCreateDuplicateType($hWorkName, $hWorkPrice);
 workHourCreateEmpty();
 workHourEdit($hWorkName, $hWorkNewName, $hWorkPrice, 4);
 workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescription);
+workHourCheckCode($hWorkName);
 
 commonDelete("Work Hours", $hWorkNewName, 4);
 commonDeleteValidation("Type of hours", $hWorkNewName);

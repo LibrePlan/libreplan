@@ -29,7 +29,12 @@
  *   6.2 - Add a Label to a project
  *   6.3 - Try to delete this assigned Label (it should be a failure)
  *   6.4 - Delete the project
- * 7 - Delete Label
+ * 7 - Check code
+ *   7.1 - Change configuration
+ *   7.2 - Try to create a new Label type without Code (it should be a failure)
+ *   7.3 - Try to create a new Label name without Code (it should be a failure)
+ *   7.4 - Change configuration like before
+ * 8 - Delete Label
  *
 */
 _include("../common_functions.sah");
@@ -117,6 +122,35 @@ function labeltryDelete($labelNewType){
     _assert(_isVisible(_cell($labelNewType)));
 }
 
+function labelCheckCode($labelType, $labelName){
+    commonConfigurationChangeCheckboxMainPreferences("Label");
+    labelCreateWithoutCode($labelType, $labelName);
+    commonConfigurationChangeCheckboxMainPreferences("Label");
+    _log("Check code label", "custom1");
+}
+
+function labelCreateWithoutCode($type, $labelName){
+    commonCreate("Labels");
+    labelFormEmptyCode($type, $labelName);
+    commonEmptyCodeValidation();
+}
+
+function labelFormEmptyCode($name, $labelName){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_cell("Save"));
+    labelEmptyCodeValidation();
+    _setValue(_textbox(0, _near(_span("Code"))), "RamdonCode1234");
+    _removeFocus(_textbox(0, _near(_span("Code"))));
+    _setValue(_textbox(0, _near(_span("New label"))), $labelName);
+    _click(_cell("Add"));
+    _click(_cell("Save"));
+}
+
+function labelEmptyCodeValidation(){
+    _assertExists(_div("code: code not specified"));
+    _assert(_isVisible(_div("code: code not specified")));
+}
+
 /* test values */
 var $labelType = "new";
 var $labelType2 = "new2";
@@ -134,6 +168,7 @@ labelCreateDuplicateName($labelType2, $labelName);
 
 labelEdit($labelType, $labelNewType, 2);
 labelAssig($projectName, $labelName, $labelNewType);
+labelCheckCode($labelType, $labelName);
 
 commonDelete("Labels", $labelNewType, 2);
 commonDeleteValidation("Label Type", $labelNewType);

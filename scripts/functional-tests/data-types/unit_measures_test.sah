@@ -27,7 +27,11 @@
  *   5.1 Create a material and assign the Unit
  *   5.1 Try to delete the assigned Unit (it should be a failure)
  *   5.2 Delete the material
- * 6 - Delete Unit Measure
+ * 6 - Check code
+ *   6.1 - Change configuration
+ *   6.2 - Try to create a new Unit Measure without Code (it should be a failure)
+ *   6.3 - Change configuration like before
+ * 7 - Delete Unit Measure
  *
 */
 _include("../common_functions.sah");
@@ -100,6 +104,24 @@ function unitMeasureTryDeleteAssigned($UMeasure){
     _assert(_isVisible(_cell($UMeasure)));
 }
 
+function unitMeasureCheckCode($unitMeasureName){
+    commonConfigurationChangeCheckboxMainPreferences("Unit Measures");
+    unitMeasureCreateWithoutCode($unitMeasureName);
+    commonConfigurationChangeCheckboxMainPreferences("Unit Measures");
+    _log("Check code label", "custom1");
+}
+
+function unitMeasureCreateWithoutCode($name){
+    commonCreate("Unit Measures");
+    unitMeasureForm($name);
+    unitMeasureEmptyCodeValidation();
+}
+
+function unitMeasureEmptyCodeValidation(){
+    _assertExists(_div("Unit type code cannot be empty"));
+    _assert(_isVisible(_div("Unit type code cannot be empty")));
+}
+
 function materialFormDelete($materialName){
     _click(_link("Materials"));
     var $qtengo = _getValue(_textbox(1, _near(_select(0))));
@@ -124,6 +146,7 @@ unitMeasureCreateDuplicate($UMeasureName);
 unitMeasureCreateEmpty();
 unitMeasureEdit($UMeasureName, $UMeasureName2, 1);
 unitMeasureAssign($UMeasureName2, $materialName);
+unitMeasureCheckCode($UMeasureName);
 commonDelete("Unit Measures", $UMeasureName2, 1);
 commonDeleteValidation("Unit Measure", $UMeasureName2);
 _log("Delete the Unit Measure", "custom1");

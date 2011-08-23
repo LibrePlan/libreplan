@@ -24,7 +24,11 @@
  * 3 - Create a Exception Day with empty type (it should be a failure)
  * 4 - Create a Exception Day with duplicate name (it should be a failure)
  * 5 - Edit a Exception Day
- * 6 - Delete Exception Day
+ * 6 - Check code label
+ *   6.1 - Change configuration
+ *   6.2 - Try to create a new Exception day without Code (it should be a failure)
+ *   6.3 - Change configuration like before
+ * 7 - Delete Exception Day
  *
 */
 _include("../common_functions.sah");
@@ -68,11 +72,31 @@ function exceptDayNotValid($ExceptDayName){
 
 function exceptDayEdit($oldName, $newName, $cell){
     commonEdit($oldName, $cell);
-    exceptDayForm($newName);
+    exceptDayFormSaveAndContinue($newName);
     commonSaveValidation("Exception Day Type", $newName);
     _log("Edit the exception day", "custom1");
 }
 
+function exceptDayFormSaveAndContinue($name){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _removeFocus(_textbox(0, _near(_span("Name"))));
+    _click(_cell("Save and Continue"));
+    _assertExists(_cell("Save and Continue"));
+    _assert(_isVisible(_cell("Save and Continue")));
+}
+
+function exceptDayCheckCode($exceptDayName){
+    commonConfigurationChangeCheckboxMainPreferences("Calendar exception types");
+    exceptDayCreateWithoutCode($exceptDayName);
+    commonConfigurationChangeCheckboxMainPreferences("Calendar exception types");
+    _log("Check code label", "custom1");
+}
+
+function exceptDayCreateWithoutCode($name){
+    commonCreate("Exception Days");
+    exceptDayForm($name);
+    commonEmptyCodeValidation();
+}
 
 /* test values */
 var $exceptDayName = "new";
@@ -89,6 +113,8 @@ exceptDayCreateDuplicateName($exceptDayName, $exceptDaystandar, 1);
 exceptDayCreateEmpty("", $exceptDaystandar);
 
 exceptDayEdit($exceptDayName, $exceptDayNewName, 5);
+
+exceptDayCheckCode($exceptDayName);
 
 commonDelete("Exception Days", $exceptDayNewName, 5);
 commonDeleteValidation("Exception Day Type", $exceptDayNewName);
