@@ -55,7 +55,7 @@ public class AuthenticationProviderLoggingDecorator implements AuthenticationPro
             }
             return result;
         } catch (AuthenticationException e) {
-            LOG.info("unsuccesful authentication of " + principal
+            LOG.info("unsuccessful authentication of " + principal
                     + " with provider: " + decoratedProvider);
             throw e;
         }
