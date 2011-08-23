@@ -825,6 +825,8 @@ public class Task extends TaskElement implements ITaskPositionConstrained {
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
+
+        AssignmentFunction.applyAssignmentFunctionsIfAny(toBeModified);
     }
 
     private void markAsUnsatisfied(
