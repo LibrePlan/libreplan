@@ -84,13 +84,11 @@ public abstract class UntilFillingHoursAllocator {
 
     private IntraDayDate untilAllocating(final IntraDayDate dateFromWhichToAllocate,
             List<EffortPerAllocation> effortPerAllocation) {
-        int i = 0;
         IntraDayDate currentResult = dateFromWhichToAllocate;
         for (EffortPerAllocation each : effortPerAllocation) {
             IntraDayDate candidate = untilAllocating(dateFromWhichToAllocate,
                     each.allocation, each.duration);
             currentResult = pickCurrentOrCandidate(currentResult, candidate);
-            i++;
         }
         setAssignmentsForEachAllocation(currentResult);
         return currentResult;

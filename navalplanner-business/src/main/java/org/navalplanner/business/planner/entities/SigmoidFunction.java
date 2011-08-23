@@ -105,13 +105,11 @@ public class SigmoidFunction extends AssignmentFunction {
         List<BigDecimal> result = new ArrayList<BigDecimal>();
         LocalDate day = new LocalDate(resourceAllocation.getStartDate());
         final LocalDate end = resourceAllocation.getEndDate();
-        int i = 0;
 
         while (day.isBefore(end)) {
             int hoursAllocated = resourceAllocation.getAssignedHours(day, day.plusDays(1));
             if (hoursAllocated != 0) {
                 result.add(new BigDecimal(hoursAllocated));
-                i++;
             }
             day = day.plusDays(1);
         }
