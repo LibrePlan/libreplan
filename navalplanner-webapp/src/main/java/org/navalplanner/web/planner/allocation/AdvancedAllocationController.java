@@ -1360,8 +1360,7 @@ class Row {
         @Override
         public void goToConfigure() {
             try {
-                Messagebox.show(
-                        _("You need to select some function to configure"),
+                Messagebox.show(_("Flat allocation is not configurable"),
                         _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
@@ -1464,9 +1463,8 @@ class Row {
         @Override
         public void goToConfigure() {
             try {
-                Messagebox.show(_("Sigmoid function applied to current resource"),
-                        _("Sigmoid function"),
-                        Messagebox.OK, Messagebox.INFORMATION);
+                Messagebox.show(_("Sigmoid function is not configurable"),
+                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
