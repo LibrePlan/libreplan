@@ -44,7 +44,6 @@ import java.util.concurrent.Callable;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.daos.IBaseCalendarDAO;
 import org.navalplanner.business.calendars.entities.ResourceCalendar;
-import org.navalplanner.business.common.AdHocTransactionService;
 import org.navalplanner.business.common.BaseEntity;
 import org.navalplanner.business.common.IAdHocTransactionService;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -185,30 +184,24 @@ public class ResourceLoadModel implements IResourceLoadModel {
             this.parameters = parameters;
         }
 
-        @SuppressWarnings("unchecked")
         public Callable<List<Resource>> lazilyGetResourcesIncluded() {
-            return AdHocTransactionService.readOnlyProxy(transactionService,
-                    Callable.class, new Callable<List<Resource>>() {
+            return new Callable<List<Resource>>() {
 
-                        @Override
-                        public List<Resource> call() throws Exception {
-                            return reattach(getResourcesIncluded());
-                        }
+                @Override
+                public List<Resource> call() throws Exception {
+                    return reattach(getResourcesIncluded());
+                }
 
-                        private List<Resource> reattach(List<Resource> resources) {
-                            for (Resource resource : resources) {
-                                resourcesDAO.reattach(resource);
-                                ResourceCalendar calendar = resource
-                                        .getCalendar();
-                                baseCalendarDAO.reattach(calendar);
-                                BaseCalendarModel
-                                        .forceLoadBaseCalendar(calendar);
-                                resource.getAssignments().size();
-                            }
-                            return resources;
-                        }
+                private List<Resource> reattach(List<Resource> resources) {
+                    for (Resource resource : resources) {
+                        ResourceCalendar calendar = resource.getCalendar();
+                        BaseCalendarModel.forceLoadBaseCalendar(calendar);
+                        resource.getAssignments().size();
+                    }
+                    return resources;
+                }
 
-                    });
+            };
         }
 
         abstract List<Resource> getResourcesIncluded();
