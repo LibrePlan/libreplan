@@ -128,6 +128,12 @@ public class ResourceLoadModel implements IResourceLoadModel {
     @Transactional(readOnly = true)
     public ResourceLoadDisplayData calculateDataToDisplay(
             ResourceLoadParameters parameters) {
+
+        PlanningState planningState = parameters.getPlanningState();
+        if (planningState != null) {
+            planningState.reattach();
+            planningState.reassociateResourcesWithSession();
+        }
         ResourceAllocationsFinder<?> allocationsFinder = create(parameters);
         List<LoadTimeLine> loadTimeLines = allocationsFinder.buildTimeLines();
         return new ResourceLoadDisplayData(loadTimeLines,
