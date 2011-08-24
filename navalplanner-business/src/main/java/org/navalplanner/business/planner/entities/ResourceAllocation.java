@@ -87,7 +87,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
 
     private static final Log LOG = LogFactory.getLog(ResourceAllocation.class);
 
-    private static final NoneFunction NONE_FUNCTION = NoneFunction.create();
+    private static final FlatFunction FLAT_FUNCTION = FlatFunction.create();
 
     public static <T extends ResourceAllocation<?>> List<T> getSatisfied(
             Collection<T> resourceAllocations) {
@@ -1422,7 +1422,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         // If the assignment function is empty, avoid creating an association
         // between the resource allocation and the assignment function
         if (assignmentFunction == null) {
-            NONE_FUNCTION.applyTo(this);
+            FLAT_FUNCTION.applyTo(this);
             return;
         }
         this.assignmentFunction = assignmentFunction;
