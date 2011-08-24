@@ -1355,7 +1355,7 @@ class Row {
 
     }
 
-    private IAssignmentFunctionConfiguration none = new IAssignmentFunctionConfiguration() {
+    private IAssignmentFunctionConfiguration flat = new IAssignmentFunctionConfiguration() {
 
         @Override
         public void goToConfigure() {
@@ -1370,7 +1370,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.NONE.toString();
+            return ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
         }
 
         @Override
@@ -1498,7 +1498,7 @@ class Row {
     };
 
     private IAssignmentFunctionConfiguration[] functions = {
-            none,
+            flat,
             defaultStrechesFunction,
             strechesWithInterpolation,
             sigmoidFunction
@@ -1558,7 +1558,7 @@ class Row {
             List<? extends ResourceAllocation<?>> allocations) {
         AssignmentFunction function = getAssignmentFunction(allocations);
         return (function != null) ? function.getName()
-                : ASSIGNMENT_FUNCTION_NAME.NONE.toString();
+                : ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
     }
 
     private AssignmentFunction getAssignmentFunction(

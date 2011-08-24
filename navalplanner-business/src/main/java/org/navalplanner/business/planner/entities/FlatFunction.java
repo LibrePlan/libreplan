@@ -28,25 +28,23 @@ import org.navalplanner.business.planner.entities.allocationalgorithms.Resources
 import org.navalplanner.business.workingday.EffortDuration;
 
 /**
+ * Calculate hours per day for resource based on total amount of hours to be
+ * done and number of resources per day using a flat allocation
  *
  * @author Diego Pino García <dpino@igalia.com>
- *
- *         Calculate hours per day for resource based on total amount of hours to
- *         be done and number of resources per day
- *
  */
-public class NoneFunction extends AssignmentFunction {
+public class FlatFunction extends AssignmentFunction {
 
-    public static NoneFunction create() {
-        return create(new NoneFunction());
+    public static FlatFunction create() {
+        return create(new FlatFunction());
     }
 
-    protected NoneFunction() {
+    protected FlatFunction() {
 
     }
 
     public String getName() {
-        return ASSIGNMENT_FUNCTION_NAME.NONE.toString();
+        return ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
     }
 
 
