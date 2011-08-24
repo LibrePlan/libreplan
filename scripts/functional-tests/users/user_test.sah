@@ -1,0 +1,190 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 -  Create a new Account
+ * 2 -  Create other user with same password
+ * 3 -  Do a login with this new Account
+ * 4 -  Check the role
+ * 5 -  Create a Account with duplicate type (it should be a failure)
+ * 6 -  Create a Account with empty type (it should be a failure)
+ * 7 -  Create a new Account with two different passwords (it should be a failure)
+ * 8 -  Edit a Account
+ * 9 -  Do a login with this new Account
+ * 10 - Check the role
+ * 11 - Check the no user no pass
+ * 12 - Check pass without user
+ * 13 - Check the user no pass
+ * 14 - Check fake pass and user
+ * 15 - Delete both Accounts
+ *
+*/
+_include("../common_functions.sah");
+
+function accountsCreate($name, $password) {
+    commonCreate("Accounts");
+    accountsForm($name, $password);
+    commonSaveValidation("User", $name);
+    _log("Create a new Account", "custom1");
+}
+
+function accountsCreateTwoUserSamePass($name, $password) {
+    commonCreate("Accounts");
+    accountsForm($name, $password);
+    commonSaveValidation("User", $name);
+    _log("Create a new Account same password", "custom1");
+}
+
+function accountsCreateDuplicateType($name, $password) {
+    commonCreate("Accounts");
+    accountsForm($name, $password);
+    accountsNotValid($name);
+    _log("Do not allow create an Account Duplicate", "custom1");
+}
+
+function accountsCreateEmpty($name, $password) {
+    commonCreate("Accounts");
+    accountsForm($name, $password);
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+    _log("Do not allow create a Account with empty Name", "custom1");
+}
+
+function accountsCreateTwoUserSamePass($name, $password) {
+    commonCreate("Accounts");
+    accountsForm($name, $password);
+    commonSaveValidation("User", $name);
+    _log("Create a new Account same password", "custom1");
+}
+
+function accountsCreateTwoPass($name, $password, $newPassword){
+    commonCreate("Accounts");
+    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
+    _setValue(_password(0, _near(_span("Password:"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation:"))), $newPassword);
+    _click(_cell("Save"));
+    _assertExists(_div("passwords don't match"));
+    _assert(_isVisible(_div("passwords don't match")));
+    _log("Create a new Account with two diferent passwords", "custom1");
+}
+
+function accountsForm($name, $password) {
+    _setValue(_textbox(0, _near(_span("Login name:"))), $name);
+    _setValue(_password(0, _near(_span("Password:"))), $password);
+    _setValue(_password(0, _near(_span("Password confirmation:"))), $password);
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function accountsNotValid(){
+    _assertExists(_span("checkConstraintUniqueLoginName: login name is already being used by another user"));
+    _assert(_isVisible(_span("checkConstraintUniqueLoginName: login name is already being used by another user")));
+}
+
+function accountsComprobateUser($name, $Password) {
+    commonLogout();
+    commonLogin($name, $Password);
+}
+
+function accountsEdit($oldName, $newName, $newPassword, $cell) {
+    _click(_link("Accounts"));
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_span("Login name:"))), $newName);
+    _setValue(_password(0, _near(_span("Password:"))), $newPassword);
+    _setValue(_password(0, _near(_span("Password confirmation:"))), $newPassword);
+    _click(_textbox(0, _near(_cell("Add role"))));
+    _click(_cell("Administration"));
+    _click(_cell("Add role"));
+    _click(_cell("Save"));
+    commonSaveValidation("User", $newName);
+}
+
+function accountsComprobateNoUser($name, $Password){
+    commonLogin($name, $Password);
+}
+
+function accountsNoAdmin(){
+    _assertNotExists(_link("Accounts"));
+    _assertNull(_link("Accounts"));
+}
+
+function accountsAdminYes(){
+    _assertExists(_link("Accounts"));
+}
+
+function accountsNoValidationLogin(){
+    _assertExists(_div("Incorrect authentication"));
+    _assert(_isVisible(_div("Incorrect authentication")));
+}
+
+/* test values */
+var $user = "new";
+var $user2 = "same pass";
+var $newUser = "newest";
+var $password = "1234";
+var $newPassword = "2222";
+var $fakeUser = "fake street";
+var $fakePassword = "123";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+accountsCreate($user, $password);
+accountsCreateTwoUserSamePass($user2, $newPassword);
+
+accountsComprobateUser($user, $password);
+accountsNoAdmin();
+accountsComprobateUser("admin", "admin");
+_log("Comprobate Account without Administration rights", "custom1");
+
+accountsCreateDuplicateType($user, $password);
+accountsCreateEmpty("", $password);
+accountsCreateTwoPass($user, $password, $newPassword);
+
+accountsEdit($user, $newUser, $newPassword, 4);
+accountsComprobateUser( $newUser, $newPassword);
+accountsAdminYes();
+_log("Comprobate Account with Administrator rights", "custom1");
+
+accountsComprobateUser("", "");
+accountsNoValidationLogin();
+_log("Comprobate Account without name and pass", "custom1");
+
+accountsComprobateNoUser("", $fakePassword);
+accountsNoValidationLogin();
+_log("Comprobate Account without name", "custom1");
+
+accountsComprobateNoUser($newUser, "");
+accountsNoValidationLogin();
+_log("Comprobate Account without password", "custom1");
+
+commonLogin($fakeUser, $fakePassword);
+accountsNoValidationLogin();
+_log("Comprobate Account with fake user and password", "custom1");
+
+commonLogin("admin", "admin");
+
+commonDelete("Accounts", $newUser, 4);
+commonDeleteValidation("User", $newUser);
+_log("Delete an Account Duplicate", "custom1");
+commonDelete("Accounts", $user2, 4);
+commonDeleteValidation("User", $user2);
+_log("Delete an Account Duplicate", "custom1");
+commonLogout();
