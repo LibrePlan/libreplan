@@ -982,7 +982,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return row.getNameLabel();
             }
         });
-        result.add(new ColumnOnRow(_("Efforts")) {
+        result.add(new ColumnOnRow(_("Efforts"), "50px") {
             @Override
             public Component cellFor(Row row) {
                 return row.getAllEffort();
@@ -1043,9 +1043,15 @@ public class AdvancedAllocationController extends GenericForwardComposer {
 
 abstract class ColumnOnRow implements IConvertibleToColumn {
     private final String columnName;
+    private String width = null;
 
     ColumnOnRow(String columnName) {
         this.columnName = columnName;
+    }
+
+    ColumnOnRow(String columnName, String width) {
+        this.columnName = columnName;
+        this.width = width;
     }
 
     public abstract Component cellFor(Row row);
@@ -1055,6 +1061,9 @@ abstract class ColumnOnRow implements IConvertibleToColumn {
         Column column = new org.zkoss.zul.Column();
         column.setLabel(_(columnName));
         column.setSclass(columnName.toLowerCase());
+        if (width != null) {
+            column.setWidth(width);
+        }
         return column;
     }
 
@@ -1171,8 +1180,10 @@ class Row {
     }
 
     private EffortDurationBox buildSumAllEffort() {
-        return (isGroupingRow() || isLimiting) ? EffortDurationBox
+        EffortDurationBox box = (isGroupingRow() || isLimiting) ? EffortDurationBox
                 .notEditable() : new EffortDurationBox();
+        box.setWidth("40px");
+        return box;
     }
 
     private void addListenerIfNeeded(Component allEffortComponent) {
