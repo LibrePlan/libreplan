@@ -1489,6 +1489,11 @@ display:none;
     color: #555555;
 }
 
+.advanced-assignment-area > .z-center-body {
+    overflow: visible !important;
+    overflow: visible !important;
+}
+
 input.z-spinner-text-disd,
 input.z-datebox-text-disd {
     color: #000000 !important;
