@@ -230,4 +230,22 @@
         </update>
     </changeSet>
 
+    <changeSet author="mrego" id="create-table-manual_function">
+        <createTable tableName="manual_function">
+            <column name="assignment_function_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="manual_function_pkey" />
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="assignment_function_id"
+            baseTableName="manual_function"
+            constraintName="mnual_function_assignment_function_fkey"
+            deferrable="false"
+            initiallyDeferred="false"
+            onDelete="NO ACTION"
+            onUpdate="NO ACTION"
+            referencedColumnNames="id"
+            referencedTableName="assignment_function"
+            referencesUniqueColumn="false" />
+    </changeSet>
+
 </databaseChangeLog>

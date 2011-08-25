@@ -327,6 +327,9 @@
         <joined-subclass name="SigmoidFunction" table="sigmoid_function">
             <key column="assignment_function_id" />
         </joined-subclass>
+        <joined-subclass name="ManualFunction" table="manual_function">
+            <key column="assignment_function_id" />
+        </joined-subclass>
     </class>
 
     <class name="DerivedAllocation" table="derived_allocation">

@@ -48,6 +48,7 @@ import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
+import org.navalplanner.business.planner.entities.ManualFunction;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
 import org.navalplanner.business.planner.entities.SigmoidFunction;
 import org.navalplanner.business.planner.entities.SpecificResourceAllocation;
@@ -1245,9 +1246,11 @@ class Row {
         }
     }
 
+    private AssignmentFunctionListbox assignmentFunctionsCombo = null;
+
     private void initializeAssigmentFunctionsCombo() {
         hboxAssigmentFunctionsCombo = new Hbox();
-        AssignmentFunctionListbox assignmentFunctionsCombo = new AssignmentFunctionListbox(
+        assignmentFunctionsCombo = new AssignmentFunctionListbox(
                 functions, getAllocation().getAssignmentFunction());
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
         hboxAssigmentFunctionsCombo
@@ -1273,7 +1276,7 @@ class Row {
                     selectItemAndSavePreviousValue(listitem);
                 }
             }
-            this.addEventListener(Events.ON_SELECT, onSelectListbox(this));
+            this.addEventListener(Events.ON_SELECT, onSelectListbox());
             this.setMold("select");
         }
 
@@ -1289,14 +1292,13 @@ class Row {
             return listitem;
         }
 
-        private EventListener onSelectListbox(
-                final AssignmentFunctionListbox listbox) {
+        private EventListener onSelectListbox() {
             return new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) listbox
-                            .getSelectedItem().getValue();
+                    IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) getSelectedItem()
+                            .getValue();
 
                     // Cannot apply function if task contains consolidated day assignments
                     final ResourceAllocation<?> resourceAllocation = getAllocation();
@@ -1304,17 +1306,17 @@ class Row {
                             && !resourceAllocation
                                     .getConsolidatedAssignments().isEmpty()) {
                         showCannotApplySigmoidFunction();
-                        listbox.setSelectedItem(listbox.getPreviousListitem());
+                        setSelectedItem(getPreviousListitem());
                         return;
                     }
                     // User didn't accept
                     if (showConfirmChangeFunctionDialog() != Messagebox.YES) {
-                        listbox.setSelectedItem(listbox.getPreviousListitem());
+                        setSelectedItem(getPreviousListitem());
                         return;
                     }
                     // Apply sigmoid function
                     if (function != null) {
-                        setPreviousListitem(listbox.getSelectedItem());
+                        setPreviousListitem(getSelectedItem());
                         function.applyOn(resourceAllocation);
                     }
                 }
@@ -1349,6 +1351,17 @@ class Row {
                     .show(_("You are going to change the assignment function. Are you sure?"),
                             _("Confirm change"),
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
+        }
+
+        private void setSelectedFunction(String functionName) {
+            List<Listitem> children = getChildren();
+            for (Listitem item : children) {
+                IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) item
+                        .getValue();
+                if (function.getName().equals(functionName)) {
+                    setSelectedItem(item);
+                }
+            }
         }
 
     }
@@ -1386,6 +1399,35 @@ class Row {
             reloadEffortsSameRowForDetailItems();
             reloadAllEffort();
             fireCellChanged();
+        }
+
+    };
+
+    private IAssignmentFunctionConfiguration manualFunction = new IAssignmentFunctionConfiguration() {
+
+        @Override
+        public void goToConfigure() {
+            try {
+                Messagebox.show(_("Manual allocation is not configurable"),
+                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public String getName() {
+            return ASSIGNMENT_FUNCTION_NAME.MANUAL.toString();
+        }
+
+        @Override
+        public boolean isTargetedTo(AssignmentFunction function) {
+            return function instanceof ManualFunction;
+        }
+
+        @Override
+        public void applyOn(ResourceAllocation<?> resourceAllocation) {
+            resourceAllocation.setAssignmentFunction(ManualFunction.create());
         }
 
     };
@@ -1495,6 +1537,7 @@ class Row {
 
     private IAssignmentFunctionConfiguration[] functions = {
             flat,
+            manualFunction,
             defaultStrechesFunction,
             strechesWithInterpolation,
             sigmoidFunction
@@ -1608,6 +1651,7 @@ class Row {
                         .getStartDate().toLocalDate());
                 LocalDate endDate = restriction.limitEndDate(item.getEndDate()
                         .toLocalDate());
+                changeAssignmentFunctionToManual();
                 getAllocation().withPreviousAssociatedResources()
                                    .onIntervalWithinTask(startDate, endDate)
                                    .allocate(value);
@@ -1616,6 +1660,15 @@ class Row {
                 reloadAllEffort();
             }
         });
+    }
+
+    private void changeAssignmentFunctionToManual() {
+        assignmentFunctionsCombo
+                .setSelectedFunction(ASSIGNMENT_FUNCTION_NAME.MANUAL.toString());
+        ResourceAllocation<?> allocation = getAllocation();
+        if (!(allocation.getAssignmentFunction() instanceof ManualFunction)) {
+            allocation.setAssignmentFunction(ManualFunction.create());
+        }
     }
 
     private void reloadEffortOnInterval(Component component, DetailItem item) {

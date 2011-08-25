@@ -76,6 +76,7 @@ public class AssignmentFunction extends BaseEntity {
 
     public enum ASSIGNMENT_FUNCTION_NAME {
         FLAT(_("Flat")),
+        MANUAL(_("Manual")),
         STRETCHES(_("Stretches")),
         INTERPOLATION(_("Interporlation")),
         SIGMOID(_("Sigmoid"));
