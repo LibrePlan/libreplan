@@ -8,6 +8,8 @@
     <script src="../yui/2.7.0/resize/resize-min.js"/>
     <script src="../yui/2.7.0/logger/logger-min.js"/>
 
+    <script src="advanceAllocations.js"/>
+
     <widget name="GanttPanel"/>
     <widget name="TaskRow"/>
     <widget name="TaskComponent"/>
