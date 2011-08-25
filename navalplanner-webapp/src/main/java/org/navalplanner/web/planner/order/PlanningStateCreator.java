@@ -148,6 +148,7 @@ public class PlanningStateCreator {
 
     private PlanningState createInitialPlanning(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
+        orderReloaded.loadAdvanceAssignments();
         if (!orderReloaded.isSomeTaskElementScheduled()) {
             return new EmptyPlannigState(currentScenario, orderReloaded);
         }
