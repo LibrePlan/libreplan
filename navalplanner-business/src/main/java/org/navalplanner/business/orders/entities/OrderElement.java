@@ -41,7 +41,6 @@ import org.hibernate.validator.Valid;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.advance.bootstrap.PredefinedAdvancedTypes;
 import org.navalplanner.business.advance.entities.AdvanceAssignment;
-import org.navalplanner.business.advance.entities.AdvanceMeasurement;
 import org.navalplanner.business.advance.entities.AdvanceType;
 import org.navalplanner.business.advance.entities.DirectAdvanceAssignment;
 import org.navalplanner.business.advance.entities.IndirectAdvanceAssignment;
@@ -59,7 +58,6 @@ import org.navalplanner.business.orders.entities.TaskSource.TaskSourceSynchroniz
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskPositionConstraint;
-import org.navalplanner.business.planner.entities.consolidations.CalculatedConsolidation;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.TaskQualityForm;
 import org.navalplanner.business.requirements.entities.CriterionRequirement;
@@ -455,27 +453,6 @@ public abstract class OrderElement extends IntegrationEntity implements
     public abstract boolean isLeaf();
 
     public abstract List<OrderElement> getChildren();
-
-    public void loadAdvanceAssignments() {
-        for (DirectAdvanceAssignment each : getDirectAdvanceAssignments()) {
-            each.getAdvanceType().getUnitName();
-            for (AdvanceMeasurement eachMeasurement : each
-                    .getAdvanceMeasurements()) {
-                eachMeasurement.getExtraInformation();
-            }
-        }
-        for (IndirectAdvanceAssignment each : getIndirectAdvanceAssignments()) {
-            each.getAdvanceType().getUnitName();
-            Set<CalculatedConsolidation> calculatedConsolidation = each
-                    .getCalculatedConsolidation();
-            for (CalculatedConsolidation eachConsolidation : calculatedConsolidation) {
-                eachConsolidation.getConsolidatedValues().size();
-            }
-        }
-        for (OrderElement each : getChildren()) {
-            each.loadAdvanceAssignments();
-        }
-    }
 
     private static Date copy(Date date) {
         return date != null ? new Date(date.getTime()) : date;

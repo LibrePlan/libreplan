@@ -130,10 +130,24 @@ public class PlanningStateCreator {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
+    public interface IActionsOnRetrieval {
+
+        public void onRetrieval(PlanningState planningState);
+    }
+
     public PlanningState retrieveOrCreate(Desktop desktop, Order order) {
+        return retrieveOrCreate(desktop, order, null);
+    }
+
+    public PlanningState retrieveOrCreate(Desktop desktop, Order order,
+            IActionsOnRetrieval onRetrieval) {
         Object existent = desktop.getAttribute(ATTRIBUTE_NAME);
         if (existent instanceof PlanningState) {
-            return (PlanningState) existent;
+            PlanningState result = (PlanningState) existent;
+            if (onRetrieval != null) {
+                onRetrieval.onRetrieval(result);
+            }
+            return result;
         }
         PlanningState result = createInitialPlanning(reload(order));
         desktop.setAttribute(ATTRIBUTE_NAME, result);
@@ -148,7 +162,6 @@ public class PlanningStateCreator {
 
     private PlanningState createInitialPlanning(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
-        orderReloaded.loadAdvanceAssignments();
         if (!orderReloaded.isSomeTaskElementScheduled()) {
             return new EmptyPlannigState(currentScenario, orderReloaded);
         }
