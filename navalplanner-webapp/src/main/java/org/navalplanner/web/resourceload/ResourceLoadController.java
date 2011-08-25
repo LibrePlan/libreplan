@@ -932,8 +932,19 @@ public class ResourceLoadController implements Composer {
     }
 
     public void filterBy(Order order) {
-        this.filterBy = order == null ? null : planningStateCreator
-                .retrieveOrCreate(parent.getDesktop(), order);
+        this.filterBy = order == null ? null : createPlanningState(order);
+    }
+
+    PlanningState createPlanningState(final Order order) {
+        return transactionService
+                .runOnReadOnlyTransaction(new IOnTransaction<PlanningState>() {
+
+                    @Override
+                    public PlanningState execute() {
+                        return planningStateCreator.retrieveOrCreate(
+                                parent.getDesktop(), order);
+                    }
+                });
     }
 
     public void setPlanningControllerEntryPoints(
