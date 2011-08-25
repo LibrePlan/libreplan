@@ -82,8 +82,6 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Combobox;
-import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
@@ -988,7 +986,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
                 return row.getAllEffort();
             }
         });
-        result.add(new ColumnOnRow(_("Function")) {
+        result.add(new ColumnOnRow(_("Function"), "130px") {
             @Override
             public Component cellFor(Row row) {
                 return row.getFunction();
@@ -1232,7 +1230,7 @@ class Row {
         }
     }
 
-    private Hbox hboxAssigmentFunctionsCombobox = null;
+    private Hbox hboxAssigmentFunctionsCombo = null;
 
     Component getFunction() {
         if (isGroupingRow()) {
@@ -1240,19 +1238,19 @@ class Row {
         } else if (isLimiting) {
             return new Label(_("Limiting assignment"));
         } else {
-            if (hboxAssigmentFunctionsCombobox == null) {
-                initializeAssigmentFunctionsCombobox();
+            if (hboxAssigmentFunctionsCombo == null) {
+                initializeAssigmentFunctionsCombo();
             }
-            return hboxAssigmentFunctionsCombobox;
+            return hboxAssigmentFunctionsCombo;
         }
     }
 
-    private void initializeAssigmentFunctionsCombobox() {
-        hboxAssigmentFunctionsCombobox = new Hbox();
-        AssignmentFunctionCombobox assignmentFunctionsCombo = new AssignmentFunctionCombobox(
+    private void initializeAssigmentFunctionsCombo() {
+        hboxAssigmentFunctionsCombo = new Hbox();
+        AssignmentFunctionListbox assignmentFunctionsCombo = new AssignmentFunctionListbox(
                 functions, getAllocation().getAssignmentFunction());
-        hboxAssigmentFunctionsCombobox.appendChild(assignmentFunctionsCombo);
-        hboxAssigmentFunctionsCombobox
+        hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
+        hboxAssigmentFunctionsCombo
                 .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
     }
 
@@ -1262,77 +1260,73 @@ class Row {
      *         Encapsulates the logic of the combobox used for selecting what
      *         type of assignment function to apply
      */
-    class AssignmentFunctionCombobox extends Combobox {
+    class AssignmentFunctionListbox extends Listbox {
 
-        private String previousValue;
+        private Listitem previousListitem;
 
-        public AssignmentFunctionCombobox(IAssignmentFunctionConfiguration[] functions,
+        public AssignmentFunctionListbox(IAssignmentFunctionConfiguration[] functions,
                 AssignmentFunction initialValue) {
             for (IAssignmentFunctionConfiguration each : functions) {
-                Comboitem comboitem = comboItem(each);
-                this.appendChild(comboitem);
+                Listitem listitem = listItem(each);
+                this.appendChild(listitem);
                 if (each.isTargetedTo(initialValue)) {
-                    selectItem(comboitem);
+                    selectItemAndSavePreviousValue(listitem);
                 }
             }
-            this.addEventListener(Events.ON_CHANGE, onChangeCombobox(this));
+            this.addEventListener(Events.ON_SELECT, onSelectListbox(this));
+            this.setMold("select");
         }
 
-        private Comboitem comboItem(IAssignmentFunctionConfiguration assignmentFunction) {
-            Comboitem comboitem = new Comboitem(assignmentFunction.getName());
-            comboitem.setValue(assignmentFunction);
-            return comboitem;
+        private void selectItemAndSavePreviousValue(Listitem listitem) {
+            setSelectedItem(listitem);
+            previousListitem = listitem;
         }
 
-        private void selectItem(Comboitem comboitem) {
-            String functionName = ((IAssignmentFunctionConfiguration) comboitem.getValue()).getName();
-            this.setSelectedItem(comboitem);
-            this.setValue(functionName);
-            this.setPreviousValue(functionName);
+        private Listitem listItem(
+                IAssignmentFunctionConfiguration assignmentFunction) {
+            Listitem listitem = new Listitem(_(assignmentFunction.getName()));
+            listitem.setValue(assignmentFunction);
+            return listitem;
         }
 
-        private EventListener onChangeCombobox(final AssignmentFunctionCombobox combobox) {
+        private EventListener onSelectListbox(
+                final AssignmentFunctionListbox listbox) {
             return new EventListener() {
 
                 @Override
                 public void onEvent(Event event) throws Exception {
-                    final String currentValue = combobox.getValue();
-                    final String previousValue = combobox.getPreviousValue();
+                    IAssignmentFunctionConfiguration function = (IAssignmentFunctionConfiguration) listbox
+                            .getSelectedItem().getValue();
 
-                    // Same value selected
-                    if (currentValue.equals(previousValue)) {
-                        return;
-                    }
                     // Cannot apply function if task contains consolidated day assignments
                     final ResourceAllocation<?> resourceAllocation = getAllocation();
-                    if (isSigmoid(currentValue)
+                    if (isSigmoid(function.getName())
                             && !resourceAllocation
                                     .getConsolidatedAssignments().isEmpty()) {
                         showCannotApplySigmoidFunction();
-                        combobox.setValue(previousValue);
+                        listbox.setSelectedItem(listbox.getPreviousListitem());
                         return;
                     }
                     // User didn't accept
                     if (showConfirmChangeFunctionDialog() != Messagebox.YES) {
-                        combobox.setValue(previousValue);
+                        listbox.setSelectedItem(listbox.getPreviousListitem());
                         return;
                     }
                     // Apply sigmoid function
-                    IAssignmentFunctionConfiguration function = getSelectedFunction(combobox);
                     if (function != null) {
-                        setPreviousValue(currentValue);
+                        setPreviousListitem(listbox.getSelectedItem());
                         function.applyOn(resourceAllocation);
                     }
                 }
             };
         }
 
-        private String getPreviousValue() {
-            return previousValue;
+        private Listitem getPreviousListitem() {
+            return previousListitem;
         }
 
-        private void setPreviousValue(String value) {
-            this.previousValue = value;
+        private void setPreviousListitem(Listitem previousListitem) {
+            this.previousListitem = previousListitem;
         }
 
         private boolean isSigmoid(String value) {
@@ -1355,13 +1349,6 @@ class Row {
                     .show(_("You are going to change the assignment function. Are you sure?"),
                             _("Confirm change"),
                             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION);
-        }
-
-        private IAssignmentFunctionConfiguration getSelectedFunction(
-                Combobox combobox) {
-            Comboitem selectedItem = combobox.getSelectedItem();
-            return (selectedItem != null) ? (IAssignmentFunctionConfiguration) selectedItem
-                    .getValue() : null;
         }
 
     }
@@ -1516,7 +1503,7 @@ class Row {
     private boolean isLimiting;
 
     private Button getAssignmentFunctionsConfigureButton(
-            final Combobox assignmentFunctionsCombo) {
+            final Listbox assignmentFunctionsListbox) {
         final Button button = new Button("", "/common/img/ico_editar1.png");
         button.setHoverImage("/common/img/ico_editar.png");
         button.setSclass("icono");
@@ -1525,7 +1512,7 @@ class Row {
 
             @Override
             public void onEvent(Event event) {
-                IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsCombo
+                IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsListbox
                         .getSelectedItem().getValue();
                 configuration.goToConfigure();
             }
