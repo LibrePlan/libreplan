@@ -36,11 +36,11 @@
 <borderlayout id="normalLayout" width="auto" apply="${advancedAllocationController}" class="advancedallocationlayout">
     <north height="30px" border="0" sclass="toolbar-box">
         <hbox align="center">
-            <button label="${i18n:_('Accept')}" id="acceptButton" class="save-button global-action"
+            <button label="${i18n:_('Accept')}" id="acceptButton" 
                 if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
-            <button label="${i18n:_('Cancel')}" id="cancelButton" class="cancel-button global-action"
+            <button label="${i18n:_('Cancel')}" id="cancelButton" 
                 if="${advancedAllocationController.advancedAllocationOfSingleTask}" />
-            <button image="/common/img/ico_ok.png" tooltiptext="${i18n:_('Accept')}" id="saveButton" class="planner-command"
+            <button image="/common/img/ico_ok.png" tooltiptext="${i18n:_('Accept')}" id="saveButton" 
                 if="${!(advancedAllocationController.advancedAllocationOfSingleTask)}" />
             <separator/>
             <label>${i18n:_('Zoom level')}:</label>
