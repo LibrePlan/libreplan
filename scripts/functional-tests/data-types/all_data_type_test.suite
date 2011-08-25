@@ -1,0 +1,7 @@
+progress_test.sah http://localhost:8080/navalplanner-webapp/
+criteria_test.sah http://localhost:8080/navalplanner-webapp/
+unit_measures_test.sah http://localhost:8080/navalplanner-webapp/
+label_test.sah http://localhost:8080/navalplanner-webapp/
+work_report_model.sah http://localhost:8080/navalplanner-webapp/
+exception_days_test.sah http://localhost:8080/navalplanner-webapp/
+work_hours_test.sah http://localhost:8080/navalplanner-webapp/
