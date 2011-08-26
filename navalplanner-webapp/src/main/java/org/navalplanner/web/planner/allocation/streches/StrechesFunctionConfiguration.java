@@ -97,4 +97,9 @@ public abstract class StrechesFunctionConfiguration implements
         resourceAllocation.setAssignmentFunction(StretchesFunction.create());
     }
 
+    @Override
+    public boolean isSigmoid() {
+        return false;
+    }
+
 }

@@ -1302,7 +1302,7 @@ class Row {
 
                     // Cannot apply function if task contains consolidated day assignments
                     final ResourceAllocation<?> resourceAllocation = getAllocation();
-                    if (isSigmoid(function.getName())
+                    if (function.isSigmoid()
                             && !resourceAllocation
                                     .getConsolidatedAssignments().isEmpty()) {
                         showCannotApplySigmoidFunction();
@@ -1329,10 +1329,6 @@ class Row {
 
         private void setPreviousListitem(Listitem previousListitem) {
             this.previousListitem = previousListitem;
-        }
-
-        private boolean isSigmoid(String value) {
-            return AssignmentFunctionName.SIGMOID.toString().equals(value);
         }
 
         private void showCannotApplySigmoidFunction() {
@@ -1401,6 +1397,11 @@ class Row {
             fireCellChanged();
         }
 
+        @Override
+        public boolean isSigmoid() {
+            return false;
+        }
+
     };
 
     private IAssignmentFunctionConfiguration manualFunction = new IAssignmentFunctionConfiguration() {
@@ -1428,6 +1429,11 @@ class Row {
         @Override
         public void applyOn(ResourceAllocation<?> resourceAllocation) {
             resourceAllocation.setAssignmentFunction(ManualFunction.create());
+        }
+
+        @Override
+        public boolean isSigmoid() {
+            return false;
         }
 
     };
@@ -1531,6 +1537,11 @@ class Row {
             reloadEffortsSameRowForDetailItems();
             reloadAllEffort();
             fireCellChanged();
+        }
+
+        @Override
+        public boolean isSigmoid() {
+            return true;
         }
 
     };
