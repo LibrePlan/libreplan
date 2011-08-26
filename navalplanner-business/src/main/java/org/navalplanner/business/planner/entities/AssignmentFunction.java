@@ -32,11 +32,7 @@ import org.navalplanner.business.common.BaseEntity;
  * @author Diego Pino García <dpino@igalia.com>
  *
  */
-public class AssignmentFunction extends BaseEntity {
-
-    public static AssignmentFunction create() {
-        return create(new AssignmentFunction());
-    }
+public abstract class AssignmentFunction extends BaseEntity {
 
     /**
      * This method goes over the {@link ResourceAllocation} list and apply the
@@ -56,23 +52,14 @@ public class AssignmentFunction extends BaseEntity {
         }
     }
 
-    public AssignmentFunction() {
-
-    }
-
     /**
      * This method applies the function to the received resourceAllocation
      * <i>This method is intended to be overridden by subclasses</i>
      * @param resourceAllocation
      */
-    public void applyTo(ResourceAllocation<?> resourceAllocation) {
-        // override at subclasses
-    }
+    public abstract void applyTo(ResourceAllocation<?> resourceAllocation);
 
-    public String getName() {
-        // override at subclasses
-        return null;
-    }
+    public abstract String getName();
 
     public enum ASSIGNMENT_FUNCTION_NAME {
         FLAT(_("Flat")),
