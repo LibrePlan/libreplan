@@ -31,6 +31,7 @@ import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.qualityforms.daos.IQualityFormDAO;
 import org.navalplanner.business.qualityforms.entities.QualityForm;
 import org.navalplanner.business.qualityforms.entities.QualityFormItem;
+import org.navalplanner.business.users.entities.Profile;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -217,4 +218,9 @@ public class QualityFormModel implements IQualityFormModel {
                 .equals(totalPercentage)) : false;
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public void checkHasTasks(QualityForm qualityForm) throws ValidationException {
+        qualityFormDAO.checkHasTasks(qualityForm);
+    }
 }

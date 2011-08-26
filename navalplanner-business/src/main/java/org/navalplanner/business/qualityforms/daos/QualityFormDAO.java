@@ -22,11 +22,13 @@
 package org.navalplanner.business.qualityforms.daos;
 
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang.Validate;
 import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
+import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.navalplanner.business.advance.daos.IAdvanceTypeDAO;
 import org.navalplanner.business.advance.entities.AdvanceType;
@@ -150,4 +152,16 @@ public class QualityFormDAO extends GenericDAOHibernate<QualityForm, Long>
         super.save(entity);
     }
 
+    @Override
+    public void checkHasTasks(QualityForm qualityForm) throws ValidationException {
+        Query query = getSession().createQuery(
+                "FROM TaskQualityForm taskQualityForm JOIN taskQualityForm.qualityForm tq WHERE tq IN (:qualityForms)");
+        query.setParameterList("qualityForms", Collections.singleton(qualityForm));
+        if (!query.list().isEmpty()) {
+            throw ValidationException
+                    .invalidValue(
+                            "Cannot delete quality form. It is being used at this moment by some task.",
+                            qualityForm);
+        }
+    }
 }
