@@ -1138,20 +1138,28 @@ class Row {
         effortDurationBox.addEventListener(Events.ON_CHANGE,
                 new EventListener() {
 
-            @Override
+                    @Override
                     public void onEvent(Event event) {
                         EffortDuration value = effortDurationBox
                                 .getEffortDurationValue();
 
-                getAllocation().withPreviousAssociatedResources().onIntervalWithinTask(
-                        getAllocation().getStartDate(),
-                        getAllocation().getEndDate())
-                        .allocate(value);
-                fireCellChanged();
+                        ResourceAllocation<?> resourceAllocation = getAllocation();
+                        resourceAllocation
+                                .withPreviousAssociatedResources()
+                                .onIntervalWithinTask(
+                                        resourceAllocation.getStartDate(),
+                                        resourceAllocation.getEndDate())
+                                .allocate(value);
+                        AssignmentFunction assignmentFunction = resourceAllocation.getAssignmentFunction();
+                        if (assignmentFunction != null) {
+                            assignmentFunction.applyTo(resourceAllocation);
+                        }
+
+                        fireCellChanged();
                         reloadEffortsSameRowForDetailItems();
                         reloadAllEffort();
-            }
-        });
+                    }
+                });
     }
 
     private void reloadEffortsSameRowForDetailItems() {
