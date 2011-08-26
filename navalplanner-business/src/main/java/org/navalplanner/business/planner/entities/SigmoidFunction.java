@@ -266,4 +266,9 @@ public class SigmoidFunction extends AssignmentFunction {
                 PRECISSION, ROUND_MODE);
     }
 
+    @Override
+    public boolean isManual() {
+        return false;
+    }
+
 }

@@ -1429,7 +1429,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         this.assignmentFunction.applyTo(this);
     }
 
-    private void setWithoutApply(AssignmentFunction assignmentFunction) {
+    protected void setWithoutApply(AssignmentFunction assignmentFunction) {
         this.assignmentFunction = assignmentFunction;
     }
 

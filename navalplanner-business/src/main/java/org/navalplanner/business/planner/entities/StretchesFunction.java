@@ -476,4 +476,9 @@ public class StretchesFunction extends AssignmentFunction {
         }
     }
 
+    @Override
+    public boolean isManual() {
+        return false;
+    }
+
 }

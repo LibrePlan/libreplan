@@ -63,4 +63,9 @@ public class FlatFunction extends AssignmentFunction {
             .untilAllocating(EffortDuration.hours(hours));
     }
 
+    @Override
+    public boolean isManual() {
+        return false;
+    }
+
 }

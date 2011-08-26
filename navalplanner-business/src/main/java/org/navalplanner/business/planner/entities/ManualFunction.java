@@ -41,4 +41,9 @@ public class ManualFunction extends AssignmentFunction {
         // Do nothing
     }
 
+    @Override
+    public boolean isManual() {
+        return true;
+    }
+
 }
