@@ -1422,6 +1422,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         // If the assignment function is empty, avoid creating an association
         // between the resource allocation and the assignment function
         if (assignmentFunction == null) {
+            this.assignmentFunction = null;
             FLAT_FUNCTION.applyTo(this);
             return;
         }
