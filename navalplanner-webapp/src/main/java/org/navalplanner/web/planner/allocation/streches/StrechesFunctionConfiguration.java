@@ -102,4 +102,9 @@ public abstract class StrechesFunctionConfiguration implements
         return false;
     }
 
+    @Override
+    public boolean isConfigurable() {
+        return true;
+    }
+
 }

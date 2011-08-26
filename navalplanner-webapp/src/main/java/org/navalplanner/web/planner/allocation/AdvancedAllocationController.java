@@ -62,6 +62,7 @@ import org.navalplanner.web.common.IMessagesForUser;
 import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
+import org.navalplanner.web.common.Util;
 import org.navalplanner.web.planner.allocation.streches.StrechesFunctionConfiguration;
 import org.zkoss.ganttz.timetracker.ICellForDetailItemRenderer;
 import org.zkoss.ganttz.timetracker.IConvertibleToColumn;
@@ -1248,13 +1249,15 @@ class Row {
 
     private AssignmentFunctionListbox assignmentFunctionsCombo = null;
 
+    private Button assignmentFunctionsConfigureButton = null;
+
     private void initializeAssigmentFunctionsCombo() {
         hboxAssigmentFunctionsCombo = new Hbox();
         assignmentFunctionsCombo = new AssignmentFunctionListbox(
                 functions, getAllocation().getAssignmentFunction());
         hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsCombo);
-        hboxAssigmentFunctionsCombo
-                .appendChild(getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo));
+        assignmentFunctionsConfigureButton = getAssignmentFunctionsConfigureButton(assignmentFunctionsCombo);
+        hboxAssigmentFunctionsCombo.appendChild(assignmentFunctionsConfigureButton);
     }
 
     /**
@@ -1314,10 +1317,13 @@ class Row {
                         setSelectedItem(getPreviousListitem());
                         return;
                     }
-                    // Apply sigmoid function
+                    // Apply assignment function
                     if (function != null) {
                         setPreviousListitem(getSelectedItem());
                         function.applyOn(resourceAllocation);
+                        updateAssignmentFunctionsConfigureButton(
+                                assignmentFunctionsConfigureButton,
+                                function.isConfigurable());
                     }
                 }
             };
@@ -1366,12 +1372,8 @@ class Row {
 
         @Override
         public void goToConfigure() {
-            try {
-                Messagebox.show(_("Flat allocation is not configurable"),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException(
+                    "Flat allocation is not configurable");
         }
 
         @Override
@@ -1402,18 +1404,19 @@ class Row {
             return false;
         }
 
+        @Override
+        public boolean isConfigurable() {
+            return false;
+        }
+
     };
 
     private IAssignmentFunctionConfiguration manualFunction = new IAssignmentFunctionConfiguration() {
 
         @Override
         public void goToConfigure() {
-            try {
-                Messagebox.show(_("Manual allocation is not configurable"),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException(
+                    "Manual allocation is not configurable");
         }
 
         @Override
@@ -1433,6 +1436,11 @@ class Row {
 
         @Override
         public boolean isSigmoid() {
+            return false;
+        }
+
+        @Override
+        public boolean isConfigurable() {
             return false;
         }
 
@@ -1508,12 +1516,8 @@ class Row {
 
         @Override
         public void goToConfigure() {
-            try {
-                Messagebox.show(_("Sigmoid function is not configurable"),
-                        _("Warning"), Messagebox.OK, Messagebox.EXCLAMATION);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            throw new UnsupportedOperationException(
+                    "Sigmoid function is not configurable");
         }
 
         @Override
@@ -1544,6 +1548,11 @@ class Row {
             return true;
         }
 
+        @Override
+        public boolean isConfigurable() {
+            return false;
+        }
+
     };
 
     private IAssignmentFunctionConfiguration[] functions = {
@@ -1558,12 +1567,7 @@ class Row {
 
     private Button getAssignmentFunctionsConfigureButton(
             final Listbox assignmentFunctionsListbox) {
-        final Button button = new Button("", "/common/img/ico_editar1.png");
-        button.setHoverImage("/common/img/ico_editar.png");
-        button.setSclass("icono");
-        button.setTooltiptext(_("Configure"));
-        button.addEventListener(Events.ON_CLICK, new EventListener() {
-
+        Button button = Util.createEditButton(new EventListener() {
             @Override
             public void onEvent(Event event) {
                 IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsListbox
@@ -1571,7 +1575,23 @@ class Row {
                 configuration.goToConfigure();
             }
         });
+
+        IAssignmentFunctionConfiguration configuration = (IAssignmentFunctionConfiguration) assignmentFunctionsListbox
+                .getSelectedItem().getValue();
+        updateAssignmentFunctionsConfigureButton(button,
+                configuration.isConfigurable());
         return button;
+    }
+
+    private void updateAssignmentFunctionsConfigureButton(Button button,
+            boolean configurable) {
+        if (configurable) {
+            button.setTooltiptext(_("Configure"));
+            button.setDisabled(false);
+        } else {
+            button.setTooltiptext(_("Not configurable"));
+            button.setDisabled(true);
+        }
     }
 
     Component getNameLabel() {

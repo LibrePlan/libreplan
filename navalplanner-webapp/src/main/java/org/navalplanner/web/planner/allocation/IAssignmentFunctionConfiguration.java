@@ -36,4 +36,6 @@ public interface IAssignmentFunctionConfiguration {
 
     public boolean isSigmoid();
 
+    public boolean isConfigurable();
+
 }
