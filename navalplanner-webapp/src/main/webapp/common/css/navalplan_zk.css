@@ -576,6 +576,14 @@ div.z-grid {
     padding-top: 5px;
 }
 
+.listdetails div.z-tree {
+    background: transparent;
+}
+
+.leftpanelgap .z-tree-body {
+    z-index: -1;
+}
+
 .z-tree .z-datebox-inp {
     height:25px;
 }
