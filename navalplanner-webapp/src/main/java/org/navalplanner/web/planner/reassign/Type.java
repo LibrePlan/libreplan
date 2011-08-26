@@ -28,7 +28,7 @@ public enum Type {
 
         @Override
         public String getName() {
-            return _("All");
+            return _("All project tasks");
         }
 
         @Override
@@ -40,7 +40,7 @@ public enum Type {
 
         @Override
         public String getName() {
-            return _("From Today");
+            return _("From today");
         }
 
         @Override
@@ -52,7 +52,7 @@ public enum Type {
 
         @Override
         public String getName() {
-            return _("From Chosen");
+            return _("From chosen date");
         }
 
         @Override
