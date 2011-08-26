@@ -32,6 +32,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.navalplanner.business.orders.entities.AggregatedHoursGroup;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
+import org.navalplanner.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -635,6 +637,8 @@ public class ResourceAllocationController extends GenericForwardComposer {
                     data.getRealResourcesPerDay());
             realResourcesPerDay.setStyle("float: right; padding-right: 1em;");
 
+            appendFunctionInformation(row, data);
+
             // On click delete button
             Button deleteButton = appendDeleteButton(row);
             formBinder.setDeleteButtonFor(data, deleteButton);
@@ -651,6 +655,20 @@ public class ResourceAllocationController extends GenericForwardComposer {
             } else {
                 row.setSclass("allocation-satisfied");
             }
+        }
+
+        private void appendFunctionInformation(Row row, final AllocationRow data) {
+            ResourceAllocation<?> allocation = data.getOrigin();
+            Label functionName = new Label(
+                    _(AssignmentFunctionName.FLAT.toString()));
+            if (allocation != null) {
+                AssignmentFunction function = allocation
+                        .getAssignmentFunction();
+                if (function != null) {
+                    functionName.setValue(_(function.getName()));
+                }
+            }
+            append(row, functionName);
         }
 
         private void renderAggregatingRow(Row row) {
