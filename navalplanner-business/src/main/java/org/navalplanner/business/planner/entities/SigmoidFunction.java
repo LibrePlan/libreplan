@@ -52,7 +52,7 @@ public class SigmoidFunction extends AssignmentFunction {
 
     @Override
     public String getName() {
-        return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+        return AssignmentFunctionName.SIGMOID.toString();
     }
 
     @Override

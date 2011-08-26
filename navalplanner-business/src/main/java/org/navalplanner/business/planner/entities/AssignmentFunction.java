@@ -61,7 +61,7 @@ public abstract class AssignmentFunction extends BaseEntity {
 
     public abstract String getName();
 
-    public enum ASSIGNMENT_FUNCTION_NAME {
+    public enum AssignmentFunctionName {
         FLAT(_("Flat")),
         MANUAL(_("Manual")),
         STRETCHES(_("Stretches")),
@@ -70,7 +70,7 @@ public abstract class AssignmentFunction extends BaseEntity {
 
         private String name;
 
-        private ASSIGNMENT_FUNCTION_NAME(String name) {
+        private AssignmentFunctionName(String name) {
             this.name = name;
         }
 

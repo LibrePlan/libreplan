@@ -45,7 +45,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.navalplanner.business.planner.entities.AggregateOfResourceAllocations;
 import org.navalplanner.business.planner.entities.AssignmentFunction;
-import org.navalplanner.business.planner.entities.AssignmentFunction.ASSIGNMENT_FUNCTION_NAME;
+import org.navalplanner.business.planner.entities.AssignmentFunction.AssignmentFunctionName;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.GenericResourceAllocation;
 import org.navalplanner.business.planner.entities.ManualFunction;
@@ -1332,7 +1332,7 @@ class Row {
         }
 
         private boolean isSigmoid(String value) {
-            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString().equals(value);
+            return AssignmentFunctionName.SIGMOID.toString().equals(value);
         }
 
         private void showCannotApplySigmoidFunction() {
@@ -1380,7 +1380,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
+            return AssignmentFunctionName.FLAT.toString();
         }
 
         @Override
@@ -1417,7 +1417,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.MANUAL.toString();
+            return AssignmentFunctionName.MANUAL.toString();
         }
 
         @Override
@@ -1471,7 +1471,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
+            return AssignmentFunctionName.STRETCHES.toString();
         }
     };
 
@@ -1494,7 +1494,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
+            return AssignmentFunctionName.INTERPOLATION.toString();
         }
     };
 
@@ -1512,7 +1512,7 @@ class Row {
 
         @Override
         public String getName() {
-            return ASSIGNMENT_FUNCTION_NAME.SIGMOID.toString();
+            return AssignmentFunctionName.SIGMOID.toString();
         }
 
         @Override
@@ -1597,7 +1597,7 @@ class Row {
             List<? extends ResourceAllocation<?>> allocations) {
         AssignmentFunction function = getAssignmentFunction(allocations);
         return (function != null) ? function.getName()
-                : ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
+                : AssignmentFunctionName.FLAT.toString();
     }
 
     private AssignmentFunction getAssignmentFunction(
@@ -1664,7 +1664,7 @@ class Row {
 
     private void changeAssignmentFunctionToManual() {
         assignmentFunctionsCombo
-                .setSelectedFunction(ASSIGNMENT_FUNCTION_NAME.MANUAL.toString());
+                .setSelectedFunction(AssignmentFunctionName.MANUAL.toString());
         ResourceAllocation<?> allocation = getAllocation();
         if (!(allocation.getAssignmentFunction() instanceof ManualFunction)) {
             allocation.setAssignmentFunction(ManualFunction.create());

@@ -33,7 +33,7 @@ public class ManualFunction extends AssignmentFunction {
 
     @Override
     public String getName() {
-        return ASSIGNMENT_FUNCTION_NAME.MANUAL.toString();
+        return AssignmentFunctionName.MANUAL.toString();
     }
 
     @Override

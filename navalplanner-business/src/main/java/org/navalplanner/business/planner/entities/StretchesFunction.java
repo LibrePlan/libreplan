@@ -387,9 +387,9 @@ public class StretchesFunction extends AssignmentFunction {
     @Override
     public String getName() {
         if (StretchesFunctionTypeEnum.INTERPOLATED.equals(type)) {
-            return ASSIGNMENT_FUNCTION_NAME.INTERPOLATION.toString();
+            return AssignmentFunctionName.INTERPOLATION.toString();
         } else {
-            return ASSIGNMENT_FUNCTION_NAME.STRETCHES.toString();
+            return AssignmentFunctionName.STRETCHES.toString();
         }
     }
 

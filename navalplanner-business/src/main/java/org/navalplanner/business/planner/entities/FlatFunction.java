@@ -44,7 +44,7 @@ public class FlatFunction extends AssignmentFunction {
     }
 
     public String getName() {
-        return ASSIGNMENT_FUNCTION_NAME.FLAT.toString();
+        return AssignmentFunctionName.FLAT.toString();
     }
 
 
