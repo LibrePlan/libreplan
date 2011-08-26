@@ -59,7 +59,6 @@ import org.navalplanner.business.resources.entities.Criterion;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.common.EffortDurationBox;
 import org.navalplanner.web.common.IMessagesForUser;
-import org.navalplanner.web.common.Level;
 import org.navalplanner.web.common.MessagesForUser;
 import org.navalplanner.web.common.OnlyOneVisible;
 import org.navalplanner.web.common.Util;
@@ -229,8 +228,7 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public static Restriction build(IRestrictionSource restrictionSource) {
             switch (restrictionSource.getCalculatedValue()) {
             case END_DATE:
-                return Restriction.fixedEffort(restrictionSource.getStart(),
-                        restrictionSource.getTotalEffort());
+                return Restriction.emptyRestriction();
             case NUMBER_OF_HOURS:
                 return Restriction.onlyAssignOnInterval(restrictionSource
                         .getStart(), restrictionSource.getEnd());
@@ -249,11 +247,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         private static Restriction onlyAssignOnInterval(LocalDate start,
                 LocalDate end){
             return new OnlyOnIntervalRestriction(start, end);
-        }
-
-        private static Restriction fixedEffort(LocalDate start,
-                EffortDuration effort) {
-            return new FixedEffortRestriction(start, effort);
         }
 
         abstract LocalDate limitStartDate(LocalDate startDate);
@@ -319,55 +312,6 @@ public class AdvancedAllocationController extends GenericForwardComposer {
         public void markInvalidEffort(Row groupingRow,
                 EffortDuration currentEffort) {
             throw new UnsupportedOperationException();
-        }
-    }
-
-    private static class FixedEffortRestriction extends Restriction {
-
-        private final EffortDuration effort;
-
-        private final LocalDate start;
-
-        private FixedEffortRestriction(LocalDate start, EffortDuration effort) {
-            this.start = start;
-            this.effort = effort;
-        }
-
-        @Override
-        boolean isDisabledEditionOn(DetailItem item) {
-            return false;
-        }
-
-        @Override
-        LocalDate limitEndDate(LocalDate endDate) {
-            return endDate;
-        }
-
-        @Override
-        LocalDate limitStartDate(LocalDate argStart) {
-            return start.compareTo(argStart) > 0 ? start : argStart;
-        }
-
-        @Override
-        public boolean isInvalidTotalEffort(EffortDuration totalEffort) {
-            return this.effort.compareTo(totalEffort) != 0;
-        }
-
-        @Override
-        public void showInvalidEffort(IMessagesForUser messages,
-                EffortDuration totalEffort) {
-            messages.showMessage(Level.WARNING, getMessage(totalEffort));
-        }
-
-        private String getMessage(EffortDuration totalEffort) {
-            return _("there must be {0} effort instead of {1}",
-                    effort.toFormattedString(), totalEffort.toFormattedString());
-        }
-
-        @Override
-        public void markInvalidEffort(Row groupingRow,
-                EffortDuration totalEffort) {
-            groupingRow.markErrorOnTotal(getMessage(totalEffort));
         }
     }
 
