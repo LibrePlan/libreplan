@@ -42,6 +42,7 @@ import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalc
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ResourcesPerDayIsZero;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ThereAreNoValidPeriods;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.ValidPeriodsDontHaveCapacity;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocation;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -485,16 +486,29 @@ public abstract class AllocationRow {
         this.currentCalculatedValue = calculatedValue;
         effortInput
                 .setDisabled(calculatedValue != CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation);
+                        || recommendedAllocation
+                        || isAssignmentFunctionNotFlat());
         effortInput.setConstraint(constraintForHoursInput());
         intendedResourcesPerDayInput
                 .setDisabled(calculatedValue == CalculatedValue.RESOURCES_PER_DAY
-                        || recommendedAllocation);
+                        || recommendedAllocation
+                        || isAssignmentFunctionNotFlat());
         if (intendedResourcesPerDayInput.isDisabled()) {
             clearRealResourcesPerDay();
         }
         intendedResourcesPerDayInput
                 .setConstraint(constraintForResourcesPerDayInput());
+    }
+
+    private AssignmentFunction getAssignmentFunction() {
+        if (origin != null) {
+            return origin.getAssignmentFunction();
+        }
+        return null;
+    }
+
+    private boolean isAssignmentFunctionNotFlat() {
+        return getAssignmentFunction() != null;
     }
 
     private Constraint constraintForHoursInput() {
