@@ -764,11 +764,13 @@ public class ManageOrderElementAdvancesController extends
                         .getValue();
                 if (!manageOrderElementAdvancesModel
                         .hasConsolidatedAdvances(advance)) {
-                    if (value == null) {
-                        ((Decimalbox) comp).setValue(advance.getMaxValue());
+                    if (value == null
+                            || (BigDecimal.ZERO.compareTo((BigDecimal) value) >= 0)) {
+                        ((Decimalbox) comp).setValue(advance.getAdvanceType()
+                                .getDefaultMaxValue());
                         ((Decimalbox) comp).invalidate();
                         throw new WrongValueException(comp,
-                                _("The max value must be not empty"));
+                                _("The max value must be greater than 0"));
                     }
                 }
             }
