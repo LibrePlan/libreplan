@@ -126,8 +126,11 @@ public class SpecificAllocationRow extends AllocationRow {
         SpecificResourceAllocation specific = SpecificResourceAllocation
                 .create(task);
         specific.setResource(resource);
-        specific
-                .overrideConsolidatedDayAssignments((SpecificResourceAllocation) getOrigin());
+        SpecificResourceAllocation origin = (SpecificResourceAllocation) getOrigin();
+        specific.overrideConsolidatedDayAssignments(origin);
+        if (origin != null) {
+            specific.setWithoutApply(origin.getAssignmentFunction());
+        }
         return specific;
     }
 

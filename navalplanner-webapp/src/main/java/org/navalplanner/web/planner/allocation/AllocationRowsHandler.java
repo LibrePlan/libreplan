@@ -34,6 +34,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.calendars.entities.ThereAreHoursOnWorkHoursCalculator.CapacityResult;
 import org.navalplanner.business.common.Flagged;
 import org.navalplanner.business.orders.entities.HoursGroup;
+import org.navalplanner.business.planner.entities.AssignmentFunction;
 import org.navalplanner.business.planner.entities.CalculatedValue;
 import org.navalplanner.business.planner.entities.DerivedAllocationGenerator.IWorkerFinder;
 import org.navalplanner.business.planner.entities.ResourceAllocation;
@@ -272,16 +273,24 @@ public class AllocationRowsHandler {
     }
 
     private List<? extends AllocationModification> doSuitableAllocation() {
+        List<? extends AllocationModification> allocationModifications;
         switch (calculatedValue) {
         case NUMBER_OF_HOURS:
-            return calculateNumberOfHoursAllocation();
+            allocationModifications = calculateNumberOfHoursAllocation();
+            break;
         case END_DATE:
-            return calculateEndDateOrStartDateAllocation();
+            allocationModifications = calculateEndDateOrStartDateAllocation();
+            break;
         case RESOURCES_PER_DAY:
-            return calculateResourcesPerDayAllocation();
+            allocationModifications = calculateResourcesPerDayAllocation();
+            break;
         default:
             throw new RuntimeException("cant handle: " + calculatedValue);
         }
+
+        AssignmentFunction.applyAssignmentFunctionsIfAny(AllocationModification
+                .getBeingModified(allocationModifications));
+        return allocationModifications;
     }
 
     private List<ResourcesPerDayModification> calculateNumberOfHoursAllocation() {
