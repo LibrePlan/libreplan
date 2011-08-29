@@ -720,19 +720,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public boolean isAnyNotFlat() {
-        if (formBinder == null) {
-            return false;
-        }
-
-        List<AllocationRow> currentRows = formBinder.getCurrentRows();
-        for (AllocationRow allocationRow : currentRows) {
-            if ((allocationRow.getOrigin() != null)
-                    && (allocationRow.getOrigin().getAssignmentFunction() != null)) {
-                return true;
-            }
-        }
-
-        return false;
+        return formBinder != null && formBinder.isAnyNotFlat();
     }
 
 }

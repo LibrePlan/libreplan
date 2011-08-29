@@ -906,4 +906,14 @@ public class FormBinder {
         this.behaviour = behaviour;
     }
 
+    public boolean isAnyNotFlat() {
+        for (AllocationRow allocationRow : allocationRowsHandler
+                .getCurrentRows()) {
+            if (allocationRow.isNotFlat()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

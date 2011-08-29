@@ -760,4 +760,9 @@ public abstract class AllocationRow {
         });
     }
 
+    public boolean isNotFlat() {
+        return getOrigin() != null
+                && getOrigin().getAssignmentFunction() != null;
+    }
+
 }
