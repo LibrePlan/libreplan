@@ -507,7 +507,7 @@ public abstract class AllocationRow {
         return null;
     }
 
-    private boolean isAssignmentFunctionNotFlat() {
+    public boolean isAssignmentFunctionNotFlat() {
         return getAssignmentFunction() != null;
     }
 
@@ -758,11 +758,6 @@ public abstract class AllocationRow {
                         _("Resources per day are zero"));
             }
         });
-    }
-
-    public boolean isNotFlat() {
-        return getOrigin() != null
-                && getOrigin().getAssignmentFunction() != null;
     }
 
 }

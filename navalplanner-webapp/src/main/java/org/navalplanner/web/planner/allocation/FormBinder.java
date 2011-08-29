@@ -909,7 +909,7 @@ public class FormBinder {
     public boolean isAnyNotFlat() {
         for (AllocationRow allocationRow : allocationRowsHandler
                 .getCurrentRows()) {
-            if (allocationRow.isNotFlat()) {
+            if (allocationRow.isAssignmentFunctionNotFlat()) {
                 return true;
             }
         }
