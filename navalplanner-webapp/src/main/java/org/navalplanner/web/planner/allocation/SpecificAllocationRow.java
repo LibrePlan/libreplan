@@ -129,7 +129,7 @@ public class SpecificAllocationRow extends AllocationRow {
         SpecificResourceAllocation origin = (SpecificResourceAllocation) getOrigin();
         specific.overrideConsolidatedDayAssignments(origin);
         if (origin != null) {
-            specific.setWithoutApply(origin.getAssignmentFunction());
+            specific.setAssignmentFunctionWithoutApply(origin.getAssignmentFunction());
         }
         return specific;
     }

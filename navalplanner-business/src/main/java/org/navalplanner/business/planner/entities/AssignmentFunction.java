@@ -53,7 +53,7 @@ public abstract class AssignmentFunction extends BaseEntity {
             if (assignmentFunction != null) {
                 if (assignmentFunction.isManual()) {
                     // reset to flat
-                    resourceAllocation.setWithoutApply(null);
+                    resourceAllocation.setAssignmentFunctionWithoutApply(null);
                 } else {
                     assignmentFunction.applyTo(resourceAllocation);
                 }

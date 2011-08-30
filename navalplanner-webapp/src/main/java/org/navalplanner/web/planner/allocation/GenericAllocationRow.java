@@ -142,7 +142,7 @@ public class GenericAllocationRow extends AllocationRow {
         if (origin != null) {
             result.overrideConsolidatedDayAssignments(origin);
             discountFrom.add(origin);
-            result.setWithoutApply(origin.getAssignmentFunction());
+            result.setAssignmentFunctionWithoutApply(origin.getAssignmentFunction());
         }
         result.discountAssignedHoursForResourceFrom(discountFrom);
         return result;

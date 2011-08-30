@@ -1430,7 +1430,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
         this.assignmentFunction.applyTo(this);
     }
 
-    public void setWithoutApply(AssignmentFunction assignmentFunction) {
+    public void setAssignmentFunctionWithoutApply(AssignmentFunction assignmentFunction) {
         this.assignmentFunction = assignmentFunction;
     }
 
@@ -2072,7 +2072,7 @@ public abstract class ResourceAllocation<T extends DayAssignment> extends
             updateOriginalTotalAssigment();
             updateResourcesPerDay();
         }
-        setWithoutApply(modifications.getAssignmentFunction());
+        setAssignmentFunctionWithoutApply(modifications.getAssignmentFunction());
         mergeDerivedAllocations(scenario, modifications.getDerivedAllocations());
     }
 
