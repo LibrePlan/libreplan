@@ -240,6 +240,11 @@ public class DirectAdvanceAssignment extends AdvanceAssignment {
         return true;
     }
 
+    @AssertTrue(message = "max value must be greater than zero")
+    public boolean checkConstraintMaxValueMustBeGreaterThanZero() {
+        return maxValue.compareTo(BigDecimal.ZERO) > 0;
+    }
+
     public void setNonCalculatedConsolidation(
             Set<NonCalculatedConsolidation> nonCalculatedConsolidation) {
         this.nonCalculatedConsolidations = nonCalculatedConsolidation;
