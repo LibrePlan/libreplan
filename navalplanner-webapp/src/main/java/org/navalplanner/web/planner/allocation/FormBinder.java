@@ -540,6 +540,7 @@ public class FormBinder {
         loadValueForEffortInput();
         loadDerivedAllocations();
         loadSclassRowSatisfied();
+        loadAssignmentFunctionNames();
         workableDaysAndDatesBinder.afterApplicationReloadValues();
         Util.reloadBindings(allocationsGrid);
     }
@@ -560,6 +561,12 @@ public class FormBinder {
             }
         } catch (ClassCastException e) {
             throw new RuntimeException();
+        }
+    }
+
+    private void loadAssignmentFunctionNames() {
+        for (AllocationRow each : rows) {
+            each.loadAssignmentFunctionName();
         }
     }
 
