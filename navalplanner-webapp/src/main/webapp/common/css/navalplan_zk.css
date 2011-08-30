@@ -1517,6 +1517,14 @@ input.z-datebox-text-disd {
     padding: 0;
 }
 
+.z-calendar .z-outside {
+    color: #CCC;
+}
+
+.z-calendar-calday td.z-calendar-seld {
+    font-weight: bold;
+}
+
 .add-resources-or-criteria span {
     white-space: nowrap;
 }
