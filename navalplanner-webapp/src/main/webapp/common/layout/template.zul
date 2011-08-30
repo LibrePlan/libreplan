@@ -54,8 +54,8 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
   <n:tr>
     <n:td valign="center" class="logo-area">
         <n:a href="${contextPath}/">
-            <n:img height="40" src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
-            <n:img src="${contextPath}/common/img/${i18n:_('en')}/logo.png" if="${templateCtrl.companyLogoURL==''}" />
+            <n:img src="${templateCtrl.companyLogoURL}" if="${templateCtrl.companyLogoURL!=''}" />
+            <n:img src="${contextPath}/common/img/logo.png" if="${templateCtrl.companyLogoURL==''}" />
         </n:a></n:td>
   <n:td valign="top">
   <n:table width="100%"  border="0" cellspacing="0" cellpadding="0">
