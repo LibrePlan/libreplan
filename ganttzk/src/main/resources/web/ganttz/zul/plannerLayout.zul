@@ -43,6 +43,7 @@ planner = self;
         <separator/>
 
         <!--  Visualization modes -->
+        <space bar="true" />
         <label>${ganttzk_i18n:_('Zoom')}:</label>
         <listbox id="listZoomLevels" mold="select" rows="1"
             model="${planner.zoomLevels}">
