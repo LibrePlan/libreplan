@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-11 18:16+0200\n"
-"PO-Revision-Date: 2011-06-02 17:29+0400\n"
+"PO-Revision-Date: 2011-08-30 16:46+0400\n"
 "Last-Translator: Pavel Rudensky <prudensky@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -37,7 +37,7 @@ msgstr "Начало"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:592
 msgid "Show reported hours"
-msgstr "?Показать сообщенные часы"
+msgstr "Показать затраченные часы"
 
 #: ganttzk/src/main/resources/web/ganttz/zul/plannerLayout.zul:78
 msgid "Show/Hide Progress"
@@ -171,7 +171,7 @@ msgstr "Установить Конец-Начало"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:302
 msgid "decreasing zoom"
-msgstr "?уменьшить масштаб"
+msgstr "уменьшить масштаб"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:559
 msgid "Hide critical path"
@@ -179,7 +179,7 @@ msgstr "Скрыть критическую часть"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:599
 msgid "Hide reported hours"
-msgstr "?Скрыть сообщенные часы"
+msgstr "Скрыть затраченные часы"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/timetracker/zoom/ZoomLevel.java:84
 msgid "Day"
@@ -220,7 +220,7 @@ msgstr "Просмотр распределения ресурсов"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/Planner.java:285
 msgid "increasing zoom"
-msgstr "?увеличение масштаба"
+msgstr "увеличить масштаб"
 
 #: ganttzk/src/main/java/org/zkoss/ganttz/resourceload/ResourcesLoadPanel.java:455
 msgid "Show all elements"
