@@ -49,6 +49,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -74,6 +75,8 @@ public class CalendarExceptionTypeCRUDController extends
     private EffortDurationPicker standardEffort;
 
     private EffortDurationPicker extraEffort;
+
+    private Listbox colorsListbox;
 
     private static ListitemRenderer calendarExceptionTypeColorRenderer = new ListitemRenderer() {
         @Override
@@ -263,6 +266,21 @@ public class CalendarExceptionTypeCRUDController extends
 
     public RowRenderer getExceptionDayTypeRenderer() {
         return exceptionDayTypeRenderer;
+    }
+
+    public String getStyleColorOwnException() {
+        return (getExceptionDayType() == null) ? "" : "background-color: "
+                + getExceptionDayType().getColor().getColorOwnException();
+    }
+
+    public String getStyleColorDerivedException() {
+        return (getExceptionDayType() == null) ? "" : "background-color: "
+                + getExceptionDayType().getColor().getColorDerivedException();
+    }
+
+    public void reloadSampleColors() {
+        Util.reloadBindings(editWindow.getFellow("colorSampleOwn"));
+        Util.reloadBindings(editWindow.getFellow("colorSampleDerived"));
     }
 
 }

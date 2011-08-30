@@ -1403,6 +1403,12 @@ display:none;
     overflow: hidden;
 }
 
+.color-sample {
+    height: 10px;
+    width: 20px;
+    border: solid 1px black;
+}
+
 /* Expand vertical boxes for non-ffox browsers */
 .z-vbox {
     width:100%;

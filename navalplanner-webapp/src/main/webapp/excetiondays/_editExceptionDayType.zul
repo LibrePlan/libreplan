@@ -56,12 +56,19 @@
                         </row>
                         <row>
                             <label value="${i18n:_('Color')}" />
-                            <listbox id="colorsListbox" mold="select"
+                            <hbox align="pack">
+                                <listbox id="colorsListbox" mold="select"
                                     model="@{controller.colors}"
                                     selectedItem="@{controller.exceptionDayType.color}"
-                                    itemRenderer="@{controller.colorsRenderer}"/>
+                                    itemRenderer="@{controller.colorsRenderer}"
+                                    onSelect="controller.reloadSampleColors()" />
+                                <div id="colorSampleOwn" sclass="color-sample" style="@{controller.styleColorOwnException}" />
+                                <label value="${i18n:_('Own exception')}" />
+                                <div id="colorSampleDerived" sclass="color-sample" style="@{controller.styleColorDerivedException}" />
+                                <label value="${i18n:_('Derived exception')}" />
+                            </hbox>
                         </row>
-                         <row>
+                        <row>
                             <label value="${i18n:_('Standard Effort')}" />
                             <effortDurationPicker id="standardEffort" />
                         </row>
