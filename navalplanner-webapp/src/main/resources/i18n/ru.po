@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-05-11 18:16+0200\n"
-"PO-Revision-Date: 2011-08-30 02:19+0400\n"
+"PO-Revision-Date: 2011-08-30 16:43+0400\n"
 "Last-Translator: Pavel Rudensky <prudensky@gmail.com>\n"
 "Language-Team: Russian\n"
 "Language: ru\n"
@@ -28,7 +28,7 @@ msgstr "Коды критерия должны быть уникальными �
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/users/OrderAuthorizationController.java:96
 msgid "No authorizations were added because you did not select any."
-msgstr "?Ни одной авторизации не добавлено, потому что Вы ничего не выбрали."
+msgstr "Ни одной авторизации не добавлено, потому что Вы ничего не выбрали."
 
 #: navalplanner-webapp/src/main/webapp/resources/search/allocation_selector.zul:88
 #: navalplanner-webapp/src/main/webapp/common/layout/login.zul:45
@@ -40,7 +40,7 @@ msgstr "ru"
 
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:188
 msgid "Origin"
-msgstr "?1Origin"
+msgstr "Первоисточник"
 
 #: navalplanner-webapp/src/main/webapp/calendars/_edition.zul:165
 msgid "Create exception"
@@ -175,7 +175,7 @@ msgstr "Метод МонтеКарло"
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:292
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/planner/tabs/PlanningTabCreator.java:310
 msgid "Project Scheduling"
-msgstr "?Планирование проекта"
+msgstr "Планирование проекта"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/reports/HoursWorkedPerWorkerInAMonthController.java:42
 #: navalplanner-webapp/src/main/webapp/reports/hoursWorkedPerWorkerInAMonthReport.zul:62
@@ -226,7 +226,7 @@ msgstr "Растягиваемая дата не должна быть мень�
 
 #: navalplanner-webapp/src/main/webapp/planner/stretches_function.zul:66
 msgid "Dedication chart"
-msgstr "?Dedication chart"
+msgstr "График затраченного времени"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:701
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/orders/ManageOrderElementAdvancesController.java:728
@@ -595,7 +595,7 @@ msgstr "Список рабочих отчетов"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/common/CustomMenuController.java:312
 msgid "Accounts"
-msgstr "?Аккаунты"
+msgstr "Учетные записи"
 
 #: navalplanner-webapp/src/main/webapp/orders/_edition.zul:85
 msgid "External code"
@@ -6265,7 +6265,7 @@ msgstr "Критерий"
 
 #: navalplanner-webapp/src/main/java/org/navalplanner/web/calendars/BaseCalendarEditionController.java:94
 msgid "unl"
-msgstr "?unl"
+msgstr "неогр."
 
 #: navalplanner-webapp/src/main/webapp/common/configuration.zul:76
 msgid "Generate code for"
