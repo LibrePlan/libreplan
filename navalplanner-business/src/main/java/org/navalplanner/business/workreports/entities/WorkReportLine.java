@@ -57,13 +57,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return create(new WorkReportLine(workReport));
     }
 
-    public static WorkReportLine create(EffortDuration effort,
-            Resource resource,
-            OrderElement orderElement, WorkReport workReport) {
-        return create(new WorkReportLine(effort, resource, orderElement,
-                workReport));
-    }
-
     private EffortDuration effort;
 
     private Date date;
@@ -92,14 +85,6 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public WorkReportLine(WorkReport workReport) {
         this.setWorkReport(workReport);
-    }
-
-    private WorkReportLine(EffortDuration effort, Resource resource,
-            OrderElement orderElement, WorkReport workReport) {
-        this(workReport);
-        this.effort = effort;
-        this.resource = resource;
-        this.orderElement = orderElement;
     }
 
     @NotNull(message = "effort not specified")
