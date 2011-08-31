@@ -1,0 +1,100 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Material
+ * 2 - Edit a Material
+ * 3 - Delete Material
+ *
+*/
+_include("../common_functions.sah");
+
+function materialCreate($name) {
+    materialForm($name);
+    _assertExists(_span("Materials saved"));
+    _assert(_isVisible(_span("Materials saved")));
+}
+
+function materialForm($description) {
+    _click(_link("Materials"));
+    _click(_span("z-dottree-ico z-dottree-firstspacer"));
+    _click(_cell("z-button-cm[3]"));
+    _setValue(_textbox("z-textbox[2]"), $description);
+    _click(_cell("Save"));
+}
+
+/* test to check a that naval plan give us a error */
+function materialNotValid($material){
+    _assertExists(_div("There exists other Materials with the same name."));
+    _assert(_isVisible(_div("There exists other Materials with the same name.")));
+}
+
+function materialEdit($oldDescription, $newDescription, $cell) {
+    var $nrows;
+    var $table;
+    var $label;
+    _click(_link("Materials"));
+    _set($label, _textbox(0, _near(_div("List of materials for all categories (select one to filter)"))).id);
+    _set($nrows, _parentTable(_textbox($label)).rows.length);
+    for (var $i=1; $i<$nrows; $i++){
+    if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $oldDescription)){
+        var $idTextbox;
+        _set($idTextbox, _textbox(0, _in(_cell(_parentTable(_textbox($label)), $i, 1))).id);
+        _setValue(_textbox($idTextbox), $newDescription);
+        break;
+    }
+    }
+    _click(_cell("Save"));
+}
+
+function materialDelete($materialNewName, $numer){
+    var $nrows;
+    var $table;
+    var $label;
+    _click(_link("Materials"));
+    _set($label,_textbox(0, _near(_div("List of materials for all categories (select one to filter)"))).id);
+    _set($nrows,_parentTable(_textbox($label)).rows.length);
+    for (var $i=1; $i<$nrows; $i++){
+    if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $materialNewName)){
+        var $idTextbox;
+        _set($idTextbox, _textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).id);
+        _click(_image("ico_borrar1.png", _in(_cell(6, _near(_textbox($idTextbox))))));
+        break;
+    }
+    }
+    _click(_cell("Save"));
+}
+
+/* test values */
+var $materialDescription = "new";
+var $materialDescription2 = "new2";
+var $materialNewName = "newest";
+
+
+/* test actions */
+commonLogin("admin", "admin");
+
+materialCreate($materialDescription);
+/* materialCreateEmpty(); PENDING OF A BUG */
+materialEdit($materialDescription, $materialDescription2, 6);
+materialDelete($materialDescription2, 6);
+/* commonDeleteValidation("Materials", $materialNewName); PENDING OF A BUG */
+
+commonLogout();
