@@ -10,3 +10,10 @@ data-types/work_hours_test.sah
 # User tests
 users/user_test.sah
 users/profile_test.sah
+
+# Administration and Management
+#administration-management/configuration_test.sah
+administration-management/calendar_test.sah
+administration-management/material_test.sah
+administration-management/quality_forms_test.sah
+administration-management/cost_categories_test.sah
