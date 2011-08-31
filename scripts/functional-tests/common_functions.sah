@@ -66,6 +66,27 @@ function commonDeleteProject($name){
     _assertEqual("Removed "+$name, _getText(_div("Removed "+$name)));
 }
 
+function commonConfigurationChangeCheckboxMainPreferences($element){
+    _click(_link("NavalPlan Configuration"));
+    _click(_checkbox(0, _near(_label($element))));
+    _click(_cell("Save"));
+    commonSaveConfigurationValidation();
+}
+
+/*
+ * Common functions for Validations
+ */
+
+function commonSaveConfigurationValidation(){
+    _assertExists(_span("Changes saved"));
+    _assert(_isVisible(_span("Changes saved")));
+}
+
+function commonEmptyCodeValidation(){
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+}
+
 /* test to check a correct save */
 function commonSaveValidation($something, $name){
     _assertExists(_div($something+" \""+$name+"\" saved"));
@@ -80,19 +101,143 @@ function commonDeleteValidation($something, $name){
     _assertEqual($something+" \""+$name+"\" deleted", _getText(_div($something+" \""+$name+"\" deleted")));
 }
 
-function commonConfigurationChangeCheckboxMainPreferences($element){
-    _click(_link("NavalPlan Configuration"));
-    _click(_checkbox(0, _near(_label($element))));
+/*
+ * Common functions for Worker
+ */
+
+function commonWorkerDelete($name){
+commonDelete("Workers", $name, 5);
+commonWorkerAcctionValidation("deleted");
+_log("Delete the worker", "custom1");
+}
+
+function commonWorkerAcctionValidation($action){
+    _assertExists(_span("Worker "+$action));
+    _assert(_isVisible(_span("Worker "+$action)));
+}
+
+/*
+ * Common functions for Calendar
+ */
+
+function commonCalendarCreate($name) {
+    commonCreate("Calendars");
+    commonCalendarForm($name);
+    commonSaveValidation("Base calendar", $name);
+    _log("Create a new calendar", "custom1");
+}
+
+function commonCalendarForm($name) {
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
     _click(_cell("Save"));
-    commonSaveConfigurationValidation();
 }
 
-function commonSaveConfigurationValidation(){
-    _assertExists(_span("Changes saved"));
-    _assert(_isVisible(_span("Changes saved")));
+function commonCalendarTryDeleteAssignedCalendar($name, $cell) {
+    _click(_link("Calendars"));
+    _click(_image("ico_borrar1.png", _in(_cell($cell, _near(_cell($name))))));
+    _assertExists(_span("Cannot delete calendar. It is being used at this moment by some resources."));
+    _assert(_isVisible(_span("Cannot delete calendar. It is being used at this moment by some resources.")));
+    _log("Do not allow delete assigned calendar", "custom1");
 }
 
-function commonEmptyCodeValidation(){
-    _assertExists(_div("cannot be null or empty"));
-    _assert(_isVisible(_div("cannot be null or empty")));
+function commonCalendarDelete($name){
+    commonDelete("Calendars", $name, 3);
+    commonCalendarDeleteValidation($name);
+    _log("Delete de Calendar", "custom1");
+}
+
+function commonCalendarDeleteValidation($name) {
+    _assertExists(_span("Removed calendar \""+$name+"\""));
+    _assert(_isVisible(_span("Removed calendar \""+$name+"\"")));
+}
+
+/*
+ * Common functions for Cost Category
+ */
+
+function commonCostCategoryCreate($name, $hworkName){
+    commonCreate("Cost Categories");
+    commonCostCategoryForm($name, $hworkName);
+    commonSaveValidation("Cost Category", $name);
+    _log("Create a Cost Category", "custom1");
+}
+
+function commonCostCategoryForm($name, $hworkName){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _click(_cell("Add new row"));
+    _setSelected(_select(0), $hworkName);
+    _click(_cell("Save"));
+}
+
+function commonCostCategoryDelete($name){
+    commonDelete("Cost Categories", $name, 2);
+    commonDeleteValidation("Cost Category", $name);
+    _log("Delete de cost category", "custom1");
+}
+
+/*
+ * Common functions for Criteria
+ */
+
+function commonCriteriaCreate($type){
+    commonCreate("Criteria");
+    commonCriteriaForm($type);
+    commonSaveValidation("Criterion Type", $type);
+    _log("Create a new criterion", "custom1");
+}
+
+function commonCriteriaEdit($oldName, $newName, $cell){
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_span("Name"))), $newName);
+    _removeFocus(_textbox(0, _near(_span("Name"))), $newName);
+    _click(_cell("Save & Continue"));
+    commonSaveValidation("Criterion Type", $newName);
+    _log("Edit a criterion", "custom1");
+}
+
+function commonCriteriaForm($name){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _click(_checkbox(0, _near(_div("Multiple values per resource"))));
+    _click(_checkbox(0, _near(_div("Hierarchy"))));
+    _click(_cell("OK"));
+    _setValue(_textbox(0, _near(_span("New criterion"))), $name);
+    _click(_cell("Add"));
+    _click(_cell("Save"));
+}
+
+function commonCriteriaDelete($criteriaName){
+    commonDelete("Criteria", $criteriaName, 4);
+    commonDeleteValidation("Criterion Type", $criteriaName);
+    _log("Delete the criteria", "custom1");
+}
+
+function commonCriteriaTryDeleteAssigned($criteriaName){
+    _click(_link("Criteria"));
+    _click(_image("ico_borrar1.png", _in(_cell(4, _near(_cell($criteriaName))))));
+    _assertExists(_span("This criterion type cannot be deleted because it has assignments to projects or resources"));
+    _assert(_isVisible(_span("This criterion type cannot be deleted because it has assignments to projects or resources")));
+    _log("Do not allow criteria because it's assigned", "custom1");
+}
+
+/*
+ * Common functions for Work hours
+ */
+
+function commonWorkHourCreate($type, $price){
+    commonCreate("Work Hours");
+    commonWorkHourForm($type, $price);
+    commonSaveValidation("Type of hours", $type);
+    _log("Create a new Work Hour", "custom1");
+}
+
+function commonWorkHourForm($name, $price){
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _setValue(_textbox(0, _near(_span("Default price"))), $price);
+    _click(_cell("Save"));
+}
+
+function commonWorkHourDelete($name){
+    commonDelete("Work Hours", $name, 4);
+    commonDeleteValidation("Type of hours", $name);
+    _log("Delete the Work Hour", "custom1");
 }
