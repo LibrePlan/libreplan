@@ -1762,3 +1762,11 @@ select {
     border-right: 1px solid #9ECAD8;
     border-left: 1px solid #d9f3ff;
 }
+
+.logo-area img {
+    margin-right:10px;
+}
+
+.logo-area {
+    width: 1px;
+}
