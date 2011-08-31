@@ -49,32 +49,19 @@
 */
 _include("../common_functions.sah");
 
-function workHourCreate($type, $price){
-    commonCreate("Work Hours");
-    workHourForm($type, $price);
-    commonSaveValidation("Type of hours", $type);
-    _log("Create a new Work Hour", "custom1");
-}
-
 function workHourCreateDuplicateType($type, $price){
     commonCreate("Work Hours");
-    workHourForm($type, $price);
+    commonWorkHourForm($type, $price);
     workHourNotValid($type);
     _log("Do not allow create a duplicate Work Hour", "custom1");
 }
 
 function workHourCreateEmpty(){
     commonCreate("Work Hours");
-    workHourForm("", 10);
+    commonWorkHourForm("", 10);
     _assertExists(_div("cannot be null or empty"));
     _assert(_isVisible(_div("cannot be null or empty")));
     _log("Do not allow create a empty Work Hour", "custom1");
-}
-
-function workHourForm($name, $price){
-    _setValue(_textbox(0, _near(_span("Name"))), $name);
-    _setValue(_textbox(0, _near(_span("Default price"))), $price);
-    _click(_cell("Save"));
 }
 
 /* test to check a that naval plan give us a error */
@@ -85,7 +72,7 @@ function workHourNotValid($hWorkType){
 
 function workHourEdit($oldName, $newName, $hWorkPrice, $cell) {
     commonEdit($oldName, $cell);
-    workHourForm($newName, $hWorkPrice);
+    commonWorkHourForm($newName, $hWorkPrice);
     commonSaveValidation("Type of hours", $newName);
     _log("Edit the Work Hour", "custom1");
 }
@@ -115,6 +102,19 @@ function workHourTryDelete($hWorkNewName,$something){
     _assert(_isVisible(_span("Cannot delete type of work hours. It is being used at this moment in some "+$something+".")));
     _click(_cell("OK"));
     _log("Do not allow delete the Work Hour", "custom1");
+}
+
+function workHourCheckCode($workHourName){
+    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    workHourCreateWithoutCode($workHourName);
+    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
+    _log("Check code label", "custom1");
+}
+
+function workHourCreateWithoutCode($type){
+    commonCreate("Work Hours");
+    commonWorkHourForm($type);
+    commonEmptyCodeValidation();
 }
 
 /*
@@ -198,38 +198,10 @@ function commonTryDeleteProject($name){
  * */
 
 function workHourAssignCostCategory($categoryName, $hworkName){
-    costCategoryCreate($categoryName, $hworkName);
+    commonCostCategoryCreate($categoryName, $hworkName);
     workHourTryDelete($hWorkName,"cost category");
-    commonDelete("Cost Categories", $categoryName, 2);
-    commonDeleteValidation("Cost Category", $categoryName);
+    commonCostCategoryDelete($categoryName);
     _log("Assign to a Cost Category", "custom1");
-}
-
-function costCategoryCreate($name, $hworkName){
-    commonCreate("Cost Categories");
-    costCategoryForm($name, $hworkName);
-    commonSaveValidation("Cost Category", $name);
-    _log("Create a Cost Category", "custom1");
-}
-
-function costCategoryForm($name, $hworkName){
-    _setValue(_textbox(0, _near(_span("Name:"))), $name);
-    _click(_cell("Add new row"));
-    _setSelected(_select(0), $hworkName);
-    _click(_cell("Save"));
-}
-
-function workHourCheckCode($workHourName){
-    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
-    workHourCreateWithoutCode($workHourName);
-    commonConfigurationChangeCheckboxMainPreferences("Types of work hours");
-    _log("Check code label", "custom1");
-}
-
-function workHourCreateWithoutCode($type){
-    commonCreate("Work Hours");
-    workHourForm($type);
-    commonEmptyCodeValidation();
 }
 
 /* test values */
@@ -244,19 +216,16 @@ var $materialDescription = "strongeMachine";
 /* test actions */
 commonLogin("admin", "admin");
 
-workHourCreate($hWorkName, $hWorkPrice);
+commonWorkHourCreate($hWorkName, $hWorkPrice);
 workHourCreateDuplicateType($hWorkName, $hWorkPrice);
 workHourCreateEmpty();
 workHourEdit($hWorkName, $hWorkNewName, $hWorkPrice, 4);
 workHourAssign($hWorkNewName, $ModelName, $materialName, $materialDescription);
 workHourCheckCode($hWorkName);
 
-commonDelete("Work Hours", $hWorkNewName, 4);
-commonDeleteValidation("Type of hours", $hWorkNewName);
+commonWorkHourDelete($hWorkNewName);
 
-workHourCreate($hWorkName, $hWorkPrice);
+commonWorkHourCreate($hWorkName, $hWorkPrice);
 workHourAssignCostCategory($cCategoryName, $hWorkName);
-commonDelete("Work Hours", $hWorkName, 4);
-commonDeleteValidation("Type of hours", $hWorkName);
-_log("Delete the work Hour", "custom1");
+commonWorkHourDelete($hWorkName);
 commonLogout();
