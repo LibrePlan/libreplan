@@ -29,9 +29,9 @@ import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.AssertTrue;
 import org.hibernate.validator.NotNull;
 import org.hibernate.validator.Valid;
-import org.joda.time.Hours;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
+import org.joda.time.Seconds;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
@@ -40,6 +40,7 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.navalplanner.business.workreports.valueobjects.DescriptionField;
 import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
@@ -56,13 +57,14 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return create(new WorkReportLine(workReport));
     }
 
-    public static WorkReportLine create(Integer numHours, Resource resource,
+    public static WorkReportLine create(EffortDuration effort,
+            Resource resource,
             OrderElement orderElement, WorkReport workReport) {
-        return create(new WorkReportLine(numHours, resource, orderElement,
+        return create(new WorkReportLine(effort, resource, orderElement,
                 workReport));
     }
 
-    private Integer numHours;
+    private EffortDuration effort;
 
     private Date date;
 
@@ -92,26 +94,26 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         this.setWorkReport(workReport);
     }
 
-    private WorkReportLine(Integer numHours, Resource resource,
+    private WorkReportLine(EffortDuration effort, Resource resource,
             OrderElement orderElement, WorkReport workReport) {
         this(workReport);
-        this.numHours = numHours;
+        this.effort = effort;
         this.resource = resource;
         this.orderElement = orderElement;
     }
 
-    @NotNull(message = "number of hours not specified")
-    public Integer getNumHours() {
-        return numHours;
+    @NotNull(message = "effort not specified")
+    public EffortDuration getEffort() {
+        return effort;
     }
 
-    public void setNumHours(Integer numHours) {
-        this.numHours = numHours;
+    public void setEffort(EffortDuration effort) {
+        this.effort = effort;
         if ((workReport != null)
                 && (workReport.getWorkReportType() != null)
                 && (workReport.getWorkReportType().getHoursManagement()
                         .equals(HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK))) {
-            this.numHours = getDiferenceBetweenTimeStartAndFinish();
+            this.effort = getDiferenceBetweenTimeStartAndFinish();
         }
     }
 
@@ -127,7 +129,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setClockFinish(LocalTime clockFinish) {
         this.clockFinish = clockFinish;
-        updateNumHours();
+        updateEffort();
     }
 
     public LocalTime getClockStart() {
@@ -142,7 +144,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     public void setClockStart(LocalTime clockStart) {
         this.clockStart = clockStart;
-        updateNumHours();
+        updateEffort();
     }
 
     @NotNull(message = "date not specified")
@@ -216,8 +218,8 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         // copy the required fields if these are shared by lines
         updatesAllSharedDataByLines();
 
-        // update calculated hours
-        updateNumHours();
+        // update calculated effort
+        updateEffort();
     }
 
     @Valid
@@ -260,7 +262,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return true;
     }
 
-    @AssertTrue(message = "closckFinish:the clockStart must be not null if number of hours is calcultate by clock")
+    @AssertTrue(message = "clockFinish:the clockStart must be not null if number of hours is calcultate by clock")
     public boolean checkConstraintClockFinishMustBeNotNullIfIsCalculatedByClock() {
         if (!firstLevelValidationsPassed()) {
             return true;
@@ -375,18 +377,19 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         }
     }
 
-    private void updateNumHours() {
+    private void updateEffort() {
         if ((workReport != null)
                 && (workReport.getWorkReportType() != null)
                 && workReport.getWorkReportType().getHoursManagement().equals(
                         HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            setNumHours(getDiferenceBetweenTimeStartAndFinish());
+            setEffort(getDiferenceBetweenTimeStartAndFinish());
         }
     }
 
-    private Integer getDiferenceBetweenTimeStartAndFinish() {
+    private EffortDuration getDiferenceBetweenTimeStartAndFinish() {
         if ((clockStart != null) && (clockFinish != null)) {
-            return Hours.hoursBetween(clockStart, clockFinish).getHours();
+            return EffortDuration.seconds(Seconds.secondsBetween(clockStart,
+                    clockFinish).getSeconds());
         }
         return null;
     }
@@ -429,7 +432,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
         if (workReport.getWorkReportType().getHoursManagement().equals(
                 HoursManagementEnum.HOURS_CALCULATED_BY_CLOCK)) {
-            if (getDiferenceBetweenTimeStartAndFinish().compareTo(numHours) != 0) {
+            if (getDiferenceBetweenTimeStartAndFinish().compareTo(effort) != 0) {
                 return false;
             }
         }
@@ -438,7 +441,7 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
 
     private boolean firstLevelValidationsPassed() {
         return (workReport != null) && (typeOfWorkHours != null)
-                && (numHours != null) && (date != null) && (resource != null)
+                && (effort != null) && (date != null) && (resource != null)
                 && (orderElement != null);
     }
 
@@ -552,4 +555,25 @@ public class WorkReportLine extends IntegrationEntity implements Comparable {
         return getWorkReport() != null ? getWorkReport().isCodeAutogenerated()
                 : false;
     }
+
+    /**
+     * TODO remove this method in order to use
+     * {@link WorkReportLine#getEffort()}
+     * 
+     * @deprecated Use {@link WorkReportLine#getEffort()} instead
+     */
+    public Integer getNumHours() {
+        return (getEffort() == null) ? null : getEffort().getHours();
+    }
+
+    /**
+     * TODO remove this method in order to use
+     * {@link WorkReportLine#setEffort()}
+     * 
+     * @deprecated Use {@link WorkReportLine#setEffort()} instead
+     */
+    public void setNumHours(Integer hours) {
+        setEffort(EffortDuration.hours(hours));
+    }
+
 }

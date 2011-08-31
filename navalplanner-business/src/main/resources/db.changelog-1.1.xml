@@ -230,4 +230,16 @@
         </update>
     </changeSet>
 
+    <changeSet id="change-numhours-to-effort-in-work-report-lines" author="idiazt">
+        <comment>Changing work_report_line numHours to effort</comment>
+        <renameColumn tableName="work_report_line" oldColumnName="num_hours" newColumnName="effort"/>
+    </changeSet>
+
+    <changeSet id="update-numhours-values-to-effort-values" author="idiazt">
+        <comment>Updating numHours to effort (hours to seconds)</comment>
+        <sql>
+            UPDATE work_report_line
+            SET effort = effort*3600
+        </sql>
+    </changeSet>
 </databaseChangeLog>
