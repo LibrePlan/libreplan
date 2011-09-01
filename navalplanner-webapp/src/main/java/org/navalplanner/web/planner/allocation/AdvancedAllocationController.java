@@ -1341,7 +1341,12 @@ class Row {
         @Override
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
-            resourceAllocation.setAssignmentFunction(null);
+            resourceAllocation.setAssignmentFunctionWithoutApply(null);
+            resourceAllocation
+                    .withPreviousAssociatedResources()
+                    .onIntervalWithinTask(resourceAllocation.getStartDate(),
+                            resourceAllocation.getEndDate())
+                    .allocate(allEffortInput.getEffortDurationValue());
             reloadEfforts();
         }
 
