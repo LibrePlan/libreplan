@@ -220,6 +220,33 @@ function commonCriteriaTryDeleteAssigned($criteriaName){
 }
 
 /*
+ * Common functions for Work Report Model
+ */
+
+function commonWorkReportModelCreate($name, $type){
+    commonCreate("Work Report Models");
+    commonWorkReportModelForm($name, $type);
+    commonSaveValidation("Work Report Type", $name);
+    _log("Create a new Work Report Model", "custom1");
+}
+
+function commonWorkReportModelForm($name, $type){
+    _setValue(_textbox(0, _near(_span("Name:"))), $name);
+    _removeFocus(_textbox(0, _near(_div("Name:"))));
+    _setSelected(_select(0, _near(_span("Task:"))), $type);
+    _click(_cell("Add New Complementary Field"));
+    _setValue(_textbox(0, _near(_div("Complementary text fields"))), $name);
+    _setValue(_textbox(1, _near(_div("Complementary text fields"))), "12");
+    _click(_cell("Save"));
+}
+
+function commonWorkReportModelDelete($name){
+    commonDelete("Work Report Models", $name, 1);
+    commonDeleteValidation("Work Report Type", $name);
+    _log("Delete the Work Report Model", "custom1");
+}
+
+/*
  * Common functions for Work hours
  */
 
