@@ -156,7 +156,6 @@ signature="java.lang.Boolean isDefaultPasswordsControl()"?>
         <n:img width="110" height="40" src="${contextPath}/common/img/logos_footer_fundacion.png"/>
         <n:img width="253" height="40" src="${contextPath}/common/img/logos_footer_administracion.png"/>
     </n:td>
-
   </n:tr>
 </n:table>
 </south>

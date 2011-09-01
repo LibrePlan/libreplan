@@ -364,18 +364,10 @@ public class CutyPrint {
             int minWidthPixels) {
         String css = "/* ------ Make the area for task names wider ------ */\n";
         css += "th.z-tree-col {width: 76px !important;}\n";
-        css += "th.tree-text {width: " + (24 + minWidthPixels) + "px !important;}\n";
+        css += "th.tree-text {width: " + (34 + minWidthPixels)
+                + "px !important;}\n";
         css += ".taskdetailsContainer, .z-west-body, .z-tree-header, .z-tree-body {";
         css += "width: " + (176 + minWidthPixels) + "px !important;}\n";
-        css += ".listdetails .depth_1 input.task_title {";
-        css += "width: " + (minWidthPixels - 1) + "px !important;}\n";
-        css += ".listdetails .depth_2 input.task_title {";
-        css += "width: " + (minWidthPixels - 22) + "px !important;}\n";
-        css += ".listdetails .depth_3 input.task_title {";
-        css += "width: " + (minWidthPixels - 43) + "px !important;}\n";
-        css += ".listdetails .depth_4 input.task_title {";
-        css += "width: " + (minWidthPixels - 64) + "px !important;}\n";
-
         return css;
     }
 }

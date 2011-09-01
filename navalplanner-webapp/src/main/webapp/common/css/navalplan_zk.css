@@ -931,6 +931,9 @@ span.z-dottree-line {
     width: 84px;
     height: 84px;
     margin: 0 0 4px 4px;
+}
+
+.perspective tr td, .perspective-active  tr td {
     font-weight: normal;
     font-size: 10px;
 }
@@ -980,8 +983,17 @@ span.z-dottree-line {
     background-color: #E6F2F9;
 }
 
+span.perspective, span.perspective-active {
+    margin: 0 2px;
+}
+
 .perspectives-label {
     display: none;
+}
+
+.taskdetailsContainer {
+    border-left:0;
+    border-top:0;
 }
 
 .z-button.perspective .z-button-cm,
@@ -1769,4 +1781,8 @@ select {
 
 .logo-area {
     width: 1px;
+}
+
+.z-borderlayout {
+    background-color: transparent;
 }
