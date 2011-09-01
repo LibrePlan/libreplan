@@ -12,7 +12,7 @@ users/user_test.sah
 users/profile_test.sah
 
 # Administration and Management
-#administration-management/configuration_test.sah
+administration-management/configuration_test.sah
 administration-management/calendar_test.sah
 administration-management/material_test.sah
 administration-management/quality_forms_test.sah
