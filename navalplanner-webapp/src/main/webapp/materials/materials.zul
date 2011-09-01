@@ -30,14 +30,15 @@
 <zk>
     <window self="@{define(content)}"
         apply="org.navalplanner.web.materials.MaterialsController"
-        title="${i18n:_('Materials')}">
-        <vbox id="messagesContainer" />
+        title="${i18n:_('Materials')}" >
 
         <!-- Categories  -->
-        <hbox width="100%">
-            <panel title="${i18n:_('Categories')}"
-                border="normal">
-                <panelchildren>
+        <vbox width="100%">
+
+        <vbox id="messagesContainer" />
+
+            <groupbox closable="false">
+            <caption label="${i18n:_('Categories')}" />
                     <hbox>
                         <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
                             style="padding-bottom: 4px" />
@@ -47,7 +48,6 @@
                         <button label="${i18n:_('Unselect')}" onClick="materialsController.clearSelectionCategoriesTree()" />
                     </hbox>
 
-                    <separator spacing="5px" orient="horizontal" />
 
                     <tree id="categoriesTree" zclass="z-dottree"
                         rows="5" vflex="true" multiple="false"
@@ -61,15 +61,14 @@
                             <treecol label="${i18n:_('Operations')}" width="80px" />
                         </treecols>
                     </tree>
-                </panelchildren>
-            </panel>
-        </hbox>
+                </groupbox>
+        </vbox>
 
         <!-- Materials -->
-        <hbox width="100%">
-            <panel title="${i18n:_('List of materials for all categories (select one to filter)')}"
-                id="materialsPanel" border="normal">
-                <panelchildren>
+        <vbox width="100%">
+
+        <groupbox closable="false">
+            <caption id="materialsCaption" label="${i18n:_('List of materials for all categories (select one to filter)')}"/>
                     <button id="btnAddMaterial"
                         label="${i18n:_('Add')}"
                         onClick="materialsController.addMaterialToMaterialCategory(categoriesTree.selectedItem)" />
@@ -107,10 +106,8 @@
                             </row>
                         </rows>
                     </newdatasortablegrid>
-
-                </panelchildren>
-            </panel>
-        </hbox>
+                </groupbox>
+        </vbox>
 
         <!-- Save button -->
         <button onClick="materialsController.saveAndContinue()"

@@ -50,6 +50,7 @@ import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Caption;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Listbox;
@@ -96,7 +97,7 @@ public class MaterialsController extends
 
     private Component messagesContainer;
 
-    private Panel materialsPanel;
+    private Caption materialsCaption;
 
     private UnitTypeListRenderer unitTypeListRenderer = new UnitTypeListRenderer();
 
@@ -483,11 +484,12 @@ public class MaterialsController extends
     private void refreshMaterialsListTitle() {
         Treeitem treeitem = categoriesTree.getSelectedItem();
         if (treeitem != null) {
-            materialsPanel.setTitle(_("List of materials for category: {0}",
+            materialsCaption.setLabel(_("List of materials for category: {0}",
                     ((MaterialCategory) treeitem.getValue()).getName()));
         }
         else {
-            materialsPanel.setTitle
+            materialsCaption
+                    .setLabel
                 (_("List of materials for all categories (select one to filter)"));
         }
     }
