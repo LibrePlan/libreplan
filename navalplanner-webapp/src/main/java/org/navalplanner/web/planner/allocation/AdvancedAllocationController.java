@@ -1388,7 +1388,7 @@ class Row {
 
         @Override
         public void applyOn(ResourceAllocation<?> resourceAllocation) {
-            resourceAllocation.setAssignmentFunction(ManualFunction.create());
+            resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction.create());
         }
 
         @Override
@@ -1490,7 +1490,7 @@ class Row {
         @Override
         public void applyOn(
                 ResourceAllocation<?> resourceAllocation) {
-            resourceAllocation.setAssignmentFunction(SigmoidFunction.create());
+            resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(SigmoidFunction.create());
             reloadEfforts();
         }
 
@@ -1655,7 +1655,7 @@ class Row {
                 .setSelectedFunction(AssignmentFunctionName.MANUAL.toString());
         ResourceAllocation<?> allocation = getAllocation();
         if (!(allocation.getAssignmentFunction() instanceof ManualFunction)) {
-            allocation.setAssignmentFunction(ManualFunction.create());
+            allocation.setAssignmentFunctionAndApplyIfNotFlat(ManualFunction.create());
         }
     }
 

@@ -58,7 +58,7 @@ public abstract class StrechesFunctionConfiguration implements
 
         int exitStatus = stretchesFunctionController.showWindow();
         if (exitStatus == Messagebox.OK) {
-            getAllocation().setAssignmentFunction(
+            getAllocation().setAssignmentFunctionAndApplyIfNotFlat(
                     stretchesFunctionController.getAssignmentFunction());
             assignmentFunctionChanged();
         }
@@ -94,7 +94,7 @@ public abstract class StrechesFunctionConfiguration implements
 
     @Override
     public void applyOn(ResourceAllocation<?> resourceAllocation) {
-        resourceAllocation.setAssignmentFunction(StretchesFunction.create());
+        resourceAllocation.setAssignmentFunctionAndApplyIfNotFlat(StretchesFunction.create());
     }
 
     @Override
