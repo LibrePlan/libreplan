@@ -52,21 +52,24 @@ public class AssignedHoursToOrderElementController extends
         return assignedHoursToOrderElementModel.getWorkReportLines();
     }
 
-    public int getTotalAssignedDirectHours() {
-        return assignedHoursToOrderElementModel.getAssignedDirectHours();
+    public String getTotalAssignedDirectEffort() {
+        return assignedHoursToOrderElementModel.getAssignedDirectEffort()
+                .toFormattedString();
     }
 
-    public int getTotalAssignedHours() {
-        return assignedHoursToOrderElementModel.getTotalAssignedHours();
+    public String getTotalAssignedEffort() {
+        return assignedHoursToOrderElementModel.getTotalAssignedEffort()
+                .toFormattedString();
     }
 
-    public int getHoursChildren() {
+    public String getEffortChildren() {
         return assignedHoursToOrderElementModel
-                .getAssignedDirectHoursChildren();
+                .getAssignedDirectEffortChildren().toFormattedString();
     }
 
-    public int getEstimatedHours() {
-        return assignedHoursToOrderElementModel.getEstimatedHours();
+    public String getEstimatedEffort() {
+        return assignedHoursToOrderElementModel.getEstimatedEffort()
+                .toFormattedString();
     }
 
     public int getProgressWork() {

@@ -21,15 +21,18 @@ import java.util.Date;
 import org.joda.time.LocalDate;
 import org.navalplanner.business.costcategories.entities.TypeOfWorkHours;
 import org.navalplanner.business.resources.entities.Resource;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 
 /**
  * DTO for {@link WorkReportLine} entity.
+ *
  * @author Susana Montes Pedreira <smonts@wirelessgalicia.com>
+ * @author Ignacio Diaz Teijido <ignacio.diaz@comtecsf.es>
  */
 public class WorkReportLineDTO {
 
-    private Integer sumHours;
+    private EffortDuration sumEffort;
 
     private Date date;
 
@@ -41,19 +44,11 @@ public class WorkReportLineDTO {
     }
 
     public WorkReportLineDTO(Resource resource,
-            TypeOfWorkHours typeOfWorkHours, Date date, Long numHours) {
+            TypeOfWorkHours typeOfWorkHours, Date date, Long effortDB) {
         this.setDate(date);
         this.setResource(resource);
         this.setTypeOfWorkHours(typeOfWorkHours);
-        this.setSumHours(new Integer(numHours.intValue()));
-    }
-
-    public void setSumHours(Integer numHours) {
-        this.sumHours = numHours;
-    }
-
-    public Integer getSumHours() {
-        return sumHours;
+        this.setSumEffort(EffortDuration.seconds(effortDB.intValue()));
     }
 
     public void setDate(Date date) {
@@ -82,6 +77,14 @@ public class WorkReportLineDTO {
 
     public LocalDate getLocalDate() {
         return LocalDate.fromDateFields(getDate());
+    }
+
+    public void setSumEffort(EffortDuration effort) {
+        this.sumEffort = effort;
+    }
+
+    public EffortDuration getSumEffort() {
+        return sumEffort;
     }
 
 }

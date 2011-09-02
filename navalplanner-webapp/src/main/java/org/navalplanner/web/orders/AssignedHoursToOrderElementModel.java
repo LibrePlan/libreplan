@@ -33,6 +33,7 @@ import org.joda.time.LocalDate;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.reports.dtos.WorkReportLineDTO;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workreports.daos.IWorkReportLineDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -44,6 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Service to show the asigned hours of a selected order element
  *
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
+ * @author Ignacio Díaz Teijido <ignacio.diaz@comtecsf.es>
  */
 @Service
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -56,7 +58,7 @@ public class AssignedHoursToOrderElementModel implements
     @Autowired
     private IOrderElementDAO orderElementDAO;
 
-    private int assignedDirectHours;
+    private EffortDuration assignedDirectEffort;
 
     private OrderElement orderElement;
 
@@ -66,7 +68,7 @@ public class AssignedHoursToOrderElementModel implements
     public AssignedHoursToOrderElementModel(IWorkReportLineDAO workReportLineDAO) {
         Validate.notNull(workReportLineDAO);
         this.workReportLineDAO = workReportLineDAO;
-        this.assignedDirectHours = 0;
+        this.assignedDirectEffort = EffortDuration.zero();
     }
 
     @Override
@@ -76,7 +78,7 @@ public class AssignedHoursToOrderElementModel implements
             return new ArrayList<WorkReportLineDTO>();
         }
         orderElementDAO.reattach(orderElement);
-        this.assignedDirectHours = 0;
+        this.assignedDirectEffort = EffortDuration.zero();
         this.listWRL = workReportLineDAO
                 .findByOrderElementGroupByResourceAndHourTypeAndDate(orderElement);
 
@@ -86,8 +88,8 @@ public class AssignedHoursToOrderElementModel implements
             WorkReportLineDTO w = iterador.next();
             w.getResource().getShortDescription();
             w.getTypeOfWorkHours().getName();
-            this.assignedDirectHours = this.assignedDirectHours
-                    + w.getSumHours();
+            this.assignedDirectEffort = this.assignedDirectEffort.plus(w
+                    .getSumEffort());
         }
         return sortByDate(listWRL);
     }
@@ -128,8 +130,8 @@ public class AssignedHoursToOrderElementModel implements
                                 .equals(nextWRL.getTypeOfWorkHours().getId()))
                         && (currentDate.compareTo(nextDate) == 0)) {
                     // sum the number of hours to the next WorkReportLineDTO
-                    currentWRL.setSumHours(currentWRL.getSumHours()
-                            + nextWRL.getSumHours());
+                    currentWRL.setSumEffort(currentWRL.getSumEffort().plus(
+                            nextWRL.getSumEffort()));
                 } else {
                     groupedByDateList.add(nextWRL);
                     currentWRL = nextWRL;
@@ -140,32 +142,32 @@ public class AssignedHoursToOrderElementModel implements
     }
 
     @Override
-    public int getAssignedDirectHours() {
+    public EffortDuration getAssignedDirectEffort() {
         if (orderElement == null) {
-            return 0;
+            return EffortDuration.zero();
         }
-        return this.assignedDirectHours;
+        return this.assignedDirectEffort;
     }
 
     @Override
-    public int getTotalAssignedHours() {
+    public EffortDuration getTotalAssignedEffort() {
         if (orderElement == null) {
-            return 0;
+            return EffortDuration.zero();
         }
-        return this.orderElement.getSumChargedEffort().getTotalChargedHours();
+        return this.orderElement.getSumChargedEffort().getTotalChargedEffort();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public int getAssignedDirectHoursChildren() {
+    public EffortDuration getAssignedDirectEffortChildren() {
         if (orderElement == null) {
-            return 0;
+            return EffortDuration.zero();
         }
         if (orderElement.getChildren().isEmpty()) {
-            return 0;
+            return EffortDuration.zero();
         }
-        int assignedDirectChildren = getTotalAssignedHours()
-                - this.assignedDirectHours;
+        EffortDuration assignedDirectChildren = getTotalAssignedEffort().minus(
+                this.assignedDirectEffort);
         return assignedDirectChildren;
     }
 
@@ -177,11 +179,12 @@ public class AssignedHoursToOrderElementModel implements
 
     @Override
     @Transactional(readOnly = true)
-    public int getEstimatedHours() {
+    public EffortDuration getEstimatedEffort() {
         if (orderElement == null) {
-            return 0;
+            return EffortDuration.zero();
         }
-        return orderElement.getWorkHours();
+        //TODO this must be changed when changing HoursGroup
+        return EffortDuration.hours(orderElement.getWorkHours());
     }
 
     @Override
