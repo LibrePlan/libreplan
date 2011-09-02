@@ -47,7 +47,8 @@ import org.navalplanner.business.workreports.valueobjects.DescriptionValue;
  * @author Diego Pino García <dpino@igalia.com>
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  */
-public class WorkReport extends IntegrationEntity {
+public class WorkReport extends IntegrationEntity implements
+        IWorkReportsElements {
 
     public static final String DATE = "date";
     public static final String RESOURCE = "resource";
@@ -105,10 +106,12 @@ public class WorkReport extends IntegrationEntity {
         this.orderElement = orderElement;
     }
 
+    @Override
     public Date getDate() {
         return date != null ? new Date(date.getTime()) : null;
     }
 
+    @Override
     public void setDate(Date date) {
         this.date = date != null ? new Date(date.getTime()) : null;
         if (workReportType != null) {
@@ -154,27 +157,33 @@ public class WorkReport extends IntegrationEntity {
         workReportLines.remove(workReportLine);
     }
 
+    @Override
     @Valid
     public Set<DescriptionValue> getDescriptionValues() {
         return Collections.unmodifiableSet(descriptionValues);
     }
 
+    @Override
     public void setDescriptionValues(Set<DescriptionValue> descriptionValues) {
         this.descriptionValues = descriptionValues;
     }
 
+    @Override
     public Set<Label> getLabels() {
         return labels;
     }
 
+    @Override
     public void setLabels(Set<Label> labels) {
         this.labels = labels;
     }
 
+    @Override
     public Resource getResource() {
         return resource;
     }
 
+    @Override
     public void setResource(Resource resource) {
         this.resource = resource;
         if (workReportType != null) {
@@ -186,10 +195,12 @@ public class WorkReport extends IntegrationEntity {
         }
     }
 
+    @Override
     public OrderElement getOrderElement() {
         return orderElement;
     }
 
+    @Override
     public void setOrderElement(OrderElement orderElement) {
         this.orderElement = orderElement;
         if (workReportType != null) {
