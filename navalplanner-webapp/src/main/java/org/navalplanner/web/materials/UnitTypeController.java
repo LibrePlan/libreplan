@@ -41,6 +41,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
@@ -123,13 +124,17 @@ public class UnitTypeController extends GenericForwardComposer {
                     }
                 }));
 
-                hbox.appendChild(Util.createRemoveButton(new EventListener() {
+                Button removeButton = Util
+                        .createRemoveButton(new EventListener() {
 
                     @Override
                     public void onEvent(Event event) throws Exception {
                         confirmRemove(unitType);
                     }
-                }));
+                });
+                removeButton.setDisabled(unitTypeModel
+                        .isUnitTypeUsedInAnyMaterial(unitType));
+                hbox.appendChild(removeButton);
 
                 row.appendChild(hbox);
             }
