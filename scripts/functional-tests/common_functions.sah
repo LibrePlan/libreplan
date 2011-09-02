@@ -117,6 +117,29 @@ function commonWorkerAcctionValidation($action){
 }
 
 /*
+ * Common functions for Machine
+ */
+
+function commonMachineCreate($name, $description) {
+    commonCreate("Machines");
+    commonMachineForm($name, $description);
+    commonSaveValidation("Machine", $name);
+    _log("Create a new Machine", "custom1");
+}
+
+function commonMachineForm($name, $description) {
+    _setValue(_textbox(0, _near(_span("Name"))), $name);
+    _setValue(_textbox(0, _near(_span("Description"))), $description);
+    _click(_cell("Save"));
+}
+
+function commonMachineDelete($name){
+    commonDelete("Machines", $name, 4);
+    commonDeleteValidation("Machine", $name);
+    _log("Delete the machine", "custom1");
+}
+
+/*
  * Common functions for Calendar
  */
 
