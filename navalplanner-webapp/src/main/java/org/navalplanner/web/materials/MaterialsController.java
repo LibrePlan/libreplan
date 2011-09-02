@@ -386,10 +386,10 @@ public class MaterialsController extends
     private void reloadCategoriesTree(Treeitem treeitem) {
         if (treeitem != null) {
             final MaterialCategory materialCategory = (MaterialCategory) treeitem.getValue();
-            Util.reloadBindings(categoriesTree);
+            categoriesTree.invalidate();
             locateAndSelectMaterialCategory(materialCategory);
         } else {
-            Util.reloadBindings(categoriesTree);
+            categoriesTree.invalidate();
         }
     }
 

@@ -38,7 +38,7 @@
         <vbox id="messagesContainer" />
 
             <groupbox closable="false">
-            <caption label="${i18n:_('Categories')}" />
+                    <caption label="${i18n:_('Categories')}" />
                     <hbox>
                         <textbox id="txtCategory" onOK="materialsController.addMaterialCategory()"
                             style="padding-bottom: 4px" />
