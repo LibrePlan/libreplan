@@ -267,4 +267,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="rename-sum_charged_hours_id-to-sum_charged_effort_id" author="mrego">
+        <comment>Rename sum_charged_hours_id to sum_charged_effort_id in order_element</comment>
+        <renameColumn tableName="order_element"
+            oldColumnName="sum_charged_hours_id"
+            newColumnName="sum_charged_effort_id" />
+    </changeSet>
+
+
 </databaseChangeLog>

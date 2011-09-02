@@ -150,8 +150,8 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
-        final int totalChargedHours = orderElement.getSumChargedHours() != null ? orderElement
-                .getSumChargedHours().getTotalChargedHours() : 0;
+        final int totalChargedHours = orderElement.getSumChargedEffort() != null ? orderElement
+                .getSumChargedEffort().getTotalChargedHours() : 0;
         BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
                 .setScale(2);
@@ -461,7 +461,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
             });
             differenceOfHours = hours - oldNumHours;
         }
-        orderElement.getSumChargedHours().addDirectChargedHours(differenceOfHours);
+        orderElement.getSumChargedEffort().addDirectChargedHours(differenceOfHours);
         save(orderElement);
         updateIndirectChargedHoursRecursively(orderElement.getParent(),differenceOfHours,
                 relationOrderElementIdAndIndirectChargedHours);
@@ -480,7 +480,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
         OrderElement orderElement = find(workReportLine.getOrderElement().getId());
         Integer hours = workReportLine.getNumHours() * -1;
 
-        orderElement.getSumChargedHours().addDirectChargedHours(hours);
+        orderElement.getSumChargedEffort().addDirectChargedHours(hours);
         save(orderElement);
         updateIndirectChargedHoursRecursively(orderElement.getParent(), hours,
                 relationOrderElementIdAndIndirectChargedHours);
@@ -509,7 +509,7 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
 
         for(Long id : relationOrderElementIdAndIndirectChargedHours.keySet()) {
             OrderElement orderElement = find(id);
-            orderElement.getSumChargedHours().addIndirectChargedHours(
+            orderElement.getSumChargedEffort().addIndirectChargedHours(
                     relationOrderElementIdAndIndirectChargedHours.get(id));
             save(orderElement);
         }

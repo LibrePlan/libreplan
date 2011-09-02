@@ -420,16 +420,16 @@ public class OrderElementDAOTest {
     public void testSumChargedHoursRelation() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
 
-        orderLine.getSumChargedHours().setDirectChargedHours(8);
-        orderLine.getSumChargedHours().setIndirectChargedHours(10);
+        orderLine.getSumChargedEffort().setDirectChargedHours(8);
+        orderLine.getSumChargedEffort().setIndirectChargedHours(10);
 
         orderElementDAO.save(orderLine);
 
         OrderElement orderLineCopy = orderElementDAO.find(orderLine.getId());
 
-        assertEquals(orderLine.getSumChargedHours().getId(),
-                orderLineCopy.getSumChargedHours().getId());
+        assertEquals(orderLine.getSumChargedEffort().getId(),
+                orderLineCopy.getSumChargedEffort().getId());
 
-        assertTrue(orderLineCopy.getSumChargedHours().getTotalChargedHours().equals(18));
+        assertTrue(orderLineCopy.getSumChargedEffort().getTotalChargedHours().equals(18));
     }
 }

@@ -74,9 +74,9 @@
                 column="scheduling_state_for_version_id" />
         </map>
 
-       <many-to-one name="sumChargedHours"
+       <many-to-one name="sumChargedEffort"
            class="SumChargedEffort"
-           column="sum_charged_hours_id"
+           column="sum_charged_effort_id"
            cascade="save-update, delete"
            unique="true"
            lazy="false" />

@@ -152,7 +152,7 @@ public class AssignedHoursToOrderElementModel implements
         if (orderElement == null) {
             return 0;
         }
-        return this.orderElement.getSumChargedHours().getTotalChargedHours();
+        return this.orderElement.getSumChargedEffort().getTotalChargedHours();
     }
 
     @Override
