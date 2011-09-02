@@ -75,7 +75,7 @@
         </map>
 
        <many-to-one name="sumChargedHours"
-           class="SumChargedHours"
+           class="SumChargedEffort"
            column="sum_charged_hours_id"
            cascade="save-update, delete"
            unique="true"
@@ -236,7 +236,7 @@
         </set>
     </class>
 
-    <class name="SumChargedHours" table="sum_charged_hours">
+    <class name="SumChargedEffort" table="sum_charged_effort">
         <id name="id" access="property" type="long">
             <generator class="hilo" >
                 <param name="max_lo">100</param>
@@ -244,10 +244,12 @@
         </id>
         <version name="version" access="property" type="long" />
 
-        <property name="directChargedHours" access="field"
-            column="direct_charged_hours" />
-        <property name="indirectChargedHours" access="field"
-            column="indirect_charged_hours" />
+        <property name="directChargedEffort" access="field"
+            column="direct_charged_effort"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType" />
+        <property name="indirectChargedEffort" access="field"
+            column="indirect_charged_effort"
+            type="org.navalplanner.business.workingday.hibernate.EffortDurationType" />
     </class>
 
 </hibernate-mapping>

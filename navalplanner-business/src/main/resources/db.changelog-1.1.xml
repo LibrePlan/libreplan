@@ -242,4 +242,29 @@
             SET effort = effort*3600
         </sql>
     </changeSet>
+
+    <changeSet id="change-sum_charged_hours-to-sum_charged_effort" author="mrego">
+        <comment>Changing sum_charged_hours to sum_charged_effort</comment>
+        <renameTable oldTableName="sum_charged_hours"
+            newTableName="sum_charged_effort" />
+        <renameColumn tableName="sum_charged_effort"
+            oldColumnName="direct_charged_hours"
+            newColumnName="direct_charged_effort" />
+        <renameColumn tableName="sum_charged_effort"
+            oldColumnName="indirect_charged_hours"
+            newColumnName="indirect_charged_effort" />
+    </changeSet>
+
+    <changeSet id="update-effort-values-in-sum_charged_effort" author="mrego">
+        <comment>Updating effort values (hours to seconds) in sum_charged_effort table</comment>
+        <sql>
+            UPDATE sum_charged_effort
+            SET direct_charged_effort = direct_charged_effort*3600
+        </sql>
+        <sql>
+            UPDATE sum_charged_effort
+            SET indirect_charged_effort = indirect_charged_effort*3600
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
