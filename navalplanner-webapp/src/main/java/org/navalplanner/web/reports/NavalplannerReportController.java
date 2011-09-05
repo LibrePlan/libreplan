@@ -30,6 +30,8 @@ import java.util.Set;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRParameter;
 
+import org.navalplanner.business.common.Registry;
+import org.springframework.transaction.annotation.Transactional;
 import org.zkoss.util.Locales;
 import org.zkoss.zk.au.out.AuDownload;
 import org.zkoss.zk.ui.Executions;
@@ -100,7 +102,12 @@ public abstract class NavalplannerReportController extends GenericForwardCompose
 
     protected Map<String, Object> getParameters() {
         Map<String, Object> parameters = new HashMap<String, Object>();
-        parameters.put("logo", String.format("/logos/%s/logo.png", getLanguage()));
+        String companyLogo = Registry.getConfigurationDAO()
+                .getConfigurationWithReadOnlyTransaction().getCompanyLogoURL();
+        if (companyLogo == "") {
+            companyLogo = "/logos/logo.png";
+        }
+        parameters.put("logo", companyLogo);
         parameters.put(JRParameter.REPORT_LOCALE, getCurrentLocale());
         return parameters;
     }
