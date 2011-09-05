@@ -140,7 +140,6 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
 
     }
 
-    @NotEmpty
     private String name;
 
     @Valid
@@ -170,6 +169,7 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         this.name = name;
     }
 
+    @NotEmpty(message = "name not specified")
     public String getName() {
         return name;
     }
