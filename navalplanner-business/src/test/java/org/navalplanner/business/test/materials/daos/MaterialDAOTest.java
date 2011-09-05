@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.navalplanner.business.IDataBootstrap;
 import org.navalplanner.business.common.exceptions.InstanceNotFoundException;
+import org.navalplanner.business.common.exceptions.ValidationException;
 import org.navalplanner.business.materials.daos.IMaterialCategoryDAO;
 import org.navalplanner.business.materials.daos.IMaterialDAO;
 import org.navalplanner.business.materials.entities.Material;
@@ -93,6 +94,7 @@ public class MaterialDAOTest {
         MaterialCategory materialCategory = MaterialCategory.create(UUID.randomUUID().toString());
         materialCategoryDAO.save(materialCategory);
         Material material = Material.create(UUID.randomUUID().toString());
+        material.setDescription("material");
         material.setCategory(materialCategory);
         return material;
     }
@@ -102,6 +104,13 @@ public class MaterialDAOTest {
         Material material = createValidMaterial();
         materialDAO.save(material);
         assertTrue(material.getId() != null);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void testSaveMaterialWithoutDescription() {
+        Material material = createValidMaterial();
+        material.setDescription(null);
+        materialDAO.save(material);
     }
 
     @Test

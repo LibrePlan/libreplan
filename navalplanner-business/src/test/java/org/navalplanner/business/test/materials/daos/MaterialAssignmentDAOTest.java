@@ -73,6 +73,7 @@ public class MaterialAssignmentDAOTest {
         UnitType unitType = UnitType.create("m");
         unitTypeDAO.save(unitType);
         Material material = Material.create(UUID.randomUUID().toString());
+        material.setDescription("material");
         material.setCategory(materialCategory);
         material.setUnitType(unitType);
         materialDAO.save(material);

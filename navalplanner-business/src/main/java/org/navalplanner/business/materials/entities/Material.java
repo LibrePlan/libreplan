@@ -24,6 +24,7 @@ package org.navalplanner.business.materials.entities;
 import java.math.BigDecimal;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.NotEmpty;
 import org.hibernate.validator.NotNull;
 import org.navalplanner.business.common.IntegrationEntity;
 import org.navalplanner.business.common.Registry;
@@ -101,6 +102,7 @@ public class Material extends IntegrationEntity implements Comparable {
         this.category = category;
     }
 
+    @NotEmpty(message = "description is not specified")
     public String getDescription() {
         return description;
     }
