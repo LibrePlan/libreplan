@@ -37,9 +37,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import javax.annotation.Resource;
 
@@ -282,7 +282,7 @@ public class ReportAdvancesServiceTest {
     private Order givenValidOrderAlreadyStored() {
         Order order = Order.create();
         order.setCode(UUID.randomUUID().toString());
-        order.setName("Order name");
+        order.setName("Order name " + UUID.randomUUID());
         order.setInitDate(new Date());
         order.setCalendar(configurationDAO.getConfiguration()
                 .getDefaultCalendar());
