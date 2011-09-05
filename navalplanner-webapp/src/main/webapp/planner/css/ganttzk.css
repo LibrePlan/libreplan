@@ -1176,16 +1176,9 @@ height: 100%
     background-image: url("../../zkau/web/ganttz/img/deadline.png");
 }
 
-
-
 body .perspectives-column {
     display:inline;
 }
-
-.perspectives-column .z-west-body {
-    width: 200px !important;
-}
-
 
 #watermark .timetracker_column .today_deadline {
     background-image:url(../img/watermark_today.png);
