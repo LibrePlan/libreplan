@@ -77,6 +77,12 @@ public class BaseCalendar extends IntegrationEntity implements ICalendar,
         return calendar;
     }
 
+    public static BaseCalendar createBasicCalendar(String code) {
+        BaseCalendar calendar = create(code);
+        resetDefaultCapacities(calendar);
+        return calendar;
+    }
+
     public static List<BaseCalendar> sortByName(List<BaseCalendar> baseCalendars) {
         Collections.sort(baseCalendars, new Comparator<BaseCalendar>() {
 
