@@ -153,7 +153,7 @@ function workReportForm($machine, $project, $workHour) {
 }
 
 function commonTryDeleteProject($name){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
     _click(_cell("OK"));
     _assertExists(_div("You can not remove the project \"new project\" because of any of its tasks are already in use in some work reports and the project just exists in the current scenario"));

@@ -136,7 +136,7 @@ function progressAssigned($projectName, $progressNewName){
 }
 
 function progressAssignProject($projectName, $progressNewName){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($projectName))))));
     _click(_span("Progress"));
     _click(_cell("Add new progress assignment"));

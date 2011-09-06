@@ -82,7 +82,7 @@ function configCheckMonteCarlo(){
 }
 
 function configCheckScenario(){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _assertExists(_span("scenario:"));
     _assert(_isVisible(_span("scenario:")));
     _log("Scenario is showed", "custom1");
@@ -200,7 +200,7 @@ function configCheckCalendarWorker($name){
 }
 
 function configCheckCalendarProject($name){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_add.png"));
     if (_condition(_textbox(0, _near(_span("Calendar"))).value == $name)){
     _log("The correct calendar is assigned", "custom1");

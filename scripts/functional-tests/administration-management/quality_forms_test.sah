@@ -95,7 +95,7 @@ function qualityFormAssign($qualityFormName, $project){
 }
 
 function qualityFormAssingProject($qualityFormName, $project){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_editar1.png", _in(_cell(8,_near(_cell($project))))));
     _click(_span("Task quality forms"));
     _click(_italic(0, _near(_span("Assign quality form"))));

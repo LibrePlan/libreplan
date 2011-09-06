@@ -49,7 +49,7 @@ function commonDelete ($something, $name, $cell) {
 
 /* Create new project */
 function commonCreateProject($name){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_add.png"));
     _setValue(_textbox(6), $name);
     _click(_cell("Accept"));
@@ -58,7 +58,7 @@ function commonCreateProject($name){
 
 /* Delete a project */
 function commonDeleteProject($name){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($name))))));
     _click(_cell("OK"));
     _assertExists(_div("Removed "+$name));

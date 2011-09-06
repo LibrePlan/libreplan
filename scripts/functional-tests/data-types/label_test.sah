@@ -102,7 +102,7 @@ function labelAssig($project, $labelName, $labelType2){
 }
 
 function labelAssignProject($project){
-    _click(_link("Projects"));
+    _click(_link("Projects List"));
     _click(_image("ico_editar1.png", _in(_cell(8, _near(_cell($project))))));
     _click(_span("Label"));
     _click(_textbox(0, _near(_cell("Assign"))));
