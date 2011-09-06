@@ -45,7 +45,6 @@ import org.navalplanner.business.labels.entities.Label;
 import org.navalplanner.business.labels.entities.LabelType;
 import org.navalplanner.business.orders.daos.IOrderDAO;
 import org.navalplanner.business.orders.daos.IOrderElementDAO;
-import org.navalplanner.business.orders.entities.Order;
 import org.navalplanner.business.orders.entities.OrderElement;
 import org.navalplanner.business.orders.entities.OrderLineGroup;
 import org.navalplanner.business.resources.daos.IWorkerDAO;
@@ -281,9 +280,11 @@ public class WorkReportModel extends IntegrationEntityModel implements
     @Transactional
     public void confirmSave() throws ValidationException {
         try {
-            orderElementDAO.updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+            orderElementDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
                     deletedWorkReportLinesSet);
-            orderElementDAO.updateRelatedSumChargedHoursWithWorkReportLineSet(
+            orderElementDAO
+                    .updateRelatedSumChargedEffortWithWorkReportLineSet(
                     workReport.getWorkReportLines());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -420,7 +421,8 @@ public class WorkReportModel extends IntegrationEntityModel implements
     public void remove(WorkReport workReport) {
         //before deleting the report, update OrderElement.SumChargedHours
         try {
-            orderElementDAO.updateRelatedSumChargedHoursWithDeletedWorkReportLineSet(
+            orderElementDAO
+                    .updateRelatedSumChargedEffortWithDeletedWorkReportLineSet(
                     workReport.getWorkReportLines());
             workReportDAO.remove(workReport.getId());
         } catch (InstanceNotFoundException e) {
