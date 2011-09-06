@@ -103,7 +103,7 @@ public class SaveCommandBuilder {
 
     public ISaveCommand build(PlanningState planningState,
             PlannerConfiguration<TaskElement> plannerConfiguration) {
-        SaveCommandImpl result = new SaveCommandImpl(planningState,
+        SaveCommand result = new SaveCommand(planningState,
                 plannerConfiguration);
 
         return ConcurrentModificationHandling.addHandling(
@@ -175,7 +175,7 @@ public class SaveCommandBuilder {
     @Autowired
     private IAdHocTransactionService transactionService;
 
-    private class SaveCommandImpl implements ISaveCommand {
+    private class SaveCommand implements ISaveCommand {
 
         private PlanningState state;
 
@@ -187,7 +187,7 @@ public class SaveCommandBuilder {
 
         private List<IAfterSaveListener> listeners = new ArrayList<IAfterSaveListener>();
 
-        public SaveCommandImpl(PlanningState planningState,
+        public SaveCommand(PlanningState planningState,
                 PlannerConfiguration<TaskElement> configuration) {
             this.state = planningState;
             this.configuration = configuration;

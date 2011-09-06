@@ -62,10 +62,14 @@ import org.navalplanner.business.scenarios.daos.IScenarioDAO;
 import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.web.calendars.BaseCalendarModel;
+import org.navalplanner.web.planner.TaskElementAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
+import org.zkoss.ganttz.adapters.IStructureNavigator;
+import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.zk.ui.Desktop;
 
 /**
@@ -132,6 +136,12 @@ public class PlanningStateCreator {
     @Autowired
     private ITaskSourceDAO taskSourceDAO;
 
+    @Autowired
+    private TaskElementAdapter taskElementAdapterCreator;
+
+    @Autowired
+    private SaveCommandBuilder saveCommandBuilder;
+
     public interface IActionsOnRetrieval {
 
         public void onRetrieval(PlanningState planningState);
@@ -146,6 +156,7 @@ public class PlanningStateCreator {
         Object existent = desktop.getAttribute(ATTRIBUTE_NAME);
         if (existent instanceof PlanningState) {
             PlanningState result = (PlanningState) existent;
+            result.onRetrieval();
             if (onRetrieval != null) {
                 onRetrieval.onRetrieval(result);
             }
@@ -324,6 +335,28 @@ public class PlanningStateCreator {
                 }
             }
             forceLoadOfLabels(taskElement.getChildren());
+        }
+    }
+
+    private static final class TaskElementNavigator implements
+            IStructureNavigator<TaskElement> {
+
+        @Override
+        public List<TaskElement> getChildren(TaskElement object) {
+            return object.getChildren();
+        }
+
+        @Override
+        public boolean isLeaf(TaskElement object) {
+            return object.isLeaf();
+        }
+
+        @Override
+        public boolean isMilestone(TaskElement object) {
+            if (object != null) {
+                return object instanceof TaskMilestone;
+            }
+            return false;
         }
     }
 
@@ -511,6 +544,42 @@ public class PlanningStateCreator {
          */
         public IAssignmentsOnResourceCalculator getAssignmentsCalculator() {
             return getScenarioInfo().getAssignmentsCalculator();
+        }
+
+        void onRetrieval() {
+            cachedConfiguration = null;
+            cachedCommand = null;
+        }
+
+        private PlannerConfiguration<TaskElement> cachedConfiguration;
+
+        public PlannerConfiguration<TaskElement> getConfiguration() {
+            if (cachedConfiguration != null) {
+                return cachedConfiguration;
+            }
+            IAdapterToTaskFundamentalProperties<TaskElement> adapter;
+            adapter = taskElementAdapterCreator.createForOrder(
+                    getScenarioInfo().getCurrentScenario(), order);
+
+            PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
+                    adapter, new TaskElementNavigator(), getInitial());
+
+            result.setNotBeforeThan(order.getInitDate());
+            result.setNotAfterThan(order.getDeadline());
+            result.setDependenciesConstraintsHavePriority(order
+                    .getDependenciesConstraintsHavePriority());
+            result.setScheduleBackwards(order.isScheduleBackwards());
+            return cachedConfiguration = result;
+        }
+
+        private ISaveCommand cachedCommand;
+
+        public ISaveCommand getSaveCommand() {
+            if (cachedCommand != null) {
+                return cachedCommand;
+            }
+            return cachedCommand = saveCommandBuilder.build(this,
+                    getConfiguration());
         }
 
         public abstract Collection<? extends TaskElement> getTasksToSave();

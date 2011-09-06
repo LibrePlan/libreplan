@@ -64,11 +64,9 @@ import org.navalplanner.business.planner.entities.ICostCalculator;
 import org.navalplanner.business.planner.entities.Task;
 import org.navalplanner.business.planner.entities.TaskElement;
 import org.navalplanner.business.planner.entities.TaskGroup;
-import org.navalplanner.business.planner.entities.TaskMilestone;
 import org.navalplanner.business.resources.entities.CriterionSatisfaction;
 import org.navalplanner.business.resources.entities.Resource;
 import org.navalplanner.business.scenarios.IScenarioManager;
-import org.navalplanner.business.scenarios.entities.Scenario;
 import org.navalplanner.business.users.daos.IOrderAuthorizationDAO;
 import org.navalplanner.business.users.daos.IUserDAO;
 import org.navalplanner.business.users.entities.OrderAuthorization;
@@ -78,7 +76,6 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.advances.IAdvanceAssignmentPlanningCommand;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
@@ -110,7 +107,6 @@ import org.zkforge.timeplot.Plotinfo;
 import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.Planner;
-import org.zkoss.ganttz.adapters.IStructureNavigator;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IPrintAction;
 import org.zkoss.ganttz.adapters.PlannerConfiguration.IReloadChartListener;
@@ -223,9 +219,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private IScenarioManager scenarioManager;
 
     @Autowired
-    private SaveCommandBuilder saveCommandBuilder;
-
-    @Autowired
     private IReassignCommand reassignCommand;
 
     @Autowired
@@ -255,42 +248,15 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     @Autowired
-    private TaskElementAdapter taskElementAdapterCreator;
-
-    @Autowired
     private ICostCalculator hoursCostCalculator;
 
     private List<Checkbox> earnedValueChartConfigurationCheckboxes = new ArrayList<Checkbox>();
 
     private List<IChartVisibilityChangedListener> keepAliveChartVisibilityListeners = new ArrayList<IChartVisibilityChangedListener>();
 
-    private Scenario currentScenario;
-
     private Planner planner;
 
     private OverAllProgressContent overallProgressContent;
-
-    private static final class TaskElementNavigator implements
-            IStructureNavigator<TaskElement> {
-
-        @Override
-        public List<TaskElement> getChildren(TaskElement object) {
-            return object.getChildren();
-        }
-
-        @Override
-        public boolean isLeaf(TaskElement object) {
-            return object.isLeaf();
-        }
-
-        @Override
-        public boolean isMilestone(TaskElement object) {
-            if (object != null) {
-                return object instanceof TaskMilestone;
-            }
-            return false;
-        }
-    }
 
     private static class NullSeparatorCommandOnTask<T> implements
             ICommandOnTask<T> {
@@ -329,8 +295,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         long time = System.currentTimeMillis();
         this.planner = planner;
         planningState = createPlanningStateFor(order);
-        currentScenario = scenarioManager.getCurrent();
-        PlannerConfiguration<TaskElement> configuration = createConfiguration(order);
+        PlannerConfiguration<TaskElement> configuration = planningState
+                .getConfiguration();
         PROFILING_LOG.info("load data and create configuration took: "
                 + (System.currentTimeMillis() - time) + " ms");
         User user;
@@ -962,12 +928,12 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private ISaveCommand setupSaveCommand(
             PlannerConfiguration<TaskElement> configuration,
             boolean writingAllowed) {
-        if (writingAllowed) {
-            ISaveCommand result = buildSaveCommand(configuration);
-            configuration.addGlobalCommand(result);
-            return result;
+        if (!writingAllowed) {
+            return null;
         }
-        return null;
+        ISaveCommand result = planningState.getSaveCommand();
+        configuration.addGlobalCommand(result);
+        return result;
     }
 
     private void setupEditingCapabilities(
@@ -1015,11 +981,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             EditTaskController editTaskController) {
         resourceAllocationCommand.initialize(editTaskController, planningState);
         return resourceAllocationCommand;
-    }
-
-    private ISaveCommand buildSaveCommand(
-            PlannerConfiguration<TaskElement> configuration) {
-        return saveCommandBuilder.build(planningState, configuration);
     }
 
     private ICommand<TaskElement> buildReassigningCommand() {
@@ -1086,19 +1047,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         keepAliveZoomListeners.add(zoomListener);
 
         return zoomListener;
-    }
-
-    private PlannerConfiguration<TaskElement> createConfiguration(Order order) {
-        PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
-                taskElementAdapterCreator
-                        .createForOrder(currentScenario, order),
-                new TaskElementNavigator(), planningState.getInitial());
-        result.setNotBeforeThan(order.getInitDate());
-        result.setNotAfterThan(order.getDeadline());
-        result.setDependenciesConstraintsHavePriority(order
-                .getDependenciesConstraintsHavePriority());
-        result.setScheduleBackwards(order.isScheduleBackwards());
-        return result;
     }
 
     @Autowired
