@@ -1,0 +1,133 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a Company
+ * 2 - Create a project
+ * 3 - Create a task
+ * 4 - Create a subcontract and assign the company like subcontractor
+ * 5 - Send the task
+ * 6 - Assign a progres to a subcontracted task
+ * 7 - Send the progress
+ * 8 - Check that the progress was send
+ * 9 - Delete all required elements
+ *
+*/
+
+_include("../common_functions.sah");
+
+function subcontractingAssignTask($company){
+    subcontractingGoToTaskForSubcontractSinceProjectDetails();
+    subcontractingTaskForSubcontractForm($company, $subProjectName);
+    _log("Assign the task to a Company", "custom1");
+}
+
+function subcontractingGoToTaskForSubcontractSinceProjectDetails(){
+    _click(_cell("Project Scheduling"));
+    _doubleClick(_div("box standard-task yui-resize unassigned"));
+    _click(_span("Task properties"));
+    _setSelected(_select(0, _near(_span("Resource allocation type"))), "Subcontract")
+}
+
+function subcontractingTaskForSubcontractForm($company, $subProjectName){
+    _setValue(_textbox(0, _near(_span("External company"))), $company);
+    _setValue(_textbox(0, _near(_span("Work description    "))), $subProjectName);
+    _setValue(_textbox(0, _near(_span("Subcontract price"))), "6000");
+    _setValue(_textbox(0, _near(_span("Subcontracted code"))), $companyId);
+    _click(_checkbox(0, _near(_span("Hours groups"))));
+    _click(_cell("z-button-cm[39]"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+}
+
+function subcontractingSendTask(){
+    _click(_link("Subcontracted Tasks"));
+    _click(_cell("Send"))
+    subcontractingSendSubValidation();
+    _log("Task was sent", "custom1");
+}
+
+function subcontractingReportTask($projectName, $progressName){
+    commonProgressAssignProject($projectName, $progressName);
+    _click(_link("Report Progress"));
+    _click(_cell("Send"));
+    subcontractingSendProgressValidation();
+    _log("Progress was sent", "custom1");
+}
+
+function subcontractingCheckAssignedProgress($projectName){
+    commonEditProject($projectName);
+    _click(_span("Progress"));
+    _assertExists(_span("30.00 %"));
+    _assert(_isVisible(_span("30.00 %")));
+    _log("Progress was assigned", "custom1");
+}
+
+function subcontractingDeleteAllRequiredElements(){
+    commonDeleteProject($projectName);
+    _click(_link("Projects List"));
+    _click(_image("ico_borrar1.png", _in(_cell(8, _near(_cell($subProjectName))))));
+    _click(_cell("OK"));
+    subcontractingDeleteValidation();
+    _click(_cell("OK"));
+    _assertExists(_div("Removed "+$subProjectName));
+    _assert(_isVisible(_div("Removed "+$subProjectName)));
+    commonCompanyDelete($companyName);
+}
+
+/*
+ * Validations
+ */
+
+function subcontractingSendSubValidation(){
+    _assertExists(_span("Subcontracted task sent successfully"));
+    _assert(_isVisible(_span("Subcontracted task sent successfully")));
+}
+
+function subcontractingSendProgressValidation(){
+    _assertExists(_span("Progress sent successfully"));
+    _assert(_isVisible(_span("Progress sent successfully")));
+}
+
+function subcontractingDeleteValidation(){
+    _assertExists(_span("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?"));
+    _assert(_isVisible(_span("Deleting this subcontracted project, you are going to lose the relation to report progress. Are you sure?")));
+}
+/* test values */
+var $companyName = "subcompany";
+var $companyId = "COMPANY_CODE";
+var $projectName = "projectToBeSubcontrated";
+var $subProjectName = "SomeDescription";
+var $taskName = "taskforsubcontract";
+var $taskHour =  "100";
+var $progressName = "Subcontractor";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+commonCompanyCreate($companyName, $companyId);
+commonCreateProject($projectName);
+commonCreateTask($projectName, $taskName, $taskHour);
+subcontractingAssignTask($companyName, $subProjectName);
+subcontractingSendTask();
+subcontractingReportTask($subProjectName, $progressName);
+subcontractingCheckAssignedProgress($projectName);
+subcontractingDeleteAllRequiredElements();
+commonLogout();
