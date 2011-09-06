@@ -43,10 +43,6 @@ public class SumChargedEffort extends BaseEntity {
         return create(new SumChargedEffort());
     }
 
-    public void setDirectChargedEffort(EffortDuration directChargedEffort) {
-        this.directChargedEffort = directChargedEffort;
-    }
-
     public void addDirectChargedEffort(EffortDuration directChargedEffort) {
         this.directChargedEffort = this.directChargedEffort
                 .plus(directChargedEffort);
@@ -61,10 +57,6 @@ public class SumChargedEffort extends BaseEntity {
         return directChargedEffort;
     }
 
-    public void setIndirectChargedEffort(EffortDuration indirectChargedEffort) {
-        this.indirectChargedEffort = indirectChargedEffort;
-    }
-
     public void addIndirectChargedEffort(EffortDuration indirectChargedEffort) {
         this.indirectChargedEffort = this.indirectChargedEffort
                 .plus(indirectChargedEffort);
@@ -76,24 +68,6 @@ public class SumChargedEffort extends BaseEntity {
 
     public EffortDuration getTotalChargedEffort() {
         return directChargedEffort.plus(indirectChargedEffort);
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link SumChargedEffort#setDirectChargedEffort(EffortDuration)}
-     *             instead
-     */
-    public void setDirectChargedHours(Integer directChargedHours) {
-        setDirectChargedEffort(EffortDuration.hours(directChargedHours));
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link SumChargedEffort#setIndirectChargedEffort(EffortDuration)}
-     *             instead
-     */
-    public void setIndirectChargedHours(Integer indirectChargedHours) {
-        setIndirectChargedEffort(EffortDuration.hours(indirectChargedHours));
     }
 
     /**

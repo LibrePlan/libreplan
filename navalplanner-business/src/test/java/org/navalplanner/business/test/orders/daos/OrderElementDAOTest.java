@@ -68,6 +68,7 @@ import org.navalplanner.business.scenarios.entities.OrderVersion;
 import org.navalplanner.business.test.calendars.entities.BaseCalendarTest;
 import org.navalplanner.business.test.orders.entities.OrderElementTest;
 import org.navalplanner.business.test.planner.daos.ResourceAllocationDAOTest;
+import org.navalplanner.business.workingday.EffortDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -420,8 +421,10 @@ public class OrderElementDAOTest {
     public void testSumChargedHoursRelation() throws InstanceNotFoundException {
         OrderLine orderLine = createValidOrderLine();
 
-        orderLine.getSumChargedEffort().setDirectChargedHours(8);
-        orderLine.getSumChargedEffort().setIndirectChargedHours(10);
+        orderLine.getSumChargedEffort().addDirectChargedEffort(
+                EffortDuration.hours(8));
+        orderLine.getSumChargedEffort().addIndirectChargedEffort(
+                EffortDuration.hours(10));
 
         orderElementDAO.save(orderLine);
 
@@ -430,6 +433,7 @@ public class OrderElementDAOTest {
         assertEquals(orderLine.getSumChargedEffort().getId(),
                 orderLineCopy.getSumChargedEffort().getId());
 
-        assertTrue(orderLineCopy.getSumChargedEffort().getTotalChargedHours().equals(18));
+        assertEquals(orderLineCopy.getSumChargedEffort()
+                .getTotalChargedEffort(), EffortDuration.hours(18));
     }
 }
