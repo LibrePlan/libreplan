@@ -89,45 +89,11 @@ public class SumChargedEffort extends BaseEntity {
 
     /**
      * @deprecated Use
-     *             {@link SumChargedEffort#addDirectChargedEffort(EffortDuration)}
-     *             instead
-     */
-    public void addDirectChargedHours(Integer directChargedHours) {
-        addDirectChargedEffort(EffortDuration.hours(directChargedHours));
-    }
-
-    /**
-     * @deprecated Use {@link SumChargedEffort#getDirectChargedEffort()}
-     *             instead
-     */
-    public Integer getDirectChargedHours() {
-        return getDirectChargedEffort().getHours();
-    }
-
-    /**
-     * @deprecated Use
      *             {@link SumChargedEffort#setIndirectChargedEffort(EffortDuration)}
      *             instead
      */
     public void setIndirectChargedHours(Integer indirectChargedHours) {
         setIndirectChargedEffort(EffortDuration.hours(indirectChargedHours));
-    }
-
-    /**
-     * @deprecated Use
-     *             {@link SumChargedEffort#addIndirectChargedEffort(EffortDuration)}
-     *             instead
-     */
-    public void addIndirectChargedHours(Integer indirectChargedHours) {
-        addIndirectChargedEffort(EffortDuration.hours(indirectChargedHours));
-    }
-
-    /**
-     * @deprecated Use {@link SumChargedEffort#getIndirectChargedEffort()}
-     *             instead
-     */
-    public Integer getIndirectChargedHours() {
-        return getIndirectChargedEffort().getHours();
     }
 
     /**
