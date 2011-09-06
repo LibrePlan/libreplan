@@ -223,7 +223,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private IScenarioManager scenarioManager;
 
     @Autowired
-    private ISaveCommand saveCommand;
+    private SaveCommandBuilder saveCommandBuilder;
 
     @Autowired
     private IReassignCommand reassignCommand;
@@ -1019,9 +1019,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private ISaveCommand buildSaveCommand(
             PlannerConfiguration<TaskElement> configuration) {
-        saveCommand.setConfiguration(configuration);
-        saveCommand.setState(planningState);
-        return saveCommand;
+        return saveCommandBuilder.build(planningState, configuration);
     }
 
     private ICommand<TaskElement> buildReassigningCommand() {

@@ -89,7 +89,7 @@ import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.business.workingday.IntraDayDate;
 import org.navalplanner.web.common.concurrentdetection.OnConcurrentModification;
 import org.navalplanner.web.limitingresources.QueuesState.Edge;
-import org.navalplanner.web.planner.order.SaveCommand;
+import org.navalplanner.web.planner.order.SaveCommandBuilder;
 import org.navalplanner.web.security.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -922,7 +922,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
             }
         }
         updateEndDateForParentTasks();
-        SaveCommand.dontPoseAsTransientAndChildrenObjects(getAllocations(toBeSaved));
+        SaveCommandBuilder.dontPoseAsTransientAndChildrenObjects(getAllocations(toBeSaved));
         toBeSaved.clear();
         parentElementsToBeUpdated.clear();
     }
