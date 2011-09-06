@@ -51,7 +51,7 @@ function materialEdit($oldDescription, $newDescription, $cell) {
     var $table;
     var $label;
     _click(_link("Materials"));
-    _set($label, _textbox(0, _near(_div("List of materials for all categories (select one to filter)"))).id);
+    _set($label, _textbox(0, _near(_span("List of materials for all categories (select one to filter)"))).id);
     _set($nrows, _parentTable(_textbox($label)).rows.length);
     for (var $i=1; $i<$nrows; $i++){
     if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $oldDescription)){
@@ -69,7 +69,7 @@ function materialDelete($materialNewName, $numer){
     var $table;
     var $label;
     _click(_link("Materials"));
-    _set($label,_textbox(0, _near(_div("List of materials for all categories (select one to filter)"))).id);
+    _set($label,_textbox(0, _near(_span("List of materials for all categories (select one to filter)"))).id);
     _set($nrows,_parentTable(_textbox($label)).rows.length);
     for (var $i=1; $i<$nrows; $i++){
     if (_condition(_textbox(0, _in(_cell(_parentTable(_textbox($label)),$i,1))).value == $materialNewName)){

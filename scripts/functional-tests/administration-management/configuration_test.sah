@@ -116,8 +116,8 @@ function configCheckMaterial(){
     var $label;
     _click(_link("Materials"));
     _click(_span("z-dottree-ico z-dottree-firstspacer"));
-    _click(_cell("z-button-cm", _near(_div("List of materials for category: Imported materials without category"))));
-    _set($label, _textbox(0, _near(_div("List of materials for category: Imported materials without category"))).id);
+    _click(_cell("z-button-cm", _near(_span("List of materials for category: Imported materials without category"))));
+    _set($label, _textbox(0, _near(_span("List of materials for category: Imported materials without category"))).id);
     _set($code, _textbox(0, _in(_cell(_parentTable(_textbox($label)),1,0))).value);
     if ($code == ""){
     _log("Material code is empty", "custom1");
