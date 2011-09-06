@@ -1,0 +1,147 @@
+/*
+ * This file is part of NavalPlan
+ *
+ * Copyright (C) 2011 Igalia, S.L.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* Included tests
+ *
+ * 1 - Create a new Machine
+ * 2 - Create a Machine with empty name (it should be a failure)
+ * 3 - Edit a Machine
+ * 4 - ASSIGN A CRITERIA TO A MACHINE (PENDING FOF A BUG)
+ *   5.1 - Create a criteria
+ *   5.2 - Edit Assigned criteria tab
+ *   5.3 - Try to delete a assigned criteria
+ * 5 - Assign a calendar
+ *   5.1 - Create a calendar
+ *   5.2 - Edit Calendar tab
+ *   5.3 - Try to delete a assigned calendar
+ * 6 - Assign a cost category
+ *   6.1 - Create a cost category
+ *   6.2 - Edit cost category tab
+ *   6.3 - Try to delete a assigned cost category
+ * 7 - Delete Machine
+ * 8 - Delete all required elements
+ *
+*/
+_include("../common_functions.sah");
+
+function machineCreateEmpty() {
+    commonCreate("Machines");
+    _click(_cell("Save"));
+    machineNameEmptyValidation();
+    _setValue(_textbox(0, _near(_span("Name"))), "something");
+    _click(_cell("Save"));
+    machineDescriptionEmptyValidation();
+    _log("Do not allow create a machine without name or description", "custom1");
+}
+
+function machineEdit($oldName, $newName, $cell) {
+    commonEdit($oldName, $cell);
+    _setValue(_textbox(0, _near(_span("Name"))), $newName);
+    _setValue(_textbox(0, _near(_span("Description"))), $newName);
+    _click(_cell("Save & Continue"));
+    commonSaveValidation("Machine", $newName);
+    _log("Edit the machine", "custom1");
+}
+
+function machineCheckCode($name){
+    commonConfigurationChangeCheckboxMainPreferences("Resources");
+    machineCreateWithoutCode($name);
+    commonConfigurationChangeCheckboxMainPreferences("Resources");
+    _log("Check code label", "custom1");
+}
+
+function machineCreateWithoutCode($type){
+    commonCreate("Machines");
+    commonMachineForm($type);
+    commonEmptyCodeValidation();
+}
+
+function machineCheckTabs(){
+    /* machineCheckAssignedCriteria($machineNewName, 4, $criteriaName); Bug 1167 */
+    machineCheckAssignedCalendar($machineNewName, 4, $calendarName);
+    machineCheckAssignedCostCategory($machineNewName, 4, $costCategoryName);
+}
+
+function machineCheckAssignedCriteria($machineName, $cell, $criterion){
+    commonCriteriaCreate($criteriaName);
+    commonResourceEditAssignedCriteriaForm("Machines", $machineName, $cell, $criterion);
+    commonCriteriaTryDeleteAssigned($criteriaName);
+}
+
+function machineCheckAssignedCalendar($machineName, $cell, $calendar){
+    commonCalendarCreate($calendar);
+    commonResourceEditAssignedCalendarForm("Machines", $machineName, $cell, $calendar);
+    commonCalendarTryDeleteAssignedCalendar($calendar, 3);
+}
+
+function machineCheckAssignedCostCategory($machineName, $cell, $cCategory){
+    commonWorkHourCreate("HourForMachine", "12");
+    commonCostCategoryCreate($cCategory, "HourForMachine");
+    commonResourceEditAssignedCostCategoryForm("Machines", $machineName, $cell, $cCategory);
+    commonSaveValidation("Machine", $machineName);
+    _log("Assign the created cost category", "custom1");
+    commonCostCategoryTryDeleteAssignedCostCategory($cCategory, 3);
+}
+
+function machineDeleteRequiredElements(){
+    commonCalendarDelete($calendarName);
+    commonCostCategoryDelete($costCategoryName);
+    commonWorkHourDelete("HourForMachine");
+    _log("All required elements deleted", "custom1");
+}
+
+/*
+ * Validation functions
+ * */
+
+function machineNameEmptyValidation(){
+    _assertExists(_div("Name cannot be null or empty"));
+    _assert(_isVisible(_div("Name cannot be null or empty")));
+}
+
+function machineDescriptionEmptyValidation(){
+    _assertExists(_div("Description cannot be null or empty"));
+    _assert(_isVisible(_div("Description cannot be null or empty")));
+}
+
+function machineEmptyFields(){
+_assertExists(_div("This field may not be empty or contain only spaces."));
+_assert(_isVisible(_div("This field may not be empty or contain only spaces.")));
+}
+
+/* test values */
+var $machineName = "new";
+var $machineDescription = "something new";
+var $machineNewName = "newest";
+var $criteriaName = "criteriaForMachine";
+var $calendarName = "calendarForMachine";
+var $costCategoryName = "costCategoryforMachines";
+
+/* test actions */
+commonLogin("admin", "admin");
+
+commonMachineCreate($machineName, $machineDescription);
+machineCreateEmpty();
+machineEdit($machineName, $machineNewName, 4);
+machineCheckTabs();
+machineCheckCode($machineName);
+commonMachineDelete($machineNewName);
+machineDeleteRequiredElements();
+
+commonLogout();
