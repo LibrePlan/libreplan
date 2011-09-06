@@ -20,16 +20,35 @@
 /* Included tests
  *
  * 1 - Create a new Material
- * 2 - Edit a Material
- * 3 - Delete Material
+ * 2 - Create a Material without any category selected
+ * 3 - Create a material with empty description (it should be a failure)
+ * 4 - Edit a Material
+ * 5 - Assign a mterial in a project
+ *   5.1 - Create a project
+ *   5.2 - Assign the material
+ *   5.3 - Try to delete the assigned material
+ *   5.4 _ Delete the calendar
+ * 6 - Delete Material
  *
 */
 _include("../common_functions.sah");
 
 function materialCreate($name) {
     materialForm($name);
-    _assertExists(_span("Materials saved"));
-    _assert(_isVisible(_span("Materials saved")));
+    materialSaveValidation();
+    _log("Create a material", "custom1");
+}
+
+function materialCreateWithoutCategory(){
+    _click(_link("Materials"));
+    _click(_cell("z-button-cm[3]"));
+    materialWithoutCategoryValidation();
+}
+
+function materialCreateEmpty(){
+    materialForm("");
+    materialEmptyFieldValidation();
+    _log("Do not allow create empty materials", "custom1");
 }
 
 function materialForm($description) {
@@ -62,6 +81,28 @@ function materialEdit($oldDescription, $newDescription, $cell) {
     }
     }
     _click(_cell("Save"));
+    _log("Edit a material", "custom1");
+}
+
+function materialAssignToProject($material, $project){
+    commonCreateProject($project);
+    commonEditProject($project);
+    _click(_span("Materials"));
+    _click(_cell("Add materials"));
+    _click(_div($material));
+    _click(_cell("Assign materials"));
+    _click(_image("ico_save.png"));
+    _click(_cell("OK"));
+    materialTryDeleteMaterial();
+    commonDeleteProject($project);
+    _log("Assign a material into a project", "custom1");
+}
+
+function materialTryDeleteMaterial(){
+    _click(_link("Materials"));
+    _assertExists(_image("ico_borrar_out.png"));
+    _assert(_isVisible(_image("ico_borrar_out.png")));
+    _log("Do not allow delete an assigned material", "custom1");
 }
 
 function materialDelete($materialNewName, $numer){
@@ -80,20 +121,42 @@ function materialDelete($materialNewName, $numer){
     }
     }
     _click(_cell("Save"));
+    _log("Delete the material", "custom1");
+}
+
+/*
+ * Validations
+ */
+
+function materialSaveValidation(){
+    _assertExists(_span("Materials saved"));
+    _assert(_isVisible(_span("Materials saved")));
+}
+
+function materialEmptyFieldValidation(){
+    _assertExists(_div("cannot be null or empty"));
+    _assert(_isVisible(_div("cannot be null or empty")));
+}
+
+function materialWithoutCategoryValidation(){
+    _assertExists(_div("Cannot insert material in general view. Please, select a category"));
+    _assert(_isVisible(_div("Cannot insert material in general view. Please, select a category")));
 }
 
 /* test values */
 var $materialDescription = "new";
 var $materialDescription2 = "new2";
 var $materialNewName = "newest";
-
-
+var $projectName = "ProjectForMaterials";
+var $category = "NewCategory";
 /* test actions */
 commonLogin("admin", "admin");
 
 materialCreate($materialDescription);
-/* materialCreateEmpty(); PENDING OF A BUG */
+materialCreateEmpty();
+materialCreateWithoutCategory();
 materialEdit($materialDescription, $materialDescription2, 6);
+materialAssignToProject($materialDescription2, $projectName);
 materialDelete($materialDescription2, 6);
 /* commonDeleteValidation("Materials", $materialNewName); PENDING OF A BUG */
 
