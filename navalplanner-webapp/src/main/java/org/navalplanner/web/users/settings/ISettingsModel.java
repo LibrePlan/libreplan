@@ -63,8 +63,6 @@ public interface ISettingsModel {
 
     void setEmail(String email);
 
-    void setLoginName(String loginName);
-
     String getLoginName();
 
 }

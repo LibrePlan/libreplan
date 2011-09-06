@@ -160,10 +160,6 @@ public class SettingsController extends GenericForwardComposer {
         return settingsModel.getLoginName();
     }
 
-    public void setLoginName(String loginName) {
-        settingsModel.setLoginName(loginName);
-    }
-
     public void setEmail(String email) {
         settingsModel.setEmail(email);
     }
