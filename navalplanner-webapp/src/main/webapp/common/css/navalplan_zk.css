@@ -552,6 +552,9 @@ div.z-grid {
     padding: 0;
 }
 
+.listdetails .z-tree-header {
+    position:relative;
+}
 
 .z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
 .z-listbox .z-longbox,.z-listbox .z-doublebox {
@@ -574,14 +577,6 @@ div.z-grid {
 }
 .listdetails input {
     padding-top: 5px;
-}
-
-.listdetails div.z-tree {
-    background: transparent;
-}
-
-.leftpanelgap .z-tree-body {
-    z-index: -1;
 }
 
 .z-tree .z-datebox-inp {
