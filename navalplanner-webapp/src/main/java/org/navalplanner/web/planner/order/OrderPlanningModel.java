@@ -78,7 +78,7 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workingday.EffortDuration;
 import org.navalplanner.web.calendars.BaseCalendarModel;
 import org.navalplanner.web.common.ViewSwitcher;
-import org.navalplanner.web.planner.ITaskElementAdapter;
+import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.advances.AdvanceAssignmentPlanningController;
 import org.navalplanner.web.planner.advances.IAdvanceAssignmentPlanningCommand;
 import org.navalplanner.web.planner.allocation.IResourceAllocationCommand;
@@ -255,7 +255,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     private List<IZoomLevelChangedListener> keepAliveZoomListeners = new ArrayList<IZoomLevelChangedListener>();
 
     @Autowired
-    private ITaskElementAdapter taskElementAdapter;
+    private TaskElementAdapter taskElementAdapterCreator;
 
     @Autowired
     private ICostCalculator hoursCostCalculator;
@@ -1091,11 +1091,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private PlannerConfiguration<TaskElement> createConfiguration(Order order) {
-        taskElementAdapter.useScenario(currentScenario);
-        taskElementAdapter.setInitDate(asLocalDate(order.getInitDate()));
-        taskElementAdapter.setDeadline(asLocalDate(order.getDeadline()));
         PlannerConfiguration<TaskElement> result = new PlannerConfiguration<TaskElement>(
-                taskElementAdapter,
+                taskElementAdapterCreator
+                        .createForOrder(currentScenario, order),
                 new TaskElementNavigator(), planningState.getInitial());
         result.setNotBeforeThan(order.getInitDate());
         result.setNotAfterThan(order.getDeadline());
@@ -1103,10 +1101,6 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                 .getDependenciesConstraintsHavePriority());
         result.setScheduleBackwards(order.isScheduleBackwards());
         return result;
-    }
-
-    private LocalDate asLocalDate(Date date) {
-        return date != null ? LocalDate.fromDateFields(date) : null;
     }
 
     @Autowired

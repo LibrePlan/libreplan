@@ -56,7 +56,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
 @Service
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
+@Scope(BeanDefinition.SCOPE_SINGLETON)
 /**
  * @author Diego Pino Garcia <dpino@igalia.com>
  */

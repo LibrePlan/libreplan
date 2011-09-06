@@ -92,6 +92,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.zkoss.ganttz.IDatesMapper;
 import org.zkoss.ganttz.adapters.DomainDependency;
+import org.zkoss.ganttz.adapters.IAdapterToTaskFundamentalProperties;
 import org.zkoss.ganttz.data.DependencyType;
 import org.zkoss.ganttz.data.GanttDate;
 import org.zkoss.ganttz.data.GanttDate.Cases;
@@ -99,33 +100,22 @@ import org.zkoss.ganttz.data.GanttDate.CustomDate;
 import org.zkoss.ganttz.data.GanttDate.LocalDateBased;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties;
 import org.zkoss.ganttz.data.constraint.Constraint;
+
 /**
- * Responsible of adaptating a {@link TaskElement} into a
- * {@link ITaskFundamentalProperties} <br />
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
 @Component
-@Scope(BeanDefinition.SCOPE_PROTOTYPE)
-public class TaskElementAdapter implements ITaskElementAdapter {
+@Scope(BeanDefinition.SCOPE_SINGLETON)
+public class TaskElementAdapter {
 
     private static final Log LOG = LogFactory.getLog(TaskElementAdapter.class);
-
-    private boolean preventCalculateResourcesText = false;
-
-    public boolean isPreventCalculateResourcesText() {
-        return preventCalculateResourcesText;
-    }
-
-    public void setPreventCalculateResourcesText(
-            boolean preventCalculateResourcesText) {
-        this.preventCalculateResourcesText = preventCalculateResourcesText;
-    }
 
     public static List<Constraint<GanttDate>> getStartConstraintsFor(
             TaskElement taskElement, LocalDate orderInitDate) {
         if (taskElement instanceof ITaskPositionConstrained) {
             ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
-            TaskPositionConstraint startConstraint = task.getPositionConstraint();
+            TaskPositionConstraint startConstraint = task
+                    .getPositionConstraint();
             final PositionConstraintType constraintType = startConstraint
                     .getConstraintType();
             switch (constraintType) {
@@ -138,7 +128,7 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             case START_IN_FIXED_DATE:
                 return Collections
                         .singletonList(equalTo(toGantt(startConstraint
-                        .getConstraintDate())));
+                                .getConstraintDate())));
             case START_NOT_EARLIER_THAN:
                 return Collections
                         .singletonList(biggerOrEqualThan(toGantt(startConstraint
@@ -166,52 +156,6 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
         }
         return Collections.emptyList();
-    }
-
-    @Autowired
-    private IAdHocTransactionService transactionService;
-
-    @Autowired
-    private IOrderElementDAO orderElementDAO;
-
-    @Autowired
-    private ITaskElementDAO taskDAO;
-
-    @Autowired
-    private ICriterionDAO criterionDAO;
-
-    @Autowired
-    private IResourceAllocationDAO resourceAllocationDAO;
-
-    @Autowired
-    private IResourcesSearcher searcher;
-
-    @Autowired
-    private IConfigurationDAO configurationDAO;
-
-    private Scenario scenario;
-
-    private LocalDate initDate;
-
-    private LocalDate deadline;
-
-
-    @Override
-    public void useScenario(Scenario scenario) {
-        this.scenario = scenario;
-    }
-
-    @Override
-    public void setInitDate(LocalDate initDate) {
-        this.initDate = initDate;
-    }
-
-    @Override
-    public void setDeadline(LocalDate deadline) {
-        this.deadline = deadline;
-    }
-
-    public TaskElementAdapter() {
     }
 
     public static GanttDate toGantt(IntraDayDate date) {
@@ -255,6 +199,48 @@ public class TaskElementAdapter implements ITaskElementAdapter {
             }
         });
     }
+
+    public IAdapterToTaskFundamentalProperties<TaskElement> createForCompany(
+            Scenario currentScenario) {
+        Adapter result = new Adapter();
+        result.useScenario(currentScenario);
+        result.setPreventCalculateResourcesText(true);
+        return result;
+    }
+
+    public IAdapterToTaskFundamentalProperties<TaskElement> createForOrder(
+            Scenario currentScenario, Order order) {
+        Adapter result = new Adapter();
+        result.useScenario(currentScenario);
+        result.setInitDate(asLocalDate(order.getInitDate()));
+        result.setDeadline(asLocalDate(order.getDeadline()));
+        return result;
+    }
+
+    private LocalDate asLocalDate(Date date) {
+        return date != null ? LocalDate.fromDateFields(date) : null;
+    }
+
+    @Autowired
+    private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private ITaskElementDAO taskDAO;
+
+    @Autowired
+    private ICriterionDAO criterionDAO;
+
+    @Autowired
+    private IResourceAllocationDAO resourceAllocationDAO;
+
+    @Autowired
+    private IResourcesSearcher searcher;
+
+    @Autowired
+    private IConfigurationDAO configurationDAO;
 
     static class GanttDateAdapter extends CustomDate {
 
@@ -341,13 +327,14 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         @SuppressWarnings("unchecked")
         private Fraction fractionOfWorkingDayFor(EffortDuration effortDuration) {
             Duration durationInDay = toMilliseconds(effortDuration);
-            // cast to int is safe because there are not enough seconds in day
+            // cast to int is safe because there are not enough seconds in
+            // day
             // to overflow
             Fraction fraction = Fraction.getFraction(
                     (int) durationInDay.getStandardSeconds(),
                     (int) workingDayDuration.getStandardSeconds());
-            return (Fraction) Collections.min(Arrays
-                    .asList(fraction, Fraction.ONE));
+            return (Fraction) Collections.min(Arrays.asList(fraction,
+                    Fraction.ONE));
         }
 
         private static Duration toMilliseconds(EffortDuration duration) {
@@ -355,751 +342,796 @@ public class TaskElementAdapter implements ITaskElementAdapter {
         }
     }
 
-    private class TaskElementWrapper implements ITaskFundamentalProperties {
+    /**
+     * Responsible of adaptating a {@link TaskElement} into a
+     * {@link ITaskFundamentalProperties} <br />
+     * @author Óscar González Fernández <ogonzalez@igalia.com>
+     */
+    public class Adapter implements
+            IAdapterToTaskFundamentalProperties<TaskElement> {
 
-        private final TaskElement taskElement;
+        private Scenario scenario;
 
-        private final Scenario currentScenario;
+        private LocalDate initDate;
 
-        protected TaskElementWrapper(Scenario currentScenario,
-                TaskElement taskElement) {
-            Validate.notNull(currentScenario);
-            this.currentScenario = currentScenario;
-            this.taskElement = taskElement;
+        private LocalDate deadline;
+
+        private boolean preventCalculateResourcesText = false;
+
+        private void useScenario(Scenario scenario) {
+            this.scenario = scenario;
         }
 
-        @Override
-        public void setName(String name) {
-            taskElement.setName(name);
+        private void setInitDate(LocalDate initDate) {
+            this.initDate = initDate;
         }
 
-        @Override
-        public void setNotes(String notes) {
-            taskElement.setNotes(notes);
+        private void setDeadline(LocalDate deadline) {
+            this.deadline = deadline;
         }
 
-        @Override
-        public String getName() {
-            return taskElement.getName();
+        public boolean isPreventCalculateResourcesText() {
+            return preventCalculateResourcesText;
         }
 
-        @Override
-        public String getNotes() {
-            return taskElement.getNotes();
+        public void setPreventCalculateResourcesText(
+                boolean preventCalculateResourcesText) {
+            this.preventCalculateResourcesText = preventCalculateResourcesText;
         }
 
-        @Override
-        public GanttDate getBeginDate() {
-            IntraDayDate start = taskElement.getIntraDayStartDate();
-            return toGantt(start);
+        public Adapter() {
         }
 
-        private GanttDate toGantt(IntraDayDate date) {
-            BaseCalendar calendar = taskElement.getCalendar();
-            if (calendar == null) {
-                return TaskElementAdapter.toGantt(date);
+
+        private class TaskElementWrapper implements ITaskFundamentalProperties {
+
+            private final TaskElement taskElement;
+
+            private final Scenario currentScenario;
+
+            protected TaskElementWrapper(Scenario currentScenario,
+                    TaskElement taskElement) {
+                Validate.notNull(currentScenario);
+                this.currentScenario = currentScenario;
+                this.taskElement = taskElement;
             }
-            return TaskElementAdapter
-                    .toGantt(date, calendar.getCapacityOn(PartialDay
-                            .wholeDay(date.getDate())));
-        }
 
-        @Override
-        public void setBeginDate(final GanttDate beginDate) {
-            transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                        @Override
-                        public Void execute() {
-                            stepsBeforePossibleReallocation();
-                            getDatesHandler(taskElement).moveTo(
-                                    toIntraDay(beginDate));
-                            return null;
-                        }
-                    });
-        }
+            @Override
+            public void setName(String name) {
+                taskElement.setName(name);
+            }
 
-        @Override
-        public GanttDate getEndDate() {
-            return toGantt(taskElement.getIntraDayEndDate());
-        }
+            @Override
+            public void setNotes(String notes) {
+                taskElement.setNotes(notes);
+            }
 
-        @Override
-        public void setEndDate(final GanttDate endDate) {
-            transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                        @Override
-                        public Void execute() {
-                            stepsBeforePossibleReallocation();
-                            getDatesHandler(taskElement).moveEndTo(
-                                    toIntraDay(endDate));
-                            return null;
-                        }
-                    });
-        }
+            @Override
+            public String getName() {
+                return taskElement.getName();
+            }
 
-        @Override
-        public void resizeTo(final GanttDate endDate) {
-            transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
-                        @Override
-                        public Void execute() {
-                            stepsBeforePossibleReallocation();
-                            updateTaskPositionConstraint(endDate);
-                            getDatesHandler(taskElement).resizeTo(
-                                    toIntraDay(endDate));
-                            return null;
-                        }
-                    });
-        }
+            @Override
+            public String getNotes() {
+                return taskElement.getNotes();
+            }
 
-        IDatesHandler getDatesHandler(TaskElement taskElement) {
-            return taskElement.getDatesHandler(currentScenario, searcher);
-        }
+            @Override
+            public GanttDate getBeginDate() {
+                IntraDayDate start = taskElement.getIntraDayStartDate();
+                return toGantt(start);
+            }
 
-        private void updateTaskPositionConstraint(GanttDate endDate) {
-            if (taskElement instanceof ITaskPositionConstrained) {
-                ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
-                PositionConstraintType constraintType = task
-                        .getPositionConstraint().getConstraintType();
-                if (constraintType
-                        .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
-                        || constraintType
-                                .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
-                    task.explicityMoved(toIntraDay(endDate));
+            private GanttDate toGantt(IntraDayDate date) {
+                BaseCalendar calendar = taskElement.getCalendar();
+                if (calendar == null) {
+                    return TaskElementAdapter.toGantt(date);
                 }
-            }
-        }
-
-        @Override
-        public GanttDate getHoursAdvanceEndDate() {
-            OrderElement orderElement = taskElement.getOrderElement();
-
-            EffortDuration assignedEffort = EffortDuration.zero();
-            if (orderElement.getSumChargedEffort() != null) {
-                assignedEffort = orderElement.getSumChargedEffort()
-                        .getTotalChargedEffort();
+                return TaskElementAdapter.toGantt(date, calendar
+                        .getCapacityOn(PartialDay.wholeDay(date.getDate())));
             }
 
-            GanttDate result = null;
-            if(!(taskElement instanceof TaskGroup)) {
-                result = calculateLimitDate(assignedEffort
-                        .toHoursAsDecimalWithScale(2));
+            @Override
+            public void setBeginDate(final GanttDate beginDate) {
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                stepsBeforePossibleReallocation();
+                                getDatesHandler(taskElement).moveTo(
+                                        toIntraDay(beginDate));
+                                return null;
+                            }
+                        });
             }
-            if (result == null) {
-                Integer hours = taskElement.getSumOfHoursAllocated();
 
-                if (hours == 0) {
-                    hours = orderElement.getWorkHours();
-                    if (hours == 0) {
-                        return getBeginDate();
+            @Override
+            public GanttDate getEndDate() {
+                return toGantt(taskElement.getIntraDayEndDate());
+            }
+
+            @Override
+            public void setEndDate(final GanttDate endDate) {
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                stepsBeforePossibleReallocation();
+                                getDatesHandler(taskElement).moveEndTo(
+                                        toIntraDay(endDate));
+                                return null;
+                            }
+                        });
+            }
+
+            @Override
+            public void resizeTo(final GanttDate endDate) {
+                transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<Void>() {
+                            @Override
+                            public Void execute() {
+                                stepsBeforePossibleReallocation();
+                                updateTaskPositionConstraint(endDate);
+                                getDatesHandler(taskElement).resizeTo(
+                                        toIntraDay(endDate));
+                                return null;
+                            }
+                        });
+            }
+
+            IDatesHandler getDatesHandler(TaskElement taskElement) {
+                return taskElement.getDatesHandler(currentScenario, searcher);
+            }
+
+            private void updateTaskPositionConstraint(GanttDate endDate) {
+                if (taskElement instanceof ITaskPositionConstrained) {
+                    ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
+                    PositionConstraintType constraintType = task
+                            .getPositionConstraint().getConstraintType();
+                    if (constraintType
+                            .compareTo(PositionConstraintType.FINISH_NOT_LATER_THAN) == 0
+                            || constraintType
+                                    .compareTo(PositionConstraintType.AS_LATE_AS_POSSIBLE) == 0) {
+                        task.explicityMoved(toIntraDay(endDate));
                     }
                 }
-                BigDecimal percentage = assignedEffort
-                        .toHoursAsDecimalWithScale(2).divide(
-                                new BigDecimal(hours),
-                                RoundingMode.DOWN);
-                result = calculateLimitDate(percentage);
-
             }
 
-            return result;
-        }
+            @Override
+            public GanttDate getHoursAdvanceEndDate() {
+                OrderElement orderElement = taskElement.getOrderElement();
 
-        @Override
-        public BigDecimal getHoursAdvancePercentage() {
-            OrderElement orderElement = taskElement.getOrderElement();
-            if (orderElement == null) {
-                return BigDecimal.ZERO;
+                EffortDuration assignedEffort = EffortDuration.zero();
+                if (orderElement.getSumChargedEffort() != null) {
+                    assignedEffort = orderElement.getSumChargedEffort()
+                            .getTotalChargedEffort();
+                }
+
+                GanttDate result = null;
+                if (!(taskElement instanceof TaskGroup)) {
+                    result = calculateLimitDate(assignedEffort
+                            .toHoursAsDecimalWithScale(2));
+                }
+                if (result == null) {
+                    Integer hours = taskElement.getSumOfHoursAllocated();
+
+                    if (hours == 0) {
+                        hours = orderElement.getWorkHours();
+                        if (hours == 0) {
+                            return getBeginDate();
+                        }
+                    }
+                    BigDecimal percentage = assignedEffort
+                            .toHoursAsDecimalWithScale(2).divide(
+                                    new BigDecimal(hours));
+                    result = calculateLimitDate(percentage);
+
+                }
+
+                return result;
             }
 
-            EffortDuration totalChargedEffort = orderElement
-                    .getSumChargedEffort() != null ? orderElement
-                    .getSumChargedEffort().getTotalChargedEffort()
-                    : EffortDuration.zero();
-            BigDecimal assignedHours = totalChargedEffort
-                    .toHoursAsDecimalWithScale(2);
-
-            BigDecimal estimatedHours = new BigDecimal(taskElement.getSumOfHoursAllocated())
-                    .setScale(2);
-
-            if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
-                estimatedHours = new BigDecimal(orderElement.getWorkHours())
-                        .setScale(2);
-                if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+            @Override
+            public BigDecimal getHoursAdvancePercentage() {
+                OrderElement orderElement = taskElement.getOrderElement();
+                if (orderElement == null) {
                     return BigDecimal.ZERO;
                 }
-            }
-            return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
-        }
 
-        @Override
-        public GanttDate getAdvanceEndDate(String progressType) {
-            return getAdvanceEndDate(ProgressType.asEnum(progressType));
-        }
+                EffortDuration totalChargedEffort = orderElement
+                        .getSumChargedEffort() != null ? orderElement
+                        .getSumChargedEffort().getTotalChargedEffort()
+                        : EffortDuration.zero();
+                BigDecimal assignedHours = totalChargedEffort
+                        .toHoursAsDecimalWithScale(2);
 
-        private GanttDate getAdvanceEndDate(ProgressType progressType) {
-            BigDecimal advancePercentage = BigDecimal.ZERO;
-            if (taskElement.getOrderElement() != null) {
-                advancePercentage = taskElement
-                        .getAdvancePercentage(progressType);
-            }
-            return getAdvanceEndDate(advancePercentage);
-        }
+                BigDecimal estimatedHours = new BigDecimal(
+                        taskElement.getSumOfHoursAllocated()).setScale(2);
 
-        @Override
-        public GanttDate getAdvanceEndDate() {
-            BigDecimal advancePercentage = BigDecimal.ZERO;
-
-            if (taskElement.getOrderElement() != null) {
-                if (isTaskRoot(taskElement)) {
-                    ProgressType progressType = getProgressTypeFromConfiguration();
-                    advancePercentage = taskElement.getAdvancePercentage(progressType);
-
-                } else {
-                    advancePercentage = taskElement.getAdvancePercentage();
-                }
-            }
-            return getAdvanceEndDate(advancePercentage);
-        }
-
-        private boolean isTaskRoot(TaskElement taskElement) {
-            return taskElement instanceof TaskGroup && taskElement.getParent() == null;
-        }
-
-        private ProgressType getProgressTypeFromConfiguration() {
-            return transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<ProgressType>() {
-                        @Override
-                        public ProgressType execute() {
-                            return configurationDAO.getConfiguration()
-                                    .getProgressType();
-                        }
-                    });
-        }
-
-        private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
-            Integer hours = Integer.valueOf(0);
-            if (taskElement.getOrderElement() != null) {
-                hours = taskElement.getSumOfHoursAllocated();
-            }
-
-            if (taskElement instanceof TaskGroup) {
-                return calculateLimitDate(advancePercentage);
-            }
-
-            // Calculate date according to advanceHours or advancePercentage
-            final Integer advanceHours = advancePercentage.multiply(
-                    new BigDecimal(hours)).intValue();
-            GanttDate result = calculateLimitDate(advanceHours);
-            if (result == null) {
-                result = calculateLimitDate(advancePercentage);
-            }
-            return result;
-        }
-
-        private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
-            BaseCalendar calendar = taskElement.getCalendar();
-            if (advancePercentage.compareTo(BigDecimal.ZERO) == 0 || calendar==null) {
-                return getBeginDate();
-            }
-            IntraDayDate start = taskElement.getIntraDayStartDate();
-            IntraDayDate end = taskElement.getIntraDayEndDate();
-            int daysBetween = start.numberOfDaysUntil(end);
-            if (daysBetween == 0) {
-                return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
-            }
-            int daysAdvance = advancePercentage.multiply(
-                    new BigDecimal(daysBetween))
-                    .intValue();
-            return GanttDate.createFrom(taskElement.getIntraDayStartDate()
-                    .getDate().plusDays(daysAdvance));
-        }
-
-        private GanttDate calculateLimitDateWhenDaysBetweenAreZero(
-                BigDecimal advancePercentage) {
-            IntraDayDate start = taskElement.getIntraDayStartDate();
-            IntraDayDate end = taskElement.getIntraDayEndDate();
-            final BaseCalendar calendar = taskElement.getCalendar();
-            Iterable<PartialDay> daysUntil = start.daysUntil(end);
-
-            EffortDuration total = EffortDuration.sum(daysUntil,
-                    new IEffortFrom<PartialDay>() {
-                        @Override
-                        public EffortDuration from(PartialDay each) {
-                            return calendar.getCapacityOn(each);
-                        }
-                    });
-
-            BigDecimal totalAsSeconds = new BigDecimal(total
-                    .getSeconds());
-            EffortDuration advanceLeft = seconds(advancePercentage.multiply(
-                    totalAsSeconds).intValue());
-            for (PartialDay each : daysUntil) {
-                if (advanceLeft.compareTo(calendar.getCapacityOn(each)) <= 0) {
-                    LocalDate dayDate = each.getStart().getDate();
-                    if (dayDate.equals(start.getDate())) {
-                        return toGantt(IntraDayDate.create(dayDate,
-                                advanceLeft.plus(start.getEffortDuration())));
+                if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                    estimatedHours = new BigDecimal(orderElement.getWorkHours())
+                            .setScale(2);
+                    if (estimatedHours.compareTo(BigDecimal.ZERO) <= 0) {
+                        return BigDecimal.ZERO;
                     }
-                    return toGantt(IntraDayDate.create(dayDate, advanceLeft));
                 }
-                advanceLeft = advanceLeft.minus(calendar.getCapacityOn(each));
+                return assignedHours.divide(estimatedHours, RoundingMode.DOWN);
             }
-            return toGantt(end);
-        }
 
-        private GanttDate calculateLimitDate(Integer hours) {
-            if (hours == null || hours == 0) {
-                return null;
+            @Override
+            public GanttDate getAdvanceEndDate(String progressType) {
+                return getAdvanceEndDate(ProgressType.asEnum(progressType));
             }
-            EffortDuration hoursLeft = hours(hours);
-            IntraDayDate result = null;
-            EffortDuration effortLastDayNotZero = zero();
 
-            Map<LocalDate, EffortDuration> daysMap = taskElement
-                    .getDurationsAssignedByDay();
-            if (daysMap.isEmpty()) {
-                return null;
-            }
-            for (Entry<LocalDate, EffortDuration> entry : daysMap.entrySet()) {
-                if (!entry.getValue().isZero()) {
-                    effortLastDayNotZero = entry.getValue();
+            private GanttDate getAdvanceEndDate(ProgressType progressType) {
+                BigDecimal advancePercentage = BigDecimal.ZERO;
+                if (taskElement.getOrderElement() != null) {
+                    advancePercentage = taskElement
+                            .getAdvancePercentage(progressType);
                 }
-                EffortDuration decrement = min(entry.getValue(), hoursLeft);
-                hoursLeft = hoursLeft.minus(decrement);
-                if (hoursLeft.isZero()) {
-                    if (decrement.equals(entry.getValue())) {
+                return getAdvanceEndDate(advancePercentage);
+            }
+
+            @Override
+            public GanttDate getAdvanceEndDate() {
+                BigDecimal advancePercentage = BigDecimal.ZERO;
+
+                if (taskElement.getOrderElement() != null) {
+                    if (isTaskRoot(taskElement)) {
+                        ProgressType progressType = getProgressTypeFromConfiguration();
+                        advancePercentage = taskElement
+                                .getAdvancePercentage(progressType);
+
+                    } else {
+                        advancePercentage = taskElement.getAdvancePercentage();
+                    }
+                }
+                return getAdvanceEndDate(advancePercentage);
+            }
+
+            private boolean isTaskRoot(TaskElement taskElement) {
+                return taskElement instanceof TaskGroup
+                        && taskElement.getParent() == null;
+            }
+
+            private ProgressType getProgressTypeFromConfiguration() {
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<ProgressType>() {
+                            @Override
+                            public ProgressType execute() {
+                                return configurationDAO.getConfiguration()
+                                        .getProgressType();
+                            }
+                        });
+            }
+
+            private GanttDate getAdvanceEndDate(BigDecimal advancePercentage) {
+                Integer hours = Integer.valueOf(0);
+                if (taskElement.getOrderElement() != null) {
+                    hours = taskElement.getSumOfHoursAllocated();
+                }
+
+                if (taskElement instanceof TaskGroup) {
+                    return calculateLimitDate(advancePercentage);
+                }
+
+                // Calculate date according to advanceHours or advancePercentage
+                final Integer advanceHours = advancePercentage.multiply(
+                        new BigDecimal(hours)).intValue();
+                GanttDate result = calculateLimitDate(advanceHours);
+                if (result == null) {
+                    result = calculateLimitDate(advancePercentage);
+                }
+                return result;
+            }
+
+            private GanttDate calculateLimitDate(BigDecimal advancePercentage) {
+                BaseCalendar calendar = taskElement.getCalendar();
+                if (advancePercentage.compareTo(BigDecimal.ZERO) == 0
+                        || calendar == null) {
+                    return getBeginDate();
+                }
+                IntraDayDate start = taskElement.getIntraDayStartDate();
+                IntraDayDate end = taskElement.getIntraDayEndDate();
+                int daysBetween = start.numberOfDaysUntil(end);
+                if (daysBetween == 0) {
+                    return calculateLimitDateWhenDaysBetweenAreZero(advancePercentage);
+                }
+                int daysAdvance = advancePercentage.multiply(
+                        new BigDecimal(daysBetween)).intValue();
+                return GanttDate.createFrom(taskElement.getIntraDayStartDate()
+                        .getDate().plusDays(daysAdvance));
+            }
+
+            private GanttDate calculateLimitDateWhenDaysBetweenAreZero(
+                    BigDecimal advancePercentage) {
+                IntraDayDate start = taskElement.getIntraDayStartDate();
+                IntraDayDate end = taskElement.getIntraDayEndDate();
+                final BaseCalendar calendar = taskElement.getCalendar();
+                Iterable<PartialDay> daysUntil = start.daysUntil(end);
+
+                EffortDuration total = EffortDuration.sum(daysUntil,
+                        new IEffortFrom<PartialDay>() {
+                            @Override
+                            public EffortDuration from(PartialDay each) {
+                                return calendar.getCapacityOn(each);
+                            }
+                        });
+
+                BigDecimal totalAsSeconds = new BigDecimal(total.getSeconds());
+                EffortDuration advanceLeft = seconds(advancePercentage
+                        .multiply(totalAsSeconds).intValue());
+                for (PartialDay each : daysUntil) {
+                    if (advanceLeft.compareTo(calendar.getCapacityOn(each)) <= 0) {
+                        LocalDate dayDate = each.getStart().getDate();
+                        if (dayDate.equals(start.getDate())) {
+                            return toGantt(IntraDayDate
+                                    .create(dayDate, advanceLeft.plus(start
+                                            .getEffortDuration())));
+                        }
+                        return toGantt(IntraDayDate
+                                .create(dayDate, advanceLeft));
+                    }
+                    advanceLeft = advanceLeft.minus(calendar
+                            .getCapacityOn(each));
+                }
+                return toGantt(end);
+            }
+
+            private GanttDate calculateLimitDate(Integer hours) {
+                if (hours == null || hours == 0) {
+                    return null;
+                }
+                EffortDuration hoursLeft = hours(hours);
+                IntraDayDate result = null;
+                EffortDuration effortLastDayNotZero = zero();
+
+                Map<LocalDate, EffortDuration> daysMap = taskElement
+                        .getDurationsAssignedByDay();
+                if (daysMap.isEmpty()) {
+                    return null;
+                }
+                for (Entry<LocalDate, EffortDuration> entry : daysMap
+                        .entrySet()) {
+                    if (!entry.getValue().isZero()) {
+                        effortLastDayNotZero = entry.getValue();
+                    }
+                    EffortDuration decrement = min(entry.getValue(), hoursLeft);
+                    hoursLeft = hoursLeft.minus(decrement);
+                    if (hoursLeft.isZero()) {
+                        if (decrement.equals(entry.getValue())) {
+                            result = IntraDayDate.startOfDay(entry.getKey()
+                                    .plusDays(1));
+                        } else {
+                            result = IntraDayDate.create(entry.getKey(),
+                                    decrement);
+                        }
+                        break;
+                    } else {
                         result = IntraDayDate.startOfDay(entry.getKey()
                                 .plusDays(1));
-                    } else {
-                        result = IntraDayDate.create(entry.getKey(), decrement);
                     }
-                    break;
-                } else {
-                    result = IntraDayDate
-                            .startOfDay(entry.getKey().plusDays(1));
                 }
-            }
-            if (!hoursLeft.isZero() && effortLastDayNotZero.isZero()) {
-                LOG.warn("limit not reached and no day with effort not zero");
-            }
-            if (!hoursLeft.isZero() && !effortLastDayNotZero.isZero()) {
-                while (!hoursLeft.isZero()) {
-                    hoursLeft = hoursLeft.minus(min(effortLastDayNotZero,
-                            hoursLeft));
-                    result = result.nextDayAtStart();
+                if (!hoursLeft.isZero() && effortLastDayNotZero.isZero()) {
+                    LOG.warn("limit not reached and no day with effort not zero");
                 }
+                if (!hoursLeft.isZero() && !effortLastDayNotZero.isZero()) {
+                    while (!hoursLeft.isZero()) {
+                        hoursLeft = hoursLeft.minus(min(effortLastDayNotZero,
+                                hoursLeft));
+                        result = result.nextDayAtStart();
+                    }
+                }
+                if (result == null) {
+                    return null;
+                }
+                return toGantt(result);
             }
-            if (result == null) {
-                return null;
-            }
-            return toGantt(result);
-        }
 
-        @Override
-        public String getTooltipText() {
-            if (taskElement.isMilestone()) {
-                return "";
-            }
-            return transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
-
-                        @Override
-                        public String execute() {
-                            orderElementDAO.reattach(taskElement
-                                    .getOrderElement());
-                            return buildTooltipText();
-                        }
-                    });
-        }
-
-        @Override
-        public String getLabelsText() {
-            if (taskElement.isMilestone()) {
-                return "";
-            }
-            return transactionService
-                    .runOnReadOnlyTransaction(new IOnTransaction<String>() {
-
-                        @Override
-                        public String execute() {
-                            orderElementDAO.reattach(taskElement
-                                    .getOrderElement());
-                            return buildLabelsText();
-                        }
-                    });
-        }
-
-        @Override
-        public String getResourcesText() {
-            if (isPreventCalculateResourcesText() ||
-                    taskElement.getOrderElement() == null) {
-                return "";
-            }
-            try {
+            @Override
+            public String getTooltipText() {
+                if (taskElement.isMilestone()) {
+                    return "";
+                }
                 return transactionService
-                        .runOnAnotherReadOnlyTransaction(new IOnTransaction<String>() {
+                        .runOnReadOnlyTransaction(new IOnTransaction<String>() {
 
                             @Override
                             public String execute() {
                                 orderElementDAO.reattach(taskElement
                                         .getOrderElement());
-                                return buildResourcesText();
+                                return buildTooltipText();
                             }
                         });
-            } catch (Exception e) {
-                LOG.error("error calculating resources text", e);
-                return "";
             }
-        }
 
-        private Set<Label> getLabelsFromElementAndPredecesors(
-                OrderElement order) {
-            if (order != null) {
-                if (order.getParent() == null) {
-                    return order.getLabels();
-                } else {
-                    HashSet<Label> labels = new HashSet<Label>(order
-                            .getLabels());
-                    labels.addAll(getLabelsFromElementAndPredecesors(order
-                            .getParent()));
-                    return labels;
+            @Override
+            public String getLabelsText() {
+                if (taskElement.isMilestone()) {
+                    return "";
+                }
+                return transactionService
+                        .runOnReadOnlyTransaction(new IOnTransaction<String>() {
+
+                            @Override
+                            public String execute() {
+                                orderElementDAO.reattach(taskElement
+                                        .getOrderElement());
+                                return buildLabelsText();
+                            }
+                        });
+            }
+
+            @Override
+            public String getResourcesText() {
+                if (isPreventCalculateResourcesText()
+                        || taskElement.getOrderElement() == null) {
+                    return "";
+                }
+                try {
+                    return transactionService
+                            .runOnAnotherReadOnlyTransaction(new IOnTransaction<String>() {
+
+                                @Override
+                                public String execute() {
+                                    orderElementDAO.reattach(taskElement
+                                            .getOrderElement());
+                                    return buildResourcesText();
+                                }
+                            });
+                } catch (Exception e) {
+                    LOG.error("error calculating resources text", e);
+                    return "";
                 }
             }
-            return new HashSet<Label>();
-        }
 
-        private String buildLabelsText() {
-            List<String> result = new ArrayList<String>();
-
-            if (taskElement.getOrderElement() != null) {
-                Set<Label> labels = getLabelsFromElementAndPredecesors(taskElement
-                        .getOrderElement());
-
-                for (Label label : labels) {
-                    String representation = label.getName();
-                    if (!result.contains(representation)) {
-                        result.add(representation);
+            private Set<Label> getLabelsFromElementAndPredecesors(
+                    OrderElement order) {
+                if (order != null) {
+                    if (order.getParent() == null) {
+                        return order.getLabels();
+                    } else {
+                        HashSet<Label> labels = new HashSet<Label>(
+                                order.getLabels());
+                        labels.addAll(getLabelsFromElementAndPredecesors(order
+                                .getParent()));
+                        return labels;
                     }
                 }
+                return new HashSet<Label>();
             }
 
-            Collections.sort(result);
-            return StringUtils.join(result, ", ");
-        }
+            private String buildLabelsText() {
+                List<String> result = new ArrayList<String>();
 
-        private String buildResourcesText() {
-            List<String> result = new ArrayList<String>();
-            for (ResourceAllocation<?> each : taskElement
-                    .getSatisfiedResourceAllocations()) {
-                if (each instanceof SpecificResourceAllocation) {
-                    for (Resource r : each.getAssociatedResources()) {
-                        String representation = r.getName();
+                if (taskElement.getOrderElement() != null) {
+                    Set<Label> labels = getLabelsFromElementAndPredecesors(taskElement
+                            .getOrderElement());
+
+                    for (Label label : labels) {
+                        String representation = label.getName();
                         if (!result.contains(representation)) {
                             result.add(representation);
                         }
                     }
+                }
+
+                Collections.sort(result);
+                return StringUtils.join(result, ", ");
+            }
+
+            private String buildResourcesText() {
+                List<String> result = new ArrayList<String>();
+                for (ResourceAllocation<?> each : taskElement
+                        .getSatisfiedResourceAllocations()) {
+                    if (each instanceof SpecificResourceAllocation) {
+                        for (Resource r : each.getAssociatedResources()) {
+                            String representation = r.getName();
+                            if (!result.contains(representation)) {
+                                result.add(representation);
+                            }
+                        }
+                    } else {
+                        String representation = extractRepresentationForGeneric((GenericResourceAllocation) each);
+                        if (!result.contains(representation)) {
+                            result.add(representation);
+                        }
+                    }
+                }
+                Collections.sort(result);
+                return StringUtils.join(result, ", ");
+            }
+
+            private String extractRepresentationForGeneric(
+                    GenericResourceAllocation generic) {
+                if (!generic.isNewObject()) {
+                    resourceAllocationDAO.reattach(generic);
+                }
+                Set<Criterion> criterions = generic.getCriterions();
+                List<String> forCriterionRepresentations = new ArrayList<String>();
+                if (!criterions.isEmpty()) {
+                    for (Criterion c : criterions) {
+                        criterionDAO.reattachUnmodifiedEntity(c);
+                        forCriterionRepresentations.add(c.getName());
+                    }
                 } else {
-                    String representation =
-                        extractRepresentationForGeneric((GenericResourceAllocation) each);
-                    if (!result.contains(representation)) {
-                        result.add(representation);
+                    forCriterionRepresentations.add((_("All workers")));
+                }
+                return "["
+                        + StringUtils.join(forCriterionRepresentations, ", ")
+                        + "]";
+            }
+
+            @Override
+            public String updateTooltipText() {
+                return buildTooltipText();
+            }
+
+            @Override
+            public String updateTooltipText(String progressType) {
+                return buildTooltipText(ProgressType.asEnum(progressType));
+            }
+
+            @Override
+            public BigDecimal getAdvancePercentage() {
+                if (taskElement != null) {
+                    return taskElement.getAdvancePercentage();
+                }
+                return new BigDecimal(0);
+            }
+
+            private String buildTooltipText() {
+                return buildTooltipText(asPercentage(taskElement
+                        .getAdvancePercentage()));
+            }
+
+            private BigDecimal asPercentage(BigDecimal value) {
+                return value.multiply(BigDecimal.valueOf(100)).setScale(2,
+                        RoundingMode.DOWN);
+            }
+
+            private String buildTooltipText(BigDecimal progressPercentage) {
+                StringBuilder result = new StringBuilder();
+                result.append(_("Name: {0}", getName()) + "<br/>");
+                result.append(_("Progress") + ": ").append(progressPercentage)
+                        .append("% , ");
+
+                result.append(_("Hours invested") + ": ")
+                        .append(getHoursAdvancePercentage().multiply(
+                                new BigDecimal(100))).append("% <br/>");
+                if (taskElement.getOrderElement() instanceof Order) {
+                    result.append(_("State") + ": ").append(getOrderState());
+                }
+                String labels = buildLabelsText();
+                if (!labels.equals("")) {
+                    result.append("<div class='tooltip-labels'>" + _("Labels")
+                            + ": " + labels + "</div>");
+                }
+                return result.toString();
+            }
+
+            private String buildTooltipText(ProgressType progressType) {
+                return buildTooltipText(asPercentage(taskElement
+                        .getAdvancePercentage(progressType)));
+            }
+
+            private String getOrderState() {
+                String cssClass;
+                OrderStatusEnum state = taskElement.getOrderElement()
+                        .getOrder().getState();
+
+                if (Arrays.asList(OrderStatusEnum.ACCEPTED,
+                        OrderStatusEnum.OFFERED, OrderStatusEnum.STARTED,
+                        OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER).contains(
+                        state)) {
+                    if (taskElement.getAssignedStatus() == "assigned") {
+                        cssClass = "order-open-assigned";
+                    } else {
+                        cssClass = "order-open-unassigned";
+                    }
+                } else {
+                    cssClass = "order-closed";
+                }
+                return "<font class='" + cssClass + "'>" + state.toString()
+                        + "</font>";
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getStartConstraints() {
+                return getStartConstraintsFor(this.taskElement, initDate);
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getEndConstraints() {
+                return getEndConstraintsFor(this.taskElement, deadline);
+            }
+
+            @Override
+            public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
+                if (taskElement instanceof Task) {
+                    Task task = (Task) taskElement;
+                    if (task.getAllocationDirection() == Direction.FORWARD) {
+                        return Collections
+                                .singletonList(biggerOrEqualThan(getEndDate()));
+                    }
+                }
+                return Collections.emptyList();
+            }
+
+            @Override
+            public void moveTo(GanttDate newStart) {
+                if (taskElement instanceof ITaskPositionConstrained) {
+                    ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
+                    if (task.getPositionConstraint()
+                            .isConstraintAppliedToStart()) {
+                        setBeginDate(newStart);
+                        task.explicityMoved(toIntraDay(newStart));
+                    } else {
+                        GanttDate newEnd = inferEndFrom(newStart);
+                        setEndDate(newEnd);
+                        task.explicityMoved(toIntraDay(newEnd));
                     }
                 }
             }
-            Collections.sort(result);
-            return StringUtils.join(result, ", ");
-        }
 
-        private String extractRepresentationForGeneric(
-                GenericResourceAllocation generic) {
-            if (!generic.isNewObject()) {
-                resourceAllocationDAO.reattach(generic);
-            }
-            Set<Criterion> criterions = generic.getCriterions();
-            List<String> forCriterionRepresentations = new ArrayList<String>();
-            if (!criterions.isEmpty()) {
-                for (Criterion c : criterions) {
-                    criterionDAO.reattachUnmodifiedEntity(c);
-                    forCriterionRepresentations.add(c.getName());
+            private GanttDate inferEndFrom(GanttDate newStart) {
+                if (taskElement instanceof Task) {
+                    Task task = (Task) taskElement;
+                    return toGantt(task
+                            .calculateEndKeepingLength(toIntraDay(newStart)));
                 }
-            } else {
-                forCriterionRepresentations.add((_("All workers")));
+                return newStart;
             }
-            return "["
-                    + StringUtils.join(forCriterionRepresentations,
-                            ", ") + "]";
-        }
 
-        @Override
-        public String updateTooltipText() {
-            return buildTooltipText();
-        }
-
-        @Override
-        public String updateTooltipText(String progressType) {
-            return buildTooltipText(ProgressType.asEnum(progressType));
-        }
-
-        @Override
-        public BigDecimal getAdvancePercentage() {
-            if (taskElement != null) {
-                return taskElement.getAdvancePercentage();
-            }
-            return new BigDecimal(0);
-        }
-
-        private String buildTooltipText() {
-            return buildTooltipText(asPercentage(taskElement.getAdvancePercentage()));
-        }
-
-        private BigDecimal asPercentage(BigDecimal value) {
-            return value.multiply(BigDecimal.valueOf(100)).setScale(2, RoundingMode.DOWN);
-        }
-
-        private String buildTooltipText(BigDecimal progressPercentage) {
-            StringBuilder result = new StringBuilder();
-            result.append(_("Name: {0}", getName()) + "<br/>");
-            result.append(_("Progress") + ": ")
-                    .append(progressPercentage).append("% , ");
-
-            result.append(_("Hours invested") + ": ").append(
-                    getHoursAdvancePercentage().multiply(new BigDecimal(100)))
-                    .append("% <br/>");
-            if (taskElement.getOrderElement() instanceof Order) {
-                result.append(_("State") + ": ").append(getOrderState());
-            }
-            String labels = buildLabelsText();
-            if (!labels.equals("")) {
-                result.append("<div class='tooltip-labels'>" + _("Labels")
-                        + ": " + labels + "</div>");
-            }
-            return result.toString();
-        }
-
-        private String buildTooltipText(ProgressType progressType) {
-            return buildTooltipText(asPercentage(taskElement.getAdvancePercentage(progressType)));
-        }
-
-        private String getOrderState() {
-            String cssClass;
-            OrderStatusEnum state = taskElement.getOrderElement().getOrder().getState();
-
-            if(Arrays.asList(OrderStatusEnum.ACCEPTED,
-                    OrderStatusEnum.OFFERED,OrderStatusEnum.STARTED,
-                    OrderStatusEnum.SUBCONTRACTED_PENDING_ORDER)
-                    .contains(state)) {
-                if(taskElement.getAssignedStatus() == "assigned") {
-                    cssClass="order-open-assigned";
+            @Override
+            public Date getDeadline() {
+                LocalDate deadline = taskElement.getDeadline();
+                if (deadline == null) {
+                    return null;
                 }
-                else {
-                    cssClass="order-open-unassigned";
-                }
+                return deadline.toDateTimeAtStartOfDay().toDate();
             }
-            else {
-                cssClass="order-closed";
-            }
-            return "<font class='" + cssClass + "'>"
-                + state.toString()
-                + "</font>";
-        }
 
-        @Override
-        public List<Constraint<GanttDate>> getStartConstraints() {
-            return getStartConstraintsFor(this.taskElement, initDate);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getEndConstraints() {
-            return getEndConstraintsFor(this.taskElement, deadline);
-        }
-
-        @Override
-        public List<Constraint<GanttDate>> getCurrentLengthConstraint() {
-            if (taskElement instanceof Task) {
-                Task task = (Task) taskElement;
-                if (task.getAllocationDirection() == Direction.FORWARD) {
-                    return Collections
-                            .singletonList(biggerOrEqualThan(getEndDate()));
-                }
-            }
-            return Collections.emptyList();
-        }
-
-        @Override
-        public void moveTo(GanttDate newStart) {
-            if (taskElement instanceof ITaskPositionConstrained) {
-                ITaskPositionConstrained task = (ITaskPositionConstrained) taskElement;
-                if (task.getPositionConstraint().isConstraintAppliedToStart()) {
-                    setBeginDate(newStart);
-                    task.explicityMoved(toIntraDay(newStart));
+            @Override
+            public void setDeadline(Date date) {
+                if (date != null) {
+                    taskElement.setDeadline(LocalDate.fromDateFields(date));
                 } else {
-                    GanttDate newEnd = inferEndFrom(newStart);
-                    setEndDate(newEnd);
-                    task.explicityMoved(toIntraDay(newEnd));
+                    taskElement.setDeadline(null);
                 }
             }
-        }
 
-        private GanttDate inferEndFrom(GanttDate newStart) {
-            if (taskElement instanceof Task) {
-                Task task = (Task) taskElement;
-                return toGantt(task
-                        .calculateEndKeepingLength(toIntraDay(newStart)));
+            @Override
+            public GanttDate getConsolidatedline() {
+                if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
+                    return null;
+                }
+                LocalDate consolidatedline = ((Task) taskElement)
+                        .getFirstDayNotConsolidated().getDate();
+                return TaskElementAdapter.toGantt(consolidatedline);
             }
-            return newStart;
-        }
 
-        @Override
-        public Date getDeadline() {
-            LocalDate deadline = taskElement.getDeadline();
-            if (deadline == null) {
-                return null;
+            @Override
+            public boolean isSubcontracted() {
+                return taskElement.isSubcontracted();
             }
-            return deadline.toDateTimeAtStartOfDay().toDate();
+
+            @Override
+            public boolean isLimiting() {
+                return taskElement.isLimiting();
+            }
+
+            @Override
+            public boolean isLimitingAndHasDayAssignments() {
+                return taskElement.isLimitingAndHasDayAssignments();
+            }
+
+            public boolean hasConsolidations() {
+                return taskElement.hasConsolidations();
+            }
+
+            private void stepsBeforePossibleReallocation() {
+                taskDAO.reattach(taskElement);
+            }
+
+            @Override
+            public boolean canBeExplicitlyResized() {
+                return taskElement.canBeExplicitlyResized();
+            }
+
+            @Override
+            public String getAssignedStatus() {
+                return taskElement.getAssignedStatus();
+            }
+
+            @Override
+            public boolean isFixed() {
+                return taskElement.isLimitingAndHasDayAssignments()
+                        || taskElement.hasConsolidations();
+            }
+
         }
 
         @Override
-        public void setDeadline(Date date) {
-            if (date != null) {
-                taskElement.setDeadline(LocalDate.fromDateFields(date));
-            } else {
-                taskElement.setDeadline(null);
+        public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
+            return new TaskElementWrapper(scenario, taskElement);
+        }
+
+        @Override
+        public List<DomainDependency<TaskElement>> getIncomingDependencies(
+                TaskElement taskElement) {
+            return toDomainDependencies(taskElement
+                    .getDependenciesWithThisDestination());
+        }
+
+        @Override
+        public List<DomainDependency<TaskElement>> getOutcomingDependencies(
+                TaskElement taskElement) {
+            return toDomainDependencies(taskElement
+                    .getDependenciesWithThisOrigin());
+        }
+
+        private List<DomainDependency<TaskElement>> toDomainDependencies(
+                Collection<? extends Dependency> dependencies) {
+            List<DomainDependency<TaskElement>> result = new ArrayList<DomainDependency<TaskElement>>();
+            for (Dependency dependency : dependencies) {
+                result.add(DomainDependency.createDependency(
+                        dependency.getOrigin(), dependency.getDestination(),
+                        toGanntType(dependency.getType())));
+            }
+            return result;
+        }
+
+        private DependencyType toGanntType(Type type) {
+            switch (type) {
+            case END_START:
+                return DependencyType.END_START;
+            case START_END:
+                return DependencyType.START_END;
+            case START_START:
+                return DependencyType.START_START;
+            case END_END:
+                return DependencyType.END_END;
+            default:
+                throw new RuntimeException(_("{0} not supported yet", type));
+            }
+        }
+
+        private Type toDomainType(DependencyType type) {
+            switch (type) {
+            case END_START:
+                return Type.END_START;
+            case START_END:
+                return Type.START_END;
+            case START_START:
+                return Type.START_START;
+            case END_END:
+                return Type.END_END;
+            default:
+                throw new RuntimeException(_("{0} not supported yet", type));
             }
         }
 
         @Override
-        public GanttDate getConsolidatedline() {
-            if (!taskElement.isLeaf() || !taskElement.hasConsolidations()) {
-                return null;
-            }
-            LocalDate consolidatedline = ((Task) taskElement)
-                    .getFirstDayNotConsolidated().getDate();
-            return TaskElementAdapter.toGantt(consolidatedline);
+        public void addDependency(DomainDependency<TaskElement> dependency) {
+            TaskElement source = dependency.getSource();
+            TaskElement destination = dependency.getDestination();
+            Type domainType = toDomainType(dependency.getType());
+            Dependency.create(source, destination, domainType);
         }
 
         @Override
-        public boolean isSubcontracted() {
-            return taskElement.isSubcontracted();
+        public boolean canAddDependency(DomainDependency<TaskElement> dependency) {
+            return true;
         }
 
         @Override
-        public boolean isLimiting() {
-            return taskElement.isLimiting();
-        }
-
-        @Override
-        public boolean isLimitingAndHasDayAssignments() {
-            return taskElement.isLimitingAndHasDayAssignments();
-        }
-
-        public boolean hasConsolidations() {
-            return taskElement.hasConsolidations();
-        }
-
-        private void stepsBeforePossibleReallocation() {
-            taskDAO.reattach(taskElement);
-        }
-
-        @Override
-        public boolean canBeExplicitlyResized() {
-            return taskElement.canBeExplicitlyResized();
-        }
-
-        @Override
-        public String getAssignedStatus() {
-            return taskElement.getAssignedStatus();
-        }
-
-        @Override
-        public boolean isFixed() {
-            return taskElement.isLimitingAndHasDayAssignments()
-                || taskElement.hasConsolidations();
+        public void removeDependency(DomainDependency<TaskElement> dependency) {
+            TaskElement source = dependency.getSource();
+            Type type = toDomainType(dependency.getType());
+            source.removeDependencyWithDestination(dependency.getDestination(),
+                    type);
         }
 
     }
-
-    @Override
-    public ITaskFundamentalProperties adapt(final TaskElement taskElement) {
-        return new TaskElementWrapper(scenario, taskElement);
-    }
-
-
-    @Override
-    public List<DomainDependency<TaskElement>> getIncomingDependencies(
-            TaskElement taskElement) {
-        return toDomainDependencies(taskElement
-                .getDependenciesWithThisDestination());
-    }
-
-    @Override
-    public List<DomainDependency<TaskElement>> getOutcomingDependencies(
-            TaskElement taskElement) {
-        return toDomainDependencies(taskElement
-                .getDependenciesWithThisOrigin());
-    }
-
-    private List<DomainDependency<TaskElement>> toDomainDependencies(
-            Collection<? extends Dependency> dependencies) {
-        List<DomainDependency<TaskElement>> result = new ArrayList<DomainDependency<TaskElement>>();
-        for (Dependency dependency : dependencies) {
-            result.add(DomainDependency.createDependency(
-                    dependency.getOrigin(),
-                    dependency.getDestination(), toGanntType(dependency
-                            .getType())));
-        }
-        return result;
-    }
-
-    private DependencyType toGanntType(Type type) {
-        switch (type) {
-        case END_START:
-            return DependencyType.END_START;
-        case START_END:
-            return DependencyType.START_END;
-        case START_START:
-            return DependencyType.START_START;
-        case END_END:
-            return DependencyType.END_END;
-        default:
-            throw new RuntimeException(_("{0} not supported yet", type));
-        }
-    }
-
-    private Type toDomainType(DependencyType type) {
-        switch (type) {
-        case END_START:
-            return Type.END_START;
-        case START_END:
-            return Type.START_END;
-        case START_START:
-            return Type.START_START;
-        case END_END:
-            return Type.END_END;
-        default:
-            throw new RuntimeException(_("{0} not supported yet", type));
-        }
-    }
-
-    @Override
-    public void addDependency(DomainDependency<TaskElement> dependency) {
-        TaskElement source = dependency.getSource();
-        TaskElement destination = dependency.getDestination();
-        Type domainType = toDomainType(dependency.getType());
-        Dependency.create(source, destination, domainType);
-    }
-
-    @Override
-    public boolean canAddDependency(DomainDependency<TaskElement> dependency) {
-        return true;
-    }
-
-    @Override
-    public void removeDependency(DomainDependency<TaskElement> dependency) {
-        TaskElement source = dependency.getSource();
-        Type type = toDomainType(dependency.getType());
-        source.removeDependencyWithDestination(dependency.getDestination(),
-                type);
-    }
-
 }

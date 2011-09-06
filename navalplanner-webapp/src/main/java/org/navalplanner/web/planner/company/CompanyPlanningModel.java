@@ -68,7 +68,7 @@ import org.navalplanner.business.users.entities.UserRole;
 import org.navalplanner.business.workreports.entities.WorkReportLine;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup;
 import org.navalplanner.web.orders.assigntemplates.TemplateFinderPopup.IOnResult;
-import org.navalplanner.web.planner.ITaskElementAdapter;
+import org.navalplanner.web.planner.TaskElementAdapter;
 import org.navalplanner.web.planner.chart.Chart;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller;
 import org.navalplanner.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
@@ -155,7 +155,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     private IScenarioManager scenarioManager;
 
     @Autowired
-    private ITaskElementAdapter taskElementAdapter;
+    private TaskElementAdapter taskElementAdapterCreator;
 
     private Scenario currentScenario;
 
@@ -729,13 +729,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private PlannerConfiguration<TaskElement> createConfiguration(
             IPredicate predicate) {
-        taskElementAdapter.setPreventCalculateResourcesText(true);
-        taskElementAdapter.useScenario(currentScenario);
-        List<TaskElement> toShow;
-        toShow = retainOnlyTopLevel(predicate);
-
-        return new PlannerConfiguration<TaskElement>(taskElementAdapter,
-                new TaskElementNavigator(), toShow);
+        return new PlannerConfiguration<TaskElement>(
+                taskElementAdapterCreator.createForCompany(currentScenario),
+                new TaskElementNavigator(), retainOnlyTopLevel(predicate));
     }
 
     private List<TaskElement> retainOnlyTopLevel(IPredicate predicate) {
