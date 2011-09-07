@@ -151,9 +151,12 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement>
     @Override
     @Transactional(readOnly = true)
     public BigDecimal getHoursAdvancePercentage(OrderElement orderElement) {
-        final int totalChargedHours = orderElement.getSumChargedEffort() != null ? orderElement
-                .getSumChargedEffort().getTotalChargedHours() : 0;
-        BigDecimal assignedHours = new BigDecimal(totalChargedHours).setScale(2);
+        final EffortDuration totalChargedEffort = orderElement
+                .getSumChargedEffort() != null ? orderElement
+                .getSumChargedEffort().getTotalChargedEffort() : EffortDuration
+                .zero();
+        BigDecimal assignedHours = totalChargedEffort
+                .toHoursAsDecimalWithScale(2);
         BigDecimal estimatedHours = new BigDecimal(orderElement.getWorkHours())
                 .setScale(2);
 

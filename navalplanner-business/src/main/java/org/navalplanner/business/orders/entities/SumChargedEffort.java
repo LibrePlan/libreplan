@@ -70,11 +70,4 @@ public class SumChargedEffort extends BaseEntity {
         return directChargedEffort.plus(indirectChargedEffort);
     }
 
-    /**
-     * @deprecated Use {@link SumChargedEffort#getTotalChargedEffort()} instead
-     */
-    public Integer getTotalChargedHours() {
-        return getTotalChargedEffort().getHours();
-    }
-
 }
