@@ -21,6 +21,8 @@
 
 package org.navalplanner.business.reports.dtos;
 
+import java.math.BigDecimal;
+
 import org.navalplanner.business.resources.entities.Worker;
 
 
@@ -28,18 +30,18 @@ public class HoursWorkedPerWorkerInAMonthDTO {
 
     private String workerName;
 
-    private Long numHours;
+    private BigDecimal numHours;
 
-    public HoursWorkedPerWorkerInAMonthDTO(Worker worker, Long numHours) {
+    public HoursWorkedPerWorkerInAMonthDTO(Worker worker, BigDecimal numHours) {
         this.workerName = worker.getName();
         this.numHours = numHours;
     }
 
-    public Long getNumHours() {
+    public BigDecimal getNumHours() {
         return numHours;
     }
 
-    public void setNumHours(Long numHours) {
+    public void setNumHours(BigDecimal numHours) {
         this.numHours = numHours;
     }
 

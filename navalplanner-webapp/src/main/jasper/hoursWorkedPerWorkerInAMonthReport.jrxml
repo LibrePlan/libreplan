@@ -6,10 +6,10 @@
 	<parameter name="month" class="java.lang.String"/>
 	<parameter name="logo" class="java.lang.String"/>
 	<field name="workerName" class="java.lang.String"/>
-	<field name="numHours" class="java.lang.Long"/>
-	<variable name="sumNumHours" class="java.lang.Long" calculation="Sum">
+	<field name="numHours" class="java.math.BigDecimal"/>
+	<variable name="sumNumHours" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
-		<initialValueExpression><![CDATA[new java.lang.Long(0)]]></initialValueExpression>
+		<initialValueExpression><![CDATA[java.math.BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<background>
 		<band splitType="Stretch"/>
@@ -123,7 +123,7 @@
 			<textField isBlankWhenNull="true">
 				<reportElement x="213" y="0" width="100" height="15"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$F{numHours}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{numHours}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="13" y="0" width="200" height="15"/>
@@ -138,7 +138,7 @@
 			<textField evaluationTime="Report" isBlankWhenNull="true">
 				<reportElement x="213" y="10" width="100" height="15"/>
 				<textElement textAlignment="Center"/>
-				<textFieldExpression class="java.lang.Long"><![CDATA[$V{sumNumHours}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumNumHours}]]></textFieldExpression>
 			</textField>
 			<line>
 				<reportElement x="224" y="4" width="80" height="1"/>

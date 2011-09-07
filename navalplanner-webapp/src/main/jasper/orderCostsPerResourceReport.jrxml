@@ -11,7 +11,7 @@
 	<field name="date" class="java.util.Date"/>
 	<field name="clockStart" class="java.util.Date"/>
 	<field name="clockFinish" class="java.util.Date"/>
-	<field name="numHours" class="java.lang.Integer"/>
+	<field name="numHours" class="java.math.BigDecimal"/>
 	<field name="orderElementCode" class="java.lang.String"/>
 	<field name="descriptionValues" class="java.lang.String"/>
 	<field name="labels" class="java.lang.String"/>
@@ -21,13 +21,13 @@
 	<field name="costPerHour" class="java.math.BigDecimal"/>
 	<field name="orderElementName" class="java.lang.String"/>
 	<field name="orderCode" class="java.lang.String"/>
-	<variable name="sumHoursPerTask" class="java.lang.Integer" resetType="Group" resetGroup="Task" calculation="Sum">
+	<variable name="sumHoursPerTask" class="java.math.BigDecimal" resetType="Group" resetGroup="Task" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
-		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
 	</variable>
-	<variable name="sumHoursPerWorker" class="java.lang.Integer" resetType="Group" resetGroup="Worker" calculation="Sum">
+	<variable name="sumHoursPerWorker" class="java.math.BigDecimal" resetType="Group" resetGroup="Worker" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
-		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
 	</variable>
 	<variable name="sumCosts" class="java.math.BigDecimal" resetType="Group" resetGroup="Worker" calculation="Sum">
 		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
@@ -36,16 +36,16 @@
 	<variable name="sumTotalCosts" class="java.math.BigDecimal" resetType="Group" resetGroup="OrderCode" calculation="Sum">
 		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
 	</variable>
-	<variable name="sumTotalHours" class="java.lang.Integer" resetType="Group" resetGroup="OrderCode" calculation="Sum">
+	<variable name="sumTotalHours" class="java.math.BigDecimal" resetType="Group" resetGroup="OrderCode" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
 	</variable>
 	<variable name="sumCostsPerTask" class="java.math.BigDecimal" resetType="Group" resetGroup="Task" calculation="Sum">
 		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
 		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
 	</variable>
-	<variable name="sumHoursPerWorkerandCost" class="java.lang.Integer" resetType="Group" resetGroup="HoursType Group" calculation="Sum">
+	<variable name="sumHoursPerWorkerandCost" class="java.math.BigDecimal" resetType="Group" resetGroup="HoursType Group" calculation="Sum">
 		<variableExpression><![CDATA[$F{numHours}]]></variableExpression>
-		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
+		<initialValueExpression><![CDATA[new BigDecimal(0)]]></initialValueExpression>
 	</variable>
 	<variable name="sumCostsPerWorkerandCost" class="java.math.BigDecimal" resetType="Group" resetGroup="HoursType Group" calculation="Sum">
 		<variableExpression><![CDATA[$F{cost}]]></variableExpression>
@@ -83,12 +83,12 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0 h">
+				<textField pattern="###0.00 h">
 					<reportElement x="329" y="2" width="93" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font isBold="true"/>
 					</textElement>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTotalHours}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00 €;-###0.00 €">
 					<reportElement x="422" y="2" width="119" height="20"/>
@@ -132,10 +132,10 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.task}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0 h">
+				<textField pattern="###0.00 h">
 					<reportElement x="329" y="2" width="93" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumHoursPerTask}]]></textFieldExpression>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerTask}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00 €;-###0.00 €" isBlankWhenNull="true">
 					<reportElement x="422" y="2" width="119" height="20"/>
@@ -242,10 +242,10 @@
 					</textElement>
 					<textFieldExpression class="java.lang.String"><![CDATA[$R{total.worker}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0 h">
+				<textField pattern="###0.00 h">
 					<reportElement x="329" y="2" width="93" height="20"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumHoursPerWorker}]]></textFieldExpression>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerWorker}]]></textFieldExpression>
 				</textField>
 			</band>
 		</groupFooter>
@@ -271,10 +271,10 @@
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
 					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCostsPerWorkerandCost}]]></textFieldExpression>
 				</textField>
-				<textField pattern="###0 h">
+				<textField pattern="###0.00 h">
 					<reportElement x="330" y="0" width="93" height="14"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle"/>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{sumHoursPerWorkerandCost}]]></textFieldExpression>
+					<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumHoursPerWorkerandCost}]]></textFieldExpression>
 				</textField>
 				<textField pattern="###0.00 €/h;-###0.00 €/h" isBlankWhenNull="true">
 					<reportElement x="252" y="0" width="78" height="14"/>
