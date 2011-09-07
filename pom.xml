@@ -157,7 +157,7 @@
         </repository>
     <repository>
          <id>thirdparty</id>
-         <url>http://nexus.naval.igalia.com/content/repositories/thirdparty</url>
+         <url>http://nexus.libreplan.org/content/repositories/thirdparty</url>
      </repository>
     </repositories>
 
