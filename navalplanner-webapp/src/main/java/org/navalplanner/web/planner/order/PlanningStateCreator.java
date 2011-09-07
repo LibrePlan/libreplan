@@ -175,19 +175,16 @@ public class PlanningStateCreator {
 
     private PlanningState createInitialPlanning(Order orderReloaded) {
         Scenario currentScenario = scenarioManager.getCurrent();
-        if (!orderReloaded.isSomeTaskElementScheduled()) {
-            return new EmptyPlannigState(currentScenario, orderReloaded);
-        }
         final List<Resource> allResources = resourceDAO.list(Resource.class);
         criterionDAO.list(Criterion.class);
-        TaskGroup taskElement = orderReloaded.getAssociatedTaskElement();
-        forceLoadOfChildren(Arrays.asList(taskElement));
-        forceLoadDayAssignments(orderReloaded.getResources());
-        switchAllocationsToScenario(currentScenario, taskElement);
+        TaskGroup rootTask = orderReloaded.getAssociatedTaskElement();
+        if (rootTask != null) {
+            forceLoadOfChildren(Arrays.asList(rootTask));
+            forceLoadDayAssignments(orderReloaded.getResources());
+        }
 
-        PlanningState result = new WithDataPlanningState(taskElement,
-                orderReloaded.getAssociatedTasks(), allResources,
-                buildScenarioInfo(orderReloaded));
+        PlanningState result = new PlanningState(orderReloaded, allResources,
+                currentScenario);
 
         forceLoadOfDependenciesCollections(result.getInitial());
         forceLoadOfWorkingHours(result.getInitial());
@@ -512,20 +509,71 @@ public class PlanningStateCreator {
         }
     }
 
-    public abstract class PlanningState {
+    public class PlanningState {
 
         private final Order order;
 
-        public PlanningState(Order order) {
+        private ArrayList<TaskElement> initial;
+
+        private Set<TaskElement> toSave;
+
+        private Set<TaskElement> toRemove = new HashSet<TaskElement>();
+
+        private Set<Resource> resources = new HashSet<Resource>();
+
+        private TaskGroup rootTask;
+
+        private final IScenarioInfo scenarioInfo;
+
+        public PlanningState(Order order,
+                Collection<? extends Resource> initialResources,
+                Scenario currentScenario) {
             Validate.notNull(order);
             this.order = order;
+            rebuildTasksState(order);
+            this.scenarioInfo = isEmpty() ? new EmptySchedulingScenarioInfo(
+                    currentScenario) : buildScenarioInfo(order);
+            this.resources = OrderPlanningModel
+                    .loadRequiredDataFor(new HashSet<Resource>(initialResources));
+            associateWithScenario(this.resources);
+        }
+
+        void onRetrieval() {
+            cachedConfiguration = null;
+            cachedCommand = null;
+            rebuildTasksState(order);
+        }
+
+        private void rebuildTasksState(Order order) {
+            this.rootTask = order.getAssociatedTaskElement();
+            if (this.rootTask == null) {
+                this.initial = new ArrayList<TaskElement>();
+                this.toSave = new HashSet<TaskElement>();
+            } else {
+                this.initial = new ArrayList<TaskElement>(
+                        rootTask.getChildren());
+                this.toSave = rootTask == null ? new HashSet<TaskElement>()
+                        : new HashSet<TaskElement>(rootTask.getChildren());
+                this.toSave.removeAll(this.toRemove);
+            }
+        }
+
+        private void associateWithScenario(
+                Collection<? extends Resource> resources) {
+            Scenario currentScenario = getCurrentScenario();
+            for (Resource each : resources) {
+                each.useScenario(currentScenario);
+
+            }
         }
 
         public Order getOrder() {
             return order;
         }
 
-        public abstract boolean isEmpty();
+        public boolean isEmpty() {
+            return rootTask == null;
+        }
 
         /**
          * <p>
@@ -546,10 +594,6 @@ public class PlanningStateCreator {
             return getScenarioInfo().getAssignmentsCalculator();
         }
 
-        void onRetrieval() {
-            cachedConfiguration = null;
-            cachedCommand = null;
-        }
 
         private PlannerConfiguration<TaskElement> cachedConfiguration;
 
@@ -582,23 +626,119 @@ public class PlanningStateCreator {
                     getConfiguration());
         }
 
-        public abstract Collection<? extends TaskElement> getTasksToSave();
+        public Collection<? extends TaskElement> getTasksToSave() {
+            return Collections.unmodifiableCollection(toSave);
+        }
 
-        public abstract List<TaskElement> getInitial();
+        public List<TaskElement> getInitial() {
+            return new ArrayList<TaskElement>(initial);
+        }
 
-        public abstract List<Task> getAllTasks();
+        public List<Task> getAllTasks() {
+            List<Task> result = new ArrayList<Task>();
+            if (rootTask != null) {
+                findTasks(rootTask, result);
+            }
+            return result;
+        }
 
-        public abstract void reassociateResourcesWithSession();
+        private void findTasks(TaskElement taskElement, List<Task> result) {
+            if (taskElement instanceof Task) {
+                Task t = (Task) taskElement;
+                result.add(t);
+            }
+            for (TaskElement each : taskElement.getChildren()) {
+                findTasks(each, result);
+            }
+        }
 
-        public abstract Collection<? extends TaskElement> getToRemove();
+        public void reassociateResourcesWithSession() {
+            for (Resource resource : resources) {
+                resourceDAO.reattach(resource);
+            }
+            // ensuring no repeated instances of criterions
+            reattachCriterions(getExistentCriterions(resources));
+            addingNewlyCreated(resourceDAO);
+        }
 
-        public abstract void removed(TaskElement taskElement);
+        private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
+            Set<Criterion> result = new HashSet<Criterion>();
+            for (Resource resource : resources) {
+                for (CriterionSatisfaction each : resource
+                        .getCriterionSatisfactions()) {
+                    result.add(each.getCriterion());
+                }
+            }
+            return result;
+        }
 
-        public abstract void added(TaskElement taskElement);
+        private void reattachCriterions(Set<Criterion> criterions) {
+            for (Criterion each : criterions) {
+                criterionDAO.reattachUnmodifiedEntity(each);
+            }
+        }
 
-        public abstract TaskGroup getRootTask();
+        private void addingNewlyCreated(IResourceDAO resourceDAO) {
+            Set<Resource> newResources = getNewResources(resourceDAO);
+            OrderPlanningModel.loadRequiredDataFor(newResources);
+            associateWithScenario(newResources);
+            resources.addAll(newResources);
+        }
 
-        public abstract IScenarioInfo getScenarioInfo();
+        private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
+            Set<Resource> result = new HashSet<Resource>(
+                    resourceDAO.list(Resource.class));
+            result.removeAll(resources);
+            return result;
+        }
+
+        public Collection<? extends TaskElement> getToRemove() {
+            return Collections
+                    .unmodifiableCollection(onlyNotTransient(toRemove));
+        }
+
+        private List<TaskElement> onlyNotTransient(
+                Collection<? extends TaskElement> toRemove) {
+            ArrayList<TaskElement> result = new ArrayList<TaskElement>();
+            for (TaskElement taskElement : toRemove) {
+                if (taskElement.getId() != null) {
+                    result.add(taskElement);
+                }
+            }
+            return result;
+        }
+
+        public void removed(TaskElement taskElement) {
+            taskElement.detach();
+            if (!isTopLevel(taskElement)) {
+                return;
+            }
+            toSave.remove(taskElement);
+            toRemove.add(taskElement);
+        }
+
+        private boolean isTopLevel(TaskElement taskElement) {
+            if (taskElement instanceof TaskMilestone) {
+                return true;
+            }
+            return taskElement.getParent() == rootTask;
+        }
+
+        public void added(TaskElement taskElement) {
+            if (!isTopLevel(taskElement)) {
+                return;
+            }
+            toRemove.remove(taskElement);
+            toSave.add(taskElement);
+        }
+
+        public TaskGroup getRootTask() {
+            return rootTask;
+        }
+
+        public IScenarioInfo getScenarioInfo() {
+            return scenarioInfo;
+        }
 
         public Scenario getCurrentScenario() {
             return getScenarioInfo().getCurrentScenario();
@@ -709,229 +849,6 @@ public class PlanningStateCreator {
                 }
             }
             return result;
-        }
-
-    }
-
-    private class EmptyPlannigState extends PlanningState {
-
-        private final Scenario currentScenario;
-
-        private EmptyPlannigState(Scenario currentScenario, Order order) {
-            super(order);
-            this.currentScenario = currentScenario;
-        }
-
-        @Override
-        public void added(TaskElement taskElement) {
-        }
-
-        @Override
-        public List<TaskElement> getInitial() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public TaskGroup getRootTask() {
-            return null;
-        }
-
-        @Override
-        public Collection<? extends TaskElement> getTasksToSave() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public Collection<? extends TaskElement> getToRemove() {
-            return Collections.emptyList();
-        }
-
-        @Override
-        public void reassociateResourcesWithSession() {
-        }
-
-        public void removed(TaskElement taskElement) {
-        }
-
-        @Override
-        public IScenarioInfo getScenarioInfo() {
-            return new EmptySchedulingScenarioInfo(currentScenario);
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return true;
-        }
-
-        @Override
-        public List<Task> getAllTasks() {
-            return Collections.emptyList();
-        }
-
-    }
-
-    private class WithDataPlanningState extends PlanningState {
-
-        private final ArrayList<TaskElement> initial;
-
-        private final Set<TaskElement> toSave;
-
-        private final Set<TaskElement> toRemove;
-
-        private Set<Resource> resources = new HashSet<Resource>();
-
-        private final TaskGroup rootTask;
-
-        private final IScenarioInfo scenarioInfo;
-
-        private WithDataPlanningState(TaskGroup rootTask,
-                Collection<? extends TaskElement> initialState,
-                Collection<? extends Resource> initialResources,
-                IScenarioInfo scenarioInfo) {
-            super((Order) rootTask.getOrderElement());
-            this.rootTask = rootTask;
-            this.scenarioInfo = scenarioInfo;
-            this.initial = new ArrayList<TaskElement>(initialState);
-            this.toSave = new HashSet<TaskElement>(initialState);
-            this.toRemove = new HashSet<TaskElement>();
-            this.resources = OrderPlanningModel
-                    .loadRequiredDataFor(new HashSet<Resource>(initialResources));
-            associateWithScenario(this.resources);
-        }
-
-        private void associateWithScenario(
-                Collection<? extends Resource> resources) {
-            Scenario currentScenario = getCurrentScenario();
-            for (Resource each : resources) {
-                each.useScenario(currentScenario);
-
-            }
-        }
-
-        @Override
-        public Collection<? extends TaskElement> getTasksToSave() {
-            return Collections.unmodifiableCollection(toSave);
-        }
-
-        @Override
-        public List<Task> getAllTasks() {
-            List<Task> result = new ArrayList<Task>();
-            findTasks(rootTask, result);
-            return result;
-        }
-
-        private void findTasks(TaskElement taskElement, List<Task> result) {
-            if (taskElement instanceof Task) {
-                Task t = (Task) taskElement;
-                result.add(t);
-            }
-            for (TaskElement each : taskElement.getChildren()) {
-                findTasks(each, result);
-            }
-        }
-
-        @Override
-        public List<TaskElement> getInitial() {
-            return new ArrayList<TaskElement>(initial);
-        }
-
-        @Override
-        public void reassociateResourcesWithSession() {
-            for (Resource resource : resources) {
-                resourceDAO.reattach(resource);
-            }
-            // ensuring no repeated instances of criterions
-            reattachCriterions(getExistentCriterions(resources));
-            addingNewlyCreated(resourceDAO);
-        }
-
-        private void reattachCriterions(Set<Criterion> criterions) {
-            for (Criterion each : criterions) {
-                criterionDAO.reattachUnmodifiedEntity(each);
-            }
-        }
-
-        private Set<Criterion> getExistentCriterions(Set<Resource> resources) {
-            Set<Criterion> result = new HashSet<Criterion>();
-            for (Resource resource : resources) {
-                for (CriterionSatisfaction each : resource
-                        .getCriterionSatisfactions()) {
-                    result.add(each.getCriterion());
-                }
-            }
-            return result;
-        }
-
-        private void addingNewlyCreated(IResourceDAO resourceDAO) {
-            Set<Resource> newResources = getNewResources(resourceDAO);
-            OrderPlanningModel.loadRequiredDataFor(newResources);
-            associateWithScenario(newResources);
-            resources.addAll(newResources);
-        }
-
-        private Set<Resource> getNewResources(IResourceDAO resourceDAO) {
-            Set<Resource> result = new HashSet<Resource>(
-                    resourceDAO.list(Resource.class));
-            result.removeAll(resources);
-            return result;
-        }
-
-        @Override
-        public Collection<? extends TaskElement> getToRemove() {
-            return Collections
-                    .unmodifiableCollection(onlyNotTransient(toRemove));
-        }
-
-        private List<TaskElement> onlyNotTransient(
-                Collection<? extends TaskElement> toRemove) {
-            ArrayList<TaskElement> result = new ArrayList<TaskElement>();
-            for (TaskElement taskElement : toRemove) {
-                if (taskElement.getId() != null) {
-                    result.add(taskElement);
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public void removed(TaskElement taskElement) {
-            taskElement.detach();
-            if (!isTopLevel(taskElement)) {
-                return;
-            }
-            toSave.remove(taskElement);
-            toRemove.add(taskElement);
-        }
-
-        private boolean isTopLevel(TaskElement taskElement) {
-            if (taskElement instanceof TaskMilestone) {
-                return true;
-            }
-            return taskElement.getParent() == null;
-        }
-
-        @Override
-        public void added(TaskElement taskElement) {
-            if (!isTopLevel(taskElement)) {
-                return;
-            }
-            toRemove.remove(taskElement);
-            toSave.add(taskElement);
-        }
-
-        @Override
-        public TaskGroup getRootTask() {
-            return rootTask;
-        }
-
-        @Override
-        public IScenarioInfo getScenarioInfo() {
-            return scenarioInfo;
-        }
-
-        @Override
-        public boolean isEmpty() {
-            return false;
         }
 
     }
