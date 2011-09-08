@@ -365,7 +365,7 @@ public class EffortDuration implements Comparable<EffortDuration> {
         Integer hours = valuesForEachUnit.get(Granularity.HOURS);
         Integer minutes = valuesForEachUnit.get(Granularity.MINUTES);
         Integer seconds = valuesForEachUnit.get(Granularity.SECONDS);
-        return hours + ":" + minutes + ":" + seconds;
+        return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 
     public String toFormattedString() {
@@ -374,9 +374,9 @@ public class EffortDuration implements Comparable<EffortDuration> {
         int hours = byGranularity.get(Granularity.HOURS);
         int minutes = byGranularity.get(Granularity.MINUTES);
         if (minutes == 0) {
-            return String.format("%s", hours);
+            return String.format("%d", hours);
         } else {
-            return String.format("%s:%s", hours, minutes);
+            return String.format("%d:%02d", hours, minutes);
         }
     }
 
